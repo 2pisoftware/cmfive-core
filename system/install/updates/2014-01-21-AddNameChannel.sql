@@ -1,0 +1,1 @@
+ALTER TABLE  `channel` ADD  `name` VARCHAR( 255 ) NULL AFTER  `is_active`;

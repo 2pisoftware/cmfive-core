@@ -1,0 +1,44 @@
+[[title|Edit Template]]
+
+<h4>Details</h4>
+
+<ul>
+    <li><b>Template Details</b>
+        <ul>
+            <li>Title - Template titles should describe their usage</li>
+            <li>Active - Can be used to turn templates on or off</li>
+            <li>Module - The module that will use this template. This field is Context
+specific, module titles must match correctly for the template to work</li>
+            <li>Category - Usually describes the purpose of the template. This field 
+is also context sensitive and needs to match specified values for the template to work</li>
+        </ul>
+    <li><b>Description</b> - Used for storing notes and useful information about the template</li>
+</ul>
+
+<h4>Template</h4>
+<p>Templates are written in HTML with the <a href="http://twig.sensiolabs.org/" target="_blank">Twig formatting 
+language</a>. Variables are passed to 
+placeholders enclosed by {{double curly brackets}}.</p>
+<ul>
+    <li><b>Template Title</b> - Templates are split into two sections, the title and the body.
+The template title is a smaller field and is not used for single page templates, eg. templates that
+produce PDFs. For email templates the contents of the title section is used to 
+fill out the subject line of the email</li>
+    <li><b>Template Body</b> - The template body is the main section of the template.</li>
+</ul>
+
+<h4>Test Data</h4>
+<p>Test data can be provided to be included in the template preview. Data needs 
+to be in the form of a keyed JSON object where keys match the placeholder strings 
+in the template.<br>
+{<br>
+"placeholder":"Hello World"<br>
+}</p>
+
+<h4>Test Output</h4>
+<p>Test output will show a preview of the template with the data provided under the Test Data tab.</p>
+
+<h4>Manual</h4>
+<p>A detailed description of how to write templates.</p>
+
+

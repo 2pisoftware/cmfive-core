@@ -1,0 +1,9 @@
+[[title|Migration]]
+
+<p><b>Warning!</b> Running migrations can cause loss of data. Please use only as directed by 
+your system administrator or software maintenance provider.</p> 
+
+<p>Migrations update the structure of the underlying system database. When system 
+updates occur there may be necessary database changes. These changes will be conducted 
+by your system administrator or software maintenance provider. The migrations module provides tools for maintaining 
+the state of the database for these changes.</p>

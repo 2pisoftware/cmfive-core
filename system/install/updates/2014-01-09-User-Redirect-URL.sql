@@ -1,0 +1,1 @@
+ALTER TABLE `user` ADD `redirect_url` VARCHAR( 255 ) NOT NULL DEFAULT 'main/index' AFTER `dt_password_reset_at`;

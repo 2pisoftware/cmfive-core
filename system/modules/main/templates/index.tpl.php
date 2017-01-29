@@ -1,0 +1,1 @@
+<?php echo $w->partial("listwidgets", null, "main"); ?>

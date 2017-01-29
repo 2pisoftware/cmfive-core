@@ -1,0 +1,12 @@
+.draggable-icon {
+	color: darkgrey;
+	padding: 10px;
+	text-align: center;
+	border: 1px #cdcdcd solid;
+}
+
+.draggable-icon:hover {
+	cursor: pointer;
+	background-color: #efefef;
+	color: black;
+}

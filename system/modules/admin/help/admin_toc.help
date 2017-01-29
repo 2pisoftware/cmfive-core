@@ -1,0 +1,15 @@
+[[title|Administration Overview]]
+
+[[help|admin/users|List Users]]<br>
+[[help|admin/groups|List Groups]]<br>
+[[help|admin/lookup|Lookup]]<br>
+[[help|admin/templates/index|Templates]]<br>
+PHP Info - displays information for local php settings<br>
+[[help|admin/printers|Printers]]<br>
+[[help|admin/printqueue|Print Queue]]<br>
+[[help|admin/databasebackup|Backup Database]] - Creates a backup of all data<br>
+[[help|admin/composer|Update Composer.json]] - Updates system dependency list<br>
+[[help|admin/email|Email]]<br>
+[[help|admin/migrations/index|Migrations]]<br>
+[[help|admin/file/index|File Transfer]]<br>
+[[help|file/deletedfiles|Deleted Files]]<br>

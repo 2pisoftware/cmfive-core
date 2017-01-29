@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="selenium.base" href="http://devtest.isaac/auth/login" />
+<title>create custom form on task</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">create custom form on task</td></tr>
+</thead><tbody>
+<tr>
+	<td>open</td>
+	<td>/auth/login</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=login</td>
+	<td>admin</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=password</td>
+	<td>admin</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//button[@type='submit']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Form</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=button.button.tiny </td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=title</td>
+	<td>testForm</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=description</td>
+	<td>for testing</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//button[@type='submit']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=testForm</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=button.button.tiny </td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=name</td>
+	<td>testTextField</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=div.large-12.columns &gt; button.button</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=button.button.tiny </td>
+	<td></td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>id=type</td>
+	<td>label=Decimal</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=option[value=&quot;decimal&quot;]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=name</td>
+	<td>testDecimalField</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=decimal_places</td>
+	<td>2</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=div.large-12.columns &gt; button.button</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=button.button.tiny </td>
+	<td></td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>id=type</td>
+	<td>label=Date</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=name</td>
+	<td>testDateField</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=div.large-12.columns &gt; button.button</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=button.button.tiny </td>
+	<td></td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>id=type</td>
+	<td>label=Date &amp; Time</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=name</td>
+	<td>testDateTimeField</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=div.large-12.columns &gt; button.button</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=button.button.tiny </td>
+	<td></td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>id=type</td>
+	<td>label=Select</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=option[value=&quot;select&quot;]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=name</td>
+	<td>testSelectField</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=options</td>
+	<td>Yes,No,Maybe</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=div.large-12.columns &gt; button.button</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=button.button.tiny </td>
+	<td></td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>id=type</td>
+	<td>label=Select</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=option[value=&quot;select&quot;]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=name</td>
+	<td>testSelectObjectField</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=object_type</td>
+	<td>task</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=div.large-12.columns &gt; button.button</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=button.button.tiny </td>
+	<td></td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>id=type</td>
+	<td>label=Autocomplete</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=option[value=&quot;autocomplete&quot;]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=name</td>
+	<td>testAutocompleteField</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=object_type</td>
+	<td>task</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=div.large-12.columns &gt; button.button</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Preview</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=testdecimalfield</td>
+	<td>4543.4343</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=testdatefield</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=15</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=testdatetimefield</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=testselectfield</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Mapping</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=Task</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=div.row-fluid.clearfix &gt; div.small-12.columns &gt; button.button</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Fields</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Row Templates</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=span.fi-q.show-for-medium-up</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=a.close-reveal-modal</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Task List</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=testTask</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=testForm 0</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=#testform &gt; div.row-fluid &gt; button.button.tiny </td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=testtextfield</td>
+	<td>testData</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=testdecimalfield</td>
+	<td>133.999</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=testdatefield</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=15</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=testdatetimefield</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=15</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//dd[@id='ui_tpicker_hour_testdatetimefield']/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>xpath=(//button[@type='button'])[5]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=acp_testautocompletefield</td>
+	<td>testTask</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>xpath=(//button[@type='button'])[6]</td>
+	<td></td>
+</tr>
+
+</tbody></table>
+</body>
+</html>

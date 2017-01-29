@@ -1,0 +1,88 @@
+[[title|Adding a Channel]]
+After you select "Email" from the "Add a New Channel" dropdown.
+An Email Channel is comprised of many parts:
+<hr/>
+<div class='row-fluid'>
+    <div class='small-12 medium-3 columns'>
+        <h3><a href="#channel-anchor">Channel</a></h3>
+        <ul>
+            <li><a href="#channel-name-anchor">Name</a></li>
+            <li><a href="#channel-notify-anchor">Notify User/Email</a></li>
+            <li><a href="#channel-processor-anchor">Run Processors</a></li>
+        </ul>
+    </div>
+    <div class='small-12 medium-3 columns'>
+        <h3><a href="#email-anchor">Email</a></h3>
+        <ul>
+            <li><a href="#email-protocol-anchor">Protocol</a></li>
+            <li><a href="#email-server-anchor">Server URL</a></li>
+            <li><a href="#email-username-anchor">Username and Password</a></li>
+            <li><a href="#email-port-anchor">Port</a></li>
+            <li><a href="#email-useauth-anchor">Use Auth</a></li>
+            <li><a href="#email-folder-anchor">Folder</a></li>
+        </ul>
+    </div>
+    <div class='small-12 medium-3 columns'>
+        <h3><a href="#filter-anchor">Filter</a></h3>
+        <ul>
+            <li><a href="#filter-to-anchor">To, From and CC</a></li>
+            <li><a href="#filter-subject-anchor">Subject</a></li>
+            <li><a href="#filter-body-anchor">Body</a></li>
+        </ul>
+    </div>
+    <div class='small-12 medium-3 columns'>
+        <h3><a href="#action-anchor">Action</a></h3>
+        <ul>
+            <li><a href="#action-action-anchor">Post Read Action</a></li>
+            <li><a href="#action-data-anchor">Post Read Data</a></li>
+        </ul>
+    </div>
+</div>
+<hr/>
+<div id='channel-anchor' class='row-fluid panel'>
+    <h3>Channel</h3>
+    <h5 id='channel-name-anchor'>Name</h5>
+    The name field is just a reference name for the Channel. Choosing a unique name is wise so you can tell them apart in the list.
+    <h5 id='channel-notify-anchor'>Notify User/Email</h5>
+    The notify feature will notify either the user by their chosen method of being notified, or to a given email address.
+    <h5 id='channel-processor-anchor'>Run Processor</h5>
+    If the "Run Processor" option is ticked, then the System will automatically run the matching Channel processors after it has run
+    the read cycle. If this is left unticked, then the processor will need to be called manually.
+</div>
+<br/>
+<div id='email-anchor' class='row-fluid panel'>
+    <h3>Email</h3>
+    <h5 id='email-protocol-anchor'>Protocol</h5>
+    The protocol list is either POP3 or IMAP, choose the one relevant to the email account used.
+    <h5 id='email-server-anchor'>Server URL</h5>
+    The server url is the POP3 or IMAP server url to your email service, for example, Gmail's server url is [pop3|imap].gmail.com.
+    <h5 id='email-username-anchor'>Username and Password</h5>
+    The username and password for the email account used.
+    <h5 id='email-port-anchor'>Port</h5>
+    The port for the email account used.
+    <h5 id='email-useauth-anchor'>Use Auth</h5>
+    The use auth flag is to tell the system whether or not to use an SSL connection.
+    <h5 id='email-username-anchor'>Folder</h5>
+    The folder specifies where to get emails from within the account. Leave blank for Inbox, research will need to be done to find
+    the right syntax for specifying folders.
+</div>
+<br/>
+<div id='filter-anchor' class='row-fluid panel'>
+    <h3>Filter</h3>
+    <h5 id='filter-to-anchor'>To, From and CC</h5>
+    The to, from and cc fields are the email addresses that we want to get emails to and from. For example if we wanted only get emails 
+    that have been sent from "user@example.com" then put "user@example.com" in the FROM field.
+    <h5 id='filter-subject-anchor'>Subject</h5>
+    The subject filter field, is the same as above except we can filter by the subject field. For example, if we wanted to only read 
+    emails with a subject "JOBS", then put "JOBS" in the subject filter field.
+    <h5 id='filter-body-anchor'>Body</h5>
+    Like above, the body filter will only retrieve emails where the body contains some text specified.
+</div>
+<br/>
+<div id='action-anchor' class='row-fluid panel'>
+    <h3>Action</h3>
+    <h5 id='action-action-anchor'>Post Read Action</h5>
+    The post read action is the name of an action to run after the channel has been read.
+    <h5 id='faction-data-anchor'>Post Read Data</h5>
+    The post read data is what data should be sent to the above specified action.
+</div>

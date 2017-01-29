@@ -1,0 +1,30 @@
+/**
+ * Cmfive default print.css
+ */
+
+@media print {
+	/**
+	 * Hide first three rows in default template
+     * These are: optional dev message, top menu and breadcrumbs
+	 */
+	body > div:not(.body):nth-child(-n+6) {
+		display: none;
+	}
+	
+	input {
+		width: 100%;
+	}
+	
+	div.tab-head {
+		display: none;
+	}
+	
+	div.tab-body > div {
+		display: block !important;
+		width: 100%;
+	}
+	
+	.button {
+		display: none;
+	}
+}

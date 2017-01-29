@@ -1,0 +1,1 @@
+ALTER TABLE  `user` ADD  `dt_password_reset_at` DATETIME NULL AFTER  `dt_lastlogin` ;

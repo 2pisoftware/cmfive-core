@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="selenium.base" href="http://devtest.isaac/auth/login" />
+<title>create user</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">create user</td></tr>
+</thead><tbody>
+<tr>
+	<td>open</td>
+	<td>/auth/login</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=login</td>
+	<td>admin</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=password</td>
+	<td>admin</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//button[@type='submit']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=List Users</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=button.button.tiny </td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>2000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=login</td>
+	<td>testUser</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=is_active</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=password</td>
+	<td>password</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=password2</td>
+	<td>password</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=firstname</td>
+	<td>test</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=lastname</td>
+	<td>user</td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>id=title</td>
+	<td>The Honerable</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=email</td>
+	<td>issac+testuser@2pisoftware.com</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=check_comment</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=check_favorites_user</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=check_file_upload</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=check_file_download</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=check_help_view</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=check_help_contact</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=check_inbox_reader</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=check_inbox_sender</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=check_user</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=check_report_user</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=check_tag_user</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=check_task_user</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=check_task_group</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=check_timelog_user</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=check_calendar_editor</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=check_calendar_user</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=check_crm_account_viewer</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=check_crm_account_editor</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=check_crm_contact_viewer</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=check_crm_contact_editor</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=check_crm_opportunity_manager</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=check_crm_invoice_manager</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=check_crm_quote_manager</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=check_crm_expense_staff</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=check_crm_expense_finance</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=check_crm_expense_user</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=check_crm_expense_manager</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=check_crm_project_user</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=check_crm_project_manager</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=check_doctemplates_admin</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=check_doctemplates_admin</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=check_doctemplates_view</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=check_hosting_user</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=check_scrum_user</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=check_staff_user</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//button[@type='submit']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertText</td>
+	<td>id=saved_record_id</td>
+	<td>User testUser added</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>xpath=(//a[contains(text(),'Edit')])[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Logout</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=login</td>
+	<td>testUser</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=password</td>
+	<td>password</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//button[@type='submit']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertText</td>
+	<td>link=test</td>
+	<td>test</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Logout</td>
+	<td></td>
+</tr>
+</tbody></table>
+</body>
+</html>

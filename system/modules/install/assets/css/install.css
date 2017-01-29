@@ -1,0 +1,267 @@
+.steps ul {display:inline;}
+.steps ul,
+.steps ul li {
+list-style:none;
+margin:0;
+padding:0;
+}
+.steps {
+margin:10px 0;
+}
+.steps ul li {
+display:block;
+float:left;
+padding:0;
+line-height:1.5em;
+width:1.7em;
+text-align:center;
+margin:0 5px;
+font-size:1em;
+border:1px solid #4D4D4D;
+color:#4D4D4D;
+border-radius:20px;
+}
+.steps ul li.active {
+background-color:#00AAE5;
+color:#fff;
+}
+.steps ul li.complete {
+background-color:#34C71F;
+color:#fff;
+}
+.header > img {
+vertical-align:bottom;
+}
+.header > h3 {
+line-height:1.8em;
+}
+
+#install_complete
+{
+    margin-left: 50px;
+}
+
+li.step:before {
+    font-family: 'FontAwesome';
+    position: absolute;
+    margin-left: -40px;
+}
+
+li.step.passed:before {
+    content: '\f00c';
+    color: green;
+}
+
+li.step.missing:before {
+    content: '\f096';
+    color: orange;
+}
+
+li.step.warning:before {
+    content: '\f128';
+    color: orange;
+}
+
+li.step.failed:before {
+    content: '\f00d';
+    color: red;
+}
+
+.alert-box p:last-of-type
+{
+    margin-bottom: 0;
+}
+
+i.error
+{
+    color: red;
+}
+
+span.test
+{
+    font-weight: bold;
+}
+
+span.test.passed
+{
+    color: green;
+}
+
+span.test.failed
+{
+    color: red;
+}
+
+
+div.warning_box
+{
+    background-color : yellow;
+    color: orange;
+    border: 1px solid orange;
+    padding: 20px;
+    padding-bottom: 0;
+}
+
+div.error_box
+{
+    background-color: pink;
+    color: red;
+    border: 1px solid red;
+    padding: 20px;
+    padding-bottom: 0;
+}
+
+/*** MANDY ADDED THIS (install_breadcrumbs).... GOD HELP ME... THAT OTHER CSS FILE IS INSANE!!! ****/
+span.install-header {
+    top: 20px;
+    position: relative;
+    border: 2px solid #008CBA;
+    background: #e7e7e7;
+    padding: 5px;
+}
+
+span.install-version {
+    font-size: small;
+    position: relative;
+    top: 50px;
+    left: -40px;
+}
+
+img.install-logo {
+    margin-top: 10px;
+    margin-bottom: 20px;
+    vertical-align: top;
+}
+
+div.install_breadcrumbs ul {
+    list-style-type: none;
+    margin-left: 0;
+    overflow: hidden;
+    width: 100%;
+}
+
+div.install_breadcrumbs ul li {
+    /*width: 16%;*/
+    float: left;
+    font-size: small;
+}
+
+div.install_breadcrumbs ul li a {
+    color: #008CBA;
+    text-decoration: none;
+    padding: 10px 0 10px 50px;
+    background: #e7e7e7;                   /* fallback color */
+    /*background: hsla(34,85%,35%,1);*/
+    position: relative;
+    display: block;
+    float: left;
+}
+
+div.install_breadcrumbs ul li.complete a {
+    background: #008CBA;                   /* fallback color */
+    /*border: 1px solid #008CBA; /* #008CBA - #007095 */
+    color: white;
+}
+
+div.install_breadcrumbs ul li:first-child a {
+    padding-left: 20px;
+}
+
+.install_breadcrumbs li a:after {
+    content: " ";
+    display: block;
+    width: 0;
+    height: 0;
+    border-top: 50px solid transparent;           /* Go big on the size, and let overflow hide */
+    border-bottom: 50px solid transparent;
+    /*border-left: 30px solid hsla(34,85%,35%,1);*/
+    border-left: 30px solid #e7e7e7;
+    position: absolute;
+    top: 50%;
+    margin-top: -50px;
+    left: 100%;
+    z-index: 2;
+}
+
+.install_breadcrumbs li.complete a:after {
+    border-top: 50px solid transparent;           /* Go big on the size, and let overflow hide */
+    border-bottom: 50px solid transparent;
+    border-left: 30px solid #008CBA;
+}
+
+.install_breadcrumbs li a:before {
+    content: " ";
+    display: block;
+    width: 0;
+    height: 0;
+    border-top: 50px solid transparent;
+    border-bottom: 50px solid transparent;
+    border-left: 30px solid white;
+    position: absolute;
+    top: 50%;
+    margin-top: -50px;
+    margin-left: 1px;
+    left: 100%;
+    z-index: 1;
+}
+
+.install_breadcrumbs li.complete a:after {
+    border-top: 50px solid transparent;
+    border-bottom: 50px solid transparent;
+    border-left: 30px solid #008CBA;
+}
+
+/* labels? */
+#install_form .gray label,
+#install_form label.gray,
+#install_form .disabled label,
+#install_form label.disabled
+{
+    color: #b9b9b9;
+}
+
+#install_form .disabled label,
+#install_form .disabled input,
+#install_form input.disabled,
+#install_form label.disabled,
+#install_form input[disabled]
+{
+    cursor: not-allowed;
+}
+
+#install_form .gray input,
+#install_form .disabled input,
+#install_form input.disabled,
+#install_form input.gray,
+#install_form input[disabled]
+{
+    color: #b9b9b9;
+    background: #e7e7e7;
+}
+
+label small {
+    text-transform: initial;
+}
+
+.switch-row .column {
+    width: initial;
+}
+
+/** from timezone picker css */
+#timezone-picker {
+    text-align: center;
+    margin: 10px -240px;
+}
+
+#timezone-picker div,
+#timezone-picker map {
+    margin: auto;
+}
+
+/*** columns ***/
+
+div.switch-row > div.column:last-of-type{
+    float: none;
+    margin-left: 70px;
+}
+

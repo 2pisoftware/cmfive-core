@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta content="text/html; charset=UTF-8" http-equiv="content-type" />
+  <title>Test Suite</title>
+</head>
+<body>
+<table id="suiteTable" cellpadding="1" cellspacing="1" border="1" class="selenium"><tbody>
+<tr><td><b>Test Suite</b></td></tr>
+<tr><td><a href="create lookup">create lookup</a></td></tr>
+<tr><td><a href="create user test">create user test</a></td></tr>
+<tr><td><a href="create user group">create user group</a></td></tr>
+<tr><td><a href="create template">create template</a></td></tr>
+<tr><td><a href="create taskgroup">create taskgroup</a></td></tr>
+<tr><td><a href="create task">create task</a></td></tr>
+<tr><td><a href="create timelog from timer">create timelog from timer</a></td></tr>
+<tr><td><a href="delete timelog from timer">delete timelog from timer</a></td></tr>
+<tr><td><a href="create timelog">create timelog</a></td></tr>
+<tr><td><a href="create report">create report</a></td></tr>
+<tr><td><a href="delete report">delete report</a></td></tr>
+<tr><td><a href="delete timelog">delete timelog</a></td></tr>
+<tr><td><a href="delete task">delete task</a></td></tr>
+<tr><td><a href="delete taskgroup">delete taskgroup</a></td></tr>
+<tr><td><a href="delete user group">delete user group</a></td></tr>
+<tr><td><a href="delete user test">delete user test</a></td></tr>
+<tr><td><a href="delete lookup">delete lookup</a></td></tr>
+</tbody></table>
+</body>
+</html>

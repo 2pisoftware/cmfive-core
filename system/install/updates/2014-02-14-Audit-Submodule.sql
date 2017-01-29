@@ -1,0 +1,1 @@
+ALTER TABLE  `audit` ADD  `submodule` TEXT NULL, ADD `message` TEXT NULL;

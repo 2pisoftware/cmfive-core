@@ -1,0 +1,16 @@
+[[title|List Users]]
+
+<p>The user list provides summarised information about all system users.</p>
+<ul>
+    <li><b>Login</b> - The user's login/username</li>
+    <li><b>First Name / Last Name</b> - The user's legal name</li>
+    <li><b>Admin</b> - Indicates whether the user is a system administrator</li>
+    <li><b>Active</b> - A user must be "Active" in order to use the system. A user's access can be denied by switching this off</li>
+    <li><b>Created</b> - Displays the date that the user was entered into the system</li>
+    <li><b>Last Login</b> - Displays the date the user last logged into the system</li>
+    <li><b>Operations</b> - These actions can be performed on each user. For more detail see [[help|admin/useredit|Edit]],[[help|admin/permissionedit|Permissions]] or [[help|admin/user/remove|Remove]]</li>
+
+</ul>
+
+<h3>Add New User</h3>
+<p>Opens the new user details form. For more information on User and Contact details see [[help|admin/useredit|here]], for information on Roles and Permissions see [[help|admin/permissionsedit|here]].</p>

@@ -1,0 +1,13 @@
+[[title|Deleted Files]]
+
+<p>The Deleted Files page provides a safety net for retrieving and restoring attachments deleted by 
+the system.</p>
+<ul>
+    <li><b>File</b> - The filename</li>
+    <li><b>Path</b> - Because deleted files are not accessible through the interface
+the path is provided to enable retrieval if required</li>
+    <li><b>View</b> - Opens the file in the browser</li>
+    <li><b>Restore File</b> - Restores the file making it accessible from the original 
+object it was attached to</li>
+    <li><b>Permanently Delete</b> - Removes the file from the filesystem so that it can not be retrieved again.</li>
+</ul>

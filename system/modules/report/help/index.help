@@ -1,0 +1,14 @@
+
+[[title|REPORTS]]
+
+The report dashboard shows all reports available to you. Displayed is the category, the title, the type and description of each report.
+
+Use the <i>Execute</i> button to execute any report. Each report will allow you to select from a variety of parameters related to the report to create highly pertinent report.
+
+[[restricted|report_editor,report_admin]]
+
+Report Editors and Administrators will also have an <i>Edit</i> button allowing them to create and edit reports. Please see the Help guide for creating reports for all the information required in this specialised process.
+
+Administrators also have the ability to delete reports.
+ 
+

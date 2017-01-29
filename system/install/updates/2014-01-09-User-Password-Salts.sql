@@ -1,0 +1,1 @@
+ALTER TABLE `user` ADD `password_salt` VARCHAR( 255 ) NULL AFTER `password`;

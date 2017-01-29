@@ -1,0 +1,9 @@
+[[title|Inbox Overview]]
+
+Flow has an internal messaging system, similar to email. You can send messages to other users in Flow, however these messages
+do not go out to an email address, but stay internal to Flow (so they get delivered a lot faster!).
+
+Your [[help|inbox/index|inbox]] is the core of this messaging system. It shows you all messages that you have received, new ones and 'read' ones.
+
+You can [[help|inbox/send|create messages]] and send them to other users.
+

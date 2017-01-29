@@ -1,0 +1,16 @@
+i.favorite_flag {
+	display: inline-block;
+	color: lightgrey;
+	padding: 0px 5px;
+	font-size: 35px;
+	line-height: 40px;
+	float: left;
+}
+
+i.favorite_flag:hover {
+	cursor: pointer;
+}
+
+i.favorite_flag.favorite_on {
+	color: gold;
+}

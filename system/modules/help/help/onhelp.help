@@ -1,0 +1,12 @@
+[[title|Help System]]
+
+The help system provides context sensitive help wherever you need it. Just clicking on the
+link <a>HELP</a> in the top menu bar will activate the help window and display a help page relevant to
+what you are currently doing.
+
+[[restricted|administrator]]
+
+This is a restricted paragraph and can only be viewed by users which have the
+'administrator' role.
+
+[[endrestricted]]

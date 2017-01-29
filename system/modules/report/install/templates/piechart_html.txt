@@ -1,0 +1,23 @@
+<script src="/system/templates/js/chart-js/Chart.js"></script>
+<canvas id="canvas" height="450" width="600"></canvas>
+	<script>
+      function toSec(ts) {
+		var a = ts.split(':');
+		return (+a[0]) * 60 * 60 + (+a[1]) * 60 + (+a[2]);
+      }
+      
+        var col = 220;
+		var pieData = [
+				{% for results in data[0]['results'] %}
+				{
+					label: "{{ results[0] }}",
+					value: toSec("{{ results[4] }}")/3600,
+                    color: "rgb("+ (col - (10*{{ loop.index }})) +",220,220)",
+                    highlight: "rgb("+ (col - (10*{{ loop.index }})) +","+ (col - (15*{{ loop.index }})) +",220)"
+				},
+				{% endfor %}
+			];
+       var options = [];
+
+	var myPie = new Chart(document.getElementById("canvas").getContext("2d")).Pie(pieData,options);	
+	</script>

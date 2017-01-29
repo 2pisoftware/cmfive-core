@@ -1,0 +1,36 @@
+[[title|Permissions and Roles]]
+
+<p>Permissions grant access to system functionality for users at a base level. 
+This is generally used to restrict access to certain modules and screens and to 
+hide menu items and buttons that would interfere with a user's workflow. These 
+permissions can often be superseded at a higher level by group membership. EG. A
+user may have the task_user permission, however without appropriate membership 
+to a [[help|task/group/viewtaskgrouptypes|Task Group]] they will not be able to 
+view any tasks.</p>
+<p>Permissions are included on a module basis. Several core permissions will be 
+explained below to provide examples. If the permission you are interested in is 
+not explained below, this information can be retrieved from help screen for a module
+or specific action.</p>
+<ul>
+    <li><b>Admin</b>
+        <ul>
+            <li>comment - Allows user to add comments</li>
+            <li>user - Similar to the 'active' flag. The user cannot log in 
+without this permission</li>
+        </ul>
+    </li>
+    <li><b>Favorites</b>
+        <ul>
+            <li>favorites_user - Allows user to use [[help|admin/favorite|Favorites]]</li>
+        </ul>
+    </li>
+    <li><b>Task</b>
+        <ul>
+            <li>task_admin - Grants access to all tasks and task functions</li>
+            <li>task_user - Grants access to tasks. Access will be restricted by [[help|task/group/viewtaskgrouptypes|Task Group]]
+membership.</li>
+            <li>task_group - Requires task_user. Gants access to the [[help|task/group/viewtaskgrouptypes|Task Group]] 
+menu item. Allows user to add and manage [[help|task/group/viewtaskgrouptypes|Task Groups]]</li>
+<ul>
+
+

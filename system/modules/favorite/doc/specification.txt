@@ -1,0 +1,13 @@
+From Carsten: 
+
+As my workload increases I really need this feature so that I can mark the projects and individual tasks which I need to monitor. I think the interface should look like this:
+
+to mark something as favourite
+-> not useful to mark a page a favourite! Rather give the action implementor the option to easily add a button to mark an OBJECT a favourite ... the favourite table would then store the object class, the id and the user id.
+
+to display favourites
+-> make this a partial and a dashboard widget
+-> the display should be full width with a tabbed interface with the different object classes at the top
+-> each tab would display a lost of objects using the standard SEARCH methods for displaying
+-> this means that if you want an object to be marked as favority you also have to implement the search title etc. functions
+-> the favourite display is very similar to a handpicked search list

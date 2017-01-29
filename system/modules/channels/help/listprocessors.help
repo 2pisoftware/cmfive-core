@@ -1,0 +1,11 @@
+[[title|Adding a Processor]]
+A processor is comprised of three parts:
+<ul>
+    <li>Name: A unique (preferrably) name to identify the processor</li>
+    <li>Channel: The channel to tie the processor too.</li>
+    <li>Processor Class: The processor implementation to run</li>
+</ul>
+
+A processor is run after a Channel read has run. For example: if you've have made an Email Channel to process
+new emails, then the processor is what actually looks at each email to decide what to do with the email object.
+And the Processor Class is the file with the above mentioned implementation.

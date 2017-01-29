@@ -1,0 +1,31 @@
+{% for results in data %}
+<h1>
+  {{results["title"]}}
+</h1>
+<table class="tablesorter">
+  <thead>
+  <tr>
+	{% for th in results["headers"] %}
+      {% if not (th ends with '_link') %} 
+  	  <th>{{th}}</th>
+      {% endif %}
+  	{% endfor %}
+  </tr>
+  </thead>
+  <tbody>
+	{% for tr in results["results"] %}
+  <tr>
+      {% for td in tr %}
+        {% if not (results["headers"][loop.index0] ends with '_link') %}
+          {% if not (results["headers"][loop.index0 + 1] ends with '_link') %}
+  			<td>{{td}}</td>
+          {% else %}
+            <td><a href="{{ tr[loop.index0 + 1] }}">{{td}}</a></td>
+          {% endif %}
+        {% endif %}
+      {% endfor %}
+  </tr>
+  	{% endfor %}
+  </tbody>
+</table>
+{% endfor %}

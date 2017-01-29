@@ -1,0 +1,23 @@
+[[title|User Group Management]]
+
+<p>Lists the users belonging to the [[help|admin/groups|User Group]]</p>
+
+<ul>
+    <li><b>Name</b> - Displays the member's name</li>
+    <li><b>Role</b> - !!Unused at this time!! Either 'member' or 'owner'. Owners have the ability to add
+or remove members.</li>
+    <li><b>Delete</b> - Deleting a member removes them from the group. Be mindful 
+that removing a member can affect their permissions</li>
+</ul>
+
+<h4>New Member</h4>
+<ul>
+    <li><b>Select Member</b> - Select a new member from the list of users</li>
+    <li><b>Owner</b> - !Unused!!</li>
+</ul>
+
+<h4>Edit Permissions</h4>
+<p>Permissions granted to the User Group will be inherited by all of its members.
+For information on permissions see [[help|admin/permissionedit|here]]</p>
+
+

@@ -1,0 +1,12 @@
+[[title|Inbox]]
+
+Your inbox lists all messages from other users of Flow or system notifications.
+A system notification will be sent from other parts in the system where you are
+subscribed to receive such notifications, eg. if you are an Operations Admin you will
+be notified in the case of important changes to any jobs that are assigned to your
+team.
+
+The inbox shows all new messages, but only the last 10 read messages. To mark all messages
+as 'read' click [[button|Mark all read]].
+
+You can also [[help|inbox/send|send messages]] to other people in Flow by clicking [[button|Create Message]].

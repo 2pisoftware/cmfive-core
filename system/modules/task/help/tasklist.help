@@ -1,0 +1,58 @@
+
+[[title|TASK DASHBOARD]]
+The Task Dashboard shows an overview of your <b>open</b> tasks. Each of the Task Groups of which you are a Member are given, along with a 
+count of open tasks. The figures given show your open tasks / the groups open tasks. 
+
+
+[[title|TASK LIST]]
+The Task List shows an overview of Tasks.
+
+The Search Tasks filter allows you to find and review the tasks of interest by selecting any combination of the available selections.
+
+When searching for tasks, or when arriving here via the Task Dashboard, the filter will show the selections you made to arrive at the current
+list of Tasks.
+
+Selections available include:
+	Assignee: the person currently assigned to a task
+	Creator: the person who created the task
+	Group: the Task Group to which a task belongs
+	Type: the type of task
+	Priority: the task priority
+	Status: the current task status
+	From/To Date: filter tasks by their due date occuring within a given date span
+	Incl. Closes Tasks: check this box to include closed task in your search returns.
+
+To view a Task in detail, click on the respective 'Details' button.
+
+
+[[title|CREATE TASK]]
+A form is provided for you to create new tasks.
+
+By first selecting the Task Group, the form will allow you to make further selections relevant to that Task Group.
+
+The form is a two-step process. Please complete all steps to properly register a Task.
+
+The form consists of:
+	Task Group: select the group most appropriate to the task you require fulfilled
+	Task Title: enter a title outlining the task
+	Task Type: select the type of task
+	Priority: select your priority for the task
+	Date Due: select the date on which you will need to task to be completed
+	Description: enter an accurate and concise description of the task, providing as much information as is necessary
+	Assigned: if suitably authorised, you may assign the task to a Group Member, otherwise you may only select 'Default'.
+	
+Click the 'Continue' button to continue the process
+	
+On the next form you will be asked further questions specific to the Group and Type of task as entered in the previous form. Complete this 
+form and click the 'Submit' button to submit the task.
+
+
+[[title|NOTIFICATIONS]]
+You can set up each of your Task Groups so that you will be notified, via your Inbox, of events that take place to Tasks relevant to you.
+
+Listed are the Task Groups of which you are a Member, showing your role within that group and the types of notifications you will receive. For any given group,
+click the <b>Edit</b> button to edit your notifications. Depending upon your role, you can receive notifications for Tasks you have created, for Tasks assigned to you or, if you are a Group Owner, for activity in any Task within that group.
+
+You can also set the Task Events for which you wish to receive notifications. These events are in affect for all Tasks relevant to you within that group.
+
+

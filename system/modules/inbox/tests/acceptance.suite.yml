@@ -1,0 +1,12 @@
+class_name: AcceptanceGuy
+modules:
+  enabled:
+    - WebDriver:
+        url: 
+        wait: 1
+        browser: chrome
+        host: selenium
+    - \Helper\Acceptance
+    - \Helper\CmFiveTestHelper
+    - Asserts
+    - Db

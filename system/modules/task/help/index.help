@@ -1,0 +1,43 @@
+
+[[title|TASK DASHBOARD]]
+The Task Dashboard shows an overview of your <b>open</b> tasks. Each of the Task Groups of which you are a Member are given, along with a 
+count of open tasks. The figures given show your open tasks / the groups open tasks. 
+
+Click on the task group titles to reveal the breakdown of task in that group. The table of task shows each type of task available in that 
+group. Each column represents the various status that a task in that group may have, from New to Done.
+
+The figures again show your tasks / all group tasks for each task type and for each task status.
+
+Any figure greater than zero is hyperlinked to the Task List, giving more information about each task of that type and status.
+
+Alternatively, click on the 'Group Task List' link to view a list of all tasks in this group regardless of type or status.
+
+
+[[title|TASK LIST]]
+The Task List shows an overview of Tasks. Clicking on this tab will display your open tasks and allow you to review them in detail or make updates as appropriate.
+
+A Search Tasks filter allows you to find and review the tasks of interest by selecting any combination of the available selections.
+
+
+[[title|CREATE TASK]]
+A form is provided for you to create new tasks.
+
+By first selecting the Task Group, the form will allow you to make further selections relevant to that Task Group.
+
+The form is a two-step process. Please complete all steps to properly register a Task.
+
+The form consists of:
+	Task Group: select the group most appropriate to the task you require fulfilled
+	Task Title: enter a title outlining the task
+	Task Type: select the type of task
+	Priority: select your priority for the task
+	Date Due: select the date on which you will need to task to be completed
+	Description: enter an accurate and concise description of the task, providing as much information as is necessary
+	Assigned: if suitably authorised, you may assign the task to a Group Member, otherwise you may only select 'Default'.
+	
+Click the 'Continue' button to continue the process
+	
+On the next form you will be asked further questions specific to the Group and Type of task as entered in the previous form. Complete this 
+form and click the 'Submit' button to submit the task.
+
+	

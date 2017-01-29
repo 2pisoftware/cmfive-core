@@ -1,0 +1,94 @@
+* {margin: 0; padding: 0;}
+
+html {
+    background-color: #efefef;
+}
+
+body {
+    background-color: white;
+    margin:0 auto;
+    font-family: Verdana;
+    font-weight: normal;
+    text-align: left;   
+    /* 210mm roughly translates to 595pt */
+    width: 595pt;
+    padding: 0px 40px;
+    margin-top: 20px;
+    box-shadow: 1px 2px 2px 2px #aaa;
+    margin-bottom: 20px;
+    padding-bottom: 50px;
+    min-height: 844pt;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px #333333 solid;
+}
+
+thead {
+    background-color: #004269;
+    color: #fff;
+    text-align: center;
+    border: none;
+}
+
+tr, td {
+    border: none;
+    border: 1px solid black;
+    vertical-align: top;
+    font-size: 10px;
+}
+
+h1 {
+    font-size: 1.8em;
+}
+
+h2 {
+    font-size: 1.6em;
+}
+
+h3 {
+    font-size: 1.4em;
+}
+
+.printbar {
+    font-family:Arial;
+    height: 18px;
+    padding: 8px;
+    width: 98%;
+    background-color: #efefef;
+    color: #333333;
+    border-top: 20px white solid;
+    margin-bottom: 20px;
+}
+
+.printbar span {
+    padding:22px;
+    margin:22px;
+    vertical-align: middle;
+    height: 40px;
+}
+
+.printlink {
+    position: inherit;
+    padding: 8px 40px;
+    width: 80px;
+    color: black;
+    background-color: #dedede;
+    border-left: 1px #777777 solid;
+    border-right: 1px #777777 solid;
+    text-decoration: none;
+}
+
+.printlink:hover {
+    background-color: #adadad;
+}
+
+.printdisclaimer {
+    float: right; 
+    font-weight: lighter;
+    font-size: 8pt;
+    margin-top: 3px;
+    margin-right: 5px;
+}

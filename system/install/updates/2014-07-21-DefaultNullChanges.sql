@@ -1,0 +1,22 @@
+ALTER TABLE `object_index` CHANGE `dt_created` `dt_created` DATETIME NULL DEFAULT NULL;
+ALTER TABLE `object_index` CHANGE `dt_modified` `dt_modified` DATETIME NULL DEFAULT NULL;
+ALTER TABLE `object_index` CHANGE `creator_id` `creator_id` BIGINT(20) NULL DEFAULT NULL;
+ALTER TABLE `object_index` CHANGE `modifier_id` `modifier_id` BIGINT(20) NULL DEFAULT NULL;
+ALTER TABLE `audit` CHANGE `dt_created` `dt_created` DATETIME NULL DEFAULT NULL;
+ALTER TABLE `audit` CHANGE `creator_id` `creator_id` BIGINT(20) NULL DEFAULT NULL;
+ALTER TABLE `task` CHANGE `dt_completed` `dt_completed` DATETIME NULL DEFAULT NULL;
+ALTER TABLE `comment` CHANGE `obj_id` `obj_id` BIGINT(20) NULL DEFAULT NULL;
+ALTER TABLE `comment` CHANGE `comment` `comment` TEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL;
+ALTER TABLE `comment` CHANGE `creator_id` `creator_id` BIGINT(20) NULL DEFAULT NULL;
+ALTER TABLE `comment` CHANGE `dt_created` `dt_created` DATETIME NULL DEFAULT NULL;
+ALTER TABLE `comment` CHANGE `modifier_id` `modifier_id` BIGINT(20) NULL DEFAULT NULL;
+ALTER TABLE `comment` CHANGE `dt_modified` `dt_modified` DATETIME NULL DEFAULT NULL;
+ALTER TABLE `comment` CHANGE `is_deleted` `is_deleted` TINYINT(1) NOT NULL DEFAULT '0';
+ALTER TABLE `task` CHANGE `title` `title` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL;
+ALTER TABLE `task` CHANGE `dt_planned` `dt_planned` DATETIME NULL DEFAULT NULL;
+ALTER TABLE `task` CHANGE `dt_due` `dt_due` DATETIME NULL DEFAULT NULL;
+ALTER TABLE `task` CHANGE `estimate_hours` `estimate_hours` INT(11) NULL DEFAULT NULL;
+ALTER TABLE `task` CHANGE `description` `description` TEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL;
+ALTER TABLE `task` CHANGE `latitude` `latitude` VARCHAR(20) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL;
+ALTER TABLE `task` CHANGE `longitude` `longitude` VARCHAR(20) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL;
+

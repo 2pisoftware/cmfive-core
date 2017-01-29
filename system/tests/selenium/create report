@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="selenium.base" href="http://devtest.isaac/auth/login" />
+<title>New Test</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">New Test</td></tr>
+</thead><tbody>
+<tr>
+	<td>open</td>
+	<td>/auth/login</td>
+	<td></td>
+</tr>
+<tr>
+	<td>store</td>
+	<td>[[task_id||autocomplete||Task Number (Required)||&nbsp;&nbsp;&nbsp;select t.id as value, concat(CAST(t.id AS CHAR),' ',t.title) as title&nbsp;&nbsp;&nbsp;&nbsp;from task t&nbsp;&nbsp;&nbsp;&nbsp;where t.is_deleted = 0&nbsp;&nbsp;&nbsp;order by title ]] @@Task Details|| SELECT t.id as 'Number', concat('{{webroot}}task/edit/',t.id) as Number_link, t.title as 'Title', t.description as 'Description', t.task_type as 'Type', t.status as 'Status', t.priority as 'Priority', DATE_FORMAT(t.dt_due, '%Y/%m/%d') as 'Due Date', t.estimate_hours as 'Estimated Hours', t.effort as 'Effort', CONCAT(assignee.firstname, ' ', assignee.lastname) as 'Assigned to'&nbsp;&nbsp;FROM task t LEFT JOIN user AS assignee_user ON t.assignee_id = assignee_user.id LEFT JOIN contact AS assignee ON assignee_user.contact_id = assignee.id&nbsp;&nbsp;WHERE t.id = '{{task_id}}' @@ @@Account Details|| SELECT ca.name as 'Account', concat('{{webroot}}crm-accounts/show/',ca.id) as Account_link, cp.title as 'Project', concat('{{webroot}}crm-projects/show/',cp.id) as Project_link, tg.title as 'Taskgoup'&nbsp;&nbsp;&nbsp;FROM task t LEFT JOIN task_group tg ON t.task_group_id = tg.id LEFT JOIN crm_project_taskgroup cpt ON tg.id = cpt.taskgroup_id LEFT JOIN crm_project cp ON cpt.crm_project_id = cp.id LEFT JOIN crm_account ca ON cp.crm_account_id = ca.id&nbsp;&nbsp;WHERE t.id = '{{task_id}}' @@ @@Task Comments|| SELECT CONCAT(creator.firstname,' ',creator.lastname) as 'User', DATE_FORMAT(c.dt_created, '%Y/%m/%d %H:%i') as 'Date Created', c.comment as 'Comment'&nbsp;&nbsp;FROM comment c LEFT JOIN user AS creator_user ON c.creator_id = creator_user.id LEFT JOIN contact AS creator ON creator_user.contact_id = creator.id&nbsp;&nbsp;WHERE c.obj_table = 'task' AND c.is_system = 0 AND c.is_deleted = 0 AND c.obj_id = '{{task_id}}'&nbsp;&nbsp;ORDER BY c.dt_created @@ @@Task Timelog Entries|| SELECT&nbsp;&nbsp;CONCAT(c.firstname,' ',c.lastname) as 'User', tl.time_type as 'Time Type', tl.dt_start as 'Date Time Started', tl.dt_end as 'Date Time Finished', sec_to_time(unix_timestamp(tl.dt_end) - unix_timestamp(tl.dt_start)) as 'Duration'&nbsp;&nbsp;FROM timelog tl LEFT JOIN user u ON tl.creator_id = u.id LEFT JOIN contact c ON u.contact_id = c.id&nbsp;&nbsp;WHERE tl.is_deleted = 0 AND tl.object_class = 'Task' AND tl.object_id = '{{task_id}}'&nbsp;&nbsp;ORDER BY tl.dt_start @@ @@Total Time On Task|| SELECT sec_to_time(SUM(unix_timestamp(tl.dt_end) - unix_timestamp(tl.dt_start))) as 'Total' FROM timelog tl WHERE tl.is_deleted = 0 AND tl.object_class = 'Task' AND tl.object_id = '{{task_id}}' @@ @@Task Attachments|| SELECT a.title as 'Title', concat('{{webroot}}file/atfile/',a.id) as Title_link, a.description as 'Description'&nbsp;&nbsp;FROM attachment a&nbsp;&nbsp;WHERE a.is_deleted = 0 AND a.parent_table = 'task' AND a.parent_id = '{{task_id}}' @@</td>
+	<td>i</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=login</td>
+	<td>admin</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=password</td>
+	<td>admin</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//button[@type='submit']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Create a Report</td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>2000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=title</td>
+	<td>testTaskReport</td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>id=module</td>
+	<td>label=Task</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//button[@type='submit']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>2000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertText</td>
+	<td>css=div.alert-box.info</td>
+	<td>Report created ×</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=SQL</td>
+	<td></td>
+</tr>
+<tr>
+	<td>runScript</td>
+	<td>$('.CodeMirror')[0].CodeMirror.setValue(&quot; ${i} &quot;);</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>xpath=(//button[@type='submit'])[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>2000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertText</td>
+	<td>css=div.alert-box.info</td>
+	<td>Report updated ×</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Members</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=#members &gt; button.button.tiny </td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>2000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>id=member</td>
+	<td>label=test user</td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>id=role</td>
+	<td>label=USER</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>xpath=(//button[@type='submit'])[3]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>2000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertText</td>
+	<td>css=div.alert-box.info</td>
+	<td>Member Group updated ×</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Edit Report</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=button.button.tiny </td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>2000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>sendKeys</td>
+	<td>id=acp_task_id</td>
+	<td>test</td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>2000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>mouseOver</td>
+	<td>id=ui-id-2</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAt</td>
+	<td>id=ui-id-2</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//button[@type='submit']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>2000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertText</td>
+	<td>//td[2]</td>
+	<td>testTask</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Logout</td>
+	<td></td>
+</tr>
+</tbody></table>
+</body>
+</html>

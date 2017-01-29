@@ -1,0 +1,13 @@
+[[title|User Groups]]
+
+<p>User Groups allow roles and permissions to be assigned and managed for multiple 
+users. Roles and permissions assigned to a User Group will apply to all members of 
+the Group. User Groups can also belong and inherit roles and permissions from a 
+parent group for which they are a member.</p>
+
+<ul>
+    <li><b>New Group</b> - Creates a new User Group</li>
+    <li><b>More Info</b> - Manage the User Group</li>
+    <li><b>Delete</b> - Deleting User Groups can effect the permission settings 
+for users. Be mindful that users may lose permissions when deleting User Groups</li>
+</ul>

@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="selenium.base" href="http://devtest.isaac/auth/login" />
+<title>create taskgroup</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">create taskgroup</td></tr>
+</thead><tbody>
+<tr>
+	<td>open</td>
+	<td>/auth/login</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=login</td>
+	<td>admin</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=password</td>
+	<td>admin</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//button[@type='submit']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Task Groups</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=New Task Group</td>
+	<td></td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>id=task_group_type</td>
+	<td>label=Software Development</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=option[value=&quot;TaskGroupType_SoftwareDevelopment&quot;]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=title</td>
+	<td>testTaskgroup</td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>id=can_assign</td>
+	<td>label=MEMBER</td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>id=can_view</td>
+	<td>label=ALL</td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>id=can_create</td>
+	<td>label=GUEST</td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>id=can_create</td>
+	<td>label=MEMBER</td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>id=is_active</td>
+	<td>label=Yes</td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>id=default_task_type</td>
+	<td>label=Programming Task</td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>id=default_priority</td>
+	<td>label=Normal</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//button[@type='submit']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>2000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertText</td>
+	<td>id=saved_record_id</td>
+	<td>Task Group testTaskgroup added</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//div[@id='members']/button[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>2000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>id=role</td>
+	<td>label=OWNER</td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>id=member</td>
+	<td>label=Administrator</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>xpath=(//button[@type='submit'])[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>2000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertText</td>
+	<td>css=div.alert-box.info</td>
+	<td>Task Group updated ×</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//div[@id='members']/button[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>2000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>id=role</td>
+	<td>label=MEMBER</td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>id=member</td>
+	<td>label=test user</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>xpath=(//button[@type='submit'])[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>2000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertText</td>
+	<td>css=div.alert-box.info</td>
+	<td>Task Group updated ×</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//div[@id='members']/button[3]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>2000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>id=can_create</td>
+	<td>label=ALL</td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>id=default_assignee_id</td>
+	<td>label=test user</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>xpath=(//button[@type='submit'])[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>2000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertText</td>
+	<td>css=div.alert-box.info</td>
+	<td>Task Group testTaskgroup updated. ×</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Logout</td>
+	<td></td>
+</tr>
+</tbody></table>
+</body>
+</html>

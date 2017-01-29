@@ -1,0 +1,18 @@
+[[title|Templates]]
+
+<p>Templates are HTML documents that insert object values into specified placeholders.
+Templates are used for formatting system outputs such as outgoing emails, invoices and quotes.
+Use templates to insert company logos, signatures and styles to personalise your Cmfive installation.</p>
+
+<ul>
+    <li><b>Title</b> - Template titles should describe their usage</li>
+    <li><b>Module / Category</b> - The Module and Category fields indicate the location 
+from which the template will be used. These fields are context specific and incorrect 
+values will result in an inactive template</li>
+    <li><b>Active</b> - Can be used to turn templates on or off</li>
+    <li><b>Created / Modified</b> - Dates the template was created and modified</li>
+    <li><b>[[help|admin/templates/edit|Edit]]</b> - Takes you to the template edit page</li>
+</ul>
+
+<h4>Add New Template</h4>
+<p>Takes you to the [[help|admin/templates/edit|new template]] form</p>

@@ -1,0 +1,40 @@
+[[title|Lookup]]
+
+<p>Lookup allows for the customisation of ambiguous selectable values. These could 
+be, for example, prefixes to names, statuses of items, company department titles or public 
+holiday dates.
+
+Items added to Lookup appear elsewhere in the system as selectable options in
+specific select boxes on various forms.</p>
+
+<h4>Lookup List</h4>
+<ul>
+    <li><b>Filter</b> - The lookup list can be filtered to show only items of a 
+specific type</li>
+    <li><b>Type</b> - The Type is specific to the destination of the lookup item. 
+Items must adhere to the correct type string if they are to appear in the correct location</li>
+    <li><b>Code</b> - The Code is the value returned when the item is selected. 
+This is also context sensitive. Items returning an invalid Code will throw an error.</li>
+    <li><b>Title</b> - The Title is what is displayed in the select dropdown. In 
+most cases, when selecting a name or text the Title will be a duplicate of the Code</li>
+    <li><b>Edit</b> - This can be used to change any values for an item</li>
+    <li><b>Delete</b> - Lookup items can be deleted. However, any objects that have
+stored that item's value will retain it until another option is selected</li>
+</ul>
+
+<h4>New Item</h4>
+<ul>
+    <li><b>Type / Add new Type</b> - A pre existing type can be selected or this 
+field can be left blank and a new type can be inserted in the following text field</li>
+    <li><b>Code</b> - The Code is the value returned when the item is selected. 
+This is also context sensitive. Items returning an invalid Code will throw an error.</li>
+    <li><b>Title</b> - The Title is what is displayed in the select dropdown. In 
+most cases, when selecting a name or text the Title will be a duplicate of the Code</li>
+</ul>
+
+<h4>Example</h4>
+<p>A simple example of the Lookup functionality can be found on the [[help|admin/useredit|user edit]] form.
+To add a new option to the contact details title select field create a new lookup 
+item with Type = 'title'. Insert 'The Honorable' into both the Code and Title fields. 
+When editing a user's details 'The Honorable' will be an avaliable option.</p>
+ 

@@ -1,0 +1,16 @@
+[[title|File Transfer]]
+
+<p>File Transfer is used to move file attachments between storage locations. The 
+storage of file attachments can be configured to use various locations such as local 
+storage, remote server file systems, or Amazon S3.</p>
+
+<ul>
+    <li><b>Title</b> - The attachment title. Set when file was uploaded</li>
+    <li><b>Object</b> - The object type to which the file is attached. The number 
+in the square brackets is the object's id. This provides a means of finding the 
+object</li>
+    <li><b>Location</b> - The current storage location of the file</li>
+    <li><b>View</b> - Opens the file for viewing</li>
+    <li><b>Move To</b> - Select a new location for the file to be stored. Storage 
+locations require set up and configuration before they become avaliable</li>
+</ul>

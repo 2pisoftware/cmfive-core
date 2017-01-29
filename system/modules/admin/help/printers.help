@@ -1,0 +1,12 @@
+Printers can be used by cmfive to send files to printers.<br/><br/>
+
+The name is the name of the printer. The server depends on the type of setup, for example, if it's 
+a network shared printer on Windows it could be \\COMPUTERNAME\PRINTERSERVER. You'll will need to 
+determine the server by looking at your systems printer setup.<br/><br/>
+
+The port is the network port that the printer may be located on (optional).<br/><br/>
+
+From there, you can use the printer services' getPrinter() and send the printer from that function 
+to the printjob printer service function which takes a file path and a Printer object. <br/><br/>
+
+From there, the job will print!

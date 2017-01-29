@@ -1,0 +1,1 @@
+ALTER TABLE  `widget_config` ADD  `custom_config` TEXT NULL AFTER  `widget_name`;

@@ -1,0 +1,12 @@
+/*************** Messages CSS: ******************/
+
+* {margin:0; padding:0}
+body {font:12px Verdana, Arial, Helvetica, sans-serif; color:#666}
+#wrapper {width:300px; margin:50px auto}
+.form {float:left; padding:0 10px 10px 10px; background:#f3f3f3; border:2px solid #cfcfcf}
+.form label {float:left; width:100px; padding:10px 10px 0 0; font-weight:bold}
+.form select {float:left; width:146px; margin-top:10px}
+.form input {float:left; margin-top:10px}
+.form .submit {clear:both}
+#msg {display:none; position:absolute; z-index:200; background:url(images/msg_arrow.gif) left center no-repeat; padding-left:7px}
+#msgcontent {display:block; background:#f3e6e6; border:2px solid #924949; border-left:none; padding:5px; min-width:150px; max-width:250px}

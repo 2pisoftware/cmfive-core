@@ -1,0 +1,114 @@
+[[title|CREATING REPORTS]]
+
+Creating reports requires the use of a simple syntax, as given below, to ensure that your report executes successfully. Reports can be exported as CSV, PDF, XML or viewed as a web page.
+Special term substitutions are available which are listed under the <i>View Database</i> tab of the Create Report form and the View Report forms.
+<p>
+Also provided under this tab is a quick reference to lookup Flow tables and their fields for building SQL statements.
+<p>&nbsp;<p>
+<b>SPECIAL SYNTAX</b><br>
+The following characters have special meaning as follows:
+<table cellpadding=2 cellspacing=2 border=0>
+<tr valign=top><td><b>[[...]]</b></td><td>To create form parameters which allow users to select different report parameters, enclose them in double square brackets.</td></tr>
+<tr valign=top><td><b> || </b></td><td>Within square brackets, a double pipe delimits the different properties of a parameter such as the type of form element, its name, label and values</td></tr>
+<tr valign=top><td><b>{{...}}</b></td><td>Double curly brackets denotes a field in the report SQL statment which will be substituted by the value of the parameter of the same name</td></tr>
+<tr valign=top><td><b><b>dt_...</b></td><td>Any parameters which are a Date field must have their name prefixed with <b>dt_</b>, eg. dt_fromdate</td></tr>
+<tr valign=top><td><b>@@...@@</b></td><td>Report SQL statements are wrapped in double @ symbols allowing for multiple SQL statements.</td></tr>
+</table>
+<p>&nbsp;<p>
+<b>SPECIAL PARAMETERS</b><br>
+The following paramters will be replaced accordingly:
+<table cellpadding=2 cellspacing=2 border=0>
+<tr valign=top><td><b>{{current_user_id}}</b></td><td>Will be substituted with the User ID of the person who is running the report.</td></tr>
+<tr valign=top><td><b>{{roles}}</b></td><td>Will be substituted with the list of roles of the person running the report.</td></tr>
+<tr valign=top><td><b>{{webroot}}</b></td><td>Will be substituted by the full web site URL.</td></tr>
+<tr valign=top><td><b>{{&lt;parameter&gt;}}</b></td><td>Will be substituted by the selected value of the parameter of the same name.</td></tr>
+</table>
+<p>&nbsp;<p>
+<b>COUNTING ROWS IN MySQL</b><br>
+To just count the rows incremently use something like this:
+<p>
+<code>SELECT a.*, @num := @num + 1 b from test a, (SELECT @num := 0) d;</code>
+<P>
+This results in having table ‘a’ with an additional column ‘b’ wich just counts the rows. Setting @num in the sub-selection makes it simple to put it into 1 query. The incrementing number can be adjusted.
+<p>
+After the ‘d’ (wich stands for derived and it is mandatory to have an alias), you can order, group by etc. the column ‘b’ still adds up.
+<p>
+Further reading: <a href="http://www.xaprb.com/blog/2006/12/02/how-to-number-rows-in-mysql/" target="_blank">Counting rows with MySQL</a>
+<p>&nbsp;<p>
+<b>CREATING HYPERLINKS</b><br>
+For display on the <i>web page</i> format only, links may be created linking a given field with a given URL. This requires the use of the <i>&lt;field&gt;_link</i> name. It is requred that the field be repeated in the statement without a reference to hyperlinks.
+<p>
+To create a link it is necessary to use <i>concat</i> to concatenate the given URL with the field value which will complete the link, eg. an item ID. This field is renamed as <i>&lt;field&gt;_link</i>.
+<p>
+NOTE: if using {{webroot}}, DO NOT include a leading '/' in your URL. Also include an unlinked reference to the field.
+<p>
+<b>Example</b>:<br>
+<code>... concat('{{webroot}}','task/viewtask',id) <i>as title_link</i>, title ....</code>
+<p>
+This syntax will return: <code>&lt;a href="http://flow.pyramidpower.com.au/task/viewtask/54"&gt;My Task&lt;/a&gt;</code>
+<p>
+<b>Example</b>:<br>
+It may be required that the field to be linked is a concatenation of other fields as follows:<p>
+<code>... concat('{{webroot}}','task/viewtask',id) <i>as fullname_link</i>, concat(firstname,' ',lastname) as fullname ....</code>
+<p>
+NOTE: the URL will not be displayed in export types other than Web Page.
+<p>&nbsp;<p>
+<b>STEPS IN CREATING A REPORT</b>
+<ol>
+<li> If your report will provide parameters which the user can manipulate, define them as follows:<p>
+<b>[[name||form element type||label||sql to return data to populate this element]]</b>
+<p>
+Your SQL <b>must</b> rename the appropriate fields as <b>value</b> and <b>title</b>, for populating dropdowns.
+<p>
+<b>Example</b>:<br>
+<code>[[status||select||Status||select distinct status <u>as value</u>, status <u>as title</u> from form_data_gc order by status]]</code>
+<p>
+This example creates a Status select box populated by statuses in the form_data_gc table.
+<p>
+<b>Example</b>:<br>
+<code>[[dt_fromdate||Date||from_date]]</code>
+<p>
+This example create a Date Picker form element for selecting dates as report parameters.
+
+<li> Having created your parameters, now create the SQL to generate the report based on the parameters selected.<p>
+Multiple SQL statements are permissible and are defined as follows:<p>
+<b>@@title||SQL@@</b>
+<p>
+Given the above, avoid using <b>||</b> in your SQL statements. Use <b>OR</b> instead.
+<p>
+This syntax must be adhered to even when using only one SQL statement.
+<p>
+<b>Example</b>:<br>
+<code>@@GC Leads||SELECT status, concat(firstname, ' ', surname) as fullname, phone, suburb, state, dt_created FROM form_data_gc WHERE status = '{{status}}' and dt_created >= '{{dt_fromdate}}' and dt_created <= '{{dt_todate}}'@@</code>
+<p>
+This example gives a title of 'GC Leads' and allows parameters for status, a from date and a to date. The place markers are replace by the respective parameter selection when the report is executed. These place markers are replaced by the selected value of the parameter of the same name.
+<p>
+So our complete report may look like the following:<p>
+
+<code>[[status||select||Status||select distinct status as value, status as title from form_data_gc order by status]]<br>
+[[salesrep||select||SalesRep||select u.id as value, concat(c.firstname,' ',c.lastname) as title from user u, contact c where u.contact_id = c.id and u.id in (select distinct user_id from sales_agency_member where role = 'sales_rep') order by title]]<br>
+[[dt_fromdate||date||From]]<br>
+[[dt_todate||date||To]]</code>
+<p>
+<code>@@GC Leads||SELECT status, concat(firstname, ' ', surname) as fullname, phone, suburb, state, dt_created FROM form_data_gc WHERE status = '{{status}}' and dt_created >= '{{dt_fromdate}}' and dt_created <= '{{dt_todate}}'@@</code>
+<p>
+This report provides a list of status and from and to date selections to generate a report of Grid Connect leads of given status and within the date span given.
+<p>
+<b>An Example with Multiple SQL and a Hyperlink</b>:<br>
+<code>
+[[dt_from||date||From]]<br>
+[[dt_to||date||To]]
+<p>
+@@With URL||select concat('{{webroot}}','task/viewtask/',id) as title_link, task_type, status, priority, dt_due from task where dt_due >= '{{dt_from}}' and dt_due <= '{{dt_to}}' and assignee_id = {{current_user_id}}@@
+<p>
+@@Without URL||select title, task_type, status, priority, dt_due from task where dt_due >= '{{dt_from}}' and dt_due <= '{{dt_to}}' and assignee_id = {{current_user_id}}@@
+</code>
+<p>
+This example will return a list of tasks for the logged in user for a given date span. The first recordset provides the list of tasks with the title <i>With URL</i>. It will display the task title linked to the details of the actual task.
+<p>
+The second recordset returns the same list of tasks with a title <i>Without URL</i> and indeed there is no links in this recordset. 
+<p>
+<li>Save the report
+<p>
+<li>All newly created reports, or edits of existing reports will be reviewed and approved by the Report Administrator prior to being made available to general Flow users.
+</ol>

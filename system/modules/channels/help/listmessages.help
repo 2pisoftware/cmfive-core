@@ -1,0 +1,4 @@
+[[title|Messages List]]
+
+A message is an entry from the system when a processor has run. If there are any problems with a processor running
+then they should show up here, from here you can fix the problem and re run the process.
