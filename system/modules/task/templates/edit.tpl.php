@@ -9,13 +9,14 @@
 <?php endif; ?>
 <div class="tabs">
     <div class="tab-head">
+             */
         <a href="#details">Task Details</a>
 		<?php if (!empty($task->id)) : ?>
             <a href="#timelog">Time Log <span class='label secondary round cmfive__tab-label cmfive__count-timelog'></span></a>
             <a href="#comments">Comments <span class='label secondary round cmfive__tab-label cmfive__count-comment_section'></span></a>
             <a href="#attachments">Attachments <span class='label secondary round cmfive__tab-label cmfive__count-attachment'></span></a>
 
-            <?php if ($task->getCanINotify()):?><a href="#notification">Notifications</a><?php endif;?>
+            <?php if ($task->getCanINotify()):?><a href="#notification"><?php _e('Notifications'); ?></a><?php endif;?>
 			<?php 
 				$tab_headers = $w->callHook('core_template', 'tab_headers', $task); 
 				if (!empty($tab_headers)) {
@@ -29,25 +30,14 @@
             <div class="row-fluid clearfix">
                 <div class="row-fluid columns">
                     <?php 
-						if (!empty($task->id)) {
-							echo $w->Favorite->getFavoriteButton($task);
-							// Note the extra buttons only show when the task_type object
-							$tasktypeobject = $task->getTaskTypeObject();
-							echo !empty($tasktypeobject) ? $tasktypeobject->displayExtraButtons($task) : null; 
-							//echo $w->Tag->getTagButton($task->id,"Task")."&nbsp;";
-							echo $task->canDelete($w->Auth->user()) ? Html::b($task->w->localUrl('/task/delete/' . $task->id), "Delete", "Are you sure you want to delete this task?", null, false, 'warning') : ''; 
-							echo Html::b($task->w->localURL('task/duplicatetask/' . $task->id), "Duplicate Task");
-							echo Html::b($task->w->localURL('/task/edit/?gid=' . $task->task_group_id), "New Task");
-							echo Html::box("/task-group/moveTaskgroup/" . $task->id, "Move to Taskgroup", true, false, null, null, null, null, 'secondary');
-							
-							// Extra buttons for task
-							$buttons = $w->callHook("task", "extra_buttons", $task);
-							if (!empty($buttons) && is_array($buttons)) {
-								echo implode('', $buttons);
-							}
-							
-							echo $w->partial('listTags',['object' => $task], 'tag');
-						}
+                    	echo $w->Favorite->getFavoriteButton($task);
+                        // Note the extra buttons only show when the task_type object
+                        $tasktypeobject = $task->getTaskTypeObject();
+                        echo !empty($tasktypeobject) ? $tasktypeobject->displayExtraButtons($task) : null; 
+                    	//echo $w->Tag->getTagButton($task->id,"Task")."&nbsp;";
+                        echo (!empty($task->id) && $task->canDelete($w->Auth->user())) ? Html::b($task->w->localUrl('/task/delete/' . $task->id), __("Delete"), __("Are you sure you want to delete this task?" )) : ''; 
+                        echo (!empty($task->id)) ? Html::b($task->w->localURL('task/duplicatetask/' . $task->id), __("Duplicate Task")) : '';
+                        echo (!empty($task->id) ? $w->partial('listTags',['object' => $task], 'tag') : '');
 					?>
                 </div>
                 <div class="row-fluid clearfix">
@@ -98,7 +88,7 @@
             <?php if ($task->getCanINotify()):?>
             <div id="notification" class="clearfix">
                 <div class="row small-12">
-                    <h4>If you do not set notifications for this Task then the default settings for this Task group will be used</h4>
+                    <h4><?php _e('If you do not set notifications for this Task then the default settings for the this Task group will be used.'); ?></h4>
                 </div>
                 <?php echo $tasknotify;?>
             </div>
@@ -120,6 +110,10 @@
 
     $(document).ready(function() {
         bindTypeChangeEvent();
+		
+		$('#total_timelogs').text($('.timelog').length);
+        $('#total_comments').text($('.comment_section').length);
+        $('#total_attachments').text($('.attachment').length);
 
         getTaskGroupData(<?php echo !empty($task->task_group_id) ? $task->task_group_id : $w->request('gid'); ?>);
         $("#task_type").trigger("change");

@@ -75,18 +75,18 @@ class AdminService extends DbService {
 		
         $nav = $prenav ? $prenav : array();
         if ($w->Auth->loggedIn()) {
-            $w->menuLink("admin/users", "List Users", $nav);
-            $w->menuLink("admin/groups", "List Groups", $nav);
-            $w->menuLink("admin/lookup", "Lookup", $nav);
-            $w->menuLink("admin-templates", "Templates", $nav);
-            $w->menuLink("admin/phpinfo", "PHP Info", $nav);
-            $w->menuLink("admin/printers", "Printers", $nav);
-            $w->menuLink("admin/printqueue", "Print Queue", $nav);
-            $w->menuLink("admin/databasebackup", "Backup Database", $nav);
-            $w->menuLink("admin/composer", "Update composer.json", $nav, null, "_blank");
-            $w->menuLink("admin/email", "Email", $nav);
-            $w->menuLink("admin-migration", "Migrations", $nav);
-			$w->menuLink("admin-file", "File transfer", $nav);
+            $w->menuLink("admin/users", __("List Users"), $nav);
+            $w->menuLink("admin/groups", __("List Groups"), $nav);
+            $w->menuLink("admin/lookup", __("Lookup"), $nav);
+            $w->menuLink("admin-templates", __("Templates"), $nav);
+            $w->menuLink("admin/phpinfo", __("PHP Info"), $nav);
+            $w->menuLink("admin/printers", __("Printers"), $nav);
+            $w->menuLink("admin/printqueue", __("Print Queue"), $nav);
+            $w->menuLink("admin/databasebackup", __("Backup Database"), $nav);
+            $w->menuLink("admin/composer", __("Install/Update Composer"), $nav, null, "_blank");
+            $w->menuLink("admin/email", __("Email"), $nav);
+            $w->menuLink("admin-migration", __("Migrations"), $nav);
+			$w->menuLink("admin-file", __("File transfer"), $nav);
         }
 		
         $w->ctx("navigation", $nav);

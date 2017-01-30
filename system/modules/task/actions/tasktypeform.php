@@ -2,7 +2,7 @@
 // Step II in creating a task. This function gets the additional fields by tasktype.
 // Serialise REQUEST object from step one and store in hidden form element: 'formone'
 function tasktypeform_POST(Web $w) {
-	$w->Task->navigation($w, "Create Task");
+	$w->Task->navigation($w, __("Create Task"));
 
 	// get task type, serialise REQUEST object from step 1 of creating a new task
 	$tid = $w->request('task_type');
@@ -21,7 +21,7 @@ function tasktypeform_POST(Web $w) {
 	}
 
 	if (!$theform) {
-		$theform = array(array("Message","static","text","No further information required.<p>Please save your task."));
+		$theform = array(array(__("Message"),"static","text",__("No further information required.<p>Please save your task.")));
 	}
 
 	// combine input from step one with form fields for step II
@@ -29,6 +29,6 @@ function tasktypeform_POST(Web $w) {
 	array_push($theform, $hiden);
 
 	// display the form
-	$f = Html::form($theform, $w->localUrl("/task/edit/"),"POST"," Submit ");
+	$f = Html::form($theform, $w->localUrl("/task/edit/"),"POST",__(" Submit "));
 	$w->ctx("formfields",$f);
 }

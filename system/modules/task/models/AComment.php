@@ -46,7 +46,7 @@ class AComment extends DbObject{
 		$u = $this->w->Auth->getUser($this->creator_id);
         if ($u) 
         {
-           $str .= "<br>By <i>".$u->getFullName().",</i>";
+           $str .= "<br>".__("By")." <i>".$u->getFullName().",</i>";
         }
         
         $str.= "<i>".formatDateTime($this->dt_created)."</i>";

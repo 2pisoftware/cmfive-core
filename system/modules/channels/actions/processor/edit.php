@@ -5,25 +5,25 @@ function edit_GET(Web $w) {
 	$p = $w->pathMatch("id");
 	$processor_id = $p["id"];
 
-	$w->Channels->navigation($w, $processor_id ? "Edit" : "Add" . " a Processor");
+	$w->Channels->navigation($w, $processor_id ? __("Edit") : __("Add") . __(" a Processor"));
 
 	// Get channel and form
 	$processor = $processor_id ? $w->Channel->getProcessor($processor_id) : new ChannelProcessor($w);
 	$processor_list = $w->Channel->getProcessorList();
 
-	$form = array("Processor" => array(
+	$form = array(__("Processor") => array(
 		array(
-			array("Name", "text", "name", $processor->name)
+			array(__("Name"), "text", "name", $processor->name)
 		),
 		array(
-			array("Channel", "select", "channel_id", $processor->channel_id, $w->Channel->getChannels())
+			array(__("Channel"), "select", "channel_id", $processor->channel_id, $w->Channel->getChannels())
 		),
 		array(
-			array("Processor Class", "select", "processor_class", $processor->module.'.'.$processor->class, $processor_list)
+			array(__("Processor Class"), "select", "processor_class", $processor->module.'.'.$processor->class, $processor_list)
 		)
 	));
 
-	$w->out(Html::multiColForm($form, "/channels-processor/edit/{$processor_id}", "POST", "Save"));
+	$w->out(Html::multiColForm($form, "/channels-processor/edit/{$processor_id}", "POST", __("Save")));
 }
 
 function edit_POST(Web $w) {
@@ -37,13 +37,13 @@ function edit_POST(Web $w) {
 
 	// Make sure we only have two values
 	if (count($processor_expl) !== 2) {
-		$w->error("Missing Processor values", "/channels/listprocessors");
+		$w->error(__("Missing Processor values"), "/channels/listprocessors");
 		exit();
 	}
 
 	// make sure the selected class exists in config
 	if (!in_array($processor_expl[1], $w->moduleConf($processor_expl[0], "processors"))) {
-		$w->error("Could not find processor in config", "/channels/listprocessors");	
+		$w->error(__("Could not find processor in config"), "/channels/listprocessors");	
 		exit();
 	}
 
@@ -54,6 +54,6 @@ function edit_POST(Web $w) {
 	$processor_object->class = $processor_expl[1];
 	$processor_object->insertOrUpdate();
 
-	$w->msg("Processor " . ($processor_id ? "updated" : "created"), "/channels/listprocessors");
+	$w->msg(__("Processor ") . ($processor_id ? __("updated") : __("created")), "/channels/listprocessors");
 
 }

@@ -5,7 +5,7 @@
 //////////////////////////////////////////
 
 function index_ALL(Web $w) {
-    $w->Task->navigation($w, "Task Dashboard");
+    $w->Task->navigation($w, __("Task Dashboard"));
         
     // I want to see:
     //   Number of open tasks assigned to me (out of total open tasks) \/

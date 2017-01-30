@@ -10,9 +10,9 @@ function groupedit_GET(Web $w)
 
 	$user = $w->Auth->getUser($option['group_id']);
 
-	$template['Edit Group'] = array(array(array("Group Title: ","text","title",$user->login)));
+	$template['Edit Group'] = array(array(array(__("Group Title: "),"text","title",$user->login)));
 
-	$w->out(Html::multiColForm($template,"/admin/groupedit/".$option['group_id'],"POST","Save"));
+	$w->out(Html::multiColForm($template,"/admin/groupedit/".$option['group_id'],"POST",__("Save")));
 
 	$w->setLayout(null);
 }
@@ -25,5 +25,5 @@ function groupedit_POST(Web $w)
 	$user->login = $_REQUEST['title'];
 	$user->update();
 
-	$w->msg("Group info updated!", "/admin/groups");
+	$w->msg(__("Group info updated!"), "/admin/groups");
 }

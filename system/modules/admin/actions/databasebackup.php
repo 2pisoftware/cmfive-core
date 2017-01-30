@@ -2,7 +2,7 @@
 
 // Using this as a guide: http://www.bendemeyer.com/2013/03/12/automated-site-backups-using-php-and-cron/
 function databasebackup_ALL(Web $w) {
-    $w->Admin->navigation($w, "Database Backup");
+    $w->Admin->navigation($w, __("Database Backup"));
     
     $datestamp = date("Y-m-d-H-i");
     $filedir = ROOT_PATH . "/backups/";
@@ -16,7 +16,7 @@ function databasebackup_ALL(Web $w) {
                 $backuptime = DateTime::createFromFormat("Y-m-d-H-i", $datepart);
                 if ($backuptime) {
                     if ((time() - $backuptime->getTimestamp()) < (60*60*4)) {
-                        $w->out("You cannot backup more than once every 4 hours");
+                        $w->out(__("You cannot backup more than once every 4 hours"));
                         return;
                     }
                 }
@@ -40,7 +40,7 @@ function databasebackup_ALL(Web $w) {
                 array(Config::get('database.username'), Config::get('database.password'), Config::get('database.database'), $filedir.$filename), 
                 $command);
         $w->out(shell_exec($command));
-        $w->out("Backup completed to: {$filedir}{$filename}");
+        $w->out(__("Backup completed to:"_." {$filedir}{$filename}");
         
         // Save elsewhere if defined
         $backuplocations = Config::get('admin.database.backuplocations');
@@ -52,7 +52,7 @@ function databasebackup_ALL(Web $w) {
                     case 'dropbox':
                         // Dropbox requires the OAuth extension
                         if (!class_exists("OAuth")) {
-                            $w->out("You need the OAuth extension installed to backup to dropbox");
+                            $w->out(__("You need the OAuth extension installed to backup to dropbox"));
                             continue;
                         }
                             
@@ -70,6 +70,6 @@ function databasebackup_ALL(Web $w) {
             }
         }
     } else {
-        $w->out("Could not find backup command");
+        $w->out(__("Could not find backup command"));
     }
 }

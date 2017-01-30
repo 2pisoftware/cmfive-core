@@ -7,7 +7,7 @@ Config::set('main', array(
     'topmenu' => false,
     'application_name' => 'cmfive',
     'company_name' => 'cmfive',
-    'company_url' => 'http://github.com/careck/cmfive',
+    'company_url' => 'http://github.com/2pisoftware/cmfive',
     "dependencies" => array(
         "monolog/monolog" => "1.8.*@dev"
     ),

@@ -375,7 +375,7 @@ class Task extends DbObject {
     }
 
     function printSearchTitle() {
-        $buf = (!empty($this->title) ? $this->title : 'Task [' . $this->id . ']') . ', ' . strtoupper($this->status);
+        $buf = (!empty($this->title) ? $this->title : __('Task').' [' . $this->id . ']') . ', ' . strtoupper($this->status);
         return $buf;
     }
 
@@ -384,15 +384,15 @@ class Task extends DbObject {
         $assignee = $this->getAssignee();
         $buf = $tg->title;
         if ($assignee) {
-            $buf .= ', Assigned: ' . $assignee->getFullName();
+            $buf .= __(', Assigned: ') . $assignee->getFullName();
         }
 
         if ($this->dt_first_assigned) {
-            $buf .= ', First Assigned: ' . $this->getDate('dt_first_assigned');
+            $buf .= __(', First Assigned: ') . $this->getDate('dt_first_assigned');
         }
 
         if ($this->dt_due) {
-            $buf .= ', Due: ' . $this->getDate('dt_due');
+            $buf .= __(', Due: ') . $this->getDate('dt_due');
         }
         return $buf;
     }
@@ -406,9 +406,9 @@ class Task extends DbObject {
             $user = $this->w->Auth->user();
         }
         if ($this->canView($user)) {
-            return Html::a($this->w->localUrl($this->printSearchUrl()), (!empty($this->title) ? htmlentities($this->title) : 'Task [' . $this->id . ']'), null, $class, null, $target);
+            return Html::a($this->w->localUrl($this->printSearchUrl()), (!empty($this->title) ? htmlentities($this->title) : __('Task').' [' . $this->id . ']'), null, $class, null, $target);
         }
-        return (!empty($this->title) ? htmlentities($this->title) : 'Task [' . $this->id . ']');
+        return (!empty($this->title) ? htmlentities($this->title) : __('Task').' [' . $this->id . ']');
     }
 	
     function getAssignee() {
@@ -474,7 +474,7 @@ class Task extends DbObject {
             $comm->obj_table = $this->getDbTableName();
             $comm->obj_id = $this->id;
 			$comm->is_system = 1;
-            $comm->comment = "Task Created";
+            $comm->comment = __("Task Created");
             $comm->insert();
 
             // add to context for notifications post listener
@@ -557,7 +557,7 @@ class Task extends DbObject {
 
             $this->commitTransaction();
         } catch (Exception $ex) {
-            $this->Log->error("Updating Task(" . $this->id . "): " . $ex->getMessage());
+            $this->Log->error(__("Updating Task")."(" . $this->id . "): " . $ex->getMessage());
             $this->rollbackTransaction();
         }
     }
@@ -602,7 +602,7 @@ class Task extends DbObject {
 
             $this->commitTransaction();
         } catch (Exception $ex) {
-            $this->Log->error("Deleting Task(" . $this->id . "): " . $ex->getMessage());
+            $this->Log->error(__("Deleting Task")."(" . $this->id . "): " . $ex->getMessage());
             $this->rollbackTransaction();
         }
     }

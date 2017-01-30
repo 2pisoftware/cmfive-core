@@ -1,4 +1,4 @@
-<h3 class="subheading" style="border-bottom: 1px solid grey;">Search</h3>
+<h3 class="subheading" style="border-bottom: 1px solid grey;"><?php _e('Search'); ?></h3>
 
 <div class="row-fluid">
 <!--    <form action="<?php // echo $webroot; ?>/search/results" method="GET">-->
@@ -15,7 +15,7 @@
                 <?php echo Html::select("tags", $tags); ?>
             </div>
             <div class="small-12 medium-2 columns">
-                <button class="button tiny small-12" type="submit">Go</button>
+                <button class="button tiny small-12" type="submit"><?php _e('Go'); ?></button>
             </div>
         </div>
     </form>
@@ -44,7 +44,7 @@
                     $("#message_box").html(response.data);
                     $("#search_message").show();
                 } else {
-                    var text_data = "<span style='padding-left: 20px;'>No results found</span>";
+                    var text_data = "<span style='padding-left: 20px;'><?php _e('No results found'); ?></span>";
                     if (response.data) {
                         text_data = response.data;
                     }
@@ -52,7 +52,7 @@
                 }
             },
             function(response) {
-                $("#message_box").html("Failed to receive a response from search");
+                $("#message_box").html("<?php _e('Failed to receive a response from search'); ?>");
                 $("#search_message").show();
             }
         );

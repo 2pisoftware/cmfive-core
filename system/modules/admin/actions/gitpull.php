@@ -2,21 +2,21 @@
 
 function gitpull_GET(Web $w) {
     $form = array(
-      "Path to Git" => array(
-          array(array("Path to Git", "text", "git"))
+      __("Path to Git") => array(
+          array(array(__("Path to Git"), "text", "git"))
       ),
-      "Branch" => array(
-          array(array("Branch", "text", "branch"))
+      __("Branch") => array(
+          array(array(__("Branch"), "text", "branch"))
       )  
     );
     
-    $w->out(Html::multiColForm($form, "/admin/gitpull", "POST", "Go"));
+    $w->out(Html::multiColForm($form, "/admin/gitpull", "POST", __("Go")));
 }
 
 function gitpull_POST(Web $w) {
     $git = $_POST["git"];    
     if (empty($_POST["branch"])) {
-        $w->error("Branch missing", "/admin/gitpull");
+        $w->error(__("Branch missing"), "/admin/gitpull");
     }
     if (empty($git)) $git = "git";
     

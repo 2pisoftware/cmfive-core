@@ -15,6 +15,6 @@ function process_GET(Web $w) {
 			}
 		}
 	} else {
-		$w->out("No channel found.");
+		$w->out(__("No channel found."));
 	}
 }

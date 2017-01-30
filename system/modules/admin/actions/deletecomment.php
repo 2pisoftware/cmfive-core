@@ -12,5 +12,5 @@ function deletecomment_ALL(Web &$w){
     }
 
     $redirectUrl = $w->request("redirect_url");
-    $w->msg("Comment deleted.", !empty($redirectUrl) ? $redirectUrl : $_SERVER["REQUEST_URI"]);
+    $w->msg(__("Comment deleted."), !empty($redirectUrl) ? $redirectUrl : $_SERVER["REQUEST_URI"]);
 }

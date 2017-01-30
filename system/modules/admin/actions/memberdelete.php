@@ -9,5 +9,5 @@ function memberdelete_GET(Web &$w)
 	{
 		$member->delete();
 	}
-	$w->msg("Member is deleted!", "/admin/moreInfo/".$option['group_id']);
+	$w->msg(__("Member is deleted!"), "/admin/moreInfo/".$option['group_id']);
 }

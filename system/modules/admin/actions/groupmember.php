@@ -22,12 +22,12 @@ function groupmember_GET(Web $w)
 	ksort($select[0]);
 	ksort($select[1]);
 
-	$template['New Member'] = [[["Select Member: ", "select", "member_id", null, $select[0] + $select[1]]]];
+	$template['New Member'] = [[[__("Select Member: "), "select", "member_id", null, $select[0] + $select[1]]]];
 	if ($w->Auth->user()->is_admin) {
-		$template['New Member'][0][] = array("Owner","checkbox","is_owner");
+		$template['New Member'][0][] = array(__("Owner"),"checkbox","is_owner");
 	}
 		
-	$w->out(Html::multiColForm($template,"/admin/groupmember/".$option['group_id'],"POST","Save"));
+	$w->out(Html::multiColForm($template,"/admin/groupmember/".$option['group_id'],"POST",__("Save")));
 
 	$w->setLayout(null);
 }
@@ -78,8 +78,8 @@ function groupmember_POST(Web $w)
 	$w->sessionUnset('parents');
 
 	if (!empty($exceptions)) {
-		$w->error(implode(", ", $exceptions)." can not be added!", "/admin/moreInfo/".$group_id);
+		$w->error(implode(", ", $exceptions).__(" can not be added!"), "/admin/moreInfo/".$group_id);
 	} else {
-		$w->msg("New members are added!", "/admin/moreInfo/".$group_id);
+		$w->msg(__("New members are added!"), "/admin/moreInfo/".$group_id);
 	}
 }

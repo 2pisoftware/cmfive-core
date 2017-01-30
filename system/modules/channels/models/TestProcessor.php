@@ -10,9 +10,9 @@ class TestProcessor extends ProcessorType {
 			}
 		}
 
-		return array("Settings" => array(
+		return array(__("Settings") => array(
 			array(
-				array("My Setting", "text", "my_setting", @$current_settings->my_setting)
+				array(__("My Setting"), "text", "my_setting", @$current_settings->my_setting)
 			)
 		));
 	}

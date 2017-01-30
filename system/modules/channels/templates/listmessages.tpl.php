@@ -1,7 +1,7 @@
 <?php if (!empty($messages)) : ?>
 
     <table class="tablesorter">
-        <thead><tr><th>ID</th><th>Type</th><th>Channel</th><th>Failed Processes</th><th>Run Time</th><th>Actions</th></tr></thead>
+        <thead><tr><th><?php _e('ID'); ?></th><th><?php _e('Type'); ?></th><th><?php _e('Channel'); ?></th><th><?php _e('Failed Processes'); ?></th><th><?php _e('Run Time'); ?></th><th><?php _e('Actions'); ?></th></tr></thead>
         <tbody>
             <?php foreach ($messages as $m) : ?>
                 <?php $channel = $m->getChannel(); ?>
@@ -11,7 +11,7 @@
                     <td><?php echo (!empty($channel->id) ? $channel->name : ""); ?></td>
                     <td><?php echo $m->getFailedProcesses(); ?></td>
                     <td><?php echo formatDateTime($m->dt_created); ?></td>
-                    <td><?php echo Html::a("/channels/listmessagestatuses/{$m->id}", "View Message Statuses"); ?></td>
+                    <td><?php echo Html::a("/channels/listmessagestatuses/{$m->id}", __("View Message Statuses")); ?></td>
                 </tr>
             <?php endforeach; ?>
         </tbody>
@@ -19,6 +19,6 @@
 
 <?php else: ?>
 
-    <p>No messages found.</p>
+    <p><?php _e('No messages found.'); ?></p>
 
 <?php endif; ?>

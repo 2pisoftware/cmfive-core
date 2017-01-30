@@ -1,7 +1,7 @@
 <?php
 
 function listchannels_GET(Web $w) {
-	$w->Channels->navigation($w, "Channels List");
+	$w->Channels->navigation($w, __("Channels List"));
 	
         // Get known channel types: email and web
 	$email_channels = $w->Channel->getEmailChannels();

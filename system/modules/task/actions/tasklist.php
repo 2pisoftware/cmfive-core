@@ -110,7 +110,7 @@ function tasklist_ALL(Web $w) {
     // Build the filter and its data
     $taskgroup_data = $w->Task->getTaskGroupDetailsForUser();
     $filter_assignees = $taskgroup_data["members"];
-    array_unshift($filter_assignees,array("Unassigned","unassigned"));
+    array_unshift($filter_assignees,array(__("Unassigned"),"unassigned"));
     $filter_data = array(
         array("Assignee", "select", "task__assignee-id", !empty($assignee_id) ? $assignee_id : null, $filter_assignees),
         array("Creator", "select", "task__creator-id", !empty($creator_id) ? $creator_id : null, $taskgroup_data["members"]),
@@ -138,4 +138,52 @@ function tasklist_ALL(Web $w) {
     );
     
     $w->ctx("filter_data", $filter_data);
+    
+    
+    // tab: notifications
+    // list groups and notification based on my role and permissions
+    $line = array(array(__("Task Group"), __("Your Role"), __("Creator"), __("Assignee"), __("All Others"), ""));
+    $user_taskgroup_members = $w->Task->getMemberGroups($w->Auth->user()->id);
+    if ($user_taskgroup_members) {
+        usort($user_taskgroup_members, array("TaskService", "sortbyRole"));
+
+        foreach ($user_taskgroup_members as $member) {
+            $taskgroup = $member->getTaskGroup();
+            $value_array = array();
+            $notify = $w->Task->getTaskGroupUserNotify($w->Auth->user()->id, $member->task_group_id);
+            if ($notify) {
+                foreach ($notify as $n) {
+                    $value = ($n->value == "0") ? __("No") : __("Yes");
+                    $value_array[$n->role][$n->type] = $value;
+                }
+            } else {
+                $notify = $w->Task->getTaskGroupNotify($member->task_group_id);
+                if ($notify) {
+                    foreach ($notify as $n) {
+                        $value = ($n->value == "0") ? __("No") : __("Yes");
+                        $value_array[$n->role][$n->type] = $value;
+                    }
+                }
+            }
+
+            if ($taskgroup->getCanIView()) {
+                $title = $w->Task->getTaskGroupTitleById($member->task_group_id);
+                $role = strtolower($member->role);
+
+                $line[] = array(
+                    $title,
+                    ucfirst($role),
+                    @$value_array[$role]["creator"],
+                    @$value_array[$role]["assignee"],
+                    @$value_array[$role]["other"],
+                    Html::box(WEBROOT . "/task/updateusergroupnotify/" . $member->task_group_id, __(" Edit "), true)
+                );
+            }
+            unset($value_array);
+        }
+        
+
+        // display list
+        $w->ctx("notify", Html::table($line, null, "tablesorter", true));
+    }
 }

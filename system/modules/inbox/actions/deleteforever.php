@@ -11,5 +11,5 @@ function deleteforever_ALL(Web &$w) {
 		//		$mess_obj->dt_archived = time();
 		$mess_obj->update();
 	}
-	$w->msg("Message(s) Deleted", "/inbox/trash");
+	$w->msg(__("Message(s) Deleted"), "/inbox/trash");
 }

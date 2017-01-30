@@ -1,6 +1,6 @@
 <?php
 
-echo "Task Group successfully created.<p>";
+echo __("Task Group successfully created").".<p>";
 echo "<div style=\"width:800px;\">";
 echo $table;
 echo "</div>";

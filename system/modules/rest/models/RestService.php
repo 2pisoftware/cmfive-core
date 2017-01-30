@@ -24,7 +24,7 @@ class RestService extends RestSearchableService {
 			if ($api && trim($api) == trim(Config::get('system.rest_api_key'))) {
 				$user = $this->w->Auth->login($username,$password,null,true);
 			} else {
-				return $this->errorJson("wrong API key");
+				return $this->errorJson(__("wrong API key"));
 			}
 		}
 		// allow for logged in user
@@ -34,7 +34,7 @@ class RestService extends RestSearchableService {
 			$session->insert();
 			return $this->successJson($session->token);
 		} else {
-			return $this->errorJson("authentication failed for ".$username.", ".$password.", ".$api);
+			return $this->errorJson(__("authentication failed for ").$username.", ".$password.", ".$api);
 		}
 	}
 	
@@ -50,7 +50,7 @@ class RestService extends RestSearchableService {
 	 */
 	function checkTokenJson($token) {
 		if (!$token) {
-			return $this->errorJson("Missing token");
+			return $this->errorJson(__("Missing token"));
 		}
 		$this->token=$token;
 		$session = $this->getObject("RestSession", array("token"=>$token));
@@ -58,7 +58,7 @@ class RestService extends RestSearchableService {
 			$user = $session->getUser();
 			$this->w->Auth->setRestUser($user); 
 		} else {
-			return $this->errorJson("No session associated with this token");
+			return $this->errorJson(__("No session associated with this token"));
 		}
 		return null;
 	}
@@ -69,7 +69,7 @@ class RestService extends RestSearchableService {
 			return $checkToken;
 		}
 		if (!$this->checkModuleAccess($classname)) {
-			return $this->errorJson('No access to '.$classname);
+			return $this->errorJson(__('No access to ').$classname);
 		}
 		try {
 			$os = $this->search($classname, $query,$allowDeleted);
@@ -106,7 +106,7 @@ class RestService extends RestSearchableService {
 			return $checkToken;
 		}
 		if (!$this->checkModuleAccess($classname)) {
-			return $this->errorJson('No access to '.$classname);
+			return $this->errorJson(__('No access to ').$classname);
 		}
 		
 		if (intval($id)>0) { 
@@ -128,7 +128,7 @@ class RestService extends RestSearchableService {
 							return $this->errorJson($saveResult['invalid']);
 						}
 					} else {
-						return $this->errorJson('No feedback from save.');
+						return $this->errorJson(__('No feedback from save.'));
 					}
 
 					} else {
@@ -136,7 +136,7 @@ class RestService extends RestSearchableService {
 				}
 			} else {
 				http_response_code(403);
-				return $this->errorJson('Not allowed');
+				return $this->errorJson(__('Not allowed'));
 			}
 		}
 	}
@@ -148,7 +148,7 @@ class RestService extends RestSearchableService {
 			return $checkToken;
 		}
 		if (!$this->checkModuleAccess($classname)) {
-			return $this->errorJson('No access to '.$classname);
+			return $this->errorJson(__('No access to ').$classname);
 		}
 				
 		$o = $this->getObject($classname, $id);
@@ -156,10 +156,10 @@ class RestService extends RestSearchableService {
 			if ($o && $o->canDelete($this->w->Auth->user())) {
 				$o->delete();
 				http_response_code(204);
-				return $this->successJSON('deleted');
+				return $this->successJSON(__('deleted'));
 			} else {
 				http_response_code(403);
-				return $this->errorJSON('Not allowed to delete this record');
+				return $this->errorJSON(__('Not allowed to delete this record'));
 			}
 		} else {
 			http_response_code(404);

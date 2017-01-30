@@ -10,11 +10,11 @@ function index_GET(Web $w) {
 		$attachment = $w->File->getAttachment($id);
 		if (!empty($attachment) && $attachment->exists()) {
 			$attachment->moveToAdapter($adapter);
-			$w->msg("File moved to " . $adapter, "/admin-file");
+			$w->msg(__("File moved to ") . $adapter, "/admin-file");
 		}
 	} else {
 		// get attachments
-		$attachments = $w->File->getObjects("Attachment", ["is_deleted" => 0]);
+		$attachments = $w->File->getObjects(__("Attachment"), ["is_deleted" => 0]);
 
 		$adapters = array_keys(Config::get('file.adapters'));
 

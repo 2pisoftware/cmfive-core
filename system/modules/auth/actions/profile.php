@@ -4,32 +4,33 @@ function profile_GET(Web &$w) {
 	$user = $w->Auth->user();
 	$contact = $user->getContact();
 	if ($user) {
-		$w->ctx("title","Administration - Profile - ".$user->login);
+		$w->ctx("title",__("Administration - Profile - ").$user->login);
 	} else {
-		$w->error("User does not exist.");
+		$w->error(__("User does not exist."));
 	}
 
 	$lines = array();
 
-	$lines[] = array("Change Password","section");
-	$lines[] = array("Password","password","password","");
-	$lines[] = array("Repeat Password","password","password2","");
-	$lines[] = array("Contact Details","section");
-	$lines[] = array("First Name","text","firstname",$contact ? $contact->firstname : "");
-	$lines[] = array("Last Name","text","lastname",$contact ? $contact->lastname : "");
-	$lines[] = array("Communication","section");
-	$lines[] = array("Home Phone","text","homephone",$contact ? $contact->homephone : "");
-	$lines[] = array("Work Phone","text","workphone",$contact ? $contact->workphone : "");
-	$lines[] = array("Private Mobile","text","priv_mobile",$contact ? $contact->priv_mobile : "");
-	$lines[] = array("Work Mobile","text","mobile",$contact ? $contact->mobile : "");
-	$lines[] = array("Fax","text","fax",$contact ? $contact->fax : "");
-	$lines[] = array("Email","text","email",$contact ? $contact->email : "");
-	$lines[] = array("Redirect URL", "text", "redirect_url", $user->redirect_url);
+	$lines[] = array(__("Change Password"),"section");
+	$lines[] = array(__("Password"),"password","password","");
+	$lines[] = array(__("Repeat Password"),"password","password2","");
+	$lines[] = array(__("Contact Details"),"section");
+	$lines[] = array(__("First Name"),"text","firstname",$contact ? $contact->firstname : "");
+	$lines[] = array(__("Last Name"),"text","lastname",$contact ? $contact->lastname : "");
+	$lines[] = array(__("Communication"),"section");
+	$lines[] = array(__("Home Phone"),"text","homephone",$contact ? $contact->homephone : "");
+	$lines[] = array(__("Work Phone"),"text","workphone",$contact ? $contact->workphone : "");
+	$lines[] = array(__("Private Mobile"),"text","priv_mobile",$contact ? $contact->priv_mobile : "");
+	$lines[] = array(__("Work Mobile"),"text","mobile",$contact ? $contact->mobile : "");
+	$lines[] = array(__("Fax"),"text","fax",$contact ? $contact->fax : "");
+	$lines[] = array(__("Email"),"text","email",$contact ? $contact->email : "");
+	$lines[] = array(__("Redirect URL"), "text", "redirect_url", $user->redirect_url);
+	$lines[] = array(__("Language"), "select", "language", $user->language,$user->getAvailableLanguages());
 
-	$f = Html::form($lines,$w->localUrl("/auth/profile"),"POST","Update");
+	$f = Html::form($lines,$w->localUrl("/auth/profile"),"POST",__("Update"));
 	if ($p['box']) {
 		$w->setLayout(null);
-		$f = "<h2>Edit Profile</h2>".$f;
+		$f = "<h2>".__("Edit Profile")."</h2>".$f;
 	}
 	$w->out($f);
 }
@@ -38,20 +39,20 @@ function profile_POST(Web &$w) {
 	$w->pathMatch("id");
 	
 	$errors = $w->validate(array(
-	array("homephone","^[0-9+\- ]*$","Not a valid home phone number"),
-	array("workphone","^[0-9+\- ]*$","Not a valid work phone number"),
-	array("mobile","^[0-9+\- ]*$","Not a valid  mobile phone number"),
-	array("priv_mobile","^[0-9+\- ]*$","Not a valid  mobile phone number"),
-	array("fax","^[0-9+\- ]*$","Not a valid fax number"),
+	array("homephone","^[0-9+\- ]*$",__("Not a valid home phone number")),
+	array("workphone","^[0-9+\- ]*$",__("Not a valid work phone number")),
+	array("mobile","^[0-9+\- ]*$",__("Not a valid  mobile phone number")),
+	array("priv_mobile","^[0-9+\- ]*$",__("Not a valid  mobile phone number")),
+	array("fax","^[0-9+\- ]*$",__("Not a valid fax number")),
 	));
 
 	if ($_REQUEST['password'] && (($_REQUEST['password'] != $_REQUEST['password2']))) {
-		$errors[]="Passwords don't match";
+		$errors[]=__("Passwords don't match");
 	}
 	$user = $w->Auth->user();
 
 	if (!$user) {
-		$errors[]="Not Logged In";
+		$errors[]=__("Not Logged In");
 	}
 
 	if (sizeof($errors) != 0) {
@@ -83,5 +84,5 @@ function profile_POST(Web &$w) {
 		$contact->update();
 	}
 
-	$w->msg("Profile updated.");
+	$w->msg(__("Profile updated."));
 }

@@ -1,6 +1,6 @@
 <?php
 function index_GET(Web &$w) {
-    $w->Inbox->navigation($w,"New Messages");
+    $w->Inbox->navigation($w,__("New Messages"));
 
     // Get current page number
     $p = $w->pathMatch('num');
@@ -11,7 +11,7 @@ function index_GET(Web &$w) {
     $new = $w->Inbox->getMessages($num-1,40,$w->Auth->user()->id,1);
 
     // Make new message table
-    $header = array("<input style='margin: 0px;' type='checkbox' id='allChk' onclick='selectAll()' />", "Subject", "Date", "Sender");
+    $header = array("<input style='margin: 0px;' type='checkbox' id='allChk' onclick='selectAll()' />", __("Subject"), __("Date"), __("Sender"));
     $data = array();
     foreach ($new as $q => $in) {
         $data[] = array(

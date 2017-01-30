@@ -6,7 +6,7 @@ function reassign_GET(Web $w) {
 	$redirect = $w->request("redirect");
 	
 	if (empty($user_id)) {
-		$w->error("No user specified", $redirect ? : "/admin/users");
+		$w->error(__("No user specified"), $redirect ? : "/admin/users");
 	}
 	
 	// Get a list of users whoare report_admins/editors and aren't the person being reassigned
@@ -16,8 +16,8 @@ function reassign_GET(Web $w) {
 	
 	// Print form
 	$w->out(Html::multiColForm([
-		"Reassign reports" => [
-			[["Reassign reports to", "select", "reassign_to", null, $report_editors]]
+		__("Reassign reports") => [
+			[[__("Reassign reports to"), "select", "reassign_to", null, $report_editors]]
 		]
 	], '/report-user/reassign/' . $user_id . '?redirect=' . $redirect));
 	
@@ -29,7 +29,7 @@ function reassign_POST(Web $w) {
 	$redirect = $w->request("redirect");
 	
 	if (empty($user_id)) {
-		$w->error("No user specified", $redirect ? : "/admin/users");
+		$w->error(__("No user specified"), $redirect ? : "/admin/users");
 	}
 	
 	// Get the user to reassign to
@@ -69,9 +69,9 @@ function reassign_POST(Web $w) {
 			}
 		}
 	} else {
-		$w->Log->warn("No reports found for user " . $user_id);
+		$w->Log->warn(__("No reports found for user ") . $user_id);
 	}
 	
-	$w->msg("Users reports reassigned to " . $reassign_user->getFullName(), $redirect ? : "/admin/users");
+	$w->msg(__("Users reports reassigned to ") . $reassign_user->getFullName(), $redirect ? : "/admin/users");
 	
 }

@@ -25,11 +25,11 @@ function deletereport_ALL(Web &$w) {
 				$feed->update();
 			}
 			// return
-			$w->msg("Report deleted","/report/index/");
+			$w->msg(__("Report deleted"),"/report/index/");
 		}
 		// if no report, say as much
 		else {
-			$w->msg("Report no longer exists?","/report/index/");
+			$w->msg(__("Report no longer exists?"),"/report/index/");
 		}
 	}
 }

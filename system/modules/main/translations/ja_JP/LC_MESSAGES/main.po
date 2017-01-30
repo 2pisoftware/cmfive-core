@@ -1,0 +1,4601 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.7\n"
+"Project-Id-Version: cmfive\n"
+"Language: ja\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Steve Ryan <steve@2pisoftware.com>\n"
+"Language-Team: \n"
+
+#: modules/example/actions/delete.php:25
+msgid "Object Deleted"
+msgstr "オブジェクトは削除します"
+
+#: modules/example/actions/delete.php:30
+msgid "This object does not exist."
+msgstr "このオブジェクトは存在しません。"
+
+#: modules/example/actions/edit.php:28
+msgid "Edit Example Data"
+msgstr "編集データ例"
+
+#: modules/example/actions/edit.php:29 modules/example/actions/index.php:11
+#: modules/wiki/templates/createwiki.tpl.php:4
+#: system/modules/admin/actions/groups.php:11
+#: system/modules/admin/actions/groups/index.php:11
+#: system/modules/admin/actions/lookup.php:26
+#: system/modules/admin/actions/templates/edit.php:16
+#: system/modules/admin/actions/templates/index.php:5
+#: system/modules/admin/templates/file/index.tpl.php:7
+#: system/modules/admin/templates/useradd.tpl.php:16
+#: system/modules/admin/templates/useredit.tpl.php:19
+#: system/modules/file/actions/edit.php:20
+#: system/modules/file/actions/new.php:16
+#: system/modules/file/partials/templates/listattachments.tpl.php:109
+#: system/modules/file/partials/templates/listattachmentsplain.tpl.php:73
+#: system/modules/file/templates/attach.tpl.php:9
+#: system/modules/form/actions/edit.php:10
+#: system/modules/form/templates/index.tpl.php:10
+#: system/modules/report/actions/createreport.php:13
+#: system/modules/report/actions/edit.php:23
+#: system/modules/report/actions/edit.php:118
+#: system/modules/report/actions/feedAjaxGetReportText.php:10
+#: system/modules/report/actions/index.php:33
+#: system/modules/report/actions/index.php:34
+#: system/modules/task/actions/group/viewtaskgrouptypes.php:11
+#: system/modules/task/actions/group/viewtaskgrouptypes.php:49
+#: system/modules/task/actions/viewtask.php:60
+#: system/modules/task/actions/viewtask.php:75
+#: system/modules/task/partials/templates/listtasks.tpl.php:5
+#: system/modules/task/task.group.actions.php:41
+#: system/modules/task/task.group.actions.php:139
+msgid "Title"
+msgstr "タイトル"
+
+#: modules/example/actions/edit.php:30 modules/example/actions/index.php:11
+msgid "Data"
+msgstr "データ"
+
+#: modules/example/actions/edit.php:31
+msgid "Check"
+msgstr "チェック"
+
+#: modules/example/actions/edit.php:32
+msgid "select field"
+msgstr "選択フィールド"
+
+#: modules/example/actions/edit.php:33
+msgid "autocomplete field"
+msgstr "オートコンプリートフィールド"
+
+#: modules/example/actions/edit.php:34
+msgid "multiselect field"
+msgstr "複数選択フィールド"
+
+#: modules/example/actions/edit.php:35
+msgid "radio field"
+msgstr "電波"
+
+#: modules/example/actions/edit.php:36
+msgid "password field"
+msgstr "パスワード欄"
+
+#: modules/example/actions/edit.php:37
+msgid "email field"
+msgstr "電子メールフィールド"
+
+#: modules/example/actions/edit.php:38
+msgid "hidden field"
+msgstr "非表示フィールド"
+
+#: modules/example/actions/edit.php:39
+msgid "date field"
+msgstr "日付フィールド"
+
+#: modules/example/actions/edit.php:40
+msgid "datetime field"
+msgstr "日時フィールド"
+
+#: modules/example/actions/edit.php:41
+msgid "time field"
+msgstr "時間フィールド"
+
+#: modules/example/actions/edit.php:42
+msgid "file field"
+msgstr "ファイルのフィールド"
+
+#: modules/example/actions/edit.php:43
+msgid "multifile field"
+msgstr "マルチフィールド"
+
+#: modules/example/actions/edit.php:48
+#: system/modules/admin/actions/lookup.php:57
+msgid " Save "
+msgstr " セーブ"
+
+#: modules/example/actions/edit.php:80
+msgid "ExampleData updated"
+msgstr "ExampleData更新"
+
+#: modules/example/actions/index.php:8
+msgid "Example Data List"
+msgstr "例データ一覧"
+
+#: modules/example/actions/index.php:11
+msgid "Checkbox"
+msgstr "チェックボックス"
+
+#: modules/example/actions/index.php:11
+#: system/modules/admin/actions/lookup.php:26
+#: system/modules/admin/actions/printers.php:6
+#: system/modules/admin/actions/printqueue.php:18
+#: system/modules/admin/actions/templates/index.php:5
+#: system/modules/admin/templates/file/index.tpl.php:7
+#: system/modules/admin/templates/migration/index.tpl.php:76
+#: system/modules/channels/templates/listchannels.tpl.php:8
+#: system/modules/channels/templates/listmessages.tpl.php:4
+#: system/modules/channels/templates/listmessagestatuses.tpl.php:4
+#: system/modules/channels/templates/listprocessors.tpl.php:7
+#: system/modules/form/partials/templates/listform.tpl.php:7
+#: system/modules/form/templates/index.tpl.php:10
+#: system/modules/form/templates/show.tpl.php:21
+#: system/modules/report/actions/connections/index.php:7
+#: system/modules/report/actions/edit.php:118
+#: system/modules/tag/actions/index.php:6
+#: system/modules/task/actions/edit.php:91
+#: system/modules/timelog/partials/templates/listtimelog.tpl.php:8
+#: system/modules/timelog/templates/index.tpl.php:6
+msgid "Actions"
+msgstr "行動"
+
+#: modules/example/actions/index.php:17
+#: system/modules/admin/actions/users.php:16
+#: system/modules/admin/actions/users.php:17
+#: system/modules/channels/templates/listmessagestatuses.tpl.php:11
+#: system/modules/report/actions/edit.php:99
+#: system/modules/task/actions/group/viewtaskgrouptypes.php:39
+#: system/modules/task/actions/tasklist.php:117
+#: system/modules/task/actions/tasklist.php:124
+#: system/modules/task/task.group.actions.php:21
+#: system/modules/task/task.group.actions.php:22
+#: system/modules/task/task.group.actions.php:133
+msgid "Yes"
+msgstr "はい"
+
+#: modules/example/actions/index.php:17
+#: system/modules/admin/actions/users.php:16
+#: system/modules/admin/actions/users.php:17
+#: system/modules/channels/templates/listmessagestatuses.tpl.php:11
+#: system/modules/form/partials/templates/listform.tpl.php:23
+#: system/modules/report/actions/edit.php:99
+#: system/modules/task/actions/group/viewtaskgrouptypes.php:39
+#: system/modules/task/actions/tasklist.php:117
+#: system/modules/task/actions/tasklist.php:124
+#: system/modules/task/task.group.actions.php:21
+#: system/modules/task/task.group.actions.php:22
+#: system/modules/task/task.group.actions.php:133
+msgid "No"
+msgstr "いいえ"
+
+#: modules/example/actions/index.php:22
+#: system/modules/admin/actions/groups/edit.php:9
+#: system/modules/admin/actions/groups/index.php:32
+#: system/modules/admin/actions/printers.php:11
+#: system/modules/admin/actions/templates/index.php:14
+#: system/modules/admin/actions/users.php:20
+#: system/modules/admin/partials/templates/displaycomment.tpl.php:19
+#: system/modules/channels/actions/processor/edit.php:8
+#: system/modules/channels/actions/web/edit.php:8
+#: system/modules/channels/templates/listchannels.tpl.php:23
+#: system/modules/channels/templates/listprocessors.tpl.php:19
+#: system/modules/file/partials/templates/listattachments.tpl.php:67
+#: system/modules/file/partials/templates/listattachments.tpl.php:123
+#: system/modules/form/partials/templates/listform.tpl.php:14
+#: system/modules/form/templates/index.tpl.php:18
+#: system/modules/form/templates/show.tpl.php:34
+#: system/modules/report/actions/connections/index.php:15
+#: system/modules/report/actions/edit.php:5
+#: system/modules/report/actions/edit.php:22
+#: system/modules/report/actions/edit.php:131
+#: system/modules/report/actions/index.php:44
+#: system/modules/report/templates/edit.tpl.php:3
+#: system/modules/timelog/partials/templates/listtimelog.tpl.php:17
+#: system/modules/timelog/templates/index.tpl.php:16
+msgid "Edit"
+msgstr "編集"
+
+#: modules/example/actions/index.php:25 modules/wiki/templates/index.tpl.php:29
+#: system/modules/admin/actions/groups.php:39
+#: system/modules/admin/actions/groups/index.php:35
+#: system/modules/admin/actions/moreInfo.php:39
+#: system/modules/admin/actions/printers.php:12
+#: system/modules/admin/actions/printqueue.php:33
+#: system/modules/admin/partials/templates/displaycomment.tpl.php:21
+#: system/modules/channels/templates/listchannels.tpl.php:24
+#: system/modules/channels/templates/listprocessors.tpl.php:20
+#: system/modules/file/partials/templates/listattachments.tpl.php:70
+#: system/modules/file/partials/templates/listattachments.tpl.php:124
+#: system/modules/form/partials/templates/listform.tpl.php:15
+#: system/modules/form/templates/index.tpl.php:19
+#: system/modules/form/templates/show.tpl.php:35
+#: system/modules/inbox/templates/index.tpl.php:8
+#: system/modules/inbox/templates/read.tpl.php:8
+#: system/modules/inbox/templates/showarchive.tpl.php:4
+#: system/modules/inbox/templates/view.tpl.php:6
+#: system/modules/report/actions/connections/index.php:16
+#: system/modules/report/actions/edit.php:132
+#: system/modules/report/actions/index.php:49
+#: system/modules/tag/actions/index.php:13
+#: system/modules/task/actions/edit.php:119
+#: system/modules/task/templates/edit.tpl.php:34
+#: system/modules/timelog/partials/templates/listtimelog.tpl.php:18
+#: system/modules/timelog/templates/index.tpl.php:17
+msgid "Delete"
+msgstr "削除"
+
+#: modules/example/actions/index.php:25
+msgid "Really delete?"
+msgstr "本当に削除しますか？"
+
+#: modules/example/models/ExampleService.php:36
+#: system/modules/help/templates/toc.tpl.php:3
+#: system/modules/help/templates/view.tpl.php:3
+#: system/modules/main/actions/index.php:3
+msgid "Home"
+msgstr "ホーム"
+
+#: modules/example/templates/index.tpl.php:2
+msgid "New Data"
+msgstr "新しいデータ"
+
+#: system/modules/file/partials/templates/listattachments.tpl.php:51
+msgid "Attach a File"
+msgstr "ファイルを添付する"
+
+#: modules/wiki/templates/pagehistory.tpl.php:11
+#: system/modules/admin/templates/file/index.tpl.php:18
+#: system/modules/file/partials/templates/listattachments.tpl.php:64
+msgid "View"
+msgstr "ビュー"
+
+#: system/modules/file/partials/templates/listattachments.tpl.php:70
+msgid "Are you sure you want to delete this attachment?"
+msgstr "あなたがこの添付ファイルを削除してもよろしいですか？"
+
+#: system/modules/file/partials/templates/listattachments.tpl.php:92
+msgid "Open in new tab/window"
+msgstr "新しいタブ/ウィンドウで開きます"
+
+#: system/modules/admin/actions/printfile.php:10
+#: system/modules/file/partials/templates/listattachments.tpl.php:108
+#: system/modules/file/partials/templates/listattachmentsplain.tpl.php:72
+msgid "Filename"
+msgstr "ファイル名"
+
+#: system/modules/admin/actions/templates/edit.php:21
+#: system/modules/file/actions/edit.php:21
+#: system/modules/file/actions/new.php:17
+#: system/modules/file/partials/templates/listattachments.tpl.php:110
+#: system/modules/file/partials/templates/listattachmentsplain.tpl.php:74
+#: system/modules/file/templates/attach.tpl.php:10
+#: system/modules/form/actions/edit.php:11
+#: system/modules/form/templates/index.tpl.php:10
+#: system/modules/report/actions/createfeed.php:21
+#: system/modules/report/actions/createreport.php:16
+#: system/modules/report/actions/edit.php:25
+#: system/modules/report/actions/editfeed.php:28
+#: system/modules/report/actions/feedAjaxGetReportText.php:11
+#: system/modules/report/actions/index.php:33
+#: system/modules/report/actions/index.php:34
+#: system/modules/report/actions/listfeed.php:11
+#: system/modules/task/actions/createtask.php:35
+#: system/modules/task/actions/createtask.php:49
+#: system/modules/task/actions/edit.php:67
+#: system/modules/task/actions/group/viewtaskgrouptypes.php:11
+#: system/modules/task/actions/group/viewtaskgrouptypes.php:55
+#: system/modules/task/actions/taskAjaxSelectbyTaskGroup.php:36
+#: system/modules/task/actions/viewtask.php:64
+#: system/modules/task/actions/viewtask.php:68
+#: system/modules/task/actions/viewtask.php:79
+#: system/modules/task/actions/viewtask.php:83
+#: system/modules/task/task.actions.php:80
+#: system/modules/task/task.group.actions.php:46
+#: system/modules/task/task.group.actions.php:144
+#: system/modules/timelog/actions/edit.php:44
+#: system/modules/timelog/actions/start.php:17
+#: system/modules/timelog/partials/templates/listtimelog.tpl.php:8
+#: system/modules/timelog/templates/index.tpl.php:6
+msgid "Description"
+msgstr "説明"
+
+#: modules/wiki/templates/pagehistory.tpl.php:5
+#: system/modules/file/partials/templates/listattachments.tpl.php:111
+msgid "Action"
+msgstr "アクション"
+
+#: system/modules/file/partials/templates/listattachments.tpl.php:124
+msgid "Do you want to delete this attachment?"
+msgstr "あなたがこの添付ファイルを削除しますか？"
+
+#: modules/frontend/assets/js/vendor/jquery.js:14
+msgid "<iframe frameborder='0' width='0' height='0'/>"
+msgstr "<iframeのFRAMEBORDER = '0'幅= '0'、高さ= '0' />"
+
+#: modules/frontend/assets/js/vendor/jquery.js:26
+msgid "<script>"
+msgstr "<スクリプト>"
+
+#: modules/frontend/assets/js/vendor/jquery.js:26
+msgid "<div>"
+msgstr "<div>"
+
+#: modules/wiki/actions/createwiki.php:17
+msgid "Wiki "
+msgstr "ウィキ"
+
+#: modules/wiki/actions/createwiki.php:17
+msgid " created."
+msgstr " 作成した。"
+
+#: modules/wiki/actions/createwiki.php:19
+msgid "Wiki couldn't be created"
+msgstr "ウィキを作成できませんでした"
+
+#: modules/wiki/actions/delmember.php:7 modules/wiki/actions/delwiki.php:10
+msgid "No access to delete this wiki."
+msgstr "このウィキを削除するためのアクセスいいえ。"
+
+#: modules/wiki/actions/delmember.php:14
+msgid "Member removed."
+msgstr "メンバーは削除します。"
+
+#: modules/wiki/actions/delwiki.php:8
+msgid "Wiki deleted."
+msgstr "ウィキは削除しました。"
+
+#: modules/wiki/actions/edit.php:10 modules/wiki/actions/history.php:11
+#: modules/wiki/actions/history.php:19 modules/wiki/actions/pagehistory.php:11
+#: modules/wiki/actions/pagehistory.php:19 modules/wiki/actions/preview.php:10
+#: modules/wiki/actions/view.php:9 modules/wiki/actions/view.php:16
+#: modules/wiki/actions/viewhistoryversion.php:64
+#: modules/wiki/actions/viewhistoryversion.php:73
+msgid "Wiki does not exist."
+msgstr "ウィキは存在しません。"
+
+#: modules/wiki/actions/edit.php:14 modules/wiki/actions/preview.php:14
+msgid "Page does not exist."
+msgstr "ページが存在しません。"
+
+#: modules/wiki/actions/edit.php:18
+msgid "Page updated."
+msgstr "ページを更新しました。"
+
+#: modules/wiki/actions/editmember.php:7 modules/wiki/actions/editmember.php:28
+msgid "No access to this wiki."
+msgstr "このウィキにアクセスできません。"
+
+#: modules/wiki/actions/editmember.php:38
+msgid "Member updated."
+msgstr "メンバーを更新しました。"
+
+#: modules/wiki/actions/history.php:28 modules/wiki/actions/pagehistory.php:28
+msgid "Page does not exist"
+msgstr "ページが存在しません。"
+
+#: modules/wiki/actions/view.php:28
+msgid "New Page."
+msgstr "新しいページ。"
+
+#: modules/wiki/actions/view.php:65 modules/wiki/templates/editmember.tpl.php:6
+#: system/modules/admin/actions/comment.php:44
+#: system/modules/admin/actions/groupadd.php:11
+#: system/modules/admin/actions/groupedit.php:15
+#: system/modules/admin/actions/groupmember.php:30
+#: system/modules/admin/templates/useradd.tpl.php:29
+#: system/modules/admin/templates/useredit.tpl.php:39
+#: system/modules/channels/actions/processor/edit.php:26
+#: system/modules/channels/actions/web/edit.php:22
+#: system/modules/form/templates/field/edit.tpl.php:33
+#: system/modules/form/templates/show.tpl.php:92
+#: system/modules/report/actions/createfeed.php:22
+#: system/modules/task/actions/ajaxGetTaskTypeFormFields.php:16
+#: system/modules/task/actions/edit.php:82
+#: system/modules/task/actions/group/viewtaskgrouptypes.php:59
+#: system/modules/task/actions/viewtask.php:270
+#: system/modules/task/task.actions.php:16
+#: system/modules/task/task.actions.php:142
+#: system/modules/task/task.actions.php:238
+#: system/modules/task/task.actions.php:628
+#: system/modules/timelog/actions/edit.php:65
+#: system/modules/timelog/actions/start.php:21
+msgid "Save"
+msgstr "セーブ"
+
+#: modules/wiki/actions/view.php:65
+msgid "Markup Help"
+msgstr "マークアップヘルプ"
+
+#: modules/wiki/models/Wiki.php:90
+msgid "This wiki needs a title."
+msgstr "このウィキは、タイトルを必要とします。"
+
+#: modules/wiki/models/Wiki.php:98
+msgid "Wiki of name "
+msgstr "名前のウィキ"
+
+#: modules/wiki/models/Wiki.php:98
+msgid " already exists."
+msgstr " もう存在している。"
+
+#: modules/wiki/models/WikiService.php:16
+#: modules/wiki/models/WikiService.php:32
+msgid "You have no access to this wiki."
+msgstr "あなたはこのウィキにアクセスできません。"
+
+#: modules/wiki/models/WikiService.php:105
+msgid "Wiki List"
+msgstr "ウィキリスト"
+
+#: modules/wiki/models/WikiService.php:106
+msgid "New Wiki"
+msgstr "新しいウィキ"
+
+#: modules/wiki/templates/createwiki.tpl.php:3
+msgid "Create Wiki"
+msgstr "ウィキを作成"
+
+#: modules/wiki/templates/createwiki.tpl.php:5
+msgid "Public"
+msgstr "パブリック"
+
+#: modules/wiki/templates/createwiki.tpl.php:6
+#: modules/wiki/templates/index.tpl.php:6
+#: system/modules/admin/actions/editlookup.php:12
+#: system/modules/admin/actions/lookup.php:26
+#: system/modules/admin/actions/lookup.php:53
+#: system/modules/admin/templates/lookup.tpl.php:9
+#: system/modules/channels/templates/listchannels.tpl.php:8
+#: system/modules/channels/templates/listmessages.tpl.php:4
+#: system/modules/form/templates/field/edit.tpl.php:11
+#: system/modules/form/templates/show.tpl.php:21
+#: system/modules/report/actions/edit.php:118
+#: system/modules/report/actions/templates/edit.php:13
+#: system/modules/report/models/ReportService.php:318
+#: system/modules/task/actions/group/viewtaskgrouptypes.php:11
+#: system/modules/task/partials/templates/listtasks.tpl.php:5
+msgid "Type"
+msgstr "タイプ"
+
+#: modules/wiki/templates/createwiki.tpl.php:6
+msgid "Rich Text"
+msgstr "リッチテキスト"
+
+#: modules/wiki/templates/createwiki.tpl.php:6
+msgid "Markdown"
+msgstr "値下げ"
+
+#: modules/wiki/templates/createwiki.tpl.php:10
+#: system/modules/admin/actions/groups/edit.php:9
+#: system/modules/report/actions/edit.php:5
+#: system/modules/report/templates/edit.tpl.php:3
+msgid "Create"
+msgstr "作ります"
+
+#: modules/wiki/templates/editmember.tpl.php:2
+msgid "Wiki Member"
+msgstr "ウィキメンバー"
+
+#: modules/wiki/templates/editmember.tpl.php:3
+#: modules/wiki/templates/history.tpl.php:4
+#: modules/wiki/templates/pagehistory.tpl.php:5
+#: system/modules/admin/actions/useradd.php:66
+#: system/modules/admin/actions/users.php:7
+#: system/modules/report/actions/createreport.php:23
+#: system/modules/report/actions/edit.php:43
+#: system/modules/task/templates/taskweek.tpl.php:11
+msgid "User"
+msgstr "ユーザー"
+
+#: modules/wiki/templates/editmember.tpl.php:4
+#: system/modules/admin/actions/moreInfo.php:20
+#: system/modules/report/actions/edit.php:92
+#: system/modules/report/actions/editmember.php:13
+#: system/modules/report/models/ReportLib.php:11
+#: system/modules/task/actions/group/viewmembergroup.php:20
+#: system/modules/task/task.group.actions.php:222
+#: system/modules/task/task.group.actions.php:301
+msgid "Role"
+msgstr "役割"
+
+#: modules/wiki/templates/history.tpl.php:4
+#: modules/wiki/templates/pagehistory.tpl.php:5
+#: system/modules/form/models/FormStandardInterface.php:12
+#: system/modules/inbox/actions/index.php:14
+#: system/modules/inbox/actions/read.php:10
+#: system/modules/inbox/actions/showarchive.php:13
+#: system/modules/inbox/actions/trash.php:12
+#: system/modules/inbox/templates/portal.tpl.php:6
+msgid "Date"
+msgstr "日付"
+
+#: modules/wiki/templates/history.tpl.php:4
+#: system/modules/task/task.actions.php:139
+msgid "Page"
+msgstr "ページ"
+
+#: modules/wiki/templates/history.tpl.php:14
+#: modules/wiki/templates/pagehistory.tpl.php:16
+msgid "No changes yet."
+msgstr "まだ変更はありません。"
+
+#: modules/wiki/templates/index.tpl.php:5
+msgid "Wiki Title"
+msgstr "ウィキタイトル"
+
+#: modules/wiki/templates/index.tpl.php:7
+#: system/modules/admin/actions/printqueue.php:18
+msgid "Date Created"
+msgstr "作成日"
+
+#: modules/wiki/templates/index.tpl.php:8
+msgid "Last Modified Date"
+msgstr "最終更新日"
+
+#: modules/wiki/templates/index.tpl.php:9
+msgid "Modified By"
+msgstr "更新者"
+
+#: modules/wiki/templates/index.tpl.php:10
+msgid "Last Page Modified"
+msgstr "最後のページが変更されました"
+
+#: modules/wiki/templates/index.tpl.php:29
+msgid "Do you really want to delete this wiki and all of its pages?"
+msgstr "あなたは本当にこのウィキおよびそのすべてのページを削除しますか？"
+
+#: modules/wiki/templates/index.tpl.php:44
+msgid "There are no wikis yet."
+msgstr "何のウィキはまだありません。"
+
+#: modules/wiki/templates/index.tpl.php:45
+msgid "Create a wiki"
+msgstr "Wikiを作成します。"
+
+#: system/modules/admin/actions/comment.php:35
+#: system/modules/task/actions/edit.php:91
+#: system/modules/task/actions/viewtask.php:156
+#: system/modules/task/task.actions.php:11
+#: system/modules/task/task.actions.php:29
+#: system/modules/task/task.hooks.php:219
+msgid "Comment"
+msgstr "コメント"
+
+#: system/modules/admin/actions/comment.php:37
+msgid "Help"
+msgstr "助けて"
+
+#: system/modules/admin/actions/comment.php:64
+#: system/modules/admin/actions/comment.php:66
+msgid "Comment saved"
+msgstr "コメントを保存します"
+
+#: system/modules/admin/actions/composer.php:64
+msgid "Composer update return exit code "
+msgstr "作曲更新リターン終了コード"
+
+#: system/modules/admin/actions/composer.php:64
+msgid " (0 is OK)<br/>Check the /log/composer.log for output"
+msgstr " 出力用/log/composer.logをチェック<BR/>（0はOKです）"
+
+#: system/modules/admin/actions/databasebackup.php:5
+msgid "Database Backup"
+msgstr "データベースのバックアップ"
+
+#: system/modules/admin/actions/databasebackup.php:19
+msgid "You cannot backup more than once every 4 hours"
+msgstr "することはできませんバックアップ回以上4時間ごと"
+
+#: system/modules/admin/actions/databasebackup.php:43
+msgid "Backup completed to:"
+msgstr "に完了したバックアップ："
+
+#: system/modules/admin/actions/databasebackup.php:55
+msgid "You need the OAuth extension installed to backup to dropbox"
+msgstr "あなたはDropboxにバックアップするインストールのOAuth拡張を必要とします"
+
+#: system/modules/admin/actions/databasebackup.php:73
+msgid "Could not find backup command"
+msgstr "バックアップコマンドが見つかりませんでした"
+
+#: system/modules/admin/actions/deletecomment.php:15
+msgid "Comment deleted."
+msgstr "削除されたコメント。"
+
+#: system/modules/admin/actions/deletelookup.php:11
+msgid "Lookup Item deleted"
+msgstr "検索項目を削除します"
+
+#: system/modules/admin/actions/deletelookup.php:14
+msgid "Lookup Item not found?"
+msgstr "検索項目が見つかりませんか？"
+
+#: system/modules/admin/actions/deleteprinter.php:10
+msgid "Printer deleted"
+msgstr "プリンタの削除"
+
+#: system/modules/admin/actions/deleteprinter.php:14
+msgid "Could not find printer"
+msgstr "プリンタが見つかりませんでした"
+
+#: system/modules/admin/actions/deleteprintfile.php:8
+msgid "File deleted"
+msgstr "ファイルが削除します"
+
+#: system/modules/admin/actions/deleteprintfile.php:10
+msgid "Missing filename"
+msgstr "行方不明のファイル名"
+
+#: system/modules/admin/actions/editlookup.php:11
+msgid "Edit an Existing Entry"
+msgstr "既存のエントリを編集するには"
+
+#: system/modules/admin/actions/editlookup.php:13
+#: system/modules/admin/actions/lookup.php:55
+msgid "Key"
+msgstr "キー"
+
+#: system/modules/admin/actions/editlookup.php:14
+#: system/modules/admin/actions/lookup.php:56
+msgid "Value"
+msgstr "値"
+
+#: system/modules/admin/actions/editlookup.php:15
+#: system/modules/report/actions/editfeed.php:31
+#: system/modules/report/actions/editmember.php:15
+#: system/modules/task/actions/viewtask.php:124
+#: system/modules/task/task.group.actions.php:50
+#: system/modules/task/task.group.actions.php:223
+msgid " Update "
+msgstr " 更新"
+
+#: system/modules/admin/actions/editlookup.php:21
+msgid "No such Lookup Item?"
+msgstr "そのようなルックアップ項目はありませんか？"
+
+#: system/modules/admin/actions/editlookup.php:31
+msgid "Please add select a TYPE<br>"
+msgstr "TYPEの<BR>を選択して追加してください"
+
+#: system/modules/admin/actions/editlookup.php:33
+#: system/modules/admin/actions/newlookup.php:11
+msgid "Please enter a KEY<br>"
+msgstr "KEYを入力してください<BR​​>"
+
+#: system/modules/admin/actions/editlookup.php:35
+#: system/modules/admin/actions/newlookup.php:13
+msgid "Please enter a VALUE<br>"
+msgstr "値を入力してください<BR​​>"
+
+#: system/modules/admin/actions/editlookup.php:46
+msgid "Lookup Item edited"
+msgstr "検索項目を編集します"
+
+#: system/modules/admin/actions/editlookup.php:49
+msgid "Could not find item?"
+msgstr "アイテムが見つかりませんでしたか？"
+
+#: system/modules/admin/actions/editprinter.php:11
+#: system/modules/admin/templates/templates/edit.tpl.php:6
+msgid "Details"
+msgstr "細部"
+
+#: system/modules/admin/actions/editprinter.php:12
+msgid "Printer name"
+msgstr "プリンタ名"
+
+#: system/modules/admin/actions/editprinter.php:13
+#: system/modules/admin/actions/printers.php:6
+msgid "Server"
+msgstr "サーバ"
+
+#: system/modules/admin/actions/editprinter.php:14
+#: system/modules/admin/actions/printers.php:6
+#: system/modules/report/actions/connections/edit.php:21
+#: system/modules/report/actions/connections/index.php:7
+msgid "Port"
+msgstr "ポート"
+
+#: system/modules/admin/actions/editprinter.php:31
+msgid "Printer added"
+msgstr "プリンタが追加されました"
+
+#: system/modules/admin/actions/email.php:5
+msgid "You don't have the Mandrill library installed"
+msgstr "あなたはマンドリルのライブラリがインストールされていません"
+
+#: system/modules/admin/actions/email.php:11
+msgid "You don't have a Mandrill API key specified"
+msgstr "指定したマンド​​リルAPIキーを持っていません"
+
+#: system/modules/admin/actions/email.php:16
+msgid "Email stats"
+msgstr "メールの統計"
+
+#: system/modules/admin/actions/email.php:33
+msgid "A Mandrill error occurred: "
+msgstr "マンドリルのエラーが発生しました："
+
+#: system/modules/admin/actions/file/index.php:13
+msgid "File moved to "
+msgstr "ファイルに移動しました"
+
+#: system/modules/admin/actions/file/index.php:17
+msgid "Attachment"
+msgstr "アタッチメント"
+
+#: system/modules/admin/actions/gitpull.php:5
+#: system/modules/admin/actions/gitpull.php:6
+msgid "Path to Git"
+msgstr "Gitリポジトリへのパス"
+
+#: system/modules/admin/actions/gitpull.php:8
+#: system/modules/admin/actions/gitpull.php:9
+msgid "Branch"
+msgstr "ブランチ"
+
+#: system/modules/admin/actions/gitpull.php:13
+#: system/modules/search/templates/index.tpl.php:18
+msgid "Go"
+msgstr "行きます"
+
+#: system/modules/admin/actions/gitpull.php:19
+msgid "Branch missing"
+msgstr "不足している支店"
+
+#: system/modules/admin/actions/groupadd.php:9
+#: system/modules/admin/actions/groups.php:49
+#: system/modules/admin/actions/groups/index.php:44
+msgid "New Group"
+msgstr "新しいグループ"
+
+#: system/modules/admin/actions/groupadd.php:9
+#: system/modules/admin/actions/groupedit.php:13
+msgid "Group Title: "
+msgstr "グループタイトル："
+
+#: system/modules/admin/actions/groupadd.php:23
+msgid "New group added!"
+msgstr "新しいグループが追加されました！"
+
+#: system/modules/admin/actions/groupdelete.php:24
+msgid "Group is deleted!"
+msgstr "グループが削除されます！"
+
+#: system/modules/admin/actions/groupedit.php:28
+msgid "Group info updated!"
+msgstr "グループ情報更新します！"
+
+#: system/modules/admin/actions/groupmember.php:25
+msgid "Select Member: "
+msgstr "メンバーを選択します。"
+
+#: system/modules/admin/actions/groupmember.php:27
+#: system/modules/task/actions/group/viewmembergroup.php:80
+msgid "Owner"
+msgstr "オーナー"
+
+#: system/modules/admin/actions/groupmember.php:81
+msgid " can not be added!"
+msgstr " 追加することはできません！"
+
+#: system/modules/admin/actions/groupmember.php:83
+msgid "New members are added!"
+msgstr "新しいメンバーが追加されます！"
+
+#: system/modules/admin/actions/groups.php:11
+#: system/modules/admin/actions/groups/index.php:11
+msgid "Parent Groups"
+msgstr "親グループ"
+
+#: system/modules/admin/actions/groups.php:11
+#: system/modules/admin/actions/groups/index.php:11
+#: system/modules/admin/actions/moreInfo.php:20
+#: system/modules/admin/actions/users.php:6
+msgid "Operations"
+msgstr "オペレーション"
+
+#: system/modules/admin/actions/groups.php:36
+msgid "More Info"
+msgstr "詳細"
+
+#: system/modules/admin/actions/groups.php:39
+#: system/modules/admin/actions/groups/index.php:35
+msgid "Are you sure you want to delete this group?"
+msgstr "あなたはこのグループを削除してもよろしいですか？"
+
+#: system/modules/admin/actions/groups/delete.php:6
+#: system/modules/admin/actions/groups/delete.php:11
+msgid "Group not found"
+msgstr "グループが見つかりません。"
+
+#: system/modules/admin/actions/groups/delete.php:29
+msgid "Group deleted"
+msgstr "グループが削除されました"
+
+#: system/modules/admin/actions/groups/edit.php:9
+#: system/modules/admin/templates/useredit.tpl.php:37
+msgid "Group Title"
+msgstr "グループタイトル"
+
+#: system/modules/admin/actions/groups/edit.php:22
+#: system/modules/channels/actions/processor/edit.php:57
+#: system/modules/channels/actions/web/edit.php:39
+#: system/modules/form/actions/edit.php:27
+#: system/modules/form/actions/field/edit.php:88
+#: system/modules/report/actions/connections/edit.php:42
+#: system/modules/report/actions/edit.php:188
+#: system/modules/report/actions/templates/edit.php:35
+msgid "updated"
+msgstr "更新しました"
+
+#: system/modules/admin/actions/groups/edit.php:22
+#: system/modules/channels/actions/processor/edit.php:57
+#: system/modules/channels/actions/web/edit.php:39
+#: system/modules/form/actions/edit.php:27
+#: system/modules/form/actions/field/edit.php:88
+#: system/modules/report/actions/connections/edit.php:42
+#: system/modules/report/actions/edit.php:188
+#: system/modules/report/actions/templates/edit.php:35
+msgid "created"
+msgstr "作成した"
+
+#: system/modules/admin/actions/groups/index.php:9
+#: system/modules/task/templates/taskweek.tpl.php:10
+msgid "Groups"
+msgstr "グループ"
+
+#: system/modules/admin/actions/index.php:3
+msgid "Dashboard"
+msgstr "ダッシュボード"
+
+#: system/modules/admin/actions/lookup.php:3
+#: system/modules/admin/actions/newlookup.php:3
+#: system/modules/admin/models/AdminService.php:80
+msgid "Lookup"
+msgstr "見上げる"
+
+#: system/modules/admin/actions/lookup.php:26
+#: system/modules/report/actions/createreport.php:17
+#: system/modules/report/actions/edit.php:35
+msgid "Code"
+msgstr "コー​​ド"
+
+#: system/modules/admin/actions/lookup.php:34
+#: system/modules/report/actions/edit.php:101
+#: system/modules/report/models/ReportLib.php:19
+#: system/modules/task/actions/edit.php:112
+#: system/modules/task/actions/group/viewmembergroup.php:26
+#: system/modules/task/actions/tasklist.php:140
+#: system/modules/task/actions/viewtask.php:175
+msgid " Edit "
+msgstr " 編集"
+
+#: system/modules/admin/actions/lookup.php:36
+#: system/modules/report/actions/deletemember.php:14
+#: system/modules/report/actions/edit.php:102
+#: system/modules/report/actions/listfeed.php:27
+#: system/modules/report/models/ReportLib.php:21
+#: system/modules/task/actions/group/viewmembergroup.php:28
+#: system/modules/task/actions/viewtask.php:189
+#: system/modules/task/task.group.actions.php:146
+#: system/modules/task/task.group.actions.php:302
+msgid " Delete "
+msgstr " 削除"
+
+#: system/modules/admin/actions/lookup.php:36
+msgid "Are you sure you wish to DELETE this Lookup item?"
+msgstr "あなたはこのルックアップ項目を削除しますか？"
+
+#: system/modules/admin/actions/lookup.php:41
+msgid "No Lookup items to list"
+msgstr "リストへのルックアップ項目いいえ"
+
+#: system/modules/admin/actions/lookup.php:52
+msgid "Create a New Entry"
+msgstr "新しいエントリを作成"
+
+#: system/modules/admin/actions/lookup.php:54
+msgid "or Add New Type"
+msgstr "または新しいタイプの追加"
+
+#: system/modules/admin/actions/memberdelete.php:12
+msgid "Member is deleted!"
+msgstr "メンバーが削除されます！"
+
+#: system/modules/admin/actions/migration/create.php:8
+#: system/modules/admin/actions/migration/create.php:26
+msgid "Missing specified module or it doesn't exist"
+msgstr "指定されたモジュールが見つからないか、存在しません。"
+
+#: system/modules/admin/actions/migration/create.php:12
+msgid "Enter the migration name (camel case)"
+msgstr "移行名を入力します（キャメルケース）"
+
+#: system/modules/admin/actions/migration/create.php:13
+#: system/modules/admin/actions/moreInfo.php:20
+#: system/modules/admin/actions/printers.php:6
+#: system/modules/admin/actions/printqueue.php:18
+#: system/modules/admin/templates/migration/index.tpl.php:76
+#: system/modules/channels/actions/processor/edit.php:16
+#: system/modules/channels/models/Channel.php:15
+#: system/modules/channels/templates/listchannels.tpl.php:8
+#: system/modules/channels/templates/listprocessors.tpl.php:7
+#: system/modules/form/templates/field/edit.tpl.php:4
+#: system/modules/form/templates/field/edit.tpl.php:5
+#: system/modules/form/templates/show.tpl.php:21
+#: system/modules/report/actions/deletemember.php:13
+#: system/modules/report/actions/editmember.php:12
+#: system/modules/task/task.group.actions.php:221
+#: system/modules/task/task.group.actions.php:300
+#: system/modules/timelog/partials/templates/listtimelog.tpl.php:8
+msgid "Name"
+msgstr "名"
+
+#: system/modules/admin/actions/migration/rollback.php:8
+msgid "Missing parameters required for rollback"
+msgstr "ロールバックに必要なパラメータがありません"
+
+#: system/modules/admin/actions/migration/run.php:8
+msgid "Missing module parameter required to run migration"
+msgstr "移行を実行するために必要な不足しているモジュールのパラメータ"
+
+#: system/modules/admin/actions/moreInfo.php:15
+msgid "New Member"
+msgstr "新しいメンバー"
+
+#: system/modules/admin/actions/moreInfo.php:17
+msgid "Edit Permissions"
+msgstr "許可を編集"
+
+#: system/modules/admin/actions/moreInfo.php:39
+msgid "Are you sure you want to delete this member?"
+msgstr "あなたはこのメンバーを削除してもよろしいですか？"
+
+#: system/modules/admin/actions/newlookup.php:9
+msgid "Please add select or create a TYPE<br>"
+msgstr "選択追加またはTYPEの<BR>を作成してください"
+
+#: system/modules/admin/actions/newlookup.php:15
+msgid "Type and Key combination already exists"
+msgstr "種類とキーの組み合わせがすでに存在しています"
+
+#: system/modules/admin/actions/newlookup.php:25
+msgid "Lookup Item added"
+msgstr "ルックアップアイテムが追加します"
+
+#: system/modules/admin/actions/permissionedit.php:10
+#: system/modules/admin/actions/users.php:21
+msgid "Permissions"
+msgstr "パーミッション"
+
+#: system/modules/admin/actions/permissionedit.php:81
+msgid "Permissions are updated!"
+msgstr "アクセス許可が更新されます！"
+
+#: system/modules/admin/actions/printers.php:12
+msgid "Are you sure you want to delete this printer?"
+msgstr "あなたはこのプリンタを削除してもよろしいですか？"
+
+#: system/modules/admin/actions/printfile.php:5
+msgid "No filename specified"
+msgstr "ファイル名が指定されていませんいいえ"
+
+#: system/modules/admin/actions/printfile.php:9
+msgid "Printer"
+msgstr "プリンタ"
+
+#: system/modules/admin/actions/printfile.php:13
+#: system/modules/admin/actions/printqueue.php:32
+msgid "Print"
+msgstr "印刷"
+
+#: system/modules/admin/actions/printfile.php:19
+msgid "Printer does not exist"
+msgstr "プリンタが存在しません。"
+
+#: system/modules/admin/actions/printfile.php:23
+msgid "File has been sent to the printer"
+msgstr "ファイルがプリンタに送信されています"
+
+#: system/modules/admin/actions/printqueue.php:18
+msgid "Size"
+msgstr "サイズ"
+
+#: system/modules/admin/actions/printqueue.php:33
+msgid "Are you sure you want to remove this file? (This is irreversible)"
+msgstr "あなたはこのファイルを削除してもよろしいですか？ （これは不可逆的です）"
+
+#: system/modules/admin/actions/templates/edit.php:7
+#: system/modules/admin/actions/templates/index.php:3
+#: system/modules/admin/models/AdminService.php:81
+#: system/modules/report/templates/edit.tpl.php:6
+msgid "Templates"
+msgstr "テンプレート"
+
+#: system/modules/admin/actions/templates/edit.php:14
+msgid "Template Details"
+msgstr "テンプレートの詳細"
+
+#: system/modules/admin/actions/templates/edit.php:17
+#: system/modules/admin/actions/templates/index.php:11
+#: system/modules/admin/actions/users.php:6
+#: system/modules/admin/templates/useradd.tpl.php:5
+#: system/modules/admin/templates/useredit.tpl.php:8
+#: system/modules/task/actions/group/viewtaskgrouptypes.php:53
+msgid "Active"
+msgstr "アクティブ"
+
+#: system/modules/admin/actions/templates/edit.php:19
+#: system/modules/admin/actions/templates/index.php:5
+#: system/modules/report/actions/createreport.php:14
+#: system/modules/report/actions/edit.php:24
+#: system/modules/report/actions/index.php:33
+#: system/modules/report/actions/index.php:34
+#: system/modules/timelog/actions/edit.php:34
+#: system/modules/timelog/actions/start.php:14
+msgid "Module"
+msgstr "モジュール"
+
+#: system/modules/admin/actions/templates/edit.php:20
+#: system/modules/admin/actions/templates/index.php:5
+#: system/modules/report/actions/edit.php:118
+msgid "Category"
+msgstr "カテゴリー"
+
+#: system/modules/admin/actions/templates/edit.php:29
+msgid "Template Title"
+msgstr "テンプレートのタイトル"
+
+#: system/modules/admin/actions/templates/edit.php:32
+msgid "Template Body"
+msgstr "テンプレート・ボディ"
+
+#: system/modules/admin/actions/templates/edit.php:39
+msgid "Title Data"
+msgstr "タイトルデータ"
+
+#: system/modules/admin/actions/templates/edit.php:42
+msgid "Body Data"
+msgstr "ボディデータ"
+
+#: system/modules/admin/actions/templates/edit.php:68
+msgid "Template saved"
+msgstr "テンプレートの保存"
+
+#: system/modules/admin/actions/templates/index.php:5
+msgid "Active?"
+msgstr "アクティブ？"
+
+#: system/modules/admin/actions/templates/index.php:5
+#: system/modules/admin/actions/users.php:6
+#: system/modules/report/actions/listfeed.php:11
+msgid "Created"
+msgstr "作成した"
+
+#: system/modules/admin/actions/templates/index.php:5
+msgid "Modified"
+msgstr "修正されました"
+
+#: system/modules/admin/actions/templates/index.php:11
+msgid "Inactive"
+msgstr "非アクティブな"
+
+#: system/modules/admin/actions/testemail.php:7
+msgid "Test email"
+msgstr "テストメール"
+
+#: system/modules/admin/actions/testemail.php:7
+msgid "Test email, ignore"
+msgstr "テスト電子メール、無視"
+
+#: system/modules/admin/actions/testemail.php:8
+msgid "An email has been sent to your address"
+msgstr "電子メールがあなたのアドレスに送信されました"
+
+#: system/modules/admin/actions/user/remove.php:8
+#: system/modules/admin/actions/user/remove.php:13
+msgid "User not found"
+msgstr "ユーザーが見つかりません"
+
+#: system/modules/admin/actions/user/remove.php:16
+msgid "Data clean up for "
+msgstr "データがのためにクリーンアップ"
+
+#: system/modules/admin/actions/useract.php:8
+#: system/modules/admin/actions/useract.php:10
+#: system/modules/admin/actions/userdel.php:8
+#: system/modules/admin/actions/userdel.php:10
+#: system/modules/admin/actions/useredit.php:67
+msgid "User "
+msgstr "ユーザー"
+
+#: system/modules/admin/actions/useract.php:8
+msgid "suspended"
+msgstr "中断"
+
+#: system/modules/admin/actions/useract.php:10
+#: system/modules/admin/actions/userdel.php:10
+#: system/modules/admin/actions/useredit.php:16
+msgid " does not exist."
+msgstr " 存在しない。"
+
+#: system/modules/admin/actions/useradd.php:11
+msgid "Add User"
+msgstr "ユーザーの追加"
+
+#: system/modules/admin/actions/useradd.php:24
+#: system/modules/admin/actions/useredit.php:35
+msgid "Login is mandatory"
+msgstr "ログインは必須です"
+
+#: system/modules/admin/actions/useradd.php:25
+msgid "Password is mandatory"
+msgstr "パスワードが必須です"
+
+#: system/modules/admin/actions/useradd.php:26
+msgid "Password2 is mandatory"
+msgstr "パスワード2は必須です"
+
+#: system/modules/admin/actions/useradd.php:29
+#: system/modules/admin/actions/useredit.php:38
+#: system/modules/auth/actions/profile.php:50
+msgid "Passwords don't match"
+msgstr "パスワードが一致しません"
+
+#: system/modules/admin/actions/useradd.php:66
+#: system/modules/task/actions/createtask.php:86
+#: system/modules/task/task.group.actions.php:73
+msgid " added"
+msgstr " 追加されました"
+
+#: system/modules/admin/actions/userdel.php:8
+#: system/modules/task/task.group.actions.php:170
+msgid " deleted."
+msgstr " 削除されました。"
+
+#: system/modules/admin/actions/useredit.php:13
+msgid "Administration - Edit User - "
+msgstr "管理 - ユーザーの編集 - "
+
+#: system/modules/admin/actions/useredit.php:42
+msgid "User does not exist"
+msgstr "使用者はいません"
+
+#: system/modules/admin/actions/useredit.php:67
+#: system/modules/form/actions/instance/edit.php:93
+#: system/modules/task/actions/updatetask.php:89
+msgid " updated"
+msgstr " 更新しました"
+
+#: system/modules/admin/actions/users.php:6
+#: system/modules/admin/templates/useradd.tpl.php:3
+#: system/modules/admin/templates/useredit.tpl.php:6
+#: system/modules/auth/actions/login.php:13
+#: system/modules/auth/templates/forgotpassword.tpl.php:3
+#: system/modules/auth/templates/login.tpl.php:4
+#: system/modules/auth/templates/login.tpl.php:8
+msgid "Login"
+msgstr "ログイン"
+
+#: system/modules/admin/actions/users.php:6
+#: system/modules/admin/templates/useradd.tpl.php:13
+#: system/modules/admin/templates/useredit.tpl.php:16
+#: system/modules/auth/actions/profile.php:18
+msgid "First Name"
+msgstr "ファーストネーム"
+
+#: system/modules/admin/actions/users.php:6
+#: system/modules/admin/templates/useradd.tpl.php:14
+#: system/modules/admin/templates/useredit.tpl.php:17
+#: system/modules/auth/actions/profile.php:19
+msgid "Last Name"
+msgstr "苗字"
+
+#: system/modules/admin/actions/users.php:6
+#: system/modules/admin/templates/useradd.tpl.php:4
+#: system/modules/admin/templates/useredit.tpl.php:7
+msgid "Admin"
+msgstr "管理者"
+
+#: system/modules/admin/actions/users.php:6
+msgid "Last Login"
+msgstr "最終ログイン"
+
+#: system/modules/admin/actions/users.php:22
+#: system/modules/main/partials/templates/listwidgets.tpl.php:12
+msgid "Remove"
+msgstr "削除します"
+
+#: system/modules/admin/models/AdminService.php:78
+msgid "List Users"
+msgstr "ユーザーリスト"
+
+#: system/modules/admin/models/AdminService.php:79
+msgid "List Groups"
+msgstr "一覧グループ"
+
+#: system/modules/admin/models/AdminService.php:82
+msgid "PHP Info"
+msgstr "PHP情報"
+
+#: system/modules/admin/models/AdminService.php:83
+msgid "Printers"
+msgstr "プリンター"
+
+#: system/modules/admin/models/AdminService.php:84
+msgid "Print Queue"
+msgstr "印刷待ち行列"
+
+#: system/modules/admin/models/AdminService.php:85
+msgid "Backup Database"
+msgstr "データベースのバックアップ"
+
+#: system/modules/admin/models/AdminService.php:86
+msgid "Install/Update Composer"
+msgstr "/更新Composerをインストールします"
+
+#: system/modules/admin/models/AdminService.php:87
+#: system/modules/admin/templates/useradd.tpl.php:17
+#: system/modules/admin/templates/useredit.tpl.php:20
+#: system/modules/auth/actions/profile.php:26
+#: system/modules/channels/templates/listchannels.tpl.php:1
+msgid "Email"
+msgstr "Eメール"
+
+#: system/modules/admin/models/AdminService.php:88
+msgid "Migrations"
+msgstr "移行"
+
+#: system/modules/admin/models/AdminService.php:89
+msgid "File transfer"
+msgstr "ファイル転送"
+
+#: system/modules/admin/models/CmfiveTable.php:64
+msgid "Cmfive mandates to prefix date fields with 'd_'."
+msgstr "「D_」で日付フィールドを先頭に付加するCmfive義務付け。"
+
+#: system/modules/admin/models/CmfiveTable.php:71
+msgid "Cmfive mandates to prefix datetime fields with 'dt_'."
+msgstr "「DT_ 'で日時フィールドを先頭に付加するCmfive義務付け。"
+
+#: system/modules/admin/models/CmfiveTable.php:78
+msgid "Cmfive mandates to prefix time fields with 't_'."
+msgstr "「T_」で時間フィールドを先頭に付加するCmfive義務付け。"
+
+#: system/modules/admin/models/CmfiveTable.php:85
+msgid "Cmfive mandates to prefix boolean fields with either 'is_' or 'has_'."
+msgstr "「is_ 'または' has_​​ 'のいずれかとのブールフィールドを先頭に付加するCmfive義務付け。"
+
+#: system/modules/admin/models/Comment.php:47
+#: system/modules/task/models/AComment.php:49
+msgid "By"
+msgstr "によって"
+
+#: system/modules/admin/models/MigrationService.php:106
+msgid "Missing module or it doesn't exist"
+msgstr "モジュールが見つからないか、存在しません。"
+
+#: system/modules/admin/models/MigrationService.php:123
+msgid "Could not find module directory"
+msgstr "モジュールディレクトリが見つかりませんでした"
+
+#: system/modules/admin/models/MigrationService.php:157
+msgid "Migration created"
+msgstr "移行の作成"
+
+#: system/modules/admin/models/MigrationService.php:243
+#: system/modules/admin/models/MigrationService.php:324
+#: system/modules/admin/models/MigrationService.php:347
+#: system/modules/admin/templates/migration/index.tpl.php:71
+msgid " migration"
+msgstr " マイグレーション"
+
+#: system/modules/admin/models/MigrationService.php:243
+#: system/modules/admin/models/MigrationService.php:324
+msgid " has"
+msgstr " 持っています"
+
+#: system/modules/admin/models/MigrationService.php:243
+#: system/modules/admin/models/MigrationService.php:324
+msgid "s have"
+msgstr "sが持っています"
+
+#: system/modules/admin/models/MigrationService.php:243
+msgid " run"
+msgstr " ラン"
+
+#: system/modules/admin/models/MigrationService.php:245
+#: system/modules/admin/models/MigrationService.php:326
+msgid "Error with a migration: "
+msgstr "移行でエラー："
+
+#: system/modules/admin/models/MigrationService.php:245
+msgid "More info: "
+msgstr "さらに詳しい情報："
+
+#: system/modules/admin/models/MigrationService.php:250
+msgid "No migrations to run!"
+msgstr "実行するには移行しないん！"
+
+#: system/modules/admin/models/MigrationService.php:267
+msgid "Missing parameters required for a rollback"
+msgstr "ロールバックに必要なパラメータがありません"
+
+#: system/modules/admin/models/MigrationService.php:271
+msgid "Module doesn't exist"
+msgstr "モジュールが存在しません。"
+
+#: system/modules/admin/models/MigrationService.php:276
+msgid "There are no installed migrations to rollback"
+msgstr "ロールバックする一切インストール移行はありません"
+
+#: system/modules/admin/models/MigrationService.php:324
+#: system/modules/admin/models/MigrationService.php:347
+msgid " rolled back"
+msgstr " ロールバック"
+
+#: system/modules/admin/partials/templates/displaycomment.tpl.php:13
+msgid "Posted"
+msgstr "投稿"
+
+#: system/modules/admin/partials/templates/displaycomment.tpl.php:20
+msgid "or"
+msgstr "または"
+
+#: system/modules/admin/partials/templates/displaycomment.tpl.php:21
+msgid "Are you sure you want to delete this comment?"
+msgstr "あなたはこのコメントを削除してもよろしいですか？"
+
+#: system/modules/admin/partials/templates/listcomments.tpl.php:8
+msgid "Add Comment"
+msgstr "コメントを追加"
+
+#: system/modules/admin/templates/file/index.tpl.php:7
+#: system/modules/form/models/FormStandardInterface.php:103
+#: system/modules/form/models/FormStandardInterface.php:105
+#: system/modules/timelog/templates/index.tpl.php:6
+msgid "Object"
+msgstr "オブジェクト"
+
+#: system/modules/admin/templates/file/index.tpl.php:7
+msgid "Location"
+msgstr "ロケーション"
+
+#: system/modules/admin/templates/file/index.tpl.php:21
+msgid "Move to "
+msgstr "へ引っ越す"
+
+#: system/modules/admin/templates/file/index.tpl.php:40
+msgid "No attachment available"
+msgstr "利用可能な添付ファイルいいえ"
+
+#: system/modules/admin/templates/index.tpl.php:1
+msgid "Users Currently Logged In"
+msgstr "現在ログインしているユーザー"
+
+#: system/modules/admin/templates/lookup.tpl.php:3
+msgid "Lookup List"
+msgstr "ルックアップリスト"
+
+#: system/modules/admin/templates/lookup.tpl.php:4
+msgid "New Item"
+msgstr "新商品"
+
+#: system/modules/admin/templates/lookup.tpl.php:8
+msgid "Search Lookup Items"
+msgstr "ルックアップアイテムを検索"
+
+#: system/modules/admin/templates/migration/index.tpl.php:9
+#: system/modules/admin/templates/migration/index.tpl.php:37
+msgid "Batch"
+msgstr "バッチ"
+
+#: system/modules/admin/templates/migration/index.tpl.php:10
+msgid "Individual"
+msgstr "個人"
+
+#: system/modules/admin/templates/migration/index.tpl.php:15
+msgid "Rollback latest batch"
+msgstr "ロールバック最新のバッチ"
+
+#: system/modules/admin/templates/migration/index.tpl.php:15
+msgid "Are you sure you want to rollback migrations?"
+msgstr "あなたは、移行をロールバックにしてもよろしいですか？"
+
+#: system/modules/admin/templates/migration/index.tpl.php:22
+msgid "Install migrations"
+msgstr "移行をインストール"
+
+#: system/modules/admin/templates/migration/index.tpl.php:22
+msgid "Are you sure you want to install migrations?"
+msgstr "あなたが移行をインストールしてもよろしいですか？"
+
+#: system/modules/admin/templates/migration/index.tpl.php:71
+msgid "Create a"
+msgstr "作ります"
+
+#: system/modules/admin/templates/migration/index.tpl.php:73
+msgid "Run all "
+msgstr "すべて実行]"
+
+#: system/modules/admin/templates/migration/index.tpl.php:73
+msgid " migrations"
+msgstr " 移行"
+
+#: system/modules/admin/templates/migration/index.tpl.php:73
+msgid "Are you sure you want to run all outstanding migrations for this module?"
+msgstr "あなたは、このモジュールのすべての未移行を実行するにしてもよろしいですか？"
+
+#: system/modules/admin/templates/migration/index.tpl.php:76
+msgid "Path"
+msgstr "パス"
+
+#: system/modules/admin/templates/migration/index.tpl.php:76
+msgid "Date run"
+msgstr "日付ラン"
+
+#: system/modules/admin/templates/migration/index.tpl.php:87
+msgid "System"
+msgstr "システム"
+
+#: system/modules/admin/templates/migration/index.tpl.php:95
+msgid "Rollback to here"
+msgstr "ここにロールバック"
+
+#: system/modules/admin/templates/migration/index.tpl.php:95
+msgid "Are you 110% sure you want to rollback a migration? DATA COULD BE LOST PERMANENTLY!"
+msgstr "あなたは110％を使用して、移行をロールバックしてもよろしいですか？データは完全失われる可能性があります！"
+
+#: system/modules/admin/templates/migration/index.tpl.php:97
+msgid "Migrate to here"
+msgstr "ここへの移行"
+
+#: system/modules/admin/templates/migration/index.tpl.php:97
+msgid "Are you sure you want to run a migration?"
+msgstr "あなたは、マイグレーションを実行してもよろしいですか？"
+
+#: system/modules/admin/templates/migration/index.tpl.php:135
+msgid "There are no migrations on this project"
+msgstr "このプロジェクトには移行は​​ありません"
+
+#: system/modules/admin/templates/printers.tpl.php:2
+msgid "Add a printer"
+msgstr "プリンタを追加します。"
+
+#: system/modules/admin/templates/templates/edit.tpl.php:1
+msgid "Back to Templates List"
+msgstr "戻るテンプレート一覧へ"
+
+#: system/modules/admin/templates/templates/edit.tpl.php:7
+#: system/modules/report/actions/templates/edit.php:10
+msgid "Template"
+msgstr "テンプレート"
+
+#: system/modules/admin/templates/templates/edit.tpl.php:8
+msgid "Test Data"
+msgstr "テストデータ"
+
+#: system/modules/admin/templates/templates/edit.tpl.php:9
+msgid "Test Output"
+msgstr "テスト出力"
+
+#: system/modules/admin/templates/templates/edit.tpl.php:10
+msgid "Manual"
+msgstr "マニュアル"
+
+#: system/modules/admin/templates/templates/edit.tpl.php:23
+msgid "this is the template manual"
+msgstr "これは、テンプレートマニュアルです"
+
+#: system/modules/admin/templates/templates/index.tpl.php:1
+#: system/modules/report/templates/edit.tpl.php:28
+msgid "Add Template"
+msgstr "テンプレートの追加"
+
+#: system/modules/admin/templates/user/remove.tpl.php:1
+msgid "Back to user list"
+msgstr "戻るユーザーリストへ"
+
+#: system/modules/admin/templates/user/remove.tpl.php:6
+msgid "Deactivate user"
+msgstr "ユーザーを非アクティブ化"
+
+#: system/modules/admin/templates/user/remove.tpl.php:7
+msgid "Delete user"
+msgstr "ユーザーの削除"
+
+#: system/modules/admin/templates/user/remove.tpl.php:7
+msgid "Are you sure you want to delete this user?"
+msgstr "このユーザーを削除してもよろしいですか？"
+
+#: system/modules/admin/templates/useradd.tpl.php:2
+#: system/modules/admin/templates/useradd.tpl.php:8
+msgid "User Details"
+msgstr "ユーザー詳細"
+
+#: system/modules/admin/templates/useradd.tpl.php:6
+#: system/modules/admin/templates/useredit.tpl.php:9
+#: system/modules/auth/actions/profile.php:28
+msgid "Language"
+msgstr "言語"
+
+#: system/modules/admin/templates/useradd.tpl.php:9
+#: system/modules/admin/templates/useredit.tpl.php:12
+#: system/modules/auth/actions/login.php:12
+#: system/modules/auth/actions/profile.php:15
+#: system/modules/auth/templates/login.tpl.php:6
+#: system/modules/report/actions/connections/edit.php:26
+msgid "Password"
+msgstr "パスワード"
+
+#: system/modules/admin/templates/useradd.tpl.php:10
+#: system/modules/admin/templates/useredit.tpl.php:13
+#: system/modules/auth/actions/profile.php:16
+msgid "Repeat Password"
+msgstr "パスワードを再度入力してください"
+
+#: system/modules/admin/templates/useradd.tpl.php:12
+#: system/modules/admin/templates/useradd.tpl.php:15
+#: system/modules/auth/actions/profile.php:17
+msgid "Contact Details"
+msgstr "連絡先の詳細"
+
+#: system/modules/admin/templates/useredit.tpl.php:2
+msgid "Edit User"
+msgstr "ユーザーの編集"
+
+#: system/modules/admin/templates/useredit.tpl.php:37
+msgid "User Groups"
+msgstr "ユーザーグループ"
+
+#: system/modules/admin/templates/useredit.tpl.php:43
+msgid "User with ID"
+msgstr "IDを持つユーザー"
+
+#: system/modules/admin/templates/useredit.tpl.php:43
+msgid "does not exist."
+msgstr "存在しない。"
+
+#: system/modules/admin/templates/users.tpl.php:11
+msgid "Add New User"
+msgstr "新規ユーザの追加"
+
+#: system/modules/auth/actions/forgotpassword.php:14
+#: system/modules/auth/templates/login.tpl.php:9
+msgid "Forgot Password"
+msgstr "パスワードをお忘れですか"
+
+#: system/modules/auth/actions/forgotpassword.php:21
+msgid "Cannot send recovery email. This site has not been configured with a default email address"
+msgstr "予備のメールを送信することはできません。このサイトでは、デフォルトの電子メールアドレスが設定されていません"
+
+#: system/modules/auth/actions/forgotpassword.php:26
+msgid "If this account exists then a password reset email has been just sent to the associated email address."
+msgstr "このアカウントが存在する場合は、パスワード再設定のメールだけで関連付けられているメールアドレスに送信されました。"
+
+#: system/modules/auth/actions/forgotpassword.php:45
+msgid "Hello"
+msgstr "こんにちは"
+
+#: system/modules/auth/actions/forgotpassword.php:46
+msgid "Please go to this link to reset your password:"
+msgstr "あなたのパスワードをリセットするには、このリンクにアクセスしてください："
+
+#: system/modules/auth/actions/forgotpassword.php:48
+msgid "You have 24 hours to reset your password"
+msgstr "あなたのパスワードをリセットするために24時間を持っています"
+
+#: system/modules/auth/actions/forgotpassword.php:49
+msgid "Thank you,"
+msgstr "ありがとうございました、"
+
+#: system/modules/auth/actions/forgotpassword.php:49
+msgid "cmfive support"
+msgstr "cmfiveサポート"
+
+#: system/modules/auth/actions/forgotpassword.php:51
+msgid " password reset"
+msgstr " パスワードのリセット"
+
+#: system/modules/auth/actions/forgotpassword.php:55
+msgid "There was a problem sending an email, check your settings."
+msgstr "電子メールの送信の問題は、あなたの設定を確認し、ありました。"
+
+#: system/modules/auth/actions/login.php:10
+msgid "Application Login"
+msgstr "アプリケーション・ログイン"
+
+#: system/modules/auth/actions/login.php:11
+#: system/modules/report/actions/connections/edit.php:25
+#: system/modules/report/actions/connections/index.php:7
+msgid "Username"
+msgstr "ユーザー名"
+
+#: system/modules/auth/actions/login.php:36
+msgid "Login or Password incorrect"
+msgstr "ログインまたはパスワードが正しくありません"
+
+#: system/modules/auth/actions/login.php:39
+msgid "Please enter your login and password"
+msgstr "ログイン名とパスワードを入力してください"
+
+#: system/modules/auth/actions/profile.php:7
+msgid "Administration - Profile - "
+msgstr "管理 - プロフィール - "
+
+#: system/modules/auth/actions/profile.php:9
+msgid "User does not exist."
+msgstr "使用者はいません。"
+
+#: system/modules/auth/actions/profile.php:14
+msgid "Change Password"
+msgstr "パスワードを変更する"
+
+#: system/modules/auth/actions/profile.php:20
+msgid "Communication"
+msgstr "コミュニケーション"
+
+#: system/modules/auth/actions/profile.php:21
+msgid "Home Phone"
+msgstr "自宅の電話"
+
+#: system/modules/auth/actions/profile.php:22
+msgid "Work Phone"
+msgstr "勤務先の電話"
+
+#: system/modules/auth/actions/profile.php:23
+msgid "Private Mobile"
+msgstr "プライベートモバイル"
+
+#: system/modules/auth/actions/profile.php:24
+msgid "Work Mobile"
+msgstr "ワークモバイル"
+
+#: system/modules/auth/actions/profile.php:25
+msgid "Fax"
+msgstr "ファックス"
+
+#: system/modules/auth/actions/profile.php:27
+msgid "Redirect URL"
+msgstr "リダイレクトURL"
+
+#: system/modules/auth/actions/profile.php:30
+msgid "Update"
+msgstr "更新"
+
+#: system/modules/auth/actions/profile.php:33
+msgid "Edit Profile"
+msgstr "プロファイル編集"
+
+#: system/modules/auth/actions/profile.php:42
+msgid "Not a valid home phone number"
+msgstr "有効ではありません自宅の電話番号"
+
+#: system/modules/auth/actions/profile.php:43
+msgid "Not a valid work phone number"
+msgstr "いない有効な勤務先の電話番号"
+
+#: system/modules/auth/actions/profile.php:44
+#: system/modules/auth/actions/profile.php:45
+msgid "Not a valid  mobile phone number"
+msgstr "いない有効な携帯電話番号"
+
+#: system/modules/auth/actions/profile.php:46
+msgid "Not a valid fax number"
+msgstr "無効なファックス番号"
+
+#: system/modules/auth/actions/profile.php:55
+msgid "Not Logged In"
+msgstr "ログインしていない"
+
+#: system/modules/auth/actions/profile.php:87
+msgid "Profile updated."
+msgstr "プロフィールを更新しました。"
+
+#: system/modules/auth/actions/resetpassword.php:13
+#: system/modules/auth/actions/resetpassword.php:53
+msgid "Your token has expired (max 24 hours), please submit for a new one"
+msgstr "あなたのトークンが（最大24時間）有効期限が切れている、新しいもののために提出してください"
+
+#: system/modules/auth/actions/resetpassword.php:22
+msgid "Enter new password"
+msgstr "新しいパスワードを入力してください"
+
+#: system/modules/auth/actions/resetpassword.php:23
+msgid "New password"
+msgstr "新しいパスワード"
+
+#: system/modules/auth/actions/resetpassword.php:24
+msgid "Confirm password"
+msgstr "パスワードを認証する"
+
+#: system/modules/auth/actions/resetpassword.php:25
+msgid "Reset"
+msgstr "リセット"
+
+#: system/modules/auth/actions/resetpassword.php:33
+#: system/modules/auth/actions/resetpassword.php:76
+msgid "Invalid email or token, this incident has been logged"
+msgstr "無効な電子メールまたはトークン、この事件が記録されました"
+
+#: system/modules/auth/actions/resetpassword.php:44
+msgid "Passwords do not match"
+msgstr "パスワードが一致していません"
+
+#: system/modules/auth/actions/resetpassword.php:78
+msgid "Your password has been reset"
+msgstr "あなたのパスワードはリセットされました"
+
+#: system/modules/auth/actions/user/unassign.php:16
+msgid "Group membership revoked"
+msgstr "グループメンバーシップは取り消さ"
+
+#: system/modules/auth/models/Contact.php:74
+msgid "work phone "
+msgstr "勤務先の電話"
+
+#: system/modules/auth/models/Contact.php:78
+msgid "mobile "
+msgstr "モバイル"
+
+#: system/modules/auth/models/User.php:130
+msgid "English"
+msgstr "英語"
+
+#: system/modules/auth/models/User.php:130
+msgid "German"
+msgstr "ドイツ人"
+
+#: system/modules/auth/models/User.php:130
+msgid "French"
+msgstr "フランス語"
+
+#: system/modules/auth/models/User.php:130
+msgid "Chinese"
+msgstr "中国語"
+
+#: system/modules/auth/models/User.php:130
+msgid "Japanese"
+msgstr "日本語"
+
+#: system/modules/auth/models/User.php:130
+msgid "Spanish"
+msgstr "スペイン語"
+
+#: system/modules/auth/models/User.php:130
+msgid "Dutch"
+msgstr "オランダの"
+
+#: system/modules/auth/models/User.php:130
+msgid "Russian"
+msgstr "ロシア"
+
+#: system/modules/auth/models/User.php:130
+msgid "Gaelic"
+msgstr "ゲール語"
+
+#: system/modules/auth/partials/templates/removeUser.tpl.php:2
+msgid "Auth"
+msgstr "認証"
+
+#: system/modules/auth/partials/templates/removeUser.tpl.php:4
+#: system/modules/report/partials/templates/removeUser.tpl.php:7
+#: system/modules/task/partials/templates/removeUser.tpl.php:9
+msgid "This user is a member of"
+msgstr "このユーザーはのメンバーであります"
+
+#: system/modules/auth/partials/templates/removeUser.tpl.php:4
+msgid " group"
+msgstr " グループ"
+
+#: system/modules/auth/partials/templates/removeUser.tpl.php:7
+msgid "Unassign from groups"
+msgstr "グループからの割り当て解除"
+
+#: system/modules/auth/templates/forgotpassword.tpl.php:4
+#: system/modules/auth/templates/login.tpl.php:5
+msgid "Your login"
+msgstr "あなたのログイン"
+
+#: system/modules/auth/templates/forgotpassword.tpl.php:5
+#: system/modules/task/task.group.actions.php:255
+msgid "Submit"
+msgstr "提出します"
+
+#: system/modules/auth/templates/forgotpassword.tpl.php:6
+#: system/modules/help/templates/toc.tpl.php:2
+#: system/modules/help/templates/view.tpl.php:2
+msgid "Back"
+msgstr "バック"
+
+#: system/modules/channels/actions/index.php:4
+msgid "Channels"
+msgstr "チャネル"
+
+#: system/modules/channels/actions/listchannels.php:4
+msgid "Channels List"
+msgstr "チャンネル一覧"
+
+#: system/modules/channels/actions/listmessages.php:4
+msgid "Messages list"
+msgstr "メッセージリスト"
+
+#: system/modules/channels/actions/listmessagestatuses.php:7
+msgid "Message Statuses"
+msgstr "メッセージステータス"
+
+#: system/modules/channels/actions/listmessagestatuses.php:10
+msgid "Message ID not found"
+msgstr "メッセージIDが見つかりません"
+
+#: system/modules/channels/actions/listprocessors.php:4
+msgid "Processors List"
+msgstr "プロセッサ一覧"
+
+#: system/modules/channels/actions/process.php:18
+#: system/modules/channels/actions/read.php:17
+msgid "No channel found."
+msgstr "チャネル見つかりません。"
+
+#: system/modules/channels/actions/processor/delete.php:11
+msgid "Processor deleted"
+msgstr "プロセッサの削除"
+
+#: system/modules/channels/actions/processor/delete.php:13
+msgid "Could not find processor"
+msgstr "プロセッサが見つかりませんでした"
+
+#: system/modules/channels/actions/processor/edit.php:8
+#: system/modules/channels/actions/web/edit.php:8
+#: system/modules/main/actions/addwidget.php:22
+#: system/modules/tag/models/TagService.php:142
+#: system/modules/tag/partials/templates/listTags.tpl.php:22
+msgid "Add"
+msgstr "加えます"
+
+#: system/modules/channels/actions/processor/edit.php:8
+msgid " a Processor"
+msgstr " プロセッサ"
+
+#: system/modules/channels/actions/processor/edit.php:14
+msgid "Processor"
+msgstr "プロセッサ"
+
+#: system/modules/channels/actions/processor/edit.php:19
+#: system/modules/channels/models/Channel.php:13
+#: system/modules/channels/templates/listmessages.tpl.php:4
+msgid "Channel"
+msgstr "チャネル"
+
+#: system/modules/channels/actions/processor/edit.php:22
+#: system/modules/channels/templates/listprocessors.tpl.php:7
+msgid "Processor Class"
+msgstr "プロセッサのクラス"
+
+#: system/modules/channels/actions/processor/edit.php:40
+msgid "Missing Processor values"
+msgstr "プロセッサの値がありません"
+
+#: system/modules/channels/actions/processor/edit.php:46
+msgid "Could not find processor in config"
+msgstr "設定のプロセッサを見つけることができませんでした"
+
+#: system/modules/channels/actions/processor/edit.php:57
+msgid "Processor "
+msgstr "プロセッサ"
+
+#: system/modules/channels/actions/processor/editsettings.php:9
+#: system/modules/channels/actions/processor/editsettings.php:39
+msgid "Missing parameter in request"
+msgstr "リクエストのパラメータがありません"
+
+#: system/modules/channels/actions/processor/editsettings.php:14
+#: system/modules/channels/actions/processor/editsettings.php:50
+msgid "Invalid processor ID"
+msgstr "無効プロセッサID"
+
+#: system/modules/channels/actions/processor/editsettings.php:26
+msgid "Form implementation is empty"
+msgstr "フォームの実装は空です。"
+
+#: system/modules/channels/actions/processor/editsettings.php:29
+msgid "Generic form settings function is missing"
+msgstr "機能が欠落している一般的な形式の設定"
+
+#: system/modules/channels/actions/processor/editsettings.php:56
+msgid "Processor settings saved"
+msgstr "プロセッサの設定が保存され"
+
+#: system/modules/channels/actions/web/delete.php:11
+msgid "Channel deleted"
+msgstr "チャンネル削除"
+
+#: system/modules/channels/actions/web/delete.php:13
+msgid "Could not find channel"
+msgstr "チャンネルが見つかりませんでした"
+
+#: system/modules/channels/actions/web/edit.php:8
+msgid " a Web Channel"
+msgstr " Webチャネル"
+
+#: system/modules/channels/actions/web/edit.php:18
+msgid "Web API URL"
+msgstr "ウェブAPIのURL"
+
+#: system/modules/channels/actions/web/edit.php:39
+msgid "Web Channel "
+msgstr "Webチャネル"
+
+#: system/modules/channels/models/Channel.php:16
+#: system/modules/task/task.group.actions.php:45
+#: system/modules/task/task.group.actions.php:143
+msgid "Is Active"
+msgstr "アクティブです"
+
+#: system/modules/channels/models/Channel.php:19
+#: system/modules/channels/templates/listchannels.tpl.php:8
+msgid "Notify Email"
+msgstr "メールを通知します"
+
+#: system/modules/channels/models/Channel.php:21
+#: system/modules/channels/templates/listchannels.tpl.php:8
+msgid "Notify User"
+msgstr "ユーザーに通知"
+
+#: system/modules/channels/models/Channel.php:24
+msgid "Run processors?"
+msgstr "プロセッサを実行しますか？"
+
+#: system/modules/channels/models/ChannelService.php:167
+#: system/modules/channels/models/ChannelsService.php:17
+msgid "List Channels"
+msgstr "一覧チャンネル"
+
+#: system/modules/channels/models/ChannelService.php:168
+#: system/modules/channels/models/ChannelsService.php:18
+msgid "List Processors"
+msgstr "リストプロセッサ"
+
+#: system/modules/channels/models/ChannelService.php:169
+#: system/modules/channels/models/ChannelsService.php:19
+msgid "List Messages"
+msgstr "リストのメッセージ"
+
+#: system/modules/channels/models/TestProcessor.php:13
+msgid "Settings"
+msgstr "設定"
+
+#: system/modules/channels/models/TestProcessor.php:15
+msgid "My Setting"
+msgstr "マイ設定"
+
+#: system/modules/channels/templates/listchannels.tpl.php:1
+msgid "Add a new channel"
+msgstr "新しいチャネルを追加"
+
+#: system/modules/channels/templates/listchannels.tpl.php:1
+msgid "Web"
+msgstr "ウェブ"
+
+#: system/modules/channels/templates/listchannels.tpl.php:8
+#: system/modules/channels/templates/listmessages.tpl.php:4
+#: system/modules/channels/templates/listprocessors.tpl.php:7
+msgid "ID"
+msgstr "ID"
+
+#: system/modules/channels/templates/listchannels.tpl.php:8
+msgid "ON/OFF"
+msgstr "オンオフ"
+
+#: system/modules/channels/templates/listchannels.tpl.php:18
+msgid "OFF"
+msgstr "オフ"
+
+#: system/modules/channels/templates/listchannels.tpl.php:24
+#: system/modules/channels/templates/listprocessors.tpl.php:20
+msgid "Are you sure you want to delete "
+msgstr "あなたが削除してもよろしいです"
+
+#: system/modules/channels/templates/listchannels.tpl.php:24
+msgid "this channel"
+msgstr "このチャンネル"
+
+#: system/modules/channels/templates/listchannels.tpl.php:25
+msgid "Messages"
+msgstr "メッセージ"
+
+#: system/modules/channels/templates/listmessages.tpl.php:4
+msgid "Failed Processes"
+msgstr "失敗したプロセス"
+
+#: system/modules/channels/templates/listmessages.tpl.php:4
+msgid "Run Time"
+msgstr "ランタイム"
+
+#: system/modules/channels/templates/listmessages.tpl.php:14
+msgid "View Message Statuses"
+msgstr "メッセージの表示ステータス"
+
+#: system/modules/channels/templates/listmessages.tpl.php:22
+msgid "No messages found."
+msgstr "メッセージが見つかりませんでした。"
+
+#: system/modules/channels/templates/listmessagestatuses.tpl.php:4
+msgid "Processor ID"
+msgstr "プロセッサID"
+
+#: system/modules/channels/templates/listmessagestatuses.tpl.php:4
+#: system/modules/inbox/templates/view.tpl.php:13
+#: system/modules/report/models/Report.php:254
+#: system/modules/task/actions/tasktypeform.php:24
+msgid "Message"
+msgstr "メッセージ"
+
+#: system/modules/channels/templates/listmessagestatuses.tpl.php:4
+msgid "Was Successful"
+msgstr "成功しました"
+
+#: system/modules/channels/templates/listmessagestatuses.tpl.php:12
+msgid "Rerun Process"
+msgstr "再実行してプロセス"
+
+#: system/modules/channels/templates/listprocessors.tpl.php:1
+msgid "Add Processor"
+msgstr "プロセッサを追加"
+
+#: system/modules/channels/templates/listprocessors.tpl.php:7
+msgid "Processor Module"
+msgstr "プロセッサモジュール"
+
+#: system/modules/channels/templates/listprocessors.tpl.php:7
+msgid "Attached to"
+msgstr "に添付"
+
+#: system/modules/channels/templates/listprocessors.tpl.php:20
+msgid "this processor"
+msgstr "このプロセッサ"
+
+#: system/modules/channels/templates/listprocessors.tpl.php:20
+msgid "?"
+msgstr "？"
+
+#: system/modules/channels/templates/listprocessors.tpl.php:27
+msgid "Edit Settings"
+msgstr "設定の編集"
+
+#: system/modules/favorite/actions/ajaxEditFavorites.php:26
+#: system/modules/tag/actions/ajaxTag.php:13
+#: system/modules/tag/actions/ajaxTag.php:69
+#: system/modules/tag/actions/ajaxTag.php:72
+#: system/modules/tag/actions/ajaxTag.php:75
+msgid "Invalid request"
+msgstr "無効なリクエスト"
+
+#: system/modules/file/actions/atdel.php:12
+msgid "Attachment deleted."
+msgstr "添付ファイルが削除されました。"
+
+#: system/modules/file/actions/atdel.php:14
+msgid "Attachment does not exist."
+msgstr "添付ファイルは存在しません。"
+
+#: system/modules/file/actions/attach.php:7
+#: system/modules/file/actions/attach.php:26
+msgid "Nothing to attach to."
+msgstr "に付着するものがありません。"
+
+#: system/modules/file/actions/attach.php:37
+msgid "File attached."
+msgstr "ファイルが添付さ。"
+
+#: system/modules/file/actions/attach.php:39
+msgid "There was an error. Attachment could not be saved."
+msgstr "エラーが発生しました。添付ファイルを保存できませんでした。"
+
+#: system/modules/file/actions/delete.php:10
+#: system/modules/file/actions/edit.php:10
+#: system/modules/file/actions/edit.php:35
+msgid "Missing attachment ID"
+msgstr "不足している添付ファイルID"
+
+#: system/modules/file/actions/delete.php:15
+#: system/modules/file/actions/edit.php:15
+#: system/modules/file/actions/edit.php:40
+msgid "Attachment not found"
+msgstr "添付ファイルが見つかりません"
+
+#: system/modules/file/actions/delete.php:19
+msgid "Attachment deleted"
+msgstr "添付ファイルの削除"
+
+#: system/modules/file/actions/edit.php:19
+msgid "Edit Attachment"
+msgstr "編集アタッチメント"
+
+#: system/modules/file/actions/edit.php:47
+msgid "Attachment updated"
+msgstr "添付ファイルの更新"
+
+#: system/modules/file/actions/new.php:10
+#: system/modules/file/actions/new.php:30
+msgid "Missing class parameters"
+msgstr "不足しているクラス・パラメータ"
+
+#: system/modules/file/actions/new.php:14
+msgid "New Attachment"
+msgstr "新付着"
+
+#: system/modules/file/actions/new.php:15
+#: system/modules/file/templates/attach.tpl.php:8
+msgid "File"
+msgstr "ファイル"
+
+#: system/modules/file/actions/new.php:36
+msgid "Object not found"
+msgstr "オブジェクトが見つかりません。"
+
+#: system/modules/file/actions/new.php:43
+msgid "File attached"
+msgstr "ファイルの添付"
+
+#: system/modules/file/templates/attach.tpl.php:4
+msgid "Attache a File"
+msgstr "ファイルのアタッシュケース"
+
+#: system/modules/file/templates/attach.tpl.php:6
+msgid "Attachment Type"
+msgstr "添付ファイルの種類"
+
+#: system/modules/file/templates/attach.tpl.php:12
+msgid "Upload"
+msgstr "アップロード"
+
+#: system/modules/form/actions/delete.php:7
+#: system/modules/form/actions/delete.php:12
+#: system/modules/form/actions/field/delete.php:13
+#: system/modules/form/actions/field/edit.php:9
+#: system/modules/form/actions/show.php:7
+msgid "Form not found"
+msgstr "フォームが見つかりません。"
+
+#: system/modules/form/actions/delete.php:16
+msgid "Form deleted"
+msgstr "フォームの削除"
+
+#: system/modules/form/actions/edit.php:9
+msgid "Form"
+msgstr "形"
+
+#: system/modules/form/actions/edit.php:27
+#: system/modules/form/actions/field/edit.php:88
+msgid "Form "
+msgstr "形"
+
+#: system/modules/form/actions/field/delete.php:7
+#: system/modules/form/actions/field/delete.php:18
+msgid "Form field not found"
+msgstr "フォームフィールドが見つかりません"
+
+#: system/modules/form/actions/field/delete.php:22
+msgid "Form field deleted"
+msgstr "フォームフィールド削除"
+
+#: system/modules/form/actions/index.php:5
+msgid "Forms list"
+msgstr "フォームのリスト"
+
+#: system/modules/form/actions/instance/delete.php:8
+#: system/modules/form/actions/instance/delete.php:14
+msgid "Form instance not found"
+msgstr "フォームインスタンスが見つかりません"
+
+#: system/modules/form/actions/instance/delete.php:19
+msgid "Form instance deleted"
+msgstr "フォームのインスタンスは削除します"
+
+#: system/modules/form/actions/instance/edit.php:12
+#: system/modules/form/actions/instance/edit.php:39
+msgid "Form instance data missing"
+msgstr "不足しているフォームインスタンスデータ"
+
+#: system/modules/form/actions/instance/edit.php:93
+msgid " created"
+msgstr " 作成した"
+
+#: system/modules/form/actions/mapping/edit.php:35
+msgid "Form mappings updated"
+msgstr "フォームのマッピングを更新します"
+
+#: system/modules/form/actions/show.php:14
+msgid "Form: "
+msgstr "形："
+
+#: system/modules/form/models/FormStandardInterface.php:10
+msgid "Text"
+msgstr "テキスト"
+
+#: system/modules/form/models/FormStandardInterface.php:11
+msgid "Decimal"
+msgstr "10進数"
+
+#: system/modules/form/models/FormStandardInterface.php:13
+msgid "Date & Time"
+msgstr "日付時刻"
+
+#: system/modules/form/models/FormStandardInterface.php:14
+msgid "Select"
+msgstr "選択します"
+
+#: system/modules/form/models/FormStandardInterface.php:15
+msgid "Autocomplete"
+msgstr "オートコンプリート"
+
+#: system/modules/form/models/FormStandardInterface.php:101
+msgid "Decimal Places"
+msgstr "小数位"
+
+#: system/modules/form/models/FormStandardInterface.php:103
+#: system/modules/form/models/FormStandardInterface.php:105
+msgid "Filter"
+msgstr "フィルタ"
+
+#: system/modules/form/models/FormStandardInterface.php:103
+#: system/modules/form/models/FormStandardInterface.php:105
+msgid "Options"
+msgstr "オプション"
+
+#: system/modules/form/partials/templates/listform.tpl.php:3
+msgid "Add new "
+msgstr "新しく追加する"
+
+#: system/modules/form/partials/templates/listform.tpl.php:15
+msgid "Are you sure you want to delete this item?"
+msgstr "あなたはこのアイテムを削除してもよろしいですか？"
+
+#: system/modules/form/partials/templates/listform.tpl.php:23
+msgid "form data found"
+msgstr "フォームデータが見つかりました。"
+
+#: system/modules/form/templates/field/edit.tpl.php:34
+msgid "Cancel"
+msgstr "キャンセル"
+
+#: system/modules/form/templates/index.tpl.php:3
+msgid "Add a form"
+msgstr "フォームを追加"
+
+#: system/modules/form/templates/index.tpl.php:19
+msgid "Are you sure you want to delete this form? (WARNING: there may be existing data saved to this form!)"
+msgstr "あなたは、このフォームを削除してもよろしいですか？ （警告：この形式に保存されている既存のデータがあるかもしれません！）"
+
+#: system/modules/form/templates/show.tpl.php:7
+#: system/modules/report/actions/edit.php:48
+msgid "Fields"
+msgstr "フィールズ"
+
+#: system/modules/form/templates/show.tpl.php:8
+msgid "Preview"
+msgstr "プレビュー"
+
+#: system/modules/form/templates/show.tpl.php:9
+msgid "Mapping"
+msgstr "マッピング"
+
+#: system/modules/form/templates/show.tpl.php:10
+msgid "Row Templates"
+msgstr "行テンプレート"
+
+#: system/modules/form/templates/show.tpl.php:11
+msgid "Summary Template"
+msgstr "概要テンプレート"
+
+#: system/modules/form/templates/show.tpl.php:15
+msgid "Add a field"
+msgstr "フィールドを追加します。"
+
+#: system/modules/form/templates/show.tpl.php:21
+msgid "Ordering"
+msgstr "発注"
+
+#: system/modules/form/templates/show.tpl.php:21
+msgid "Technical Name"
+msgstr "技術名称"
+
+#: system/modules/form/templates/show.tpl.php:21
+msgid "Additional Details"
+msgstr "追加の詳細"
+
+#: system/modules/form/templates/show.tpl.php:35
+msgid "Are you sure you want to delete this form field? (WARNING: there may be existing data saved to this form field!)"
+msgstr "あなたは、このフォームフィールドを削除してもよろしいですか？ （警告：このフォームフィールドに保存された既存のデータがあるかもしれません！）"
+
+#: system/modules/form/templates/show.tpl.php:101
+msgid "Row templates"
+msgstr "行テンプレート"
+
+#: system/modules/form/templates/show.tpl.php:102
+msgid "Header row template"
+msgstr "ヘッダ行テンプレート"
+
+#: system/modules/form/templates/show.tpl.php:103
+msgid "Item row template"
+msgstr "項目行テンプレート"
+
+#: system/modules/form/templates/show.tpl.php:111
+msgid "Summary template"
+msgstr "要約テンプレート"
+
+#: system/modules/help/actions/view.php:10
+msgid "Sorry, there is no help for this topic."
+msgstr "申し訳ありませんが、このトピックのためのヘルプはありません。"
+
+#: system/modules/help/actions/view.php:30
+msgid "Sorry, this help topic is not yet written."
+msgstr "申し訳ありませんが、このヘルプトピックはまだ書かれていません。"
+
+#: system/modules/help/templates/layout.tpl.php:19
+#: system/modules/help/templates/view.tpl.php:5
+msgid "Contents"
+msgstr "コンテンツ"
+
+#: system/modules/help/templates/layout.tpl.php:20
+#: system/modules/help/templates/toc.tpl.php:4
+#: system/modules/help/templates/view.tpl.php:7
+msgid "Help on Help"
+msgstr "ヘルプの使い方"
+
+#: system/modules/help/templates/layout.tpl.php:29
+msgid "Copyright"
+msgstr "著作権"
+
+#: system/modules/help/templates/toc.tpl.php:6
+msgid "Table of Contents"
+msgstr "目次"
+
+#: system/modules/inbox/actions/allread.php:4
+msgid "All messages marked as read."
+msgstr "すべてのメッセージは既読としてマークしました。"
+
+#: system/modules/inbox/actions/archive.php:15
+msgid "Message(s) Archived"
+msgstr "メッセージ（複数可）アーカイブ"
+
+#: system/modules/inbox/actions/delete.php:14
+#: system/modules/inbox/actions/deleteforever.php:14
+msgid "Message(s) Deleted"
+msgstr "メッセージ（複数可）を削除"
+
+#: system/modules/inbox/actions/index.php:3
+#: system/modules/inbox/models/InboxService.php:240
+msgid "New Messages"
+msgstr "新しいメッセージ"
+
+#: system/modules/inbox/actions/index.php:14
+#: system/modules/inbox/actions/read.php:10
+#: system/modules/inbox/actions/showarchive.php:13
+#: system/modules/inbox/actions/trash.php:12
+#: system/modules/inbox/templates/portal.tpl.php:6
+#: system/modules/inbox/templates/send.tpl.php:37
+#: system/modules/inbox/templates/send.tpl.php:52
+#: system/modules/inbox/templates/view.tpl.php:10
+#: system/modules/task/task.hooks.php:50
+msgid "Subject"
+msgstr "テーマ"
+
+#: system/modules/inbox/actions/index.php:14
+#: system/modules/inbox/actions/read.php:10
+#: system/modules/inbox/actions/showarchive.php:13
+#: system/modules/inbox/actions/trash.php:12
+#: system/modules/inbox/templates/portal.tpl.php:6
+msgid "Sender"
+msgstr "差出人"
+
+#: system/modules/inbox/actions/read.php:3
+#: system/modules/inbox/models/InboxService.php:241
+msgid "Read Messages"
+msgstr "メッセージを読みます"
+
+#: system/modules/inbox/actions/send.php:3
+#: system/modules/inbox/templates/index.tpl.php:3
+#: system/modules/inbox/templates/read.tpl.php:3
+msgid "Create Message"
+msgstr "メッセージを作成します"
+
+#: system/modules/inbox/actions/send.php:22
+msgid "Message Sent."
+msgstr "メッセージが送信されます。"
+
+#: system/modules/inbox/actions/showarchive.php:4
+#: system/modules/inbox/models/InboxService.php:242
+#: system/modules/inbox/templates/index.tpl.php:7
+#: system/modules/inbox/templates/read.tpl.php:7
+#: system/modules/inbox/templates/view.tpl.php:5
+msgid "Archive"
+msgstr "アーカイブ"
+
+#: system/modules/inbox/actions/trash.php:4
+#: system/modules/inbox/models/InboxService.php:243
+msgid "Bin"
+msgstr "ビン"
+
+#: system/modules/inbox/actions/view.php:3
+msgid "Message View"
+msgstr "メッセージを表示"
+
+#: system/modules/inbox/actions/view.php:7
+msgid "No such message."
+msgstr "そのようなメッセージはありません。"
+
+#: system/modules/inbox/actions/view.php:10
+msgid "No access."
+msgstr "アクセスなし。"
+
+#: system/modules/inbox/inbox.hooks.php:4
+msgid "The following account has been changed"
+msgstr "次のアカウントが変更されました"
+
+#: system/modules/inbox/inbox.hooks.php:5
+msgid "An account has changed"
+msgstr "アカウントが変更されました"
+
+#: system/modules/inbox/models/InboxService.php:251
+msgid "Inbox"
+msgstr "受信トレイ"
+
+#: system/modules/inbox/templates/index.tpl.php:12
+msgid "Mark all read"
+msgstr "すべて既読"
+
+#: system/modules/inbox/templates/index.tpl.php:12
+msgid "Are you sure to mark all messages as read?"
+msgstr "あなたが読んとして、すべてのメッセージをマークしますか？"
+
+#: system/modules/inbox/templates/index.tpl.php:29
+#: system/modules/inbox/templates/read.tpl.php:25
+#: system/modules/inbox/templates/showarchive.tpl.php:24
+#: system/modules/inbox/templates/trash.tpl.php:23
+msgid "Prev"
+msgstr "前のページ"
+
+#: system/modules/inbox/templates/index.tpl.php:39
+#: system/modules/inbox/templates/read.tpl.php:35
+#: system/modules/inbox/templates/showarchive.tpl.php:34
+#: system/modules/inbox/templates/trash.tpl.php:33
+msgid "Next"
+msgstr "次"
+
+#: system/modules/inbox/templates/index.tpl.php:45
+#: system/modules/inbox/templates/portal.tpl.php:19
+msgid "No new messages"
+msgstr "新しいメッセージはありません"
+
+#: system/modules/inbox/templates/index.tpl.php:45
+msgid "click here"
+msgstr "ここをクリック"
+
+#: system/modules/inbox/templates/index.tpl.php:45
+msgid "to go to your read messages."
+msgstr "あなたのリード・メッセージに移動します。"
+
+#: system/modules/inbox/templates/send.tpl.php:13
+#: system/modules/inbox/templates/view.tpl.php:22
+msgid "Previous Messages"
+msgstr "前のメッセージ"
+
+#: system/modules/inbox/templates/send.tpl.php:15
+#: system/modules/inbox/templates/send.tpl.php:25
+#: system/modules/inbox/templates/view.tpl.php:31
+msgid "Message sent by"
+msgstr "によって送信されたメッセージ"
+
+#: system/modules/inbox/templates/send.tpl.php:15
+#: system/modules/inbox/templates/view.tpl.php:31
+msgid "on"
+msgstr "に"
+
+#: system/modules/inbox/templates/send.tpl.php:36
+#: system/modules/inbox/templates/send.tpl.php:51
+#: system/modules/timelog/actions/edit.php:42
+#: system/modules/timelog/partials/templates/listtimelog.tpl.php:8
+#: system/modules/timelog/templates/index.tpl.php:6
+msgid "To"
+msgstr "に"
+
+#: system/modules/inbox/templates/send.tpl.php:41
+#: system/modules/inbox/templates/send.tpl.php:55
+msgid "Send"
+msgstr "送信"
+
+#: system/modules/inbox/templates/send.tpl.php:50
+msgid "Send a Message"
+msgstr "メッセージを送ります"
+
+#: system/modules/inbox/templates/showarchive.tpl.php:9
+msgid "There are no archived messages"
+msgstr "全くアーカイブされたメッセージはありません"
+
+#: system/modules/inbox/templates/trash.tpl.php:4
+msgid "Delete Forever"
+msgstr "完全に削除"
+
+#: system/modules/inbox/templates/trash.tpl.php:8
+msgid "No deleted messages."
+msgstr "いいえ削除されたメッセージはありません。"
+
+#: system/modules/inbox/templates/view.tpl.php:3
+msgid "Reply"
+msgstr "応答"
+
+#: system/modules/inbox/templates/view.tpl.php:9
+#: system/modules/timelog/actions/edit.php:41
+#: system/modules/timelog/partials/templates/listtimelog.tpl.php:8
+#: system/modules/timelog/templates/index.tpl.php:6
+msgid "From"
+msgstr "から"
+
+#: system/modules/inbox/templates/view.tpl.php:9
+msgid "Unknown"
+msgstr "未知の"
+
+#: system/modules/inbox/templates/view.tpl.php:11
+msgid "Date Sent"
+msgstr "日付送信"
+
+#: system/modules/main/actions/addwidget.php:14
+msgid "Add a widget"
+msgstr "ウィジェットを追加"
+
+#: system/modules/main/actions/addwidget.php:17
+msgid "Source module"
+msgstr "ソース・モジュール"
+
+#: system/modules/main/actions/addwidget.php:18
+msgid "Widget Name"
+msgstr "ウィジェットの名前"
+
+#: system/modules/main/actions/addwidget.php:44
+msgid "Widget Added"
+msgstr "ウィジェットを追加しました"
+
+#: system/modules/main/actions/addwidget.php:46
+msgid "Could not add widget"
+msgstr "ウィジェットを追加できませんでした"
+
+#: system/modules/main/actions/configwidget.php:11
+#: system/modules/main/actions/configwidget.php:34
+#: system/modules/main/actions/removewidget.php:9
+msgid "Widget not found"
+msgstr "ウィジェットが見つかりません"
+
+#: system/modules/main/actions/configwidget.php:22
+msgid "Could not find widget class"
+msgstr "ウィジェットクラスが見つかりませんでした"
+
+#: system/modules/main/actions/configwidget.php:43
+msgid "Widget updated"
+msgstr "ウィジェットの更新"
+
+#: system/modules/main/actions/removewidget.php:14
+msgid "Widget removed"
+msgstr "ウィジェットの削除"
+
+#: system/modules/main/partials/templates/listwidgets.tpl.php:2
+msgid "Add Widget"
+msgstr "ウィジェットを追加"
+
+#: system/modules/main/partials/templates/listwidgets.tpl.php:11
+msgid "Config"
+msgstr "設定"
+
+#: system/modules/main/partials/templates/listwidgets.tpl.php:12
+msgid "Remove Widget"
+msgstr "ウィジェットを削除します"
+
+#: system/modules/report/actions/addmembers.php:23
+msgid "Add Member"
+msgstr "メンバーの追加"
+
+#: system/modules/report/actions/addmembers.php:24
+msgid "With Role"
+msgstr "役割を持ちます"
+
+#: system/modules/report/actions/addmembers.php:28
+#: system/modules/task/actions/group/viewmembergroup.php:87
+#: system/modules/task/actions/tasktypeform.php:32
+msgid " Submit "
+msgstr " 提出します"
+
+#: system/modules/report/actions/connections/delete.php:6
+#: system/modules/report/actions/connections/test.php:6
+msgid "No connection ID specified"
+msgstr "指定なし接続IDません"
+
+#: system/modules/report/actions/connections/delete.php:11
+#: system/modules/report/actions/connections/test.php:11
+msgid "Connection could not be found"
+msgstr "接続が見つかりませんでした"
+
+#: system/modules/report/actions/connections/delete.php:15
+msgid "Connection deleted"
+msgstr "接続が削除されました"
+
+#: system/modules/report/actions/connections/edit.php:17
+#: system/modules/report/actions/connections/index.php:7
+msgid "Driver"
+msgstr "ドライバ"
+
+#: system/modules/report/actions/connections/edit.php:18
+#: system/modules/report/actions/connections/index.php:7
+msgid "Host"
+msgstr "ホスト"
+
+#: system/modules/report/actions/connections/edit.php:22
+#: system/modules/report/actions/connections/index.php:7
+msgid "Database"
+msgstr "データベース"
+
+#: system/modules/report/actions/connections/edit.php:42
+msgid "Connection "
+msgstr "接続"
+
+#: system/modules/report/actions/connections/index.php:14
+msgid "Test Connection"
+msgstr "試験用接続"
+
+#: system/modules/report/actions/connections/index.php:16
+msgid "Are you sure you want to remove this connection?"
+msgstr "あなたは、この接続を削除してもよろしいですか？"
+
+#: system/modules/report/actions/connections/test.php:19
+msgid "Connected to DB"
+msgstr "DBに接続されています"
+
+#: system/modules/report/actions/connections/test.php:19
+msgid "Fetching databases to test connection"
+msgstr "テスト接続にデータベースをフェッチ"
+
+#: system/modules/report/actions/connections/test.php:36
+#: system/modules/search/templates/index.tpl.php:47
+msgid "No results found"
+msgstr "結果が見つかりません"
+
+#: system/modules/report/actions/createfeed.php:18
+#: system/modules/report/actions/editfeed.php:25
+msgid "Create a Feed from a Report"
+msgstr "レポートからのフィードを作成します。"
+
+#: system/modules/report/actions/createfeed.php:19
+#: system/modules/report/actions/editfeed.php:26
+msgid "Select Report"
+msgstr "レポートを選択します"
+
+#: system/modules/report/actions/createfeed.php:20
+#: system/modules/report/actions/editfeed.php:27
+msgid "Feed Title"
+msgstr "フィードタイトル"
+
+#: system/modules/report/actions/createfeed.php:28
+#: system/modules/report/actions/editfeed.php:37
+msgid "Create a Feed"
+msgstr "フィードを作成します。"
+
+#: system/modules/report/actions/createfeed.php:64
+msgid "Your Feed has been created"
+msgstr "あなたのフィードが作成されました"
+
+#: system/modules/report/actions/createfeed.php:64
+msgid "Use the URL below, with actual query parameter values, to access this report feed."
+msgstr "このレポートのフィードにアクセスするために、実際のクエリパラメータ値で、以下のURLを使用してください。"
+
+#: system/modules/report/actions/createreport.php:7
+#: system/modules/report/models/ReportService.php:617
+msgid "Create a Report"
+msgstr "レポートを作成します"
+
+#: system/modules/report/actions/createreport.php:12
+msgid "Create a New Report"
+msgstr "新しいレポートを作成"
+
+#: system/modules/report/actions/createreport.php:18
+#: system/modules/report/actions/edit.php:27
+msgid "Connection"
+msgstr "接続"
+
+#: system/modules/report/actions/createreport.php:19
+#: system/modules/report/actions/edit.php:82
+#: system/modules/report/actions/edit.php:83
+msgid "Save Report"
+msgstr "レポートの保存"
+
+#: system/modules/report/actions/createreport.php:22
+#: system/modules/report/actions/edit.php:42
+msgid "Special Parameters"
+msgstr "特殊パラメータ"
+
+#: system/modules/report/actions/createreport.php:24
+#: system/modules/report/actions/edit.php:44
+msgid "Roles"
+msgstr "役割"
+
+#: system/modules/report/actions/createreport.php:25
+#: system/modules/report/actions/edit.php:45
+msgid "Site URL"
+msgstr "サイトのURL"
+
+#: system/modules/report/actions/createreport.php:26
+#: system/modules/report/actions/edit.php:46
+#: system/modules/report/templates/createreport.tpl.php:4
+#: system/modules/report/templates/edit.tpl.php:9
+msgid "View Database"
+msgstr "Viewデータベース"
+
+#: system/modules/report/actions/createreport.php:27
+#: system/modules/report/actions/edit.php:47
+msgid "Tables"
+msgstr "テーブル"
+
+#: system/modules/report/actions/deletefeed.php:12
+#: system/modules/report/actions/editfeed.php:50
+msgid "Feed "
+msgstr "フィード"
+
+#: system/modules/report/actions/deletefeed.php:12
+msgid " has been deleted"
+msgstr " 削除されました"
+
+#: system/modules/report/actions/deletemember.php:11
+msgid "Confirm Delete Member"
+msgstr "メンバーの削除の確認"
+
+#: system/modules/report/actions/deletemember.php:17
+msgid "No such member?"
+msgstr "そのようなメンバーはありませんか？"
+
+#: system/modules/report/actions/deletemember.php:35
+msgid "Member deleted"
+msgstr "メンバーは削除します"
+
+#: system/modules/report/actions/deletemember.php:39
+msgid "Member no longer exists?"
+msgstr "メンバーは存在しませんか？"
+
+#: system/modules/report/actions/deletereport.php:28
+msgid "Report deleted"
+msgstr "レポートの削除"
+
+#: system/modules/report/actions/deletereport.php:32
+msgid "Report no longer exists?"
+msgstr "報告書は存在しませんか？"
+
+#: system/modules/report/actions/edit.php:5
+#: system/modules/report/actions/edit.php:22
+msgid " Report"
+msgstr " 報告する"
+
+#: system/modules/report/actions/edit.php:10
+#: system/modules/report/actions/edit.php:147
+msgid "Report not found"
+msgstr "報告書が見つかりません"
+
+#: system/modules/report/actions/edit.php:14
+#: system/modules/report/templates/approvereport.tpl.php:16
+#: system/modules/report/templates/createreport.tpl.php:3
+msgid "Create Report"
+msgstr "レポートを作成します"
+
+#: system/modules/report/actions/edit.php:16
+msgid "Edit Report: "
+msgstr "[レポートの編集："
+
+#: system/modules/report/actions/edit.php:22
+msgid "Create a New"
+msgstr "新規作成"
+
+#: system/modules/report/actions/edit.php:54
+msgid "Execute Report"
+msgstr "レポートの実行"
+
+#: system/modules/report/actions/edit.php:68
+#: system/modules/report/actions/edit.php:158
+msgid "You do not have access to this report"
+msgstr "このレポートへのアクセス権を持っていません"
+
+#: system/modules/report/actions/edit.php:73
+#: system/modules/report/actions/edit.php:163
+msgid "You do not have create report permissions"
+msgstr "レポートの作成権限を持っていません"
+
+#: system/modules/report/actions/edit.php:79
+msgid "Approved"
+msgstr "承認されました"
+
+#: system/modules/report/actions/edit.php:92
+#: system/modules/report/models/ReportLib.php:11
+#: system/modules/task/actions/group/viewmembergroup.php:20
+#: system/modules/task/actions/group/viewmembergroup.php:75
+msgid "Member"
+msgstr "メンバー"
+
+#: system/modules/report/actions/edit.php:92
+msgid "Is Email Recipient"
+msgstr "メールの受信者は、"
+
+#: system/modules/report/actions/edit.php:107
+#: system/modules/report/models/ReportLib.php:27
+#: system/modules/task/actions/group/viewmembergroup.php:34
+msgid "Group currently has no members. Please Add New Members."
+msgstr "グループは現在、メンバーが存在しません。新しいメンバーを追加してください。"
+
+#: system/modules/report/actions/edit.php:118
+msgid "Is Email Template"
+msgstr "メールテンプレートは、"
+
+#: system/modules/report/actions/edit.php:132
+msgid "Are you sure you want to delete this Report template entry?"
+msgstr "あなたは、この報告書のテンプレートエントリを削除してもよろしいですか？"
+
+#: system/modules/report/actions/edit.php:188
+msgid "Report "
+msgstr "報告する"
+
+#: system/modules/report/actions/edit.php:190
+#: system/modules/report/actions/feedAjaxGetReportText.php:9
+#: system/modules/report/actions/listfeed.php:11
+#: system/modules/report/partials/templates/removeUser.tpl.php:2
+#: system/modules/report/templates/edit.tpl.php:3
+msgid "Report"
+msgstr "報告する"
+
+#: system/modules/report/actions/editfeed.php:3
+msgid "Edit Feed"
+msgstr "編集フィード"
+
+#: system/modules/report/actions/editfeed.php:21
+msgid "Available Formats: html, csv, pdf, xml"
+msgstr "ご利用形式：HTML、CSV、PDF、XML"
+
+#: system/modules/report/actions/editfeed.php:22
+msgid "Date Formats must be <b>d/m/Y</b> to mimic date picker"
+msgstr "日付形式は、日付ピッカーを模倣するために、<B> D / M / Y </ b>のでなければなりません"
+
+#: system/modules/report/actions/editfeed.php:29
+msgid "Feed URL"
+msgstr "フィードURL"
+
+#: system/modules/report/actions/editfeed.php:30
+#: system/modules/task/task.hooks.php:58 system/modules/task/task.hooks.php:109
+#: system/modules/task/task.hooks.php:150
+#: system/modules/task/task.hooks.php:232
+#: system/modules/task/task.hooks.php:266
+#: system/modules/task/task.hooks.php:300
+msgid "Note"
+msgstr "注意"
+
+#: system/modules/report/actions/editfeed.php:50
+msgid " has been updated"
+msgstr " 更新されています"
+
+#: system/modules/report/actions/editmember.php:10
+#: system/modules/task/task.group.actions.php:220
+#: system/modules/task/task.group.actions.php:298
+msgid "Member Details"
+msgstr "メンバーの詳細"
+
+#: system/modules/report/actions/editmember.php:14
+msgid "Is email recipient"
+msgstr "電子メールの受信者は、"
+
+#: system/modules/report/actions/editmember.php:30
+msgid "Member updated"
+msgstr "メンバーの更新"
+
+#: system/modules/report/actions/email.php:141
+msgid "Dear "
+msgstr "親愛な"
+
+#: system/modules/report/actions/email.php:141
+msgid "Please find attached your reports"
+msgstr "添付のレポートを見つけてください。"
+
+#: system/modules/report/actions/email.php:141
+msgid "Kind regards"
+msgstr "敬具"
+
+#: system/modules/report/actions/exereport.php:5
+#: system/modules/report/actions/runreport.php:8
+msgid "Generate Report"
+msgstr "レポートの生成"
+
+#: system/modules/report/actions/exereport.php:19
+msgid "Export as CSV"
+msgstr "CSVとしてエクスポート"
+
+#: system/modules/report/actions/exereport.php:21
+msgid "Export as XML"
+msgstr "XMLとしてエクスポート"
+
+#: system/modules/report/actions/exereport.php:22
+msgid "Edit Report Parameters"
+msgstr "編集レポートのパラメータ"
+
+#: system/modules/report/actions/exereport.php:23
+msgid "Edit Report"
+msgstr "[レポートの編集"
+
+#: system/modules/report/actions/exereport.php:24
+msgid "Export as PDF"
+msgstr "PDFとしてエクスポート"
+
+#: system/modules/report/actions/exereport.php:42
+msgid "No Data found for selections. Please try again...."
+msgstr "データが選択に見つかりません。もう一度やり直してください...."
+
+#: system/modules/report/actions/exereport.php:180
+msgid "No such report?"
+msgstr "そのような報告はありませんか？"
+
+#: system/modules/report/actions/index.php:8
+msgid "Reports"
+msgstr "レポート"
+
+#: system/modules/report/actions/index.php:9
+msgid "List Reports"
+msgstr "リストレポート"
+
+#: system/modules/report/actions/index.php:49
+msgid "Are you sure you want to delete this Report?"
+msgstr "あなたはこのレポートを削除してもよろしいですか？"
+
+#: system/modules/report/actions/index.php:79
+msgid "You have no available reports"
+msgstr "あなたが利用可能なレポートがありません"
+
+#: system/modules/report/actions/listfeed.php:5
+msgid "Feeds"
+msgstr "フィード"
+
+#: system/modules/report/actions/listfeed.php:11
+msgid "Feed"
+msgstr "フィード"
+
+#: system/modules/report/actions/listfeed.php:26
+msgid " View "
+msgstr " ビュー"
+
+#: system/modules/report/actions/listfeed.php:27
+msgid "Are you sure you wish to DELETE this feed?"
+msgstr "あなたはこのフィードを削除したいあなたは確信していますか？"
+
+#: system/modules/report/actions/listfeed.php:33
+msgid "No feeds to list"
+msgstr "リストするフィードいいえ"
+
+#: system/modules/report/actions/reportAjaxCategorytoType.php:32
+#: system/modules/report/actions/reportAjaxListModules.php:19
+#: system/modules/report/actions/reportAjaxModuletoCategory.php:23
+msgid "No Reports"
+msgstr "いいえレポートはありません"
+
+#: system/modules/report/actions/runreport.php:22
+msgid ": Report is yet to be approved"
+msgstr "：レポートはまだ承認されます"
+
+#: system/modules/report/actions/runreport.php:34
+msgid " Display Report "
+msgstr " レポートの表示"
+
+#: system/modules/report/actions/templates/delete.php:6
+#: system/modules/report/actions/templates/delete.php:11
+msgid "Report template not found"
+msgstr "レポートのテンプレートが見つかりません。"
+
+#: system/modules/report/actions/templates/delete.php:15
+msgid "Report template removed"
+msgstr "レポートテンプレートを削除します"
+
+#: system/modules/report/actions/templates/edit.php:8
+msgid "Add Report Template"
+msgstr "レポートテンプレートを追加します。"
+
+#: system/modules/report/actions/templates/edit.php:16
+msgid "Use in emailed reports"
+msgstr "電子メールで送信レポートに使用します"
+
+#: system/modules/report/actions/templates/edit.php:19
+msgid "Report ID"
+msgstr "報告書ID"
+
+#: system/modules/report/actions/templates/edit.php:35
+msgid "Report template "
+msgstr "レポートテンプレート"
+
+#: system/modules/report/actions/updatemembers.php:28
+msgid "Member Group updated"
+msgstr "メンバーグループを更新します"
+
+#: system/modules/report/actions/user/reassign.php:9
+#: system/modules/report/actions/user/reassign.php:32
+msgid "No user specified"
+msgstr "ユーザーが指定されていませんいいえ"
+
+#: system/modules/report/actions/user/reassign.php:19
+msgid "Reassign reports"
+msgstr "レポートを再割り当て"
+
+#: system/modules/report/actions/user/reassign.php:20
+msgid "Reassign reports to"
+msgstr "にレポートを再割り当て"
+
+#: system/modules/report/actions/user/reassign.php:72
+msgid "No reports found for user "
+msgstr "ユーザーが見つかりませレポートはありません"
+
+#: system/modules/report/actions/user/reassign.php:75
+msgid "Users reports reassigned to "
+msgstr "に再割り当てユーザーレポート"
+
+#: system/modules/report/models/Report.php:153
+msgid "Select an Optional Template"
+msgstr "オプションのテンプレートを選択します"
+
+#: system/modules/report/models/Report.php:154
+#: system/modules/report/models/ReportService.php:364
+msgid "Format"
+msgstr "フォーマット"
+
+#: system/modules/report/models/Report.php:250
+msgid "No Data Returned for selections"
+msgstr "選択のために返されるデータがありません"
+
+#: system/modules/report/models/Report.php:250
+msgid "Results"
+msgstr "結果"
+
+#: system/modules/report/models/Report.php:250
+msgid "No data returned for selections"
+msgstr "選択のために戻さデータはありません"
+
+#: system/modules/report/models/Report.php:254
+#: system/modules/task/actions/edit.php:54
+#: system/modules/task/actions/viewtask.php:51
+#: system/modules/task/actions/viewtask.php:55
+#: system/modules/task/actions/viewtask.php:80
+#: system/modules/task/partials/templates/listtasks.tpl.php:5
+msgid "Status"
+msgstr "状態"
+
+#: system/modules/report/models/Report.php:261
+msgid "SQL has completed successfully"
+msgstr "SQLが正常に完了しました"
+
+#: system/modules/report/models/Report.php:265
+msgid "A SQL error was encountered: "
+msgstr "SQLエラーが発生しました："
+
+#: system/modules/report/models/Report.php:276
+#: system/modules/report/models/Report.php:280
+#: system/modules/report/models/Report.php:286
+msgid "There is a problem with your SQL statement"
+msgstr "あなたのSQL文に問題があります"
+
+#: system/modules/report/models/ReportService.php:318
+msgid "Field"
+msgstr "フィールド"
+
+#: system/modules/report/models/ReportService.php:353
+msgid "No action Found"
+msgstr "アクションは見つかりませんでした"
+
+#: system/modules/report/models/ReportService.php:360
+msgid "Web Page"
+msgstr "ウェブページ"
+
+#: system/modules/report/models/ReportService.php:361
+msgid "Comma Delimited File"
+msgstr "カンマ区切りファイル"
+
+#: system/modules/report/models/ReportService.php:362
+msgid "PDF File"
+msgstr "PDFファイル"
+
+#: system/modules/report/models/ReportService.php:363
+#: system/modules/report/models/ReportTemplate.php:14
+msgid "XML"
+msgstr "XML"
+
+#: system/modules/report/models/ReportService.php:614
+#: system/modules/report/templates/approvereport.tpl.php:15
+#: system/modules/report/templates/deletereport.tpl.php:3
+msgid "Report Dashboard"
+msgstr "レポートダッシュボード"
+
+#: system/modules/report/models/ReportService.php:618
+msgid "Connections"
+msgstr "接続"
+
+#: system/modules/report/models/ReportService.php:619
+msgid "Feeds Dashboard"
+msgstr "ダッシュボードのフィード"
+
+#: system/modules/report/models/ReportTemplate.php:12
+msgid "HTML"
+msgstr "HTML"
+
+#: system/modules/report/models/ReportTemplate.php:13
+msgid "CSV"
+msgstr "CSV"
+
+#: system/modules/report/models/ReportTemplate.php:15
+msgid "PDF"
+msgstr "PDF"
+
+#: system/modules/report/models/ReportTemplate.php:16
+msgid "Image"
+msgstr "画像"
+
+#: system/modules/report/partials/actions/removeUser.php:9
+msgid "No User provided"
+msgstr "ユーザーませんありません"
+
+#: system/modules/report/partials/templates/removeUser.tpl.php:4
+msgid "This user owns"
+msgstr "このユーザーは、所有しています"
+
+#: system/modules/report/partials/templates/removeUser.tpl.php:4
+#: system/modules/report/partials/templates/removeUser.tpl.php:7
+msgid "report"
+msgstr "報告する"
+
+#: system/modules/report/partials/templates/removeUser.tpl.php:10
+msgid "Reassign report(s)"
+msgstr "レポートを再割り当て（複数可）"
+
+#: system/modules/report/templates/approvereport.tpl.php:17
+msgid "Approve Reports"
+msgstr "レポートの承認"
+
+#: system/modules/report/templates/approvereport.tpl.php:18
+msgid "View Report"
+msgstr "レポートを見ます"
+
+#: system/modules/report/templates/approvereport.tpl.php:19
+#: system/modules/report/templates/edit.tpl.php:7
+msgid "Members"
+msgstr "メンバー"
+
+#: system/modules/report/templates/connections/index.tpl.php:1
+msgid "Add a Connection"
+msgstr "接続の追加"
+
+#: system/modules/report/templates/createreport.tpl.php:8
+msgid "Please review the <b>Help</b> file for full instructions on the special syntax used to create reports."
+msgstr "レポートを作成するために使用される特殊な構文上の完全な手順については、<B>ヘルプ</ b>のファイルを確認してください。"
+
+#: system/modules/report/templates/deletereport.tpl.php:4
+msgid "Delete Report"
+msgstr "レポートを削除"
+
+#: system/modules/report/templates/edit.tpl.php:5
+msgid "SQL"
+msgstr "SQL"
+
+#: system/modules/report/templates/edit.tpl.php:20
+msgid ""
+"You can add special templates to render the data. Create a <a href=\"/admin-templates\">System Template in Admin</a> and set the \n"
+"\t        \tmodule to <b>report</b>, it can then be selected here.</p>\n"
+"\t        \t<p>The template processer uses the Twig language, you can find more information about this on\n"
+"\t        \tthe <a href=\"\">Twig Website</a>.</p>\n"
+"\t        \t<p>A good first step when creating a new template, is to look at the data. You can use the following\n"
+"\t        \ttwig statement in your template to do this:</p>\n"
+"\t        \t<pre>{{dump(data)}}</pre>"
+msgstr ""
+"あなたはデータをレンダリングするために特別なテンプレートを追加することができます。管理する</a>に<a href=\"/admin-templates\">システムテンプレートの作成と設定\n"
+"<b>レポート</ b>をモジュール、それはその後、ここで選択することができます。</ p>\n"
+"<P>テンプレート・プロセサは、小枝の言語を使用して、あなたはこれについての詳細な情報を見つけることができます\n"
+"<aのhref=\"\">小枝サイト</a>します。</ p>\n"
+"<P>新しいテンプレートを作成する良い最初のステップは、データを見ることです。あなたは次のように使用することができます\n"
+"これを行うには、テンプレート内の小枝声明ます：</ p>\n"
+"<前> {{ダンプ（データ）}} </ PRE>"
+
+#: system/modules/report/templates/edit.tpl.php:32
+msgid " Add New Members "
+msgstr " 新しいメンバーを追加します。"
+
+#: system/modules/report/templates/editfeed.tpl.php:3
+msgid "View Feed"
+msgstr "ビューフィード"
+
+#: system/modules/report/templates/listfeed.tpl.php:1
+msgid "Create Feed"
+msgstr "フィードを作成します。"
+
+#: system/modules/rest/models/RestService.php:27
+msgid "wrong API key"
+msgstr "間違ったAPIキー"
+
+#: system/modules/rest/models/RestService.php:37
+msgid "authentication failed for "
+msgstr "認証に失敗しました"
+
+#: system/modules/rest/models/RestService.php:53
+msgid "Missing token"
+msgstr "不足しているトークン"
+
+#: system/modules/rest/models/RestService.php:61
+msgid "No session associated with this token"
+msgstr "このトークンに関連付けられたセッションはありません"
+
+#: system/modules/rest/models/RestService.php:72
+#: system/modules/rest/models/RestService.php:109
+#: system/modules/rest/models/RestService.php:151
+msgid "No access to "
+msgstr "へのアクセスなし"
+
+#: system/modules/rest/models/RestService.php:131
+msgid "No feedback from save."
+msgstr "セーブからのフィードバックはありません。"
+
+#: system/modules/rest/models/RestService.php:139
+msgid "Not allowed"
+msgstr "許可されていません"
+
+#: system/modules/rest/models/RestService.php:159
+msgid "deleted"
+msgstr "削除されました"
+
+#: system/modules/rest/models/RestService.php:162
+msgid "Not allowed to delete this record"
+msgstr "このレコードを削除することはできません"
+
+#: system/modules/search/actions/reindexall.php:4
+#: system/modules/task/config.php:45
+msgid "Done"
+msgstr "終わりました"
+
+#: system/modules/search/actions/results.php:50
+#: system/modules/search/templates/resultsbackup.tpl.php:25
+msgid "restricted"
+msgstr "制限されました"
+
+#: system/modules/search/actions/results.php:64
+msgid "Please enter at least 3 characters for searching."
+msgstr "検索のために少なくとも3文字を入力してください。"
+
+#: system/modules/search/templates/index.tpl.php:1
+#: system/modules/timelog/actions/edit.php:35
+#: system/modules/timelog/actions/start.php:15
+msgid "Search"
+msgstr "サーチ"
+
+#: system/modules/search/templates/index.tpl.php:55
+msgid "Failed to receive a response from search"
+msgstr "検索からの応答の受信に失敗しました"
+
+#: system/modules/search/templates/resultsbackup.tpl.php:35
+msgid "No documents found,."
+msgstr "いいえドキュメントが見つかりませんでした、。"
+
+#: system/modules/tag/actions/delete.php:10
+msgid "Tag deleted"
+msgstr "タグ削除"
+
+#: system/modules/tag/actions/delete.php:14
+msgid "Could not find tag"
+msgstr "タグが見つかりませんでした"
+
+#: system/modules/tag/actions/edit.php:4
+msgid "Edit Tag"
+msgstr "[タグの編集]"
+
+#: system/modules/tag/actions/edit.php:9 system/modules/tag/actions/edit.php:11
+#: system/modules/tag/actions/index.php:6
+msgid "Tag"
+msgstr "タグ"
+
+#: system/modules/tag/actions/edit.php:23
+msgid "Couldn't save tag"
+msgstr "タグを保存できませんでした"
+
+#: system/modules/tag/actions/edit.php:23
+msgid "already exists!"
+msgstr "もう存在している！"
+
+#: system/modules/tag/actions/edit.php:25
+msgid "Tag saved"
+msgstr "タグ保存"
+
+#: system/modules/tag/actions/index.php:4
+#: system/modules/tag/models/TagService.php:158
+msgid "Tag Admin"
+msgstr "タグの管理"
+
+#: system/modules/tag/models/TagService.php:129
+#: system/modules/tag/models/TagService.php:131
+#: system/modules/tag/partials/templates/listTags.tpl.php:13
+msgid "No tag"
+msgstr "タグはありません"
+
+#: system/modules/tag/models/TagService.php:142
+#: system/modules/tag/partials/templates/listTags.tpl.php:22
+msgid "Filter tags"
+msgstr "フィルタのタグ"
+
+#: system/modules/tag/partials/templates/listTags.tpl.php:20
+msgid "Available tags"
+msgstr "利用可能なタグ"
+
+#: system/modules/tag/templates/edit.tpl.php:1
+msgid "Back to Tag List"
+msgstr "戻るタグリストへ"
+
+#: system/modules/task/actions/createtask.php:4
+#: system/modules/task/actions/createtask.php:58
+#: system/modules/task/actions/tasktypeform.php:5
+#: system/modules/task/templates/tasktypeform.tpl.php:17
+msgid "Create Task"
+msgstr "タスクの作成"
+
+#: system/modules/task/actions/createtask.php:32
+#: system/modules/task/actions/taskAjaxSelectbyTaskGroup.php:33
+msgid "Task Group Description"
+msgstr "タスクグループの説明"
+
+#: system/modules/task/actions/createtask.php:33
+#: system/modules/task/actions/createtask.php:44
+#: system/modules/task/actions/edit.php:45
+#: system/modules/task/actions/edit.php:46
+#: system/modules/task/actions/taskAjaxSelectbyTaskGroup.php:34
+#: system/modules/task/actions/tasklist.php:94
+#: system/modules/task/actions/tasklist.php:106
+#: system/modules/task/actions/viewtask.php:62
+#: system/modules/task/actions/viewtask.php:77
+msgid "Task Group"
+msgstr "タスクグループ"
+
+#: system/modules/task/actions/createtask.php:34
+#: system/modules/task/actions/createtask.php:46
+#: system/modules/task/actions/edit.php:48
+#: system/modules/task/actions/edit.php:50
+#: system/modules/task/actions/taskAjaxSelectbyTaskGroup.php:35
+#: system/modules/task/actions/tasklist.php:95
+#: system/modules/task/actions/viewtask.php:63
+#: system/modules/task/actions/viewtask.php:78
+msgid "Task Type"
+msgstr "タスクの種類"
+
+#: system/modules/task/actions/createtask.php:43
+msgid "Create a New Task - Step One"
+msgstr "新しいタスクの作成 - ステップ1を"
+
+#: system/modules/task/actions/createtask.php:45
+#: system/modules/task/actions/edit.php:53
+msgid "Task Title"
+msgstr "タスクのタイトル"
+
+#: system/modules/task/actions/createtask.php:47
+#: system/modules/task/actions/edit.php:57
+#: system/modules/task/actions/viewtask.php:66
+#: system/modules/task/actions/viewtask.php:81
+#: system/modules/task/partials/templates/listtasks.tpl.php:5
+msgid "Priority"
+msgstr "優先"
+
+#: system/modules/task/actions/createtask.php:48
+#: system/modules/task/actions/edit.php:58
+#: system/modules/task/actions/viewtask.php:67
+#: system/modules/task/actions/viewtask.php:82
+msgid "Date Due"
+msgstr "期日"
+
+#: system/modules/task/actions/createtask.php:50
+#: system/modules/task/actions/edit.php:60
+#: system/modules/task/actions/edit.php:61
+#: system/modules/task/actions/viewtask.php:30
+#: system/modules/task/actions/viewtask.php:34
+#: system/modules/task/partials/templates/listtasks.tpl.php:5
+msgid "Assigned To"
+msgstr "に割り当てられた"
+
+#: system/modules/task/actions/createtask.php:51
+msgid " Continue >> "
+msgstr " 続行>>"
+
+#: system/modules/task/actions/createtask.php:86
+#: system/modules/task/task.hooks.php:99
+msgid "Task "
+msgstr "仕事"
+
+#: system/modules/task/actions/createtask.php:90
+msgid "The Task could not be created. Please inform the IT Group"
+msgstr "タスクを作成できませんでした。 ITグループまでご連絡ください"
+
+#: system/modules/task/actions/delete.php:14
+#: system/modules/task/actions/updatestatus.php:40
+msgid "Task: "
+msgstr "仕事："
+
+#: system/modules/task/actions/delete.php:14
+msgid " has been deleted."
+msgstr " 削除されました。"
+
+#: system/modules/task/actions/delete.php:16
+msgid "Task could not be found."
+msgstr "タスクが見つかりませんでした。"
+
+#: system/modules/task/actions/duplicatetask.php:12
+msgid " -Copy"
+msgstr " -copy"
+
+#: system/modules/task/actions/duplicatetask.php:51
+msgid "Task duplicated"
+msgstr "タスクの重複"
+
+#: system/modules/task/actions/edit.php:11
+msgid "You do not have permission to edit this Task"
+msgstr "あなたは、このタスクを編集する権限がありません"
+
+#: system/modules/task/actions/edit.php:35
+#: system/modules/task/actions/group/viewtaskgrouptypes.php:43
+#: system/modules/task/actions/taskAjaxSelectbyTaskGroup.php:28
+#: system/modules/task/actions/tasklist.php:90
+#: system/modules/task/task.group.actions.php:33
+msgid "Unassigned"
+msgstr "割り当てられていません"
+
+#: system/modules/task/actions/edit.php:42
+msgid "Edit task"
+msgstr "編集タスク"
+
+#: system/modules/task/actions/edit.php:42
+msgid "Create a new task"
+msgstr "新しいタスクを作成します。"
+
+#: system/modules/task/actions/edit.php:64
+msgid "Estimated hours"
+msgstr "推定時間"
+
+#: system/modules/task/actions/edit.php:65
+msgid "Effort"
+msgstr "努力"
+
+#: system/modules/task/actions/edit.php:73
+msgid "Task Group ID"
+msgstr "タスクグループID"
+
+#: system/modules/task/actions/edit.php:77
+#: system/modules/task/partials/templates/listtaskgroups.tpl.php:8
+msgid "New Task"
+msgstr "新しい仕事"
+
+#: system/modules/task/actions/edit.php:79
+#: system/modules/task/actions/viewtask.php:22
+msgid "Task:"
+msgstr "仕事："
+
+#: system/modules/task/actions/edit.php:91
+#: system/modules/task/actions/group/viewmembergroup.php:67
+#: system/modules/task/actions/tasklist.php:92
+#: system/modules/task/actions/tasklist.php:106
+#: system/modules/task/actions/viewtask.php:156
+#: system/modules/task/task.actions.php:225
+msgid "Assignee"
+msgstr "譲受人"
+
+#: system/modules/task/actions/edit.php:91
+#: system/modules/task/actions/viewtask.php:156
+#: system/modules/timelog/partials/templates/timelogwidget.tpl.php:24
+msgid "Start"
+msgstr "開始"
+
+#: system/modules/task/actions/edit.php:91
+#: system/modules/task/actions/viewtask.php:156
+msgid "Period (hours)"
+msgstr "期間（時間）"
+
+#: system/modules/task/actions/edit.php:116 system/modules/task/config.php:71
+msgid "Review"
+msgstr "レビュー"
+
+#: system/modules/task/actions/edit.php:116
+msgid "Accept"
+msgstr "受け入れます"
+
+#: system/modules/task/actions/edit.php:119
+#: system/modules/task/actions/viewtask.php:189
+msgid "Are you sure you wish to DELETE this Time Log Entry?"
+msgstr "あなたはこの時間ログエントリを削除したいあなたは確信していますか？"
+
+#: system/modules/task/actions/edit.php:125
+#: system/modules/task/actions/viewtask.php:196
+msgid "Total"
+msgstr "合計"
+
+#: system/modules/task/actions/edit.php:161
+msgid "Notification Events"
+msgstr "通知イベント"
+
+#: system/modules/task/actions/edit.php:164
+#: system/modules/task/actions/viewtask.php:264
+#: system/modules/task/task.actions.php:622
+msgid "Task Details Update"
+msgstr "タスクの詳細の更新"
+
+#: system/modules/task/actions/edit.php:165
+#: system/modules/task/actions/viewtask.php:265
+#: system/modules/task/task.actions.php:623
+msgid "Comments Added"
+msgstr "コメントを追加しました"
+
+#: system/modules/task/actions/edit.php:168
+#: system/modules/task/actions/viewtask.php:266
+#: system/modules/task/task.actions.php:624
+msgid "Time Log Entry"
+msgstr "時間ログエントリ"
+
+#: system/modules/task/actions/edit.php:169
+#: system/modules/task/actions/viewtask.php:267
+msgid "Task Data Updated"
+msgstr "タスクデータが更新されました"
+
+#: system/modules/task/actions/edit.php:171
+#: system/modules/task/actions/viewtask.php:268
+#: system/modules/task/task.actions.php:625
+msgid "Documents Added"
+msgstr "ドキュメントが追加されました"
+
+#: system/modules/task/actions/edit.php:245
+msgid "Your iCal is attached"
+msgstr "あなたのiCalが添付されています"
+
+#: system/modules/task/actions/edit.php:245
+msgid "View Task at: "
+msgstr "でタスクを表示します。"
+
+#: system/modules/task/actions/group/viewmembergroup.php:15
+msgid "Task Group - "
+msgstr "タスクグループ - "
+
+#: system/modules/task/actions/group/viewmembergroup.php:17
+msgid "Task Group: "
+msgstr "タスクグループ："
+
+#: system/modules/task/actions/group/viewmembergroup.php:66
+#: system/modules/task/actions/tasklist.php:93
+#: system/modules/task/actions/tasklist.php:106
+msgid "Creator"
+msgstr "クリエイター"
+
+#: system/modules/task/actions/group/viewmembergroup.php:68
+#: system/modules/task/actions/tasklist.php:106
+msgid "All Others"
+msgstr "他のすべて"
+
+#: system/modules/task/actions/group/viewmembergroup.php:71
+msgid "Guest"
+msgstr "ゲスト"
+
+#: system/modules/task/actions/group/viewtaskgrouptypes.php:3
+#: system/modules/task/actions/group/viewtaskgrouptypes.php:5
+msgid "Manage Task Groups"
+msgstr "タスクグループの管理"
+
+#: system/modules/task/actions/group/viewtaskgrouptypes.php:11
+#: system/modules/task/task.group.actions.php:49
+#: system/modules/task/task.group.actions.php:145
+msgid "Default Assignee"
+msgstr "デフォルトの割り当て"
+
+#: system/modules/task/actions/group/viewtaskgrouptypes.php:26
+msgid "There are no Task Groups Configured. Please create a New Task Group."
+msgstr "何のタスクグループが構成さはありません。新しいタスクグループを作成してください。"
+
+#: system/modules/task/actions/group/viewtaskgrouptypes.php:47
+msgid "Task Group Attributes"
+msgstr "タスクグループの属性"
+
+#: system/modules/task/actions/group/viewtaskgrouptypes.php:48
+#: system/modules/task/task.group.actions.php:40
+#: system/modules/task/task.group.actions.php:138
+msgid "Task Group Type"
+msgstr "タスクグループの種類"
+
+#: system/modules/task/actions/group/viewtaskgrouptypes.php:50
+#: system/modules/task/task.group.actions.php:42
+#: system/modules/task/task.group.actions.php:140
+msgid "Who Can Assign"
+msgstr "誰割り当てることができます"
+
+#: system/modules/task/actions/group/viewtaskgrouptypes.php:51
+#: system/modules/task/task.group.actions.php:43
+#: system/modules/task/task.group.actions.php:141
+msgid "Who Can View"
+msgstr "誰が見ることができます"
+
+#: system/modules/task/actions/group/viewtaskgrouptypes.php:52
+#: system/modules/task/task.group.actions.php:44
+#: system/modules/task/task.group.actions.php:142
+msgid "Who Can Create"
+msgstr "誰を作成することができます"
+
+#: system/modules/task/actions/group/viewtaskgrouptypes.php:56
+#: system/modules/task/task.group.actions.php:47
+msgid "Default Task Type"
+msgstr "デフォルトのタスクタイプ"
+
+#: system/modules/task/actions/group/viewtaskgrouptypes.php:57
+#: system/modules/task/task.group.actions.php:48
+msgid "Default Priority"
+msgstr "デフォルト優先順位"
+
+#: system/modules/task/actions/index.php:8
+#: system/modules/task/templates/tasktypeform.tpl.php:15
+msgid "Task Dashboard"
+msgstr "タスクダッシュボード"
+
+#: system/modules/task/actions/taskAjaxAssigntoGroup.php:20
+#: system/modules/task/actions/taskAjaxGrouptoType.php:26
+#: system/modules/task/actions/taskAjaxPrioritytoStatus.php:30
+#: system/modules/task/actions/taskAjaxTypetoPriority.php:28
+msgid "No assigned Tasks"
+msgstr "いいえ割り当てられたタスクはありません"
+
+#: system/modules/task/actions/tasklist.php:4
+msgid "List Tasks"
+msgstr "リストのタスク"
+
+#: system/modules/task/actions/tasklist.php:96
+msgid "Task Priority"
+msgstr "タスクの優先順位"
+
+#: system/modules/task/actions/tasklist.php:97
+msgid "Task Status"
+msgstr "タスクの状態"
+
+#: system/modules/task/actions/tasklist.php:98
+msgid "Closed"
+msgstr "閉まっている"
+
+#: system/modules/task/actions/tasklist.php:106
+msgid "Your Role"
+msgstr "あなたの役割"
+
+#: system/modules/task/actions/tasktypeform.php:24
+msgid "No further information required.<p>Please save your task."
+msgstr "必要な詳細情報いいえ。<P>あなたのタスクを保存してください。"
+
+#: system/modules/task/actions/taskweek.php:22
+#: system/modules/task/templates/portal.tpl.php:13
+msgid "An overview of the activity in Tasks: "
+msgstr "タスクの活動の概要："
+
+#: system/modules/task/actions/taskweek.php:22
+#: system/modules/task/task.actions.php:357
+#: system/modules/task/templates/portal.tpl.php:13
+msgid " to "
+msgstr " に"
+
+#: system/modules/task/actions/taskweek.php:41
+#: system/modules/task/templates/portal.tpl.php:31
+msgid "View Task Group"
+msgstr "[タスクグループ"
+
+#: system/modules/task/actions/taskweek.php:42
+#: system/modules/task/templates/portal.tpl.php:32
+msgid "View Task Details"
+msgstr "[タスク詳細"
+
+#: system/modules/task/actions/taskweek.php:50
+msgid "No Task Activity found for given selections."
+msgstr "タスク・アクティビティは、与えられた選択のため見つかりません。"
+
+#: system/modules/task/actions/updatestatus.php:11
+msgid "status updated to: "
+msgstr "に更新されたステータス："
+
+#: system/modules/task/actions/updatestatus.php:44
+msgid "There was a problem."
+msgstr "問題が発生しました。"
+
+#: system/modules/task/actions/updatetask.php:30
+msgid " updated to: "
+msgstr " にアップデート："
+
+#: system/modules/task/actions/updatetask.php:89
+#: system/modules/task/models/Task.php:298
+#: system/modules/task/models/Task.php:329
+#: system/modules/task/models/Task.php:331
+#: system/modules/task/partials/templates/removeUser.tpl.php:3
+#: system/modules/task/task.tasks.php:83
+#: system/modules/task/templates/index.tpl.php:15
+#: system/modules/task/templates/index.tpl.php:53
+#: system/modules/task/templates/index.tpl.php:68
+msgid "Task"
+msgstr "仕事"
+
+#: system/modules/task/actions/user/unassign.php:9
+msgid "Missing User ID"
+msgstr "不足しているユーザーID"
+
+#: system/modules/task/actions/user/unassign.php:44
+msgid "User removed from Tasks/Taskgroups"
+msgstr "ユーザーがタスク/ Taskgroupsから削除します"
+
+#: system/modules/task/actions/viewtask.php:14
+msgid "View Task: "
+msgstr "タスクを表示します。"
+
+#: system/modules/task/actions/viewtask.php:18
+msgid "This Task has been deleted"
+msgstr "このタスクは削除されました"
+
+#: system/modules/task/actions/viewtask.php:33
+msgid "Not Assigned"
+msgstr "割り当てられていない"
+
+#: system/modules/task/actions/viewtask.php:47
+msgid " Delete Task "
+msgstr " タスクの削除"
+
+#: system/modules/task/actions/viewtask.php:47
+msgid "Are you should you with to DELETE this task?"
+msgstr "あなたは、このタスクを削除することでなければならないですか？"
+
+#: system/modules/task/actions/viewtask.php:59
+#: system/modules/task/actions/viewtask.php:74
+#: system/modules/task/templates/edit.tpl.php:3
+#: system/modules/task/templates/viewtask.tpl.php:10
+msgid "Task Details"
+msgstr "タスクの詳細"
+
+#: system/modules/task/actions/viewtask.php:61
+#: system/modules/task/actions/viewtask.php:76
+#: system/modules/task/partials/templates/listtasks.tpl.php:5
+msgid "Created By"
+msgstr "によって作成された"
+
+#: system/modules/task/actions/viewtask.php:130
+msgid "Start Time Log"
+msgstr "開始時刻のログ"
+
+#: system/modules/task/actions/viewtask.php:145
+msgid " Add Time Log entry "
+msgstr " 時間ログのエントリを追加します。"
+
+#: system/modules/task/actions/viewtask.php:156
+msgid "End"
+msgstr "終わり"
+
+#: system/modules/task/actions/viewtask.php:167
+msgid " Accept "
+msgstr " 受け入れます"
+
+#: system/modules/task/actions/viewtask.php:173
+msgid " Review "
+msgstr " レビュー"
+
+#: system/modules/task/actions/viewtask.php:193
+msgid " Comment "
+msgstr " コメント"
+
+#: system/modules/task/actions/viewtask.php:199
+msgid "No time log entries have been made"
+msgstr "時間がないのログエントリが行われていません"
+
+#: system/modules/task/actions/viewtask.php:262
+msgid "For which Task Events should you receive Notification?"
+msgstr "これについては、タスクのイベントは、あなたが通知を受け取りますか？"
+
+#: system/modules/task/actions/viewtask.php:281
+msgid "Not a Member"
+msgstr "メンバーでありません"
+
+#: system/modules/task/actions/viewtask.php:291
+msgid "You must be at least a "
+msgstr "あなたがでなければならない、少なくとも"
+
+#: system/modules/task/actions/viewtask.php:291
+msgid " of the Task Group"
+msgstr " タスクグループの"
+
+#: system/modules/task/actions/viewtask.php:291
+msgid "Your current Membership Level"
+msgstr "あなたの現在のメンバーシップレベル"
+
+#: system/modules/task/actions/viewtask.php:291
+msgid "Please appeal to the group owner(s)"
+msgstr "グループの所有者にアピールしてください（複数可）"
+
+#: system/modules/task/actions/viewtask.php:291
+msgid " for promotion."
+msgstr " 昇進のため。"
+
+#: system/modules/task/actions/viewtask.php:291
+msgid "to view tasks in this group"
+msgstr "このグループ内のタスクを表示します"
+
+#: system/modules/task/config.php:30 system/modules/task/config.php:53
+msgid "Ordinary Hours"
+msgstr "通常の営業時間"
+
+#: system/modules/task/config.php:30 system/modules/task/config.php:53
+msgid "Overtime"
+msgstr "時間とともに"
+
+#: system/modules/task/config.php:30 system/modules/task/config.php:53
+msgid "Weekend"
+msgstr "週末"
+
+#: system/modules/task/config.php:39
+msgid "To Do"
+msgstr "行うには"
+
+#: system/modules/task/config.php:41
+msgid "New"
+msgstr "新しい"
+
+#: system/modules/task/config.php:42
+msgid "Assigned"
+msgstr "割り当てられました"
+
+#: system/modules/task/config.php:43
+msgid "Wip"
+msgstr "WIP"
+
+#: system/modules/task/config.php:44
+msgid "Pending"
+msgstr "保留中"
+
+#: system/modules/task/config.php:46 system/modules/task/config.php:74
+msgid "Rejected"
+msgstr "拒否されました"
+
+#: system/modules/task/config.php:47 system/modules/task/config.php:75
+msgid "Urgent"
+msgstr "緊急"
+
+#: system/modules/task/config.php:47 system/modules/task/config.php:75
+msgid "Normal"
+msgstr "ノーマル"
+
+#: system/modules/task/config.php:47 system/modules/task/config.php:75
+msgid "Nice to have"
+msgstr "あると便利"
+
+#: system/modules/task/config.php:63
+msgid "Programming Task"
+msgstr "プログラミングタスク"
+
+#: system/modules/task/config.php:65
+msgid "Idea"
+msgstr "アイディア"
+
+#: system/modules/task/config.php:66
+msgid "On Hold"
+msgstr "保留"
+
+#: system/modules/task/config.php:67
+msgid "Backlog"
+msgstr "バックログ"
+
+#: system/modules/task/config.php:68
+msgid "Todo"
+msgstr "藤堂"
+
+#: system/modules/task/config.php:69
+msgid "WIP"
+msgstr "WIP"
+
+#: system/modules/task/config.php:70
+msgid "Testing"
+msgstr "検査"
+
+#: system/modules/task/config.php:72
+msgid "Deploy"
+msgstr "展開します"
+
+#: system/modules/task/config.php:73
+msgid "Live"
+msgstr "ライブ"
+
+#: system/modules/task/models/Task.php:307
+msgid ", Assigned: "
+msgstr "、割り当てられました："
+
+#: system/modules/task/models/Task.php:311
+msgid ", First Assigned: "
+msgstr "、まず、割り当てられました："
+
+#: system/modules/task/models/Task.php:315
+msgid ", Due: "
+msgstr "、期限："
+
+#: system/modules/task/models/Task.php:397
+msgid "Task Created"
+msgstr "タスクの作成"
+
+#: system/modules/task/models/Task.php:480
+msgid "Updating Task"
+msgstr "タスクの更新"
+
+#: system/modules/task/models/Task.php:525
+msgid "Deleting Task"
+msgstr "タスクの削除"
+
+#: system/modules/task/partials/templates/listtasks.tpl.php:2
+msgid "Filter Tasks"
+msgstr "フィルタのタスク"
+
+#: system/modules/task/partials/templates/listtasks.tpl.php:5
+msgid "Group"
+msgstr "グループ"
+
+#: system/modules/task/partials/templates/listtasks.tpl.php:5
+msgid "Due"
+msgstr "原因"
+
+#: system/modules/task/partials/templates/listtasks.tpl.php:33
+msgid "No tasks found"
+msgstr "タスク見つかりません"
+
+#: system/modules/task/partials/templates/removeUser.tpl.php:6
+msgid "This user has"
+msgstr "このユーザーは持っています"
+
+#: system/modules/task/partials/templates/removeUser.tpl.php:6
+#: system/modules/task/templates/index.tpl.php:7
+#: system/modules/task/templates/index.tpl.php:40
+#: system/modules/task/templates/index.tpl.php:50
+#: system/modules/task/templates/index.tpl.php:70
+msgid "task"
+msgstr "仕事"
+
+#: system/modules/task/partials/templates/removeUser.tpl.php:6
+msgid "assigned to them"
+msgstr "それらに割り当てられました"
+
+#: system/modules/task/partials/templates/removeUser.tpl.php:9
+msgid "task group"
+msgstr "タスクグループ"
+
+#: system/modules/task/partials/templates/removeUser.tpl.php:11
+msgid "and they are the default assignee for"
+msgstr "そして、彼らは、デフォルトの譲受人であります"
+
+#: system/modules/task/partials/templates/removeUser.tpl.php:11
+msgid "of these"
+msgstr "これらの"
+
+#: system/modules/task/partials/templates/removeUser.tpl.php:16
+msgid "WARNING: Revoking this users Taskgroup membership will leave"
+msgstr "警告：このユーザタスクグループメンバーシップを取り消すことはままにします"
+
+#: system/modules/task/partials/templates/removeUser.tpl.php:16
+#: system/modules/task/templates/index.tpl.php:6
+#: system/modules/task/templates/index.tpl.php:49
+msgid "taskgroup"
+msgstr "タスクグループ"
+
+#: system/modules/task/partials/templates/removeUser.tpl.php:17
+msgid "without any members!"
+msgstr "どのメンバーもなし！"
+
+#: system/modules/task/partials/templates/removeUser.tpl.php:19
+msgid "Please add members to the following Taskgroups before proceeding:"
+msgstr "先に進む前に、次のTaskgroupsにメンバーを追加してください："
+
+#: system/modules/task/partials/templates/removeUser.tpl.php:28
+msgid "The following actions will be carried out:"
+msgstr "次のアクションが行われます。"
+
+#: system/modules/task/partials/templates/removeUser.tpl.php:30
+msgid "Remove user membership from any taskgroups"
+msgstr "任意のtaskgroupsからユーザーのメンバーシップを削除します"
+
+#: system/modules/task/partials/templates/removeUser.tpl.php:31
+msgid "Remove user from any taskgroup default assignee (WARNING: result will be that taskgroup has no default assignee)"
+msgstr "任意のタスクグループのデフォルトの譲受人（：結果はタスクグループは、デフォルトの譲受人を有していないことになりますWARNING）からユーザーを削除します"
+
+#: system/modules/task/partials/templates/removeUser.tpl.php:32
+msgid "Reassign any tasks assigned to the user to the default user (As with above, if the user is assigned and also the default assignee, the result will be tasks become unassigned)"
+msgstr "（ユーザが割り当てられている場合、上記と同じように、また、デフォルトの譲受人は、その結果、タスクが割り当てられていないになるだろう）デフォルト・ユーザーにユーザーに割り当てられたタスクを再割り当て"
+
+#: system/modules/task/partials/templates/removeUser.tpl.php:35
+msgid "Remove from Task"
+msgstr "タスクから削除"
+
+#: system/modules/task/task.actions.php:53
+msgid "Comment updated."
+msgstr "更新コメント。"
+
+#: system/modules/task/task.actions.php:60
+msgid "Comment created."
+msgstr "作成されたコメント。"
+
+#: system/modules/task/task.actions.php:78
+msgid "Attach Document"
+msgstr "ドキュメントを添付"
+
+#: system/modules/task/task.actions.php:79
+msgid "Document"
+msgstr "資料"
+
+#: system/modules/task/task.actions.php:84
+msgid " Upload "
+msgstr " アップロード"
+
+#: system/modules/task/task.actions.php:108
+msgid "There was an error. The document could not be saved."
+msgstr "エラーが発生しました。文書を保存できませんでした。"
+
+#: system/modules/task/task.actions.php:110
+msgid "The Document has been uploaded."
+msgstr "ドキュメントがアップロードされています。"
+
+#: system/modules/task/task.actions.php:118
+msgid "File Uploaded: "
+msgstr "ファイルのアップロード："
+
+#: system/modules/task/task.actions.php:138
+msgid "Select a Page"
+msgstr "ページを選択"
+
+#: system/modules/task/task.actions.php:154
+msgid "Please select a PAGE"
+msgstr "PAGEを選択してください"
+
+#: system/modules/task/task.actions.php:175
+msgid "Page Attached to Task: "
+msgstr "タスクに添付ページ："
+
+#: system/modules/task/task.actions.php:183
+msgid "Page Added to Task"
+msgstr "タスクに追加されたページ"
+
+#: system/modules/task/task.actions.php:224
+msgid "Add Time Log Entry"
+msgstr "時間ログエントリを追加します。"
+
+#: system/modules/task/task.actions.php:226
+msgid "Select the Start Date & Time"
+msgstr "開始日と時刻を選択します"
+
+#: system/modules/task/task.actions.php:227
+#: system/modules/task/task.actions.php:229
+msgid "Date/Time"
+msgstr "日付時刻"
+
+#: system/modules/task/task.actions.php:228
+msgid "Select the End Date & Time, or Period worked"
+msgstr "終了日と時刻を選択するか、または期間が働いていました"
+
+#: system/modules/task/task.actions.php:230
+msgid "Or Period:"
+msgstr "または期間："
+
+#: system/modules/task/task.actions.php:230
+msgid "Below select the period worked since the Start Date/Time"
+msgstr "下記の期間は、開始日付/時刻以降に働い選択します"
+
+#: system/modules/task/task.actions.php:231
+msgid "Hours"
+msgstr "営業時間"
+
+#: system/modules/task/task.actions.php:232
+msgid "Min"
+msgstr "ミン"
+
+#: system/modules/task/task.actions.php:233
+#: system/modules/timelog/actions/ajaxGetExtraData.php:20
+msgid "Time Type"
+msgstr "タイムタイプ"
+
+#: system/modules/task/task.actions.php:234
+#: system/modules/task/task.actions.php:235
+#: system/modules/task/task.actions.php:451
+#: system/modules/task/task.actions.php:533
+#: system/modules/task/templates/edit.tpl.php:12
+#: system/modules/task/templates/viewtask.tpl.php:12
+msgid "Comments"
+msgstr "注釈"
+
+#: system/modules/task/task.actions.php:278
+msgid "Start is greater than End. Please enter again."
+msgstr "スタートは終了よりも大きいです。もう一度入力してください。"
+
+#: system/modules/task/task.actions.php:280
+msgid "Time Log Entry updated."
+msgstr "時間ログエントリを更新しました。"
+
+#: system/modules/task/task.actions.php:280
+msgid "Time Log Entry created."
+msgstr "時間ログエントリが作成されました。"
+
+#: system/modules/task/task.actions.php:320
+msgid "Time Log entry marked for review"
+msgstr "レビューのためにマークされた時間のログエントリ"
+
+#: system/modules/task/task.actions.php:323
+msgid "Time Log entry accepted"
+msgstr "受け付け時間ログエントリ"
+
+#: system/modules/task/task.actions.php:357
+msgid "Time Log Entry deleted: "
+msgstr "時間ログエントリを削除します："
+
+#: system/modules/task/task.actions.php:364
+msgid "Time Log entry has been deleted."
+msgstr "時間ログエントリは削除されました。"
+
+#: system/modules/task/task.actions.php:366
+msgid "Time Log entry could not be found."
+msgstr "時間ログエントリが見つかりませんでした。"
+
+#: system/modules/task/task.actions.php:414
+#: system/modules/task/task.actions.php:446
+#: system/modules/task/task.actions.php:511
+#: system/modules/task/task.actions.php:528
+#: system/modules/task/templates/viewtask.tpl.php:58
+msgid "Task Time Log"
+msgstr "タスクタイムログ"
+
+#: system/modules/task/task.actions.php:447
+#: system/modules/task/task.actions.php:529
+msgid "View Task"
+msgstr "[タスク"
+
+#: system/modules/task/task.actions.php:454
+msgid "Save Comments"
+msgstr "コメントを保存"
+
+#: system/modules/task/task.actions.php:455
+msgid "Stop Time Now"
+msgstr "今の時間を停止します"
+
+#: system/modules/task/task.actions.php:487
+msgid "Time Log Entry: "
+msgstr "時間ログエントリ："
+
+#: system/modules/task/task.actions.php:489
+msgid " - Comments: "
+msgstr "  - コメント："
+
+#: system/modules/task/task.actions.php:608
+msgid " - Notifications"
+msgstr "  - お知らせ"
+
+#: system/modules/task/task.actions.php:620
+msgid "For which events should you receive Notification?"
+msgstr "イベントでは、通知を受け取る必要があるために？"
+
+#: system/modules/task/task.actions.php:621
+msgid "Task Creation"
+msgstr "タスク作成"
+
+#: system/modules/task/task.actions.php:626
+msgid "Pages Added"
+msgstr "ページを追加しました"
+
+#: system/modules/task/task.actions.php:688
+#: system/modules/task/task.actions.php:728
+#: system/modules/task/task.group.actions.php:210
+msgid "Notifications Updated"
+msgstr "お知らせ更新しました"
+
+#: system/modules/task/task.group.actions.php:15
+msgid "Taskgroup: "
+msgstr "タスクグループ："
+
+#: system/modules/task/task.group.actions.php:39
+#: system/modules/task/task.group.actions.php:137
+msgid "Task Group Details"
+msgstr "タスクグループの詳細"
+
+#: system/modules/task/task.group.actions.php:73
+#: system/modules/task/task.group.actions.php:119
+#: system/modules/task/task.group.actions.php:170
+msgid "Task Group "
+msgstr "タスクグループ"
+
+#: system/modules/task/task.group.actions.php:119
+msgid " updated."
+msgstr " 更新しました。"
+
+#: system/modules/task/task.group.actions.php:123
+msgid "Group: "
+msgstr "グループ："
+
+#: system/modules/task/task.group.actions.php:123
+msgid " no longer exists?"
+msgstr " もう存在しませんか？"
+
+#: system/modules/task/task.group.actions.php:157
+msgid "Taskgroup could not be found"
+msgstr "タスクグループが見つかりませんでした"
+
+#: system/modules/task/task.group.actions.php:164
+msgid "Taskgroup could not be found with ID: "
+msgstr "タスクグループは、IDで見つかりませんでした。"
+
+#: system/modules/task/task.group.actions.php:238
+#: system/modules/task/task.group.actions.php:288
+#: system/modules/task/task.group.actions.php:329
+msgid "Task Group updated"
+msgstr "タスクグループを更新します"
+
+#: system/modules/task/task.group.actions.php:249
+#: system/modules/task/task.group.actions.php:252
+msgid "Add Group Members"
+msgstr "グループメンバーを追加します。"
+
+#: system/modules/task/task.group.actions.php:251
+msgid "As Role"
+msgstr "役割として、"
+
+#: system/modules/task/task.group.actions.php:333
+msgid "Task Group Members no longer exists?"
+msgstr "タスクグループのメンバーは存在しませんか？"
+
+#: system/modules/task/task.hooks.php:21
+msgid "Task time"
+msgstr "タスク時間"
+
+#: system/modules/task/task.hooks.php:48
+msgid "A new task has been created"
+msgstr "新しいタスクが作成されました"
+
+#: system/modules/task/task.hooks.php:51
+msgid "Body"
+msgstr "体"
+
+#: system/modules/task/task.hooks.php:57
+msgid "Access the task here: "
+msgstr "ここでのタスクにアクセスします。"
+
+#: system/modules/task/task.hooks.php:58 system/modules/task/task.hooks.php:109
+#: system/modules/task/task.hooks.php:150
+#: system/modules/task/task.hooks.php:232
+#: system/modules/task/task.hooks.php:266
+#: system/modules/task/task.hooks.php:300
+msgid "Go to "
+msgstr "に行きます"
+
+#: system/modules/task/task.hooks.php:58 system/modules/task/task.hooks.php:109
+#: system/modules/task/task.hooks.php:150
+#: system/modules/task/task.hooks.php:232
+#: system/modules/task/task.hooks.php:266
+#: system/modules/task/task.hooks.php:300
+msgid "Task > Task List > Notifications"
+msgstr "[タスク]> [タスクリスト]> [通知]"
+
+#: system/modules/task/task.hooks.php:58 system/modules/task/task.hooks.php:109
+#: system/modules/task/task.hooks.php:150
+#: system/modules/task/task.hooks.php:232
+#: system/modules/task/task.hooks.php:266
+#: system/modules/task/task.hooks.php:300
+msgid ", to edit the types of notifications you will receive."
+msgstr "、あなたが受け取る通知のタイプを編集します。"
+
+#: system/modules/task/task.hooks.php:101
+msgid " details has been updated"
+msgstr " 詳細が更新されました"
+
+#: system/modules/task/task.hooks.php:102
+msgid "Status: "
+msgstr "状態："
+
+#: system/modules/task/task.hooks.php:141
+msgid "Someone"
+msgstr "誰か"
+
+#: system/modules/task/task.hooks.php:141
+msgid " has commented on a task that you're a part of"
+msgstr " あなたがその一部だ仕事にコメントしています"
+
+#: system/modules/task/task.hooks.php:218
+msgid " replied to a comment "
+msgstr " コメントに返信"
+
+#: system/modules/task/task.hooks.php:218
+msgid "that you're a part of "
+msgstr "あなたは、の一部だということ"
+
+#: system/modules/task/task.hooks.php:218
+msgid "for "
+msgstr "ために"
+
+#: system/modules/task/task.hooks.php:224
+msgid "Click here to view the comment"
+msgstr "コメントを表示するにはここをクリック"
+
+#: system/modules/task/task.hooks.php:226
+msgid "You are unable to view this task"
+msgstr "このタスクを表示することができません"
+
+#: system/modules/task/task.hooks.php:257
+#: system/modules/task/task.hooks.php:291
+msgid "Task - "
+msgstr "仕事 -"
+
+#: system/modules/task/task.hooks.php:259
+msgid " has had a new time log entry"
+msgstr " 新しいタイムログエントリがありました"
+
+#: system/modules/task/task.hooks.php:293
+msgid " has got a new attachment"
+msgstr " 新しい添付ファイルを持っています"
+
+#: system/modules/task/task.tasks.php:33
+msgid "Todo Item"
+msgstr "藤堂アイテム"
+
+#: system/modules/task/task.tasks.php:37
+msgid "Use this to assign any task."
+msgstr "任意のタスクを割り当てるために使用します。"
+
+#: system/modules/task/task.tasks.php:69
+msgid "Dev Ticket"
+msgstr "devのチケット"
+
+#: system/modules/task/task.tasks.php:73
+msgid "Use this to report any issue or feature request."
+msgstr "すべての問題や機能要求を報告するために使用します。"
+
+#: system/modules/task/task.tasks.php:83
+msgid "Ticket Type"
+msgstr "チケットの種類"
+
+#: system/modules/task/task.tasks.php:83
+msgid "Issue"
+msgstr "問題"
+
+#: system/modules/task/task.tasks.php:83
+msgid "Feature"
+msgstr "特徴"
+
+#: system/modules/task/task.tasks.php:84
+msgid "Identifier"
+msgstr "識別子"
+
+#: system/modules/task/templates/createtask.tpl.php:1
+msgid "Creating a new Task is a two step process."
+msgstr "新しいタスクを作成するには、2つのステップのプロセスです。"
+
+#: system/modules/task/templates/createtask.tpl.php:1
+msgid "Please complete all steps to register a Task."
+msgstr "タスクを登録するすべての手順を完了してください。"
+
+#: system/modules/task/templates/createtask.tpl.php:7
+msgid "You need to set up a Task Group first, that can be done"
+msgstr "あなたが行うことができる、最初のタスクグループを設定する必要があります"
+
+#: system/modules/task/templates/createtask.tpl.php:7
+msgid "here"
+msgstr "ここに"
+
+#: system/modules/task/templates/edit.tpl.php:11
+#: system/modules/task/templates/viewtask.tpl.php:11
+msgid "Time Log"
+msgstr "タイムログ"
+
+#: system/modules/task/templates/edit.tpl.php:13
+msgid "Attachments"
+msgstr "添付ファイル"
+
+#: system/modules/task/templates/edit.tpl.php:15
+#: system/modules/task/templates/viewtask.tpl.php:14
+msgid "Notifications"
+msgstr "お知らせ"
+
+#: system/modules/task/templates/edit.tpl.php:34
+msgid "Are you sure you want to delete this task?"
+msgstr "このタスクを削除してもよろしいですか？"
+
+#: system/modules/task/templates/edit.tpl.php:35
+msgid "Duplicate Task"
+msgstr "重複するタスク"
+
+#: system/modules/task/templates/edit.tpl.php:64
+msgid "If you do not set notifications for this Task then the default settings for the this Task group will be used."
+msgstr "あなたはこのタスクの通知を設定しない場合、このタスクグループのデフォルト設定が使用されます。"
+
+#: system/modules/task/templates/group/createtaskgroup.tpl.php:3
+msgid "Task Group successfully created"
+msgstr "タスクグループが正常に作成されました"
+
+#: system/modules/task/templates/index.tpl.php:6
+msgid "You're a member of"
+msgstr "あなたはのメンバーになっています"
+
+#: system/modules/task/templates/index.tpl.php:7
+msgid "With"
+msgstr "ととも​​に"
+
+#: system/modules/task/templates/index.tpl.php:15
+#: system/modules/task/templates/index.tpl.php:53
+msgid "assigned to you"
+msgstr "自分に割り当てられ"
+
+#: system/modules/task/templates/index.tpl.php:21
+#: system/modules/task/templates/index.tpl.php:57
+msgid " overdue"
+msgstr " 期限を過ぎました"
+
+#: system/modules/task/templates/index.tpl.php:24
+#: system/modules/task/templates/index.tpl.php:60
+msgid "0 due"
+msgstr "0による"
+
+#: system/modules/task/templates/index.tpl.php:24
+#: system/modules/task/templates/index.tpl.php:26
+#: system/modules/task/templates/index.tpl.php:62
+msgid "within 7 days"
+msgstr "7日以内に"
+
+#: system/modules/task/templates/index.tpl.php:26
+#: system/modules/task/templates/index.tpl.php:62
+msgid " due"
+msgstr " 原因"
+
+#: system/modules/task/templates/index.tpl.php:30
+#: system/modules/task/templates/index.tpl.php:65
+msgid "without a due date"
+msgstr "期日なし"
+
+#: system/modules/task/templates/index.tpl.php:38
+#: system/modules/task/templates/index.tpl.php:40
+#: system/modules/task/templates/index.tpl.php:68
+#: system/modules/task/templates/index.tpl.php:70
+msgid "marked"
+msgstr "マークされた"
+
+#: system/modules/task/templates/index.tpl.php:38
+#: system/modules/task/templates/index.tpl.php:40
+#: system/modules/task/templates/index.tpl.php:68
+#: system/modules/task/templates/index.tpl.php:70
+msgid "urgent"
+msgstr "緊急"
+
+#: system/modules/task/templates/index.tpl.php:49
+msgid "You're a member of "
+msgstr "あなたはのメンバーになっています"
+
+#: system/modules/task/templates/index.tpl.php:50
+msgid "overall"
+msgstr "全体"
+
+#: system/modules/task/templates/index.tpl.php:60
+msgid "with 7 days"
+msgstr "7日間で"
+
+#: system/modules/task/templates/portal.tpl.php:40
+msgid "No Task Activity found for given date span"
+msgstr "指定した日付のスパンが見つかりませタスクの活動はありません"
+
+#: system/modules/task/templates/tasktypeform.tpl.php:16
+msgid "Task List"
+msgstr "タスクリスト"
+
+#: system/modules/task/templates/taskweek.tpl.php:7
+#: system/modules/task/templates/taskweek.tpl.php:14
+msgid "Search Tasks"
+msgstr "検索タスク"
+
+#: system/modules/task/templates/taskweek.tpl.php:12
+msgid "From Date"
+msgstr "日から"
+
+#: system/modules/task/templates/viewtask.tpl.php:13
+msgid "Documents"
+msgstr "ドキュメント"
+
+#: system/modules/task/templates/viewtask.tpl.php:38
+msgid "Set your Notifications specific to this Task, otherwise your notifications for this Task Group will be employed."
+msgstr "それ以外の場合は、このタスクグループのためのあなたの通知が使用されるであろう、このタスクに固有のあなたの通知を設定します。"
+
+#: system/modules/task/templates/viewtask.tpl.php:69
+msgid "Please END TIME on your current Task"
+msgstr "あなたの現在のタスクにTIMEを終了してください"
+
+#: system/modules/task/templates/viewtask.tpl.php:69
+msgid "before starting a new Task Time Log"
+msgstr "新しいタスクのタイムログを開始する前に"
+
+#: system/modules/timelog/actions/ajaxGetExtraData.php:27
+msgid "Required"
+msgstr "必須"
+
+#: system/modules/timelog/actions/ajaxGetExtraData.php:34
+msgid "-- Select --"
+msgstr " - 選択 - "
+
+#: system/modules/timelog/actions/delete.php:13
+msgid "No timelog identifier provided"
+msgstr "ありませtimelog識別子ません"
+
+#: system/modules/timelog/actions/delete.php:19
+msgid "Timelog not found"
+msgstr "Timelogが見つかりません"
+
+#: system/modules/timelog/actions/delete.php:24
+msgid "You cannot delete Timelogs"
+msgstr "あなたはTimelogsを削除することはできません"
+
+#: system/modules/timelog/actions/delete.php:28
+msgid "Timelog deleted"
+msgstr "Timelog削除"
+
+#: system/modules/timelog/actions/edit.php:32
+msgid "Timelog"
+msgstr "Timelog"
+
+#: system/modules/timelog/actions/edit.php:90
+msgid "Timelog saved"
+msgstr "Timelogは、保存されました"
+
+#: system/modules/timelog/actions/migrate.php:40
+msgid "Timelog successfully migrated."
+msgstr "Timelogは正常に移行しました。"
+
+#: system/modules/timelog/actions/migrate.php:40
+#: system/modules/timelog/actions/migrate.php:43
+msgid "View Timelog"
+msgstr "ビューTimelog"
+
+#: system/modules/timelog/actions/migrate.php:43
+msgid "Timelog migration cannot run, lock is in place."
+msgstr "Timelog移行は、ロックが所定の位置にある、実行することはできません。"
+
+#: system/modules/timelog/actions/start.php:13
+msgid "Start Timelog"
+msgstr "スタートTimelog"
+
+#: system/modules/timelog/models/TimelogService.php:120
+msgid "Add Timelog"
+msgstr "Timelogを追加"
+
+#: system/modules/timelog/partials/templates/listtimelog.tpl.php:1
+msgid "Add new timelog"
+msgstr "新しいtimelogを追加"
+
+#: system/modules/timelog/partials/templates/listtimelog.tpl.php:18
+#: system/modules/timelog/templates/index.tpl.php:17
+msgid "Are you sure you want to delete this timelog?"
+msgstr "あなたはこのtimelogを削除してもよろしいですか？"
+
+#: system/modules/timelog/partials/templates/timelogwidget.tpl.php:4
+msgid "Start Timer"
+msgstr "スタート・タイマー"
+
+#: system/modules/timelog/partials/templates/timelogwidget.tpl.php:17
+msgid "Enter Description"
+msgstr "説明を入力します。"
+
+#: system/modules/timelog/partials/templates/timelogwidget.tpl.php:25
+msgid "Close"
+msgstr "閉じる"
+
+#: system/modules/timelog/templates/edit.tpl.php:63
+msgid "Additional Fields"
+msgstr "追加フィールド"
+
+#: system/modules/timelog/templates/index.tpl.php:15
+msgid "View Time Log"
+msgstr "表示時間ログ"
+
+#: system/modules/timelog/templates/index.tpl.php:25
+msgid "No time logs found"
+msgstr "時間がないのログが見つかりませんでした"

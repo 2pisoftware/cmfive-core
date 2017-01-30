@@ -54,6 +54,7 @@ function edit_GET(Web $w) {
 function edit_POST(Web $w) {
 //	var_dump($_POST); die();
 	$p = $w->pathMatch("id");
+	
 	$redirect = $w->request("redirect", '');
 	
 	$timelog = !empty($p['id']) ? $w->Timelog->getTimelog($p['id']) : new Timelog($w);

@@ -20,10 +20,10 @@ function addmembers_GET(Web &$w) {
 	// build form
 	$addUserForm = array(
 	array("","hidden", "report_id",$p['id']),
-	array("Add Member","select","member",null,$members),
-	array("With Role","select","role","",$w->Report->getReportPermissions()),
+	array(__("Add Member"),"select","member",null,$members),
+	array(__("With Role"),"select","role","",$w->Report->getReportPermissions()),
 	);
 
 	$w->setLayout(null);
-	$w->ctx("addmembers",Html::form($addUserForm,$w->localUrl("/report/updatemembers/"),"POST"," Submit "));
+	$w->ctx("addmembers",Html::form($addUserForm,$w->localUrl("/report/updatemembers/"),"POST",__(" Submit ")));
 }

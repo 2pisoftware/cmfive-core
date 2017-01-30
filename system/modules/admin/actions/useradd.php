@@ -6,8 +6,10 @@
 */
 function useradd_GET(Web &$w) {
 	$p = $w->pathMatch("box");
+	$user=new User($w);
+	$w->ctx('availableLocales',$user->getAvailableLanguages());
 	if (!$p['box']) {
-		$w->Admin->navigation($w,"Add User");
+		$w->Admin->navigation($w,__("Add User"));
 	} else {
 		$w->setLayout(null);
 	}
@@ -20,12 +22,12 @@ function useradd_GET(Web &$w) {
  */
 function useradd_POST(Web &$w) {
 	$errors = $w->validate(array(
-	array("login",".+","Login is mandatory"),
-	array("password",".+","Password is mandatory"),
-	array("password2",".+","Password2 is mandatory"),
+	array("login",".+",__("Login is mandatory")),
+	array("password",".+",__("Password is mandatory")),
+	array("password2",".+",__("Password2 is mandatory")),
 	));
 	if ($_REQUEST['password2'] != $_REQUEST['password']) {
-		$errors[]="Passwords don't match";
+		$errors[]=__("Passwords don't match");
 	}
 	if (sizeof($errors) != 0) {
 		$w->error(implode("<br/>\n",$errors),"/admin/useradd");
@@ -63,5 +65,5 @@ function useradd_POST(Web &$w) {
 	}
 	$w->callHook("admin", "account_changed", $user);
 
-	$w->msg("<div id='saved_record_id' data-id='".$user->id."' >User ".$user->login." added</div>","/admin/users");
+	$w->msg("<div id='saved_record_id' data-id='".$user->id."' >".__("User")." ".$user->login.__(" added")."</div>","/admin/users");
 }

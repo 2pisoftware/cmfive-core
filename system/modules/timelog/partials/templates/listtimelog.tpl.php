@@ -1,4 +1,4 @@
-<?php echo Html::box("/timelog/edit?class={$class}&id={$id}" . (!empty($redirect) ? "&redirect=$redirect" : ''), "Add new timelog", true); ?>
+<?php echo Html::box("/timelog/edit?class={$class}&id={$id}" . (!empty($redirect) ? "&redirect=$redirect" : ''), __("Add new timelog"), true); ?>
 <h4 style="display: inline; padding: 0px 5px;" class="right">
 	<?php echo $w->Task->getFormatPeriod($total); ?>
 </h4>
@@ -16,8 +16,8 @@
 					<td><?php echo $timelog->time_type; ?></td>
 					<td><pre class="break-pre" style="font-family: sans-serif;"><?php echo $timelog->getComment()->comment; ?></pre></td>
 					<td>
-						<?php echo Html::box('/timelog/edit/' . $timelog->id . (!empty($redirect) ? "?redirect=$redirect" : ''), 'Edit', true); ?>
-						<?php echo Html::b('/timelog/delete/' . $timelog->id . (!empty($redirect) ? "?redirect=$redirect" : ''), 'Delete', 'Are you sure you want to delete this timelog?'); ?>
+						<?php echo Html::box('/timelog/edit/' . $timelog->id . (!empty($redirect) ? "?redirect=$redirect" : ''), __('Edit'), true); ?>
+						<?php echo Html::b('/timelog/delete/' . $timelog->id . (!empty($redirect) ? "?redirect=$redirect" : ''), __('Delete'), __('Are you sure you want to delete this timelog?')); ?>
 					</td>
 				</tr>
 			<?php endforeach; ?>

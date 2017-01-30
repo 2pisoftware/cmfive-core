@@ -32,5 +32,5 @@ function edit_POST(Web $w) {
 	}
 	
 	
-	$w->msg("Form mappings updated", "/form/show/" . $form_id . "#mapping");
+	$w->msg(__("Form mappings updated"), "/form/show/" . $form_id . "#mapping");
 }

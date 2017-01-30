@@ -80,6 +80,8 @@ class Web {
 
     public $_scripts = array();
     public $_styles = array();
+    public $_languageModulesLoaded=[];
+    public $currentLocale='';
     
     /**
      * Constructor
@@ -101,12 +103,10 @@ class Web {
         $this->_hooks = array();
         
         // if using IIS then value is "off" for non ssl requests
-        $sHttps=array_key_exists('HTTPS',$_SERVER) ? $_SERVER['HTTPS'] : '';
-        $sHttpHost=array_key_exists('HTTP_HOST',$_SERVER) ? $_SERVER['HTTP_HOST'] : '';
-        if (empty($sHttps) || $sHttps == "off") {
-        	$this->_webroot = "http://" . $sHttpHost;
+        if (empty($_SERVER['HTTPS']) || $_SERVER['HTTPS'] == "off") {
+        	$this->_webroot = "http://" . $_SERVER['HTTP_HOST'];
         } else {
-        	$this->_webroot = "https://" . $sHttpHost;
+        	$this->_webroot = "https://" . $_SERVER['HTTP_HOST'];
         }
         $this->_actionMethod = null;
 
@@ -115,7 +115,8 @@ class Web {
 		defined("WEBROOT") ||  define("WEBROOT", $this->_webroot);
 		
         // conditions to start the installer
-        $this->_is_installing = array_key_exists('REQUEST_URI',$_SERVER) && strpos($_SERVER['REQUEST_URI'], '/install') === 0 ||!file_exists(ROOT_PATH . "/config.php");
+        $this->_is_installing = strpos($_SERVER['REQUEST_URI'], '/install') === 0 ||
+                                !file_exists(ROOT_PATH . "/config.php");
 
         $this->loadConfigurationFiles();
          
@@ -126,22 +127,20 @@ class Web {
     }
 
     private function modelLoader($className) {
-		// 1. check if class directory has to be loaded from cache
+    	// 1. check if class directory has to be loaded from cache
     	$classdirectory_cache_file = ROOT_PATH."/cache/classdirectory.cache";
     	
     	if (empty($this->_classdirectory) && file_exists($classdirectory_cache_file)) {
     		require_once $classdirectory_cache_file;
     	}
-    	
-		// 2. if filename is stored in $this->_classdirectory
+    	// 2. if filename is stored in $this->_classdirectory
     	if (!empty($this->_classdirectory[$className])) {
     		if (file_exists($this->_classdirectory[$className])) {
-    			require $this->_classdirectory[$className];
+    			require_once $this->_classdirectory[$className];
     			return true;
     		}
     	}
-    	
-		// 3. class has to be found the hard way
+    	// 3. class has to be found the hard way
         $modules = $this->modules();
         
         // create the class cache file
@@ -153,7 +152,7 @@ class Web {
             if (Config::get("{$model}.active") === true) {
                 $file = $this->getModuleDir($model) . 'models/' . ucfirst($className) . ".php";
                 if (file_exists($file)) {
-                    require $file;
+                    require_once $file;
                     // add this class file to the cache file
                     file_put_contents($classdirectory_cache_file,'$this->_classdirectory["'.$className.'"]="'.$file.'";'."\n", FILE_APPEND);
                     return true;
@@ -161,7 +160,7 @@ class Web {
                     // Try a lower case version
                     $file = $this->getModuleDir($model) . 'models/' . $className . ".php";
                     if (file_exists($file)) {
-                        require	 $file;
+                        require_once $file;
                         // add this class file to the cache file
                     	file_put_contents($classdirectory_cache_file,'$this->_classdirectory["'.$className.'"]="'.$file.'";'."\n", FILE_APPEND);
                         return true;
@@ -214,6 +213,69 @@ class Web {
         }
         return array_values($requestURI);
     }
+    
+    function initLocale() { 
+		$user=$this->Auth->user();
+		// default language
+		$language=Config::get('system.language');
+		// per user language s
+		if (!empty($user)) {
+			$lang=$user->language;
+			if (!empty($lang))  {
+				$language=$lang;
+			}
+		}
+		$this->Log->info('init locale '.$language);
+		
+		
+		$results = setlocale(LC_ALL, $language);
+		if (!$results) {
+			$this->Log->info('setlocale failed: locale function is not available on this platform, or the given locale ('.$language.') does not exist in this environment');
+		}
+		$langParts=explode(".",$language);
+		$this->currentLocale=$langParts[0];
+	}
+    
+  
+	
+	/**
+	 * Set the default translation domain (module name)
+	 * Initialise gettext for this module if not already loaded
+	 */
+	function setTranslationDomain($domain) {
+		//if (!in_array($domain,$this->_languageModulesLoaded)) {
+			$this->Log->info('init translations for '.$domain);
+			$path=ROOT_PATH."/".$this->getModuleDir($domain)."translations";
+			$translationFile=$path."/".$this->currentLocale."/LC_MESSAGES/".$domain.".mo";
+			$this->Log->info('translations file is '.$translationFile);
+			if (file_exists($translationFile)) {
+				$this->Log->info('translations file exists for '.$domain);
+				$results=bindtextdomain($domain, $path);
+				if (!$results) {
+					$this->Log->info('setlocale bindtextdomain failed try again with main domain: '.$domain.' : '.$path);
+					$domain='main';
+					$path=ROOT_PATH."/".$this->getModuleDir($domain)."translations";
+					$results=bindtextdomain($domain, $path);
+					if (!$results) {
+						//$this->Log->info('setlocale bindtextdomain failed on retry with main');
+						throw new Exception('setlocale bindtextdomain failed on retry with main');
+					}
+				}
+			} else {
+				$this->Log->info('no translations file exists for '.$domain." using main instead");
+				$domain='main';
+				$path=ROOT_PATH."/".$this->getModuleDir($domain)."translations";
+				$translationFile=$path."/".$this->currentLocale."/LC_MESSAGES/".$domain.".mo";
+				$results=bindtextdomain($domain, $path);
+					if (!$results) {
+						//$this->Log->info('setlocale bindtextdomain failed on retry with main');
+						throw new Exception('setlocale bindtextdomain failed on retry with main');
+					}
+			}
+		//}
+		bind_textdomain_codeset($domain, 'UTF-8');	
+		textdomain($domain);
+	}
 
     /**
      * Enqueue script adds the script entry to the Webs _script var which maintains
@@ -436,7 +498,11 @@ class Web {
         if (null !== Config::get("{$this->_module}.active") && !Config::get("{$this->_module}.active") && $this->_module !== "main") {
             $this->error("The {$this->_module} module is not active, you can change it's active state in it's config file.", "/");
         }
-        
+        // configure translations lookup for this module
+        $this->initLocale();
+        $this->setTranslationDomain('admin');
+        $this->setTranslationDomain('main');
+        $this->setTranslationDomain($this->currentModule());
         
         if (!$this->_action) {
             $this->_action = $this->_defaultAction;
@@ -461,7 +527,6 @@ class Web {
 		
         $actionmethods[] = $this->_action . '_' . $this->_requestMethod;
         $actionmethods[] = $this->_action . '_ALL';
-        $actionmethods[] = 'default_ALL';
 
         // change the submodule and action for installation
         if($this->_is_installing) {
@@ -572,8 +637,7 @@ class Web {
             } else {
                 $this->_buffer = $body;
             }
-			
-			echo $this->_buffer;
+            echo $this->_buffer;
         } else {
             $this->notFoundPage();
         }
@@ -1237,6 +1301,12 @@ class Web {
             $module = $this->_module;
         }
         
+        // set translations to partial module
+        $oldModule=$this->currentModule();
+		if ($oldModule!=$module)  {
+			$this->setTranslationDomain($module);
+		}
+		
         // Check if the module if active or not
 //        if (!Config::get("{$name}.active") && $name !== "main") {
 //            // Do we want to do something else?
@@ -1316,7 +1386,12 @@ class Web {
         // restore output buffer and context
         $this->_buffer = $oldbuf;
         $this->_context = $oldctx;
-
+		
+		// restore translations module
+		if ($oldModule!=$module)  {
+			$this->setTranslationDomain($oldModule);
+		}
+		
         return $currentbuf;
     }
 
@@ -1332,7 +1407,13 @@ class Web {
         if (empty($module) || empty($function)) {
             return null;
         }
-
+		
+		// set translations to hook module
+        $oldModule=$this->currentModule();
+		if ($oldModule!=$module)  {
+			$this->setTranslationDomain($module);
+		}
+		
         // Build _hook registry if empty
         if (empty($this->_hooks)) {
            foreach ($this->modules() as $modulename) {
@@ -1386,6 +1467,12 @@ class Web {
 	            }
             }
         }
+        
+		// restore translations module
+		if ($oldModule!=$module)  {
+			$this->setTranslationDomain($oldModule);
+		}
+		
         return $buffer;
     }
 

@@ -1,6 +1,6 @@
 <?php
 function lookup_ALL(Web &$w) {
-	$w->Admin->navigation($w,"Lookup");
+	$w->Admin->navigation($w,__("Lookup"));
 
 	$types = $w->Admin->getLookupTypes();
 
@@ -18,11 +18,12 @@ function lookup_ALL(Web &$w) {
             if ($w->request("type") !== null) {
                 unset($_REQUEST["type"]);
             }
+            var_dump($_REQUEST);
         }
        
 	$lookup = $w->Admin->getAllLookup($where);
 
-	$line[] = array("Type","Code","Title","Actions");
+	$line[] = array(__("Type"),__("Code"),__("Title"),__("Actions"));
 
 	if ($lookup) {
 		foreach ($lookup as $look) {
@@ -30,14 +31,14 @@ function lookup_ALL(Web &$w) {
 			$look->type,
 			$look->code,
 			$look->title,
-			Html::box($w->localUrl("/admin/editlookup/".$look->id."/".urlencode($w->request('type')))," Edit ",true) .
+			Html::box($w->localUrl("/admin/editlookup/".$look->id."/".urlencode($w->request('type'))),__(" Edit "),true) .
 						"&nbsp;&nbsp;&nbsp;" .
-			Html::b($w->webroot()."/admin/deletelookup/".$look->id."/".urlencode($w->request('type'))," Delete ", "Are you sure you wish to DELETE this Lookup item?")
+			Html::b($w->webroot()."/admin/deletelookup/".$look->id."/".urlencode($w->request('type')),__(" Delete "), __("Are you sure you wish to DELETE this Lookup item?"))
 			);
 		}
 	}
 	else {
-		$line[] = array("No Lookup items to list", null, null, null);
+		$line[] = array(__("No Lookup items to list"), null, null, null);
 	}
 
 	// display list of items, if any
@@ -48,12 +49,12 @@ function lookup_ALL(Web &$w) {
 	$types = $w->Admin->getLookupTypes();
 
 	$f = Html::form(array(
-	array("Create a New Entry","section"),
-	array("Type","select","type", null,$types),
-	array("or Add New Type","text","ntype"),
-	array("Code","text","code"),
-	array("Title","text","title"),
-	),$w->localUrl("/admin/newlookup/"),"POST"," Save ");
+	array(__("Create a New Entry"),"section"),
+	array(__("Type"),"select","type", null,$types),
+	array(__("or Add New Type"),"text","ntype"),
+	array(__("Key"),"text","code"),
+	array(__("Value"),"text","title"),
+	),$w->localUrl("/admin/newlookup/"),"POST",__(" Save "));
 	 
 	$w->ctx("newitem",$f);
 }

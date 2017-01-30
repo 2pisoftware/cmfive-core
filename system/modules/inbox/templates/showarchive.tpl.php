@@ -1,12 +1,12 @@
 <?php
 
 $button = new \Html\button();
-    echo $button->id('deletebutton')->text("Delete")->onclick("deleteMessage()")->__toString(); // print "<button onclick='deleteMessage()'>Delete</button>";
+echo $button->text(__("Delete"))->onclick("deleteMessage()")->__toString(); // print "<button onclick='deleteMessage()'>Delete</button>";
 
 if (!empty($arch_table)) {
     echo $arch_table;
 } else {
-    echo "<br/>There are no archived messages";
+    echo "<br/>".__("There are no archived messages");
 }
 
 $last_page = ceil($readtotal / 40);
@@ -21,7 +21,7 @@ $maxPage = ($pgnum * 1) + 5;
 if ($last_page > 1) {
     print "<table style='margin:auto;'><tr id='nav'>";
     if ($pgnum > 1) {
-        print "<td style='background-color:#eee;' id='link" . $i . " prevlink' class='link' onclick='switchPage(" . ($pgnum - 1) . ")'><a class='link'  href='#'>Prev</a></td>&nbsp";
+        print "<td style='background-color:#eee;' id='link" . $i . " prevlink' class='link' onclick='switchPage(" . ($pgnum - 1) . ")'><a class='link'  href='#'>".__("Prev")."</a></td>&nbsp";
     }
     for ($i = $minPage; $i <= $maxPage; $i++) {
         if ($pgnum == $i) {
@@ -31,7 +31,7 @@ if ($last_page > 1) {
         }
     }
     if ($pgnum < $last_page && $last_page !== 1) {
-        print "<td style='background-color: #eee; width:30px;' id='link" . $i . " nextlink' class='link' onclick='switchPage(" . ($pgnum + 1) . ")'><a class='link'  href='#'>Next</a></td>&nbsp";
+        print "<td style='background-color: #eee; width:30px;' id='link" . $i . " nextlink' class='link' onclick='switchPage(" . ($pgnum + 1) . ")'><a class='link'  href='#'>".__("Next")."</a></td>&nbsp";
     }
     print "</tr></table>";
 }

@@ -6,7 +6,7 @@ function removeUser(\Web $w, $params = []) {
 	$user = defaultVal($params['user']);
 	
 	if (empty($user)) {
-		$w->error("No User provided", $redirect ? : "/admin/users");
+		$w->error(__("No User provided"), $redirect ? : "/admin/users");
 	}
 	
 	// Get reports that a user owns

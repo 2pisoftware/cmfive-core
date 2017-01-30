@@ -1,13 +1,13 @@
-<?php echo Html::b("/admin-templates","Back to Templates List",false); ?>
+<?php echo Html::b("/admin-templates",__("Back to Templates List"),false); ?>
 <br/><br/>
 <div class="tabs">
 
 	<div class="tab-head">
-		<a href="#details">Details</a>
-		<a href="#template">Template</a>
-		<a href="#test">Test Data</a>
-        <?php echo Html::box("/admin-templates/rendertemplate/". (!empty($id) ? $id : ""), "Test Output", false); ?>
-		<a href="#manual">Manual</a>
+		<a href="#details"><?php _e('Details'); ?></a>
+		<a href="#template"><?php _e('Template'); ?></a>
+		<a href="#test"><?php _e('Test Data'); ?></a>
+        <?php echo Html::box("/admin-templates/rendertemplate/". (!empty($id) ? $id : ""), __("Test Output"), false); ?>
+		<a href="#manual"><?php _e('Manual'); ?></a>
 	</div>
 	<div class="tab-body clearfix">
             <div id="details"><p>
@@ -20,7 +20,7 @@
                     <?php echo !empty($testdataform) ? $testdataform : '';?>
             </div>
             <div id="manual" style="display: none;"><p>
-                            this is the template manual
+                            <?php _e('this is the template manual'); ?>
             </div>
 	</div>
 </div>

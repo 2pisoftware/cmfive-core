@@ -2,18 +2,18 @@
 
 function email_GET(Web $w) {
 	if (!class_exists("Mandrill")) {
-		$w->ctx("error", "You don't have the Mandrill library installed");
+		$w->ctx("error", __("You don't have the Mandrill library installed"));
 		return;
 	}
 	
 	$api_key = Config::get('email.api.credentials.key');
 	if (empty($api_key)) {
-		$w->ctx("error", "You don't have a Mandrill API key specified");
+		$w->ctx("error", __("You don't have a Mandrill API key specified"));
 		return;
 	}
 
 	try {
-		$w->ctx("title", "Email stats");
+		$w->ctx("title", __("Email stats"));
 		// Instantiate Mandrill
 		$mandrill = new Mandrill(Config::get('email.api.credentials.key'));
 
@@ -30,6 +30,6 @@ function email_GET(Web $w) {
 		$w->ctx("info", $info);
 		$w->ctx("messages", $messages);
 	} catch (Mandrill_Error $e) {
-		$w->ctx("error", "A Mandrill error occurred: " . get_class($e) . ' - ' . $e->getMessage());
+		$w->ctx("error", __("A Mandrill error occurred: ") . get_class($e) . ' - ' . $e->getMessage());
 	}
 }

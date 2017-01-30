@@ -4,20 +4,20 @@ function delete_ALL(Web $w) {
 	
 	$p = $w->pathMatch("id");
 	if (empty($p['id'])) {
-		$w->error("Form field not found", "/form");
+		$w->error(__("Form field not found"), "/form");
 	}
 	
 	$_form_field_object = $w->Form->getFormField($p['id']);
 	$form=$_form_field_object->getForm();
 	if (empty($form->id)) {
-		$w->error("Form not found", "/form");
+		$w->error(__("Form not found"), "/form");
 	}
 	
 	
 	if (empty($_form_field_object->id)) {
-		$w->error("Form field not found", "/form/show/".$form->id);
+		$w->error(__("Form field not found"), "/form/show/".$form->id);
 	}
 	
 	$_form_field_object->delete();
-	$w->msg("Form field deleted", "/form/show/".$form->id);
+	$w->msg(__("Form field deleted"), "/form/show/".$form->id);
 }

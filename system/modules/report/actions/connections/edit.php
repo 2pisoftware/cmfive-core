@@ -14,16 +14,16 @@ function edit_GET(Web $w) {
     $form = array(
         "Connection" => array(
             array(
-                array("Driver", "select", "db_driver", $report_connection->db_driver, PDO::getAvailableDrivers()),
-                array("Host", "text", "db_host", $report_connection->db_host)
+                array(__("Driver"), "select", "db_driver", $report_connection->db_driver, PDO::getAvailableDrivers()),
+                array(__("Host"), "text", "db_host", $report_connection->db_host)
             ),
             array(
-                array("Port", "text", "db_port", $report_connection->db_port),
-                array("Database", "text", "db_database", $report_connection->db_database)
+                array(__("Port"), "text", "db_port", $report_connection->db_port),
+                array(__("Database"), "text", "db_database", $report_connection->db_database)
             ),
             array(
-                array("Username", "text", "s_db_user", $report_connection->s_db_user),
-                array("Password", "password", "s_db_password", $report_connection->s_db_password)
+                array(__("Username"), "text", "s_db_user", $report_connection->s_db_user),
+                array(__("Password"), "password", "s_db_password", $report_connection->s_db_password)
             )
         )
     );
@@ -39,5 +39,5 @@ function edit_POST(Web $w) {
         $report_connection->s_db_password = NULL;
     }
     $report_connection->insertOrUpdate();
-    $w->msg("Connection " . (!empty($p["id"]) ? "updated" : "created"), "/report-connections");
+    $w->msg(__("Connection ") . (!empty($p["id"]) ? __("updated") : __("created")), "/report-connections");
 }

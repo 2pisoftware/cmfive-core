@@ -6,12 +6,12 @@ function editsettings_GET(Web $w) {
     $id = $p["id"];
 
     if (!$id) {
-        $w->error("Missing parameter in request", "/channels/listprocessors");
+        $w->error(__("Missing parameter in request"), "/channels/listprocessors");
     }
 
     $processor = $w->Channel->getProcessor($id);
     if (empty($processor->id)) {
-        $w->error("Invalid processor ID", "/channels/listprocessors");
+        $w->error(__("Invalid processor ID"), "/channels/listprocessors");
     }
 
     // Instantiate processor
@@ -23,10 +23,10 @@ function editsettings_GET(Web $w) {
         if (!empty($form)) {
             $w->out(Html::multiColForm($form, "/channels-processor/editsettings/{$processor->id}"));
         } else {
-            $w->error("Form implementation is empty", "/channels/listprocessors");
+            $w->error(__("Form implementation is empty"), "/channels/listprocessors");
         }
     } else {
-        $w->error("Generic form settings function is missing", "/channels/listprocessors");
+        $w->error(__("Generic form settings function is missing"), "/channels/listprocessors");
     }
 }
 
@@ -36,7 +36,7 @@ function editsettings_POST(Web $w) {
     $id = $p["id"];
 
     if (!$id) {
-        $w->error("Missing parameter in request", "/channels/listprocessors");
+        $w->error(__("Missing parameter in request"), "/channels/listprocessors");
     }
 
     // Remove CSRF token from request
@@ -47,11 +47,11 @@ function editsettings_POST(Web $w) {
 
     $processor = $w->Channel->getProcessor($id);
     if (empty($processor->id)) {
-        $w->error("Invalid processor ID", "/channels/listprocessors");
+        $w->error(__("Invalid processor ID"), "/channels/listprocessors");
     }
 
     $processor->settings = json_encode($post);
     $processor->update();
 
-    $w->msg("Processor settings saved", "/channels/listprocessors");
+    $w->msg(__("Processor settings saved"), "/channels/listprocessors");
 }

@@ -16,7 +16,7 @@ function reportAjaxListModules_ALL(Web $w) {
 		}
 	}
 	if (!$modules)
-	$modules = array(array("No Reports",""));
+	$modules = array(array(__("No Reports"),""));
 
 	// load Module dropdown and return
 	$modules = Html::select("module",$modules);

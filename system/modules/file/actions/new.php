@@ -7,7 +7,7 @@ function new_GET(Web $w) {
 	
 	$p = $w->pathMatch("class", "class_id");
 	if (empty($p['class']) || empty($p['class_id'])) {
-		$w->error("Missing class parameters", $redirect_url);
+		$w->error(__("Missing class parameters"), $redirect_url);
 	}
 	
 	$_form = [
@@ -27,13 +27,13 @@ function new_POST(Web $w) {
 	
 	$p = $w->pathMatch("class", "class_id");
 	if (empty($p['class']) || empty($p['class_id'])) {
-		$w->error("Missing class parameters", $redirect_url);
+		$w->error(__("Missing class parameters"), $redirect_url);
 	}
 	
 	$object = $w->File->getObject($p['class'], $p['class_id']);
 	
 	if (empty($object->id)) {
-		$w->error("Object not found", $redirect_url);
+		$w->error(__("Object not found"), $redirect_url);
 	}
 	
 	$result = $w->File->uploadAttachment("file", $object, $_POST['title'], $_POST['description'], !empty($_POST['type_code']) ? $_POST['type_code'] : null);
@@ -42,6 +42,6 @@ function new_POST(Web $w) {
     } elseif(!empty($_POST['file'])) {
 		$w->out(json_encode(array('success'=> 'true', 'key' => $_POST['key'])));
 	} else {
-		$w->msg("File attached", $redirect_url);
+		$w->msg(__("File attached"), $redirect_url);
 	}
 }

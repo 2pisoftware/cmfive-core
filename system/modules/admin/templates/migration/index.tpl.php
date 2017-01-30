@@ -13,14 +13,14 @@
 	<div class="tab-body clearfix">
 		<div id="batch">
 			<div class="row-fluid">
-				<?php echo Html::b("/admin-migration/rollbackbatch", "Rollback latest batch", "Are you sure you want to rollback migrations?"); ?>
+				<?php echo Html::b("/admin-migration/rollbackbatch", __("Rollback latest batch"), __("Are you sure you want to rollback migrations?")); ?>
 			</div>
 			<ul class="accordion" data-accordion>
 				<?php if (!empty($not_installed)) : ?>
 					<li class="accordion-navigation">
 						<a href="#batch_available">Not Installed</a>
 						<div id="batch_available" class="content active">
-							<?php echo Html::b("/admin-migration/run/all", "Install migrations", "Are you sure you want to install migrations?", null, false, "right");?>
+							<?php echo Html::b("/admin-migration/run/all", __("Install migrations"), __("Are you sure you want to install migrations?"), null, false, "right");?>
 							<ul>
 								<?php foreach($not_installed as $module => $_not_installed) :
 									foreach($_not_installed as $file => $classname) : ?>
@@ -35,7 +35,7 @@
 					krsort($batched);
 					foreach($batched as $batch_no => $batched_migrations) : ?>
 						<li class="accordion-navigation">
-							<a href="#batch_<?php echo $batch_no; ?>">Batch <?php echo $batch_no; ?></a>
+							<a href="#batch_<?php echo $batch_no; ?>"><?php _e('Batch'); ?> <?php echo $batch_no; ?></a>
 							<div id="batch_<?php echo $batch_no; ?>" class="content">
 								<ul>
 									<?php foreach($batched_migrations as $batched_migration): ?>
@@ -69,12 +69,12 @@
 				<div class="tabs-content">
 					<?php foreach($available as $module => $available_in_module) : ?>
 						<div class="content" style="padding-top: 0px;" id="<?php echo $module; ?>">
-							<?php echo Html::box("/admin-migration/create/" . $module, "Create a" . (in_array($module{0}, ['a', 'e', 'i' ,'o', 'u']) ? 'n' : '') . ' ' . $module . " migration", true); ?>
+							<?php echo Html::box("/admin-migration/create/" . $module, __("Create a") . (in_array($module{0}, ['a', 'e', 'i' ,'o', 'u']) ? 'n' : '') . ' ' . $module . __(" migration"), true); ?>
 							<?php if (count($available[$module]) > 0) : ?>
-								<?php echo Html::b("/admin-migration/run/" . $module, "Run all " . $module . " migrations", "Are you sure you want to run all outstanding migrations for this module?"); ?>
+								<?php echo Html::b("/admin-migration/run/" . $module, __("Run all ") . $module . __(" migrations"), __("Are you sure you want to run all outstanding migrations for this module?")); ?>
 								<table>
 									<thead>
-										<tr><th>Name</th><th>Path</th><th>Date run</th><th>Actions</th></tr>
+										<tr><th><?php _e('Name'); ?></th><th><?php _e('Path'); ?></th><th><?php _e('Date run'); ?></th><th><?php _e('Actions'); ?></th></tr>
 									</thead>
 									<tbody>
 										<?php foreach($available_in_module as $a_migration_path => $a_migration_class): ?>
@@ -85,7 +85,7 @@
 												<?php if ($w->Migration->isInstalled($a_migration_class)) :
 													$installedMigration = $w->Migration->getMigrationByClassname($a_migration_class); ?>
 													<span data-tooltip aria-haspopup="true" title="<?php echo @formatDate($installedMigration->dt_created, "d-M-Y \a\\t H:i"); ?>">
-														Run <?php echo Carbon::createFromTimeStamp($installedMigration->dt_created)->diffForHumans(); ?> by <?php echo !empty($installedMigration->creator_id) ? $w->Auth->getUser($installedMigration->creator_id)->getContact()->getFullName() : "System"; ?>
+														Run <?php echo Carbon::createFromTimeStamp($installedMigration->dt_created)->diffForHumans(); ?> <?php _e('by'); ?> <?php echo !empty($installedMigration->creator_id) ? $w->Auth->getUser($installedMigration->creator_id)->getContact()->getFullName() : __("System"); ?>
 													</span>
 												<?php endif; ?> 
 											</td>
@@ -93,9 +93,9 @@
 											<?php
 												$filename = basename($a_migration_path, ".php");
 												if ($w->Migration->isInstalled($a_migration_class)) {
-													echo Html::b('/admin-migration/rollback/' . $module . '/' . $filename, "Rollback to here", "Are you 110% sure you want to rollback a migration? DATA COULD BE LOST PERMANENTLY!", null, false, "warning expand");
+													echo Html::b('/admin-migration/rollback/' . $module . '/' . $filename, __("Rollback to here"), __("Are you 110% sure you want to rollback a migration? DATA COULD BE LOST PERMANENTLY!"), null, false, "warning expand");
 												} else {
-													echo Html::b('/admin-migration/run/' . $module . '/' . $filename, "Migrate to here", "Are you sure you want to run a migration?", null, false, "info expand");
+													echo Html::b('/admin-migration/run/' . $module . '/' . $filename, __("Migrate to here"), __("Are you sure you want to run a migration?"), null, false, "info expand");
 												}
 											?>
 											</td>
@@ -133,7 +133,7 @@
 					});
 				</script>
 			<?php else: ?>
-				<h4>There are no migrations on this project</h4>
+				<h4><?php _e('There are no migrations on this project'); ?></h4>
 			<?php endif; ?>
 		</div>
 		<div id='seed'>

@@ -315,7 +315,7 @@ class ReportService extends DbService {
 
             if ($fields) {
                 $output = "<table>";
-                $output .= "<tr><td><b>Field</b></td><td><b>Type</b></td></tr>";
+                $output .= "<tr><td><b>".__("Field")."</b></td><td><b>".__("Type")."</b></td></tr>";
                 foreach ($fields as $field) {
                     $output .= "<tr><td>" . $field['Field'] . "</td><td>" . $field['Type'] . "</td></tr>";
                 }
@@ -350,18 +350,18 @@ class ReportService extends DbService {
             // return comma delimited string of actions of SQL for display only
             return $action;
         } else {
-            return "No action Found";
+            return __("No action Found");
         }
     }
 
     // create an array of available report output formats for inclusion in the parameters form
     function selectReportFormat() {
         $arr = array();
-        $arr[] = array("Web Page", "html");
-        $arr[] = array("Comma Delimited File", "csv");
-        $arr[] = array("PDF File", "pdf");
-        $arr[] = array("XML", "xml");
-        return array(array("Format", "select", "format", null, $arr));
+        $arr[] = array(__("Web Page"), "html");
+        $arr[] = array(__("Comma Delimited File"), "csv");
+        $arr[] = array(__("PDF File"), "pdf");
+        $arr[] = array(__("XML"), "xml");
+        return array(array(__("Format"), "select", "format", null, $arr));
     }
 
     // export a recordset as CSV
@@ -539,13 +539,17 @@ class ReportService extends DbService {
     }
 
     // function to substitute special terms
-    function putSpecialSQL($sql) {
+    function putSpecialSQL($sql,$user_id=null) {
         if ($sql != "") {
             $special = array();
             $replace = array();
 
             // get user roles
-            $usr = $this->w->Auth->user();
+            if ($user_id>0) {
+				$usr = $this->w->Auth->getUser($user_id);
+			} else {
+				$usr = $this->w->Auth->user();
+			}
             $roles = '';
             foreach ($usr->getRoles() as $role) {
                 $roles .= "'" . $role . "',";
@@ -554,7 +558,7 @@ class ReportService extends DbService {
 
             // $special must be in terms of a regexp for preg_match
             $special[0] = "/\{\{current_user_id\}\}/";
-            $replace[0] = $_SESSION["user_id"];
+            $replace[0] = !empty($user_id) ? $user_id : $_SESSION["user_id"];
             $special[1] = "/\{\{roles\}\}/";
             $replace[1] = $roles;
             $special[2] = "/\{\{webroot\}\}/";
@@ -607,12 +611,12 @@ class ReportService extends DbService {
         $nav = $nav ? $nav : array();
 
         if ($w->Auth->loggedIn()) {
-            $w->menuLink("report/index", "Report Dashboard", $nav);
+            $w->menuLink("report/index", __("Report Dashboard"), $nav);
 
             if ($w->Auth->user()->hasRole("report_editor") || $w->Auth->user()->hasRole("report_admin")) {
-                $w->menuLink("report/edit", "Create a Report", $nav);
-                $w->menuLink("report-connections", "Connections", $nav);
-                $w->menuLink("report/listfeed", "Feeds Dashboard", $nav);
+                $w->menuLink("report/edit", __("Create a Report"), $nav);
+                $w->menuLink("report-connections", __("Connections"), $nav);
+                $w->menuLink("report/listfeed", __("Feeds Dashboard"), $nav);
             }
         }
 

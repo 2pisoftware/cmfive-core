@@ -9,7 +9,7 @@ function duplicatetask_GET(Web $w) {
     $old_task_id = $p['id'];
     $old_task = $w->task->getTask($old_task_id);
     $new_task = $old_task->copy(false);
-    $new_task->title = $old_task->title . " -Copy";
+    $new_task->title = $old_task->title . __(" -Copy");
     $new_task->insert();
 	
 	$object_modification = new ObjectModification($w);
@@ -58,5 +58,5 @@ function duplicatetask_GET(Web $w) {
             $new_attachment->insert();
         }
     }
-    $w->msg("Task duplicated","/task/edit/" . $new_task->id);
+    $w->msg(__("Task duplicated"),"/task/edit/" . $new_task->id);
 }

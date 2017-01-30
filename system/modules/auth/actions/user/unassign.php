@@ -13,5 +13,5 @@ function unassign_POST(Web $w) {
 		}
 	}
 	
-	$w->msg("Group membership revoked", $redirect ? : "/admin");
+	$w->msg(__("Group membership revoked"), $redirect ? : "/admin");
 }

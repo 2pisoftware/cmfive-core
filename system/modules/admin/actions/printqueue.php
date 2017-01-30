@@ -15,7 +15,7 @@ function printqueue_GET(Web $w) {
     $objects = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path));
     
     $table_data = array();
-    $table_header = array("Name", "Size", "Date Created", "Actions");
+    $table_header = array(__("Name"), __("Size"), __("Date Created"), __("Actions"));
     
     foreach($objects as $name => $object){
         $filename = $object->getFilename();
@@ -29,8 +29,8 @@ function printqueue_GET(Web $w) {
             // Function below in functions.php
             humanReadableBytes($object->getSize()),
             date("H:i d/m/Y", filectime($name)),
-            Html::box("/admin/printfile?filename=" . urlencode($name), "Print", true) . " " .
-            Html::b("/admin/deleteprintfile?filename=" . urlencode($name), "Delete", "Are you sure you want to remove this file? (This is irreversible)")
+            Html::box("/admin/printfile?filename=" . urlencode($name), __("Print"), true) . " " .
+            Html::b("/admin/deleteprintfile?filename=" . urlencode($name), __("Delete"), __("Are you sure you want to remove this file? (This is irreversible)"))
         );
     }
 

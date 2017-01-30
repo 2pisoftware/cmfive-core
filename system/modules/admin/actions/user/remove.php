@@ -5,15 +5,15 @@ function remove_GET(Web $w) {
 	list($user_id) = $w->pathMatch();
 	
 	if (empty($user_id)) {
-		$w->error("User not found", "/admin");
+		$w->error(__("User not found"), "/admin");
 	}
 	
 	$user = $w->Auth->getUser($user_id);
 	if (empty($user) || !$user->exists()) {
-		$w->error("User not found", "/admin");
+		$w->error(__("User not found"), "/admin");
 	}
 	
-	$w->ctx("title", 'Data clean up for ' . $user->getFullName());
+	$w->ctx("title", __('Data clean up for ') . $user->getFullName());
 	
 	// Call a hook and display the output to screen
 	$hook_results = $w->callHook("admin", "remove_user", $user);

@@ -1,0 +1,4607 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.7\n"
+"Project-Id-Version: cmfive\n"
+"Language: fr\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Steve Ryan <steve@2pisoftware.com>\n"
+"Language-Team: \n"
+
+msgid "eek"
+msgstr "SeeK"
+
+msgid "asfriend::::eek"
+msgstr "MeeK"
+
+#: modules/example/actions/delete.php:25
+msgid "Object Deleted"
+msgstr "objet supprimé"
+
+#: modules/example/actions/delete.php:30
+msgid "This object does not exist."
+msgstr "Cet objet n'existe pas."
+
+#: modules/example/actions/edit.php:28
+msgid "Edit Example Data"
+msgstr "Modifier Exemple de données"
+
+#: modules/example/actions/edit.php:29 modules/example/actions/index.php:11
+#: modules/wiki/templates/createwiki.tpl.php:4
+#: system/modules/admin/actions/groups.php:11
+#: system/modules/admin/actions/groups/index.php:11
+#: system/modules/admin/actions/lookup.php:26
+#: system/modules/admin/actions/templates/edit.php:16
+#: system/modules/admin/actions/templates/index.php:5
+#: system/modules/admin/templates/file/index.tpl.php:7
+#: system/modules/admin/templates/useradd.tpl.php:16
+#: system/modules/admin/templates/useredit.tpl.php:19
+#: system/modules/file/actions/edit.php:20
+#: system/modules/file/actions/new.php:16
+#: system/modules/file/partials/templates/listattachments.tpl.php:109
+#: system/modules/file/partials/templates/listattachmentsplain.tpl.php:73
+#: system/modules/file/templates/attach.tpl.php:9
+#: system/modules/form/actions/edit.php:10
+#: system/modules/form/templates/index.tpl.php:10
+#: system/modules/report/actions/createreport.php:13
+#: system/modules/report/actions/edit.php:23
+#: system/modules/report/actions/edit.php:118
+#: system/modules/report/actions/feedAjaxGetReportText.php:10
+#: system/modules/report/actions/index.php:33
+#: system/modules/report/actions/index.php:34
+#: system/modules/task/actions/group/viewtaskgrouptypes.php:11
+#: system/modules/task/actions/group/viewtaskgrouptypes.php:49
+#: system/modules/task/actions/viewtask.php:60
+#: system/modules/task/actions/viewtask.php:75
+#: system/modules/task/partials/templates/listtasks.tpl.php:5
+#: system/modules/task/task.group.actions.php:41
+#: system/modules/task/task.group.actions.php:139
+msgid "Title"
+msgstr "Titre"
+
+#: modules/example/actions/edit.php:30 modules/example/actions/index.php:11
+msgid "Data"
+msgstr "Données"
+
+#: modules/example/actions/edit.php:31
+msgid "Check"
+msgstr "Vérifier"
+
+#: modules/example/actions/edit.php:32
+msgid "select field"
+msgstr "sélectionner le champ"
+
+#: modules/example/actions/edit.php:33
+msgid "autocomplete field"
+msgstr "champ autocomplete"
+
+#: modules/example/actions/edit.php:34
+msgid "multiselect field"
+msgstr "champ multiselect"
+
+#: modules/example/actions/edit.php:35
+msgid "radio field"
+msgstr "champ radio"
+
+#: modules/example/actions/edit.php:36
+msgid "password field"
+msgstr "champ de mot de passe"
+
+#: modules/example/actions/edit.php:37
+msgid "email field"
+msgstr "champ email"
+
+#: modules/example/actions/edit.php:38
+msgid "hidden field"
+msgstr "champ caché"
+
+#: modules/example/actions/edit.php:39
+msgid "date field"
+msgstr "champ de date"
+
+#: modules/example/actions/edit.php:40
+msgid "datetime field"
+msgstr "champ datetime"
+
+#: modules/example/actions/edit.php:41
+msgid "time field"
+msgstr "champ de temps"
+
+#: modules/example/actions/edit.php:42
+msgid "file field"
+msgstr "champ de fichier"
+
+#: modules/example/actions/edit.php:43
+msgid "multifile field"
+msgstr "champ multifichier"
+
+#: modules/example/actions/edit.php:48
+#: system/modules/admin/actions/lookup.php:57
+msgid " Save "
+msgstr " sauvegarder"
+
+#: modules/example/actions/edit.php:80
+msgid "ExampleData updated"
+msgstr "ExampleData mise à jour"
+
+#: modules/example/actions/index.php:8
+msgid "Example Data List"
+msgstr "Liste des données Exemple"
+
+#: modules/example/actions/index.php:11
+msgid "Checkbox"
+msgstr "Checkbox"
+
+#: modules/example/actions/index.php:11
+#: system/modules/admin/actions/lookup.php:26
+#: system/modules/admin/actions/printers.php:6
+#: system/modules/admin/actions/printqueue.php:18
+#: system/modules/admin/actions/templates/index.php:5
+#: system/modules/admin/templates/file/index.tpl.php:7
+#: system/modules/admin/templates/migration/index.tpl.php:76
+#: system/modules/channels/templates/listchannels.tpl.php:8
+#: system/modules/channels/templates/listmessages.tpl.php:4
+#: system/modules/channels/templates/listmessagestatuses.tpl.php:4
+#: system/modules/channels/templates/listprocessors.tpl.php:7
+#: system/modules/form/partials/templates/listform.tpl.php:7
+#: system/modules/form/templates/index.tpl.php:10
+#: system/modules/form/templates/show.tpl.php:21
+#: system/modules/report/actions/connections/index.php:7
+#: system/modules/report/actions/edit.php:118
+#: system/modules/tag/actions/index.php:6
+#: system/modules/task/actions/edit.php:91
+#: system/modules/timelog/partials/templates/listtimelog.tpl.php:8
+#: system/modules/timelog/templates/index.tpl.php:6
+msgid "Actions"
+msgstr "actes"
+
+#: modules/example/actions/index.php:17
+#: system/modules/admin/actions/users.php:16
+#: system/modules/admin/actions/users.php:17
+#: system/modules/channels/templates/listmessagestatuses.tpl.php:11
+#: system/modules/report/actions/edit.php:99
+#: system/modules/task/actions/group/viewtaskgrouptypes.php:39
+#: system/modules/task/actions/tasklist.php:117
+#: system/modules/task/actions/tasklist.php:124
+#: system/modules/task/task.group.actions.php:21
+#: system/modules/task/task.group.actions.php:22
+#: system/modules/task/task.group.actions.php:133
+msgid "Yes"
+msgstr "Oui"
+
+#: modules/example/actions/index.php:17
+#: system/modules/admin/actions/users.php:16
+#: system/modules/admin/actions/users.php:17
+#: system/modules/channels/templates/listmessagestatuses.tpl.php:11
+#: system/modules/form/partials/templates/listform.tpl.php:23
+#: system/modules/report/actions/edit.php:99
+#: system/modules/task/actions/group/viewtaskgrouptypes.php:39
+#: system/modules/task/actions/tasklist.php:117
+#: system/modules/task/actions/tasklist.php:124
+#: system/modules/task/task.group.actions.php:21
+#: system/modules/task/task.group.actions.php:22
+#: system/modules/task/task.group.actions.php:133
+msgid "No"
+msgstr "Non"
+
+#: modules/example/actions/index.php:22
+#: system/modules/admin/actions/groups/edit.php:9
+#: system/modules/admin/actions/groups/index.php:32
+#: system/modules/admin/actions/printers.php:11
+#: system/modules/admin/actions/templates/index.php:14
+#: system/modules/admin/actions/users.php:20
+#: system/modules/admin/partials/templates/displaycomment.tpl.php:19
+#: system/modules/channels/actions/processor/edit.php:8
+#: system/modules/channels/actions/web/edit.php:8
+#: system/modules/channels/templates/listchannels.tpl.php:23
+#: system/modules/channels/templates/listprocessors.tpl.php:19
+#: system/modules/file/partials/templates/listattachments.tpl.php:67
+#: system/modules/file/partials/templates/listattachments.tpl.php:123
+#: system/modules/form/partials/templates/listform.tpl.php:14
+#: system/modules/form/templates/index.tpl.php:18
+#: system/modules/form/templates/show.tpl.php:34
+#: system/modules/report/actions/connections/index.php:15
+#: system/modules/report/actions/edit.php:5
+#: system/modules/report/actions/edit.php:22
+#: system/modules/report/actions/edit.php:131
+#: system/modules/report/actions/index.php:44
+#: system/modules/report/templates/edit.tpl.php:3
+#: system/modules/timelog/partials/templates/listtimelog.tpl.php:17
+#: system/modules/timelog/templates/index.tpl.php:16
+msgid "Edit"
+msgstr "modifier"
+
+#: modules/example/actions/index.php:25 modules/wiki/templates/index.tpl.php:29
+#: system/modules/admin/actions/groups.php:39
+#: system/modules/admin/actions/groups/index.php:35
+#: system/modules/admin/actions/moreInfo.php:39
+#: system/modules/admin/actions/printers.php:12
+#: system/modules/admin/actions/printqueue.php:33
+#: system/modules/admin/partials/templates/displaycomment.tpl.php:21
+#: system/modules/channels/templates/listchannels.tpl.php:24
+#: system/modules/channels/templates/listprocessors.tpl.php:20
+#: system/modules/file/partials/templates/listattachments.tpl.php:70
+#: system/modules/file/partials/templates/listattachments.tpl.php:124
+#: system/modules/form/partials/templates/listform.tpl.php:15
+#: system/modules/form/templates/index.tpl.php:19
+#: system/modules/form/templates/show.tpl.php:35
+#: system/modules/inbox/templates/index.tpl.php:8
+#: system/modules/inbox/templates/read.tpl.php:8
+#: system/modules/inbox/templates/showarchive.tpl.php:4
+#: system/modules/inbox/templates/view.tpl.php:6
+#: system/modules/report/actions/connections/index.php:16
+#: system/modules/report/actions/edit.php:132
+#: system/modules/report/actions/index.php:49
+#: system/modules/tag/actions/index.php:13
+#: system/modules/task/actions/edit.php:119
+#: system/modules/task/templates/edit.tpl.php:34
+#: system/modules/timelog/partials/templates/listtimelog.tpl.php:18
+#: system/modules/timelog/templates/index.tpl.php:17
+msgid "Delete"
+msgstr "Effacer"
+
+#: modules/example/actions/index.php:25
+msgid "Really delete?"
+msgstr "Vraiment supprimer?"
+
+#: modules/example/models/ExampleService.php:36
+#: system/modules/help/templates/toc.tpl.php:3
+#: system/modules/help/templates/view.tpl.php:3
+#: system/modules/main/actions/index.php:3
+msgid "Home"
+msgstr "Accueil"
+
+#: modules/example/templates/index.tpl.php:2
+msgid "New Data"
+msgstr "Nouvelles données"
+
+#: system/modules/file/partials/templates/listattachments.tpl.php:51
+msgid "Attach a File"
+msgstr "joindre un fichier"
+
+#: modules/wiki/templates/pagehistory.tpl.php:11
+#: system/modules/admin/templates/file/index.tpl.php:18
+#: system/modules/file/partials/templates/listattachments.tpl.php:64
+msgid "View"
+msgstr "Afficher"
+
+#: system/modules/file/partials/templates/listattachments.tpl.php:70
+msgid "Are you sure you want to delete this attachment?"
+msgstr "Êtes-vous sûr de vouloir supprimer ce groupe?"
+
+#: system/modules/file/partials/templates/listattachments.tpl.php:92
+msgid "Open in new tab/window"
+msgstr "Ouvre une nouvelle fenêtre ou un nouvel onglet"
+
+#: system/modules/admin/actions/printfile.php:10
+#: system/modules/file/partials/templates/listattachments.tpl.php:108
+#: system/modules/file/partials/templates/listattachmentsplain.tpl.php:72
+msgid "Filename"
+msgstr "Nom de fichier"
+
+#: system/modules/admin/actions/templates/edit.php:21
+#: system/modules/file/actions/edit.php:21
+#: system/modules/file/actions/new.php:17
+#: system/modules/file/partials/templates/listattachments.tpl.php:110
+#: system/modules/file/partials/templates/listattachmentsplain.tpl.php:74
+#: system/modules/file/templates/attach.tpl.php:10
+#: system/modules/form/actions/edit.php:11
+#: system/modules/form/templates/index.tpl.php:10
+#: system/modules/report/actions/createfeed.php:21
+#: system/modules/report/actions/createreport.php:16
+#: system/modules/report/actions/edit.php:25
+#: system/modules/report/actions/editfeed.php:28
+#: system/modules/report/actions/feedAjaxGetReportText.php:11
+#: system/modules/report/actions/index.php:33
+#: system/modules/report/actions/index.php:34
+#: system/modules/report/actions/listfeed.php:11
+#: system/modules/task/actions/createtask.php:35
+#: system/modules/task/actions/createtask.php:49
+#: system/modules/task/actions/edit.php:67
+#: system/modules/task/actions/group/viewtaskgrouptypes.php:11
+#: system/modules/task/actions/group/viewtaskgrouptypes.php:55
+#: system/modules/task/actions/taskAjaxSelectbyTaskGroup.php:36
+#: system/modules/task/actions/viewtask.php:64
+#: system/modules/task/actions/viewtask.php:68
+#: system/modules/task/actions/viewtask.php:79
+#: system/modules/task/actions/viewtask.php:83
+#: system/modules/task/task.actions.php:80
+#: system/modules/task/task.group.actions.php:46
+#: system/modules/task/task.group.actions.php:144
+#: system/modules/timelog/actions/edit.php:44
+#: system/modules/timelog/actions/start.php:17
+#: system/modules/timelog/partials/templates/listtimelog.tpl.php:8
+#: system/modules/timelog/templates/index.tpl.php:6
+msgid "Description"
+msgstr "La description"
+
+#: modules/wiki/templates/pagehistory.tpl.php:5
+#: system/modules/file/partials/templates/listattachments.tpl.php:111
+msgid "Action"
+msgstr "Action"
+
+#: system/modules/file/partials/templates/listattachments.tpl.php:124
+msgid "Do you want to delete this attachment?"
+msgstr "Voulez-vous supprimer cette pièce jointe ?"
+
+#: modules/frontend/assets/js/vendor/jquery.js:14
+msgid "<iframe frameborder='0' width='0' height='0'/>"
+msgstr "<Iframe frameborder = \"0\" width = \"0\" height = '0' />"
+
+#: modules/frontend/assets/js/vendor/jquery.js:26
+msgid "<script>"
+msgstr "<Script>"
+
+#: modules/frontend/assets/js/vendor/jquery.js:26
+msgid "<div>"
+msgstr "<Div>"
+
+#: modules/wiki/actions/createwiki.php:17
+msgid "Wiki "
+msgstr "Wiki"
+
+#: modules/wiki/actions/createwiki.php:17
+msgid " created."
+msgstr " créé."
+
+#: modules/wiki/actions/createwiki.php:19
+msgid "Wiki couldn't be created"
+msgstr "Wiki n'a pas pu être créé"
+
+#: modules/wiki/actions/delmember.php:7 modules/wiki/actions/delwiki.php:10
+msgid "No access to delete this wiki."
+msgstr "Pas d'accès pour supprimer ce wiki."
+
+#: modules/wiki/actions/delmember.php:14
+msgid "Member removed."
+msgstr "Membre supprimé."
+
+#: modules/wiki/actions/delwiki.php:8
+msgid "Wiki deleted."
+msgstr "Wiki supprimé."
+
+#: modules/wiki/actions/edit.php:10 modules/wiki/actions/history.php:11
+#: modules/wiki/actions/history.php:19 modules/wiki/actions/pagehistory.php:11
+#: modules/wiki/actions/pagehistory.php:19 modules/wiki/actions/preview.php:10
+#: modules/wiki/actions/view.php:9 modules/wiki/actions/view.php:16
+#: modules/wiki/actions/viewhistoryversion.php:64
+#: modules/wiki/actions/viewhistoryversion.php:73
+msgid "Wiki does not exist."
+msgstr "Wiki n'existe pas."
+
+#: modules/wiki/actions/edit.php:14 modules/wiki/actions/preview.php:14
+msgid "Page does not exist."
+msgstr "Page n'existe pas."
+
+#: modules/wiki/actions/edit.php:18
+msgid "Page updated."
+msgstr "Page mise à jour."
+
+#: modules/wiki/actions/editmember.php:7 modules/wiki/actions/editmember.php:28
+msgid "No access to this wiki."
+msgstr "Pas d'accès à ce wiki."
+
+#: modules/wiki/actions/editmember.php:38
+msgid "Member updated."
+msgstr "Membre mis à jour."
+
+#: modules/wiki/actions/history.php:28 modules/wiki/actions/pagehistory.php:28
+msgid "Page does not exist"
+msgstr "n'existe pas la page"
+
+#: modules/wiki/actions/view.php:28
+msgid "New Page."
+msgstr "Nouvelle page."
+
+#: modules/wiki/actions/view.php:65 modules/wiki/templates/editmember.tpl.php:6
+#: system/modules/admin/actions/comment.php:44
+#: system/modules/admin/actions/groupadd.php:11
+#: system/modules/admin/actions/groupedit.php:15
+#: system/modules/admin/actions/groupmember.php:30
+#: system/modules/admin/templates/useradd.tpl.php:29
+#: system/modules/admin/templates/useredit.tpl.php:39
+#: system/modules/channels/actions/processor/edit.php:26
+#: system/modules/channels/actions/web/edit.php:22
+#: system/modules/form/templates/field/edit.tpl.php:33
+#: system/modules/form/templates/show.tpl.php:92
+#: system/modules/report/actions/createfeed.php:22
+#: system/modules/task/actions/ajaxGetTaskTypeFormFields.php:16
+#: system/modules/task/actions/edit.php:82
+#: system/modules/task/actions/group/viewtaskgrouptypes.php:59
+#: system/modules/task/actions/viewtask.php:270
+#: system/modules/task/task.actions.php:16
+#: system/modules/task/task.actions.php:142
+#: system/modules/task/task.actions.php:238
+#: system/modules/task/task.actions.php:628
+#: system/modules/timelog/actions/edit.php:65
+#: system/modules/timelog/actions/start.php:21
+msgid "Save"
+msgstr "sauvegarder"
+
+#: modules/wiki/actions/view.php:65
+msgid "Markup Help"
+msgstr "Markup Aide"
+
+#: modules/wiki/models/Wiki.php:90
+msgid "This wiki needs a title."
+msgstr "Ce wiki a besoin d'un titre."
+
+#: modules/wiki/models/Wiki.php:98
+msgid "Wiki of name "
+msgstr "Wiki du nom"
+
+#: modules/wiki/models/Wiki.php:98
+msgid " already exists."
+msgstr " existe déjà."
+
+#: modules/wiki/models/WikiService.php:16
+#: modules/wiki/models/WikiService.php:32
+msgid "You have no access to this wiki."
+msgstr "Vous avez pas accès à ce wiki."
+
+#: modules/wiki/models/WikiService.php:105
+msgid "Wiki List"
+msgstr "Liste Wiki"
+
+#: modules/wiki/models/WikiService.php:106
+msgid "New Wiki"
+msgstr "Nouveau Wiki"
+
+#: modules/wiki/templates/createwiki.tpl.php:3
+msgid "Create Wiki"
+msgstr "Créer Wiki"
+
+#: modules/wiki/templates/createwiki.tpl.php:5
+msgid "Public"
+msgstr "Public"
+
+#: modules/wiki/templates/createwiki.tpl.php:6
+#: modules/wiki/templates/index.tpl.php:6
+#: system/modules/admin/actions/editlookup.php:12
+#: system/modules/admin/actions/lookup.php:26
+#: system/modules/admin/actions/lookup.php:53
+#: system/modules/admin/templates/lookup.tpl.php:9
+#: system/modules/channels/templates/listchannels.tpl.php:8
+#: system/modules/channels/templates/listmessages.tpl.php:4
+#: system/modules/form/templates/field/edit.tpl.php:11
+#: system/modules/form/templates/show.tpl.php:21
+#: system/modules/report/actions/edit.php:118
+#: system/modules/report/actions/templates/edit.php:13
+#: system/modules/report/models/ReportService.php:318
+#: system/modules/task/actions/group/viewtaskgrouptypes.php:11
+#: system/modules/task/partials/templates/listtasks.tpl.php:5
+msgid "Type"
+msgstr "Type"
+
+#: modules/wiki/templates/createwiki.tpl.php:6
+msgid "Rich Text"
+msgstr "Texte riche"
+
+#: modules/wiki/templates/createwiki.tpl.php:6
+msgid "Markdown"
+msgstr "Réduction"
+
+#: modules/wiki/templates/createwiki.tpl.php:10
+#: system/modules/admin/actions/groups/edit.php:9
+#: system/modules/report/actions/edit.php:5
+#: system/modules/report/templates/edit.tpl.php:3
+msgid "Create"
+msgstr "Créer"
+
+#: modules/wiki/templates/editmember.tpl.php:2
+msgid "Wiki Member"
+msgstr "Wiki membre"
+
+#: modules/wiki/templates/editmember.tpl.php:3
+#: modules/wiki/templates/history.tpl.php:4
+#: modules/wiki/templates/pagehistory.tpl.php:5
+#: system/modules/admin/actions/useradd.php:66
+#: system/modules/admin/actions/users.php:7
+#: system/modules/report/actions/createreport.php:23
+#: system/modules/report/actions/edit.php:43
+#: system/modules/task/templates/taskweek.tpl.php:11
+msgid "User"
+msgstr "Utilisateur"
+
+#: modules/wiki/templates/editmember.tpl.php:4
+#: system/modules/admin/actions/moreInfo.php:20
+#: system/modules/report/actions/edit.php:92
+#: system/modules/report/actions/editmember.php:13
+#: system/modules/report/models/ReportLib.php:11
+#: system/modules/task/actions/group/viewmembergroup.php:20
+#: system/modules/task/task.group.actions.php:222
+#: system/modules/task/task.group.actions.php:301
+msgid "Role"
+msgstr "Rôle"
+
+#: modules/wiki/templates/history.tpl.php:4
+#: modules/wiki/templates/pagehistory.tpl.php:5
+#: system/modules/form/models/FormStandardInterface.php:12
+#: system/modules/inbox/actions/index.php:14
+#: system/modules/inbox/actions/read.php:10
+#: system/modules/inbox/actions/showarchive.php:13
+#: system/modules/inbox/actions/trash.php:12
+#: system/modules/inbox/templates/portal.tpl.php:6
+msgid "Date"
+msgstr "date"
+
+#: modules/wiki/templates/history.tpl.php:4
+#: system/modules/task/task.actions.php:139
+msgid "Page"
+msgstr "Page"
+
+#: modules/wiki/templates/history.tpl.php:14
+#: modules/wiki/templates/pagehistory.tpl.php:16
+msgid "No changes yet."
+msgstr "Aucune modification."
+
+#: modules/wiki/templates/index.tpl.php:5
+msgid "Wiki Title"
+msgstr "Wiki Titre"
+
+#: modules/wiki/templates/index.tpl.php:7
+#: system/modules/admin/actions/printqueue.php:18
+msgid "Date Created"
+msgstr "date créée"
+
+#: modules/wiki/templates/index.tpl.php:8
+msgid "Last Modified Date"
+msgstr "Dernière Date de modification"
+
+#: modules/wiki/templates/index.tpl.php:9
+msgid "Modified By"
+msgstr "Modifié par"
+
+#: modules/wiki/templates/index.tpl.php:10
+msgid "Last Page Modified"
+msgstr "Dernière page de modification"
+
+#: modules/wiki/templates/index.tpl.php:29
+msgid "Do you really want to delete this wiki and all of its pages?"
+msgstr "Voulez-vous vraiment supprimer ce wiki et toutes ses pages?"
+
+#: modules/wiki/templates/index.tpl.php:44
+msgid "There are no wikis yet."
+msgstr "Il n'y a pas de wikis."
+
+#: modules/wiki/templates/index.tpl.php:45
+msgid "Create a wiki"
+msgstr "Créer un wiki"
+
+#: system/modules/admin/actions/comment.php:35
+#: system/modules/task/actions/edit.php:91
+#: system/modules/task/actions/viewtask.php:156
+#: system/modules/task/task.actions.php:11
+#: system/modules/task/task.actions.php:29
+#: system/modules/task/task.hooks.php:219
+msgid "Comment"
+msgstr "Commentaire"
+
+#: system/modules/admin/actions/comment.php:37
+msgid "Help"
+msgstr "Aidez-moi"
+
+#: system/modules/admin/actions/comment.php:64
+#: system/modules/admin/actions/comment.php:66
+msgid "Comment saved"
+msgstr "Commentaire enregistré"
+
+#: system/modules/admin/actions/composer.php:64
+msgid "Composer update return exit code "
+msgstr "Compositeur mise à jour le code de sortie de retour"
+
+#: system/modules/admin/actions/composer.php:64
+msgid " (0 is OK)<br/>Check the /log/composer.log for output"
+msgstr " (0 est OK) <br/> Vérifiez la /log/composer.log pour la sortie"
+
+#: system/modules/admin/actions/databasebackup.php:5
+msgid "Database Backup"
+msgstr "Base de données de sauvegarde"
+
+#: system/modules/admin/actions/databasebackup.php:19
+msgid "You cannot backup more than once every 4 hours"
+msgstr "Vous ne pouvez pas sauvegarder plus d'une fois toutes les 4 heures"
+
+#: system/modules/admin/actions/databasebackup.php:43
+msgid "Backup completed to:"
+msgstr "Sauvegarde terminée à:"
+
+#: system/modules/admin/actions/databasebackup.php:55
+msgid "You need the OAuth extension installed to backup to dropbox"
+msgstr "Vous avez besoin de l'extension OAuth installé pour la sauvegarde à la sélection"
+
+#: system/modules/admin/actions/databasebackup.php:73
+msgid "Could not find backup command"
+msgstr "Impossible de trouver la commande de sauvegarde"
+
+#: system/modules/admin/actions/deletecomment.php:15
+msgid "Comment deleted."
+msgstr "Commentaire supprimé."
+
+#: system/modules/admin/actions/deletelookup.php:11
+msgid "Lookup Item deleted"
+msgstr "Lookup Item supprimé"
+
+#: system/modules/admin/actions/deletelookup.php:14
+msgid "Lookup Item not found?"
+msgstr "Lookup Article pas trouvé?"
+
+#: system/modules/admin/actions/deleteprinter.php:10
+msgid "Printer deleted"
+msgstr "imprimante supprimé"
+
+#: system/modules/admin/actions/deleteprinter.php:14
+msgid "Could not find printer"
+msgstr "Impossible de trouver l'imprimante"
+
+#: system/modules/admin/actions/deleteprintfile.php:8
+msgid "File deleted"
+msgstr "fichier supprimé"
+
+#: system/modules/admin/actions/deleteprintfile.php:10
+msgid "Missing filename"
+msgstr "filename manquant"
+
+#: system/modules/admin/actions/editlookup.php:11
+msgid "Edit an Existing Entry"
+msgstr "Modifier une entrée existante"
+
+#: system/modules/admin/actions/editlookup.php:13
+#: system/modules/admin/actions/lookup.php:55
+msgid "Key"
+msgstr "Clé"
+
+#: system/modules/admin/actions/editlookup.php:14
+#: system/modules/admin/actions/lookup.php:56
+msgid "Value"
+msgstr "Valeur"
+
+#: system/modules/admin/actions/editlookup.php:15
+#: system/modules/report/actions/editfeed.php:31
+#: system/modules/report/actions/editmember.php:15
+#: system/modules/task/actions/viewtask.php:124
+#: system/modules/task/task.group.actions.php:50
+#: system/modules/task/task.group.actions.php:223
+msgid " Update "
+msgstr " Mettre à jour"
+
+#: system/modules/admin/actions/editlookup.php:21
+msgid "No such Lookup Item?"
+msgstr "Aucune Lookup article?"
+
+#: system/modules/admin/actions/editlookup.php:31
+msgid "Please add select a TYPE<br>"
+msgstr "S'il vous plaît ajouter sélectionner un type <br>"
+
+#: system/modules/admin/actions/editlookup.php:33
+#: system/modules/admin/actions/newlookup.php:11
+msgid "Please enter a KEY<br>"
+msgstr "S'il vous plaît entrer un <br> KEY"
+
+#: system/modules/admin/actions/editlookup.php:35
+#: system/modules/admin/actions/newlookup.php:13
+msgid "Please enter a VALUE<br>"
+msgstr "S'il vous plaît entrer une valeur <br>"
+
+#: system/modules/admin/actions/editlookup.php:46
+msgid "Lookup Item edited"
+msgstr "Lookup Item modifié"
+
+#: system/modules/admin/actions/editlookup.php:49
+msgid "Could not find item?"
+msgstr "Impossible de trouver l'article?"
+
+#: system/modules/admin/actions/editprinter.php:11
+#: system/modules/admin/templates/templates/edit.tpl.php:6
+msgid "Details"
+msgstr "Détails"
+
+#: system/modules/admin/actions/editprinter.php:12
+msgid "Printer name"
+msgstr "Nom de l'imprimante"
+
+#: system/modules/admin/actions/editprinter.php:13
+#: system/modules/admin/actions/printers.php:6
+msgid "Server"
+msgstr "Serveur"
+
+#: system/modules/admin/actions/editprinter.php:14
+#: system/modules/admin/actions/printers.php:6
+#: system/modules/report/actions/connections/edit.php:21
+#: system/modules/report/actions/connections/index.php:7
+msgid "Port"
+msgstr "Port"
+
+#: system/modules/admin/actions/editprinter.php:31
+msgid "Printer added"
+msgstr "imprimante ajouté"
+
+#: system/modules/admin/actions/email.php:5
+msgid "You don't have the Mandrill library installed"
+msgstr "Vous ne disposez pas de la bibliothèque Mandrill installé"
+
+#: system/modules/admin/actions/email.php:11
+msgid "You don't have a Mandrill API key specified"
+msgstr "Vous ne disposez pas d'une clé API de Mandrill spécifiée"
+
+#: system/modules/admin/actions/email.php:16
+msgid "Email stats"
+msgstr "Statistiques Email"
+
+#: system/modules/admin/actions/email.php:33
+msgid "A Mandrill error occurred: "
+msgstr "Une erreur est survenue Mandrill:"
+
+#: system/modules/admin/actions/file/index.php:13
+msgid "File moved to "
+msgstr "Fichier déplacé à"
+
+#: system/modules/admin/actions/file/index.php:17
+msgid "Attachment"
+msgstr "Attachement"
+
+#: system/modules/admin/actions/gitpull.php:5
+#: system/modules/admin/actions/gitpull.php:6
+msgid "Path to Git"
+msgstr "Path to Git"
+
+#: system/modules/admin/actions/gitpull.php:8
+#: system/modules/admin/actions/gitpull.php:9
+msgid "Branch"
+msgstr "Branche"
+
+#: system/modules/admin/actions/gitpull.php:13
+#: system/modules/search/templates/index.tpl.php:18
+msgid "Go"
+msgstr "Aller"
+
+#: system/modules/admin/actions/gitpull.php:19
+msgid "Branch missing"
+msgstr "manquant de la Direction générale"
+
+#: system/modules/admin/actions/groupadd.php:9
+#: system/modules/admin/actions/groups.php:49
+#: system/modules/admin/actions/groups/index.php:44
+msgid "New Group"
+msgstr "Nouveau groupe"
+
+#: system/modules/admin/actions/groupadd.php:9
+#: system/modules/admin/actions/groupedit.php:13
+msgid "Group Title: "
+msgstr "Titre du groupe:"
+
+#: system/modules/admin/actions/groupadd.php:23
+msgid "New group added!"
+msgstr "Nouveau groupe ajouté!"
+
+#: system/modules/admin/actions/groupdelete.php:24
+msgid "Group is deleted!"
+msgstr "Groupe est supprimé!"
+
+#: system/modules/admin/actions/groupedit.php:28
+msgid "Group info updated!"
+msgstr "info Groupe mis à jour!"
+
+#: system/modules/admin/actions/groupmember.php:25
+msgid "Select Member: "
+msgstr "Sélectionnez Membre:"
+
+#: system/modules/admin/actions/groupmember.php:27
+#: system/modules/task/actions/group/viewmembergroup.php:80
+msgid "Owner"
+msgstr "Propriétaire"
+
+#: system/modules/admin/actions/groupmember.php:81
+msgid " can not be added!"
+msgstr " ne peut pas être ajouté!"
+
+#: system/modules/admin/actions/groupmember.php:83
+msgid "New members are added!"
+msgstr "Les nouveaux membres sont ajoutés!"
+
+#: system/modules/admin/actions/groups.php:11
+#: system/modules/admin/actions/groups/index.php:11
+msgid "Parent Groups"
+msgstr "Groupes parent"
+
+#: system/modules/admin/actions/groups.php:11
+#: system/modules/admin/actions/groups/index.php:11
+#: system/modules/admin/actions/moreInfo.php:20
+#: system/modules/admin/actions/users.php:6
+msgid "Operations"
+msgstr "opérations"
+
+#: system/modules/admin/actions/groups.php:36
+msgid "More Info"
+msgstr "Plus d'informations"
+
+#: system/modules/admin/actions/groups.php:39
+#: system/modules/admin/actions/groups/index.php:35
+msgid "Are you sure you want to delete this group?"
+msgstr "Êtes-vous sûr de vouloir supprimer ce groupe?"
+
+#: system/modules/admin/actions/groups/delete.php:6
+#: system/modules/admin/actions/groups/delete.php:11
+msgid "Group not found"
+msgstr "Groupe non trouvé"
+
+#: system/modules/admin/actions/groups/delete.php:29
+msgid "Group deleted"
+msgstr "groupe supprimé"
+
+#: system/modules/admin/actions/groups/edit.php:9
+#: system/modules/admin/templates/useredit.tpl.php:37
+msgid "Group Title"
+msgstr "Groupe Titre"
+
+#: system/modules/admin/actions/groups/edit.php:22
+#: system/modules/channels/actions/processor/edit.php:57
+#: system/modules/channels/actions/web/edit.php:39
+#: system/modules/form/actions/edit.php:27
+#: system/modules/form/actions/field/edit.php:88
+#: system/modules/report/actions/connections/edit.php:42
+#: system/modules/report/actions/edit.php:188
+#: system/modules/report/actions/templates/edit.php:35
+msgid "updated"
+msgstr "actualisé"
+
+#: system/modules/admin/actions/groups/edit.php:22
+#: system/modules/channels/actions/processor/edit.php:57
+#: system/modules/channels/actions/web/edit.php:39
+#: system/modules/form/actions/edit.php:27
+#: system/modules/form/actions/field/edit.php:88
+#: system/modules/report/actions/connections/edit.php:42
+#: system/modules/report/actions/edit.php:188
+#: system/modules/report/actions/templates/edit.php:35
+msgid "created"
+msgstr "créé"
+
+#: system/modules/admin/actions/groups/index.php:9
+#: system/modules/task/templates/taskweek.tpl.php:10
+msgid "Groups"
+msgstr "Groupes"
+
+#: system/modules/admin/actions/index.php:3
+msgid "Dashboard"
+msgstr "Tableau de bord"
+
+#: system/modules/admin/actions/lookup.php:3
+#: system/modules/admin/actions/newlookup.php:3
+#: system/modules/admin/models/AdminService.php:80
+msgid "Lookup"
+msgstr "Chercher"
+
+#: system/modules/admin/actions/lookup.php:26
+#: system/modules/report/actions/createreport.php:17
+#: system/modules/report/actions/edit.php:35
+msgid "Code"
+msgstr "Code"
+
+#: system/modules/admin/actions/lookup.php:34
+#: system/modules/report/actions/edit.php:101
+#: system/modules/report/models/ReportLib.php:19
+#: system/modules/task/actions/edit.php:112
+#: system/modules/task/actions/group/viewmembergroup.php:26
+#: system/modules/task/actions/tasklist.php:140
+#: system/modules/task/actions/viewtask.php:175
+msgid " Edit "
+msgstr " modifier"
+
+#: system/modules/admin/actions/lookup.php:36
+#: system/modules/report/actions/deletemember.php:14
+#: system/modules/report/actions/edit.php:102
+#: system/modules/report/actions/listfeed.php:27
+#: system/modules/report/models/ReportLib.php:21
+#: system/modules/task/actions/group/viewmembergroup.php:28
+#: system/modules/task/actions/viewtask.php:189
+#: system/modules/task/task.group.actions.php:146
+#: system/modules/task/task.group.actions.php:302
+msgid " Delete "
+msgstr " Effacer"
+
+#: system/modules/admin/actions/lookup.php:36
+msgid "Are you sure you wish to DELETE this Lookup item?"
+msgstr "Êtes-vous sûr de vouloir supprimer cet objet Lookup?"
+
+#: system/modules/admin/actions/lookup.php:41
+msgid "No Lookup items to list"
+msgstr "Aucun élément Lookup à la liste"
+
+#: system/modules/admin/actions/lookup.php:52
+msgid "Create a New Entry"
+msgstr "Créer une nouvelle entrée"
+
+#: system/modules/admin/actions/lookup.php:54
+msgid "or Add New Type"
+msgstr "ou Ajouter un nouveau type"
+
+#: system/modules/admin/actions/memberdelete.php:12
+msgid "Member is deleted!"
+msgstr "Membre est supprimé!"
+
+#: system/modules/admin/actions/migration/create.php:8
+#: system/modules/admin/actions/migration/create.php:26
+msgid "Missing specified module or it doesn't exist"
+msgstr "Manquant module spécifié ou il n'existe pas"
+
+#: system/modules/admin/actions/migration/create.php:12
+msgid "Enter the migration name (camel case)"
+msgstr "Entrez le nom de migration (cas de chameau)"
+
+#: system/modules/admin/actions/migration/create.php:13
+#: system/modules/admin/actions/moreInfo.php:20
+#: system/modules/admin/actions/printers.php:6
+#: system/modules/admin/actions/printqueue.php:18
+#: system/modules/admin/templates/migration/index.tpl.php:76
+#: system/modules/channels/actions/processor/edit.php:16
+#: system/modules/channels/models/Channel.php:15
+#: system/modules/channels/templates/listchannels.tpl.php:8
+#: system/modules/channels/templates/listprocessors.tpl.php:7
+#: system/modules/form/templates/field/edit.tpl.php:4
+#: system/modules/form/templates/field/edit.tpl.php:5
+#: system/modules/form/templates/show.tpl.php:21
+#: system/modules/report/actions/deletemember.php:13
+#: system/modules/report/actions/editmember.php:12
+#: system/modules/task/task.group.actions.php:221
+#: system/modules/task/task.group.actions.php:300
+#: system/modules/timelog/partials/templates/listtimelog.tpl.php:8
+msgid "Name"
+msgstr "prénom"
+
+#: system/modules/admin/actions/migration/rollback.php:8
+msgid "Missing parameters required for rollback"
+msgstr "paramètres manquants requis pour rollback"
+
+#: system/modules/admin/actions/migration/run.php:8
+msgid "Missing module parameter required to run migration"
+msgstr "Manquant paramètre de module requis pour exécuter la migration"
+
+#: system/modules/admin/actions/moreInfo.php:15
+msgid "New Member"
+msgstr "Nouveau membre"
+
+#: system/modules/admin/actions/moreInfo.php:17
+msgid "Edit Permissions"
+msgstr "Modifier les autorisations"
+
+#: system/modules/admin/actions/moreInfo.php:39
+msgid "Are you sure you want to delete this member?"
+msgstr "Êtes-vous sûr de vouloir supprimer ce membre?"
+
+#: system/modules/admin/actions/newlookup.php:9
+msgid "Please add select or create a TYPE<br>"
+msgstr "S'il vous plaît ajouter sélectionner ou créer un TYPE <br>"
+
+#: system/modules/admin/actions/newlookup.php:15
+msgid "Type and Key combination already exists"
+msgstr "Type et combinaison clé existe déjà"
+
+#: system/modules/admin/actions/newlookup.php:25
+msgid "Lookup Item added"
+msgstr "Lookup Article ajouté"
+
+#: system/modules/admin/actions/permissionedit.php:10
+#: system/modules/admin/actions/users.php:21
+msgid "Permissions"
+msgstr "Autorisations"
+
+#: system/modules/admin/actions/permissionedit.php:81
+msgid "Permissions are updated!"
+msgstr "Les autorisations sont mis à jour!"
+
+#: system/modules/admin/actions/printers.php:12
+msgid "Are you sure you want to delete this printer?"
+msgstr "Êtes-vous sûr de vouloir supprimer cette imprimante?"
+
+#: system/modules/admin/actions/printfile.php:5
+msgid "No filename specified"
+msgstr "Pas de nom de fichier spécifié"
+
+#: system/modules/admin/actions/printfile.php:9
+msgid "Printer"
+msgstr "Imprimante"
+
+#: system/modules/admin/actions/printfile.php:13
+#: system/modules/admin/actions/printqueue.php:32
+msgid "Print"
+msgstr "Impression"
+
+#: system/modules/admin/actions/printfile.php:19
+msgid "Printer does not exist"
+msgstr "n'existe pas d'imprimante"
+
+#: system/modules/admin/actions/printfile.php:23
+msgid "File has been sent to the printer"
+msgstr "Le fichier a été envoyé à l'imprimante"
+
+#: system/modules/admin/actions/printqueue.php:18
+msgid "Size"
+msgstr "Taille"
+
+#: system/modules/admin/actions/printqueue.php:33
+msgid "Are you sure you want to remove this file? (This is irreversible)"
+msgstr "Êtes-vous sûr de vouloir supprimer ce fichier? (Cette opération est irréversible)"
+
+#: system/modules/admin/actions/templates/edit.php:7
+#: system/modules/admin/actions/templates/index.php:3
+#: system/modules/admin/models/AdminService.php:81
+#: system/modules/report/templates/edit.tpl.php:6
+msgid "Templates"
+msgstr "Modèles"
+
+#: system/modules/admin/actions/templates/edit.php:14
+msgid "Template Details"
+msgstr "Détails modèle"
+
+#: system/modules/admin/actions/templates/edit.php:17
+#: system/modules/admin/actions/templates/index.php:11
+#: system/modules/admin/actions/users.php:6
+#: system/modules/admin/templates/useradd.tpl.php:5
+#: system/modules/admin/templates/useredit.tpl.php:8
+#: system/modules/task/actions/group/viewtaskgrouptypes.php:53
+msgid "Active"
+msgstr "actif"
+
+#: system/modules/admin/actions/templates/edit.php:19
+#: system/modules/admin/actions/templates/index.php:5
+#: system/modules/report/actions/createreport.php:14
+#: system/modules/report/actions/edit.php:24
+#: system/modules/report/actions/index.php:33
+#: system/modules/report/actions/index.php:34
+#: system/modules/timelog/actions/edit.php:34
+#: system/modules/timelog/actions/start.php:14
+msgid "Module"
+msgstr "Module"
+
+#: system/modules/admin/actions/templates/edit.php:20
+#: system/modules/admin/actions/templates/index.php:5
+#: system/modules/report/actions/edit.php:118
+msgid "Category"
+msgstr "Catégorie"
+
+#: system/modules/admin/actions/templates/edit.php:29
+msgid "Template Title"
+msgstr "Titre Template"
+
+#: system/modules/admin/actions/templates/edit.php:32
+msgid "Template Body"
+msgstr "Body Template"
+
+#: system/modules/admin/actions/templates/edit.php:39
+msgid "Title Data"
+msgstr "Titre données"
+
+#: system/modules/admin/actions/templates/edit.php:42
+msgid "Body Data"
+msgstr "données du corps"
+
+#: system/modules/admin/actions/templates/edit.php:68
+msgid "Template saved"
+msgstr "modèle sauvé"
+
+#: system/modules/admin/actions/templates/index.php:5
+msgid "Active?"
+msgstr "Actif?"
+
+#: system/modules/admin/actions/templates/index.php:5
+#: system/modules/admin/actions/users.php:6
+#: system/modules/report/actions/listfeed.php:11
+msgid "Created"
+msgstr "Créé"
+
+#: system/modules/admin/actions/templates/index.php:5
+msgid "Modified"
+msgstr "Modifié"
+
+#: system/modules/admin/actions/templates/index.php:11
+msgid "Inactive"
+msgstr "Inactif"
+
+#: system/modules/admin/actions/testemail.php:7
+msgid "Test email"
+msgstr "email de test"
+
+#: system/modules/admin/actions/testemail.php:7
+msgid "Test email, ignore"
+msgstr "email de test, ignorer"
+
+#: system/modules/admin/actions/testemail.php:8
+msgid "An email has been sent to your address"
+msgstr "Un courriel a été envoyé à votre adresse"
+
+#: system/modules/admin/actions/user/remove.php:8
+#: system/modules/admin/actions/user/remove.php:13
+msgid "User not found"
+msgstr "Utilisateur non trouvé"
+
+#: system/modules/admin/actions/user/remove.php:16
+msgid "Data clean up for "
+msgstr "Les données pour nettoyer"
+
+#: system/modules/admin/actions/useract.php:8
+#: system/modules/admin/actions/useract.php:10
+#: system/modules/admin/actions/userdel.php:8
+#: system/modules/admin/actions/userdel.php:10
+#: system/modules/admin/actions/useredit.php:67
+msgid "User "
+msgstr "Utilisateur"
+
+#: system/modules/admin/actions/useract.php:8
+msgid "suspended"
+msgstr "suspendu"
+
+#: system/modules/admin/actions/useract.php:10
+#: system/modules/admin/actions/userdel.php:10
+#: system/modules/admin/actions/useredit.php:16
+msgid " does not exist."
+msgstr " n'existe pas."
+
+#: system/modules/admin/actions/useradd.php:11
+msgid "Add User"
+msgstr "Ajouter un utilisateur"
+
+#: system/modules/admin/actions/useradd.php:24
+#: system/modules/admin/actions/useredit.php:35
+msgid "Login is mandatory"
+msgstr "Connexion est obligatoire"
+
+#: system/modules/admin/actions/useradd.php:25
+msgid "Password is mandatory"
+msgstr "Mot de passe est obligatoire"
+
+#: system/modules/admin/actions/useradd.php:26
+msgid "Password2 is mandatory"
+msgstr "Password2 est obligatoire"
+
+#: system/modules/admin/actions/useradd.php:29
+#: system/modules/admin/actions/useredit.php:38
+#: system/modules/auth/actions/profile.php:50
+msgid "Passwords don't match"
+msgstr "Les mots de passe ne correspondent pas"
+
+#: system/modules/admin/actions/useradd.php:66
+#: system/modules/task/actions/createtask.php:86
+#: system/modules/task/task.group.actions.php:73
+msgid " added"
+msgstr " ajoutée"
+
+#: system/modules/admin/actions/userdel.php:8
+#: system/modules/task/task.group.actions.php:170
+msgid " deleted."
+msgstr " supprimée."
+
+#: system/modules/admin/actions/useredit.php:13
+msgid "Administration - Edit User - "
+msgstr "Administration - Modifier l'utilisateur -"
+
+#: system/modules/admin/actions/useredit.php:42
+msgid "User does not exist"
+msgstr "L'utilisateur n'existe pas"
+
+#: system/modules/admin/actions/useredit.php:67
+#: system/modules/form/actions/instance/edit.php:93
+#: system/modules/task/actions/updatetask.php:89
+msgid " updated"
+msgstr " actualisé"
+
+#: system/modules/admin/actions/users.php:6
+#: system/modules/admin/templates/useradd.tpl.php:3
+#: system/modules/admin/templates/useredit.tpl.php:6
+#: system/modules/auth/actions/login.php:13
+#: system/modules/auth/templates/forgotpassword.tpl.php:3
+#: system/modules/auth/templates/login.tpl.php:4
+#: system/modules/auth/templates/login.tpl.php:8
+msgid "Login"
+msgstr "S'identifier"
+
+#: system/modules/admin/actions/users.php:6
+#: system/modules/admin/templates/useradd.tpl.php:13
+#: system/modules/admin/templates/useredit.tpl.php:16
+#: system/modules/auth/actions/profile.php:18
+msgid "First Name"
+msgstr "Prénom"
+
+#: system/modules/admin/actions/users.php:6
+#: system/modules/admin/templates/useradd.tpl.php:14
+#: system/modules/admin/templates/useredit.tpl.php:17
+#: system/modules/auth/actions/profile.php:19
+msgid "Last Name"
+msgstr "Nom de famille"
+
+#: system/modules/admin/actions/users.php:6
+#: system/modules/admin/templates/useradd.tpl.php:4
+#: system/modules/admin/templates/useredit.tpl.php:7
+msgid "Admin"
+msgstr "Administrateur"
+
+#: system/modules/admin/actions/users.php:6
+msgid "Last Login"
+msgstr "Dernière connexion"
+
+#: system/modules/admin/actions/users.php:22
+#: system/modules/main/partials/templates/listwidgets.tpl.php:12
+msgid "Remove"
+msgstr "Retirer"
+
+#: system/modules/admin/models/AdminService.php:78
+msgid "List Users"
+msgstr "Liste des utilisateurs"
+
+#: system/modules/admin/models/AdminService.php:79
+msgid "List Groups"
+msgstr "Liste des groupes"
+
+#: system/modules/admin/models/AdminService.php:82
+msgid "PHP Info"
+msgstr "PHP info"
+
+#: system/modules/admin/models/AdminService.php:83
+msgid "Printers"
+msgstr "Imprimantes"
+
+#: system/modules/admin/models/AdminService.php:84
+msgid "Print Queue"
+msgstr "File d'attente d'impression"
+
+#: system/modules/admin/models/AdminService.php:85
+msgid "Backup Database"
+msgstr "Base de données de sauvegarde"
+
+#: system/modules/admin/models/AdminService.php:86
+msgid "Install/Update Composer"
+msgstr "Installation / Mise à jour Compositeur"
+
+#: system/modules/admin/models/AdminService.php:87
+#: system/modules/admin/templates/useradd.tpl.php:17
+#: system/modules/admin/templates/useredit.tpl.php:20
+#: system/modules/auth/actions/profile.php:26
+#: system/modules/channels/templates/listchannels.tpl.php:1
+msgid "Email"
+msgstr "Email"
+
+#: system/modules/admin/models/AdminService.php:88
+msgid "Migrations"
+msgstr "Migrations"
+
+#: system/modules/admin/models/AdminService.php:89
+msgid "File transfer"
+msgstr "Transfert de fichier"
+
+#: system/modules/admin/models/CmfiveTable.php:64
+msgid "Cmfive mandates to prefix date fields with 'd_'."
+msgstr "mandats Cmfive de préfixer champs de date avec 'd_'."
+
+#: system/modules/admin/models/CmfiveTable.php:71
+msgid "Cmfive mandates to prefix datetime fields with 'dt_'."
+msgstr "mandats Cmfive de préfixer champs datetime avec 'DT_'."
+
+#: system/modules/admin/models/CmfiveTable.php:78
+msgid "Cmfive mandates to prefix time fields with 't_'."
+msgstr "mandats Cmfive de préfixer champs de temps avec 't_'."
+
+#: system/modules/admin/models/CmfiveTable.php:85
+msgid "Cmfive mandates to prefix boolean fields with either 'is_' or 'has_'."
+msgstr "mandats Cmfive de préfixer champs booléens avec soit 'is_' ou 'has_'."
+
+#: system/modules/admin/models/Comment.php:47
+#: system/modules/task/models/AComment.php:49
+msgid "By"
+msgstr "Par"
+
+#: system/modules/admin/models/MigrationService.php:106
+msgid "Missing module or it doesn't exist"
+msgstr "Module manquant ou il n'existe pas"
+
+#: system/modules/admin/models/MigrationService.php:123
+msgid "Could not find module directory"
+msgstr "Impossible de trouver le répertoire du module"
+
+#: system/modules/admin/models/MigrationService.php:157
+msgid "Migration created"
+msgstr "migration créé"
+
+#: system/modules/admin/models/MigrationService.php:243
+#: system/modules/admin/models/MigrationService.php:324
+#: system/modules/admin/models/MigrationService.php:347
+#: system/modules/admin/templates/migration/index.tpl.php:71
+msgid " migration"
+msgstr " migration"
+
+#: system/modules/admin/models/MigrationService.php:243
+#: system/modules/admin/models/MigrationService.php:324
+msgid " has"
+msgstr " a"
+
+#: system/modules/admin/models/MigrationService.php:243
+#: system/modules/admin/models/MigrationService.php:324
+msgid "s have"
+msgstr "s ont"
+
+#: system/modules/admin/models/MigrationService.php:243
+msgid " run"
+msgstr " courir"
+
+#: system/modules/admin/models/MigrationService.php:245
+#: system/modules/admin/models/MigrationService.php:326
+msgid "Error with a migration: "
+msgstr "Erreur avec une migration:"
+
+#: system/modules/admin/models/MigrationService.php:245
+msgid "More info: "
+msgstr "Plus d'informations:"
+
+#: system/modules/admin/models/MigrationService.php:250
+msgid "No migrations to run!"
+msgstr "Aucune migration à courir!"
+
+#: system/modules/admin/models/MigrationService.php:267
+msgid "Missing parameters required for a rollback"
+msgstr "paramètres requis pour un rollback manquant"
+
+#: system/modules/admin/models/MigrationService.php:271
+msgid "Module doesn't exist"
+msgstr "Module n'existe"
+
+#: system/modules/admin/models/MigrationService.php:276
+msgid "There are no installed migrations to rollback"
+msgstr "Il n'y a pas migrations installées rollback"
+
+#: system/modules/admin/models/MigrationService.php:324
+#: system/modules/admin/models/MigrationService.php:347
+msgid " rolled back"
+msgstr " annulées"
+
+#: system/modules/admin/partials/templates/displaycomment.tpl.php:13
+msgid "Posted"
+msgstr "Publié"
+
+#: system/modules/admin/partials/templates/displaycomment.tpl.php:20
+msgid "or"
+msgstr "ou"
+
+#: system/modules/admin/partials/templates/displaycomment.tpl.php:21
+msgid "Are you sure you want to delete this comment?"
+msgstr "êtes-vous sûr de vouloir supprimer ce commentaire?"
+
+#: system/modules/admin/partials/templates/listcomments.tpl.php:8
+msgid "Add Comment"
+msgstr "Ajouter un commentaire"
+
+#: system/modules/admin/templates/file/index.tpl.php:7
+#: system/modules/form/models/FormStandardInterface.php:103
+#: system/modules/form/models/FormStandardInterface.php:105
+#: system/modules/timelog/templates/index.tpl.php:6
+msgid "Object"
+msgstr "Objet"
+
+#: system/modules/admin/templates/file/index.tpl.php:7
+msgid "Location"
+msgstr "Emplacement"
+
+#: system/modules/admin/templates/file/index.tpl.php:21
+msgid "Move to "
+msgstr "Déménager à"
+
+#: system/modules/admin/templates/file/index.tpl.php:40
+msgid "No attachment available"
+msgstr "Aucune pièce jointe disponible"
+
+#: system/modules/admin/templates/index.tpl.php:1
+msgid "Users Currently Logged In"
+msgstr "Utilisateurs actuellement connectés"
+
+#: system/modules/admin/templates/lookup.tpl.php:3
+msgid "Lookup List"
+msgstr "Liste de recherche"
+
+#: system/modules/admin/templates/lookup.tpl.php:4
+msgid "New Item"
+msgstr "Nouvel article"
+
+#: system/modules/admin/templates/lookup.tpl.php:8
+msgid "Search Lookup Items"
+msgstr "Rechercher Lookup Articles"
+
+#: system/modules/admin/templates/migration/index.tpl.php:9
+#: system/modules/admin/templates/migration/index.tpl.php:37
+msgid "Batch"
+msgstr "Lot"
+
+#: system/modules/admin/templates/migration/index.tpl.php:10
+msgid "Individual"
+msgstr "Individuel"
+
+#: system/modules/admin/templates/migration/index.tpl.php:15
+msgid "Rollback latest batch"
+msgstr "Rollback dernier lot"
+
+#: system/modules/admin/templates/migration/index.tpl.php:15
+msgid "Are you sure you want to rollback migrations?"
+msgstr "Etes-vous sûr que vous voulez rollback migrations?"
+
+#: system/modules/admin/templates/migration/index.tpl.php:22
+msgid "Install migrations"
+msgstr "Installez migrations"
+
+#: system/modules/admin/templates/migration/index.tpl.php:22
+msgid "Are you sure you want to install migrations?"
+msgstr "Etes-vous sûr que vous voulez installer les migrations?"
+
+#: system/modules/admin/templates/migration/index.tpl.php:71
+msgid "Create a"
+msgstr "Créer un"
+
+#: system/modules/admin/templates/migration/index.tpl.php:73
+msgid "Run all "
+msgstr "tout exécuter"
+
+#: system/modules/admin/templates/migration/index.tpl.php:73
+msgid " migrations"
+msgstr " migrations"
+
+#: system/modules/admin/templates/migration/index.tpl.php:73
+msgid "Are you sure you want to run all outstanding migrations for this module?"
+msgstr "Etes-vous sûr que vous voulez exécuter toutes les migrations en circulation pour ce module?"
+
+#: system/modules/admin/templates/migration/index.tpl.php:76
+msgid "Path"
+msgstr "Chemin"
+
+#: system/modules/admin/templates/migration/index.tpl.php:76
+msgid "Date run"
+msgstr "Date de l'exécution"
+
+#: system/modules/admin/templates/migration/index.tpl.php:87
+msgid "System"
+msgstr "Système"
+
+#: system/modules/admin/templates/migration/index.tpl.php:95
+msgid "Rollback to here"
+msgstr "Rollback ici"
+
+#: system/modules/admin/templates/migration/index.tpl.php:95
+msgid "Are you 110% sure you want to rollback a migration? DATA COULD BE LOST PERMANENTLY!"
+msgstr "Êtes-vous 110% sûr que vous voulez annuler une migration? Les données pourraient être définitivement perdues!"
+
+#: system/modules/admin/templates/migration/index.tpl.php:97
+msgid "Migrate to here"
+msgstr "Migrer ici"
+
+#: system/modules/admin/templates/migration/index.tpl.php:97
+msgid "Are you sure you want to run a migration?"
+msgstr "Etes-vous sûr que vous voulez exécuter une migration?"
+
+#: system/modules/admin/templates/migration/index.tpl.php:135
+msgid "There are no migrations on this project"
+msgstr "Il n'y a pas migrations sur ce projet"
+
+#: system/modules/admin/templates/printers.tpl.php:2
+msgid "Add a printer"
+msgstr "Ajouter une imprimante"
+
+#: system/modules/admin/templates/templates/edit.tpl.php:1
+msgid "Back to Templates List"
+msgstr "Retour à la liste Modèles"
+
+#: system/modules/admin/templates/templates/edit.tpl.php:7
+#: system/modules/report/actions/templates/edit.php:10
+msgid "Template"
+msgstr "Modèle"
+
+#: system/modules/admin/templates/templates/edit.tpl.php:8
+msgid "Test Data"
+msgstr "Données de test"
+
+#: system/modules/admin/templates/templates/edit.tpl.php:9
+msgid "Test Output"
+msgstr "Sortie de test"
+
+#: system/modules/admin/templates/templates/edit.tpl.php:10
+msgid "Manual"
+msgstr "Manuel"
+
+#: system/modules/admin/templates/templates/edit.tpl.php:23
+msgid "this is the template manual"
+msgstr "ceci est le manuel de modèle"
+
+#: system/modules/admin/templates/templates/index.tpl.php:1
+#: system/modules/report/templates/edit.tpl.php:28
+msgid "Add Template"
+msgstr "Ajouter un modèle"
+
+#: system/modules/admin/templates/user/remove.tpl.php:1
+msgid "Back to user list"
+msgstr "Retour à la liste des utilisateurs"
+
+#: system/modules/admin/templates/user/remove.tpl.php:6
+msgid "Deactivate user"
+msgstr "Désactiver l'utilisateur"
+
+#: system/modules/admin/templates/user/remove.tpl.php:7
+msgid "Delete user"
+msgstr "Supprimer l'utilisateur"
+
+#: system/modules/admin/templates/user/remove.tpl.php:7
+msgid "Are you sure you want to delete this user?"
+msgstr "Êtes-vous sûr de vouloir supprimer cet utilisateur?"
+
+#: system/modules/admin/templates/useradd.tpl.php:2
+#: system/modules/admin/templates/useradd.tpl.php:8
+msgid "User Details"
+msgstr "Détails de l'utilisateur"
+
+#: system/modules/admin/templates/useradd.tpl.php:6
+#: system/modules/admin/templates/useredit.tpl.php:9
+#: system/modules/auth/actions/profile.php:28
+msgid "Language"
+msgstr "La langue"
+
+#: system/modules/admin/templates/useradd.tpl.php:9
+#: system/modules/admin/templates/useredit.tpl.php:12
+#: system/modules/auth/actions/login.php:12
+#: system/modules/auth/actions/profile.php:15
+#: system/modules/auth/templates/login.tpl.php:6
+#: system/modules/report/actions/connections/edit.php:26
+msgid "Password"
+msgstr "Mot de passe"
+
+#: system/modules/admin/templates/useradd.tpl.php:10
+#: system/modules/admin/templates/useredit.tpl.php:13
+#: system/modules/auth/actions/profile.php:16
+msgid "Repeat Password"
+msgstr "Répéter le mot de passe"
+
+#: system/modules/admin/templates/useradd.tpl.php:12
+#: system/modules/admin/templates/useradd.tpl.php:15
+#: system/modules/auth/actions/profile.php:17
+msgid "Contact Details"
+msgstr "Détails du contact"
+
+#: system/modules/admin/templates/useredit.tpl.php:2
+msgid "Edit User"
+msgstr "Modifier l'utilisateur"
+
+#: system/modules/admin/templates/useredit.tpl.php:37
+msgid "User Groups"
+msgstr "Groupes d'utilisateurs"
+
+#: system/modules/admin/templates/useredit.tpl.php:43
+msgid "User with ID"
+msgstr "Utilisateur avec ID"
+
+#: system/modules/admin/templates/useredit.tpl.php:43
+msgid "does not exist."
+msgstr "n'existe pas."
+
+#: system/modules/admin/templates/users.tpl.php:11
+msgid "Add New User"
+msgstr "Ajouter un nouvel utilisateur"
+
+#: system/modules/auth/actions/forgotpassword.php:14
+#: system/modules/auth/templates/login.tpl.php:9
+msgid "Forgot Password"
+msgstr "Mot de passe oublié"
+
+#: system/modules/auth/actions/forgotpassword.php:21
+msgid "Cannot send recovery email. This site has not been configured with a default email address"
+msgstr "Vous ne pouvez pas envoyer la récupération email. Ce site n'a pas été configuré avec une adresse de messagerie par défaut"
+
+#: system/modules/auth/actions/forgotpassword.php:26
+msgid "If this account exists then a password reset email has been just sent to the associated email address."
+msgstr "Si ce compte existe alors un e-mail de réinitialisation a été simplement envoyé à l'adresse e-mail associée."
+
+#: system/modules/auth/actions/forgotpassword.php:45
+msgid "Hello"
+msgstr "Bonjour"
+
+#: system/modules/auth/actions/forgotpassword.php:46
+msgid "Please go to this link to reset your password:"
+msgstr "S'il vous plaît aller à ce lien pour réinitialiser votre mot de passe:"
+
+#: system/modules/auth/actions/forgotpassword.php:48
+msgid "You have 24 hours to reset your password"
+msgstr "Vous avez 24 heures pour réinitialiser votre mot de passe"
+
+#: system/modules/auth/actions/forgotpassword.php:49
+msgid "Thank you,"
+msgstr "Je vous remercie,"
+
+#: system/modules/auth/actions/forgotpassword.php:49
+msgid "cmfive support"
+msgstr "soutien cmfive"
+
+#: system/modules/auth/actions/forgotpassword.php:51
+msgid " password reset"
+msgstr " réinitialiser le mot de passe"
+
+#: system/modules/auth/actions/forgotpassword.php:55
+msgid "There was a problem sending an email, check your settings."
+msgstr "Il y avait un problème d'envoi d'un e-mail, vérifiez vos paramètres."
+
+#: system/modules/auth/actions/login.php:10
+msgid "Application Login"
+msgstr "Demande Connexion"
+
+#: system/modules/auth/actions/login.php:11
+#: system/modules/report/actions/connections/edit.php:25
+#: system/modules/report/actions/connections/index.php:7
+msgid "Username"
+msgstr "Nom d'utilisateur"
+
+#: system/modules/auth/actions/login.php:36
+msgid "Login or Password incorrect"
+msgstr "Connexion ou mot de passe incorrect"
+
+#: system/modules/auth/actions/login.php:39
+msgid "Please enter your login and password"
+msgstr "S'il vous plaît entrer votre login et mot de passe"
+
+#: system/modules/auth/actions/profile.php:7
+msgid "Administration - Profile - "
+msgstr "Administration - Profil -"
+
+#: system/modules/auth/actions/profile.php:9
+msgid "User does not exist."
+msgstr "L'utilisateur n'existe pas."
+
+#: system/modules/auth/actions/profile.php:14
+msgid "Change Password"
+msgstr "Changer le mot de passe"
+
+#: system/modules/auth/actions/profile.php:20
+msgid "Communication"
+msgstr "la communication"
+
+#: system/modules/auth/actions/profile.php:21
+msgid "Home Phone"
+msgstr "Téléphone fixe"
+
+#: system/modules/auth/actions/profile.php:22
+msgid "Work Phone"
+msgstr "Téléphone de travail"
+
+#: system/modules/auth/actions/profile.php:23
+msgid "Private Mobile"
+msgstr "Private mobile"
+
+#: system/modules/auth/actions/profile.php:24
+msgid "Work Mobile"
+msgstr "Le travail mobile"
+
+#: system/modules/auth/actions/profile.php:25
+msgid "Fax"
+msgstr "Fax"
+
+#: system/modules/auth/actions/profile.php:27
+msgid "Redirect URL"
+msgstr "Rediriger URL"
+
+#: system/modules/auth/actions/profile.php:30
+msgid "Update"
+msgstr "Mettre à jour"
+
+#: system/modules/auth/actions/profile.php:33
+msgid "Edit Profile"
+msgstr "Modifier le profil"
+
+#: system/modules/auth/actions/profile.php:42
+msgid "Not a valid home phone number"
+msgstr "Pas un numéro de téléphone valide"
+
+#: system/modules/auth/actions/profile.php:43
+msgid "Not a valid work phone number"
+msgstr "Pas un numéro de téléphone professionnel valide"
+
+#: system/modules/auth/actions/profile.php:44
+#: system/modules/auth/actions/profile.php:45
+msgid "Not a valid  mobile phone number"
+msgstr "Pas un numéro de téléphone portable valide"
+
+#: system/modules/auth/actions/profile.php:46
+msgid "Not a valid fax number"
+msgstr "Pas un numéro de fax valide"
+
+#: system/modules/auth/actions/profile.php:55
+msgid "Not Logged In"
+msgstr "Pas connecté"
+
+#: system/modules/auth/actions/profile.php:87
+msgid "Profile updated."
+msgstr "Profil mis à jour."
+
+#: system/modules/auth/actions/resetpassword.php:13
+#: system/modules/auth/actions/resetpassword.php:53
+msgid "Your token has expired (max 24 hours), please submit for a new one"
+msgstr "Votre jeton a expiré (max 24 heures), s'il vous plaît soumettre à une nouvelle"
+
+#: system/modules/auth/actions/resetpassword.php:22
+msgid "Enter new password"
+msgstr "Entrez un nouveau mot de passe"
+
+#: system/modules/auth/actions/resetpassword.php:23
+msgid "New password"
+msgstr "Nouveau mot de passe"
+
+#: system/modules/auth/actions/resetpassword.php:24
+msgid "Confirm password"
+msgstr "Confirmez le mot de passe"
+
+#: system/modules/auth/actions/resetpassword.php:25
+msgid "Reset"
+msgstr "Réinitialiser"
+
+#: system/modules/auth/actions/resetpassword.php:33
+#: system/modules/auth/actions/resetpassword.php:76
+msgid "Invalid email or token, this incident has been logged"
+msgstr "email ou un jeton non valide, cet incident a été enregistré"
+
+#: system/modules/auth/actions/resetpassword.php:44
+msgid "Passwords do not match"
+msgstr "Les mots de passe ne correspondent pas"
+
+#: system/modules/auth/actions/resetpassword.php:78
+msgid "Your password has been reset"
+msgstr "votre mot de passe a été réinitialisé"
+
+#: system/modules/auth/actions/user/unassign.php:16
+msgid "Group membership revoked"
+msgstr "L'appartenance au groupe révoqué"
+
+#: system/modules/auth/models/Contact.php:74
+msgid "work phone "
+msgstr "téléphone de travail"
+
+#: system/modules/auth/models/Contact.php:78
+msgid "mobile "
+msgstr "mobile"
+
+#: system/modules/auth/models/User.php:130
+msgid "English"
+msgstr "Anglais"
+
+#: system/modules/auth/models/User.php:130
+msgid "German"
+msgstr "allemand"
+
+#: system/modules/auth/models/User.php:130
+msgid "French"
+msgstr "français"
+
+#: system/modules/auth/models/User.php:130
+msgid "Chinese"
+msgstr "chinois"
+
+#: system/modules/auth/models/User.php:130
+msgid "Japanese"
+msgstr "Japonais"
+
+#: system/modules/auth/models/User.php:130
+msgid "Spanish"
+msgstr "Espanol"
+
+#: system/modules/auth/models/User.php:130
+msgid "Dutch"
+msgstr "néerlandais"
+
+#: system/modules/auth/models/User.php:130
+msgid "Russian"
+msgstr "russe"
+
+#: system/modules/auth/models/User.php:130
+msgid "Gaelic"
+msgstr "gaélique"
+
+#: system/modules/auth/partials/templates/removeUser.tpl.php:2
+msgid "Auth"
+msgstr "Auth"
+
+#: system/modules/auth/partials/templates/removeUser.tpl.php:4
+#: system/modules/report/partials/templates/removeUser.tpl.php:7
+#: system/modules/task/partials/templates/removeUser.tpl.php:9
+msgid "This user is a member of"
+msgstr "Cet utilisateur est un membre"
+
+#: system/modules/auth/partials/templates/removeUser.tpl.php:4
+msgid " group"
+msgstr " groupe"
+
+#: system/modules/auth/partials/templates/removeUser.tpl.php:7
+msgid "Unassign from groups"
+msgstr "Unassign des groupes"
+
+#: system/modules/auth/templates/forgotpassword.tpl.php:4
+#: system/modules/auth/templates/login.tpl.php:5
+msgid "Your login"
+msgstr "Votre identifiant"
+
+#: system/modules/auth/templates/forgotpassword.tpl.php:5
+#: system/modules/task/task.group.actions.php:255
+msgid "Submit"
+msgstr "Soumettre"
+
+#: system/modules/auth/templates/forgotpassword.tpl.php:6
+#: system/modules/help/templates/toc.tpl.php:2
+#: system/modules/help/templates/view.tpl.php:2
+msgid "Back"
+msgstr "Arrière"
+
+#: system/modules/channels/actions/index.php:4
+msgid "Channels"
+msgstr "filières"
+
+#: system/modules/channels/actions/listchannels.php:4
+msgid "Channels List"
+msgstr "Liste des chaînes"
+
+#: system/modules/channels/actions/listmessages.php:4
+msgid "Messages list"
+msgstr "Liste des messages"
+
+#: system/modules/channels/actions/listmessagestatuses.php:7
+msgid "Message Statuses"
+msgstr "Statuses Message"
+
+#: system/modules/channels/actions/listmessagestatuses.php:10
+msgid "Message ID not found"
+msgstr "ID de message introuvable"
+
+#: system/modules/channels/actions/listprocessors.php:4
+msgid "Processors List"
+msgstr "Liste des processeurs"
+
+#: system/modules/channels/actions/process.php:18
+#: system/modules/channels/actions/read.php:17
+msgid "No channel found."
+msgstr "Aucun canal trouvé."
+
+#: system/modules/channels/actions/processor/delete.php:11
+msgid "Processor deleted"
+msgstr "processeur supprimé"
+
+#: system/modules/channels/actions/processor/delete.php:13
+msgid "Could not find processor"
+msgstr "Impossible de trouver le processeur"
+
+#: system/modules/channels/actions/processor/edit.php:8
+#: system/modules/channels/actions/web/edit.php:8
+#: system/modules/main/actions/addwidget.php:22
+#: system/modules/tag/models/TagService.php:142
+#: system/modules/tag/partials/templates/listTags.tpl.php:22
+msgid "Add"
+msgstr "Ajouter"
+
+#: system/modules/channels/actions/processor/edit.php:8
+msgid " a Processor"
+msgstr " un processeur"
+
+#: system/modules/channels/actions/processor/edit.php:14
+msgid "Processor"
+msgstr "Processeur"
+
+#: system/modules/channels/actions/processor/edit.php:19
+#: system/modules/channels/models/Channel.php:13
+#: system/modules/channels/templates/listmessages.tpl.php:4
+msgid "Channel"
+msgstr "Canal"
+
+#: system/modules/channels/actions/processor/edit.php:22
+#: system/modules/channels/templates/listprocessors.tpl.php:7
+msgid "Processor Class"
+msgstr "processeur de classe"
+
+#: system/modules/channels/actions/processor/edit.php:40
+msgid "Missing Processor values"
+msgstr "Les valeurs manquantes du processeur"
+
+#: system/modules/channels/actions/processor/edit.php:46
+msgid "Could not find processor in config"
+msgstr "Impossible de trouver le processeur dans config"
+
+#: system/modules/channels/actions/processor/edit.php:57
+msgid "Processor "
+msgstr "Processeur"
+
+#: system/modules/channels/actions/processor/editsettings.php:9
+#: system/modules/channels/actions/processor/editsettings.php:39
+msgid "Missing parameter in request"
+msgstr "paramètre dans la requête manquante"
+
+#: system/modules/channels/actions/processor/editsettings.php:14
+#: system/modules/channels/actions/processor/editsettings.php:50
+msgid "Invalid processor ID"
+msgstr "Invalid ID de processeur"
+
+#: system/modules/channels/actions/processor/editsettings.php:26
+msgid "Form implementation is empty"
+msgstr "la mise en œuvre de formulaire est vide"
+
+#: system/modules/channels/actions/processor/editsettings.php:29
+msgid "Generic form settings function is missing"
+msgstr "Générique fonction des paramètres de formulaire est manquant"
+
+#: system/modules/channels/actions/processor/editsettings.php:56
+msgid "Processor settings saved"
+msgstr "paramètres du processeur enregistrés"
+
+#: system/modules/channels/actions/web/delete.php:11
+msgid "Channel deleted"
+msgstr "canal supprimé"
+
+#: system/modules/channels/actions/web/delete.php:13
+msgid "Could not find channel"
+msgstr "Impossible de trouver le canal"
+
+#: system/modules/channels/actions/web/edit.php:8
+msgid " a Web Channel"
+msgstr " un canal Web"
+
+#: system/modules/channels/actions/web/edit.php:18
+msgid "Web API URL"
+msgstr "API Web URL"
+
+#: system/modules/channels/actions/web/edit.php:39
+msgid "Web Channel "
+msgstr "Web Channel"
+
+#: system/modules/channels/models/Channel.php:16
+#: system/modules/task/task.group.actions.php:45
+#: system/modules/task/task.group.actions.php:143
+msgid "Is Active"
+msgstr "C'est actif"
+
+#: system/modules/channels/models/Channel.php:19
+#: system/modules/channels/templates/listchannels.tpl.php:8
+msgid "Notify Email"
+msgstr "Notifier Email"
+
+#: system/modules/channels/models/Channel.php:21
+#: system/modules/channels/templates/listchannels.tpl.php:8
+msgid "Notify User"
+msgstr "Notifier l'utilisateur"
+
+#: system/modules/channels/models/Channel.php:24
+msgid "Run processors?"
+msgstr "processeurs Run?"
+
+#: system/modules/channels/models/ChannelService.php:167
+#: system/modules/channels/models/ChannelsService.php:17
+msgid "List Channels"
+msgstr "Liste Chaînes"
+
+#: system/modules/channels/models/ChannelService.php:168
+#: system/modules/channels/models/ChannelsService.php:18
+msgid "List Processors"
+msgstr "Liste Processeurs"
+
+#: system/modules/channels/models/ChannelService.php:169
+#: system/modules/channels/models/ChannelsService.php:19
+msgid "List Messages"
+msgstr "Liste des messages"
+
+#: system/modules/channels/models/TestProcessor.php:13
+msgid "Settings"
+msgstr "Paramètres"
+
+#: system/modules/channels/models/TestProcessor.php:15
+msgid "My Setting"
+msgstr "Mes réglages"
+
+#: system/modules/channels/templates/listchannels.tpl.php:1
+msgid "Add a new channel"
+msgstr "Ajouter une nouvelle chaîne"
+
+#: system/modules/channels/templates/listchannels.tpl.php:1
+msgid "Web"
+msgstr "toile"
+
+#: system/modules/channels/templates/listchannels.tpl.php:8
+#: system/modules/channels/templates/listmessages.tpl.php:4
+#: system/modules/channels/templates/listprocessors.tpl.php:7
+msgid "ID"
+msgstr "ID"
+
+#: system/modules/channels/templates/listchannels.tpl.php:8
+msgid "ON/OFF"
+msgstr "ALLUMÉ ÉTEINT"
+
+#: system/modules/channels/templates/listchannels.tpl.php:18
+msgid "OFF"
+msgstr "DE"
+
+#: system/modules/channels/templates/listchannels.tpl.php:24
+#: system/modules/channels/templates/listprocessors.tpl.php:20
+msgid "Are you sure you want to delete "
+msgstr "Etes-vous sûr que vous voulez supprimer"
+
+#: system/modules/channels/templates/listchannels.tpl.php:24
+msgid "this channel"
+msgstr "ce canal"
+
+#: system/modules/channels/templates/listchannels.tpl.php:25
+msgid "Messages"
+msgstr "messages"
+
+#: system/modules/channels/templates/listmessages.tpl.php:4
+msgid "Failed Processes"
+msgstr "processus Failed"
+
+#: system/modules/channels/templates/listmessages.tpl.php:4
+msgid "Run Time"
+msgstr "Run Time"
+
+#: system/modules/channels/templates/listmessages.tpl.php:14
+msgid "View Message Statuses"
+msgstr "Voir le message Statuses"
+
+#: system/modules/channels/templates/listmessages.tpl.php:22
+msgid "No messages found."
+msgstr "Aucun message trouvé."
+
+#: system/modules/channels/templates/listmessagestatuses.tpl.php:4
+msgid "Processor ID"
+msgstr "ID de processeur"
+
+#: system/modules/channels/templates/listmessagestatuses.tpl.php:4
+#: system/modules/inbox/templates/view.tpl.php:13
+#: system/modules/report/models/Report.php:254
+#: system/modules/task/actions/tasktypeform.php:24
+msgid "Message"
+msgstr "Message"
+
+#: system/modules/channels/templates/listmessagestatuses.tpl.php:4
+msgid "Was Successful"
+msgstr "Était un succès"
+
+#: system/modules/channels/templates/listmessagestatuses.tpl.php:12
+msgid "Rerun Process"
+msgstr "processus Rerun"
+
+#: system/modules/channels/templates/listprocessors.tpl.php:1
+msgid "Add Processor"
+msgstr "Ajouter processeur"
+
+#: system/modules/channels/templates/listprocessors.tpl.php:7
+msgid "Processor Module"
+msgstr "Module de processeur"
+
+#: system/modules/channels/templates/listprocessors.tpl.php:7
+msgid "Attached to"
+msgstr "Attaché à"
+
+#: system/modules/channels/templates/listprocessors.tpl.php:20
+msgid "this processor"
+msgstr "ce processeur"
+
+#: system/modules/channels/templates/listprocessors.tpl.php:20
+msgid "?"
+msgstr "?"
+
+#: system/modules/channels/templates/listprocessors.tpl.php:27
+msgid "Edit Settings"
+msgstr "Modifier les paramètres"
+
+#: system/modules/favorite/actions/ajaxEditFavorites.php:26
+#: system/modules/tag/actions/ajaxTag.php:13
+#: system/modules/tag/actions/ajaxTag.php:69
+#: system/modules/tag/actions/ajaxTag.php:72
+#: system/modules/tag/actions/ajaxTag.php:75
+msgid "Invalid request"
+msgstr "Requête invalide"
+
+#: system/modules/file/actions/atdel.php:12
+msgid "Attachment deleted."
+msgstr "Pièce jointe supprimée."
+
+#: system/modules/file/actions/atdel.php:14
+msgid "Attachment does not exist."
+msgstr "n'existe pas la pièce jointe."
+
+#: system/modules/file/actions/attach.php:7
+#: system/modules/file/actions/attach.php:26
+msgid "Nothing to attach to."
+msgstr "Rien à attacher à."
+
+#: system/modules/file/actions/attach.php:37
+msgid "File attached."
+msgstr "Fichier joint."
+
+#: system/modules/file/actions/attach.php:39
+msgid "There was an error. Attachment could not be saved."
+msgstr "Il y avait une erreur. Pièce jointe n'a pas pu être sauvé."
+
+#: system/modules/file/actions/delete.php:10
+#: system/modules/file/actions/edit.php:10
+#: system/modules/file/actions/edit.php:35
+msgid "Missing attachment ID"
+msgstr "Manquant ID de fixation"
+
+#: system/modules/file/actions/delete.php:15
+#: system/modules/file/actions/edit.php:15
+#: system/modules/file/actions/edit.php:40
+msgid "Attachment not found"
+msgstr "Attachment not found"
+
+#: system/modules/file/actions/delete.php:19
+msgid "Attachment deleted"
+msgstr "Pièce jointe supprimé"
+
+#: system/modules/file/actions/edit.php:19
+msgid "Edit Attachment"
+msgstr "Modifier la pièce jointe"
+
+#: system/modules/file/actions/edit.php:47
+msgid "Attachment updated"
+msgstr "Pièce jointe mis à jour"
+
+#: system/modules/file/actions/new.php:10
+#: system/modules/file/actions/new.php:30
+msgid "Missing class parameters"
+msgstr "paramètres de classe manquant"
+
+#: system/modules/file/actions/new.php:14
+msgid "New Attachment"
+msgstr "Nouvelle pièce jointe"
+
+#: system/modules/file/actions/new.php:15
+#: system/modules/file/templates/attach.tpl.php:8
+msgid "File"
+msgstr "Fichier"
+
+#: system/modules/file/actions/new.php:36
+msgid "Object not found"
+msgstr "Objet introuvable"
+
+#: system/modules/file/actions/new.php:43
+msgid "File attached"
+msgstr "Fichier joint"
+
+#: system/modules/file/templates/attach.tpl.php:4
+msgid "Attache a File"
+msgstr "ATTACHE un fichier"
+
+#: system/modules/file/templates/attach.tpl.php:6
+msgid "Attachment Type"
+msgstr "Type de pièce jointe"
+
+#: system/modules/file/templates/attach.tpl.php:12
+msgid "Upload"
+msgstr "Télécharger"
+
+#: system/modules/form/actions/delete.php:7
+#: system/modules/form/actions/delete.php:12
+#: system/modules/form/actions/field/delete.php:13
+#: system/modules/form/actions/field/edit.php:9
+#: system/modules/form/actions/show.php:7
+msgid "Form not found"
+msgstr "Formulaire not found"
+
+#: system/modules/form/actions/delete.php:16
+msgid "Form deleted"
+msgstr "forme délétée"
+
+#: system/modules/form/actions/edit.php:9
+msgid "Form"
+msgstr "Forme"
+
+#: system/modules/form/actions/edit.php:27
+#: system/modules/form/actions/field/edit.php:88
+msgid "Form "
+msgstr "Forme"
+
+#: system/modules/form/actions/field/delete.php:7
+#: system/modules/form/actions/field/delete.php:18
+msgid "Form field not found"
+msgstr "champ de formulaire introuvable"
+
+#: system/modules/form/actions/field/delete.php:22
+msgid "Form field deleted"
+msgstr "champ de formulaire supprimé"
+
+#: system/modules/form/actions/index.php:5
+msgid "Forms list"
+msgstr "Liste des formulaires"
+
+#: system/modules/form/actions/instance/delete.php:8
+#: system/modules/form/actions/instance/delete.php:14
+msgid "Form instance not found"
+msgstr "instance de formulaire introuvable"
+
+#: system/modules/form/actions/instance/delete.php:19
+msgid "Form instance deleted"
+msgstr "instance de formulaire supprimé"
+
+#: system/modules/form/actions/instance/edit.php:12
+#: system/modules/form/actions/instance/edit.php:39
+msgid "Form instance data missing"
+msgstr "données d'instance de formulaire manquantes"
+
+#: system/modules/form/actions/instance/edit.php:93
+msgid " created"
+msgstr " créé"
+
+#: system/modules/form/actions/mapping/edit.php:35
+msgid "Form mappings updated"
+msgstr "mappages de formulaires mis à jour"
+
+#: system/modules/form/actions/show.php:14
+msgid "Form: "
+msgstr "Forme:"
+
+#: system/modules/form/models/FormStandardInterface.php:10
+msgid "Text"
+msgstr "Texte"
+
+#: system/modules/form/models/FormStandardInterface.php:11
+msgid "Decimal"
+msgstr "Décimal"
+
+#: system/modules/form/models/FormStandardInterface.php:13
+msgid "Date & Time"
+msgstr "Date et heure"
+
+#: system/modules/form/models/FormStandardInterface.php:14
+msgid "Select"
+msgstr "Sélectionner"
+
+#: system/modules/form/models/FormStandardInterface.php:15
+msgid "Autocomplete"
+msgstr "Autocomplete"
+
+#: system/modules/form/models/FormStandardInterface.php:101
+msgid "Decimal Places"
+msgstr "décimales"
+
+#: system/modules/form/models/FormStandardInterface.php:103
+#: system/modules/form/models/FormStandardInterface.php:105
+msgid "Filter"
+msgstr "Filtre"
+
+#: system/modules/form/models/FormStandardInterface.php:103
+#: system/modules/form/models/FormStandardInterface.php:105
+msgid "Options"
+msgstr "options de"
+
+#: system/modules/form/partials/templates/listform.tpl.php:3
+msgid "Add new "
+msgstr "Ajouter un nouveau"
+
+#: system/modules/form/partials/templates/listform.tpl.php:15
+msgid "Are you sure you want to delete this item?"
+msgstr "Êtes-vous sûr de bien vouloir supprimer cet élément?"
+
+#: system/modules/form/partials/templates/listform.tpl.php:23
+msgid "form data found"
+msgstr "données de formulaire trouvé"
+
+#: system/modules/form/templates/field/edit.tpl.php:34
+msgid "Cancel"
+msgstr "Annuler"
+
+#: system/modules/form/templates/index.tpl.php:3
+msgid "Add a form"
+msgstr "Ajouter une forme"
+
+#: system/modules/form/templates/index.tpl.php:19
+msgid "Are you sure you want to delete this form? (WARNING: there may be existing data saved to this form!)"
+msgstr "Êtes-vous sûr de vouloir supprimer cette forme? (ATTENTION: il peut y avoir des données existantes enregistrées à cette forme!)"
+
+#: system/modules/form/templates/show.tpl.php:7
+#: system/modules/report/actions/edit.php:48
+msgid "Fields"
+msgstr "Des champs"
+
+#: system/modules/form/templates/show.tpl.php:8
+msgid "Preview"
+msgstr "Aperçu"
+
+#: system/modules/form/templates/show.tpl.php:9
+msgid "Mapping"
+msgstr "cartographie"
+
+#: system/modules/form/templates/show.tpl.php:10
+msgid "Row Templates"
+msgstr "Modèles en rangée"
+
+#: system/modules/form/templates/show.tpl.php:11
+msgid "Summary Template"
+msgstr "Résumé modèle"
+
+#: system/modules/form/templates/show.tpl.php:15
+msgid "Add a field"
+msgstr "Ajouter un champ"
+
+#: system/modules/form/templates/show.tpl.php:21
+msgid "Ordering"
+msgstr "Commande"
+
+#: system/modules/form/templates/show.tpl.php:21
+msgid "Technical Name"
+msgstr "Nom technique"
+
+#: system/modules/form/templates/show.tpl.php:21
+msgid "Additional Details"
+msgstr "Détails supplémentaires"
+
+#: system/modules/form/templates/show.tpl.php:35
+msgid "Are you sure you want to delete this form field? (WARNING: there may be existing data saved to this form field!)"
+msgstr "Êtes-vous sûr de vouloir supprimer ce champ de formulaire? (ATTENTION: il peut y avoir des données existantes enregistrées dans ce champ de formulaire!)"
+
+#: system/modules/form/templates/show.tpl.php:101
+msgid "Row templates"
+msgstr "modèles de Row"
+
+#: system/modules/form/templates/show.tpl.php:102
+msgid "Header row template"
+msgstr "Header modèle de ligne"
+
+#: system/modules/form/templates/show.tpl.php:103
+msgid "Item row template"
+msgstr "Point modèle de ligne"
+
+#: system/modules/form/templates/show.tpl.php:111
+msgid "Summary template"
+msgstr "modèle Résumé"
+
+#: system/modules/help/actions/view.php:10
+msgid "Sorry, there is no help for this topic."
+msgstr "Désolé, il n'y a aucune aide pour ce sujet."
+
+#: system/modules/help/actions/view.php:30
+msgid "Sorry, this help topic is not yet written."
+msgstr "Désolé, cette rubrique d'aide n'a pas encore été écrit."
+
+#: system/modules/help/templates/layout.tpl.php:19
+#: system/modules/help/templates/view.tpl.php:5
+msgid "Contents"
+msgstr "Contenu"
+
+#: system/modules/help/templates/layout.tpl.php:20
+#: system/modules/help/templates/toc.tpl.php:4
+#: system/modules/help/templates/view.tpl.php:7
+msgid "Help on Help"
+msgstr "Aide sur l'aide"
+
+#: system/modules/help/templates/layout.tpl.php:29
+msgid "Copyright"
+msgstr "droits d'auteur"
+
+#: system/modules/help/templates/toc.tpl.php:6
+msgid "Table of Contents"
+msgstr "Table des matières"
+
+#: system/modules/inbox/actions/allread.php:4
+msgid "All messages marked as read."
+msgstr "Tous les messages marqués comme lus."
+
+#: system/modules/inbox/actions/archive.php:15
+msgid "Message(s) Archived"
+msgstr "Message (s) Archivé"
+
+#: system/modules/inbox/actions/delete.php:14
+#: system/modules/inbox/actions/deleteforever.php:14
+msgid "Message(s) Deleted"
+msgstr "Message (s) Supprimé"
+
+#: system/modules/inbox/actions/index.php:3
+#: system/modules/inbox/models/InboxService.php:240
+msgid "New Messages"
+msgstr "Nouveaux messages"
+
+#: system/modules/inbox/actions/index.php:14
+#: system/modules/inbox/actions/read.php:10
+#: system/modules/inbox/actions/showarchive.php:13
+#: system/modules/inbox/actions/trash.php:12
+#: system/modules/inbox/templates/portal.tpl.php:6
+#: system/modules/inbox/templates/send.tpl.php:37
+#: system/modules/inbox/templates/send.tpl.php:52
+#: system/modules/inbox/templates/view.tpl.php:10
+#: system/modules/task/task.hooks.php:50
+msgid "Subject"
+msgstr "Assujettir"
+
+#: system/modules/inbox/actions/index.php:14
+#: system/modules/inbox/actions/read.php:10
+#: system/modules/inbox/actions/showarchive.php:13
+#: system/modules/inbox/actions/trash.php:12
+#: system/modules/inbox/templates/portal.tpl.php:6
+msgid "Sender"
+msgstr "Expéditeur"
+
+#: system/modules/inbox/actions/read.php:3
+#: system/modules/inbox/models/InboxService.php:241
+msgid "Read Messages"
+msgstr "Lire Messages"
+
+#: system/modules/inbox/actions/send.php:3
+#: system/modules/inbox/templates/index.tpl.php:3
+#: system/modules/inbox/templates/read.tpl.php:3
+msgid "Create Message"
+msgstr "Créer un message"
+
+#: system/modules/inbox/actions/send.php:22
+msgid "Message Sent."
+msgstr "Message envoyé."
+
+#: system/modules/inbox/actions/showarchive.php:4
+#: system/modules/inbox/models/InboxService.php:242
+#: system/modules/inbox/templates/index.tpl.php:7
+#: system/modules/inbox/templates/read.tpl.php:7
+#: system/modules/inbox/templates/view.tpl.php:5
+msgid "Archive"
+msgstr "Archiver"
+
+#: system/modules/inbox/actions/trash.php:4
+#: system/modules/inbox/models/InboxService.php:243
+msgid "Bin"
+msgstr "Poubelle"
+
+#: system/modules/inbox/actions/view.php:3
+msgid "Message View"
+msgstr "Voir message"
+
+#: system/modules/inbox/actions/view.php:7
+msgid "No such message."
+msgstr "Un tel message."
+
+#: system/modules/inbox/actions/view.php:10
+msgid "No access."
+msgstr "Pas d'accès."
+
+#: system/modules/inbox/inbox.hooks.php:4
+msgid "The following account has been changed"
+msgstr "Le récit suivant a été modifié"
+
+#: system/modules/inbox/inbox.hooks.php:5
+msgid "An account has changed"
+msgstr "Un compte a été modifié"
+
+#: system/modules/inbox/models/InboxService.php:251
+msgid "Inbox"
+msgstr "Boîte de réception"
+
+#: system/modules/inbox/templates/index.tpl.php:12
+msgid "Mark all read"
+msgstr "Marquer tout comme lu"
+
+#: system/modules/inbox/templates/index.tpl.php:12
+msgid "Are you sure to mark all messages as read?"
+msgstr "Etes-vous sûr de marquer tous les messages comme lus?"
+
+#: system/modules/inbox/templates/index.tpl.php:29
+#: system/modules/inbox/templates/read.tpl.php:25
+#: system/modules/inbox/templates/showarchive.tpl.php:24
+#: system/modules/inbox/templates/trash.tpl.php:23
+msgid "Prev"
+msgstr "Précédent"
+
+#: system/modules/inbox/templates/index.tpl.php:39
+#: system/modules/inbox/templates/read.tpl.php:35
+#: system/modules/inbox/templates/showarchive.tpl.php:34
+#: system/modules/inbox/templates/trash.tpl.php:33
+msgid "Next"
+msgstr "Prochain"
+
+#: system/modules/inbox/templates/index.tpl.php:45
+#: system/modules/inbox/templates/portal.tpl.php:19
+msgid "No new messages"
+msgstr "Pas de nouveaux messages"
+
+#: system/modules/inbox/templates/index.tpl.php:45
+msgid "click here"
+msgstr "cliquez ici"
+
+#: system/modules/inbox/templates/index.tpl.php:45
+msgid "to go to your read messages."
+msgstr "pour aller à vos messages lus."
+
+#: system/modules/inbox/templates/send.tpl.php:13
+#: system/modules/inbox/templates/view.tpl.php:22
+msgid "Previous Messages"
+msgstr "Messages précédents"
+
+#: system/modules/inbox/templates/send.tpl.php:15
+#: system/modules/inbox/templates/send.tpl.php:25
+#: system/modules/inbox/templates/view.tpl.php:31
+msgid "Message sent by"
+msgstr "Message envoyé par"
+
+#: system/modules/inbox/templates/send.tpl.php:15
+#: system/modules/inbox/templates/view.tpl.php:31
+msgid "on"
+msgstr "sur"
+
+#: system/modules/inbox/templates/send.tpl.php:36
+#: system/modules/inbox/templates/send.tpl.php:51
+#: system/modules/timelog/actions/edit.php:42
+#: system/modules/timelog/partials/templates/listtimelog.tpl.php:8
+#: system/modules/timelog/templates/index.tpl.php:6
+msgid "To"
+msgstr "À"
+
+#: system/modules/inbox/templates/send.tpl.php:41
+#: system/modules/inbox/templates/send.tpl.php:55
+msgid "Send"
+msgstr "Envoyer"
+
+#: system/modules/inbox/templates/send.tpl.php:50
+msgid "Send a Message"
+msgstr "Envoyer un message"
+
+#: system/modules/inbox/templates/showarchive.tpl.php:9
+msgid "There are no archived messages"
+msgstr "Il n'y a pas de messages archivés"
+
+#: system/modules/inbox/templates/trash.tpl.php:4
+msgid "Delete Forever"
+msgstr "Supprimer pour toujours"
+
+#: system/modules/inbox/templates/trash.tpl.php:8
+msgid "No deleted messages."
+msgstr "Pas de messages supprimés."
+
+#: system/modules/inbox/templates/view.tpl.php:3
+msgid "Reply"
+msgstr "Répondre"
+
+#: system/modules/inbox/templates/view.tpl.php:9
+#: system/modules/timelog/actions/edit.php:41
+#: system/modules/timelog/partials/templates/listtimelog.tpl.php:8
+#: system/modules/timelog/templates/index.tpl.php:6
+msgid "From"
+msgstr "De"
+
+#: system/modules/inbox/templates/view.tpl.php:9
+msgid "Unknown"
+msgstr "Inconnu"
+
+#: system/modules/inbox/templates/view.tpl.php:11
+msgid "Date Sent"
+msgstr "Date d'envoi"
+
+#: system/modules/main/actions/addwidget.php:14
+msgid "Add a widget"
+msgstr "Ajouter un widget"
+
+#: system/modules/main/actions/addwidget.php:17
+msgid "Source module"
+msgstr "Module source"
+
+#: system/modules/main/actions/addwidget.php:18
+msgid "Widget Name"
+msgstr "Nom Widget"
+
+#: system/modules/main/actions/addwidget.php:44
+msgid "Widget Added"
+msgstr "Widget Ajouté"
+
+#: system/modules/main/actions/addwidget.php:46
+msgid "Could not add widget"
+msgstr "Impossible d'ajouter un widget"
+
+#: system/modules/main/actions/configwidget.php:11
+#: system/modules/main/actions/configwidget.php:34
+#: system/modules/main/actions/removewidget.php:9
+msgid "Widget not found"
+msgstr "Widget not found"
+
+#: system/modules/main/actions/configwidget.php:22
+msgid "Could not find widget class"
+msgstr "Impossible de trouver la classe widget de"
+
+#: system/modules/main/actions/configwidget.php:43
+msgid "Widget updated"
+msgstr "Widget mise à jour"
+
+#: system/modules/main/actions/removewidget.php:14
+msgid "Widget removed"
+msgstr "Widget supprimé"
+
+#: system/modules/main/partials/templates/listwidgets.tpl.php:2
+msgid "Add Widget"
+msgstr "Ajouter Widget"
+
+#: system/modules/main/partials/templates/listwidgets.tpl.php:11
+msgid "Config"
+msgstr "Config"
+
+#: system/modules/main/partials/templates/listwidgets.tpl.php:12
+msgid "Remove Widget"
+msgstr "Retirer Widget"
+
+#: system/modules/report/actions/addmembers.php:23
+msgid "Add Member"
+msgstr "Ajouter un membre"
+
+#: system/modules/report/actions/addmembers.php:24
+msgid "With Role"
+msgstr "Avec Rôle"
+
+#: system/modules/report/actions/addmembers.php:28
+#: system/modules/task/actions/group/viewmembergroup.php:87
+#: system/modules/task/actions/tasktypeform.php:32
+msgid " Submit "
+msgstr " Soumettre"
+
+#: system/modules/report/actions/connections/delete.php:6
+#: system/modules/report/actions/connections/test.php:6
+msgid "No connection ID specified"
+msgstr "Aucune ID de connexion spécifié"
+
+#: system/modules/report/actions/connections/delete.php:11
+#: system/modules/report/actions/connections/test.php:11
+msgid "Connection could not be found"
+msgstr "Connexion n'a pas pu être trouvé"
+
+#: system/modules/report/actions/connections/delete.php:15
+msgid "Connection deleted"
+msgstr "Connexion supprimé"
+
+#: system/modules/report/actions/connections/edit.php:17
+#: system/modules/report/actions/connections/index.php:7
+msgid "Driver"
+msgstr "Chauffeur"
+
+#: system/modules/report/actions/connections/edit.php:18
+#: system/modules/report/actions/connections/index.php:7
+msgid "Host"
+msgstr "Hôte"
+
+#: system/modules/report/actions/connections/edit.php:22
+#: system/modules/report/actions/connections/index.php:7
+msgid "Database"
+msgstr "Base de données"
+
+#: system/modules/report/actions/connections/edit.php:42
+msgid "Connection "
+msgstr "Connexion"
+
+#: system/modules/report/actions/connections/index.php:14
+msgid "Test Connection"
+msgstr "Test de connexion"
+
+#: system/modules/report/actions/connections/index.php:16
+msgid "Are you sure you want to remove this connection?"
+msgstr "Êtes-vous sûr de vouloir supprimer cette connexion?"
+
+#: system/modules/report/actions/connections/test.php:19
+msgid "Connected to DB"
+msgstr "Connecté à DB"
+
+#: system/modules/report/actions/connections/test.php:19
+msgid "Fetching databases to test connection"
+msgstr "Récupération des bases de données pour tester la connexion"
+
+#: system/modules/report/actions/connections/test.php:36
+#: system/modules/search/templates/index.tpl.php:47
+msgid "No results found"
+msgstr "Aucun résultat trouvé"
+
+#: system/modules/report/actions/createfeed.php:18
+#: system/modules/report/actions/editfeed.php:25
+msgid "Create a Feed from a Report"
+msgstr "Créer un flux à partir d'un rapport"
+
+#: system/modules/report/actions/createfeed.php:19
+#: system/modules/report/actions/editfeed.php:26
+msgid "Select Report"
+msgstr "Sélectionnez Rapport"
+
+#: system/modules/report/actions/createfeed.php:20
+#: system/modules/report/actions/editfeed.php:27
+msgid "Feed Title"
+msgstr "RSS Titre"
+
+#: system/modules/report/actions/createfeed.php:28
+#: system/modules/report/actions/editfeed.php:37
+msgid "Create a Feed"
+msgstr "Créer un flux"
+
+#: system/modules/report/actions/createfeed.php:64
+msgid "Your Feed has been created"
+msgstr "Votre alimentation a été créé"
+
+#: system/modules/report/actions/createfeed.php:64
+msgid "Use the URL below, with actual query parameter values, to access this report feed."
+msgstr "Utilisez l'URL ci-dessous, avec des valeurs de paramètres de la requête réelle, pour accéder à ce rapport alimentation."
+
+#: system/modules/report/actions/createreport.php:7
+#: system/modules/report/models/ReportService.php:617
+msgid "Create a Report"
+msgstr "Créer un rapport"
+
+#: system/modules/report/actions/createreport.php:12
+msgid "Create a New Report"
+msgstr "Créer un rapport"
+
+#: system/modules/report/actions/createreport.php:18
+#: system/modules/report/actions/edit.php:27
+msgid "Connection"
+msgstr "Connexion"
+
+#: system/modules/report/actions/createreport.php:19
+#: system/modules/report/actions/edit.php:82
+#: system/modules/report/actions/edit.php:83
+msgid "Save Report"
+msgstr "Enregistrer le rapport"
+
+#: system/modules/report/actions/createreport.php:22
+#: system/modules/report/actions/edit.php:42
+msgid "Special Parameters"
+msgstr "Paramètres spéciaux"
+
+#: system/modules/report/actions/createreport.php:24
+#: system/modules/report/actions/edit.php:44
+msgid "Roles"
+msgstr "Les rôles"
+
+#: system/modules/report/actions/createreport.php:25
+#: system/modules/report/actions/edit.php:45
+msgid "Site URL"
+msgstr "URL du site"
+
+#: system/modules/report/actions/createreport.php:26
+#: system/modules/report/actions/edit.php:46
+#: system/modules/report/templates/createreport.tpl.php:4
+#: system/modules/report/templates/edit.tpl.php:9
+msgid "View Database"
+msgstr "Voir Base de données"
+
+#: system/modules/report/actions/createreport.php:27
+#: system/modules/report/actions/edit.php:47
+msgid "Tables"
+msgstr "les tables"
+
+#: system/modules/report/actions/deletefeed.php:12
+#: system/modules/report/actions/editfeed.php:50
+msgid "Feed "
+msgstr "Alimentation"
+
+#: system/modules/report/actions/deletefeed.php:12
+msgid " has been deleted"
+msgstr " a été supprimé"
+
+#: system/modules/report/actions/deletemember.php:11
+msgid "Confirm Delete Member"
+msgstr "Confirmer la suppression membre"
+
+#: system/modules/report/actions/deletemember.php:17
+msgid "No such member?"
+msgstr "Aucun tel membre?"
+
+#: system/modules/report/actions/deletemember.php:35
+msgid "Member deleted"
+msgstr "supprimé membres"
+
+#: system/modules/report/actions/deletemember.php:39
+msgid "Member no longer exists?"
+msgstr "Membre existe plus?"
+
+#: system/modules/report/actions/deletereport.php:28
+msgid "Report deleted"
+msgstr "Rapport supprimé"
+
+#: system/modules/report/actions/deletereport.php:32
+msgid "Report no longer exists?"
+msgstr "Rapport n'existe plus?"
+
+#: system/modules/report/actions/edit.php:5
+#: system/modules/report/actions/edit.php:22
+msgid " Report"
+msgstr " rapport"
+
+#: system/modules/report/actions/edit.php:10
+#: system/modules/report/actions/edit.php:147
+msgid "Report not found"
+msgstr "Rapport non trouvé"
+
+#: system/modules/report/actions/edit.php:14
+#: system/modules/report/templates/approvereport.tpl.php:16
+#: system/modules/report/templates/createreport.tpl.php:3
+msgid "Create Report"
+msgstr "Créer un rapport"
+
+#: system/modules/report/actions/edit.php:16
+msgid "Edit Report: "
+msgstr "Modifier le rapport:"
+
+#: system/modules/report/actions/edit.php:22
+msgid "Create a New"
+msgstr "Créer un nouveau"
+
+#: system/modules/report/actions/edit.php:54
+msgid "Execute Report"
+msgstr "Exécuter rapport"
+
+#: system/modules/report/actions/edit.php:68
+#: system/modules/report/actions/edit.php:158
+msgid "You do not have access to this report"
+msgstr "Vous n'avez pas accès à ce rapport"
+
+#: system/modules/report/actions/edit.php:73
+#: system/modules/report/actions/edit.php:163
+msgid "You do not have create report permissions"
+msgstr "Vous n'avez pas créer des autorisations de rapport"
+
+#: system/modules/report/actions/edit.php:79
+msgid "Approved"
+msgstr "A approuvé"
+
+#: system/modules/report/actions/edit.php:92
+#: system/modules/report/models/ReportLib.php:11
+#: system/modules/task/actions/group/viewmembergroup.php:20
+#: system/modules/task/actions/group/viewmembergroup.php:75
+msgid "Member"
+msgstr "Membre"
+
+#: system/modules/report/actions/edit.php:92
+msgid "Is Email Recipient"
+msgstr "Est Email bénéficiaire"
+
+#: system/modules/report/actions/edit.php:107
+#: system/modules/report/models/ReportLib.php:27
+#: system/modules/task/actions/group/viewmembergroup.php:34
+msgid "Group currently has no members. Please Add New Members."
+msgstr "Groupe dispose actuellement d'aucun membre. S'il vous plaît ajouter de nouveaux membres."
+
+#: system/modules/report/actions/edit.php:118
+msgid "Is Email Template"
+msgstr "Est Email Template"
+
+#: system/modules/report/actions/edit.php:132
+msgid "Are you sure you want to delete this Report template entry?"
+msgstr "Êtes-vous sûr de vouloir supprimer ce rapport entrée de modèle?"
+
+#: system/modules/report/actions/edit.php:188
+msgid "Report "
+msgstr "rapport"
+
+#: system/modules/report/actions/edit.php:190
+#: system/modules/report/actions/feedAjaxGetReportText.php:9
+#: system/modules/report/actions/listfeed.php:11
+#: system/modules/report/partials/templates/removeUser.tpl.php:2
+#: system/modules/report/templates/edit.tpl.php:3
+msgid "Report"
+msgstr "rapport"
+
+#: system/modules/report/actions/editfeed.php:3
+msgid "Edit Feed"
+msgstr "Modifier RSS"
+
+#: system/modules/report/actions/editfeed.php:21
+msgid "Available Formats: html, csv, pdf, xml"
+msgstr "Formats disponibles: html, csv, pdf, xml"
+
+#: system/modules/report/actions/editfeed.php:22
+msgid "Date Formats must be <b>d/m/Y</b> to mimic date picker"
+msgstr "Formats de date doivent être <b> d / m / Y </ b> pour imiter sélecteur de date"
+
+#: system/modules/report/actions/editfeed.php:29
+msgid "Feed URL"
+msgstr "URL du flux"
+
+#: system/modules/report/actions/editfeed.php:30
+#: system/modules/task/task.hooks.php:58 system/modules/task/task.hooks.php:109
+#: system/modules/task/task.hooks.php:150
+#: system/modules/task/task.hooks.php:232
+#: system/modules/task/task.hooks.php:266
+#: system/modules/task/task.hooks.php:300
+msgid "Note"
+msgstr "Remarque"
+
+#: system/modules/report/actions/editfeed.php:50
+msgid " has been updated"
+msgstr " a été mis à jour"
+
+#: system/modules/report/actions/editmember.php:10
+#: system/modules/task/task.group.actions.php:220
+#: system/modules/task/task.group.actions.php:298
+msgid "Member Details"
+msgstr "Détails membres"
+
+#: system/modules/report/actions/editmember.php:14
+msgid "Is email recipient"
+msgstr "Est email destinataire"
+
+#: system/modules/report/actions/editmember.php:30
+msgid "Member updated"
+msgstr "mis à jour membre"
+
+#: system/modules/report/actions/email.php:141
+msgid "Dear "
+msgstr "cher"
+
+#: system/modules/report/actions/email.php:141
+msgid "Please find attached your reports"
+msgstr "S'il vous plaît trouver ci-joint vos rapports"
+
+#: system/modules/report/actions/email.php:141
+msgid "Kind regards"
+msgstr "Cordialement"
+
+#: system/modules/report/actions/exereport.php:5
+#: system/modules/report/actions/runreport.php:8
+msgid "Generate Report"
+msgstr "Générer un rapport"
+
+#: system/modules/report/actions/exereport.php:19
+msgid "Export as CSV"
+msgstr "Exporter en CSV"
+
+#: system/modules/report/actions/exereport.php:21
+msgid "Export as XML"
+msgstr "Exporter en XML"
+
+#: system/modules/report/actions/exereport.php:22
+msgid "Edit Report Parameters"
+msgstr "Modifier Paramètres du rapport"
+
+#: system/modules/report/actions/exereport.php:23
+msgid "Edit Report"
+msgstr "Modifier le rapport"
+
+#: system/modules/report/actions/exereport.php:24
+msgid "Export as PDF"
+msgstr "Exporter en PDF"
+
+#: system/modules/report/actions/exereport.php:42
+msgid "No Data found for selections. Please try again...."
+msgstr "Aucune donnée trouvée pour les sélections. Veuillez réessayer...."
+
+#: system/modules/report/actions/exereport.php:180
+msgid "No such report?"
+msgstr "Aucun tel rapport?"
+
+#: system/modules/report/actions/index.php:8
+msgid "Reports"
+msgstr "Rapports"
+
+#: system/modules/report/actions/index.php:9
+msgid "List Reports"
+msgstr "Rapports de la liste"
+
+#: system/modules/report/actions/index.php:49
+msgid "Are you sure you want to delete this Report?"
+msgstr "Êtes-vous sûr de vouloir supprimer ce rapport?"
+
+#: system/modules/report/actions/index.php:79
+msgid "You have no available reports"
+msgstr "Vous avez pas de rapports disponibles"
+
+#: system/modules/report/actions/listfeed.php:5
+msgid "Feeds"
+msgstr "Feeds"
+
+#: system/modules/report/actions/listfeed.php:11
+msgid "Feed"
+msgstr "Alimentation"
+
+#: system/modules/report/actions/listfeed.php:26
+msgid " View "
+msgstr " Vue"
+
+#: system/modules/report/actions/listfeed.php:27
+msgid "Are you sure you wish to DELETE this feed?"
+msgstr "Êtes-vous sûr de vouloir supprimer ce flux?"
+
+#: system/modules/report/actions/listfeed.php:33
+msgid "No feeds to list"
+msgstr "Aucun flux à la liste"
+
+#: system/modules/report/actions/reportAjaxCategorytoType.php:32
+#: system/modules/report/actions/reportAjaxListModules.php:19
+#: system/modules/report/actions/reportAjaxModuletoCategory.php:23
+msgid "No Reports"
+msgstr "Aucun rapport"
+
+#: system/modules/report/actions/runreport.php:22
+msgid ": Report is yet to be approved"
+msgstr ": Le rapport est encore approuvée"
+
+#: system/modules/report/actions/runreport.php:34
+msgid " Display Report "
+msgstr " Rapport d'affichage"
+
+#: system/modules/report/actions/templates/delete.php:6
+#: system/modules/report/actions/templates/delete.php:11
+msgid "Report template not found"
+msgstr "Modèle de rapport non trouvé"
+
+#: system/modules/report/actions/templates/delete.php:15
+msgid "Report template removed"
+msgstr "Modèle de rapport supprimé"
+
+#: system/modules/report/actions/templates/edit.php:8
+msgid "Add Report Template"
+msgstr "Ajouter Modèle de rapport"
+
+#: system/modules/report/actions/templates/edit.php:16
+msgid "Use in emailed reports"
+msgstr "Utiliser dans les rapports envoyés par courriel"
+
+#: system/modules/report/actions/templates/edit.php:19
+msgid "Report ID"
+msgstr "Rapport ID"
+
+#: system/modules/report/actions/templates/edit.php:35
+msgid "Report template "
+msgstr "modèle de rapport"
+
+#: system/modules/report/actions/updatemembers.php:28
+msgid "Member Group updated"
+msgstr "Membre du groupe mis à jour"
+
+#: system/modules/report/actions/user/reassign.php:9
+#: system/modules/report/actions/user/reassign.php:32
+msgid "No user specified"
+msgstr "Aucun utilisateur spécifié"
+
+#: system/modules/report/actions/user/reassign.php:19
+msgid "Reassign reports"
+msgstr "Réaffecter rapports"
+
+#: system/modules/report/actions/user/reassign.php:20
+msgid "Reassign reports to"
+msgstr "Réaffecter rapports"
+
+#: system/modules/report/actions/user/reassign.php:72
+msgid "No reports found for user "
+msgstr "Aucun rapport trouvé pour l'utilisateur"
+
+#: system/modules/report/actions/user/reassign.php:75
+msgid "Users reports reassigned to "
+msgstr "rapports des utilisateurs réaffectés à"
+
+#: system/modules/report/models/Report.php:153
+msgid "Select an Optional Template"
+msgstr "Sélectionnez un modèle en option"
+
+#: system/modules/report/models/Report.php:154
+#: system/modules/report/models/ReportService.php:364
+msgid "Format"
+msgstr "Format"
+
+#: system/modules/report/models/Report.php:250
+msgid "No Data Returned for selections"
+msgstr "Aucune donnée récuperés pour les sélections"
+
+#: system/modules/report/models/Report.php:250
+msgid "Results"
+msgstr "Résultats"
+
+#: system/modules/report/models/Report.php:250
+msgid "No data returned for selections"
+msgstr "Aucune donnée de retour pour les sélections"
+
+#: system/modules/report/models/Report.php:254
+#: system/modules/task/actions/edit.php:54
+#: system/modules/task/actions/viewtask.php:51
+#: system/modules/task/actions/viewtask.php:55
+#: system/modules/task/actions/viewtask.php:80
+#: system/modules/task/partials/templates/listtasks.tpl.php:5
+msgid "Status"
+msgstr "statut"
+
+#: system/modules/report/models/Report.php:261
+msgid "SQL has completed successfully"
+msgstr "SQL a terminé avec succès"
+
+#: system/modules/report/models/Report.php:265
+msgid "A SQL error was encountered: "
+msgstr "Une erreur SQL a été rencontrée:"
+
+#: system/modules/report/models/Report.php:276
+#: system/modules/report/models/Report.php:280
+#: system/modules/report/models/Report.php:286
+msgid "There is a problem with your SQL statement"
+msgstr "Il y a un problème avec votre instruction SQL"
+
+#: system/modules/report/models/ReportService.php:318
+msgid "Field"
+msgstr "Champ"
+
+#: system/modules/report/models/ReportService.php:353
+msgid "No action Found"
+msgstr "Aucune action Trouvé"
+
+#: system/modules/report/models/ReportService.php:360
+msgid "Web Page"
+msgstr "Page web"
+
+#: system/modules/report/models/ReportService.php:361
+msgid "Comma Delimited File"
+msgstr "Comma Fichier Délimité"
+
+#: system/modules/report/models/ReportService.php:362
+msgid "PDF File"
+msgstr "Fichier PDF"
+
+#: system/modules/report/models/ReportService.php:363
+#: system/modules/report/models/ReportTemplate.php:14
+msgid "XML"
+msgstr "XML"
+
+#: system/modules/report/models/ReportService.php:614
+#: system/modules/report/templates/approvereport.tpl.php:15
+#: system/modules/report/templates/deletereport.tpl.php:3
+msgid "Report Dashboard"
+msgstr "Tableau de bord"
+
+#: system/modules/report/models/ReportService.php:618
+msgid "Connections"
+msgstr "Les liaisons"
+
+#: system/modules/report/models/ReportService.php:619
+msgid "Feeds Dashboard"
+msgstr "Flux Dashboard"
+
+#: system/modules/report/models/ReportTemplate.php:12
+msgid "HTML"
+msgstr "HTML"
+
+#: system/modules/report/models/ReportTemplate.php:13
+msgid "CSV"
+msgstr "CSV"
+
+#: system/modules/report/models/ReportTemplate.php:15
+msgid "PDF"
+msgstr "PDF"
+
+#: system/modules/report/models/ReportTemplate.php:16
+msgid "Image"
+msgstr "image"
+
+#: system/modules/report/partials/actions/removeUser.php:9
+msgid "No User provided"
+msgstr "Aucun utilisateur fourni"
+
+#: system/modules/report/partials/templates/removeUser.tpl.php:4
+msgid "This user owns"
+msgstr "Cet utilisateur possède"
+
+#: system/modules/report/partials/templates/removeUser.tpl.php:4
+#: system/modules/report/partials/templates/removeUser.tpl.php:7
+msgid "report"
+msgstr "rapport"
+
+#: system/modules/report/partials/templates/removeUser.tpl.php:10
+msgid "Reassign report(s)"
+msgstr "Réaffecter rapport (s)"
+
+#: system/modules/report/templates/approvereport.tpl.php:17
+msgid "Approve Reports"
+msgstr "Approuver les rapports"
+
+#: system/modules/report/templates/approvereport.tpl.php:18
+msgid "View Report"
+msgstr "Voir le rapport"
+
+#: system/modules/report/templates/approvereport.tpl.php:19
+#: system/modules/report/templates/edit.tpl.php:7
+msgid "Members"
+msgstr "Membres"
+
+#: system/modules/report/templates/connections/index.tpl.php:1
+msgid "Add a Connection"
+msgstr "Ajouter une connexion"
+
+#: system/modules/report/templates/createreport.tpl.php:8
+msgid "Please review the <b>Help</b> file for full instructions on the special syntax used to create reports."
+msgstr "S'il vous plaît examiner la <b> Aide </ b> fichier pour obtenir des instructions complètes sur la syntaxe spéciale utilisée pour créer des rapports."
+
+#: system/modules/report/templates/deletereport.tpl.php:4
+msgid "Delete Report"
+msgstr "Supprimer le rapport"
+
+#: system/modules/report/templates/edit.tpl.php:5
+msgid "SQL"
+msgstr "SQL"
+
+#: system/modules/report/templates/edit.tpl.php:20
+msgid ""
+"You can add special templates to render the data. Create a <a href=\"/admin-templates\">System Template in Admin</a> and set the \n"
+"\t        \tmodule to <b>report</b>, it can then be selected here.</p>\n"
+"\t        \t<p>The template processer uses the Twig language, you can find more information about this on\n"
+"\t        \tthe <a href=\"\">Twig Website</a>.</p>\n"
+"\t        \t<p>A good first step when creating a new template, is to look at the data. You can use the following\n"
+"\t        \ttwig statement in your template to do this:</p>\n"
+"\t        \t<pre>{{dump(data)}}</pre>"
+msgstr ""
+"Vous pouvez ajouter des modèles spéciaux pour rendre les données. Créer un <a href=\"/admin-templates\"> Template système dans Admin </a> et définir la\n"
+"module <b> rapport </ b>, il peut alors être sélectionné ici. </ p>\n"
+"<P> Le processer modèle utilise la langue Brindille, vous pouvez trouver plus d'informations à ce sujet sur\n"
+"<a href=\"\"> Twig Site </a>. </ p>\n"
+"<P> Une bonne première étape lors de la création d'un nouveau modèle, est de regarder les données. Vous pouvez utiliser ce qui suit\n"
+"brindille déclaration dans votre modèle pour ce faire: </ p>\n"
+"<Pre> {{dump (données)}} </ pre>"
+
+#: system/modules/report/templates/edit.tpl.php:32
+msgid " Add New Members "
+msgstr " Ajouter de nouveaux membres"
+
+#: system/modules/report/templates/editfeed.tpl.php:3
+msgid "View Feed"
+msgstr "Voir le RSS"
+
+#: system/modules/report/templates/listfeed.tpl.php:1
+msgid "Create Feed"
+msgstr "Créer un flux"
+
+#: system/modules/rest/models/RestService.php:27
+msgid "wrong API key"
+msgstr "clé API mal"
+
+#: system/modules/rest/models/RestService.php:37
+msgid "authentication failed for "
+msgstr "l'authentification a échoué pour"
+
+#: system/modules/rest/models/RestService.php:53
+msgid "Missing token"
+msgstr "jeton manquant"
+
+#: system/modules/rest/models/RestService.php:61
+msgid "No session associated with this token"
+msgstr "Aucune session associée à ce jeton"
+
+#: system/modules/rest/models/RestService.php:72
+#: system/modules/rest/models/RestService.php:109
+#: system/modules/rest/models/RestService.php:151
+msgid "No access to "
+msgstr "Pas d'accès à"
+
+#: system/modules/rest/models/RestService.php:131
+msgid "No feedback from save."
+msgstr "Aucun commentaire de sauvegarde."
+
+#: system/modules/rest/models/RestService.php:139
+msgid "Not allowed"
+msgstr "Interdit"
+
+#: system/modules/rest/models/RestService.php:159
+msgid "deleted"
+msgstr "supprimé"
+
+#: system/modules/rest/models/RestService.php:162
+msgid "Not allowed to delete this record"
+msgstr "Non autorisé à supprimer cet enregistrement"
+
+#: system/modules/search/actions/reindexall.php:4
+#: system/modules/task/config.php:45
+msgid "Done"
+msgstr "Terminé"
+
+#: system/modules/search/actions/results.php:50
+#: system/modules/search/templates/resultsbackup.tpl.php:25
+msgid "restricted"
+msgstr "limité"
+
+#: system/modules/search/actions/results.php:64
+msgid "Please enter at least 3 characters for searching."
+msgstr "S'il vous plaît entrer au moins 3 caractères pour la recherche."
+
+#: system/modules/search/templates/index.tpl.php:1
+#: system/modules/timelog/actions/edit.php:35
+#: system/modules/timelog/actions/start.php:15
+msgid "Search"
+msgstr "Chercher"
+
+#: system/modules/search/templates/index.tpl.php:55
+msgid "Failed to receive a response from search"
+msgstr "Impossible de recevoir une réponse de recherche"
+
+#: system/modules/search/templates/resultsbackup.tpl.php:35
+msgid "No documents found,."
+msgstr "Aucun document trouvé ,."
+
+#: system/modules/tag/actions/delete.php:10
+msgid "Tag deleted"
+msgstr "Tag supprimé"
+
+#: system/modules/tag/actions/delete.php:14
+msgid "Could not find tag"
+msgstr "Impossible de trouver tag"
+
+#: system/modules/tag/actions/edit.php:4
+msgid "Edit Tag"
+msgstr "Modifier la balise"
+
+#: system/modules/tag/actions/edit.php:9 system/modules/tag/actions/edit.php:11
+#: system/modules/tag/actions/index.php:6
+msgid "Tag"
+msgstr "Étiquette"
+
+#: system/modules/tag/actions/edit.php:23
+msgid "Couldn't save tag"
+msgstr "Impossible d'enregistrer tag"
+
+#: system/modules/tag/actions/edit.php:23
+msgid "already exists!"
+msgstr "existe déjà!"
+
+#: system/modules/tag/actions/edit.php:25
+msgid "Tag saved"
+msgstr "Tag sauvé"
+
+#: system/modules/tag/actions/index.php:4
+#: system/modules/tag/models/TagService.php:158
+msgid "Tag Admin"
+msgstr "Tag Administrateur"
+
+#: system/modules/tag/models/TagService.php:129
+#: system/modules/tag/models/TagService.php:131
+#: system/modules/tag/partials/templates/listTags.tpl.php:13
+msgid "No tag"
+msgstr "Aucun tag"
+
+#: system/modules/tag/models/TagService.php:142
+#: system/modules/tag/partials/templates/listTags.tpl.php:22
+msgid "Filter tags"
+msgstr "étiquettes de filtrage"
+
+#: system/modules/tag/partials/templates/listTags.tpl.php:20
+msgid "Available tags"
+msgstr "balises disponibles"
+
+#: system/modules/tag/templates/edit.tpl.php:1
+msgid "Back to Tag List"
+msgstr "Retour à la liste Tag"
+
+#: system/modules/task/actions/createtask.php:4
+#: system/modules/task/actions/createtask.php:58
+#: system/modules/task/actions/tasktypeform.php:5
+#: system/modules/task/templates/tasktypeform.tpl.php:17
+msgid "Create Task"
+msgstr "Créer une tâche"
+
+#: system/modules/task/actions/createtask.php:32
+#: system/modules/task/actions/taskAjaxSelectbyTaskGroup.php:33
+msgid "Task Group Description"
+msgstr "Groupe Tâche Description"
+
+#: system/modules/task/actions/createtask.php:33
+#: system/modules/task/actions/createtask.php:44
+#: system/modules/task/actions/edit.php:45
+#: system/modules/task/actions/edit.php:46
+#: system/modules/task/actions/taskAjaxSelectbyTaskGroup.php:34
+#: system/modules/task/actions/tasklist.php:94
+#: system/modules/task/actions/tasklist.php:106
+#: system/modules/task/actions/viewtask.php:62
+#: system/modules/task/actions/viewtask.php:77
+msgid "Task Group"
+msgstr "Groupe de travail"
+
+#: system/modules/task/actions/createtask.php:34
+#: system/modules/task/actions/createtask.php:46
+#: system/modules/task/actions/edit.php:48
+#: system/modules/task/actions/edit.php:50
+#: system/modules/task/actions/taskAjaxSelectbyTaskGroup.php:35
+#: system/modules/task/actions/tasklist.php:95
+#: system/modules/task/actions/viewtask.php:63
+#: system/modules/task/actions/viewtask.php:78
+msgid "Task Type"
+msgstr "type de tâche"
+
+#: system/modules/task/actions/createtask.php:43
+msgid "Create a New Task - Step One"
+msgstr "Créer une nouvelle tâche - Première étape"
+
+#: system/modules/task/actions/createtask.php:45
+#: system/modules/task/actions/edit.php:53
+msgid "Task Title"
+msgstr "Titre de la tâche"
+
+#: system/modules/task/actions/createtask.php:47
+#: system/modules/task/actions/edit.php:57
+#: system/modules/task/actions/viewtask.php:66
+#: system/modules/task/actions/viewtask.php:81
+#: system/modules/task/partials/templates/listtasks.tpl.php:5
+msgid "Priority"
+msgstr "Priorité"
+
+#: system/modules/task/actions/createtask.php:48
+#: system/modules/task/actions/edit.php:58
+#: system/modules/task/actions/viewtask.php:67
+#: system/modules/task/actions/viewtask.php:82
+msgid "Date Due"
+msgstr "Date d'échéance"
+
+#: system/modules/task/actions/createtask.php:50
+#: system/modules/task/actions/edit.php:60
+#: system/modules/task/actions/edit.php:61
+#: system/modules/task/actions/viewtask.php:30
+#: system/modules/task/actions/viewtask.php:34
+#: system/modules/task/partials/templates/listtasks.tpl.php:5
+msgid "Assigned To"
+msgstr "Assigné à"
+
+#: system/modules/task/actions/createtask.php:51
+msgid " Continue >> "
+msgstr " Continuer >>"
+
+#: system/modules/task/actions/createtask.php:86
+#: system/modules/task/task.hooks.php:99
+msgid "Task "
+msgstr "Tâche"
+
+#: system/modules/task/actions/createtask.php:90
+msgid "The Task could not be created. Please inform the IT Group"
+msgstr "Le Groupe n'a pas pu être créé. S'il vous plaît informer le Groupe IT"
+
+#: system/modules/task/actions/delete.php:14
+#: system/modules/task/actions/updatestatus.php:40
+msgid "Task: "
+msgstr "Tâche:"
+
+#: system/modules/task/actions/delete.php:14
+msgid " has been deleted."
+msgstr " a été supprimé."
+
+#: system/modules/task/actions/delete.php:16
+msgid "Task could not be found."
+msgstr "Groupe n'a pu être trouvée."
+
+#: system/modules/task/actions/duplicatetask.php:12
+msgid " -Copy"
+msgstr " -Copie"
+
+#: system/modules/task/actions/duplicatetask.php:51
+msgid "Task duplicated"
+msgstr "Tâche dupliqué"
+
+#: system/modules/task/actions/edit.php:11
+msgid "You do not have permission to edit this Task"
+msgstr "Vous n'êtes pas autorisé à modifier cette Task"
+
+#: system/modules/task/actions/edit.php:35
+#: system/modules/task/actions/group/viewtaskgrouptypes.php:43
+#: system/modules/task/actions/taskAjaxSelectbyTaskGroup.php:28
+#: system/modules/task/actions/tasklist.php:90
+#: system/modules/task/task.group.actions.php:33
+msgid "Unassigned"
+msgstr "Unassigned"
+
+#: system/modules/task/actions/edit.php:42
+msgid "Edit task"
+msgstr "Modifier la tâche"
+
+#: system/modules/task/actions/edit.php:42
+msgid "Create a new task"
+msgstr "Créer une nouvelle tâche"
+
+#: system/modules/task/actions/edit.php:64
+msgid "Estimated hours"
+msgstr "heures estimées"
+
+#: system/modules/task/actions/edit.php:65
+msgid "Effort"
+msgstr "Effort"
+
+#: system/modules/task/actions/edit.php:73
+msgid "Task Group ID"
+msgstr "Groupe de travail ID"
+
+#: system/modules/task/actions/edit.php:77
+#: system/modules/task/partials/templates/listtaskgroups.tpl.php:8
+msgid "New Task"
+msgstr "Nouvelle tâche"
+
+#: system/modules/task/actions/edit.php:79
+#: system/modules/task/actions/viewtask.php:22
+msgid "Task:"
+msgstr "Tâche:"
+
+#: system/modules/task/actions/edit.php:91
+#: system/modules/task/actions/group/viewmembergroup.php:67
+#: system/modules/task/actions/tasklist.php:92
+#: system/modules/task/actions/tasklist.php:106
+#: system/modules/task/actions/viewtask.php:156
+#: system/modules/task/task.actions.php:225
+msgid "Assignee"
+msgstr "Cessionnaire"
+
+#: system/modules/task/actions/edit.php:91
+#: system/modules/task/actions/viewtask.php:156
+#: system/modules/timelog/partials/templates/timelogwidget.tpl.php:24
+msgid "Start"
+msgstr "Démarrer"
+
+#: system/modules/task/actions/edit.php:91
+#: system/modules/task/actions/viewtask.php:156
+msgid "Period (hours)"
+msgstr "Période (heures)"
+
+#: system/modules/task/actions/edit.php:116 system/modules/task/config.php:71
+msgid "Review"
+msgstr "La revue"
+
+#: system/modules/task/actions/edit.php:116
+msgid "Accept"
+msgstr "Acceptez"
+
+#: system/modules/task/actions/edit.php:119
+#: system/modules/task/actions/viewtask.php:189
+msgid "Are you sure you wish to DELETE this Time Log Entry?"
+msgstr "Etes-vous sûr de vouloir supprimer cette entrée Log Time?"
+
+#: system/modules/task/actions/edit.php:125
+#: system/modules/task/actions/viewtask.php:196
+msgid "Total"
+msgstr "Total"
+
+#: system/modules/task/actions/edit.php:161
+msgid "Notification Events"
+msgstr "Événements de notification"
+
+#: system/modules/task/actions/edit.php:164
+#: system/modules/task/actions/viewtask.php:264
+#: system/modules/task/task.actions.php:622
+msgid "Task Details Update"
+msgstr "Détails de la tâche de mise à jour"
+
+#: system/modules/task/actions/edit.php:165
+#: system/modules/task/actions/viewtask.php:265
+#: system/modules/task/task.actions.php:623
+msgid "Comments Added"
+msgstr "Commentaires ajoutés"
+
+#: system/modules/task/actions/edit.php:168
+#: system/modules/task/actions/viewtask.php:266
+#: system/modules/task/task.actions.php:624
+msgid "Time Log Entry"
+msgstr "Temps Log Entry"
+
+#: system/modules/task/actions/edit.php:169
+#: system/modules/task/actions/viewtask.php:267
+msgid "Task Data Updated"
+msgstr "Données de la tâche Mise à jour"
+
+#: system/modules/task/actions/edit.php:171
+#: system/modules/task/actions/viewtask.php:268
+#: system/modules/task/task.actions.php:625
+msgid "Documents Added"
+msgstr "Documents Ajouté"
+
+#: system/modules/task/actions/edit.php:245
+msgid "Your iCal is attached"
+msgstr "Votre iCal est attaché"
+
+#: system/modules/task/actions/edit.php:245
+msgid "View Task at: "
+msgstr "Voir Tâche à:"
+
+#: system/modules/task/actions/group/viewmembergroup.php:15
+msgid "Task Group - "
+msgstr "Groupe de travail -"
+
+#: system/modules/task/actions/group/viewmembergroup.php:17
+msgid "Task Group: "
+msgstr "Groupe de travail:"
+
+#: system/modules/task/actions/group/viewmembergroup.php:66
+#: system/modules/task/actions/tasklist.php:93
+#: system/modules/task/actions/tasklist.php:106
+msgid "Creator"
+msgstr "Créateur"
+
+#: system/modules/task/actions/group/viewmembergroup.php:68
+#: system/modules/task/actions/tasklist.php:106
+msgid "All Others"
+msgstr "Tous les autres"
+
+#: system/modules/task/actions/group/viewmembergroup.php:71
+msgid "Guest"
+msgstr "Client"
+
+#: system/modules/task/actions/group/viewtaskgrouptypes.php:3
+#: system/modules/task/actions/group/viewtaskgrouptypes.php:5
+msgid "Manage Task Groups"
+msgstr "Gérer groupes de travail"
+
+#: system/modules/task/actions/group/viewtaskgrouptypes.php:11
+#: system/modules/task/task.group.actions.php:49
+#: system/modules/task/task.group.actions.php:145
+msgid "Default Assignee"
+msgstr "Par défaut Cessionnaire"
+
+#: system/modules/task/actions/group/viewtaskgrouptypes.php:26
+msgid "There are no Task Groups Configured. Please create a New Task Group."
+msgstr "Il n'y a pas de tâches Groupes Configuré. S'il vous plaît créer un nouveau groupe de tâches."
+
+#: system/modules/task/actions/group/viewtaskgrouptypes.php:47
+msgid "Task Group Attributes"
+msgstr "Attributs du groupe de travail"
+
+#: system/modules/task/actions/group/viewtaskgrouptypes.php:48
+#: system/modules/task/task.group.actions.php:40
+#: system/modules/task/task.group.actions.php:138
+msgid "Task Group Type"
+msgstr "Type de groupe de travail"
+
+#: system/modules/task/actions/group/viewtaskgrouptypes.php:50
+#: system/modules/task/task.group.actions.php:42
+#: system/modules/task/task.group.actions.php:140
+msgid "Who Can Assign"
+msgstr "Qui peut Attribuez"
+
+#: system/modules/task/actions/group/viewtaskgrouptypes.php:51
+#: system/modules/task/task.group.actions.php:43
+#: system/modules/task/task.group.actions.php:141
+msgid "Who Can View"
+msgstr "Qui peut Voir"
+
+#: system/modules/task/actions/group/viewtaskgrouptypes.php:52
+#: system/modules/task/task.group.actions.php:44
+#: system/modules/task/task.group.actions.php:142
+msgid "Who Can Create"
+msgstr "Qui peut créer"
+
+#: system/modules/task/actions/group/viewtaskgrouptypes.php:56
+#: system/modules/task/task.group.actions.php:47
+msgid "Default Task Type"
+msgstr "Par défaut Type de tâche"
+
+#: system/modules/task/actions/group/viewtaskgrouptypes.php:57
+#: system/modules/task/task.group.actions.php:48
+msgid "Default Priority"
+msgstr "priorité par défaut"
+
+#: system/modules/task/actions/index.php:8
+#: system/modules/task/templates/tasktypeform.tpl.php:15
+msgid "Task Dashboard"
+msgstr "Dashboard Task"
+
+#: system/modules/task/actions/taskAjaxAssigntoGroup.php:20
+#: system/modules/task/actions/taskAjaxGrouptoType.php:26
+#: system/modules/task/actions/taskAjaxPrioritytoStatus.php:30
+#: system/modules/task/actions/taskAjaxTypetoPriority.php:28
+msgid "No assigned Tasks"
+msgstr "Aucune tâches assignées"
+
+#: system/modules/task/actions/tasklist.php:4
+msgid "List Tasks"
+msgstr "Liste des tâches"
+
+#: system/modules/task/actions/tasklist.php:96
+msgid "Task Priority"
+msgstr "priorité Tâche"
+
+#: system/modules/task/actions/tasklist.php:97
+msgid "Task Status"
+msgstr "État de la tâche"
+
+#: system/modules/task/actions/tasklist.php:98
+msgid "Closed"
+msgstr "Fermé"
+
+#: system/modules/task/actions/tasklist.php:106
+msgid "Your Role"
+msgstr "Ton rôle"
+
+#: system/modules/task/actions/tasktypeform.php:24
+msgid "No further information required.<p>Please save your task."
+msgstr "Aucune autre information requise. <P> S'il vous plaît enregistrer votre tâche."
+
+#: system/modules/task/actions/taskweek.php:22
+#: system/modules/task/templates/portal.tpl.php:13
+msgid "An overview of the activity in Tasks: "
+msgstr "Une vue d'ensemble de l'activité dans les tâches:"
+
+#: system/modules/task/actions/taskweek.php:22
+#: system/modules/task/task.actions.php:357
+#: system/modules/task/templates/portal.tpl.php:13
+msgid " to "
+msgstr " à"
+
+#: system/modules/task/actions/taskweek.php:41
+#: system/modules/task/templates/portal.tpl.php:31
+msgid "View Task Group"
+msgstr "Voir le groupe de travail"
+
+#: system/modules/task/actions/taskweek.php:42
+#: system/modules/task/templates/portal.tpl.php:32
+msgid "View Task Details"
+msgstr "Voir Tâche Détails"
+
+#: system/modules/task/actions/taskweek.php:50
+msgid "No Task Activity found for given selections."
+msgstr "Aucune Tâche Activité trouvé pour les sélections données."
+
+#: system/modules/task/actions/updatestatus.php:11
+msgid "status updated to: "
+msgstr "état mis à jour:"
+
+#: system/modules/task/actions/updatestatus.php:44
+msgid "There was a problem."
+msgstr "Il y avait un problème."
+
+#: system/modules/task/actions/updatetask.php:30
+msgid " updated to: "
+msgstr " mis à jour:"
+
+#: system/modules/task/actions/updatetask.php:89
+#: system/modules/task/models/Task.php:298
+#: system/modules/task/models/Task.php:329
+#: system/modules/task/models/Task.php:331
+#: system/modules/task/partials/templates/removeUser.tpl.php:3
+#: system/modules/task/task.tasks.php:83
+#: system/modules/task/templates/index.tpl.php:15
+#: system/modules/task/templates/index.tpl.php:53
+#: system/modules/task/templates/index.tpl.php:68
+msgid "Task"
+msgstr "Tâche"
+
+#: system/modules/task/actions/user/unassign.php:9
+msgid "Missing User ID"
+msgstr "Manquant ID utilisateur"
+
+#: system/modules/task/actions/user/unassign.php:44
+msgid "User removed from Tasks/Taskgroups"
+msgstr "Utilisateur retiré de Tâches / Taskgroups"
+
+#: system/modules/task/actions/viewtask.php:14
+msgid "View Task: "
+msgstr "Voir la tâche:"
+
+#: system/modules/task/actions/viewtask.php:18
+msgid "This Task has been deleted"
+msgstr "Ce groupe a été supprimé"
+
+#: system/modules/task/actions/viewtask.php:33
+msgid "Not Assigned"
+msgstr "Non affecté"
+
+#: system/modules/task/actions/viewtask.php:47
+msgid " Delete Task "
+msgstr " Supprimer la tâche"
+
+#: system/modules/task/actions/viewtask.php:47
+msgid "Are you should you with to DELETE this task?"
+msgstr "Etes-vous si vous avec supprimer cette tâche?"
+
+#: system/modules/task/actions/viewtask.php:59
+#: system/modules/task/actions/viewtask.php:74
+#: system/modules/task/templates/edit.tpl.php:3
+#: system/modules/task/templates/viewtask.tpl.php:10
+msgid "Task Details"
+msgstr "Détails de la tâche"
+
+#: system/modules/task/actions/viewtask.php:61
+#: system/modules/task/actions/viewtask.php:76
+#: system/modules/task/partials/templates/listtasks.tpl.php:5
+msgid "Created By"
+msgstr "Créé par"
+
+#: system/modules/task/actions/viewtask.php:130
+msgid "Start Time Log"
+msgstr "Start Time Log"
+
+#: system/modules/task/actions/viewtask.php:145
+msgid " Add Time Log entry "
+msgstr " Ajouter une entrée Log Time"
+
+#: system/modules/task/actions/viewtask.php:156
+msgid "End"
+msgstr "Fin"
+
+#: system/modules/task/actions/viewtask.php:167
+msgid " Accept "
+msgstr " Acceptez"
+
+#: system/modules/task/actions/viewtask.php:173
+msgid " Review "
+msgstr " La revue"
+
+#: system/modules/task/actions/viewtask.php:193
+msgid " Comment "
+msgstr " Commentaire"
+
+#: system/modules/task/actions/viewtask.php:199
+msgid "No time log entries have been made"
+msgstr "Pas d'entrées du journal de temps ont été réalisés"
+
+#: system/modules/task/actions/viewtask.php:262
+msgid "For which Task Events should you receive Notification?"
+msgstr "Pour ce qui des événements spéciaux devraient vous recevez une notification?"
+
+#: system/modules/task/actions/viewtask.php:281
+msgid "Not a Member"
+msgstr "Pas un membre"
+
+#: system/modules/task/actions/viewtask.php:291
+msgid "You must be at least a "
+msgstr "Vous devez être au moins un"
+
+#: system/modules/task/actions/viewtask.php:291
+msgid " of the Task Group"
+msgstr " du Groupe de travail"
+
+#: system/modules/task/actions/viewtask.php:291
+msgid "Your current Membership Level"
+msgstr "Votre niveau d'adhésion en cours"
+
+#: system/modules/task/actions/viewtask.php:291
+msgid "Please appeal to the group owner(s)"
+msgstr "S'il vous plaît appel à la propriétaire du groupe (s)"
+
+#: system/modules/task/actions/viewtask.php:291
+msgid " for promotion."
+msgstr " pour la promotion."
+
+#: system/modules/task/actions/viewtask.php:291
+msgid "to view tasks in this group"
+msgstr "pour afficher les tâches dans ce groupe"
+
+#: system/modules/task/config.php:30 system/modules/task/config.php:53
+msgid "Ordinary Hours"
+msgstr "Heures ordinaires"
+
+#: system/modules/task/config.php:30 system/modules/task/config.php:53
+msgid "Overtime"
+msgstr "Heures supplémentaires"
+
+#: system/modules/task/config.php:30 system/modules/task/config.php:53
+msgid "Weekend"
+msgstr "Fin de semaine"
+
+#: system/modules/task/config.php:39
+msgid "To Do"
+msgstr "Faire"
+
+#: system/modules/task/config.php:41
+msgid "New"
+msgstr "Nouveau"
+
+#: system/modules/task/config.php:42
+msgid "Assigned"
+msgstr "Attribué"
+
+#: system/modules/task/config.php:43
+msgid "Wip"
+msgstr "Wip"
+
+#: system/modules/task/config.php:44
+msgid "Pending"
+msgstr "en attendant"
+
+#: system/modules/task/config.php:46 system/modules/task/config.php:74
+msgid "Rejected"
+msgstr "Rejeté"
+
+#: system/modules/task/config.php:47 system/modules/task/config.php:75
+msgid "Urgent"
+msgstr "Urgent"
+
+#: system/modules/task/config.php:47 system/modules/task/config.php:75
+msgid "Normal"
+msgstr "Ordinaire"
+
+#: system/modules/task/config.php:47 system/modules/task/config.php:75
+msgid "Nice to have"
+msgstr "Agréable d'avoir"
+
+#: system/modules/task/config.php:63
+msgid "Programming Task"
+msgstr "Tâche de programmation"
+
+#: system/modules/task/config.php:65
+msgid "Idea"
+msgstr "Idée"
+
+#: system/modules/task/config.php:66
+msgid "On Hold"
+msgstr "En attente"
+
+#: system/modules/task/config.php:67
+msgid "Backlog"
+msgstr "Arriéré"
+
+#: system/modules/task/config.php:68
+msgid "Todo"
+msgstr "Faire"
+
+#: system/modules/task/config.php:69
+msgid "WIP"
+msgstr "WIP"
+
+#: system/modules/task/config.php:70
+msgid "Testing"
+msgstr "Essai"
+
+#: system/modules/task/config.php:72
+msgid "Deploy"
+msgstr "Déployer"
+
+#: system/modules/task/config.php:73
+msgid "Live"
+msgstr "Vivre"
+
+#: system/modules/task/models/Task.php:307
+msgid ", Assigned: "
+msgstr ", Attribué:"
+
+#: system/modules/task/models/Task.php:311
+msgid ", First Assigned: "
+msgstr ", D'abord attribué:"
+
+#: system/modules/task/models/Task.php:315
+msgid ", Due: "
+msgstr ", Dû:"
+
+#: system/modules/task/models/Task.php:397
+msgid "Task Created"
+msgstr "Tâche Créé"
+
+#: system/modules/task/models/Task.php:480
+msgid "Updating Task"
+msgstr "Mise à jour des tâches"
+
+#: system/modules/task/models/Task.php:525
+msgid "Deleting Task"
+msgstr "Suppression des tâches"
+
+#: system/modules/task/partials/templates/listtasks.tpl.php:2
+msgid "Filter Tasks"
+msgstr "filtrage des tâches"
+
+#: system/modules/task/partials/templates/listtasks.tpl.php:5
+msgid "Group"
+msgstr "Groupe"
+
+#: system/modules/task/partials/templates/listtasks.tpl.php:5
+msgid "Due"
+msgstr "Dû"
+
+#: system/modules/task/partials/templates/listtasks.tpl.php:33
+msgid "No tasks found"
+msgstr "Aucune tâche trouvé"
+
+#: system/modules/task/partials/templates/removeUser.tpl.php:6
+msgid "This user has"
+msgstr "Cet utilisateur dispose d'"
+
+#: system/modules/task/partials/templates/removeUser.tpl.php:6
+#: system/modules/task/templates/index.tpl.php:7
+#: system/modules/task/templates/index.tpl.php:40
+#: system/modules/task/templates/index.tpl.php:50
+#: system/modules/task/templates/index.tpl.php:70
+msgid "task"
+msgstr "tâche"
+
+#: system/modules/task/partials/templates/removeUser.tpl.php:6
+msgid "assigned to them"
+msgstr "qui leur est assigné"
+
+#: system/modules/task/partials/templates/removeUser.tpl.php:9
+msgid "task group"
+msgstr "groupe de travail"
+
+#: system/modules/task/partials/templates/removeUser.tpl.php:11
+msgid "and they are the default assignee for"
+msgstr "et ils sont le cessionnaire par défaut pour"
+
+#: system/modules/task/partials/templates/removeUser.tpl.php:11
+msgid "of these"
+msgstr "de ceux-ci"
+
+#: system/modules/task/partials/templates/removeUser.tpl.php:16
+msgid "WARNING: Revoking this users Taskgroup membership will leave"
+msgstr "AVERTISSEMENT: Révocation de l'adhésion de cet utilisateur quittera"
+
+#: system/modules/task/partials/templates/removeUser.tpl.php:16
+#: system/modules/task/templates/index.tpl.php:6
+#: system/modules/task/templates/index.tpl.php:49
+msgid "taskgroup"
+msgstr "taskgroup"
+
+#: system/modules/task/partials/templates/removeUser.tpl.php:17
+msgid "without any members!"
+msgstr "sans membres!"
+
+#: system/modules/task/partials/templates/removeUser.tpl.php:19
+msgid "Please add members to the following Taskgroups before proceeding:"
+msgstr "S'il vous plaît ajouter des membres aux Taskgroups suivants avant de poursuivre:"
+
+#: system/modules/task/partials/templates/removeUser.tpl.php:28
+msgid "The following actions will be carried out:"
+msgstr "Les actions suivantes seront effectuées:"
+
+#: system/modules/task/partials/templates/removeUser.tpl.php:30
+msgid "Remove user membership from any taskgroups"
+msgstr "Retirez l'adhésion de l'utilisateur de tout taskgroups"
+
+#: system/modules/task/partials/templates/removeUser.tpl.php:31
+msgid "Remove user from any taskgroup default assignee (WARNING: result will be that taskgroup has no default assignee)"
+msgstr "Supprimer l'utilisateur de tout cessionnaire taskgroup par défaut (ATTENTION: résultat sera que taskgroup n'a pas cessionnaire par défaut)"
+
+#: system/modules/task/partials/templates/removeUser.tpl.php:32
+msgid "Reassign any tasks assigned to the user to the default user (As with above, if the user is assigned and also the default assignee, the result will be tasks become unassigned)"
+msgstr "Réaffectation des tâches assignées à l'utilisateur de l'utilisateur par défaut (Comme ci-dessus, si l'utilisateur est affecté et également le cessionnaire par défaut, le résultat sera tâches deviennent unassigned)"
+
+#: system/modules/task/partials/templates/removeUser.tpl.php:35
+msgid "Remove from Task"
+msgstr "Retirer de la Task"
+
+#: system/modules/task/task.actions.php:53
+msgid "Comment updated."
+msgstr "Commentaire mis à jour."
+
+#: system/modules/task/task.actions.php:60
+msgid "Comment created."
+msgstr "Commentaire créé."
+
+#: system/modules/task/task.actions.php:78
+msgid "Attach Document"
+msgstr "Joindre le document"
+
+#: system/modules/task/task.actions.php:79
+msgid "Document"
+msgstr "Document"
+
+#: system/modules/task/task.actions.php:84
+msgid " Upload "
+msgstr " Télécharger"
+
+#: system/modules/task/task.actions.php:108
+msgid "There was an error. The document could not be saved."
+msgstr "Il y avait une erreur. Le document n'a pas pu être sauvé."
+
+#: system/modules/task/task.actions.php:110
+msgid "The Document has been uploaded."
+msgstr "Le document a été téléchargé."
+
+#: system/modules/task/task.actions.php:118
+msgid "File Uploaded: "
+msgstr "Fichier téléchargé:"
+
+#: system/modules/task/task.actions.php:138
+msgid "Select a Page"
+msgstr "Sélectionnez une page"
+
+#: system/modules/task/task.actions.php:154
+msgid "Please select a PAGE"
+msgstr "S'il vous plaît sélectionner un PAGE"
+
+#: system/modules/task/task.actions.php:175
+msgid "Page Attached to Task: "
+msgstr "Page ci-jointe à la tâche:"
+
+#: system/modules/task/task.actions.php:183
+msgid "Page Added to Task"
+msgstr "Ajouté à la page des tâches"
+
+#: system/modules/task/task.actions.php:224
+msgid "Add Time Log Entry"
+msgstr "Ajouter Temps Log Entry"
+
+#: system/modules/task/task.actions.php:226
+msgid "Select the Start Date & Time"
+msgstr "Sélectionnez la date et l'heure de début"
+
+#: system/modules/task/task.actions.php:227
+#: system/modules/task/task.actions.php:229
+msgid "Date/Time"
+msgstr "Date / Heure"
+
+#: system/modules/task/task.actions.php:228
+msgid "Select the End Date & Time, or Period worked"
+msgstr "Sélectionnez la date et l'heure de fin, ou période travaillée"
+
+#: system/modules/task/task.actions.php:230
+msgid "Or Period:"
+msgstr "Ou Période:"
+
+#: system/modules/task/task.actions.php:230
+msgid "Below select the period worked since the Start Date/Time"
+msgstr "Ci-dessous, sélectionnez la période travaillée depuis le début Date / Heure"
+
+#: system/modules/task/task.actions.php:231
+msgid "Hours"
+msgstr "Heures"
+
+#: system/modules/task/task.actions.php:232
+msgid "Min"
+msgstr "Min"
+
+#: system/modules/task/task.actions.php:233
+#: system/modules/timelog/actions/ajaxGetExtraData.php:20
+msgid "Time Type"
+msgstr "type de"
+
+#: system/modules/task/task.actions.php:234
+#: system/modules/task/task.actions.php:235
+#: system/modules/task/task.actions.php:451
+#: system/modules/task/task.actions.php:533
+#: system/modules/task/templates/edit.tpl.php:12
+#: system/modules/task/templates/viewtask.tpl.php:12
+msgid "Comments"
+msgstr "commentaires"
+
+#: system/modules/task/task.actions.php:278
+msgid "Start is greater than End. Please enter again."
+msgstr "Start est supérieure à la fin. S'il vous plaît entrez de nouveau."
+
+#: system/modules/task/task.actions.php:280
+msgid "Time Log Entry updated."
+msgstr "Temps Entrée de journal mis à jour."
+
+#: system/modules/task/task.actions.php:280
+msgid "Time Log Entry created."
+msgstr "Temps Entrée de journal créé."
+
+#: system/modules/task/task.actions.php:320
+msgid "Time Log entry marked for review"
+msgstr "entrée Log Time marqué pour examen"
+
+#: system/modules/task/task.actions.php:323
+msgid "Time Log entry accepted"
+msgstr "entrée Log Time acceptée"
+
+#: system/modules/task/task.actions.php:357
+msgid "Time Log Entry deleted: "
+msgstr "Temps Entrée de journal supprimé:"
+
+#: system/modules/task/task.actions.php:364
+msgid "Time Log entry has been deleted."
+msgstr "entrée Log Time a été supprimé."
+
+#: system/modules/task/task.actions.php:366
+msgid "Time Log entry could not be found."
+msgstr "entrée Log Time n'a pu être trouvée."
+
+#: system/modules/task/task.actions.php:414
+#: system/modules/task/task.actions.php:446
+#: system/modules/task/task.actions.php:511
+#: system/modules/task/task.actions.php:528
+#: system/modules/task/templates/viewtask.tpl.php:58
+msgid "Task Time Log"
+msgstr "Task Log Time"
+
+#: system/modules/task/task.actions.php:447
+#: system/modules/task/task.actions.php:529
+msgid "View Task"
+msgstr "Voir Task"
+
+#: system/modules/task/task.actions.php:454
+msgid "Save Comments"
+msgstr "Envoyer Commentaires"
+
+#: system/modules/task/task.actions.php:455
+msgid "Stop Time Now"
+msgstr "Stop Time Now"
+
+#: system/modules/task/task.actions.php:487
+msgid "Time Log Entry: "
+msgstr "Log Time Entry:"
+
+#: system/modules/task/task.actions.php:489
+msgid " - Comments: "
+msgstr " - Commentaires:"
+
+#: system/modules/task/task.actions.php:608
+msgid " - Notifications"
+msgstr " - Notifications"
+
+#: system/modules/task/task.actions.php:620
+msgid "For which events should you receive Notification?"
+msgstr "Pour les événements qui doivent vous recevez une notification?"
+
+#: system/modules/task/task.actions.php:621
+msgid "Task Creation"
+msgstr "Création de tâches"
+
+#: system/modules/task/task.actions.php:626
+msgid "Pages Added"
+msgstr "Pages Ajouté"
+
+#: system/modules/task/task.actions.php:688
+#: system/modules/task/task.actions.php:728
+#: system/modules/task/task.group.actions.php:210
+msgid "Notifications Updated"
+msgstr "Notifications Mise à jour"
+
+#: system/modules/task/task.group.actions.php:15
+msgid "Taskgroup: "
+msgstr "Taskgroup:"
+
+#: system/modules/task/task.group.actions.php:39
+#: system/modules/task/task.group.actions.php:137
+msgid "Task Group Details"
+msgstr "Groupe de travail Détails"
+
+#: system/modules/task/task.group.actions.php:73
+#: system/modules/task/task.group.actions.php:119
+#: system/modules/task/task.group.actions.php:170
+msgid "Task Group "
+msgstr "Groupe de travail"
+
+#: system/modules/task/task.group.actions.php:119
+msgid " updated."
+msgstr " actualisé."
+
+#: system/modules/task/task.group.actions.php:123
+msgid "Group: "
+msgstr "Groupe:"
+
+#: system/modules/task/task.group.actions.php:123
+msgid " no longer exists?"
+msgstr " n'existe plus?"
+
+#: system/modules/task/task.group.actions.php:157
+msgid "Taskgroup could not be found"
+msgstr "Taskgroup n'a pu être trouvée"
+
+#: system/modules/task/task.group.actions.php:164
+msgid "Taskgroup could not be found with ID: "
+msgstr "Taskgroup n'a pas pu être trouvé avec ID:"
+
+#: system/modules/task/task.group.actions.php:238
+#: system/modules/task/task.group.actions.php:288
+#: system/modules/task/task.group.actions.php:329
+msgid "Task Group updated"
+msgstr "Groupe de travail mis à jour"
+
+#: system/modules/task/task.group.actions.php:249
+#: system/modules/task/task.group.actions.php:252
+msgid "Add Group Members"
+msgstr "Ajouter des membres du groupe"
+
+#: system/modules/task/task.group.actions.php:251
+msgid "As Role"
+msgstr "Comme Rôle"
+
+#: system/modules/task/task.group.actions.php:333
+msgid "Task Group Members no longer exists?"
+msgstr "Groupe de travail Membres n'existe plus?"
+
+#: system/modules/task/task.hooks.php:21
+msgid "Task time"
+msgstr "Tâche temps"
+
+#: system/modules/task/task.hooks.php:48
+msgid "A new task has been created"
+msgstr "Une nouvelle tâche a été créée"
+
+#: system/modules/task/task.hooks.php:51
+msgid "Body"
+msgstr "Corps"
+
+#: system/modules/task/task.hooks.php:57
+msgid "Access the task here: "
+msgstr "Accéder à la tâche ici:"
+
+#: system/modules/task/task.hooks.php:58 system/modules/task/task.hooks.php:109
+#: system/modules/task/task.hooks.php:150
+#: system/modules/task/task.hooks.php:232
+#: system/modules/task/task.hooks.php:266
+#: system/modules/task/task.hooks.php:300
+msgid "Go to "
+msgstr "Aller à"
+
+#: system/modules/task/task.hooks.php:58 system/modules/task/task.hooks.php:109
+#: system/modules/task/task.hooks.php:150
+#: system/modules/task/task.hooks.php:232
+#: system/modules/task/task.hooks.php:266
+#: system/modules/task/task.hooks.php:300
+msgid "Task > Task List > Notifications"
+msgstr "Tâche> Liste des tâches> Notifications"
+
+#: system/modules/task/task.hooks.php:58 system/modules/task/task.hooks.php:109
+#: system/modules/task/task.hooks.php:150
+#: system/modules/task/task.hooks.php:232
+#: system/modules/task/task.hooks.php:266
+#: system/modules/task/task.hooks.php:300
+msgid ", to edit the types of notifications you will receive."
+msgstr ", Pour modifier les types de notifications que vous recevrez."
+
+#: system/modules/task/task.hooks.php:101
+msgid " details has been updated"
+msgstr " les détails ont été mis à jour"
+
+#: system/modules/task/task.hooks.php:102
+msgid "Status: "
+msgstr "Statut:"
+
+#: system/modules/task/task.hooks.php:141
+msgid "Someone"
+msgstr "Quelqu'un"
+
+#: system/modules/task/task.hooks.php:141
+msgid " has commented on a task that you're a part of"
+msgstr " a commenté une tâche que vous êtes une partie de"
+
+#: system/modules/task/task.hooks.php:218
+msgid " replied to a comment "
+msgstr " répondu à un commentaire"
+
+#: system/modules/task/task.hooks.php:218
+msgid "that you're a part of "
+msgstr "que vous êtes une partie de"
+
+#: system/modules/task/task.hooks.php:218
+msgid "for "
+msgstr "pour"
+
+#: system/modules/task/task.hooks.php:224
+msgid "Click here to view the comment"
+msgstr "Cliquez ici pour voir le commentaire"
+
+#: system/modules/task/task.hooks.php:226
+msgid "You are unable to view this task"
+msgstr "Vous êtes incapable de voir cette tâche"
+
+#: system/modules/task/task.hooks.php:257
+#: system/modules/task/task.hooks.php:291
+msgid "Task - "
+msgstr "Tâche -"
+
+#: system/modules/task/task.hooks.php:259
+msgid " has had a new time log entry"
+msgstr " a eu une nouvelle entrée du journal de temps"
+
+#: system/modules/task/task.hooks.php:293
+msgid " has got a new attachment"
+msgstr " a obtenu une nouvelle pièce jointe"
+
+#: system/modules/task/task.tasks.php:33
+msgid "Todo Item"
+msgstr "Todo Item"
+
+#: system/modules/task/task.tasks.php:37
+msgid "Use this to assign any task."
+msgstr "Utilisez cette option pour assigner toute tâche."
+
+#: system/modules/task/task.tasks.php:69
+msgid "Dev Ticket"
+msgstr "dev ticket"
+
+#: system/modules/task/task.tasks.php:73
+msgid "Use this to report any issue or feature request."
+msgstr "Utilisez cette option pour signaler toute demande d'émission ou de fonctionnalité."
+
+#: system/modules/task/task.tasks.php:83
+msgid "Ticket Type"
+msgstr "Type de billet"
+
+#: system/modules/task/task.tasks.php:83
+msgid "Issue"
+msgstr "Problème"
+
+#: system/modules/task/task.tasks.php:83
+msgid "Feature"
+msgstr "Fonctionnalité"
+
+#: system/modules/task/task.tasks.php:84
+msgid "Identifier"
+msgstr "Identifier"
+
+#: system/modules/task/templates/createtask.tpl.php:1
+msgid "Creating a new Task is a two step process."
+msgstr "Création d'une nouvelle tâche est un processus en deux étapes."
+
+#: system/modules/task/templates/createtask.tpl.php:1
+msgid "Please complete all steps to register a Task."
+msgstr "S'il vous plaît remplir toutes les étapes pour enregistrer une tâche."
+
+#: system/modules/task/templates/createtask.tpl.php:7
+msgid "You need to set up a Task Group first, that can be done"
+msgstr "Vous avez besoin de mettre en place un groupe de travail d'abord, qui peut être fait"
+
+#: system/modules/task/templates/createtask.tpl.php:7
+msgid "here"
+msgstr "ici"
+
+#: system/modules/task/templates/edit.tpl.php:11
+#: system/modules/task/templates/viewtask.tpl.php:11
+msgid "Time Log"
+msgstr "Log Time"
+
+#: system/modules/task/templates/edit.tpl.php:13
+msgid "Attachments"
+msgstr "Pièces jointes"
+
+#: system/modules/task/templates/edit.tpl.php:15
+#: system/modules/task/templates/viewtask.tpl.php:14
+msgid "Notifications"
+msgstr "Notifications"
+
+#: system/modules/task/templates/edit.tpl.php:34
+msgid "Are you sure you want to delete this task?"
+msgstr "Êtes-vous sûr de vouloir supprimer cette tâche?"
+
+#: system/modules/task/templates/edit.tpl.php:35
+msgid "Duplicate Task"
+msgstr "Duplicate Task"
+
+#: system/modules/task/templates/edit.tpl.php:64
+msgid "If you do not set notifications for this Task then the default settings for the this Task group will be used."
+msgstr "Si vous ne définissez pas les notifications pour cette tâche alors les paramètres par défaut pour le groupe cette tâche sera utilisée."
+
+#: system/modules/task/templates/group/createtaskgroup.tpl.php:3
+msgid "Task Group successfully created"
+msgstr "Groupe de travail créé avec succès"
+
+#: system/modules/task/templates/index.tpl.php:6
+msgid "You're a member of"
+msgstr "Vous êtes un membre de"
+
+#: system/modules/task/templates/index.tpl.php:7
+msgid "With"
+msgstr "Avec"
+
+#: system/modules/task/templates/index.tpl.php:15
+#: system/modules/task/templates/index.tpl.php:53
+msgid "assigned to you"
+msgstr "qui vous est attribué"
+
+#: system/modules/task/templates/index.tpl.php:21
+#: system/modules/task/templates/index.tpl.php:57
+msgid " overdue"
+msgstr " en retard"
+
+#: system/modules/task/templates/index.tpl.php:24
+#: system/modules/task/templates/index.tpl.php:60
+msgid "0 due"
+msgstr "0 due"
+
+#: system/modules/task/templates/index.tpl.php:24
+#: system/modules/task/templates/index.tpl.php:26
+#: system/modules/task/templates/index.tpl.php:62
+msgid "within 7 days"
+msgstr "dans les 7 jours"
+
+#: system/modules/task/templates/index.tpl.php:26
+#: system/modules/task/templates/index.tpl.php:62
+msgid " due"
+msgstr " dû"
+
+#: system/modules/task/templates/index.tpl.php:30
+#: system/modules/task/templates/index.tpl.php:65
+msgid "without a due date"
+msgstr "sans date d'échéance"
+
+#: system/modules/task/templates/index.tpl.php:38
+#: system/modules/task/templates/index.tpl.php:40
+#: system/modules/task/templates/index.tpl.php:68
+#: system/modules/task/templates/index.tpl.php:70
+msgid "marked"
+msgstr "marqué"
+
+#: system/modules/task/templates/index.tpl.php:38
+#: system/modules/task/templates/index.tpl.php:40
+#: system/modules/task/templates/index.tpl.php:68
+#: system/modules/task/templates/index.tpl.php:70
+msgid "urgent"
+msgstr "urgent"
+
+#: system/modules/task/templates/index.tpl.php:49
+msgid "You're a member of "
+msgstr "Vous êtes un membre de"
+
+#: system/modules/task/templates/index.tpl.php:50
+msgid "overall"
+msgstr "global"
+
+#: system/modules/task/templates/index.tpl.php:60
+msgid "with 7 days"
+msgstr "avec 7 jours"
+
+#: system/modules/task/templates/portal.tpl.php:40
+msgid "No Task Activity found for given date span"
+msgstr "Aucune Tâche Activité trouvé pour la date portée donnée"
+
+#: system/modules/task/templates/tasktypeform.tpl.php:16
+msgid "Task List"
+msgstr "Liste de tâches"
+
+#: system/modules/task/templates/taskweek.tpl.php:7
+#: system/modules/task/templates/taskweek.tpl.php:14
+msgid "Search Tasks"
+msgstr "recherche Tâches"
+
+#: system/modules/task/templates/taskweek.tpl.php:12
+msgid "From Date"
+msgstr "Partir de la date"
+
+#: system/modules/task/templates/viewtask.tpl.php:13
+msgid "Documents"
+msgstr "Documents"
+
+#: system/modules/task/templates/viewtask.tpl.php:38
+msgid "Set your Notifications specific to this Task, otherwise your notifications for this Task Group will be employed."
+msgstr "Définissez vos notifications spécifiques à cette tâche, sinon vos notifications pour ce groupe de travail seront employés."
+
+#: system/modules/task/templates/viewtask.tpl.php:69
+msgid "Please END TIME on your current Task"
+msgstr "S'il vous plaît END TIME sur votre tâche en cours"
+
+#: system/modules/task/templates/viewtask.tpl.php:69
+msgid "before starting a new Task Time Log"
+msgstr "avant de commencer une nouvelle tâche Log Time"
+
+#: system/modules/timelog/actions/ajaxGetExtraData.php:27
+msgid "Required"
+msgstr "Obligatoire"
+
+#: system/modules/timelog/actions/ajaxGetExtraData.php:34
+msgid "-- Select --"
+msgstr "- Sélectionnez -"
+
+#: system/modules/timelog/actions/delete.php:13
+msgid "No timelog identifier provided"
+msgstr "Aucun identifiant de TimeLOG fourni"
+
+#: system/modules/timelog/actions/delete.php:19
+msgid "Timelog not found"
+msgstr "TimeLog not found"
+
+#: system/modules/timelog/actions/delete.php:24
+msgid "You cannot delete Timelogs"
+msgstr "Vous ne pouvez pas supprimer Timelogs"
+
+#: system/modules/timelog/actions/delete.php:28
+msgid "Timelog deleted"
+msgstr "TimeLog supprimé"
+
+#: system/modules/timelog/actions/edit.php:32
+msgid "Timelog"
+msgstr "TimeLog"
+
+#: system/modules/timelog/actions/edit.php:90
+msgid "Timelog saved"
+msgstr "TimeLog sauvé"
+
+#: system/modules/timelog/actions/migrate.php:40
+msgid "Timelog successfully migrated."
+msgstr "TimeLog ont migré avec succès."
+
+#: system/modules/timelog/actions/migrate.php:40
+#: system/modules/timelog/actions/migrate.php:43
+msgid "View Timelog"
+msgstr "Voir TimeLog"
+
+#: system/modules/timelog/actions/migrate.php:43
+msgid "Timelog migration cannot run, lock is in place."
+msgstr "migration TimeLog ne peut pas courir, verrou est en place."
+
+#: system/modules/timelog/actions/start.php:13
+msgid "Start Timelog"
+msgstr "Démarrer TimeLog"
+
+#: system/modules/timelog/models/TimelogService.php:120
+msgid "Add Timelog"
+msgstr "Ajouter TimeLog"
+
+#: system/modules/timelog/partials/templates/listtimelog.tpl.php:1
+msgid "Add new timelog"
+msgstr "Ajouter un nouveau TimeLOG"
+
+#: system/modules/timelog/partials/templates/listtimelog.tpl.php:18
+#: system/modules/timelog/templates/index.tpl.php:17
+msgid "Are you sure you want to delete this timelog?"
+msgstr "Êtes-vous sûr de vouloir supprimer cette TimeLOG?"
+
+#: system/modules/timelog/partials/templates/timelogwidget.tpl.php:4
+msgid "Start Timer"
+msgstr "Start Timer"
+
+#: system/modules/timelog/partials/templates/timelogwidget.tpl.php:17
+msgid "Enter Description"
+msgstr "Entrez description"
+
+#: system/modules/timelog/partials/templates/timelogwidget.tpl.php:25
+msgid "Close"
+msgstr "Fermer"
+
+#: system/modules/timelog/templates/edit.tpl.php:63
+msgid "Additional Fields"
+msgstr "champs supplémentaires"
+
+#: system/modules/timelog/templates/index.tpl.php:15
+msgid "View Time Log"
+msgstr "Voir Time Log"
+
+#: system/modules/timelog/templates/index.tpl.php:25
+msgid "No time logs found"
+msgstr "Aucun journal de temps trouvé"

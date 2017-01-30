@@ -1,10 +1,10 @@
-            Creating a new Task is a two step process.<br>Please complete all steps to register a Task.
+            <?php _e('Creating a new Task is a two step process.'); ?><br><?php _e('Please complete all steps to register a Task.'); ?>
             <p>
             <table border=0>
                 <tr valign=top>
                     <td>
                         <?php if (empty($createtask)) : ?>
-                            <p>You need to set up a Task Group first, that can be done <a href="/task-group/viewtaskgrouptypes#">here</a></p>
+                            <p><?php _e('You need to set up a Task Group first, that can be done'); ?> <a href="/task-group/viewtaskgrouptypes#"><?php _e('here'); ?></a></p>
                         <?php else: echo $createtask;
                         endif; ?>
                     </td>

@@ -5,7 +5,7 @@
 
 // display the form allowing users to set report parameters
 function runreport_ALL(Web &$w) {
-	$w->Report->navigation($w, "Generate Report");
+	$w->Report->navigation($w, __("Generate Report"));
 	$p = $w->pathMatch("id");
 
 	// if there is a report ID in the URL ...
@@ -19,7 +19,7 @@ function runreport_ALL(Web &$w) {
 		// if report exists, first check status and user role before displaying
 		if (!empty($rep)) {
 			if (($rep->is_approved == "0") && ($member->role != "EDITOR") && (!$w->Auth->user()->hasRole("report_admin"))) {
-				$w->msg($rep->title . ": Report is yet to be approved","/report/index/");
+				$w->msg($rep->title . __(": Report is yet to be approved"),"/report/index/");
 			}
 			else {
 				// display form
@@ -31,7 +31,7 @@ function runreport_ALL(Web &$w) {
                                 
 				// if there is a form display it, otherwise say as much
 				if ($form) {
-					$theform = Html::form($form,$w->localUrl("/report/exereport/".$rep->id),"POST"," Display Report ");
+					$theform = Html::form($form,$w->localUrl("/report/exereport/".$rep->id),"POST",__(" Display Report "));
 				} else {
 					$w->redirect($w->localUrl("/report/exereport/".$rep->id));
 				}

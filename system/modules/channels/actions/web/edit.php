@@ -5,7 +5,7 @@ function edit_GET(Web $w) {
     $p = $w->pathMatch("id");
     $channel_id = $p["id"];
 
-    $w->Channels->navigation($w, $channel_id ? "Edit" : "Add" . " a Web Channel");
+    $w->Channels->navigation($w, $channel_id ? __("Edit") : __("Add") . __(" a Web Channel"));
 
     // Get channel and form
     $channel_object = $channel_id ? $w->Channel->getChannel($channel_id) : new Channel($w);
@@ -15,11 +15,11 @@ function edit_GET(Web $w) {
 
     $form["Web"] = array(
         array(
-            array("Web API URL", "text", "url", $web_channel->url)
+            array(__("Web API URL"), "text", "url", $web_channel->url)
         ),
     );
 
-    $w->ctx("form", Html::multiColForm($form, "/channels-web/edit/{$channel_id}", "POST", "Save", "channelform"));
+    $w->ctx("form", Html::multiColForm($form, "/channels-web/edit/{$channel_id}", "POST", __("Save"), "channelform"));
 }
 
 function edit_POST(Web $w) {
@@ -36,5 +36,5 @@ function edit_POST(Web $w) {
     $web_channel->channel_id = $channel_object->id;
     $web_channel->insertOrUpdate();
 
-    $w->msg("Web Channel " . ($channel_id ? "updated" : "created"), "/channels/listchannels");
+    $w->msg(__("Web Channel ") . ($channel_id ? __("updated") : __("created")), "/channels/listchannels");
 }

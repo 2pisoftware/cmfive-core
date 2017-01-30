@@ -1,4 +1,4 @@
-<?php
+v<?php
 function viewtask_GET(Web &$w) {
 	$p = $w->pathMatch("id");
 
@@ -11,15 +11,15 @@ function viewtask_GET(Web &$w) {
 	$taskdata = $w->Task->getTaskData($p['id']);
 	$group = $w->Task->getTaskGroup($task->task_group_id);
 
-	$w->Task->navigation($w, "View Task: " . $task->title);
+	$w->Task->navigation($w, __("View Task: ") . $task->title);
 
 	// if task is deleted, say as much and return to task list
 	if ($task->is_deleted != 0) {
-		$w->msg("This Task has been deleted","/task/tasklist/");
+		$w->msg(__("This Task has been deleted"),"/task/tasklist/");
 	}
 	// check if i can view the task: my role in group Vs group can_view value
 	elseif ($task->getCanIView()) {
-		History::add("Task: {$task->title}");
+		History::add(__("Task:")." {$task->title}");
 		// tab: Task Details
 
 		// if I can assign tasks, provide dropdown of group members else display current assignee.
@@ -27,11 +27,11 @@ function viewtask_GET(Web &$w) {
 		if ($task->getCanIAssign()) {
 			$members = ($task) ? $w->Task->getMembersBeAssigned($task->task_group_id) : $w->Auth->getUsers();
 			sort($members);
-			$assign = array("Assigned To","select","assignee_id",$task->assignee_id,$members);
+			$assign = array(__("Assigned To"),"select","assignee_id",$task->assignee_id,$members);
 		}
 		else {
-			$assigned = ($task->assignee_id == "0") ? "Not Assigned" : $w->Task->getUserById($task->assignee_id);
-			$assign = array("Assigned To","static","assignee_id",$assigned);
+			$assigned = ($task->assignee_id == "0") ? __("Not Assigned") : $w->Task->getUserById($task->assignee_id);
+			$assign = array(__("Assigned To"),"static","assignee_id",$assigned);
 		}
 
 		//		changing type = dymanically loading of relevant form fields ... problem when presenting on single page.
@@ -44,43 +44,43 @@ function viewtask_GET(Web &$w) {
 		// See if i am assignee or creator, if yes provide editable form, else provide static display
 		$btndelete = "";
 		if ($task->getCanIEdit()) {
-			$btndelete = Html::b(WEBROOT."/task/deletetask/".$task->id," Delete Task ", "Are you should you with to DELETE this task?");
+			$btndelete = Html::b(WEBROOT."/task/deletetask/".$task->id,__(" Delete Task "), __("Are you should you with to DELETE this task?"));
 
 			// if task is closed and Task Group type says cannot be reopened, display static status
 			if ($task->getisTaskClosed() && !$task->getTaskReopen()) {
-				$status = array("Status","static","status",$task->status);
+				$status = array(__("Status"),"static","status",$task->status);
 			}
 			// otherwise, task is open, or is closed but can be reopened so allow edit of status
 			else {
-				$status = array("Status","select","status",$task->status,$task->getTaskGroupStatus());
+				$status = array(__("Status"),"select","status",$task->status,$task->getTaskGroupStatus());
 			}
 				
 			$f = array(
-			array("Task Details","section"),
-			array("Title","text", "title", $task->title),
-			array("Created By","static", "creator", $task->getTaskCreatorName()),
-			array("Task Group","static","tg",$task->getTaskGroupTypeTitle()),
-			array("Task Type","static","task_type",$task->getTypeTitle()),
-			array("Description","static","tdesc",$task->getTypeDescription()),
+			array(__("Task Details"),"section"),
+			array(__("Title"),"text", "title", $task->title),
+			array(__("Created By"),"static", "creator", $task->getTaskCreatorName()),
+			array(__("Task Group"),"static","tg",$task->getTaskGroupTypeTitle()),
+			array(__("Task Type"),"static","task_type",$task->getTypeTitle()),
+			array(__("Description"),"static","tdesc",$task->getTypeDescription()),
 			$status,
-			array("Priority","select","priority",$task->priority,$task->getTaskGroupPriority()),
-			array("Date Due","date","dt_due", $dtdue),
-			array("Description","textarea", "description",$task->description,"80","15"),
+			array(__("Priority"),"select","priority",$task->priority,$task->getTaskGroupPriority()),
+			array(__("Date Due"),"date","dt_due", $dtdue),
+			array(__("Description"),"textarea", "description",$task->description,"80","15"),
 			$assign,
 			);
 		}
 		else {
 			$f = array(
-			array("Task Details","section"),
-			array("Title","static", "title", $task->title),
-			array("Created By","static", "creator", $task->getTaskCreatorName()),
-			array("Task Group","static","tg",$task->getTaskGroupTypeTitle()),
-			array("Task Type","static","task_type",$task->getTypeTitle()),
-			array("Description","static","tdesc",$task->getTypeDescription()),
-			array("Status","static","status",$task->status),
-			array("Priority","static","priority",$task->priority),
-			array("Date Due","static","dt_due", $dtdue),
-			array("Description","static", "description",str_replace("\r\n","<br>",$task->description)),
+			array(__("Task Details"),"section"),
+			array(__("Title"),"static", "title", $task->title),
+			array(__("Created By"),"static", "creator", $task->getTaskCreatorName()),
+			array(__("Task Group"),"static","tg",$task->getTaskGroupTypeTitle()),
+			array(__("Task Type"),"static","task_type",$task->getTypeTitle()),
+			array(__("Description"),"static","tdesc",$task->getTypeDescription()),
+			array(__("Status"),"static","status",$task->status),
+			array(__("Priority"),"static","priority",$task->priority),
+			array(__("Date Due"),"static","dt_due", $dtdue),
+			array(__("Description"),"static", "description",str_replace("\r\n","<br>",$task->description)),
 			$assign,
 			);
 		}
@@ -121,13 +121,13 @@ function viewtask_GET(Web &$w) {
 		}
 
 		// create form
-		$form = Html::form($f,$w->localUrl("/task/updatetask/".$task->id),"POST"," Update ");
+		$form = Html::form($f,$w->localUrl("/task/updatetask/".$task->id),"POST",__(" Update "));
 
 		// create 'start time log' button
 		$buttontimelog = "";
 		if ($task->assignee_id == $w->Auth->user()->id) {
                     $buttontimelog = new \Html\Button();
-                    $buttontimelog->href("/task/starttimelog/{$task->id}")->setClass("startTime button small")->text("Start Time Log");
+                    $buttontimelog->href("/task/starttimelog/{$task->id}")->setClass("startTime button small")->text(__("Start Time Log"));
                     // $btntimelog = "<button class=\"startTime\" href=\"/task/starttimelog/".$task->id."\"> Start Time Log </button>";
 		} 
 
@@ -142,7 +142,7 @@ function viewtask_GET(Web &$w) {
 		// provide button to add time entry
 		$addtime = "";
 		if ($task->assignee_id == $w->Auth->user()->id) {		
-                    $addtime = Html::box(WEBROOT."/task/addtime/".$task->id," Add Time Log entry ",true);
+                    $addtime = Html::box(WEBROOT."/task/addtime/".$task->id,__(" Add Time Log entry "),true);
 		}
 		$w->ctx("addtime",$addtime);
 
@@ -153,7 +153,7 @@ function viewtask_GET(Web &$w) {
 		$totseconds = 0;
 
 		// set headings
-		$line = array(array("Assignee", "Start", "End", "Period (hours)", "Comment", ""));
+		$line = array(array(__("Assignee"), __("Start"), __("End"), __("Period (hours)"), __("Comment"), ""));
 		// if log exists, display ...
 		if ($timelog) {
 			// for each entry display, calculate period and display total time on task
@@ -164,15 +164,15 @@ function viewtask_GET(Web &$w) {
 
 				// if suspect, label button, style period, remove edit button
 				if ($log->is_suspect == "1") {
-					$label = " Accept ";
+					$label = __(" Accept ");
 					$period = "(" . $period . ")";
 					$bedit = "";
 				}
 				// if accepted, label button, tally period, include edit button
 				if ($log->is_suspect == "0") {
-					$label = " Review ";
+					$label = __(" Review ");
 					$totseconds += $seconds;
-					$bedit = Html::box($w->localUrl("/task/addtime/".$task->id."/".$log->id)," Edit ",true);
+					$bedit = Html::box($w->localUrl("/task/addtime/".$task->id."/".$log->id),__(" Edit "),true);
 				}
 
 				// ony Task Group owner gets to reject/accept time log entries
@@ -186,17 +186,17 @@ function viewtask_GET(Web &$w) {
 				!empty($w->Comment->getComment($log->comment_id)) ? $w->Comment->getComment($log->comment_id)->comment:"",					
 				$bedit .
 								 
-				Html::b($w->localUrl("/task/deletetime/".$task->id."/".$log->id)," Delete ","Are you sure you wish to DELETE this Time Log Entry?") .
+				Html::b($w->localUrl("/task/deletetime/".$task->id."/".$log->id),__(" Delete "),__("Are you sure you wish to DELETE this Time Log Entry?")) .
 								
 				$bsuspect .
 								
-				Html::box($w->localUrl("/task/popComment/".$task->id."/".$log->comment_id)," Comment ",true)
+				Html::box($w->localUrl("/task/popComment/".$task->id."/".$log->comment_id),__(" Comment "),true)
 				);
 			}
-			$line[] = array("","","","<b>Total</b>", "<b>".$w->Task->getFormatPeriod($totseconds)."</b>","");
+			$line[] = array("","","","<b>".__("Total")."</b>", "<b>".$w->Task->getFormatPeriod($totseconds)."</b>","");
 		}
 		else {
-			$line[] = array("No time log entries have been made","","","","","");
+			$line[] = array(__("No time log entries have been made"),"","","","","");
 		}
 
 		// display the task time log
@@ -259,15 +259,15 @@ function viewtask_GET(Web &$w) {
 			}
 				
 			// create form. if still no 'notify' all boxes are unchecked
-			$f = array(array("For which Task Events should you receive Notification?","section"));
+			$f = array(array(__("For which Task Events should you receive Notification?"),"section"));
 			$f[] = array("","hidden","task_creation", "0");
-			$f[] = array("Task Details Update","checkbox","task_details", !empty($task_details) ? $task_details : null);
-			$f[] = array("Comments Added","checkbox","task_comments", !empty($task_comments) ? $task_comments : null);
-			$f[] = array("Time Log Entry","checkbox","time_log", !empty($time_log) ? $time_log : null);
-			$f[] = array("Task Data Updated","checkbox","task_data", !empty($task_data) ? $task_data : null);
-			$f[] = array("Documents Added","checkbox","task_documents", !empty($task_documents) ? $task_documents : null);
+			$f[] = array(__("Task Details Update"),"checkbox","task_details", !empty($task_details) ? $task_details : null);
+			$f[] = array(__("Comments Added"),"checkbox","task_comments", !empty($task_comments) ? $task_comments : null);
+			$f[] = array(__("Time Log Entry"),"checkbox","time_log", !empty($time_log) ? $time_log : null);
+			$f[] = array(__("Task Data Updated"),"checkbox","task_data", !empty($task_data) ? $task_data : null);
+			$f[] = array(__("Documents Added"),"checkbox","task_documents", !empty($task_documents) ? $task_documents : null);
 
-			$form = Html::form($f,$w->localUrl("/task/updateusertasknotify/".$task->id),"POST","Save");
+			$form = Html::form($f,$w->localUrl("/task/updateusertasknotify/".$task->id),"POST",__("Save"));
 
 
 			// display
@@ -278,7 +278,7 @@ function viewtask_GET(Web &$w) {
 		// if i cannot view task details, return to task list with error message
 		// for display get my role in the group, the group owners, the group title and the minimum membership required to view a task
 		$me = $w->Task->getMemberGroupById($task->task_group_id, $_SESSION['user_id']);
-		$myrole = (!$me) ? "Not a Member" : $me->role;
+		$myrole = (!$me) ? __("Not a Member") : $me->role;
 		$owners = $w->Task->getTaskGroupOwners($task->task_group_id);
 
 		// get owners names for display
@@ -288,7 +288,7 @@ function viewtask_GET(Web &$w) {
 		}
 		$strOwners = rtrim($strOwners,", ");
 
-		$form = "You must be at least a <b>" . $group->can_view . "</b> of the Task Group: <b>" . strtoupper($group->title) . "</b>, to view tasks in this group.<p>Your current Membership Level: <b>" . $myrole . "</b><p>Please appeal to the group owner(s): <b>" . $strOwners . "</b> for promotion.";
+		$form = __("You must be at least a ")."<b>" . $group->can_view . "</b>".__(" of the Task Group").": <b>" . strtoupper($group->title) . "</b>, ".__("to view tasks in this group"_.".<p>".__("Your current Membership Level").": <b>" . $myrole . "</b><p>".__("Please appeal to the group owner(s)").": <b>" . $strOwners . "</b>".__(" for promotion.");
 
 		$w->error($form,"/task/tasklist");
 	}

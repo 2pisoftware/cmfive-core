@@ -1,19 +1,20 @@
 <?php
-$form['User Details'][]=array(
-array("Login","text","login"),
-array("Admin","checkbox","is_admin"),
-array("Active","checkbox","is_active"));
+$form[__('User Details')][]=array(
+array(__("Login"),"text","login"),
+array(__("Admin"),"checkbox","is_admin"),
+array(__("Active"),"checkbox","is_active"),
+array(__("Language"),"select","language",$user->language,$availableLocales));
 
-$form['User Details'][]=array(
-array("Password","password","password"),
-array("Repeat Password","password","password2"));
+$form[__('User Details')][]=array(
+array(__("Password"),"password","password"),
+array(__("Repeat Password"),"password","password2"));
 
-$form['Contact Details'][]=array(
-array("First Name","text","firstname"),
-array("Last Name","text","lastname"));
-$form['Contact Details'][]=array(
-array("Title","select","title",null,lookupForSelect($w, "title")),
-array("Email","text","email"));
+$form[__('Contact Details')][]=array(
+array(__("First Name"),"text","firstname"),
+array(__("Last Name"),"text","lastname"));
+$form[__('Contact Details')][]=array(
+array(__("Title"),"select","title",null,lookupForSelect($w, "title")),
+array(__("Email"),"text","email"));
 
 $roles = $w->Auth->getAllRoles();
 $roles = array_chunk($roles, 4);
@@ -25,4 +26,4 @@ foreach ($roles as $r) {
 	$form['User Roles'][]=$row;
 }
 
-print Html::multiColForm($form,$w->localUrl("/admin/useradd"),"POST","Save");
+print Html::multiColForm($form,$w->localUrl("/admin/useradd"),"POST",__("Save"));

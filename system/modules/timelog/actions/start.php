@@ -10,13 +10,13 @@ function start_GET(Web $w) {
     }
     
     $form = [
-        "Start Timelog" => [
-            [["Module", "select", "module", null, $select_indexes]],
-            [["Search", "text", "-search"]],
+        __("Start Timelog") => [
+            [[__("Module"), "select", "module", null, $select_indexes]],
+            [[__("Search"), "text", "-search"]],
             [["object id", 'hidden', "object_id"]],
-            [["Description", "text", "description"]]
+            [[__("Description"), "text", "description"]]
         ]
     ];
     
-    $w->ctx("form", Html::multiColForm($form, null, null, "Save", "timelogForm"));
+    $w->ctx("form", Html::multiColForm($form, null, null, __("Save"), "timelogForm"));
 }

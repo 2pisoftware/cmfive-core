@@ -29,7 +29,7 @@ function reportAjaxCategorytoType_ALL(Web $w) {
         }
     }
     if (empty($type)) {
-        $type = array(array("No Reports", ""));
+        $type = array(array(__("No Reports"), ""));
     }
 
     $w->setLayout(null);

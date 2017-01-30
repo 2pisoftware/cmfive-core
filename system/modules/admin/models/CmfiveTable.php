@@ -1,36 +1,34 @@
-<?php
-
-namespace Cmfive;
+<?php namespace Cmfive;
 
 class Table extends \Phinx\Db\Table {
-
+	
 	public function addCmfiveParameters($exclude = []) {
 		// dt_created
 		if (!in_array("dt_created", $exclude)) {
 			$this->addDatetimeColumn("dt_created");
 		}
-
+		
 		// dt_modified
 		if (!in_array("dt_modified", $exclude)) {
 			$this->addDateTimeColumn("dt_modified");
 		}
-
+		
 		// creator_id
 		if (!in_array("creator_id", $exclude)) {
 			$this->addIdColumn("creator_id");
 		}
-
+		
 		// modifier_id
 		if (!in_array("modifier_id", $exclude)) {
 			$this->addIdColumn("modifier_id");
 		}
-
+		
 		// is_deleted
 		if (!in_array("is_deleted", $exclude)) {
 			$this->addBooleanColumn("is_deleted", false, 0);
 			$this->addIndex('is_deleted');
 		}
-
+		
 		return $this;
 	}
 
@@ -64,28 +62,28 @@ class Table extends \Phinx\Db\Table {
 
 	public function addDateColumn($name, $null = true) {
 		if (!startsWith($name, "d_")) {
-			throw new MigrationException("Cmfive mandates to prefix date fields with 'd_'.");
+			throw new MigrationException(__("Cmfive mandates to prefix date fields with 'd_'."));
 		}
 		return $this->addColumn($name, 'date', ['null' => $null]);
 	}
 
 	public function addDateTimeColumn($name, $null = true) {
 		if (!startsWith($name, "dt_")) {
-			throw new MigrationException("Cmfive mandates to prefix datetime fields with 'dt_'.");
+			throw new MigrationException(__("Cmfive mandates to prefix datetime fields with 'dt_'."));
 		}
 		return $this->addColumn($name, 'datetime', ['null' => $null]);
 	}
 
 	public function addTimeColumn($name, $null = true) {
 		if (!startsWith($name, "t_")) {
-			throw new MigrationException("Cmfive mandates to prefix time fields with 't_'.");
+			throw new MigrationException(__("Cmfive mandates to prefix time fields with 't_'."));
 		}
 		return $this->addColumn($name, 'time', ['null' => $null]);
 	}
 
 	public function addBooleanColumn($name, $null = true, $default = false, $prefixOverride = false) {
 		if (!$prefixOverride && !(startsWith($name, "is_") || startsWith($name, "has_"))) {
-			throw new MigrationException("Cmfive mandates to prefix boolean fields with either 'is_' or 'has_'.");
+			throw new MigrationException(__("Cmfive mandates to prefix boolean fields with either 'is_' or 'has_'."));
 		}
 
 		return $this->addColumn($name, 'boolean', ['null' => $null, 'default' => $default]);

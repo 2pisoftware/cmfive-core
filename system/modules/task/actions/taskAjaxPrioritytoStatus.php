@@ -27,7 +27,7 @@ function taskAjaxPrioritytoStatus_ALL(Web &$w) {
 		}
 	}
 	if (!$status)
-	$status = array(array("No assigned Tasks",""));
+	$status = array(array(__("No assigned Tasks"),""));
 
 	// load status dropdown and return
 	$status = Html::select("status",$status,null);

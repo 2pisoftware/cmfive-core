@@ -18,8 +18,8 @@ function viewtaskgroup_GET(Web &$w) {
 	$isactive = $group_details->is_active == "1" ? "Yes" : "No";
 
 	// set Is Task Active, Is Task Deleted dropdowns for display
-	$is_active = array(array("Yes","1"), array("No","0"));
-	$is_deleted = array(array("Yes","1"), array("No","0"));
+	$is_active = array(array(__("Yes"),"1"), array(__("No"),"0"));
+	$is_deleted = array(array(__("Yes"),"1"), array(__("No"),"0"));
 	
 	// get generic task group permissions
 	$arrassign = $w->Task->getTaskGroupPermissions();
@@ -30,24 +30,24 @@ function viewtaskgroup_GET(Web &$w) {
         $tasktypes = $w->Task->getTaskTypes($group_details->task_group_type);
         $priorities = $w->Task->getTaskPriority($group_details->task_group_type);
         $assignees = $w->Task->getMembersInGroup($p['id']);
-        array_unshift($assignees,array("Unassigned","unassigned")); 
+        array_unshift($assignees,array(__("Unassigned"),"unassigned")); 
         // No default assignee means it is unassigned
         $default_assignee = (empty($group_details->default_assignee_id)) ? "unassigned" : $group_details->default_assignee_id;
 	
 	// build form displaying current attributes from database
 	$f = Html::form(array(
-	array("Task Group Details","section"),
-	array("Task Group Type","static","task_group_type",$group_details->getTypeTitle()),
-	array("Title","text", "title",$group_details->title),
-	array("Who Can Assign","select", "can_assign",$group_details->can_assign,$arrassign),
-	array("Who Can View","select", "can_view",$group_details->can_view,$w->Task->getTaskGroupPermissions()),
-	array("Who Can Create","select","can_create",$group_details->can_create,$w->Task->getTaskGroupPermissions()),
-	array("Is Active","select", "is_active", $group_details->is_active,$is_active),
-	array("Description","textarea", "description",$group_details->description,"26","6"),
-        array("Default Task Type","select","default_task_type",$group_details->default_task_type,$tasktypes),
-        array("Default Priority","select","default_priority",$group_details->default_priority,$priorities),
-	array("Default Assignee","select", "default_assignee_id",$default_assignee,$assignees),
-	),$w->localUrl("/task-group/updatetaskgroup/".$group_details->id),"POST"," Update ");
+	array(__("Task Group Details"),"section"),
+	array(__("Task Group Type"),"static","task_group_type",$group_details->getTypeTitle()),
+	array(__("Title"),"text", "title",$group_details->title),
+	array(__("Who Can Assign"),"select", "can_assign",$group_details->can_assign,$arrassign),
+	array(__("Who Can View"),"select", "can_view",$group_details->can_view,$w->Task->getTaskGroupPermissions()),
+	array(__("Who Can Create"),"select","can_create",$group_details->can_create,$w->Task->getTaskGroupPermissions()),
+	array(__("Is Active"),"select", "is_active", $group_details->is_active,$is_active),
+	array(__("Description"),"textarea", "description",$group_details->description,"26","6"),
+        array(__("Default Task Type","select","default_task_type",$group_details->default_task_type,$tasktypes),
+        array(__("Default Priority"),"select","default_priority",$group_details->default_priority,$priorities),
+	array(__("Default Assignee"),"select", "default_assignee_id",$default_assignee,$assignees),
+	),$w->localUrl("/task-group/updatetaskgroup/".$group_details->id),"POST",__(" Update "));
 
 	// display form
 	$w->setLayout(null);
@@ -70,7 +70,7 @@ function createtaskgroup_POST(Web &$w) {
     );
 
     // return
-    $w->msg("<div id='saved_record_id' data-id='".$taskgroup->id."' >Task Group ".$taskgroup->title." added</div>", "/task-group/viewmembergroup/".$taskgroup->id."#members");
+    $w->msg("<div id='saved_record_id' data-id='".$taskgroup->id."' >".__("Task Group ").$taskgroup->title.__(" added")."</div>", "/task-group/viewmembergroup/".$taskgroup->id."#members");
 }
 
 function updatetaskgroup_POST(Web &$w) {
@@ -116,11 +116,11 @@ function updatetaskgroup_POST(Web &$w) {
 			}
 		
 		// return with message
-		$w->msg("Task Group " . $group_details->title . " updated.","/task-group/viewmembergroup/".$group_details->id);
+		$w->msg(__("Task Group ") . $group_details->title . __(" updated."),"/task-group/viewmembergroup/".$group_details->id);
 	}
 	else {
 		// if group somehow no longer exists, say as much
-		$w->msg("Group: " . $_REQUEST['title'] . " no longer exists?","/task-group/viewtaskgroups/".$group_details->task_group_type);
+		$w->msg(__("Group: ") . $_REQUEST['title'] . __(" no longer exists?"),"/task-group/viewtaskgroups/".$group_details->task_group_type);
 	}
 }
 
@@ -154,7 +154,7 @@ function deletetaskgroup_GET(Web &$w) {
 	), $w->localUrl("/task-group/deletetaskgroup/".$taskgroup->id),"POST","Delete");
 
 	// display form
-	
+	$w->setLayout(null);
 	$w->ctx("viewgroup",$f);
 }
 
@@ -162,20 +162,20 @@ function deletetaskgroup_POST(Web &$w) {
     // Get path ID and check that it exists
     $p = $w->pathMatch("id");
     if (empty($p['id'])) {
-        $w->error("Taskgroup could not be found", "/task-group/viewtaskgrouptypes");
+        $w->error(__("Taskgroup could not be found"), "/task-group/viewtaskgrouptypes");
     }
 
     // Get taskgroup by given ID and make sure a taskgroup exists with that ID
     $taskgroup = $w->Task->getTaskGroup($p['id']);
 
     if (empty($taskgroup->id)) {
-        $w->error("Taskgroup could not be found with ID: " . $p['id'], "/task-group/viewtaskgrouptypes");
+        $w->error(__("Taskgroup could not be found with ID: ") . $p['id'], "/task-group/viewtaskgrouptypes");
     }
 
     // Delete and return
     $taskgroup->delete();
 
-    $w->msg("Task Group " . $taskgroup->title . " deleted.","/task-group/viewtaskgrouptypes");
+    $w->msg(__("Task Group ") . $group_details->title . __(" deleted."),"/task-group/viewtaskgrouptypes");
 }
 
 ////////////////////////////////////////////////////
@@ -215,7 +215,7 @@ function updategroupnotify_POST(Web &$w) {
 	}
 	
 	// return
-	$w->msg("Notifications Updated","/task-group/viewmembergroup/".$_REQUEST['task_group_id']."/?tab=2");
+	$w->msg(__("Notifications Updated"),"/task-group/viewmembergroup/".$_REQUEST['task_group_id']."/?tab=2");
 }
 
 function viewmember_GET(Web &$w) {
@@ -225,10 +225,10 @@ function viewmember_GET(Web &$w) {
 
 	// build editable form for a member allowing change of membership type
 	$f = Html::form(array(
-	array("Member Details","section"),
-	array("Name","static", "name", $w->Task->getUserById($member->user_id)),
-	array("Role","select","role",$member->role,$w->Task->getTaskGroupPermissions())
-	),$w->localUrl("/task-group/updategroupmember/".$member->id),"POST"," Update ");
+	array(__("Member Details"),"section"),
+	array(__("Name"),"static", "name", $w->Task->getUserById($member->user_id)),
+	array(__("Role"),"select","role",$member->role,$w->Task->getTaskGroupPermissions())
+	),$w->localUrl("/task-group/updategroupmember/".$member->id),"POST",__(" Update "));
 
 	// display form
     $w->setLayout(null);
@@ -243,7 +243,7 @@ function updategroupmember_POST(Web &$w) {
 	$member->fill($_REQUEST);
 	$member->update();
 
-	$w->msg("Task Group updated","/task-group/viewmembergroup/".$tgid);
+	$w->msg(__("Task Group updated"),"/task-group/viewmembergroup/".$tgid);
 }
 
 function addgroupmembers_GET(Web &$w) {
@@ -254,13 +254,13 @@ function addgroupmembers_GET(Web &$w) {
 	
 	// build 'add members' form given task group ID, the list of group roles and the list of users.
 	// if current members are added as if new, their membership will be updated, not recreated, with the selected role
-	$addUserForm['Add Group Members'] = array(
+	$addUserForm[__('Add Group Members')] = array(
 		array(array("","hidden", "task_group_id", $p['task_group_id'])),
-		array(array("As Role", "select", "role", null, $w->Task->getTaskGroupPermissions())),
-		array(array("Add Group Members", "select", "member", null, $users))
+		array(array(__("As Role"), "select", "role", null, $w->Task->getTaskGroupPermissions())),
+		array(array(__("Add Group Members"), "select", "member", null, $users))
 	);
 
-	$w->out(Html::multiColForm($addUserForm,$w->localUrl("/task-group/updategroupmembers/"),"POST","Submit"));
+	$w->out(Html::multiColForm($addUserForm,$w->localUrl("/task-group/updategroupmembers/"),"POST",__("Submit")));
 }
 
 function updategroupmembers_POST(Web &$w) {
@@ -293,7 +293,7 @@ function updategroupmembers_POST(Web &$w) {
 		unset($arrdb['user_id']);
 //	}
 	// return
-	$w->msg("Task Group updated","/task-group/viewmembergroup/".$_REQUEST['task_group_id']);
+	$w->msg(__("Task Group updated"),"/task-group/viewmembergroup/".$_REQUEST['task_group_id']);
 }
 
 function deletegroupmember_GET(Web &$w) {
@@ -303,11 +303,11 @@ function deletegroupmember_GET(Web &$w) {
 	
 	// build a static form displaying members details for confirmation of delete
 	$f = Html::form(array(
-	array("Member Details","section"),
+	array(__("Member Details"),"section"),
 	array("","hidden", "is_active","1"),
-	array("Name","static", "name", $w->Task->getUserById($member->user_id)),
-	array("Role","static","role",$member->role)
-	),$w->localUrl("/task-group/deletegroupmember/".$member->id),"POST"," Delete ");
+	array(__("Name"),"static", "name", $w->Task->getUserById($member->user_id)),
+	array(__("Role"),"static","role",$member->role)
+	),$w->localUrl("/task-group/deletegroupmember/".$member->id),"POST",__(" Delete "));
 
 	// display form
     $w->setLayout(null);
@@ -334,10 +334,10 @@ function deletegroupmember_POST(Web &$w) {
 			$group->update();
 		}
 		// return
-		$w->msg("Task Group updated","/task-group/viewmembergroup/".$tgid);
+		$w->msg(__("Task Group updated"),"/task-group/viewmembergroup/".$tgid);
 	}
 	else {
 		// if member somehow no longer exists, say as much
-		$w->msg("Task Group Members no longer exists?","/task-group/viewmembergroup/".$tgid);
+		$w->msg(__("Task Group Members no longer exists?"),"/task-group/viewmembergroup/".$tgid);
 	}
 }

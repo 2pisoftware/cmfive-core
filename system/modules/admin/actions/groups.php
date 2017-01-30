@@ -8,7 +8,7 @@ function groups_GET(Web &$w)
 {
 	$w->Admin->navigation($w,"Groups");
 
-	$table = array(array("Title","Parent Groups","Operations"));
+	$table = array(array(__("Title"),__("Parent Groups"),__("Operations")));
 
 	$groups = $w->Auth->getGroups();
 
@@ -33,10 +33,10 @@ function groups_GET(Web &$w)
 			}
 			$line[] = count($ancestors) > 0 ? "<div style=\"color:green;\">".implode(", ", $ancestors)."</div>" : "";
 
-			$operations = Html::b("/admin/moreInfo/".$group->id,"More Info");
+			$operations = Html::b("/admin/moreInfo/".$group->id,__("More Info"));
 			 
 			if ($w->Auth->user()->is_admin)
-			$operations .= Html::b("/admin/groupdelete/".$group->id,"Delete","Are you sure you want to delete this group?");
+			$operations .= Html::b("/admin/groupdelete/".$group->id,__("Delete"),__("Are you sure you want to delete this group?"));
 
 			$line[] = $operations;
 			 
@@ -46,7 +46,7 @@ function groups_GET(Web &$w)
 
 	if ($w->Auth->user()->is_admin)
 	{
-		$w->out(Html::box("/admin/groupadd", "New Group", true));
+		$w->out(Html::box("/admin/groupadd", __("New Group"), true));
 	}
 	$w->out(Html::table($table,null,"tablesorter",true));
 }

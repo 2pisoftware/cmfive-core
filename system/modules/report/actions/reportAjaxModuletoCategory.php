@@ -20,7 +20,7 @@ function reportAjaxModuletoCategory_ALL(Web $w) {
 		}
 	}
 	if (!$category)
-	$category = array(array("No Reports",""));
+	$category = array(array(__("No Reports"),""));
 
 	// load Category dropdown and return
 	$category = Html::select("category",$category);

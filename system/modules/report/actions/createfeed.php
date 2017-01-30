@@ -15,17 +15,17 @@ function createfeed_GET(Web &$w) {
     }
 
     $f = Html::form(array(
-        array("Create a Feed from a Report", "section"),
-        array("Select Report", "select", "rid", null, $myrep),
-        array("Feed Title", "text", "title"),
-        array("Description", "textarea", "description", null, "40", "6"),
-    ), $w->localUrl("/report/createfeed"), "POST", "Save");
+        array(__("Create a Feed from a Report"), "section"),
+        array(__("Select Report"), "select", "rid", null, $myrep),
+        array(__("Feed Title"), "text", "title"),
+        array(__("Description"), "textarea", "description", null, "40", "6"),
+    ), $w->localUrl("/report/createfeed"), "POST", __("Save"));
 
     $w->ctx("createfeed",$f);
 }
 
 function createfeed_POST(Web &$w) {
-    $w->Report->navigation($w, "Create a Feed");
+    $w->Report->navigation($w, __("Create a Feed"));
 
     // create a new feed
     $feed = new ReportFeed($w);
@@ -61,7 +61,7 @@ function createfeed_POST(Web &$w) {
         $feed->url = $feedurl;
         $feed->insert(); // $feed->update();
 
-        $feedurl = "<b>Your Feed has been created</b><p>Use the URL below, with actual query parameter values, to access this report feed.<p>" . $feedurl;
+        $feedurl = "<b>".__("Your Feed has been created")."</b><p>".__("Use the URL below, with actual query parameter values, to access this report feed.")."<p>" . $feedurl;
         $w->ctx("feedurl", $feedurl);
     }
 }

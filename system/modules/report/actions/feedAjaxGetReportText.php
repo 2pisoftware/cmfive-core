@@ -6,9 +6,9 @@ function feedAjaxGetReportText_ALL(Web $w) {
 
 	if ($rep) {
 		$feedtext = "<table border=0 class=form>" .
-		           "<tr><td class=section colspan=2>Report</td></tr>" . 
-				   "<tr><td><b>Title</td><td>" . $rep->title . "</td></tr>" . 
-				   "<tr><td><b>Description</b></td><td>" . $rep->description . "</td></tr>" . 
+		           "<tr><td class=section colspan=2>".__("Report")."</td></tr>" . 
+				   "<tr><td><b>".__("Title")."</td><td>" . $rep->title . "</td></tr>" . 
+				   "<tr><td><b>".__("Description")."</b></td><td>" . $rep->description . "</td></tr>" . 
 				   "</table><p>";
 	}
 	else {

@@ -10,7 +10,7 @@ function ajaxTag_ALL(Web $w) {
 	$user = $w->Auth->user();
 	$cmd=$w->request("cmd");
 	if( !$user->hasRole("tag_user") && !$user->hasRole("tag_admin") ) {
-		echo 'Invalid request';
+		echo __('Invalid request');
 		return;
 	}
 	if( !empty($id) && !empty($class) && !empty($user) && !empty($cmd) ){
@@ -66,12 +66,12 @@ function ajaxTag_ALL(Web $w) {
 			if( $user->hasRole("tag_admin") ) {
 				$w->Tag->addTag($id, $class, $w->request('tag'));
 			} else {
-				echo "Invalid request";
+				echo __("Invalid request");
 			}
 		} else {
-			echo "Invalid request";
+			echo __("Invalid request");
 		}
 	} else {
-		echo "Invalid request";
+		echo __("Invalid request");
 	}
 }

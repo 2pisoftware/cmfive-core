@@ -3,12 +3,12 @@
 function delete_ALL(Web $w) {
     $p = $w->pathMatch("id");
     if (empty($p['id'])) {
-        $w->error("Group not found", "/admin-groups");
+        $w->error(__("Group not found"), "/admin-groups");
     }
     
     $group = $w->Auth->getUser($p['id']);
     if (empty($group->id)) {
-        $w->error("Group not found", "/admin-groups");
+        $w->error(__("Group not found"), "/admin-groups");
     }
     
     $group->delete();
@@ -26,5 +26,5 @@ function delete_ALL(Web $w) {
             $member->delete();
         }
     }
-    $w->msg("Group deleted", "/admin-groups");
+    $w->msg(__("Group deleted"), "/admin-groups");
 }

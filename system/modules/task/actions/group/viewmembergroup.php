@@ -1,5 +1,4 @@
 <?php
-
 // clicking the 'More Info' button for a task group gives all details specific to this group
 // including group attributes and group membership
 function viewmembergroup_GET(Web $w) {
@@ -16,12 +15,12 @@ function viewmembergroup_GET(Web $w) {
 	}
 
 	// put the group title into the page heading
-	$w->Task->navigation($w, "Task Group - " . $taskgroup->title);
+	$w->Task->navigation($w, __("Task Group - ") . $group->title);
 
 	History::add("Task Group: " . $taskgroup->title, null, $taskgroup);
 
 	// set columns headings for display of members
-	$line[] = array("Member", "Role", "");
+	$line[] = array(__("Member"),__("Role"),"");
 
 	// if their are members, display their full name, role and buttons to edit or delete the member
 	if ($member_group) {
@@ -34,8 +33,13 @@ function viewmembergroup_GET(Web $w) {
 		}
 	} else {
 		// if there are no members, say as much
-		$line[] = array("Group currently has no members. Please Add New Members.", "", "");
+		$line[] = array(__("Group currently has no members. Please Add New Members."), "", "");
 	}
+
+	// enter task group attributes sa query string for buttons providing group specific functions such as delete or add members
+	$w->ctx("taskgroup",$group->task_group_type);
+	$w->ctx("grpid",$group->id);
+	$w->ctx("groupid",$p['id']);
 
 	// display list of group members
 	$w->ctx("viewmembers", Html::table($line, null, "tablesorter", true));
@@ -57,28 +61,28 @@ function viewmembergroup_GET(Web $w) {
 	}
 
 	$notifyForm['Task Group Notifications'] = array(
-		array(array("", "hidden", "task_group_id", $taskgroup->id)),
-		array(
-			array("", "static", ""),
-			array("Creator", "static", "creator"),
-			array("Assignee", "static", "assignee"),
-			array("All Others", "static", "others"),
-		),
-		array(
-			array("Guest", "static", "guest"),
-			array("", "checkbox", "guest_creator", $v['guest']['creator'])
-		),
-		array(
-			array("Member", "static", "member"),
-			array("", "checkbox", "member_creator", $v['member']['creator']),
-			array("", "checkbox", "member_assignee", $v['member']['assignee']),
-		),
-		array(
-			array("Owner", "static", "owner"),
-			array("", "checkbox", "owner_creator", $v['owner']['creator']),
-			array("", "checkbox", "owner_assignee", $v['owner']['assignee']),
-			array("", "checkbox", "owner_other", $v['owner']['other']),
-		),
+			array(array("","hidden", "task_group_id",$group->id)),
+			array(
+					array("","static",""),
+					array(__("Creator"),"static","creator"),
+					array(__("Assignee"),"static","assignee"),
+					array(__("All Others"),"static","others"),
+			),
+			array(
+					array(__("Guest"),"static","guest"),
+					array("","checkbox","guest_creator",$v['guest']['creator'])
+			),
+			array(
+					array(__("Member"),"static","member"),
+					array("","checkbox","member_creator",$v['member']['creator']),
+					array("","checkbox","member_assignee",$v['member']['assignee']),
+			),
+			array(
+					array(__("Owner"),"static","owner"),
+					array("","checkbox","owner_creator",$v['owner']['creator']),
+					array("","checkbox","owner_assignee",$v['owner']['assignee']),
+					array("","checkbox","owner_other",$v['owner']['other']),
+			),
 	);
 
 	$w->ctx("taskgroup", $taskgroup);

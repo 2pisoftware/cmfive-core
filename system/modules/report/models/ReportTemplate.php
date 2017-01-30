@@ -9,11 +9,11 @@ class ReportTemplate extends DbObject {
     
     public function getReportTypes() {
         return array(
-            "HTML",
-            "CSV",
-            "XML",
-            "PDF",
-            "Image"
+            __("HTML"),
+            __("CSV"),
+            __("XML"),
+            __("PDF"),
+            __("Image")
         );
     }
     

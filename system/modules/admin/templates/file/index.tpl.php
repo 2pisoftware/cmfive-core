@@ -4,7 +4,7 @@
 		<h3>Files on <?php echo $attachment_adapter; ?></h3>
 		<table class="small-12 columns " style="margin-bottom: 50px;">
 			<thead>
-				<tr><th wdith="30%">Title</th><th width="20%">Object</th><th width="20%">Location</th><th width="30%">Actions</th></tr>
+				<tr><th wdith="30%"><?php _e('Title'); ?></th><th width="20%"><?php _e('Object'); ?></th><th width="20%"><?php _e('Location'); ?></th><th width="30%"><?php _e('Actions'); ?></th></tr>
 			</thead>
 			<tbody>
 				<?php foreach($sorted_attachments as $attachment) : ?>
@@ -15,10 +15,10 @@
 						<td>
 							<div class="row-fluid">
 								<div class="small-6 columns">
-									<a class="button tiny expand" href="<?php echo $attachment->getViewUrl() ?>" target="_new" >View</a>
+									<a class="button tiny expand" href="<?php echo $attachment->getViewUrl() ?>" target="_new" ><?php _e('View'); ?></a>
 								</div>
 								<div class="small-6 columns">
-									<button href="#" data-dropdown="move_to_<?php echo $attachment->id; ?>" aria-controls="move_to_<?php echo $attachment->id; ?>" aria-expanded="false" class="button dropdown expand">Move to</button><br>
+									<button href="#" data-dropdown="move_to_<?php echo $attachment->id; ?>" aria-controls="move_to_<?php echo $attachment->id; ?>" aria-expanded="false" class="button dropdown expand"><?php _e('Move to '); ?></button><br>
 									<ul id="move_to_<?php echo $attachment->id; ?>" data-dropdown-content class="f-dropdown" aria-hidden="true" style="z-index:1000;">
 										<?php if (!empty($adapters)) : ?>
 											<?php foreach($adapters as $adapter) : ?>
@@ -37,7 +37,7 @@
 		</table>
 	<?php endforeach;
 else : ?>
-		<h3>No attachments available</h3>
+		<h3><?php _e('No attachment available'); ?></h3>
 <?php endif; ?>
 
 <script>

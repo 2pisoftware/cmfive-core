@@ -2,7 +2,7 @@
 
 // criteria/parameter form is submited and report is executed
 function exereport_ALL(Web &$w) {
-    $w->Report->navigation($w, "Generate Report");
+    $w->Report->navigation($w, __("Generate Report"));
     $p = $w->pathMatch("id");
 
     $arrreq = array();
@@ -16,12 +16,12 @@ function exereport_ALL(Web &$w) {
     $repurl = "/report/exereport/" . $p['id'] . "?";
     $strREQ = $arrreq ? implode("&", $arrreq) : "";
     $urlcsv = $repurl . $strREQ . "&format=csv";
-    $btncsv = Html::b($urlcsv, "Export as CSV");
+    $btncsv = Html::b($urlcsv, __("Export as CSV"));
     $urlxml = $repurl . $strREQ . "&format=xml";
-    $btnxml = Html::b($urlxml, "Export as XML");
-    $btnrun = Html::b($runurl, "Edit Report Parameters");
-    $btnview = Html::b($viewurl, "Edit Report");
-	$btnpdf = Html::b($repurl . $strREQ . "&format=pdf", "Export as PDF");
+    $btnxml = Html::b($urlxml, __("Export as XML"));
+    $btnrun = Html::b($runurl, __("Edit Report Parameters"));
+    $btnview = Html::b($viewurl, __("Edit Report"));
+	$btnpdf = Html::b($repurl . $strREQ . "&format=pdf", __("Export as PDF"));
     $results = "";
     // if there is a report ID in the URL ...
     if (!empty($p['id'])) {
@@ -39,7 +39,7 @@ function exereport_ALL(Web &$w) {
 
             // if we have an empty return, say as much
             if (!$tbl) {
-                $w->error("No Data found for selections. Please try again....", "/report");
+                $w->error(__("No Data found for selections. Please try again...."), "/report");
             }
             // if an ERROR is returned, say as much
             elseif ($tbl[0][0] == "ERROR") {
@@ -177,7 +177,7 @@ function exereport_ALL(Web &$w) {
             }
         } else {
             // report does not exist?
-            $w->ctx("showreport", "No such report?");
+            $w->ctx("showreport", __("No such report?"));
         }
     }
 }

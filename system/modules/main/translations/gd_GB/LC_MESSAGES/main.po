@@ -1,0 +1,4601 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.7\n"
+"Project-Id-Version: cmfive\n"
+"Language: ga\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Steve Ryan <steve@2pisoftware.com>\n"
+"Language-Team: \n"
+
+#: modules/example/actions/delete.php:25
+msgid "Object Deleted"
+msgstr "réad Scriosta"
+
+#: modules/example/actions/delete.php:30
+msgid "This object does not exist."
+msgstr "Ní dhéanann an réad ann."
+
+#: modules/example/actions/edit.php:28
+msgid "Edit Example Data"
+msgstr "Edit Sonraí Sampla"
+
+#: modules/example/actions/edit.php:29 modules/example/actions/index.php:11
+#: modules/wiki/templates/createwiki.tpl.php:4
+#: system/modules/admin/actions/groups.php:11
+#: system/modules/admin/actions/groups/index.php:11
+#: system/modules/admin/actions/lookup.php:26
+#: system/modules/admin/actions/templates/edit.php:16
+#: system/modules/admin/actions/templates/index.php:5
+#: system/modules/admin/templates/file/index.tpl.php:7
+#: system/modules/admin/templates/useradd.tpl.php:16
+#: system/modules/admin/templates/useredit.tpl.php:19
+#: system/modules/file/actions/edit.php:20
+#: system/modules/file/actions/new.php:16
+#: system/modules/file/partials/templates/listattachments.tpl.php:109
+#: system/modules/file/partials/templates/listattachmentsplain.tpl.php:73
+#: system/modules/file/templates/attach.tpl.php:9
+#: system/modules/form/actions/edit.php:10
+#: system/modules/form/templates/index.tpl.php:10
+#: system/modules/report/actions/createreport.php:13
+#: system/modules/report/actions/edit.php:23
+#: system/modules/report/actions/edit.php:118
+#: system/modules/report/actions/feedAjaxGetReportText.php:10
+#: system/modules/report/actions/index.php:33
+#: system/modules/report/actions/index.php:34
+#: system/modules/task/actions/group/viewtaskgrouptypes.php:11
+#: system/modules/task/actions/group/viewtaskgrouptypes.php:49
+#: system/modules/task/actions/viewtask.php:60
+#: system/modules/task/actions/viewtask.php:75
+#: system/modules/task/partials/templates/listtasks.tpl.php:5
+#: system/modules/task/task.group.actions.php:41
+#: system/modules/task/task.group.actions.php:139
+msgid "Title"
+msgstr "Teideal"
+
+#: modules/example/actions/edit.php:30 modules/example/actions/index.php:11
+msgid "Data"
+msgstr "sonraí"
+
+#: modules/example/actions/edit.php:31
+msgid "Check"
+msgstr "seiceáil"
+
+#: modules/example/actions/edit.php:32
+msgid "select field"
+msgstr "réimse roghnaigh"
+
+#: modules/example/actions/edit.php:33
+msgid "autocomplete field"
+msgstr "réimse autocomplete"
+
+#: modules/example/actions/edit.php:34
+msgid "multiselect field"
+msgstr "réimse multiselect"
+
+#: modules/example/actions/edit.php:35
+msgid "radio field"
+msgstr "réimse raidió"
+
+#: modules/example/actions/edit.php:36
+msgid "password field"
+msgstr "réimse focal faire"
+
+#: modules/example/actions/edit.php:37
+msgid "email field"
+msgstr "réimse ríomhphost"
+
+#: modules/example/actions/edit.php:38
+msgid "hidden field"
+msgstr "réimse bhfolach"
+
+#: modules/example/actions/edit.php:39
+msgid "date field"
+msgstr "réimse dáta"
+
+#: modules/example/actions/edit.php:40
+msgid "datetime field"
+msgstr "réimse datetime"
+
+#: modules/example/actions/edit.php:41
+msgid "time field"
+msgstr "réimse ama"
+
+#: modules/example/actions/edit.php:42
+msgid "file field"
+msgstr "réimse comhad"
+
+#: modules/example/actions/edit.php:43
+msgid "multifile field"
+msgstr "réimse multifile"
+
+#: modules/example/actions/edit.php:48
+#: system/modules/admin/actions/lookup.php:57
+msgid " Save "
+msgstr " Sábháil"
+
+#: modules/example/actions/edit.php:80
+msgid "ExampleData updated"
+msgstr "ExampleData nuashonraithe"
+
+#: modules/example/actions/index.php:8
+msgid "Example Data List"
+msgstr "Sampla Liosta Sonraí"
+
+#: modules/example/actions/index.php:11
+msgid "Checkbox"
+msgstr "ticbhosca"
+
+#: modules/example/actions/index.php:11
+#: system/modules/admin/actions/lookup.php:26
+#: system/modules/admin/actions/printers.php:6
+#: system/modules/admin/actions/printqueue.php:18
+#: system/modules/admin/actions/templates/index.php:5
+#: system/modules/admin/templates/file/index.tpl.php:7
+#: system/modules/admin/templates/migration/index.tpl.php:76
+#: system/modules/channels/templates/listchannels.tpl.php:8
+#: system/modules/channels/templates/listmessages.tpl.php:4
+#: system/modules/channels/templates/listmessagestatuses.tpl.php:4
+#: system/modules/channels/templates/listprocessors.tpl.php:7
+#: system/modules/form/partials/templates/listform.tpl.php:7
+#: system/modules/form/templates/index.tpl.php:10
+#: system/modules/form/templates/show.tpl.php:21
+#: system/modules/report/actions/connections/index.php:7
+#: system/modules/report/actions/edit.php:118
+#: system/modules/tag/actions/index.php:6
+#: system/modules/task/actions/edit.php:91
+#: system/modules/timelog/partials/templates/listtimelog.tpl.php:8
+#: system/modules/timelog/templates/index.tpl.php:6
+msgid "Actions"
+msgstr "gníomhartha"
+
+#: modules/example/actions/index.php:17
+#: system/modules/admin/actions/users.php:16
+#: system/modules/admin/actions/users.php:17
+#: system/modules/channels/templates/listmessagestatuses.tpl.php:11
+#: system/modules/report/actions/edit.php:99
+#: system/modules/task/actions/group/viewtaskgrouptypes.php:39
+#: system/modules/task/actions/tasklist.php:117
+#: system/modules/task/actions/tasklist.php:124
+#: system/modules/task/task.group.actions.php:21
+#: system/modules/task/task.group.actions.php:22
+#: system/modules/task/task.group.actions.php:133
+msgid "Yes"
+msgstr "Is ea"
+
+#: modules/example/actions/index.php:17
+#: system/modules/admin/actions/users.php:16
+#: system/modules/admin/actions/users.php:17
+#: system/modules/channels/templates/listmessagestatuses.tpl.php:11
+#: system/modules/form/partials/templates/listform.tpl.php:23
+#: system/modules/report/actions/edit.php:99
+#: system/modules/task/actions/group/viewtaskgrouptypes.php:39
+#: system/modules/task/actions/tasklist.php:117
+#: system/modules/task/actions/tasklist.php:124
+#: system/modules/task/task.group.actions.php:21
+#: system/modules/task/task.group.actions.php:22
+#: system/modules/task/task.group.actions.php:133
+msgid "No"
+msgstr "Níl"
+
+#: modules/example/actions/index.php:22
+#: system/modules/admin/actions/groups/edit.php:9
+#: system/modules/admin/actions/groups/index.php:32
+#: system/modules/admin/actions/printers.php:11
+#: system/modules/admin/actions/templates/index.php:14
+#: system/modules/admin/actions/users.php:20
+#: system/modules/admin/partials/templates/displaycomment.tpl.php:19
+#: system/modules/channels/actions/processor/edit.php:8
+#: system/modules/channels/actions/web/edit.php:8
+#: system/modules/channels/templates/listchannels.tpl.php:23
+#: system/modules/channels/templates/listprocessors.tpl.php:19
+#: system/modules/file/partials/templates/listattachments.tpl.php:67
+#: system/modules/file/partials/templates/listattachments.tpl.php:123
+#: system/modules/form/partials/templates/listform.tpl.php:14
+#: system/modules/form/templates/index.tpl.php:18
+#: system/modules/form/templates/show.tpl.php:34
+#: system/modules/report/actions/connections/index.php:15
+#: system/modules/report/actions/edit.php:5
+#: system/modules/report/actions/edit.php:22
+#: system/modules/report/actions/edit.php:131
+#: system/modules/report/actions/index.php:44
+#: system/modules/report/templates/edit.tpl.php:3
+#: system/modules/timelog/partials/templates/listtimelog.tpl.php:17
+#: system/modules/timelog/templates/index.tpl.php:16
+msgid "Edit"
+msgstr "Edit"
+
+#: modules/example/actions/index.php:25 modules/wiki/templates/index.tpl.php:29
+#: system/modules/admin/actions/groups.php:39
+#: system/modules/admin/actions/groups/index.php:35
+#: system/modules/admin/actions/moreInfo.php:39
+#: system/modules/admin/actions/printers.php:12
+#: system/modules/admin/actions/printqueue.php:33
+#: system/modules/admin/partials/templates/displaycomment.tpl.php:21
+#: system/modules/channels/templates/listchannels.tpl.php:24
+#: system/modules/channels/templates/listprocessors.tpl.php:20
+#: system/modules/file/partials/templates/listattachments.tpl.php:70
+#: system/modules/file/partials/templates/listattachments.tpl.php:124
+#: system/modules/form/partials/templates/listform.tpl.php:15
+#: system/modules/form/templates/index.tpl.php:19
+#: system/modules/form/templates/show.tpl.php:35
+#: system/modules/inbox/templates/index.tpl.php:8
+#: system/modules/inbox/templates/read.tpl.php:8
+#: system/modules/inbox/templates/showarchive.tpl.php:4
+#: system/modules/inbox/templates/view.tpl.php:6
+#: system/modules/report/actions/connections/index.php:16
+#: system/modules/report/actions/edit.php:132
+#: system/modules/report/actions/index.php:49
+#: system/modules/tag/actions/index.php:13
+#: system/modules/task/actions/edit.php:119
+#: system/modules/task/templates/edit.tpl.php:34
+#: system/modules/timelog/partials/templates/listtimelog.tpl.php:18
+#: system/modules/timelog/templates/index.tpl.php:17
+msgid "Delete"
+msgstr "Scrios"
+
+#: modules/example/actions/index.php:25
+msgid "Really delete?"
+msgstr "Scrios?"
+
+#: modules/example/models/ExampleService.php:36
+#: system/modules/help/templates/toc.tpl.php:3
+#: system/modules/help/templates/view.tpl.php:3
+#: system/modules/main/actions/index.php:3
+msgid "Home"
+msgstr "Baile"
+
+#: modules/example/templates/index.tpl.php:2
+msgid "New Data"
+msgstr "New Sonraí"
+
+#: system/modules/file/partials/templates/listattachments.tpl.php:51
+msgid "Attach a File"
+msgstr "Ceangail Comhad"
+
+#: modules/wiki/templates/pagehistory.tpl.php:11
+#: system/modules/admin/templates/file/index.tpl.php:18
+#: system/modules/file/partials/templates/listattachments.tpl.php:64
+msgid "View"
+msgstr "Amharc"
+
+#: system/modules/file/partials/templates/listattachments.tpl.php:70
+msgid "Are you sure you want to delete this attachment?"
+msgstr "An bhfuil tú cinnte go bhfuil tú ag iarraidh seo a scriosadh ceangaltán?"
+
+#: system/modules/file/partials/templates/listattachments.tpl.php:92
+msgid "Open in new tab/window"
+msgstr "Oscail i gcluaisín / bhfuinneog nua"
+
+#: system/modules/admin/actions/printfile.php:10
+#: system/modules/file/partials/templates/listattachments.tpl.php:108
+#: system/modules/file/partials/templates/listattachmentsplain.tpl.php:72
+msgid "Filename"
+msgstr "Ainm comhaid"
+
+#: system/modules/admin/actions/templates/edit.php:21
+#: system/modules/file/actions/edit.php:21
+#: system/modules/file/actions/new.php:17
+#: system/modules/file/partials/templates/listattachments.tpl.php:110
+#: system/modules/file/partials/templates/listattachmentsplain.tpl.php:74
+#: system/modules/file/templates/attach.tpl.php:10
+#: system/modules/form/actions/edit.php:11
+#: system/modules/form/templates/index.tpl.php:10
+#: system/modules/report/actions/createfeed.php:21
+#: system/modules/report/actions/createreport.php:16
+#: system/modules/report/actions/edit.php:25
+#: system/modules/report/actions/editfeed.php:28
+#: system/modules/report/actions/feedAjaxGetReportText.php:11
+#: system/modules/report/actions/index.php:33
+#: system/modules/report/actions/index.php:34
+#: system/modules/report/actions/listfeed.php:11
+#: system/modules/task/actions/createtask.php:35
+#: system/modules/task/actions/createtask.php:49
+#: system/modules/task/actions/edit.php:67
+#: system/modules/task/actions/group/viewtaskgrouptypes.php:11
+#: system/modules/task/actions/group/viewtaskgrouptypes.php:55
+#: system/modules/task/actions/taskAjaxSelectbyTaskGroup.php:36
+#: system/modules/task/actions/viewtask.php:64
+#: system/modules/task/actions/viewtask.php:68
+#: system/modules/task/actions/viewtask.php:79
+#: system/modules/task/actions/viewtask.php:83
+#: system/modules/task/task.actions.php:80
+#: system/modules/task/task.group.actions.php:46
+#: system/modules/task/task.group.actions.php:144
+#: system/modules/timelog/actions/edit.php:44
+#: system/modules/timelog/actions/start.php:17
+#: system/modules/timelog/partials/templates/listtimelog.tpl.php:8
+#: system/modules/timelog/templates/index.tpl.php:6
+msgid "Description"
+msgstr "Tuairisc"
+
+#: modules/wiki/templates/pagehistory.tpl.php:5
+#: system/modules/file/partials/templates/listattachments.tpl.php:111
+msgid "Action"
+msgstr "gníomh"
+
+#: system/modules/file/partials/templates/listattachments.tpl.php:124
+msgid "Do you want to delete this attachment?"
+msgstr "Ar mhaith leat seo a scriosadh ceangaltán?"
+
+#: modules/frontend/assets/js/vendor/jquery.js:14
+msgid "<iframe frameborder='0' width='0' height='0'/>"
+msgstr "<Iframe frameborder = '0' width = '0' height = \"0\" />"
+
+#: modules/frontend/assets/js/vendor/jquery.js:26
+msgid "<script>"
+msgstr "<Script>"
+
+#: modules/frontend/assets/js/vendor/jquery.js:26
+msgid "<div>"
+msgstr "<Div>"
+
+#: modules/wiki/actions/createwiki.php:17
+msgid "Wiki "
+msgstr "wiki"
+
+#: modules/wiki/actions/createwiki.php:17
+msgid " created."
+msgstr " cruthaíodh."
+
+#: modules/wiki/actions/createwiki.php:19
+msgid "Wiki couldn't be created"
+msgstr "Níorbh fhéidir Wiki a chruthú"
+
+#: modules/wiki/actions/delmember.php:7 modules/wiki/actions/delwiki.php:10
+msgid "No access to delete this wiki."
+msgstr "Gan rochtain a scriosadh an vicí."
+
+#: modules/wiki/actions/delmember.php:14
+msgid "Member removed."
+msgstr "Comhalta bhaint."
+
+#: modules/wiki/actions/delwiki.php:8
+msgid "Wiki deleted."
+msgstr "Wiki scriosadh."
+
+#: modules/wiki/actions/edit.php:10 modules/wiki/actions/history.php:11
+#: modules/wiki/actions/history.php:19 modules/wiki/actions/pagehistory.php:11
+#: modules/wiki/actions/pagehistory.php:19 modules/wiki/actions/preview.php:10
+#: modules/wiki/actions/view.php:9 modules/wiki/actions/view.php:16
+#: modules/wiki/actions/viewhistoryversion.php:64
+#: modules/wiki/actions/viewhistoryversion.php:73
+msgid "Wiki does not exist."
+msgstr "Ní Wiki ann."
+
+#: modules/wiki/actions/edit.php:14 modules/wiki/actions/preview.php:14
+msgid "Page does not exist."
+msgstr "Níl Leathanach ann."
+
+#: modules/wiki/actions/edit.php:18
+msgid "Page updated."
+msgstr "Leathanach nuashonraithe."
+
+#: modules/wiki/actions/editmember.php:7 modules/wiki/actions/editmember.php:28
+msgid "No access to this wiki."
+msgstr "Níl aon rochtain ar an vicí."
+
+#: modules/wiki/actions/editmember.php:38
+msgid "Member updated."
+msgstr "Comhalta nuashonraithe."
+
+#: modules/wiki/actions/history.php:28 modules/wiki/actions/pagehistory.php:28
+msgid "Page does not exist"
+msgstr "Níl Leathanach ann"
+
+#: modules/wiki/actions/view.php:28
+msgid "New Page."
+msgstr "Nua Leathanach."
+
+#: modules/wiki/actions/view.php:65 modules/wiki/templates/editmember.tpl.php:6
+#: system/modules/admin/actions/comment.php:44
+#: system/modules/admin/actions/groupadd.php:11
+#: system/modules/admin/actions/groupedit.php:15
+#: system/modules/admin/actions/groupmember.php:30
+#: system/modules/admin/templates/useradd.tpl.php:29
+#: system/modules/admin/templates/useredit.tpl.php:39
+#: system/modules/channels/actions/processor/edit.php:26
+#: system/modules/channels/actions/web/edit.php:22
+#: system/modules/form/templates/field/edit.tpl.php:33
+#: system/modules/form/templates/show.tpl.php:92
+#: system/modules/report/actions/createfeed.php:22
+#: system/modules/task/actions/ajaxGetTaskTypeFormFields.php:16
+#: system/modules/task/actions/edit.php:82
+#: system/modules/task/actions/group/viewtaskgrouptypes.php:59
+#: system/modules/task/actions/viewtask.php:270
+#: system/modules/task/task.actions.php:16
+#: system/modules/task/task.actions.php:142
+#: system/modules/task/task.actions.php:238
+#: system/modules/task/task.actions.php:628
+#: system/modules/timelog/actions/edit.php:65
+#: system/modules/timelog/actions/start.php:21
+msgid "Save"
+msgstr "Sábháil"
+
+#: modules/wiki/actions/view.php:65
+msgid "Markup Help"
+msgstr "Markup Cabhair"
+
+#: modules/wiki/models/Wiki.php:90
+msgid "This wiki needs a title."
+msgstr "Ní mór an wiki teideal."
+
+#: modules/wiki/models/Wiki.php:98
+msgid "Wiki of name "
+msgstr "Wiki ainm"
+
+#: modules/wiki/models/Wiki.php:98
+msgid " already exists."
+msgstr " ann cheana."
+
+#: modules/wiki/models/WikiService.php:16
+#: modules/wiki/models/WikiService.php:32
+msgid "You have no access to this wiki."
+msgstr "Níl aon rochtain ar an vicí."
+
+#: modules/wiki/models/WikiService.php:105
+msgid "Wiki List"
+msgstr "Liosta wiki"
+
+#: modules/wiki/models/WikiService.php:106
+msgid "New Wiki"
+msgstr "New Wiki"
+
+#: modules/wiki/templates/createwiki.tpl.php:3
+msgid "Create Wiki"
+msgstr "Cruthaigh Wiki"
+
+#: modules/wiki/templates/createwiki.tpl.php:5
+msgid "Public"
+msgstr "Public"
+
+#: modules/wiki/templates/createwiki.tpl.php:6
+#: modules/wiki/templates/index.tpl.php:6
+#: system/modules/admin/actions/editlookup.php:12
+#: system/modules/admin/actions/lookup.php:26
+#: system/modules/admin/actions/lookup.php:53
+#: system/modules/admin/templates/lookup.tpl.php:9
+#: system/modules/channels/templates/listchannels.tpl.php:8
+#: system/modules/channels/templates/listmessages.tpl.php:4
+#: system/modules/form/templates/field/edit.tpl.php:11
+#: system/modules/form/templates/show.tpl.php:21
+#: system/modules/report/actions/edit.php:118
+#: system/modules/report/actions/templates/edit.php:13
+#: system/modules/report/models/ReportService.php:318
+#: system/modules/task/actions/group/viewtaskgrouptypes.php:11
+#: system/modules/task/partials/templates/listtasks.tpl.php:5
+msgid "Type"
+msgstr "cineál"
+
+#: modules/wiki/templates/createwiki.tpl.php:6
+msgid "Rich Text"
+msgstr "Text Rich"
+
+#: modules/wiki/templates/createwiki.tpl.php:6
+msgid "Markdown"
+msgstr "Markdown"
+
+#: modules/wiki/templates/createwiki.tpl.php:10
+#: system/modules/admin/actions/groups/edit.php:9
+#: system/modules/report/actions/edit.php:5
+#: system/modules/report/templates/edit.tpl.php:3
+msgid "Create"
+msgstr "Cruthaigh"
+
+#: modules/wiki/templates/editmember.tpl.php:2
+msgid "Wiki Member"
+msgstr "wiki Comhalta"
+
+#: modules/wiki/templates/editmember.tpl.php:3
+#: modules/wiki/templates/history.tpl.php:4
+#: modules/wiki/templates/pagehistory.tpl.php:5
+#: system/modules/admin/actions/useradd.php:66
+#: system/modules/admin/actions/users.php:7
+#: system/modules/report/actions/createreport.php:23
+#: system/modules/report/actions/edit.php:43
+#: system/modules/task/templates/taskweek.tpl.php:11
+msgid "User"
+msgstr "Úsáideoir"
+
+#: modules/wiki/templates/editmember.tpl.php:4
+#: system/modules/admin/actions/moreInfo.php:20
+#: system/modules/report/actions/edit.php:92
+#: system/modules/report/actions/editmember.php:13
+#: system/modules/report/models/ReportLib.php:11
+#: system/modules/task/actions/group/viewmembergroup.php:20
+#: system/modules/task/task.group.actions.php:222
+#: system/modules/task/task.group.actions.php:301
+msgid "Role"
+msgstr "ról"
+
+#: modules/wiki/templates/history.tpl.php:4
+#: modules/wiki/templates/pagehistory.tpl.php:5
+#: system/modules/form/models/FormStandardInterface.php:12
+#: system/modules/inbox/actions/index.php:14
+#: system/modules/inbox/actions/read.php:10
+#: system/modules/inbox/actions/showarchive.php:13
+#: system/modules/inbox/actions/trash.php:12
+#: system/modules/inbox/templates/portal.tpl.php:6
+msgid "Date"
+msgstr "dáta"
+
+#: modules/wiki/templates/history.tpl.php:4
+#: system/modules/task/task.actions.php:139
+msgid "Page"
+msgstr "leathanach"
+
+#: modules/wiki/templates/history.tpl.php:14
+#: modules/wiki/templates/pagehistory.tpl.php:16
+msgid "No changes yet."
+msgstr "Níl aon athruithe fóill."
+
+#: modules/wiki/templates/index.tpl.php:5
+msgid "Wiki Title"
+msgstr "wiki Teideal"
+
+#: modules/wiki/templates/index.tpl.php:7
+#: system/modules/admin/actions/printqueue.php:18
+msgid "Date Created"
+msgstr "dáta Cruthaithe"
+
+#: modules/wiki/templates/index.tpl.php:8
+msgid "Last Modified Date"
+msgstr "Last Dáta Athraithe"
+
+#: modules/wiki/templates/index.tpl.php:9
+msgid "Modified By"
+msgstr "Athraithe By"
+
+#: modules/wiki/templates/index.tpl.php:10
+msgid "Last Page Modified"
+msgstr "Leathanach Last Athraithe"
+
+#: modules/wiki/templates/index.tpl.php:29
+msgid "Do you really want to delete this wiki and all of its pages?"
+msgstr "Ar mhaith leat a scriosadh an vicí agus a chuid leathanaigh?"
+
+#: modules/wiki/templates/index.tpl.php:44
+msgid "There are no wikis yet."
+msgstr "Níl aon dhíríonn go fóill."
+
+#: modules/wiki/templates/index.tpl.php:45
+msgid "Create a wiki"
+msgstr "Cruthaigh wiki"
+
+#: system/modules/admin/actions/comment.php:35
+#: system/modules/task/actions/edit.php:91
+#: system/modules/task/actions/viewtask.php:156
+#: system/modules/task/task.actions.php:11
+#: system/modules/task/task.actions.php:29
+#: system/modules/task/task.hooks.php:219
+msgid "Comment"
+msgstr "Comment"
+
+#: system/modules/admin/actions/comment.php:37
+msgid "Help"
+msgstr "Cabhrú"
+
+#: system/modules/admin/actions/comment.php:64
+#: system/modules/admin/actions/comment.php:66
+msgid "Comment saved"
+msgstr "Comment shábháil"
+
+#: system/modules/admin/actions/composer.php:64
+msgid "Composer update return exit code "
+msgstr "Cumadóir cothrom le dáta cód ar ais imeachta"
+
+#: system/modules/admin/actions/composer.php:64
+msgid " (0 is OK)<br/>Check the /log/composer.log for output"
+msgstr " (0 OK) <br/> Seiceáil an /log/composer.log haghaidh aschur"
+
+#: system/modules/admin/actions/databasebackup.php:5
+msgid "Database Backup"
+msgstr "Bunachar Sonraí Cúltaca"
+
+#: system/modules/admin/actions/databasebackup.php:19
+msgid "You cannot backup more than once every 4 hours"
+msgstr "Ní féidir leat cúltaca níos mó ná uair amháin gach 4 uair an chloig"
+
+#: system/modules/admin/actions/databasebackup.php:43
+msgid "Backup completed to:"
+msgstr "Cúltaca chuig:"
+
+#: system/modules/admin/actions/databasebackup.php:55
+msgid "You need the OAuth extension installed to backup to dropbox"
+msgstr "Ní mór duit an síneadh OAuth suiteáilte chun cúltaca a dropbox"
+
+#: system/modules/admin/actions/databasebackup.php:73
+msgid "Could not find backup command"
+msgstr "Níorbh fhéidir orduithe cúltaca"
+
+#: system/modules/admin/actions/deletecomment.php:15
+msgid "Comment deleted."
+msgstr "Comment scriosadh."
+
+#: system/modules/admin/actions/deletelookup.php:11
+msgid "Lookup Item deleted"
+msgstr "Lookup Mír scriosadh"
+
+#: system/modules/admin/actions/deletelookup.php:14
+msgid "Lookup Item not found?"
+msgstr "Lookup Mír gan aimsiú?"
+
+#: system/modules/admin/actions/deleteprinter.php:10
+msgid "Printer deleted"
+msgstr "printéir scriosadh"
+
+#: system/modules/admin/actions/deleteprinter.php:14
+msgid "Could not find printer"
+msgstr "Níorbh fhéidir printéir"
+
+#: system/modules/admin/actions/deleteprintfile.php:8
+msgid "File deleted"
+msgstr "comhad a scriosadh"
+
+#: system/modules/admin/actions/deleteprintfile.php:10
+msgid "Missing filename"
+msgstr "ainm comhaid iarraidh"
+
+#: system/modules/admin/actions/editlookup.php:11
+msgid "Edit an Existing Entry"
+msgstr "In eagar an Iontráil atá ann cheana"
+
+#: system/modules/admin/actions/editlookup.php:13
+#: system/modules/admin/actions/lookup.php:55
+msgid "Key"
+msgstr "Key"
+
+#: system/modules/admin/actions/editlookup.php:14
+#: system/modules/admin/actions/lookup.php:56
+msgid "Value"
+msgstr "luach"
+
+#: system/modules/admin/actions/editlookup.php:15
+#: system/modules/report/actions/editfeed.php:31
+#: system/modules/report/actions/editmember.php:15
+#: system/modules/task/actions/viewtask.php:124
+#: system/modules/task/task.group.actions.php:50
+#: system/modules/task/task.group.actions.php:223
+msgid " Update "
+msgstr " Nuashonraigh"
+
+#: system/modules/admin/actions/editlookup.php:21
+msgid "No such Lookup Item?"
+msgstr "Uimh Lookup Mír den sórt sin?"
+
+#: system/modules/admin/actions/editlookup.php:31
+msgid "Please add select a TYPE<br>"
+msgstr "Cuir roghnú CINEÁL <br>"
+
+#: system/modules/admin/actions/editlookup.php:33
+#: system/modules/admin/actions/newlookup.php:11
+msgid "Please enter a KEY<br>"
+msgstr "Iontráil EOCHAIR <br>"
+
+#: system/modules/admin/actions/editlookup.php:35
+#: system/modules/admin/actions/newlookup.php:13
+msgid "Please enter a VALUE<br>"
+msgstr "Iontráil LUACH <br>"
+
+#: system/modules/admin/actions/editlookup.php:46
+msgid "Lookup Item edited"
+msgstr "Lookup Mír Eagarthóireacht"
+
+#: system/modules/admin/actions/editlookup.php:49
+msgid "Could not find item?"
+msgstr "Níorbh fhéidir mír?"
+
+#: system/modules/admin/actions/editprinter.php:11
+#: system/modules/admin/templates/templates/edit.tpl.php:6
+msgid "Details"
+msgstr "Mionsonraí"
+
+#: system/modules/admin/actions/editprinter.php:12
+msgid "Printer name"
+msgstr "ainm printéir"
+
+#: system/modules/admin/actions/editprinter.php:13
+#: system/modules/admin/actions/printers.php:6
+msgid "Server"
+msgstr "freastalaí"
+
+#: system/modules/admin/actions/editprinter.php:14
+#: system/modules/admin/actions/printers.php:6
+#: system/modules/report/actions/connections/edit.php:21
+#: system/modules/report/actions/connections/index.php:7
+msgid "Port"
+msgstr "Port"
+
+#: system/modules/admin/actions/editprinter.php:31
+msgid "Printer added"
+msgstr "printéir leanas"
+
+#: system/modules/admin/actions/email.php:5
+msgid "You don't have the Mandrill library installed"
+msgstr "Ní gá duit an leabharlann mandrill suiteáilte"
+
+#: system/modules/admin/actions/email.php:11
+msgid "You don't have a Mandrill API key specified"
+msgstr "Ní gá duit eochair mandrill API sonraithe"
+
+#: system/modules/admin/actions/email.php:16
+msgid "Email stats"
+msgstr "stats Ríomhphost"
+
+#: system/modules/admin/actions/email.php:33
+msgid "A Mandrill error occurred: "
+msgstr "Tharla earráid mandrill:"
+
+#: system/modules/admin/actions/file/index.php:13
+msgid "File moved to "
+msgstr "Comhad bhog sé go dtí"
+
+#: system/modules/admin/actions/file/index.php:17
+msgid "Attachment"
+msgstr "iatán"
+
+#: system/modules/admin/actions/gitpull.php:5
+#: system/modules/admin/actions/gitpull.php:6
+msgid "Path to Git"
+msgstr "Conair chun Git"
+
+#: system/modules/admin/actions/gitpull.php:8
+#: system/modules/admin/actions/gitpull.php:9
+msgid "Branch"
+msgstr "Brainse"
+
+#: system/modules/admin/actions/gitpull.php:13
+#: system/modules/search/templates/index.tpl.php:18
+msgid "Go"
+msgstr "Téigh"
+
+#: system/modules/admin/actions/gitpull.php:19
+msgid "Branch missing"
+msgstr "Brainse ar iarraidh"
+
+#: system/modules/admin/actions/groupadd.php:9
+#: system/modules/admin/actions/groups.php:49
+#: system/modules/admin/actions/groups/index.php:44
+msgid "New Group"
+msgstr "Grúpa Nua"
+
+#: system/modules/admin/actions/groupadd.php:9
+#: system/modules/admin/actions/groupedit.php:13
+msgid "Group Title: "
+msgstr "Teideal grúpa:"
+
+#: system/modules/admin/actions/groupadd.php:23
+msgid "New group added!"
+msgstr "Grúpa nua leis!"
+
+#: system/modules/admin/actions/groupdelete.php:24
+msgid "Group is deleted!"
+msgstr "Tá Grúpa scriosadh!"
+
+#: system/modules/admin/actions/groupedit.php:28
+msgid "Group info updated!"
+msgstr "info Grúpa nuashonraithe!"
+
+#: system/modules/admin/actions/groupmember.php:25
+msgid "Select Member: "
+msgstr "Roghnaigh Ball:"
+
+#: system/modules/admin/actions/groupmember.php:27
+#: system/modules/task/actions/group/viewmembergroup.php:80
+msgid "Owner"
+msgstr "úinéir"
+
+#: system/modules/admin/actions/groupmember.php:81
+msgid " can not be added!"
+msgstr " Ní féidir a chur leis!"
+
+#: system/modules/admin/actions/groupmember.php:83
+msgid "New members are added!"
+msgstr "baill nua leis!"
+
+#: system/modules/admin/actions/groups.php:11
+#: system/modules/admin/actions/groups/index.php:11
+msgid "Parent Groups"
+msgstr "Grúpaí Tuismitheoirí"
+
+#: system/modules/admin/actions/groups.php:11
+#: system/modules/admin/actions/groups/index.php:11
+#: system/modules/admin/actions/moreInfo.php:20
+#: system/modules/admin/actions/users.php:6
+msgid "Operations"
+msgstr "Oibríochtaí"
+
+#: system/modules/admin/actions/groups.php:36
+msgid "More Info"
+msgstr "Tuilleadh eolais"
+
+#: system/modules/admin/actions/groups.php:39
+#: system/modules/admin/actions/groups/index.php:35
+msgid "Are you sure you want to delete this group?"
+msgstr "An bhfuil tú cinnte go bhfuil tú ag iarraidh a scriosadh an grúpa seo?"
+
+#: system/modules/admin/actions/groups/delete.php:6
+#: system/modules/admin/actions/groups/delete.php:11
+msgid "Group not found"
+msgstr "Grúpa gan aimsiú"
+
+#: system/modules/admin/actions/groups/delete.php:29
+msgid "Group deleted"
+msgstr "Grúpa scriosadh"
+
+#: system/modules/admin/actions/groups/edit.php:9
+#: system/modules/admin/templates/useredit.tpl.php:37
+msgid "Group Title"
+msgstr "Teideal Grúpa"
+
+#: system/modules/admin/actions/groups/edit.php:22
+#: system/modules/channels/actions/processor/edit.php:57
+#: system/modules/channels/actions/web/edit.php:39
+#: system/modules/form/actions/edit.php:27
+#: system/modules/form/actions/field/edit.php:88
+#: system/modules/report/actions/connections/edit.php:42
+#: system/modules/report/actions/edit.php:188
+#: system/modules/report/actions/templates/edit.php:35
+msgid "updated"
+msgstr "cothrom le dáta"
+
+#: system/modules/admin/actions/groups/edit.php:22
+#: system/modules/channels/actions/processor/edit.php:57
+#: system/modules/channels/actions/web/edit.php:39
+#: system/modules/form/actions/edit.php:27
+#: system/modules/form/actions/field/edit.php:88
+#: system/modules/report/actions/connections/edit.php:42
+#: system/modules/report/actions/edit.php:188
+#: system/modules/report/actions/templates/edit.php:35
+msgid "created"
+msgstr "cruthaíodh"
+
+#: system/modules/admin/actions/groups/index.php:9
+#: system/modules/task/templates/taskweek.tpl.php:10
+msgid "Groups"
+msgstr "grúpaí"
+
+#: system/modules/admin/actions/index.php:3
+msgid "Dashboard"
+msgstr "Painéal na nIonstraimí"
+
+#: system/modules/admin/actions/lookup.php:3
+#: system/modules/admin/actions/newlookup.php:3
+#: system/modules/admin/models/AdminService.php:80
+msgid "Lookup"
+msgstr "Féach suas"
+
+#: system/modules/admin/actions/lookup.php:26
+#: system/modules/report/actions/createreport.php:17
+#: system/modules/report/actions/edit.php:35
+msgid "Code"
+msgstr "cód"
+
+#: system/modules/admin/actions/lookup.php:34
+#: system/modules/report/actions/edit.php:101
+#: system/modules/report/models/ReportLib.php:19
+#: system/modules/task/actions/edit.php:112
+#: system/modules/task/actions/group/viewmembergroup.php:26
+#: system/modules/task/actions/tasklist.php:140
+#: system/modules/task/actions/viewtask.php:175
+msgid " Edit "
+msgstr " Edit"
+
+#: system/modules/admin/actions/lookup.php:36
+#: system/modules/report/actions/deletemember.php:14
+#: system/modules/report/actions/edit.php:102
+#: system/modules/report/actions/listfeed.php:27
+#: system/modules/report/models/ReportLib.php:21
+#: system/modules/task/actions/group/viewmembergroup.php:28
+#: system/modules/task/actions/viewtask.php:189
+#: system/modules/task/task.group.actions.php:146
+#: system/modules/task/task.group.actions.php:302
+msgid " Delete "
+msgstr " Scrios"
+
+#: system/modules/admin/actions/lookup.php:36
+msgid "Are you sure you wish to DELETE this Lookup item?"
+msgstr "An bhfuil tú cinnte go dteastaíonn uait scriosadh an mír Lookup?"
+
+#: system/modules/admin/actions/lookup.php:41
+msgid "No Lookup items to list"
+msgstr "Níl aon rud Lookup a liostú"
+
+#: system/modules/admin/actions/lookup.php:52
+msgid "Create a New Entry"
+msgstr "Cruthaigh Iontráil Nua"
+
+#: system/modules/admin/actions/lookup.php:54
+msgid "or Add New Type"
+msgstr "nó Cuir Cineál Nua"
+
+#: system/modules/admin/actions/memberdelete.php:12
+msgid "Member is deleted!"
+msgstr "Tá Ball scriosadh!"
+
+#: system/modules/admin/actions/migration/create.php:8
+#: system/modules/admin/actions/migration/create.php:26
+msgid "Missing specified module or it doesn't exist"
+msgstr "Iarraidh modúl sonraithe ná nach bhfuil sé ann"
+
+#: system/modules/admin/actions/migration/create.php:12
+msgid "Enter the migration name (camel case)"
+msgstr "Cuir isteach an t-ainm imirce (cás camel)"
+
+#: system/modules/admin/actions/migration/create.php:13
+#: system/modules/admin/actions/moreInfo.php:20
+#: system/modules/admin/actions/printers.php:6
+#: system/modules/admin/actions/printqueue.php:18
+#: system/modules/admin/templates/migration/index.tpl.php:76
+#: system/modules/channels/actions/processor/edit.php:16
+#: system/modules/channels/models/Channel.php:15
+#: system/modules/channels/templates/listchannels.tpl.php:8
+#: system/modules/channels/templates/listprocessors.tpl.php:7
+#: system/modules/form/templates/field/edit.tpl.php:4
+#: system/modules/form/templates/field/edit.tpl.php:5
+#: system/modules/form/templates/show.tpl.php:21
+#: system/modules/report/actions/deletemember.php:13
+#: system/modules/report/actions/editmember.php:12
+#: system/modules/task/task.group.actions.php:221
+#: system/modules/task/task.group.actions.php:300
+#: system/modules/timelog/partials/templates/listtimelog.tpl.php:8
+msgid "Name"
+msgstr "Ainm"
+
+#: system/modules/admin/actions/migration/rollback.php:8
+msgid "Missing parameters required for rollback"
+msgstr "paraiméadair Iarraidh teastáil le haghaidh Rollback"
+
+#: system/modules/admin/actions/migration/run.php:8
+msgid "Missing module parameter required to run migration"
+msgstr "Ar iarraidh paraiméadar modúl teastáil imirce a rith"
+
+#: system/modules/admin/actions/moreInfo.php:15
+msgid "New Member"
+msgstr "Ball nua"
+
+#: system/modules/admin/actions/moreInfo.php:17
+msgid "Edit Permissions"
+msgstr "Edit Ceadanna"
+
+#: system/modules/admin/actions/moreInfo.php:39
+msgid "Are you sure you want to delete this member?"
+msgstr "An bhfuil tú cinnte go bhfuil tú ag iarraidh seo a scriosadh ball?"
+
+#: system/modules/admin/actions/newlookup.php:9
+msgid "Please add select or create a TYPE<br>"
+msgstr "Cuir roghnú nó CINEÁL <br> chruthú"
+
+#: system/modules/admin/actions/newlookup.php:15
+msgid "Type and Key combination already exists"
+msgstr "Cineál agus comhcheangal Príomh ann cheana"
+
+#: system/modules/admin/actions/newlookup.php:25
+msgid "Lookup Item added"
+msgstr "Lookup Mír leanas"
+
+#: system/modules/admin/actions/permissionedit.php:10
+#: system/modules/admin/actions/users.php:21
+msgid "Permissions"
+msgstr "ceadanna"
+
+#: system/modules/admin/actions/permissionedit.php:81
+msgid "Permissions are updated!"
+msgstr "Ceadanna a nuashonrú!"
+
+#: system/modules/admin/actions/printers.php:12
+msgid "Are you sure you want to delete this printer?"
+msgstr "An bhfuil tú cinnte go bhfuil tú ag iarraidh a scriosadh an printéir?"
+
+#: system/modules/admin/actions/printfile.php:5
+msgid "No filename specified"
+msgstr "Gan ainm comhaid sonraithe"
+
+#: system/modules/admin/actions/printfile.php:9
+msgid "Printer"
+msgstr "printéir"
+
+#: system/modules/admin/actions/printfile.php:13
+#: system/modules/admin/actions/printqueue.php:32
+msgid "Print"
+msgstr "Print"
+
+#: system/modules/admin/actions/printfile.php:19
+msgid "Printer does not exist"
+msgstr "Níl printéir ann"
+
+#: system/modules/admin/actions/printfile.php:23
+msgid "File has been sent to the printer"
+msgstr "Tá Comhad curtha chuig an printéir"
+
+#: system/modules/admin/actions/printqueue.php:18
+msgid "Size"
+msgstr "méid"
+
+#: system/modules/admin/actions/printqueue.php:33
+msgid "Are you sure you want to remove this file? (This is irreversible)"
+msgstr "An bhfuil tú cinnte go bhfuil tú ag iarraidh a bhaint comhad seo? (Tá sé seo do-athraithe)"
+
+#: system/modules/admin/actions/templates/edit.php:7
+#: system/modules/admin/actions/templates/index.php:3
+#: system/modules/admin/models/AdminService.php:81
+#: system/modules/report/templates/edit.tpl.php:6
+msgid "Templates"
+msgstr "teimpléid"
+
+#: system/modules/admin/actions/templates/edit.php:14
+msgid "Template Details"
+msgstr "Sonraí teimpléad"
+
+#: system/modules/admin/actions/templates/edit.php:17
+#: system/modules/admin/actions/templates/index.php:11
+#: system/modules/admin/actions/users.php:6
+#: system/modules/admin/templates/useradd.tpl.php:5
+#: system/modules/admin/templates/useredit.tpl.php:8
+#: system/modules/task/actions/group/viewtaskgrouptypes.php:53
+msgid "Active"
+msgstr "Gníomhach"
+
+#: system/modules/admin/actions/templates/edit.php:19
+#: system/modules/admin/actions/templates/index.php:5
+#: system/modules/report/actions/createreport.php:14
+#: system/modules/report/actions/edit.php:24
+#: system/modules/report/actions/index.php:33
+#: system/modules/report/actions/index.php:34
+#: system/modules/timelog/actions/edit.php:34
+#: system/modules/timelog/actions/start.php:14
+msgid "Module"
+msgstr "modúl"
+
+#: system/modules/admin/actions/templates/edit.php:20
+#: system/modules/admin/actions/templates/index.php:5
+#: system/modules/report/actions/edit.php:118
+msgid "Category"
+msgstr "Catagóir"
+
+#: system/modules/admin/actions/templates/edit.php:29
+msgid "Template Title"
+msgstr "Teideal teimpléad"
+
+#: system/modules/admin/actions/templates/edit.php:32
+msgid "Template Body"
+msgstr "Comhlacht teimpléad"
+
+#: system/modules/admin/actions/templates/edit.php:39
+msgid "Title Data"
+msgstr "Teideal Sonraí"
+
+#: system/modules/admin/actions/templates/edit.php:42
+msgid "Body Data"
+msgstr "Comhlacht Sonraí"
+
+#: system/modules/admin/actions/templates/edit.php:68
+msgid "Template saved"
+msgstr "teimpléad shábháil"
+
+#: system/modules/admin/actions/templates/index.php:5
+msgid "Active?"
+msgstr "Gníomhach?"
+
+#: system/modules/admin/actions/templates/index.php:5
+#: system/modules/admin/actions/users.php:6
+#: system/modules/report/actions/listfeed.php:11
+msgid "Created"
+msgstr "cruthaithe"
+
+#: system/modules/admin/actions/templates/index.php:5
+msgid "Modified"
+msgstr "Athraithe"
+
+#: system/modules/admin/actions/templates/index.php:11
+msgid "Inactive"
+msgstr "neamhghníomhach"
+
+#: system/modules/admin/actions/testemail.php:7
+msgid "Test email"
+msgstr "r-phost tástála"
+
+#: system/modules/admin/actions/testemail.php:7
+msgid "Test email, ignore"
+msgstr "r-phost tástála, neamhaird"
+
+#: system/modules/admin/actions/testemail.php:8
+msgid "An email has been sent to your address"
+msgstr "Tá r-phost curtha chuig do sheoladh"
+
+#: system/modules/admin/actions/user/remove.php:8
+#: system/modules/admin/actions/user/remove.php:13
+msgid "User not found"
+msgstr "Úsáideoir gan aimsiú"
+
+#: system/modules/admin/actions/user/remove.php:16
+msgid "Data clean up for "
+msgstr "Sonraí ghlanadh suas do"
+
+#: system/modules/admin/actions/useract.php:8
+#: system/modules/admin/actions/useract.php:10
+#: system/modules/admin/actions/userdel.php:8
+#: system/modules/admin/actions/userdel.php:10
+#: system/modules/admin/actions/useredit.php:67
+msgid "User "
+msgstr "Úsáideoir"
+
+#: system/modules/admin/actions/useract.php:8
+msgid "suspended"
+msgstr "fionraí"
+
+#: system/modules/admin/actions/useract.php:10
+#: system/modules/admin/actions/userdel.php:10
+#: system/modules/admin/actions/useredit.php:16
+msgid " does not exist."
+msgstr " gan a bheith ann."
+
+#: system/modules/admin/actions/useradd.php:11
+msgid "Add User"
+msgstr "Cuir Úsáideora"
+
+#: system/modules/admin/actions/useradd.php:24
+#: system/modules/admin/actions/useredit.php:35
+msgid "Login is mandatory"
+msgstr "Is Logáil éigeantach"
+
+#: system/modules/admin/actions/useradd.php:25
+msgid "Password is mandatory"
+msgstr "Focal faire éigeantach"
+
+#: system/modules/admin/actions/useradd.php:26
+msgid "Password2 is mandatory"
+msgstr "Is Password2 éigeantach"
+
+#: system/modules/admin/actions/useradd.php:29
+#: system/modules/admin/actions/useredit.php:38
+#: system/modules/auth/actions/profile.php:50
+msgid "Passwords don't match"
+msgstr "Ní gá Passwords mheaitseáil"
+
+#: system/modules/admin/actions/useradd.php:66
+#: system/modules/task/actions/createtask.php:86
+#: system/modules/task/task.group.actions.php:73
+msgid " added"
+msgstr " Added"
+
+#: system/modules/admin/actions/userdel.php:8
+#: system/modules/task/task.group.actions.php:170
+msgid " deleted."
+msgstr " scriosadh."
+
+#: system/modules/admin/actions/useredit.php:13
+msgid "Administration - Edit User - "
+msgstr "Riarachán - Edit User -"
+
+#: system/modules/admin/actions/useredit.php:42
+msgid "User does not exist"
+msgstr "Níl Úsáideoir ann"
+
+#: system/modules/admin/actions/useredit.php:67
+#: system/modules/form/actions/instance/edit.php:93
+#: system/modules/task/actions/updatetask.php:89
+msgid " updated"
+msgstr " cothrom le dáta"
+
+#: system/modules/admin/actions/users.php:6
+#: system/modules/admin/templates/useradd.tpl.php:3
+#: system/modules/admin/templates/useredit.tpl.php:6
+#: system/modules/auth/actions/login.php:13
+#: system/modules/auth/templates/forgotpassword.tpl.php:3
+#: system/modules/auth/templates/login.tpl.php:4
+#: system/modules/auth/templates/login.tpl.php:8
+msgid "Login"
+msgstr "Logáil isteach"
+
+#: system/modules/admin/actions/users.php:6
+#: system/modules/admin/templates/useradd.tpl.php:13
+#: system/modules/admin/templates/useredit.tpl.php:16
+#: system/modules/auth/actions/profile.php:18
+msgid "First Name"
+msgstr "Ainm"
+
+#: system/modules/admin/actions/users.php:6
+#: system/modules/admin/templates/useradd.tpl.php:14
+#: system/modules/admin/templates/useredit.tpl.php:17
+#: system/modules/auth/actions/profile.php:19
+msgid "Last Name"
+msgstr "Sloinne"
+
+#: system/modules/admin/actions/users.php:6
+#: system/modules/admin/templates/useradd.tpl.php:4
+#: system/modules/admin/templates/useredit.tpl.php:7
+msgid "Admin"
+msgstr "Riarachán"
+
+#: system/modules/admin/actions/users.php:6
+msgid "Last Login"
+msgstr "Logáil isteach Last"
+
+#: system/modules/admin/actions/users.php:22
+#: system/modules/main/partials/templates/listwidgets.tpl.php:12
+msgid "Remove"
+msgstr "bain"
+
+#: system/modules/admin/models/AdminService.php:78
+msgid "List Users"
+msgstr "Úsáideoirí List"
+
+#: system/modules/admin/models/AdminService.php:79
+msgid "List Groups"
+msgstr "Grúpaí liosta"
+
+#: system/modules/admin/models/AdminService.php:82
+msgid "PHP Info"
+msgstr "PHP Info"
+
+#: system/modules/admin/models/AdminService.php:83
+msgid "Printers"
+msgstr "printéirí"
+
+#: system/modules/admin/models/AdminService.php:84
+msgid "Print Queue"
+msgstr "Ciú Priontáil"
+
+#: system/modules/admin/models/AdminService.php:85
+msgid "Backup Database"
+msgstr "Bunachar Sonraí cúltaca"
+
+#: system/modules/admin/models/AdminService.php:86
+msgid "Install/Update Composer"
+msgstr "Suiteáil / Nuashonrú Cumadóir"
+
+#: system/modules/admin/models/AdminService.php:87
+#: system/modules/admin/templates/useradd.tpl.php:17
+#: system/modules/admin/templates/useredit.tpl.php:20
+#: system/modules/auth/actions/profile.php:26
+#: system/modules/channels/templates/listchannels.tpl.php:1
+msgid "Email"
+msgstr "Ríomhphost"
+
+#: system/modules/admin/models/AdminService.php:88
+msgid "Migrations"
+msgstr "migrations"
+
+#: system/modules/admin/models/AdminService.php:89
+msgid "File transfer"
+msgstr "aistriúcomhaid"
+
+#: system/modules/admin/models/CmfiveTable.php:64
+msgid "Cmfive mandates to prefix date fields with 'd_'."
+msgstr "sainorduithe Cmfive réimsí dáta réimír le 'd_'."
+
+#: system/modules/admin/models/CmfiveTable.php:71
+msgid "Cmfive mandates to prefix datetime fields with 'dt_'."
+msgstr "sainorduithe Cmfive a réimír réimsí datetime le 'dt_'."
+
+#: system/modules/admin/models/CmfiveTable.php:78
+msgid "Cmfive mandates to prefix time fields with 't_'."
+msgstr "sainorduithe Cmfive a réimír réimsí ama le 't_'."
+
+#: system/modules/admin/models/CmfiveTable.php:85
+msgid "Cmfive mandates to prefix boolean fields with either 'is_' or 'has_'."
+msgstr "sainorduithe Cmfive a réimír réimsí Boole le ceachtar 'is_' nó 'has_'."
+
+#: system/modules/admin/models/Comment.php:47
+#: system/modules/task/models/AComment.php:49
+msgid "By"
+msgstr "De réir"
+
+#: system/modules/admin/models/MigrationService.php:106
+msgid "Missing module or it doesn't exist"
+msgstr "In easnamh modúl nó nach bhfuil sé ann"
+
+#: system/modules/admin/models/MigrationService.php:123
+msgid "Could not find module directory"
+msgstr "Níorbh fhéidir eolaire modúl"
+
+#: system/modules/admin/models/MigrationService.php:157
+msgid "Migration created"
+msgstr "Imirce cruthaíodh"
+
+#: system/modules/admin/models/MigrationService.php:243
+#: system/modules/admin/models/MigrationService.php:324
+#: system/modules/admin/models/MigrationService.php:347
+#: system/modules/admin/templates/migration/index.tpl.php:71
+msgid " migration"
+msgstr " imirce"
+
+#: system/modules/admin/models/MigrationService.php:243
+#: system/modules/admin/models/MigrationService.php:324
+msgid " has"
+msgstr " tá"
+
+#: system/modules/admin/models/MigrationService.php:243
+#: system/modules/admin/models/MigrationService.php:324
+msgid "s have"
+msgstr "s Bíodh"
+
+#: system/modules/admin/models/MigrationService.php:243
+msgid " run"
+msgstr " reáchtáil"
+
+#: system/modules/admin/models/MigrationService.php:245
+#: system/modules/admin/models/MigrationService.php:326
+msgid "Error with a migration: "
+msgstr "Earráid le imirce:"
+
+#: system/modules/admin/models/MigrationService.php:245
+msgid "More info: "
+msgstr "Tuilleadh eolais:"
+
+#: system/modules/admin/models/MigrationService.php:250
+msgid "No migrations to run!"
+msgstr "Níl migrations a reáchtáil!"
+
+#: system/modules/admin/models/MigrationService.php:267
+msgid "Missing parameters required for a rollback"
+msgstr "paraiméadair teastáil le haghaidh Rollback Iarraidh"
+
+#: system/modules/admin/models/MigrationService.php:271
+msgid "Module doesn't exist"
+msgstr "Níl Modúl ann"
+
+#: system/modules/admin/models/MigrationService.php:276
+msgid "There are no installed migrations to rollback"
+msgstr "Níl aon imirce suiteáilte a athúsáid"
+
+#: system/modules/admin/models/MigrationService.php:324
+#: system/modules/admin/models/MigrationService.php:347
+msgid " rolled back"
+msgstr " rolladh siar"
+
+#: system/modules/admin/partials/templates/displaycomment.tpl.php:13
+msgid "Posted"
+msgstr "Posted"
+
+#: system/modules/admin/partials/templates/displaycomment.tpl.php:20
+msgid "or"
+msgstr "nó"
+
+#: system/modules/admin/partials/templates/displaycomment.tpl.php:21
+msgid "Are you sure you want to delete this comment?"
+msgstr "An bhfuil tú cinnte go bhfuil tú ag iarraidh a scriosadh teachtaireacht seo?"
+
+#: system/modules/admin/partials/templates/listcomments.tpl.php:8
+msgid "Add Comment"
+msgstr "Cuir Comment"
+
+#: system/modules/admin/templates/file/index.tpl.php:7
+#: system/modules/form/models/FormStandardInterface.php:103
+#: system/modules/form/models/FormStandardInterface.php:105
+#: system/modules/timelog/templates/index.tpl.php:6
+msgid "Object"
+msgstr "réad"
+
+#: system/modules/admin/templates/file/index.tpl.php:7
+msgid "Location"
+msgstr "suíomh"
+
+#: system/modules/admin/templates/file/index.tpl.php:21
+msgid "Move to "
+msgstr "Bog go dtí"
+
+#: system/modules/admin/templates/file/index.tpl.php:40
+msgid "No attachment available"
+msgstr "Níl ceangaltán fáil"
+
+#: system/modules/admin/templates/index.tpl.php:1
+msgid "Users Currently Logged In"
+msgstr "Húsáideoirí Logáilte Faoi láthair I"
+
+#: system/modules/admin/templates/lookup.tpl.php:3
+msgid "Lookup List"
+msgstr "Liosta Lookup"
+
+#: system/modules/admin/templates/lookup.tpl.php:4
+msgid "New Item"
+msgstr "Mír Nua"
+
+#: system/modules/admin/templates/lookup.tpl.php:8
+msgid "Search Lookup Items"
+msgstr "Cuardaigh Míreanna Lookup"
+
+#: system/modules/admin/templates/migration/index.tpl.php:9
+#: system/modules/admin/templates/migration/index.tpl.php:37
+msgid "Batch"
+msgstr "Baisc"
+
+#: system/modules/admin/templates/migration/index.tpl.php:10
+msgid "Individual"
+msgstr "aonair"
+
+#: system/modules/admin/templates/migration/index.tpl.php:15
+msgid "Rollback latest batch"
+msgstr "Rollback bhaisc is déanaí"
+
+#: system/modules/admin/templates/migration/index.tpl.php:15
+msgid "Are you sure you want to rollback migrations?"
+msgstr "An bhfuil tú cinnte go bhfuil tú ag iarraidh a imircí Rollback?"
+
+#: system/modules/admin/templates/migration/index.tpl.php:22
+msgid "Install migrations"
+msgstr "Suiteáil migrations"
+
+#: system/modules/admin/templates/migration/index.tpl.php:22
+msgid "Are you sure you want to install migrations?"
+msgstr "An bhfuil tú cinnte go bhfuil tú ag iarraidh a imircí shuiteáil?"
+
+#: system/modules/admin/templates/migration/index.tpl.php:71
+msgid "Create a"
+msgstr "Cruthaigh"
+
+#: system/modules/admin/templates/migration/index.tpl.php:73
+msgid "Run all "
+msgstr "Rith go léir"
+
+#: system/modules/admin/templates/migration/index.tpl.php:73
+msgid " migrations"
+msgstr " migrations"
+
+#: system/modules/admin/templates/migration/index.tpl.php:73
+msgid "Are you sure you want to run all outstanding migrations for this module?"
+msgstr "An bhfuil tú cinnte go bhfuil tú ag iarraidh a reáchtáil gach imirce gan íoc don mhodúl seo?"
+
+#: system/modules/admin/templates/migration/index.tpl.php:76
+msgid "Path"
+msgstr "conair"
+
+#: system/modules/admin/templates/migration/index.tpl.php:76
+msgid "Date run"
+msgstr "dáta reáchtáil"
+
+#: system/modules/admin/templates/migration/index.tpl.php:87
+msgid "System"
+msgstr "córas"
+
+#: system/modules/admin/templates/migration/index.tpl.php:95
+msgid "Rollback to here"
+msgstr "Rollback anseo"
+
+#: system/modules/admin/templates/migration/index.tpl.php:95
+msgid "Are you 110% sure you want to rollback a migration? DATA COULD BE LOST PERMANENTLY!"
+msgstr "An bhfuil tú 110% cinnte gur mian leat Rollback ar imirce? BHFÉADFADH SONRAÍ A CHUR CAILLTE buan!"
+
+#: system/modules/admin/templates/migration/index.tpl.php:97
+msgid "Migrate to here"
+msgstr "Aistriú go dtí anseo"
+
+#: system/modules/admin/templates/migration/index.tpl.php:97
+msgid "Are you sure you want to run a migration?"
+msgstr "An bhfuil tú cinnte go bhfuil tú ag iarraidh a reáchtáil imirce?"
+
+#: system/modules/admin/templates/migration/index.tpl.php:135
+msgid "There are no migrations on this project"
+msgstr "Níl aon imirce ar an tionscadal"
+
+#: system/modules/admin/templates/printers.tpl.php:2
+msgid "Add a printer"
+msgstr "Cuir printéir"
+
+#: system/modules/admin/templates/templates/edit.tpl.php:1
+msgid "Back to Templates List"
+msgstr "Ar ais go liosta Teimpléid"
+
+#: system/modules/admin/templates/templates/edit.tpl.php:7
+#: system/modules/report/actions/templates/edit.php:10
+msgid "Template"
+msgstr "teimpléad"
+
+#: system/modules/admin/templates/templates/edit.tpl.php:8
+msgid "Test Data"
+msgstr "tástáil Sonraí"
+
+#: system/modules/admin/templates/templates/edit.tpl.php:9
+msgid "Test Output"
+msgstr "Aschur tástáil"
+
+#: system/modules/admin/templates/templates/edit.tpl.php:10
+msgid "Manual"
+msgstr "lámhleabhar"
+
+#: system/modules/admin/templates/templates/edit.tpl.php:23
+msgid "this is the template manual"
+msgstr "is é seo an lámhleabhar teimpléad"
+
+#: system/modules/admin/templates/templates/index.tpl.php:1
+#: system/modules/report/templates/edit.tpl.php:28
+msgid "Add Template"
+msgstr "Cuir Teimpléad"
+
+#: system/modules/admin/templates/user/remove.tpl.php:1
+msgid "Back to user list"
+msgstr "Ar ais chuig an liosta úsáideora"
+
+#: system/modules/admin/templates/user/remove.tpl.php:6
+msgid "Deactivate user"
+msgstr "Díghníomhachtaigh úsáideoir"
+
+#: system/modules/admin/templates/user/remove.tpl.php:7
+msgid "Delete user"
+msgstr "Scrios úsáideoir"
+
+#: system/modules/admin/templates/user/remove.tpl.php:7
+msgid "Are you sure you want to delete this user?"
+msgstr "An bhfuil tú cinnte go bhfuil tú ag iarraidh seo a scriosadh úsáideora?"
+
+#: system/modules/admin/templates/useradd.tpl.php:2
+#: system/modules/admin/templates/useradd.tpl.php:8
+msgid "User Details"
+msgstr "Sonraí Úsáideoir"
+
+#: system/modules/admin/templates/useradd.tpl.php:6
+#: system/modules/admin/templates/useredit.tpl.php:9
+#: system/modules/auth/actions/profile.php:28
+msgid "Language"
+msgstr "teanga"
+
+#: system/modules/admin/templates/useradd.tpl.php:9
+#: system/modules/admin/templates/useredit.tpl.php:12
+#: system/modules/auth/actions/login.php:12
+#: system/modules/auth/actions/profile.php:15
+#: system/modules/auth/templates/login.tpl.php:6
+#: system/modules/report/actions/connections/edit.php:26
+msgid "Password"
+msgstr "Focal Faire"
+
+#: system/modules/admin/templates/useradd.tpl.php:10
+#: system/modules/admin/templates/useredit.tpl.php:13
+#: system/modules/auth/actions/profile.php:16
+msgid "Repeat Password"
+msgstr "Athscríobh an Pasfhocal"
+
+#: system/modules/admin/templates/useradd.tpl.php:12
+#: system/modules/admin/templates/useradd.tpl.php:15
+#: system/modules/auth/actions/profile.php:17
+msgid "Contact Details"
+msgstr "Sonraí teagmhála"
+
+#: system/modules/admin/templates/useredit.tpl.php:2
+msgid "Edit User"
+msgstr "Cuir Úsáideora"
+
+#: system/modules/admin/templates/useredit.tpl.php:37
+msgid "User Groups"
+msgstr "Grúpaí Úsáideoirí"
+
+#: system/modules/admin/templates/useredit.tpl.php:43
+msgid "User with ID"
+msgstr "Úsáideora le ID"
+
+#: system/modules/admin/templates/useredit.tpl.php:43
+msgid "does not exist."
+msgstr "gan a bheith ann."
+
+#: system/modules/admin/templates/users.tpl.php:11
+msgid "Add New User"
+msgstr "Cuir Nua User"
+
+#: system/modules/auth/actions/forgotpassword.php:14
+#: system/modules/auth/templates/login.tpl.php:9
+msgid "Forgot Password"
+msgstr "Dearmad ar pasfhocal"
+
+#: system/modules/auth/actions/forgotpassword.php:21
+msgid "Cannot send recovery email. This site has not been configured with a default email address"
+msgstr "Ní féidir sheoladh r-phost a ghnóthú. Nach bhfuil an suíomh a chumrú le seoladh ríomhphoist réamhshocraithe"
+
+#: system/modules/auth/actions/forgotpassword.php:26
+msgid "If this account exists then a password reset email has been just sent to the associated email address."
+msgstr "Má bhfuil sé seo cuntas shin i leith tá r-phost a athshocrú do phasfhocal seolta díreach chuig an seoladh r-phoist a bhaineann leo."
+
+#: system/modules/auth/actions/forgotpassword.php:45
+msgid "Hello"
+msgstr "Dia dhuit"
+
+#: system/modules/auth/actions/forgotpassword.php:46
+msgid "Please go to this link to reset your password:"
+msgstr "Do thoil, téigh go dtí an nasc seo a athshocrú do phasfhocal a úsáid:"
+
+#: system/modules/auth/actions/forgotpassword.php:48
+msgid "You have 24 hours to reset your password"
+msgstr "Tá tú 24 uair an chloig a athshocrú do phasfhocal"
+
+#: system/modules/auth/actions/forgotpassword.php:49
+msgid "Thank you,"
+msgstr "Go raibh maith agat,"
+
+#: system/modules/auth/actions/forgotpassword.php:49
+msgid "cmfive support"
+msgstr "tacaíocht cmfive"
+
+#: system/modules/auth/actions/forgotpassword.php:51
+msgid " password reset"
+msgstr " phasfhocal a athshocrú"
+
+#: system/modules/auth/actions/forgotpassword.php:55
+msgid "There was a problem sending an email, check your settings."
+msgstr "Bhí fadhb a sheoladh r-phost, seiceáil ar do socruithe."
+
+#: system/modules/auth/actions/login.php:10
+msgid "Application Login"
+msgstr "Logáil Iarratais"
+
+#: system/modules/auth/actions/login.php:11
+#: system/modules/report/actions/connections/edit.php:25
+#: system/modules/report/actions/connections/index.php:7
+msgid "Username"
+msgstr "Ainm úsáideora"
+
+#: system/modules/auth/actions/login.php:36
+msgid "Login or Password incorrect"
+msgstr "Logáil nó Pasfhocal mícheart"
+
+#: system/modules/auth/actions/login.php:39
+msgid "Please enter your login and password"
+msgstr "Cuir isteach do logáil isteach agus do phasfhocal"
+
+#: system/modules/auth/actions/profile.php:7
+msgid "Administration - Profile - "
+msgstr "Riarachán - Próifíl -"
+
+#: system/modules/auth/actions/profile.php:9
+msgid "User does not exist."
+msgstr "Níl Úsáideora ann."
+
+#: system/modules/auth/actions/profile.php:14
+msgid "Change Password"
+msgstr "Athraigh do phasfhocal"
+
+#: system/modules/auth/actions/profile.php:20
+msgid "Communication"
+msgstr "Cumarsáid"
+
+#: system/modules/auth/actions/profile.php:21
+msgid "Home Phone"
+msgstr "Fón Baile"
+
+#: system/modules/auth/actions/profile.php:22
+msgid "Work Phone"
+msgstr "Fón oibre"
+
+#: system/modules/auth/actions/profile.php:23
+msgid "Private Mobile"
+msgstr "Mobile príobháideacha"
+
+#: system/modules/auth/actions/profile.php:24
+msgid "Work Mobile"
+msgstr "Mobile Obair"
+
+#: system/modules/auth/actions/profile.php:25
+msgid "Fax"
+msgstr "Facs"
+
+#: system/modules/auth/actions/profile.php:27
+msgid "Redirect URL"
+msgstr "redirect URL"
+
+#: system/modules/auth/actions/profile.php:30
+msgid "Update"
+msgstr "Nuashonraigh"
+
+#: system/modules/auth/actions/profile.php:33
+msgid "Edit Profile"
+msgstr "Próifíl in eagar"
+
+#: system/modules/auth/actions/profile.php:42
+msgid "Not a valid home phone number"
+msgstr "Gan uimhir theileafóin bhaile bailí"
+
+#: system/modules/auth/actions/profile.php:43
+msgid "Not a valid work phone number"
+msgstr "Gan uimhir theileafóin bailí oibre"
+
+#: system/modules/auth/actions/profile.php:44
+#: system/modules/auth/actions/profile.php:45
+msgid "Not a valid  mobile phone number"
+msgstr "Nach uimhir fón póca bailí"
+
+#: system/modules/auth/actions/profile.php:46
+msgid "Not a valid fax number"
+msgstr "Nach uimhir facs bailí"
+
+#: system/modules/auth/actions/profile.php:55
+msgid "Not Logged In"
+msgstr "Gan Logáilte I"
+
+#: system/modules/auth/actions/profile.php:87
+msgid "Profile updated."
+msgstr "Próifíl nuashonrú."
+
+#: system/modules/auth/actions/resetpassword.php:13
+#: system/modules/auth/actions/resetpassword.php:53
+msgid "Your token has expired (max 24 hours), please submit for a new one"
+msgstr "Tá do chomhartha éag (uasmhéid 24 uair an chloig), cuir isteach do ceann nua"
+
+#: system/modules/auth/actions/resetpassword.php:22
+msgid "Enter new password"
+msgstr "Iontráil focal faire nua"
+
+#: system/modules/auth/actions/resetpassword.php:23
+msgid "New password"
+msgstr "Focal Faire Nua"
+
+#: system/modules/auth/actions/resetpassword.php:24
+msgid "Confirm password"
+msgstr "Deimhnigh Pasfhocal"
+
+#: system/modules/auth/actions/resetpassword.php:25
+msgid "Reset"
+msgstr "Athshocraigh"
+
+#: system/modules/auth/actions/resetpassword.php:33
+#: system/modules/auth/actions/resetpassword.php:76
+msgid "Invalid email or token, this incident has been logged"
+msgstr "ríomhphoist neamhbhailí nó airíocht tá eachtra seo logáilte"
+
+#: system/modules/auth/actions/resetpassword.php:44
+msgid "Passwords do not match"
+msgstr "Ní gá Passwords mheaitseáil"
+
+#: system/modules/auth/actions/resetpassword.php:78
+msgid "Your password has been reset"
+msgstr "Tá do fhocal faire a athshocrú"
+
+#: system/modules/auth/actions/user/unassign.php:16
+msgid "Group membership revoked"
+msgstr "ballraíocht an Ghrúpa chúlghairm"
+
+#: system/modules/auth/models/Contact.php:74
+msgid "work phone "
+msgstr "fón oibre"
+
+#: system/modules/auth/models/Contact.php:78
+msgid "mobile "
+msgstr "soghluaiste"
+
+#: system/modules/auth/models/User.php:130
+msgid "English"
+msgstr "Béarla"
+
+#: system/modules/auth/models/User.php:130
+msgid "German"
+msgstr "Gearmáinis"
+
+#: system/modules/auth/models/User.php:130
+msgid "French"
+msgstr "Fraincis"
+
+#: system/modules/auth/models/User.php:130
+msgid "Chinese"
+msgstr "Sínis"
+
+#: system/modules/auth/models/User.php:130
+msgid "Japanese"
+msgstr "Seapáinis"
+
+#: system/modules/auth/models/User.php:130
+msgid "Spanish"
+msgstr "Spainnis"
+
+#: system/modules/auth/models/User.php:130
+msgid "Dutch"
+msgstr "Ollainnis"
+
+#: system/modules/auth/models/User.php:130
+msgid "Russian"
+msgstr "Rúisis"
+
+#: system/modules/auth/models/User.php:130
+msgid "Gaelic"
+msgstr "Gaelic"
+
+#: system/modules/auth/partials/templates/removeUser.tpl.php:2
+msgid "Auth"
+msgstr "Auth"
+
+#: system/modules/auth/partials/templates/removeUser.tpl.php:4
+#: system/modules/report/partials/templates/removeUser.tpl.php:7
+#: system/modules/task/partials/templates/removeUser.tpl.php:9
+msgid "This user is a member of"
+msgstr "Is úsáideoir seo ina bhall de"
+
+#: system/modules/auth/partials/templates/removeUser.tpl.php:4
+msgid " group"
+msgstr " grúpa"
+
+#: system/modules/auth/partials/templates/removeUser.tpl.php:7
+msgid "Unassign from groups"
+msgstr "Unassign ó ghrúpaí"
+
+#: system/modules/auth/templates/forgotpassword.tpl.php:4
+#: system/modules/auth/templates/login.tpl.php:5
+msgid "Your login"
+msgstr "do logáil isteach"
+
+#: system/modules/auth/templates/forgotpassword.tpl.php:5
+#: system/modules/task/task.group.actions.php:255
+msgid "Submit"
+msgstr "Cuir"
+
+#: system/modules/auth/templates/forgotpassword.tpl.php:6
+#: system/modules/help/templates/toc.tpl.php:2
+#: system/modules/help/templates/view.tpl.php:2
+msgid "Back"
+msgstr "Ar ais"
+
+#: system/modules/channels/actions/index.php:4
+msgid "Channels"
+msgstr "cainéil"
+
+#: system/modules/channels/actions/listchannels.php:4
+msgid "Channels List"
+msgstr "Liosta cainéil"
+
+#: system/modules/channels/actions/listmessages.php:4
+msgid "Messages list"
+msgstr "liosta teachtaireachtaí"
+
+#: system/modules/channels/actions/listmessagestatuses.php:7
+msgid "Message Statuses"
+msgstr "statuses Teachtaireacht"
+
+#: system/modules/channels/actions/listmessagestatuses.php:10
+msgid "Message ID not found"
+msgstr "Teachtaireacht ID gan aimsiú"
+
+#: system/modules/channels/actions/listprocessors.php:4
+msgid "Processors List"
+msgstr "Liosta Processors"
+
+#: system/modules/channels/actions/process.php:18
+#: system/modules/channels/actions/read.php:17
+msgid "No channel found."
+msgstr "Aon chainéal aimsíodh."
+
+#: system/modules/channels/actions/processor/delete.php:11
+msgid "Processor deleted"
+msgstr "próiseálaí scriosadh"
+
+#: system/modules/channels/actions/processor/delete.php:13
+msgid "Could not find processor"
+msgstr "Níorbh fhéidir próiseálaí"
+
+#: system/modules/channels/actions/processor/edit.php:8
+#: system/modules/channels/actions/web/edit.php:8
+#: system/modules/main/actions/addwidget.php:22
+#: system/modules/tag/models/TagService.php:142
+#: system/modules/tag/partials/templates/listTags.tpl.php:22
+msgid "Add"
+msgstr "Cuir"
+
+#: system/modules/channels/actions/processor/edit.php:8
+msgid " a Processor"
+msgstr " Próiseálaí"
+
+#: system/modules/channels/actions/processor/edit.php:14
+msgid "Processor"
+msgstr "próiseálaí"
+
+#: system/modules/channels/actions/processor/edit.php:19
+#: system/modules/channels/models/Channel.php:13
+#: system/modules/channels/templates/listmessages.tpl.php:4
+msgid "Channel"
+msgstr "Channel"
+
+#: system/modules/channels/actions/processor/edit.php:22
+#: system/modules/channels/templates/listprocessors.tpl.php:7
+msgid "Processor Class"
+msgstr "Rang próiseálaí"
+
+#: system/modules/channels/actions/processor/edit.php:40
+msgid "Missing Processor values"
+msgstr "Iarraidh luachanna Próiseálaí"
+
+#: system/modules/channels/actions/processor/edit.php:46
+msgid "Could not find processor in config"
+msgstr "Níorbh fhéidir próiseálaí i cumraíochta"
+
+#: system/modules/channels/actions/processor/edit.php:57
+msgid "Processor "
+msgstr "próiseálaí"
+
+#: system/modules/channels/actions/processor/editsettings.php:9
+#: system/modules/channels/actions/processor/editsettings.php:39
+msgid "Missing parameter in request"
+msgstr "Iarraidh paraiméadar i iarraidh"
+
+#: system/modules/channels/actions/processor/editsettings.php:14
+#: system/modules/channels/actions/processor/editsettings.php:50
+msgid "Invalid processor ID"
+msgstr "ID próiseálaí Neamhbhailí"
+
+#: system/modules/channels/actions/processor/editsettings.php:26
+msgid "Form implementation is empty"
+msgstr "Foirm chun feidhme folamh"
+
+#: system/modules/channels/actions/processor/editsettings.php:29
+msgid "Generic form settings function is missing"
+msgstr "Tá cineálach feidhm suímh fhoirm easnamh"
+
+#: system/modules/channels/actions/processor/editsettings.php:56
+msgid "Processor settings saved"
+msgstr "socruithe Próiseálaí shábháil"
+
+#: system/modules/channels/actions/web/delete.php:11
+msgid "Channel deleted"
+msgstr "Channel scriosadh"
+
+#: system/modules/channels/actions/web/delete.php:13
+msgid "Could not find channel"
+msgstr "Níorbh fhéidir cainéal"
+
+#: system/modules/channels/actions/web/edit.php:8
+msgid " a Web Channel"
+msgstr " Channel Gréasáin"
+
+#: system/modules/channels/actions/web/edit.php:18
+msgid "Web API URL"
+msgstr "API gréasáin URL"
+
+#: system/modules/channels/actions/web/edit.php:39
+msgid "Web Channel "
+msgstr "Channel Web"
+
+#: system/modules/channels/models/Channel.php:16
+#: system/modules/task/task.group.actions.php:45
+#: system/modules/task/task.group.actions.php:143
+msgid "Is Active"
+msgstr "Is Gníomhach"
+
+#: system/modules/channels/models/Channel.php:19
+#: system/modules/channels/templates/listchannels.tpl.php:8
+msgid "Notify Email"
+msgstr "Fógra Ríomhphost"
+
+#: system/modules/channels/models/Channel.php:21
+#: system/modules/channels/templates/listchannels.tpl.php:8
+msgid "Notify User"
+msgstr "Fógra Úsáideora"
+
+#: system/modules/channels/models/Channel.php:24
+msgid "Run processors?"
+msgstr "próiseálaithe Rith?"
+
+#: system/modules/channels/models/ChannelService.php:167
+#: system/modules/channels/models/ChannelsService.php:17
+msgid "List Channels"
+msgstr "Cainéil List"
+
+#: system/modules/channels/models/ChannelService.php:168
+#: system/modules/channels/models/ChannelsService.php:18
+msgid "List Processors"
+msgstr "Próiseálaithe List"
+
+#: system/modules/channels/models/ChannelService.php:169
+#: system/modules/channels/models/ChannelsService.php:19
+msgid "List Messages"
+msgstr "Teachtaireachtaí List"
+
+#: system/modules/channels/models/TestProcessor.php:13
+msgid "Settings"
+msgstr "Socruithe"
+
+#: system/modules/channels/models/TestProcessor.php:15
+msgid "My Setting"
+msgstr "Mo Socrú"
+
+#: system/modules/channels/templates/listchannels.tpl.php:1
+msgid "Add a new channel"
+msgstr "Cuir cainéal nua"
+
+#: system/modules/channels/templates/listchannels.tpl.php:1
+msgid "Web"
+msgstr "Web"
+
+#: system/modules/channels/templates/listchannels.tpl.php:8
+#: system/modules/channels/templates/listmessages.tpl.php:4
+#: system/modules/channels/templates/listprocessors.tpl.php:7
+msgid "ID"
+msgstr "ID"
+
+#: system/modules/channels/templates/listchannels.tpl.php:8
+msgid "ON/OFF"
+msgstr "AR AS"
+
+#: system/modules/channels/templates/listchannels.tpl.php:18
+msgid "OFF"
+msgstr "OFF"
+
+#: system/modules/channels/templates/listchannels.tpl.php:24
+#: system/modules/channels/templates/listprocessors.tpl.php:20
+msgid "Are you sure you want to delete "
+msgstr "An bhfuil tú cinnte gur mian leat a scriosadh"
+
+#: system/modules/channels/templates/listchannels.tpl.php:24
+msgid "this channel"
+msgstr "an cainéal"
+
+#: system/modules/channels/templates/listchannels.tpl.php:25
+msgid "Messages"
+msgstr "teachtaireachtaí"
+
+#: system/modules/channels/templates/listmessages.tpl.php:4
+msgid "Failed Processes"
+msgstr "Próisis theip"
+
+#: system/modules/channels/templates/listmessages.tpl.php:4
+msgid "Run Time"
+msgstr "Rith Am"
+
+#: system/modules/channels/templates/listmessages.tpl.php:14
+msgid "View Message Statuses"
+msgstr "View Teachtaireacht Statuses"
+
+#: system/modules/channels/templates/listmessages.tpl.php:22
+msgid "No messages found."
+msgstr "Níl aon teachtaireacht aimsíodh aon rud."
+
+#: system/modules/channels/templates/listmessagestatuses.tpl.php:4
+msgid "Processor ID"
+msgstr "próiseálaí ID"
+
+#: system/modules/channels/templates/listmessagestatuses.tpl.php:4
+#: system/modules/inbox/templates/view.tpl.php:13
+#: system/modules/report/models/Report.php:254
+#: system/modules/task/actions/tasktypeform.php:24
+msgid "Message"
+msgstr "Teachtaireacht"
+
+#: system/modules/channels/templates/listmessagestatuses.tpl.php:4
+msgid "Was Successful"
+msgstr "bhí Rathúil"
+
+#: system/modules/channels/templates/listmessagestatuses.tpl.php:12
+msgid "Rerun Process"
+msgstr "Próiseas rerun"
+
+#: system/modules/channels/templates/listprocessors.tpl.php:1
+msgid "Add Processor"
+msgstr "Cuir Próiseálaí"
+
+#: system/modules/channels/templates/listprocessors.tpl.php:7
+msgid "Processor Module"
+msgstr "Modúl próiseálaí"
+
+#: system/modules/channels/templates/listprocessors.tpl.php:7
+msgid "Attached to"
+msgstr "Ceangailte leis"
+
+#: system/modules/channels/templates/listprocessors.tpl.php:20
+msgid "this processor"
+msgstr "an próiseálaí"
+
+#: system/modules/channels/templates/listprocessors.tpl.php:20
+msgid "?"
+msgstr "?"
+
+#: system/modules/channels/templates/listprocessors.tpl.php:27
+msgid "Edit Settings"
+msgstr "Socruithe eagar"
+
+#: system/modules/favorite/actions/ajaxEditFavorites.php:26
+#: system/modules/tag/actions/ajaxTag.php:13
+#: system/modules/tag/actions/ajaxTag.php:69
+#: system/modules/tag/actions/ajaxTag.php:72
+#: system/modules/tag/actions/ajaxTag.php:75
+msgid "Invalid request"
+msgstr "iarratas neamhbhailí"
+
+#: system/modules/file/actions/atdel.php:12
+msgid "Attachment deleted."
+msgstr "Attachment scriosadh."
+
+#: system/modules/file/actions/atdel.php:14
+msgid "Attachment does not exist."
+msgstr "Níl iatán ann."
+
+#: system/modules/file/actions/attach.php:7
+#: system/modules/file/actions/attach.php:26
+msgid "Nothing to attach to."
+msgstr "Ní dhéanfaidh aon ní a chur ag gabháil leis."
+
+#: system/modules/file/actions/attach.php:37
+msgid "File attached."
+msgstr "Comhad ceangailte."
+
+#: system/modules/file/actions/attach.php:39
+msgid "There was an error. Attachment could not be saved."
+msgstr "Tharla earráid. Níorbh fhéidir iatán a shábháil."
+
+#: system/modules/file/actions/delete.php:10
+#: system/modules/file/actions/edit.php:10
+#: system/modules/file/actions/edit.php:35
+msgid "Missing attachment ID"
+msgstr "Iarraidh iatán ID"
+
+#: system/modules/file/actions/delete.php:15
+#: system/modules/file/actions/edit.php:15
+#: system/modules/file/actions/edit.php:40
+msgid "Attachment not found"
+msgstr "Iatán gan aimsiú"
+
+#: system/modules/file/actions/delete.php:19
+msgid "Attachment deleted"
+msgstr "Attachment scriosadh"
+
+#: system/modules/file/actions/edit.php:19
+msgid "Edit Attachment"
+msgstr "Cuir Iatán"
+
+#: system/modules/file/actions/edit.php:47
+msgid "Attachment updated"
+msgstr "Attachment nuashonraithe"
+
+#: system/modules/file/actions/new.php:10
+#: system/modules/file/actions/new.php:30
+msgid "Missing class parameters"
+msgstr "Paraiméadair rang Iarraidh"
+
+#: system/modules/file/actions/new.php:14
+msgid "New Attachment"
+msgstr "Iatán nua"
+
+#: system/modules/file/actions/new.php:15
+#: system/modules/file/templates/attach.tpl.php:8
+msgid "File"
+msgstr "comhad"
+
+#: system/modules/file/actions/new.php:36
+msgid "Object not found"
+msgstr "Réad gan aimsiú"
+
+#: system/modules/file/actions/new.php:43
+msgid "File attached"
+msgstr "comhad ceangailte"
+
+#: system/modules/file/templates/attach.tpl.php:4
+msgid "Attache a File"
+msgstr "Attaché Comhad"
+
+#: system/modules/file/templates/attach.tpl.php:6
+msgid "Attachment Type"
+msgstr "Cineál iatán"
+
+#: system/modules/file/templates/attach.tpl.php:12
+msgid "Upload"
+msgstr "uaslódáil"
+
+#: system/modules/form/actions/delete.php:7
+#: system/modules/form/actions/delete.php:12
+#: system/modules/form/actions/field/delete.php:13
+#: system/modules/form/actions/field/edit.php:9
+#: system/modules/form/actions/show.php:7
+msgid "Form not found"
+msgstr "Foirm gan aimsiú"
+
+#: system/modules/form/actions/delete.php:16
+msgid "Form deleted"
+msgstr "foirm scriosadh"
+
+#: system/modules/form/actions/edit.php:9
+msgid "Form"
+msgstr "foirm"
+
+#: system/modules/form/actions/edit.php:27
+#: system/modules/form/actions/field/edit.php:88
+msgid "Form "
+msgstr "foirm"
+
+#: system/modules/form/actions/field/delete.php:7
+#: system/modules/form/actions/field/delete.php:18
+msgid "Form field not found"
+msgstr "réimse Foirm gan aimsiú"
+
+#: system/modules/form/actions/field/delete.php:22
+msgid "Form field deleted"
+msgstr "réimse Foirm scriosadh"
+
+#: system/modules/form/actions/index.php:5
+msgid "Forms list"
+msgstr "liosta foirmeacha"
+
+#: system/modules/form/actions/instance/delete.php:8
+#: system/modules/form/actions/instance/delete.php:14
+msgid "Form instance not found"
+msgstr "Foirm shampla gan aimsiú"
+
+#: system/modules/form/actions/instance/delete.php:19
+msgid "Form instance deleted"
+msgstr "Foirm shampla scriosadh"
+
+#: system/modules/form/actions/instance/edit.php:12
+#: system/modules/form/actions/instance/edit.php:39
+msgid "Form instance data missing"
+msgstr "Sonraí Foirm shampla easnamh"
+
+#: system/modules/form/actions/instance/edit.php:93
+msgid " created"
+msgstr " cruthaíodh"
+
+#: system/modules/form/actions/mapping/edit.php:35
+msgid "Form mappings updated"
+msgstr "Foirm Mapálacha nuashonraithe"
+
+#: system/modules/form/actions/show.php:14
+msgid "Form: "
+msgstr "foirm:"
+
+#: system/modules/form/models/FormStandardInterface.php:10
+msgid "Text"
+msgstr "téacs"
+
+#: system/modules/form/models/FormStandardInterface.php:11
+msgid "Decimal"
+msgstr "deachúil"
+
+#: system/modules/form/models/FormStandardInterface.php:13
+msgid "Date & Time"
+msgstr "Dáta Am"
+
+#: system/modules/form/models/FormStandardInterface.php:14
+msgid "Select"
+msgstr "Roghnaigh"
+
+#: system/modules/form/models/FormStandardInterface.php:15
+msgid "Autocomplete"
+msgstr "autocomplete"
+
+#: system/modules/form/models/FormStandardInterface.php:101
+msgid "Decimal Places"
+msgstr "Áiteanna deachúil"
+
+#: system/modules/form/models/FormStandardInterface.php:103
+#: system/modules/form/models/FormStandardInterface.php:105
+msgid "Filter"
+msgstr "scagaire"
+
+#: system/modules/form/models/FormStandardInterface.php:103
+#: system/modules/form/models/FormStandardInterface.php:105
+msgid "Options"
+msgstr "roghanna"
+
+#: system/modules/form/partials/templates/listform.tpl.php:3
+msgid "Add new "
+msgstr "Cuir ráiteas nua leis"
+
+#: system/modules/form/partials/templates/listform.tpl.php:15
+msgid "Are you sure you want to delete this item?"
+msgstr "An bhfuil tú cinnte go bhfuil tú ag iarraidh a scrios an mhír seo?"
+
+#: system/modules/form/partials/templates/listform.tpl.php:23
+msgid "form data found"
+msgstr "sonraí ó fhoirmeacha leathanach Torthaí"
+
+#: system/modules/form/templates/field/edit.tpl.php:34
+msgid "Cancel"
+msgstr "Cealaigh"
+
+#: system/modules/form/templates/index.tpl.php:3
+msgid "Add a form"
+msgstr "Cuir foirm"
+
+#: system/modules/form/templates/index.tpl.php:19
+msgid "Are you sure you want to delete this form? (WARNING: there may be existing data saved to this form!)"
+msgstr "An bhfuil tú cinnte go bhfuil tú ag iarraidh an fhoirm seo a scriosadh? (RABHADH: d'fhéadfadh go mbeadh sonraí atá ann cheana a shábháil leis an bhfoirm seo!)"
+
+#: system/modules/form/templates/show.tpl.php:7
+#: system/modules/report/actions/edit.php:48
+msgid "Fields"
+msgstr "réimsí"
+
+#: system/modules/form/templates/show.tpl.php:8
+msgid "Preview"
+msgstr "réamhamharc"
+
+#: system/modules/form/templates/show.tpl.php:9
+msgid "Mapping"
+msgstr "Mapáil"
+
+#: system/modules/form/templates/show.tpl.php:10
+msgid "Row Templates"
+msgstr "Teimpléid Ró"
+
+#: system/modules/form/templates/show.tpl.php:11
+msgid "Summary Template"
+msgstr "Teimpléad Achoimre"
+
+#: system/modules/form/templates/show.tpl.php:15
+msgid "Add a field"
+msgstr "Cuir réimse"
+
+#: system/modules/form/templates/show.tpl.php:21
+msgid "Ordering"
+msgstr "ordú"
+
+#: system/modules/form/templates/show.tpl.php:21
+msgid "Technical Name"
+msgstr "Ainm teicniúil"
+
+#: system/modules/form/templates/show.tpl.php:21
+msgid "Additional Details"
+msgstr "Mionsonraí Breise"
+
+#: system/modules/form/templates/show.tpl.php:35
+msgid "Are you sure you want to delete this form field? (WARNING: there may be existing data saved to this form field!)"
+msgstr "An bhfuil tú cinnte go bhfuil tú ag iarraidh seo a scriosadh réimse foirme? (RABHADH: d'fhéadfadh go mbeadh sonraí atá ann cheana a shábháil leis an réimse an fhoirm!)"
+
+#: system/modules/form/templates/show.tpl.php:101
+msgid "Row templates"
+msgstr "teimpléid Ró"
+
+#: system/modules/form/templates/show.tpl.php:102
+msgid "Header row template"
+msgstr "teimpléad a chéile Ceanntásc"
+
+#: system/modules/form/templates/show.tpl.php:103
+msgid "Item row template"
+msgstr "teimpléad a chéile Mír"
+
+#: system/modules/form/templates/show.tpl.php:111
+msgid "Summary template"
+msgstr "teimpléad Achoimre"
+
+#: system/modules/help/actions/view.php:10
+msgid "Sorry, there is no help for this topic."
+msgstr "Tá brón orainn, níl aon chabhair don ábhar seo."
+
+#: system/modules/help/actions/view.php:30
+msgid "Sorry, this help topic is not yet written."
+msgstr "Tá brón orm, níl an ábhar cabhrú scríofa go fóill."
+
+#: system/modules/help/templates/layout.tpl.php:19
+#: system/modules/help/templates/view.tpl.php:5
+msgid "Contents"
+msgstr "Clár ábhair"
+
+#: system/modules/help/templates/layout.tpl.php:20
+#: system/modules/help/templates/toc.tpl.php:4
+#: system/modules/help/templates/view.tpl.php:7
+msgid "Help on Help"
+msgstr "Cabhair ar Help"
+
+#: system/modules/help/templates/layout.tpl.php:29
+msgid "Copyright"
+msgstr "Cóipcheart"
+
+#: system/modules/help/templates/toc.tpl.php:6
+msgid "Table of Contents"
+msgstr "Clár ábhair"
+
+#: system/modules/inbox/actions/allread.php:4
+msgid "All messages marked as read."
+msgstr "Gach teachtaireacht marcáilte mar léite."
+
+#: system/modules/inbox/actions/archive.php:15
+msgid "Message(s) Archived"
+msgstr "Teachtaireacht (í) Cartlainne"
+
+#: system/modules/inbox/actions/delete.php:14
+#: system/modules/inbox/actions/deleteforever.php:14
+msgid "Message(s) Deleted"
+msgstr "Teachtaireacht (í) Scriosta"
+
+#: system/modules/inbox/actions/index.php:3
+#: system/modules/inbox/models/InboxService.php:240
+msgid "New Messages"
+msgstr "Teachtaireachtaí nua"
+
+#: system/modules/inbox/actions/index.php:14
+#: system/modules/inbox/actions/read.php:10
+#: system/modules/inbox/actions/showarchive.php:13
+#: system/modules/inbox/actions/trash.php:12
+#: system/modules/inbox/templates/portal.tpl.php:6
+#: system/modules/inbox/templates/send.tpl.php:37
+#: system/modules/inbox/templates/send.tpl.php:52
+#: system/modules/inbox/templates/view.tpl.php:10
+#: system/modules/task/task.hooks.php:50
+msgid "Subject"
+msgstr "ábhar"
+
+#: system/modules/inbox/actions/index.php:14
+#: system/modules/inbox/actions/read.php:10
+#: system/modules/inbox/actions/showarchive.php:13
+#: system/modules/inbox/actions/trash.php:12
+#: system/modules/inbox/templates/portal.tpl.php:6
+msgid "Sender"
+msgstr "Sender"
+
+#: system/modules/inbox/actions/read.php:3
+#: system/modules/inbox/models/InboxService.php:241
+msgid "Read Messages"
+msgstr "Léigh Teachtaireachtaí"
+
+#: system/modules/inbox/actions/send.php:3
+#: system/modules/inbox/templates/index.tpl.php:3
+#: system/modules/inbox/templates/read.tpl.php:3
+msgid "Create Message"
+msgstr "Cruthaigh Teachtaireacht"
+
+#: system/modules/inbox/actions/send.php:22
+msgid "Message Sent."
+msgstr "Teachtaireacht Seolta."
+
+#: system/modules/inbox/actions/showarchive.php:4
+#: system/modules/inbox/models/InboxService.php:242
+#: system/modules/inbox/templates/index.tpl.php:7
+#: system/modules/inbox/templates/read.tpl.php:7
+#: system/modules/inbox/templates/view.tpl.php:5
+msgid "Archive"
+msgstr "Cartlann"
+
+#: system/modules/inbox/actions/trash.php:4
+#: system/modules/inbox/models/InboxService.php:243
+msgid "Bin"
+msgstr "Bin"
+
+#: system/modules/inbox/actions/view.php:3
+msgid "Message View"
+msgstr "Teachtaireacht View"
+
+#: system/modules/inbox/actions/view.php:7
+msgid "No such message."
+msgstr "Gan teachtaireacht den sórt sin."
+
+#: system/modules/inbox/actions/view.php:10
+msgid "No access."
+msgstr "Gan rochtain."
+
+#: system/modules/inbox/inbox.hooks.php:4
+msgid "The following account has been changed"
+msgstr "Tá an cuntas seo a leanas athraíodh"
+
+#: system/modules/inbox/inbox.hooks.php:5
+msgid "An account has changed"
+msgstr "Tá Cuntas athraithe"
+
+#: system/modules/inbox/models/InboxService.php:251
+msgid "Inbox"
+msgstr "Bosca Isteach"
+
+#: system/modules/inbox/templates/index.tpl.php:12
+msgid "Mark all read"
+msgstr "Marcáil gach léamh"
+
+#: system/modules/inbox/templates/index.tpl.php:12
+msgid "Are you sure to mark all messages as read?"
+msgstr "An bhfuil tú cinnte chun ceiliúradh a dhéanamh ar gach teachtaireacht mar léite?"
+
+#: system/modules/inbox/templates/index.tpl.php:29
+#: system/modules/inbox/templates/read.tpl.php:25
+#: system/modules/inbox/templates/showarchive.tpl.php:24
+#: system/modules/inbox/templates/trash.tpl.php:23
+msgid "Prev"
+msgstr "prev"
+
+#: system/modules/inbox/templates/index.tpl.php:39
+#: system/modules/inbox/templates/read.tpl.php:35
+#: system/modules/inbox/templates/showarchive.tpl.php:34
+#: system/modules/inbox/templates/trash.tpl.php:33
+msgid "Next"
+msgstr "Ar Aghaidh"
+
+#: system/modules/inbox/templates/index.tpl.php:45
+#: system/modules/inbox/templates/portal.tpl.php:19
+msgid "No new messages"
+msgstr "Níl aon teachtaireacht nua"
+
+#: system/modules/inbox/templates/index.tpl.php:45
+msgid "click here"
+msgstr "Cliceáil anseo"
+
+#: system/modules/inbox/templates/index.tpl.php:45
+msgid "to go to your read messages."
+msgstr "chun dul go dtí do chuid teachtaireachtaí léite."
+
+#: system/modules/inbox/templates/send.tpl.php:13
+#: system/modules/inbox/templates/view.tpl.php:22
+msgid "Previous Messages"
+msgstr "Teachtaireachtaí roimhe Seo"
+
+#: system/modules/inbox/templates/send.tpl.php:15
+#: system/modules/inbox/templates/send.tpl.php:25
+#: system/modules/inbox/templates/view.tpl.php:31
+msgid "Message sent by"
+msgstr "Teachtaireacht a sheol"
+
+#: system/modules/inbox/templates/send.tpl.php:15
+#: system/modules/inbox/templates/view.tpl.php:31
+msgid "on"
+msgstr "ar"
+
+#: system/modules/inbox/templates/send.tpl.php:36
+#: system/modules/inbox/templates/send.tpl.php:51
+#: system/modules/timelog/actions/edit.php:42
+#: system/modules/timelog/partials/templates/listtimelog.tpl.php:8
+#: system/modules/timelog/templates/index.tpl.php:6
+msgid "To"
+msgstr "Chun"
+
+#: system/modules/inbox/templates/send.tpl.php:41
+#: system/modules/inbox/templates/send.tpl.php:55
+msgid "Send"
+msgstr "Seol"
+
+#: system/modules/inbox/templates/send.tpl.php:50
+msgid "Send a Message"
+msgstr "Seol Teachtaireacht"
+
+#: system/modules/inbox/templates/showarchive.tpl.php:9
+msgid "There are no archived messages"
+msgstr "Níl aon teachtaireacht gcartlann"
+
+#: system/modules/inbox/templates/trash.tpl.php:4
+msgid "Delete Forever"
+msgstr "Scrios Deo"
+
+#: system/modules/inbox/templates/trash.tpl.php:8
+msgid "No deleted messages."
+msgstr "Níl scriosadh teachtaireachtaí."
+
+#: system/modules/inbox/templates/view.tpl.php:3
+msgid "Reply"
+msgstr "freagra"
+
+#: system/modules/inbox/templates/view.tpl.php:9
+#: system/modules/timelog/actions/edit.php:41
+#: system/modules/timelog/partials/templates/listtimelog.tpl.php:8
+#: system/modules/timelog/templates/index.tpl.php:6
+msgid "From"
+msgstr "ó"
+
+#: system/modules/inbox/templates/view.tpl.php:9
+msgid "Unknown"
+msgstr "anaithnid"
+
+#: system/modules/inbox/templates/view.tpl.php:11
+msgid "Date Sent"
+msgstr "dáta Seolta"
+
+#: system/modules/main/actions/addwidget.php:14
+msgid "Add a widget"
+msgstr "Cuir ghiuirléid"
+
+#: system/modules/main/actions/addwidget.php:17
+msgid "Source module"
+msgstr "modúl Foinse"
+
+#: system/modules/main/actions/addwidget.php:18
+msgid "Widget Name"
+msgstr "Ainm ghiuirléid"
+
+#: system/modules/main/actions/addwidget.php:44
+msgid "Widget Added"
+msgstr "Giuirléid Added"
+
+#: system/modules/main/actions/addwidget.php:46
+msgid "Could not add widget"
+msgstr "Níorbh fhéidir giuirléid"
+
+#: system/modules/main/actions/configwidget.php:11
+#: system/modules/main/actions/configwidget.php:34
+#: system/modules/main/actions/removewidget.php:9
+msgid "Widget not found"
+msgstr "Giuirléid gan aimsiú"
+
+#: system/modules/main/actions/configwidget.php:22
+msgid "Could not find widget class"
+msgstr "Níorbh fhéidir rang ghiuirléid"
+
+#: system/modules/main/actions/configwidget.php:43
+msgid "Widget updated"
+msgstr "Giuirléid nuashonraithe"
+
+#: system/modules/main/actions/removewidget.php:14
+msgid "Widget removed"
+msgstr "Giuirléid a bhaint"
+
+#: system/modules/main/partials/templates/listwidgets.tpl.php:2
+msgid "Add Widget"
+msgstr "Cuir Giuirléid"
+
+#: system/modules/main/partials/templates/listwidgets.tpl.php:11
+msgid "Config"
+msgstr "Cumraíocht"
+
+#: system/modules/main/partials/templates/listwidgets.tpl.php:12
+msgid "Remove Widget"
+msgstr "bain Giuirléid"
+
+#: system/modules/report/actions/addmembers.php:23
+msgid "Add Member"
+msgstr "Cuir Ball"
+
+#: system/modules/report/actions/addmembers.php:24
+msgid "With Role"
+msgstr "le Ról"
+
+#: system/modules/report/actions/addmembers.php:28
+#: system/modules/task/actions/group/viewmembergroup.php:87
+#: system/modules/task/actions/tasktypeform.php:32
+msgid " Submit "
+msgstr " Cuir"
+
+#: system/modules/report/actions/connections/delete.php:6
+#: system/modules/report/actions/connections/test.php:6
+msgid "No connection ID specified"
+msgstr "Gan ID nasc sonraithe"
+
+#: system/modules/report/actions/connections/delete.php:11
+#: system/modules/report/actions/connections/test.php:11
+msgid "Connection could not be found"
+msgstr "Níorbh fhéidir ceangal le fáil"
+
+#: system/modules/report/actions/connections/delete.php:15
+msgid "Connection deleted"
+msgstr "ceangal scriosadh"
+
+#: system/modules/report/actions/connections/edit.php:17
+#: system/modules/report/actions/connections/index.php:7
+msgid "Driver"
+msgstr "tiománaí"
+
+#: system/modules/report/actions/connections/edit.php:18
+#: system/modules/report/actions/connections/index.php:7
+msgid "Host"
+msgstr "óstríomhaire"
+
+#: system/modules/report/actions/connections/edit.php:22
+#: system/modules/report/actions/connections/index.php:7
+msgid "Database"
+msgstr "Bunachar Sonraí"
+
+#: system/modules/report/actions/connections/edit.php:42
+msgid "Connection "
+msgstr "ceangal"
+
+#: system/modules/report/actions/connections/index.php:14
+msgid "Test Connection"
+msgstr "Ceangal tástáil"
+
+#: system/modules/report/actions/connections/index.php:16
+msgid "Are you sure you want to remove this connection?"
+msgstr "An bhfuil tú cinnte go bhfuil tú ag iarraidh a bhaint dtaca?"
+
+#: system/modules/report/actions/connections/test.php:19
+msgid "Connected to DB"
+msgstr "Ceangailte leis DB"
+
+#: system/modules/report/actions/connections/test.php:19
+msgid "Fetching databases to test connection"
+msgstr "bunachair ag fáil nasc a thástáil"
+
+#: system/modules/report/actions/connections/test.php:36
+#: system/modules/search/templates/index.tpl.php:47
+msgid "No results found"
+msgstr "Níor aimsíodh aon rud"
+
+#: system/modules/report/actions/createfeed.php:18
+#: system/modules/report/actions/editfeed.php:25
+msgid "Create a Feed from a Report"
+msgstr "Cruthaigh Feed ó Thuarascáil"
+
+#: system/modules/report/actions/createfeed.php:19
+#: system/modules/report/actions/editfeed.php:26
+msgid "Select Report"
+msgstr "Roghnaigh Tuarascáil"
+
+#: system/modules/report/actions/createfeed.php:20
+#: system/modules/report/actions/editfeed.php:27
+msgid "Feed Title"
+msgstr "Teideal Feed"
+
+#: system/modules/report/actions/createfeed.php:28
+#: system/modules/report/actions/editfeed.php:37
+msgid "Create a Feed"
+msgstr "Cruthaigh Feed"
+
+#: system/modules/report/actions/createfeed.php:64
+msgid "Your Feed has been created"
+msgstr "Tá do Feed Cruthaíodh"
+
+#: system/modules/report/actions/createfeed.php:64
+msgid "Use the URL below, with actual query parameter values, to access this report feed."
+msgstr "Bain úsáid as an URL thíos, le luachanna paraiméadar cheist iarbhír, rochtain a fháil ar an fotha tuarascáil."
+
+#: system/modules/report/actions/createreport.php:7
+#: system/modules/report/models/ReportService.php:617
+msgid "Create a Report"
+msgstr "Cruthaigh Tuairisc"
+
+#: system/modules/report/actions/createreport.php:12
+msgid "Create a New Report"
+msgstr "Cruthaigh tuairisc nua"
+
+#: system/modules/report/actions/createreport.php:18
+#: system/modules/report/actions/edit.php:27
+msgid "Connection"
+msgstr "ceangal"
+
+#: system/modules/report/actions/createreport.php:19
+#: system/modules/report/actions/edit.php:82
+#: system/modules/report/actions/edit.php:83
+msgid "Save Report"
+msgstr "Sábháil Tuarascáil"
+
+#: system/modules/report/actions/createreport.php:22
+#: system/modules/report/actions/edit.php:42
+msgid "Special Parameters"
+msgstr "Paraiméadair speisialta"
+
+#: system/modules/report/actions/createreport.php:24
+#: system/modules/report/actions/edit.php:44
+msgid "Roles"
+msgstr "rólanna"
+
+#: system/modules/report/actions/createreport.php:25
+#: system/modules/report/actions/edit.php:45
+msgid "Site URL"
+msgstr "URL Láithreáin"
+
+#: system/modules/report/actions/createreport.php:26
+#: system/modules/report/actions/edit.php:46
+#: system/modules/report/templates/createreport.tpl.php:4
+#: system/modules/report/templates/edit.tpl.php:9
+msgid "View Database"
+msgstr "Féach ar Bunachar Sonraí"
+
+#: system/modules/report/actions/createreport.php:27
+#: system/modules/report/actions/edit.php:47
+msgid "Tables"
+msgstr "táblaí"
+
+#: system/modules/report/actions/deletefeed.php:12
+#: system/modules/report/actions/editfeed.php:50
+msgid "Feed "
+msgstr "Feed"
+
+#: system/modules/report/actions/deletefeed.php:12
+msgid " has been deleted"
+msgstr " Scriosadh"
+
+#: system/modules/report/actions/deletemember.php:11
+msgid "Confirm Delete Member"
+msgstr "Deimhnigh Scrios Comhalta"
+
+#: system/modules/report/actions/deletemember.php:17
+msgid "No such member?"
+msgstr "Aon chomhalta den sórt sin?"
+
+#: system/modules/report/actions/deletemember.php:35
+msgid "Member deleted"
+msgstr "ball scriosadh"
+
+#: system/modules/report/actions/deletemember.php:39
+msgid "Member no longer exists?"
+msgstr "Ball ann a thuilleadh?"
+
+#: system/modules/report/actions/deletereport.php:28
+msgid "Report deleted"
+msgstr "Tuairisc scriosadh"
+
+#: system/modules/report/actions/deletereport.php:32
+msgid "Report no longer exists?"
+msgstr "Tuarascáil ann a thuilleadh?"
+
+#: system/modules/report/actions/edit.php:5
+#: system/modules/report/actions/edit.php:22
+msgid " Report"
+msgstr " Tuarascáil"
+
+#: system/modules/report/actions/edit.php:10
+#: system/modules/report/actions/edit.php:147
+msgid "Report not found"
+msgstr "Tuarascáil gan aimsiú"
+
+#: system/modules/report/actions/edit.php:14
+#: system/modules/report/templates/approvereport.tpl.php:16
+#: system/modules/report/templates/createreport.tpl.php:3
+msgid "Create Report"
+msgstr "Cruthaigh Tuarascáil"
+
+#: system/modules/report/actions/edit.php:16
+msgid "Edit Report: "
+msgstr "Tuairisc Edit:"
+
+#: system/modules/report/actions/edit.php:22
+msgid "Create a New"
+msgstr "Cruthaigh Nua"
+
+#: system/modules/report/actions/edit.php:54
+msgid "Execute Report"
+msgstr "Rith Tuarascáil"
+
+#: system/modules/report/actions/edit.php:68
+#: system/modules/report/actions/edit.php:158
+msgid "You do not have access to this report"
+msgstr "Ní gá duit rochtain a fháil tuarascáil seo"
+
+#: system/modules/report/actions/edit.php:73
+#: system/modules/report/actions/edit.php:163
+msgid "You do not have create report permissions"
+msgstr "Ní gá duit a bheith a chruthú ceadanna tuarascáil"
+
+#: system/modules/report/actions/edit.php:79
+msgid "Approved"
+msgstr "Ceadaithe"
+
+#: system/modules/report/actions/edit.php:92
+#: system/modules/report/models/ReportLib.php:11
+#: system/modules/task/actions/group/viewmembergroup.php:20
+#: system/modules/task/actions/group/viewmembergroup.php:75
+msgid "Member"
+msgstr "ball"
+
+#: system/modules/report/actions/edit.php:92
+msgid "Is Email Recipient"
+msgstr "Ríomhphost Faighteoir"
+
+#: system/modules/report/actions/edit.php:107
+#: system/modules/report/models/ReportLib.php:27
+#: system/modules/task/actions/group/viewmembergroup.php:34
+msgid "Group currently has no members. Please Add New Members."
+msgstr "Níl aon bhaill an ghrúpa faoi láthair. Tabhair Cuir Baill Nua."
+
+#: system/modules/report/actions/edit.php:118
+msgid "Is Email Template"
+msgstr "Is Teimpléad Ríomhphost"
+
+#: system/modules/report/actions/edit.php:132
+msgid "Are you sure you want to delete this Report template entry?"
+msgstr "An bhfuil tú cinnte go bhfuil tú ag iarraidh a scriosadh Tuarascáil an iontráil teimpléad?"
+
+#: system/modules/report/actions/edit.php:188
+msgid "Report "
+msgstr "Tuarascáil"
+
+#: system/modules/report/actions/edit.php:190
+#: system/modules/report/actions/feedAjaxGetReportText.php:9
+#: system/modules/report/actions/listfeed.php:11
+#: system/modules/report/partials/templates/removeUser.tpl.php:2
+#: system/modules/report/templates/edit.tpl.php:3
+msgid "Report"
+msgstr "Tuarascáil"
+
+#: system/modules/report/actions/editfeed.php:3
+msgid "Edit Feed"
+msgstr "Cuir Fotha"
+
+#: system/modules/report/actions/editfeed.php:21
+msgid "Available Formats: html, csv, pdf, xml"
+msgstr "Formats Available: html, csv, pdf, xml"
+
+#: system/modules/report/actions/editfeed.php:22
+msgid "Date Formats must be <b>d/m/Y</b> to mimic date picker"
+msgstr "Caithfidh Formáidí Dáta bheith <b> d / m / Y </ b> mimic dáta roghnóir"
+
+#: system/modules/report/actions/editfeed.php:29
+msgid "Feed URL"
+msgstr "Feed URL"
+
+#: system/modules/report/actions/editfeed.php:30
+#: system/modules/task/task.hooks.php:58 system/modules/task/task.hooks.php:109
+#: system/modules/task/task.hooks.php:150
+#: system/modules/task/task.hooks.php:232
+#: system/modules/task/task.hooks.php:266
+#: system/modules/task/task.hooks.php:300
+msgid "Note"
+msgstr "Nóta"
+
+#: system/modules/report/actions/editfeed.php:50
+msgid " has been updated"
+msgstr " curtha suas chun dáta"
+
+#: system/modules/report/actions/editmember.php:10
+#: system/modules/task/task.group.actions.php:220
+#: system/modules/task/task.group.actions.php:298
+msgid "Member Details"
+msgstr "ball Mionsonraí"
+
+#: system/modules/report/actions/editmember.php:14
+msgid "Is email recipient"
+msgstr "Is faighteoir ríomhphost"
+
+#: system/modules/report/actions/editmember.php:30
+msgid "Member updated"
+msgstr "ball nuashonraithe"
+
+#: system/modules/report/actions/email.php:141
+msgid "Dear "
+msgstr "A chara"
+
+#: system/modules/report/actions/email.php:141
+msgid "Please find attached your reports"
+msgstr "Iamh do tuarascálacha"
+
+#: system/modules/report/actions/email.php:141
+msgid "Kind regards"
+msgstr "Mise le meas"
+
+#: system/modules/report/actions/exereport.php:5
+#: system/modules/report/actions/runreport.php:8
+msgid "Generate Report"
+msgstr "Gin Tuarascáil"
+
+#: system/modules/report/actions/exereport.php:19
+msgid "Export as CSV"
+msgstr "Easpórtáil mar CSV"
+
+#: system/modules/report/actions/exereport.php:21
+msgid "Export as XML"
+msgstr "Easpórtáil mar XML"
+
+#: system/modules/report/actions/exereport.php:22
+msgid "Edit Report Parameters"
+msgstr "Cuir Tuairisc Paraiméadair"
+
+#: system/modules/report/actions/exereport.php:23
+msgid "Edit Report"
+msgstr "Tuairisc Edit"
+
+#: system/modules/report/actions/exereport.php:24
+msgid "Export as PDF"
+msgstr "Easpórtáil mar PDF"
+
+#: system/modules/report/actions/exereport.php:42
+msgid "No Data found for selections. Please try again...."
+msgstr "No sonraí aimsíodh do roghanna. Bain triail eile as ...."
+
+#: system/modules/report/actions/exereport.php:180
+msgid "No such report?"
+msgstr "Níl tuairisc den sórt sin?"
+
+#: system/modules/report/actions/index.php:8
+msgid "Reports"
+msgstr "tuarascálacha"
+
+#: system/modules/report/actions/index.php:9
+msgid "List Reports"
+msgstr "Tuarascálacha liosta"
+
+#: system/modules/report/actions/index.php:49
+msgid "Are you sure you want to delete this Report?"
+msgstr "An bhfuil tú cinnte go bhfuil tú ag iarraidh Tuarascáil seo a scriosadh?"
+
+#: system/modules/report/actions/index.php:79
+msgid "You have no available reports"
+msgstr "Níl aon tuarascálacha ar fáil"
+
+#: system/modules/report/actions/listfeed.php:5
+msgid "Feeds"
+msgstr "Fothaí"
+
+#: system/modules/report/actions/listfeed.php:11
+msgid "Feed"
+msgstr "Feed"
+
+#: system/modules/report/actions/listfeed.php:26
+msgid " View "
+msgstr " Amharc"
+
+#: system/modules/report/actions/listfeed.php:27
+msgid "Are you sure you wish to DELETE this feed?"
+msgstr "An bhfuil tú cinnte go dteastaíonn uait scriosadh an fotha?"
+
+#: system/modules/report/actions/listfeed.php:33
+msgid "No feeds to list"
+msgstr "Níl feeds a liostú"
+
+#: system/modules/report/actions/reportAjaxCategorytoType.php:32
+#: system/modules/report/actions/reportAjaxListModules.php:19
+#: system/modules/report/actions/reportAjaxModuletoCategory.php:23
+msgid "No Reports"
+msgstr "Gan Tuarascálacha"
+
+#: system/modules/report/actions/runreport.php:22
+msgid ": Report is yet to be approved"
+msgstr ": Tá Tuarascáil fós atá le formheas"
+
+#: system/modules/report/actions/runreport.php:34
+msgid " Display Report "
+msgstr " Tuairisc Taispeáin"
+
+#: system/modules/report/actions/templates/delete.php:6
+#: system/modules/report/actions/templates/delete.php:11
+msgid "Report template not found"
+msgstr "Tuarascáil teimpléad gan aimsiú"
+
+#: system/modules/report/actions/templates/delete.php:15
+msgid "Report template removed"
+msgstr "Tuairisc teimpléad bhaint"
+
+#: system/modules/report/actions/templates/edit.php:8
+msgid "Add Report Template"
+msgstr "Cuir Tuarascáil Teimpléad"
+
+#: system/modules/report/actions/templates/edit.php:16
+msgid "Use in emailed reports"
+msgstr "Úsáid i dtuarascálacha ríomhphost"
+
+#: system/modules/report/actions/templates/edit.php:19
+msgid "Report ID"
+msgstr "Tuairisc ID"
+
+#: system/modules/report/actions/templates/edit.php:35
+msgid "Report template "
+msgstr "teimpléad Tuarascáil"
+
+#: system/modules/report/actions/updatemembers.php:28
+msgid "Member Group updated"
+msgstr "Comhalta Grúpa nuashonraithe"
+
+#: system/modules/report/actions/user/reassign.php:9
+#: system/modules/report/actions/user/reassign.php:32
+msgid "No user specified"
+msgstr "Gan úsáideoir sonraithe"
+
+#: system/modules/report/actions/user/reassign.php:19
+msgid "Reassign reports"
+msgstr "tuarascálacha athshannadh"
+
+#: system/modules/report/actions/user/reassign.php:20
+msgid "Reassign reports to"
+msgstr "tuarascálacha a athshannadh"
+
+#: system/modules/report/actions/user/reassign.php:72
+msgid "No reports found for user "
+msgstr "No tuarascálacha aimsíodh don úsáideoir"
+
+#: system/modules/report/actions/user/reassign.php:75
+msgid "Users reports reassigned to "
+msgstr "tuairiscí Users athdháileadh ar"
+
+#: system/modules/report/models/Report.php:153
+msgid "Select an Optional Template"
+msgstr "Roghnaigh Teimpléad Roghnach"
+
+#: system/modules/report/models/Report.php:154
+#: system/modules/report/models/ReportService.php:364
+msgid "Format"
+msgstr "formáid"
+
+#: system/modules/report/models/Report.php:250
+msgid "No Data Returned for selections"
+msgstr "Níl sonraí ais do roghanna"
+
+#: system/modules/report/models/Report.php:250
+msgid "Results"
+msgstr "torthaí"
+
+#: system/modules/report/models/Report.php:250
+msgid "No data returned for selections"
+msgstr "Aon sonraí ar ais do roghanna"
+
+#: system/modules/report/models/Report.php:254
+#: system/modules/task/actions/edit.php:54
+#: system/modules/task/actions/viewtask.php:51
+#: system/modules/task/actions/viewtask.php:55
+#: system/modules/task/actions/viewtask.php:80
+#: system/modules/task/partials/templates/listtasks.tpl.php:5
+msgid "Status"
+msgstr "stádas"
+
+#: system/modules/report/models/Report.php:261
+msgid "SQL has completed successfully"
+msgstr "SQL curtha i gcrích go rathúil"
+
+#: system/modules/report/models/Report.php:265
+msgid "A SQL error was encountered: "
+msgstr "Tharla earráid SQL:"
+
+#: system/modules/report/models/Report.php:276
+#: system/modules/report/models/Report.php:280
+#: system/modules/report/models/Report.php:286
+msgid "There is a problem with your SQL statement"
+msgstr "Tá fadhb le do ráiteas SQL"
+
+#: system/modules/report/models/ReportService.php:318
+msgid "Field"
+msgstr "réimse"
+
+#: system/modules/report/models/ReportService.php:353
+msgid "No action Found"
+msgstr "Gan aon ghníomhaíocht Torthaí"
+
+#: system/modules/report/models/ReportService.php:360
+msgid "Web Page"
+msgstr "Leathanach gréasáin"
+
+#: system/modules/report/models/ReportService.php:361
+msgid "Comma Delimited File"
+msgstr "Camóga Comhad theorainneacha socraithe"
+
+#: system/modules/report/models/ReportService.php:362
+msgid "PDF File"
+msgstr "PDF File"
+
+#: system/modules/report/models/ReportService.php:363
+#: system/modules/report/models/ReportTemplate.php:14
+msgid "XML"
+msgstr "XML"
+
+#: system/modules/report/models/ReportService.php:614
+#: system/modules/report/templates/approvereport.tpl.php:15
+#: system/modules/report/templates/deletereport.tpl.php:3
+msgid "Report Dashboard"
+msgstr "Tuairisc Painéal na nIonstraimí"
+
+#: system/modules/report/models/ReportService.php:618
+msgid "Connections"
+msgstr "naisc"
+
+#: system/modules/report/models/ReportService.php:619
+msgid "Feeds Dashboard"
+msgstr "Fothaí Painéal"
+
+#: system/modules/report/models/ReportTemplate.php:12
+msgid "HTML"
+msgstr "HTML"
+
+#: system/modules/report/models/ReportTemplate.php:13
+msgid "CSV"
+msgstr "CSV"
+
+#: system/modules/report/models/ReportTemplate.php:15
+msgid "PDF"
+msgstr "PDF"
+
+#: system/modules/report/models/ReportTemplate.php:16
+msgid "Image"
+msgstr "Íomha"
+
+#: system/modules/report/partials/actions/removeUser.php:9
+msgid "No User provided"
+msgstr "Gan Úsáideoir fáil"
+
+#: system/modules/report/partials/templates/removeUser.tpl.php:4
+msgid "This user owns"
+msgstr "úinéireacht an úsáideoir seo"
+
+#: system/modules/report/partials/templates/removeUser.tpl.php:4
+#: system/modules/report/partials/templates/removeUser.tpl.php:7
+msgid "report"
+msgstr "tuarascáil"
+
+#: system/modules/report/partials/templates/removeUser.tpl.php:10
+msgid "Reassign report(s)"
+msgstr "Athshannadh tuairisc (í)"
+
+#: system/modules/report/templates/approvereport.tpl.php:17
+msgid "Approve Reports"
+msgstr "Tuarascálacha cheadú"
+
+#: system/modules/report/templates/approvereport.tpl.php:18
+msgid "View Report"
+msgstr "View Tuarascáil"
+
+#: system/modules/report/templates/approvereport.tpl.php:19
+#: system/modules/report/templates/edit.tpl.php:7
+msgid "Members"
+msgstr "Baill"
+
+#: system/modules/report/templates/connections/index.tpl.php:1
+msgid "Add a Connection"
+msgstr "Cuir Ceangal"
+
+#: system/modules/report/templates/createreport.tpl.php:8
+msgid "Please review the <b>Help</b> file for full instructions on the special syntax used to create reports."
+msgstr "Déan iniúchadh ar an <b> Cúnamh </ b> an comhad treoracha iomlána ar an chomhréir speisialta a úsáidtear chun tuarascálacha a chruthú."
+
+#: system/modules/report/templates/deletereport.tpl.php:4
+msgid "Delete Report"
+msgstr "Scrios Tuarascáil"
+
+#: system/modules/report/templates/edit.tpl.php:5
+msgid "SQL"
+msgstr "SQL"
+
+#: system/modules/report/templates/edit.tpl.php:20
+msgid ""
+"You can add special templates to render the data. Create a <a href=\"/admin-templates\">System Template in Admin</a> and set the \n"
+"\t        \tmodule to <b>report</b>, it can then be selected here.</p>\n"
+"\t        \t<p>The template processer uses the Twig language, you can find more information about this on\n"
+"\t        \tthe <a href=\"\">Twig Website</a>.</p>\n"
+"\t        \t<p>A good first step when creating a new template, is to look at the data. You can use the following\n"
+"\t        \ttwig statement in your template to do this:</p>\n"
+"\t        \t<pre>{{dump(data)}}</pre>"
+msgstr ""
+"Is féidir leat a chur teimpléid speisialta i gcóir chun na sonraí. Cruthaigh href=\"/admin-templates\"> <a Córas Teimpléad i Riarachán </a> agus leag an\n"
+"Modúl <b> tuarascáil </ b>, is féidir é a roghnú anseo ansin. </ p>\n"
+"<P> Úsáideann an Processer teimpléad an teanga Twig, is féidir leat teacht ar tuilleadh eolais a fháil faoi seo ar\n"
+"an <a href=\"\"> Twig láithreán </a>. </ p>\n"
+"<P> Tá an chéad chéim maith nuair a chruthú teimpléad nua, chun breathnú ar na sonraí. Is féidir leat úsáid an méid seo a leanas\n"
+"twig ráiteas i do teimpléad seo a dhéanamh: </ p>\n"
+"<Réamh> {{Dumpáil (sonraí)}} </ réamh>"
+
+#: system/modules/report/templates/edit.tpl.php:32
+msgid " Add New Members "
+msgstr " Cuir Baill Nua"
+
+#: system/modules/report/templates/editfeed.tpl.php:3
+msgid "View Feed"
+msgstr "Féach ar Feed"
+
+#: system/modules/report/templates/listfeed.tpl.php:1
+msgid "Create Feed"
+msgstr "Cruthaigh Fotha"
+
+#: system/modules/rest/models/RestService.php:27
+msgid "wrong API key"
+msgstr "eochair API mícheart"
+
+#: system/modules/rest/models/RestService.php:37
+msgid "authentication failed for "
+msgstr "fhíordheimhniú Theip haghaidh"
+
+#: system/modules/rest/models/RestService.php:53
+msgid "Missing token"
+msgstr "chomhartha Iarraidh"
+
+#: system/modules/rest/models/RestService.php:61
+msgid "No session associated with this token"
+msgstr "Gan seisiún a bhaineann leis an chomhartha"
+
+#: system/modules/rest/models/RestService.php:72
+#: system/modules/rest/models/RestService.php:109
+#: system/modules/rest/models/RestService.php:151
+msgid "No access to "
+msgstr "Gan rochtain ar"
+
+#: system/modules/rest/models/RestService.php:131
+msgid "No feedback from save."
+msgstr "Uimh aiseolas ó shábháil."
+
+#: system/modules/rest/models/RestService.php:139
+msgid "Not allowed"
+msgstr "Ní cheadaítear"
+
+#: system/modules/rest/models/RestService.php:159
+msgid "deleted"
+msgstr "scriosadh"
+
+#: system/modules/rest/models/RestService.php:162
+msgid "Not allowed to delete this record"
+msgstr "Ní cheadaítear an taifead seo a scriosadh"
+
+#: system/modules/search/actions/reindexall.php:4
+#: system/modules/task/config.php:45
+msgid "Done"
+msgstr "Críochnaithe"
+
+#: system/modules/search/actions/results.php:50
+#: system/modules/search/templates/resultsbackup.tpl.php:25
+msgid "restricted"
+msgstr "srianta"
+
+#: system/modules/search/actions/results.php:64
+msgid "Please enter at least 3 characters for searching."
+msgstr "Cuir isteach ar a laghad 3 carachtair don chuardach."
+
+#: system/modules/search/templates/index.tpl.php:1
+#: system/modules/timelog/actions/edit.php:35
+#: system/modules/timelog/actions/start.php:15
+msgid "Search"
+msgstr "Search"
+
+#: system/modules/search/templates/index.tpl.php:55
+msgid "Failed to receive a response from search"
+msgstr "Theip ar freagra a fháil ó chuardach"
+
+#: system/modules/search/templates/resultsbackup.tpl.php:35
+msgid "No documents found,."
+msgstr "Aon doiciméid aimsíodh ,."
+
+#: system/modules/tag/actions/delete.php:10
+msgid "Tag deleted"
+msgstr "Clib scriosadh"
+
+#: system/modules/tag/actions/delete.php:14
+msgid "Could not find tag"
+msgstr "Níorbh fhéidir chlib"
+
+#: system/modules/tag/actions/edit.php:4
+msgid "Edit Tag"
+msgstr "Cuir Clib"
+
+#: system/modules/tag/actions/edit.php:9 system/modules/tag/actions/edit.php:11
+#: system/modules/tag/actions/index.php:6
+msgid "Tag"
+msgstr "Clib"
+
+#: system/modules/tag/actions/edit.php:23
+msgid "Couldn't save tag"
+msgstr "Níorbh fhéidir chlib"
+
+#: system/modules/tag/actions/edit.php:23
+msgid "already exists!"
+msgstr "ann cheana féin!"
+
+#: system/modules/tag/actions/edit.php:25
+msgid "Tag saved"
+msgstr "Clib shábháil"
+
+#: system/modules/tag/actions/index.php:4
+#: system/modules/tag/models/TagService.php:158
+msgid "Tag Admin"
+msgstr "Clib Riarachán"
+
+#: system/modules/tag/models/TagService.php:129
+#: system/modules/tag/models/TagService.php:131
+#: system/modules/tag/partials/templates/listTags.tpl.php:13
+msgid "No tag"
+msgstr "aon chlib"
+
+#: system/modules/tag/models/TagService.php:142
+#: system/modules/tag/partials/templates/listTags.tpl.php:22
+msgid "Filter tags"
+msgstr "clibeanna scagaire"
+
+#: system/modules/tag/partials/templates/listTags.tpl.php:20
+msgid "Available tags"
+msgstr "clibeanna ar fáil"
+
+#: system/modules/tag/templates/edit.tpl.php:1
+msgid "Back to Tag List"
+msgstr "Ar ais go liosta a Clib"
+
+#: system/modules/task/actions/createtask.php:4
+#: system/modules/task/actions/createtask.php:58
+#: system/modules/task/actions/tasktypeform.php:5
+#: system/modules/task/templates/tasktypeform.tpl.php:17
+msgid "Create Task"
+msgstr "Cruthaigh Tasc"
+
+#: system/modules/task/actions/createtask.php:32
+#: system/modules/task/actions/taskAjaxSelectbyTaskGroup.php:33
+msgid "Task Group Description"
+msgstr "Tasc Grúpa Tuairisc"
+
+#: system/modules/task/actions/createtask.php:33
+#: system/modules/task/actions/createtask.php:44
+#: system/modules/task/actions/edit.php:45
+#: system/modules/task/actions/edit.php:46
+#: system/modules/task/actions/taskAjaxSelectbyTaskGroup.php:34
+#: system/modules/task/actions/tasklist.php:94
+#: system/modules/task/actions/tasklist.php:106
+#: system/modules/task/actions/viewtask.php:62
+#: system/modules/task/actions/viewtask.php:77
+msgid "Task Group"
+msgstr "tasc Grúpa"
+
+#: system/modules/task/actions/createtask.php:34
+#: system/modules/task/actions/createtask.php:46
+#: system/modules/task/actions/edit.php:48
+#: system/modules/task/actions/edit.php:50
+#: system/modules/task/actions/taskAjaxSelectbyTaskGroup.php:35
+#: system/modules/task/actions/tasklist.php:95
+#: system/modules/task/actions/viewtask.php:63
+#: system/modules/task/actions/viewtask.php:78
+msgid "Task Type"
+msgstr "tasc Cineál"
+
+#: system/modules/task/actions/createtask.php:43
+msgid "Create a New Task - Step One"
+msgstr "Cruthaigh Tasc Nua - Céim a hAon"
+
+#: system/modules/task/actions/createtask.php:45
+#: system/modules/task/actions/edit.php:53
+msgid "Task Title"
+msgstr "tasc Teideal"
+
+#: system/modules/task/actions/createtask.php:47
+#: system/modules/task/actions/edit.php:57
+#: system/modules/task/actions/viewtask.php:66
+#: system/modules/task/actions/viewtask.php:81
+#: system/modules/task/partials/templates/listtasks.tpl.php:5
+msgid "Priority"
+msgstr "tosaíocht"
+
+#: system/modules/task/actions/createtask.php:48
+#: system/modules/task/actions/edit.php:58
+#: system/modules/task/actions/viewtask.php:67
+#: system/modules/task/actions/viewtask.php:82
+msgid "Date Due"
+msgstr "dáta Dlite"
+
+#: system/modules/task/actions/createtask.php:50
+#: system/modules/task/actions/edit.php:60
+#: system/modules/task/actions/edit.php:61
+#: system/modules/task/actions/viewtask.php:30
+#: system/modules/task/actions/viewtask.php:34
+#: system/modules/task/partials/templates/listtasks.tpl.php:5
+msgid "Assigned To"
+msgstr "sannta Chun"
+
+#: system/modules/task/actions/createtask.php:51
+msgid " Continue >> "
+msgstr " Leanúint >>"
+
+#: system/modules/task/actions/createtask.php:86
+#: system/modules/task/task.hooks.php:99
+msgid "Task "
+msgstr "Tasc"
+
+#: system/modules/task/actions/createtask.php:90
+msgid "The Task could not be created. Please inform the IT Group"
+msgstr "Níorbh fhéidir an Tasc a chruthú. Cuir in iúl don Ghrúpa TE"
+
+#: system/modules/task/actions/delete.php:14
+#: system/modules/task/actions/updatestatus.php:40
+msgid "Task: "
+msgstr "Tasc:"
+
+#: system/modules/task/actions/delete.php:14
+msgid " has been deleted."
+msgstr " scriosta cheana féin."
+
+#: system/modules/task/actions/delete.php:16
+msgid "Task could not be found."
+msgstr "Níorbh fhéidir Tasc a fháil."
+
+#: system/modules/task/actions/duplicatetask.php:12
+msgid " -Copy"
+msgstr " -Copy"
+
+#: system/modules/task/actions/duplicatetask.php:51
+msgid "Task duplicated"
+msgstr "tasc dhúbailt"
+
+#: system/modules/task/actions/edit.php:11
+msgid "You do not have permission to edit this Task"
+msgstr "Ní gá duit cead a chur in eagar ar an Tasc"
+
+#: system/modules/task/actions/edit.php:35
+#: system/modules/task/actions/group/viewtaskgrouptypes.php:43
+#: system/modules/task/actions/taskAjaxSelectbyTaskGroup.php:28
+#: system/modules/task/actions/tasklist.php:90
+#: system/modules/task/task.group.actions.php:33
+msgid "Unassigned"
+msgstr "neamhshannta"
+
+#: system/modules/task/actions/edit.php:42
+msgid "Edit task"
+msgstr "tasc Edit"
+
+#: system/modules/task/actions/edit.php:42
+msgid "Create a new task"
+msgstr "Cruthaigh tasc nua"
+
+#: system/modules/task/actions/edit.php:64
+msgid "Estimated hours"
+msgstr "uaireanta measta"
+
+#: system/modules/task/actions/edit.php:65
+msgid "Effort"
+msgstr "iarracht"
+
+#: system/modules/task/actions/edit.php:73
+msgid "Task Group ID"
+msgstr "Tasc Grúpa ID"
+
+#: system/modules/task/actions/edit.php:77
+#: system/modules/task/partials/templates/listtaskgroups.tpl.php:8
+msgid "New Task"
+msgstr "New Tasc"
+
+#: system/modules/task/actions/edit.php:79
+#: system/modules/task/actions/viewtask.php:22
+msgid "Task:"
+msgstr "Tasc:"
+
+#: system/modules/task/actions/edit.php:91
+#: system/modules/task/actions/group/viewmembergroup.php:67
+#: system/modules/task/actions/tasklist.php:92
+#: system/modules/task/actions/tasklist.php:106
+#: system/modules/task/actions/viewtask.php:156
+#: system/modules/task/task.actions.php:225
+msgid "Assignee"
+msgstr "sannaí"
+
+#: system/modules/task/actions/edit.php:91
+#: system/modules/task/actions/viewtask.php:156
+#: system/modules/timelog/partials/templates/timelogwidget.tpl.php:24
+msgid "Start"
+msgstr "Tosaigh"
+
+#: system/modules/task/actions/edit.php:91
+#: system/modules/task/actions/viewtask.php:156
+msgid "Period (hours)"
+msgstr "Tréimhse (uaireanta)"
+
+#: system/modules/task/actions/edit.php:116 system/modules/task/config.php:71
+msgid "Review"
+msgstr "Athbhreithniú"
+
+#: system/modules/task/actions/edit.php:116
+msgid "Accept"
+msgstr "Glac"
+
+#: system/modules/task/actions/edit.php:119
+#: system/modules/task/actions/viewtask.php:189
+msgid "Are you sure you wish to DELETE this Time Log Entry?"
+msgstr "An bhfuil tú cinnte go dteastaíonn uait scriosadh an am Logáil Teacht?"
+
+#: system/modules/task/actions/edit.php:125
+#: system/modules/task/actions/viewtask.php:196
+msgid "Total"
+msgstr "Iomlán"
+
+#: system/modules/task/actions/edit.php:161
+msgid "Notification Events"
+msgstr "Fógra Imeachtaí"
+
+#: system/modules/task/actions/edit.php:164
+#: system/modules/task/actions/viewtask.php:264
+#: system/modules/task/task.actions.php:622
+msgid "Task Details Update"
+msgstr "Tasc Mionsonraí Nuashonrú"
+
+#: system/modules/task/actions/edit.php:165
+#: system/modules/task/actions/viewtask.php:265
+#: system/modules/task/task.actions.php:623
+msgid "Comments Added"
+msgstr "Comments Added"
+
+#: system/modules/task/actions/edit.php:168
+#: system/modules/task/actions/viewtask.php:266
+#: system/modules/task/task.actions.php:624
+msgid "Time Log Entry"
+msgstr "Am Logáil Iontráil"
+
+#: system/modules/task/actions/edit.php:169
+#: system/modules/task/actions/viewtask.php:267
+msgid "Task Data Updated"
+msgstr "Tasc sonraí Nuashonraithe"
+
+#: system/modules/task/actions/edit.php:171
+#: system/modules/task/actions/viewtask.php:268
+#: system/modules/task/task.actions.php:625
+msgid "Documents Added"
+msgstr "Doiciméid Added"
+
+#: system/modules/task/actions/edit.php:245
+msgid "Your iCal is attached"
+msgstr "Tá do Tuinnını ceangailte"
+
+#: system/modules/task/actions/edit.php:245
+msgid "View Task at: "
+msgstr "Féach Tasc ag:"
+
+#: system/modules/task/actions/group/viewmembergroup.php:15
+msgid "Task Group - "
+msgstr "Tasc Grúpa -"
+
+#: system/modules/task/actions/group/viewmembergroup.php:17
+msgid "Task Group: "
+msgstr "Tasc Grúpa:"
+
+#: system/modules/task/actions/group/viewmembergroup.php:66
+#: system/modules/task/actions/tasklist.php:93
+#: system/modules/task/actions/tasklist.php:106
+msgid "Creator"
+msgstr "Creator"
+
+#: system/modules/task/actions/group/viewmembergroup.php:68
+#: system/modules/task/actions/tasklist.php:106
+msgid "All Others"
+msgstr "Gach Eile"
+
+#: system/modules/task/actions/group/viewmembergroup.php:71
+msgid "Guest"
+msgstr "Aoi"
+
+#: system/modules/task/actions/group/viewtaskgrouptypes.php:3
+#: system/modules/task/actions/group/viewtaskgrouptypes.php:5
+msgid "Manage Task Groups"
+msgstr "Bainistigh Tascghrúpaí"
+
+#: system/modules/task/actions/group/viewtaskgrouptypes.php:11
+#: system/modules/task/task.group.actions.php:49
+#: system/modules/task/task.group.actions.php:145
+msgid "Default Assignee"
+msgstr "Sannaí réamhshocraithe"
+
+#: system/modules/task/actions/group/viewtaskgrouptypes.php:26
+msgid "There are no Task Groups Configured. Please create a New Task Group."
+msgstr "Níl aon Tascghrúpaí cumraithe. Tabhair chruthú Tascghrúpa Nua."
+
+#: system/modules/task/actions/group/viewtaskgrouptypes.php:47
+msgid "Task Group Attributes"
+msgstr "Tréithe Tasc Grúpa"
+
+#: system/modules/task/actions/group/viewtaskgrouptypes.php:48
+#: system/modules/task/task.group.actions.php:40
+#: system/modules/task/task.group.actions.php:138
+msgid "Task Group Type"
+msgstr "Cineál Tasc Grúpa"
+
+#: system/modules/task/actions/group/viewtaskgrouptypes.php:50
+#: system/modules/task/task.group.actions.php:42
+#: system/modules/task/task.group.actions.php:140
+msgid "Who Can Assign"
+msgstr "Cé atá i dteideal Sann"
+
+#: system/modules/task/actions/group/viewtaskgrouptypes.php:51
+#: system/modules/task/task.group.actions.php:43
+#: system/modules/task/task.group.actions.php:141
+msgid "Who Can View"
+msgstr "Cé atá i dteideal Féach"
+
+#: system/modules/task/actions/group/viewtaskgrouptypes.php:52
+#: system/modules/task/task.group.actions.php:44
+#: system/modules/task/task.group.actions.php:142
+msgid "Who Can Create"
+msgstr "Cé atá i dteideal a chruthú"
+
+#: system/modules/task/actions/group/viewtaskgrouptypes.php:56
+#: system/modules/task/task.group.actions.php:47
+msgid "Default Task Type"
+msgstr "Default Tasc Cineál"
+
+#: system/modules/task/actions/group/viewtaskgrouptypes.php:57
+#: system/modules/task/task.group.actions.php:48
+msgid "Default Priority"
+msgstr "Tosaíocht réamhshocraithe"
+
+#: system/modules/task/actions/index.php:8
+#: system/modules/task/templates/tasktypeform.tpl.php:15
+msgid "Task Dashboard"
+msgstr "tasc Painéal na nIonstraimí"
+
+#: system/modules/task/actions/taskAjaxAssigntoGroup.php:20
+#: system/modules/task/actions/taskAjaxGrouptoType.php:26
+#: system/modules/task/actions/taskAjaxPrioritytoStatus.php:30
+#: system/modules/task/actions/taskAjaxTypetoPriority.php:28
+msgid "No assigned Tasks"
+msgstr "Gan Tascanna sannadh"
+
+#: system/modules/task/actions/tasklist.php:4
+msgid "List Tasks"
+msgstr "Tascanna liosta"
+
+#: system/modules/task/actions/tasklist.php:96
+msgid "Task Priority"
+msgstr "tasc Tosaíocht"
+
+#: system/modules/task/actions/tasklist.php:97
+msgid "Task Status"
+msgstr "Stádas tasc"
+
+#: system/modules/task/actions/tasklist.php:98
+msgid "Closed"
+msgstr "dúnta"
+
+#: system/modules/task/actions/tasklist.php:106
+msgid "Your Role"
+msgstr "do Ról"
+
+#: system/modules/task/actions/tasktypeform.php:24
+msgid "No further information required.<p>Please save your task."
+msgstr "Níl aon eolas breise ag teastáil. <P> Sábháil do chúram."
+
+#: system/modules/task/actions/taskweek.php:22
+#: system/modules/task/templates/portal.tpl.php:13
+msgid "An overview of the activity in Tasks: "
+msgstr "Tá forbhreathnú ar an ghníomhaíocht in Tascanna:"
+
+#: system/modules/task/actions/taskweek.php:22
+#: system/modules/task/task.actions.php:357
+#: system/modules/task/templates/portal.tpl.php:13
+msgid " to "
+msgstr " chun"
+
+#: system/modules/task/actions/taskweek.php:41
+#: system/modules/task/templates/portal.tpl.php:31
+msgid "View Task Group"
+msgstr "Féach Tasc Grúpa"
+
+#: system/modules/task/actions/taskweek.php:42
+#: system/modules/task/templates/portal.tpl.php:32
+msgid "View Task Details"
+msgstr "Féach Tasc Sonraí an"
+
+#: system/modules/task/actions/taskweek.php:50
+msgid "No Task Activity found for given selections."
+msgstr "Uimh Gníomhaíocht Tasc le fáil le haghaidh roghanna a thugtar."
+
+#: system/modules/task/actions/updatestatus.php:11
+msgid "status updated to: "
+msgstr "nuashonraithe stádas:"
+
+#: system/modules/task/actions/updatestatus.php:44
+msgid "There was a problem."
+msgstr "Bhí fadhb."
+
+#: system/modules/task/actions/updatetask.php:30
+msgid " updated to: "
+msgstr " suas chun dáta chun:"
+
+#: system/modules/task/actions/updatetask.php:89
+#: system/modules/task/models/Task.php:298
+#: system/modules/task/models/Task.php:329
+#: system/modules/task/models/Task.php:331
+#: system/modules/task/partials/templates/removeUser.tpl.php:3
+#: system/modules/task/task.tasks.php:83
+#: system/modules/task/templates/index.tpl.php:15
+#: system/modules/task/templates/index.tpl.php:53
+#: system/modules/task/templates/index.tpl.php:68
+msgid "Task"
+msgstr "Tasc"
+
+#: system/modules/task/actions/user/unassign.php:9
+msgid "Missing User ID"
+msgstr "Iarraidh ID Úsáideora"
+
+#: system/modules/task/actions/user/unassign.php:44
+msgid "User removed from Tasks/Taskgroups"
+msgstr "Úsáideoir bhaint as Tascanna / Taskgroups"
+
+#: system/modules/task/actions/viewtask.php:14
+msgid "View Task: "
+msgstr "Féach Tasc:"
+
+#: system/modules/task/actions/viewtask.php:18
+msgid "This Task has been deleted"
+msgstr "Tá an tasc Scriosadh"
+
+#: system/modules/task/actions/viewtask.php:33
+msgid "Not Assigned"
+msgstr "Gan Sannta"
+
+#: system/modules/task/actions/viewtask.php:47
+msgid " Delete Task "
+msgstr " Scrios Tasc"
+
+#: system/modules/task/actions/viewtask.php:47
+msgid "Are you should you with to DELETE this task?"
+msgstr "An bhfuil tú ba chóir duit leis a scriosadh an tasc seo?"
+
+#: system/modules/task/actions/viewtask.php:59
+#: system/modules/task/actions/viewtask.php:74
+#: system/modules/task/templates/edit.tpl.php:3
+#: system/modules/task/templates/viewtask.tpl.php:10
+msgid "Task Details"
+msgstr "tasc Mionsonraí"
+
+#: system/modules/task/actions/viewtask.php:61
+#: system/modules/task/actions/viewtask.php:76
+#: system/modules/task/partials/templates/listtasks.tpl.php:5
+msgid "Created By"
+msgstr "Created By"
+
+#: system/modules/task/actions/viewtask.php:130
+msgid "Start Time Log"
+msgstr "Start Time Logáil"
+
+#: system/modules/task/actions/viewtask.php:145
+msgid " Add Time Log entry "
+msgstr " Cuir iontráil Am Logáil"
+
+#: system/modules/task/actions/viewtask.php:156
+msgid "End"
+msgstr "deireadh"
+
+#: system/modules/task/actions/viewtask.php:167
+msgid " Accept "
+msgstr " Glac"
+
+#: system/modules/task/actions/viewtask.php:173
+msgid " Review "
+msgstr " Athbhreithniú"
+
+#: system/modules/task/actions/viewtask.php:193
+msgid " Comment "
+msgstr " Comment"
+
+#: system/modules/task/actions/viewtask.php:199
+msgid "No time log entries have been made"
+msgstr "Níl aon iontrálacha logáil ama déanta"
+
+#: system/modules/task/actions/viewtask.php:262
+msgid "For which Task Events should you receive Notification?"
+msgstr "Ar cheart Tasc Imeachtaí tú Fógra?"
+
+#: system/modules/task/actions/viewtask.php:281
+msgid "Not a Member"
+msgstr "Gan Comhalta"
+
+#: system/modules/task/actions/viewtask.php:291
+msgid "You must be at least a "
+msgstr "Caithfidh tú a bheith ar a laghad"
+
+#: system/modules/task/actions/viewtask.php:291
+msgid " of the Task Group"
+msgstr " an Tascghrúpa"
+
+#: system/modules/task/actions/viewtask.php:291
+msgid "Your current Membership Level"
+msgstr "Do Leibhéal Ballraíocht reatha"
+
+#: system/modules/task/actions/viewtask.php:291
+msgid "Please appeal to the group owner(s)"
+msgstr "Tabhair achomharc a dhéanamh chuig an t-úinéir (í)"
+
+#: system/modules/task/actions/viewtask.php:291
+msgid " for promotion."
+msgstr " le haghaidh ardú céime."
+
+#: system/modules/task/actions/viewtask.php:291
+msgid "to view tasks in this group"
+msgstr "chun amharc ar na tascanna sa ghrúpa"
+
+#: system/modules/task/config.php:30 system/modules/task/config.php:53
+msgid "Ordinary Hours"
+msgstr "Gnáth Uaireanta"
+
+#: system/modules/task/config.php:30 system/modules/task/config.php:53
+msgid "Overtime"
+msgstr "Thar am"
+
+#: system/modules/task/config.php:30 system/modules/task/config.php:53
+msgid "Weekend"
+msgstr "Deireadh Seachtaine"
+
+#: system/modules/task/config.php:39
+msgid "To Do"
+msgstr "Le Déanamh"
+
+#: system/modules/task/config.php:41
+msgid "New"
+msgstr "Nua"
+
+#: system/modules/task/config.php:42
+msgid "Assigned"
+msgstr "sannta"
+
+#: system/modules/task/config.php:43
+msgid "Wip"
+msgstr "WIP"
+
+#: system/modules/task/config.php:44
+msgid "Pending"
+msgstr "Go dtí go"
+
+#: system/modules/task/config.php:46 system/modules/task/config.php:74
+msgid "Rejected"
+msgstr "diúltaithe"
+
+#: system/modules/task/config.php:47 system/modules/task/config.php:75
+msgid "Urgent"
+msgstr "Práinneach"
+
+#: system/modules/task/config.php:47 system/modules/task/config.php:75
+msgid "Normal"
+msgstr "gnáth"
+
+#: system/modules/task/config.php:47 system/modules/task/config.php:75
+msgid "Nice to have"
+msgstr "Deas go bhfuil"
+
+#: system/modules/task/config.php:63
+msgid "Programming Task"
+msgstr "Tasc Programming"
+
+#: system/modules/task/config.php:65
+msgid "Idea"
+msgstr "Idea"
+
+#: system/modules/task/config.php:66
+msgid "On Hold"
+msgstr "Ar feitheamh"
+
+#: system/modules/task/config.php:67
+msgid "Backlog"
+msgstr "riaráiste"
+
+#: system/modules/task/config.php:68
+msgid "Todo"
+msgstr "Tasc"
+
+#: system/modules/task/config.php:69
+msgid "WIP"
+msgstr "WIP"
+
+#: system/modules/task/config.php:70
+msgid "Testing"
+msgstr "Tástáil"
+
+#: system/modules/task/config.php:72
+msgid "Deploy"
+msgstr "imscaradh"
+
+#: system/modules/task/config.php:73
+msgid "Live"
+msgstr "beo"
+
+#: system/modules/task/models/Task.php:307
+msgid ", Assigned: "
+msgstr ", Sannta:"
+
+#: system/modules/task/models/Task.php:311
+msgid ", First Assigned: "
+msgstr ", An Chéad Sannta:"
+
+#: system/modules/task/models/Task.php:315
+msgid ", Due: "
+msgstr ", De bharr:"
+
+#: system/modules/task/models/Task.php:397
+msgid "Task Created"
+msgstr "tasc Cruthaithe"
+
+#: system/modules/task/models/Task.php:480
+msgid "Updating Task"
+msgstr "Tasc thabhairt cothrom le dáta"
+
+#: system/modules/task/models/Task.php:525
+msgid "Deleting Task"
+msgstr "scriosadh Tasc"
+
+#: system/modules/task/partials/templates/listtasks.tpl.php:2
+msgid "Filter Tasks"
+msgstr "Tascanna scagaire"
+
+#: system/modules/task/partials/templates/listtasks.tpl.php:5
+msgid "Group"
+msgstr "Grúpa"
+
+#: system/modules/task/partials/templates/listtasks.tpl.php:5
+msgid "Due"
+msgstr "De bharr"
+
+#: system/modules/task/partials/templates/listtasks.tpl.php:33
+msgid "No tasks found"
+msgstr "Gan tascanna aimsíodh"
+
+#: system/modules/task/partials/templates/removeUser.tpl.php:6
+msgid "This user has"
+msgstr "Tá an úsáideoir seo"
+
+#: system/modules/task/partials/templates/removeUser.tpl.php:6
+#: system/modules/task/templates/index.tpl.php:7
+#: system/modules/task/templates/index.tpl.php:40
+#: system/modules/task/templates/index.tpl.php:50
+#: system/modules/task/templates/index.tpl.php:70
+msgid "task"
+msgstr "tasc"
+
+#: system/modules/task/partials/templates/removeUser.tpl.php:6
+msgid "assigned to them"
+msgstr "shanntar dóibh"
+
+#: system/modules/task/partials/templates/removeUser.tpl.php:9
+msgid "task group"
+msgstr "tascghrúpa"
+
+#: system/modules/task/partials/templates/removeUser.tpl.php:11
+msgid "and they are the default assignee for"
+msgstr "agus tá siad an sannaí réamhshocraithe le haghaidh"
+
+#: system/modules/task/partials/templates/removeUser.tpl.php:11
+msgid "of these"
+msgstr "díobh"
+
+#: system/modules/task/partials/templates/removeUser.tpl.php:16
+msgid "WARNING: Revoking this users Taskgroup membership will leave"
+msgstr "RABHADH: Beidh chúlghairm an úsáideoirí Taskgroup ballraíocht saoire"
+
+#: system/modules/task/partials/templates/removeUser.tpl.php:16
+#: system/modules/task/templates/index.tpl.php:6
+#: system/modules/task/templates/index.tpl.php:49
+msgid "taskgroup"
+msgstr "taskgroup"
+
+#: system/modules/task/partials/templates/removeUser.tpl.php:17
+msgid "without any members!"
+msgstr "gan aon bhall!"
+
+#: system/modules/task/partials/templates/removeUser.tpl.php:19
+msgid "Please add members to the following Taskgroups before proceeding:"
+msgstr "Tabhair comhaltaí a chur leis an Taskgroups leanas roimh dul ar aghaidh:"
+
+#: system/modules/task/partials/templates/removeUser.tpl.php:28
+msgid "The following actions will be carried out:"
+msgstr "Beidh na gníomhartha seo a leanas a chur i gcrích:"
+
+#: system/modules/task/partials/templates/removeUser.tpl.php:30
+msgid "Remove user membership from any taskgroups"
+msgstr "Bain ballraíocht úsáideora ó aon taskgroups"
+
+#: system/modules/task/partials/templates/removeUser.tpl.php:31
+msgid "Remove user from any taskgroup default assignee (WARNING: result will be that taskgroup has no default assignee)"
+msgstr "Bain úsáideoir ó aon sannaí default taskgroup (RABHADH: Beidh toradh nach taskgroup bhfuil aon sannaí réamhshocraithe)"
+
+#: system/modules/task/partials/templates/removeUser.tpl.php:32
+msgid "Reassign any tasks assigned to the user to the default user (As with above, if the user is assigned and also the default assignee, the result will be tasks become unassigned)"
+msgstr "Athshannadh aon chúraimí a shanntar don úsáideoir don úsáideoir réamhshocraithe (Mar is amhlaidh le thuas, má tá an t-úsáideoir a shanntar agus chomh maith leis an sannaí réamhshocraithe, beidh an toradh a bheith ina cúraimí neamhshannta)"
+
+#: system/modules/task/partials/templates/removeUser.tpl.php:35
+msgid "Remove from Task"
+msgstr "Bain ó Tasc"
+
+#: system/modules/task/task.actions.php:53
+msgid "Comment updated."
+msgstr "Comment nuashonrú."
+
+#: system/modules/task/task.actions.php:60
+msgid "Comment created."
+msgstr "Comment cruthaíodh."
+
+#: system/modules/task/task.actions.php:78
+msgid "Attach Document"
+msgstr "Ceangail Document"
+
+#: system/modules/task/task.actions.php:79
+msgid "Document"
+msgstr "doiciméad"
+
+#: system/modules/task/task.actions.php:84
+msgid " Upload "
+msgstr " uaslódáil"
+
+#: system/modules/task/task.actions.php:108
+msgid "There was an error. The document could not be saved."
+msgstr "Tharla earráid. Níorbh fhéidir an doiciméad a shábháil."
+
+#: system/modules/task/task.actions.php:110
+msgid "The Document has been uploaded."
+msgstr "Tá an Doiciméad uaslódáilte."
+
+#: system/modules/task/task.actions.php:118
+msgid "File Uploaded: "
+msgstr "Comhad Uasluchtaithe:"
+
+#: system/modules/task/task.actions.php:138
+msgid "Select a Page"
+msgstr "Roghnaigh Leathanach"
+
+#: system/modules/task/task.actions.php:154
+msgid "Please select a PAGE"
+msgstr "Roghnaigh LEATHANACH"
+
+#: system/modules/task/task.actions.php:175
+msgid "Page Attached to Task: "
+msgstr "Leathanach Ceangailte leis Tasc:"
+
+#: system/modules/task/task.actions.php:183
+msgid "Page Added to Task"
+msgstr "Leathanach Added go Tasc"
+
+#: system/modules/task/task.actions.php:224
+msgid "Add Time Log Entry"
+msgstr "Cuir Time Logáil Iontráil"
+
+#: system/modules/task/task.actions.php:226
+msgid "Select the Start Date & Time"
+msgstr "Roghnaigh an Tosaithe Dáta & Am"
+
+#: system/modules/task/task.actions.php:227
+#: system/modules/task/task.actions.php:229
+msgid "Date/Time"
+msgstr "Dáta Am"
+
+#: system/modules/task/task.actions.php:228
+msgid "Select the End Date & Time, or Period worked"
+msgstr "Roghnaigh Deireadh Dáta & Am, nó a d'oibrigh Tréimhse"
+
+#: system/modules/task/task.actions.php:230
+msgid "Or Period:"
+msgstr "Nó Tréimhse:"
+
+#: system/modules/task/task.actions.php:230
+msgid "Below select the period worked since the Start Date/Time"
+msgstr "Thíos roghnaigh oibrigh an tréimhse ó Tosaithe Dáta / Am"
+
+#: system/modules/task/task.actions.php:231
+msgid "Hours"
+msgstr "Uaireanta"
+
+#: system/modules/task/task.actions.php:232
+msgid "Min"
+msgstr "Min"
+
+#: system/modules/task/task.actions.php:233
+#: system/modules/timelog/actions/ajaxGetExtraData.php:20
+msgid "Time Type"
+msgstr "Cineál Ama"
+
+#: system/modules/task/task.actions.php:234
+#: system/modules/task/task.actions.php:235
+#: system/modules/task/task.actions.php:451
+#: system/modules/task/task.actions.php:533
+#: system/modules/task/templates/edit.tpl.php:12
+#: system/modules/task/templates/viewtask.tpl.php:12
+msgid "Comments"
+msgstr "Comments"
+
+#: system/modules/task/task.actions.php:278
+msgid "Start is greater than End. Please enter again."
+msgstr "Is Tosaigh mó ná End. Cuir isteach arís."
+
+#: system/modules/task/task.actions.php:280
+msgid "Time Log Entry updated."
+msgstr "Am Logáil Iontráil suas chun dáta."
+
+#: system/modules/task/task.actions.php:280
+msgid "Time Log Entry created."
+msgstr "Am Logáil Iontráil cruthaíodh."
+
+#: system/modules/task/task.actions.php:320
+msgid "Time Log entry marked for review"
+msgstr "Am Logáil iontráil marcáilte ar athbhreithniú"
+
+#: system/modules/task/task.actions.php:323
+msgid "Time Log entry accepted"
+msgstr "Ghlac Am Logáil iontráil"
+
+#: system/modules/task/task.actions.php:357
+msgid "Time Log Entry deleted: "
+msgstr "Am Logáil Iontráil scriosadh:"
+
+#: system/modules/task/task.actions.php:364
+msgid "Time Log entry has been deleted."
+msgstr "Tá Am Logáil iontráil Scriosadh."
+
+#: system/modules/task/task.actions.php:366
+msgid "Time Log entry could not be found."
+msgstr "Níorbh fhéidir Am Logáil iontráil a fháil."
+
+#: system/modules/task/task.actions.php:414
+#: system/modules/task/task.actions.php:446
+#: system/modules/task/task.actions.php:511
+#: system/modules/task/task.actions.php:528
+#: system/modules/task/templates/viewtask.tpl.php:58
+msgid "Task Time Log"
+msgstr "Tasc Am Logáil"
+
+#: system/modules/task/task.actions.php:447
+#: system/modules/task/task.actions.php:529
+msgid "View Task"
+msgstr "Féach Tasc"
+
+#: system/modules/task/task.actions.php:454
+msgid "Save Comments"
+msgstr "Sábháil Comments"
+
+#: system/modules/task/task.actions.php:455
+msgid "Stop Time Now"
+msgstr "Stop Am Anois"
+
+#: system/modules/task/task.actions.php:487
+msgid "Time Log Entry: "
+msgstr "Am Logáil Iontráil:"
+
+#: system/modules/task/task.actions.php:489
+msgid " - Comments: "
+msgstr " - Tuairimí:"
+
+#: system/modules/task/task.actions.php:608
+msgid " - Notifications"
+msgstr " - Fógraí"
+
+#: system/modules/task/task.actions.php:620
+msgid "For which events should you receive Notification?"
+msgstr "Ar cheart imeachtaí tú Fógra?"
+
+#: system/modules/task/task.actions.php:621
+msgid "Task Creation"
+msgstr "Cruthú tasc"
+
+#: system/modules/task/task.actions.php:626
+msgid "Pages Added"
+msgstr "Leathanaigh Added"
+
+#: system/modules/task/task.actions.php:688
+#: system/modules/task/task.actions.php:728
+#: system/modules/task/task.group.actions.php:210
+msgid "Notifications Updated"
+msgstr "Fógraí Nuashonraithe"
+
+#: system/modules/task/task.group.actions.php:15
+msgid "Taskgroup: "
+msgstr "Taskgroup:"
+
+#: system/modules/task/task.group.actions.php:39
+#: system/modules/task/task.group.actions.php:137
+msgid "Task Group Details"
+msgstr "Tasc Sonraí an Ghrúpa"
+
+#: system/modules/task/task.group.actions.php:73
+#: system/modules/task/task.group.actions.php:119
+#: system/modules/task/task.group.actions.php:170
+msgid "Task Group "
+msgstr "tasc Grúpa"
+
+#: system/modules/task/task.group.actions.php:119
+msgid " updated."
+msgstr " suas chun dáta."
+
+#: system/modules/task/task.group.actions.php:123
+msgid "Group: "
+msgstr "Grúpa:"
+
+#: system/modules/task/task.group.actions.php:123
+msgid " no longer exists?"
+msgstr " thuilleadh?"
+
+#: system/modules/task/task.group.actions.php:157
+msgid "Taskgroup could not be found"
+msgstr "Níorbh fhéidir Taskgroup a fháil"
+
+#: system/modules/task/task.group.actions.php:164
+msgid "Taskgroup could not be found with ID: "
+msgstr "Níorbh fhéidir Taskgroup fáil le ID:"
+
+#: system/modules/task/task.group.actions.php:238
+#: system/modules/task/task.group.actions.php:288
+#: system/modules/task/task.group.actions.php:329
+msgid "Task Group updated"
+msgstr "Tasc Grúpa nuashonraithe"
+
+#: system/modules/task/task.group.actions.php:249
+#: system/modules/task/task.group.actions.php:252
+msgid "Add Group Members"
+msgstr "Cuir Baill an Ghrúpa"
+
+#: system/modules/task/task.group.actions.php:251
+msgid "As Role"
+msgstr "Mar Ról"
+
+#: system/modules/task/task.group.actions.php:333
+msgid "Task Group Members no longer exists?"
+msgstr "Tasc Grúpa Comhaltaí ann a thuilleadh?"
+
+#: system/modules/task/task.hooks.php:21
+msgid "Task time"
+msgstr "am tasc"
+
+#: system/modules/task/task.hooks.php:48
+msgid "A new task has been created"
+msgstr "Tá cúram nua Cruthaíodh"
+
+#: system/modules/task/task.hooks.php:51
+msgid "Body"
+msgstr "Comhlacht"
+
+#: system/modules/task/task.hooks.php:57
+msgid "Access the task here: "
+msgstr "Rochtain ar an tasc anseo:"
+
+#: system/modules/task/task.hooks.php:58 system/modules/task/task.hooks.php:109
+#: system/modules/task/task.hooks.php:150
+#: system/modules/task/task.hooks.php:232
+#: system/modules/task/task.hooks.php:266
+#: system/modules/task/task.hooks.php:300
+msgid "Go to "
+msgstr "Téigh"
+
+#: system/modules/task/task.hooks.php:58 system/modules/task/task.hooks.php:109
+#: system/modules/task/task.hooks.php:150
+#: system/modules/task/task.hooks.php:232
+#: system/modules/task/task.hooks.php:266
+#: system/modules/task/task.hooks.php:300
+msgid "Task > Task List > Notifications"
+msgstr "Tasc> Tasc Liosta> Fógraí"
+
+#: system/modules/task/task.hooks.php:58 system/modules/task/task.hooks.php:109
+#: system/modules/task/task.hooks.php:150
+#: system/modules/task/task.hooks.php:232
+#: system/modules/task/task.hooks.php:266
+#: system/modules/task/task.hooks.php:300
+msgid ", to edit the types of notifications you will receive."
+msgstr ", A chur in eagar na cineálacha fógraí a gheobhaidh tú."
+
+#: system/modules/task/task.hooks.php:101
+msgid " details has been updated"
+msgstr " sonraí curtha suas chun dáta"
+
+#: system/modules/task/task.hooks.php:102
+msgid "Status: "
+msgstr "stádas:"
+
+#: system/modules/task/task.hooks.php:141
+msgid "Someone"
+msgstr "D'iarr duine éigin"
+
+#: system/modules/task/task.hooks.php:141
+msgid " has commented on a task that you're a part of"
+msgstr " Tá trácht ar thasc a bhfuil tú mar chuid de"
+
+#: system/modules/task/task.hooks.php:218
+msgid " replied to a comment "
+msgstr " freagra a comment"
+
+#: system/modules/task/task.hooks.php:218
+msgid "that you're a part of "
+msgstr "go bhfuil tú mar chuid de"
+
+#: system/modules/task/task.hooks.php:218
+msgid "for "
+msgstr "do"
+
+#: system/modules/task/task.hooks.php:224
+msgid "Click here to view the comment"
+msgstr "Cliceáil anseo chun féachaint ar an trácht"
+
+#: system/modules/task/task.hooks.php:226
+msgid "You are unable to view this task"
+msgstr "Tá tú in ann chun amharc ar an tasc seo"
+
+#: system/modules/task/task.hooks.php:257
+#: system/modules/task/task.hooks.php:291
+msgid "Task - "
+msgstr "Tasc -"
+
+#: system/modules/task/task.hooks.php:259
+msgid " has had a new time log entry"
+msgstr " Bhí iontráil logáil nua ama"
+
+#: system/modules/task/task.hooks.php:293
+msgid " has got a new attachment"
+msgstr " fuair forbhall nua"
+
+#: system/modules/task/task.tasks.php:33
+msgid "Todo Item"
+msgstr "Tasc Mír"
+
+#: system/modules/task/task.tasks.php:37
+msgid "Use this to assign any task."
+msgstr "Úsáid é seo chun aon tasc a shannadh."
+
+#: system/modules/task/task.tasks.php:69
+msgid "Dev Ticket"
+msgstr "Ticéad Dev"
+
+#: system/modules/task/task.tasks.php:73
+msgid "Use this to report any issue or feature request."
+msgstr "Úsáid é seo chun tuairiscím ar aon saincheist nó gné a iarraidh."
+
+#: system/modules/task/task.tasks.php:83
+msgid "Ticket Type"
+msgstr "Cineál Ticéad"
+
+#: system/modules/task/task.tasks.php:83
+msgid "Issue"
+msgstr "Eisiúint"
+
+#: system/modules/task/task.tasks.php:83
+msgid "Feature"
+msgstr "Gné"
+
+#: system/modules/task/task.tasks.php:84
+msgid "Identifier"
+msgstr "aitheantóir"
+
+#: system/modules/task/templates/createtask.tpl.php:1
+msgid "Creating a new Task is a two step process."
+msgstr "Ag cruthú Tasc nua próiseas dhá chéim."
+
+#: system/modules/task/templates/createtask.tpl.php:1
+msgid "Please complete all steps to register a Task."
+msgstr "Líon isteach gach beart a Tasc a chlárú."
+
+#: system/modules/task/templates/createtask.tpl.php:7
+msgid "You need to set up a Task Group first, that can be done"
+msgstr "Ní mór duit a chur ar bun Tascghrúpa an chéad, is féidir a dhéanamh"
+
+#: system/modules/task/templates/createtask.tpl.php:7
+msgid "here"
+msgstr "anseo"
+
+#: system/modules/task/templates/edit.tpl.php:11
+#: system/modules/task/templates/viewtask.tpl.php:11
+msgid "Time Log"
+msgstr "Am Logáil"
+
+#: system/modules/task/templates/edit.tpl.php:13
+msgid "Attachments"
+msgstr "ceangaltáin"
+
+#: system/modules/task/templates/edit.tpl.php:15
+#: system/modules/task/templates/viewtask.tpl.php:14
+msgid "Notifications"
+msgstr "Fógraí"
+
+#: system/modules/task/templates/edit.tpl.php:34
+msgid "Are you sure you want to delete this task?"
+msgstr "An bhfuil tú cinnte go bhfuil tú ag iarraidh a scriosadh an tasc seo?"
+
+#: system/modules/task/templates/edit.tpl.php:35
+msgid "Duplicate Task"
+msgstr "dúblach Tasc"
+
+#: system/modules/task/templates/edit.tpl.php:64
+msgid "If you do not set notifications for this Task then the default settings for the this Task group will be used."
+msgstr "Mura bhfuil tú fógraí don Tasc leagan ansin réamhshocruithe don ghrúpa seo Tasc úsáidfear."
+
+#: system/modules/task/templates/group/createtaskgroup.tpl.php:3
+msgid "Task Group successfully created"
+msgstr "Tasc Grúpa cruthaíodh go rathúil"
+
+#: system/modules/task/templates/index.tpl.php:6
+msgid "You're a member of"
+msgstr "Tá tú ina bhall de"
+
+#: system/modules/task/templates/index.tpl.php:7
+msgid "With"
+msgstr "le"
+
+#: system/modules/task/templates/index.tpl.php:15
+#: system/modules/task/templates/index.tpl.php:53
+msgid "assigned to you"
+msgstr "shanntar tú"
+
+#: system/modules/task/templates/index.tpl.php:21
+#: system/modules/task/templates/index.tpl.php:57
+msgid " overdue"
+msgstr " thar téarma"
+
+#: system/modules/task/templates/index.tpl.php:24
+#: system/modules/task/templates/index.tpl.php:60
+msgid "0 due"
+msgstr "0 dlite"
+
+#: system/modules/task/templates/index.tpl.php:24
+#: system/modules/task/templates/index.tpl.php:26
+#: system/modules/task/templates/index.tpl.php:62
+msgid "within 7 days"
+msgstr "laistigh de 7 lá"
+
+#: system/modules/task/templates/index.tpl.php:26
+#: system/modules/task/templates/index.tpl.php:62
+msgid " due"
+msgstr " dlite"
+
+#: system/modules/task/templates/index.tpl.php:30
+#: system/modules/task/templates/index.tpl.php:65
+msgid "without a due date"
+msgstr "gan dáta dlite"
+
+#: system/modules/task/templates/index.tpl.php:38
+#: system/modules/task/templates/index.tpl.php:40
+#: system/modules/task/templates/index.tpl.php:68
+#: system/modules/task/templates/index.tpl.php:70
+msgid "marked"
+msgstr "marcáilte"
+
+#: system/modules/task/templates/index.tpl.php:38
+#: system/modules/task/templates/index.tpl.php:40
+#: system/modules/task/templates/index.tpl.php:68
+#: system/modules/task/templates/index.tpl.php:70
+msgid "urgent"
+msgstr "práinneach"
+
+#: system/modules/task/templates/index.tpl.php:49
+msgid "You're a member of "
+msgstr "Tá tú ina bhall de"
+
+#: system/modules/task/templates/index.tpl.php:50
+msgid "overall"
+msgstr "tríd is tríd"
+
+#: system/modules/task/templates/index.tpl.php:60
+msgid "with 7 days"
+msgstr "le 7 lá"
+
+#: system/modules/task/templates/portal.tpl.php:40
+msgid "No Task Activity found for given date span"
+msgstr "Gan Gníomhaíocht Tasc aimsíodh le dáta a tugadh réimse"
+
+#: system/modules/task/templates/tasktypeform.tpl.php:16
+msgid "Task List"
+msgstr "tasc Liosta"
+
+#: system/modules/task/templates/taskweek.tpl.php:7
+#: system/modules/task/templates/taskweek.tpl.php:14
+msgid "Search Tasks"
+msgstr "Tascanna Search"
+
+#: system/modules/task/templates/taskweek.tpl.php:12
+msgid "From Date"
+msgstr "ón Dáta"
+
+#: system/modules/task/templates/viewtask.tpl.php:13
+msgid "Documents"
+msgstr "Doiciméid"
+
+#: system/modules/task/templates/viewtask.tpl.php:38
+msgid "Set your Notifications specific to this Task, otherwise your notifications for this Task Group will be employed."
+msgstr "Socraigh do Fógraí ar leith a ghabhann leis an Tasc, ar shlí eile beidh do fógraí don Tascghrúpa a úsáid."
+
+#: system/modules/task/templates/viewtask.tpl.php:69
+msgid "Please END TIME on your current Task"
+msgstr "Tabhair END AMA ar do Thasc reatha"
+
+#: system/modules/task/templates/viewtask.tpl.php:69
+msgid "before starting a new Task Time Log"
+msgstr "sula dtosaíonn tú nua Tasc Am Logáil"
+
+#: system/modules/timelog/actions/ajaxGetExtraData.php:27
+msgid "Required"
+msgstr "Riachtanach"
+
+#: system/modules/timelog/actions/ajaxGetExtraData.php:34
+msgid "-- Select --"
+msgstr "- Roghnaigh -"
+
+#: system/modules/timelog/actions/delete.php:13
+msgid "No timelog identifier provided"
+msgstr "Gan aitheantóir timelog fáil"
+
+#: system/modules/timelog/actions/delete.php:19
+msgid "Timelog not found"
+msgstr "Timelog gan aimsiú"
+
+#: system/modules/timelog/actions/delete.php:24
+msgid "You cannot delete Timelogs"
+msgstr "Ní féidir leat a scriosadh Timelogs"
+
+#: system/modules/timelog/actions/delete.php:28
+msgid "Timelog deleted"
+msgstr "Timelog scriosadh"
+
+#: system/modules/timelog/actions/edit.php:32
+msgid "Timelog"
+msgstr "Timelog"
+
+#: system/modules/timelog/actions/edit.php:90
+msgid "Timelog saved"
+msgstr "Timelog shábháil"
+
+#: system/modules/timelog/actions/migrate.php:40
+msgid "Timelog successfully migrated."
+msgstr "Timelog aistrigh go rathúil."
+
+#: system/modules/timelog/actions/migrate.php:40
+#: system/modules/timelog/actions/migrate.php:43
+msgid "View Timelog"
+msgstr "View Timelog"
+
+#: system/modules/timelog/actions/migrate.php:43
+msgid "Timelog migration cannot run, lock is in place."
+msgstr "imirce Timelog Ní féidir a reáchtáil, tá glas ar bun."
+
+#: system/modules/timelog/actions/start.php:13
+msgid "Start Timelog"
+msgstr "Tosaigh Timelog"
+
+#: system/modules/timelog/models/TimelogService.php:120
+msgid "Add Timelog"
+msgstr "Cuir Timelog"
+
+#: system/modules/timelog/partials/templates/listtimelog.tpl.php:1
+msgid "Add new timelog"
+msgstr "Cuir timelog nua"
+
+#: system/modules/timelog/partials/templates/listtimelog.tpl.php:18
+#: system/modules/timelog/templates/index.tpl.php:17
+msgid "Are you sure you want to delete this timelog?"
+msgstr "An bhfuil tú cinnte go bhfuil tú ag iarraidh seo a scriosadh timelog?"
+
+#: system/modules/timelog/partials/templates/timelogwidget.tpl.php:4
+msgid "Start Timer"
+msgstr "Tosaigh Timer"
+
+#: system/modules/timelog/partials/templates/timelogwidget.tpl.php:17
+msgid "Enter Description"
+msgstr "Iontráil Tuairisc"
+
+#: system/modules/timelog/partials/templates/timelogwidget.tpl.php:25
+msgid "Close"
+msgstr "Dún"
+
+#: system/modules/timelog/templates/edit.tpl.php:63
+msgid "Additional Fields"
+msgstr "Réimsí Breise"
+
+#: system/modules/timelog/templates/index.tpl.php:15
+msgid "View Time Log"
+msgstr "View Am Logáil"
+
+#: system/modules/timelog/templates/index.tpl.php:25
+msgid "No time logs found"
+msgstr "No logs ama aimsíodh"

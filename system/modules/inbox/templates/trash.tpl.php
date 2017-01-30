@@ -1,11 +1,11 @@
 <?php
 if (!empty($del_table)) {
     $button = new \Html\button();
-    echo $button->id('deleteforevorbutton')->text("Delete Forever")->onclick("deleteMessage()")->__toString(); // print "<button onclick='deleteMessage()'>Delete</button>";
+    echo $button->text(__("Delete Forever"))->onclick("deleteMessage()")->__toString(); // print "<button onclick='deleteMessage()'>Delete</button>";
 
     echo $del_table;
 } else {
-    echo "<br/>No deleted messages.";
+    echo "<br/>".__("No deleted messages.");
 }
 
 $last_page = ceil($del_count / 40);
@@ -20,7 +20,7 @@ $maxPage = ($pgnum * 1) + 5;
 if ($last_page > 1) {
     print "<table style='margin:auto;'><tr id='nav'>";
     if ($pgnum > 1) {
-        print "<td style='background-color:#eee;' id='link" . $i . " prevlink' class='link' onclick='switchPage(" . ($pgnum - 1) . ")'><a class='link'  href='#'>Prev</a></td>&nbsp";
+        print "<td style='background-color:#eee;' id='link" . $i . " prevlink' class='link' onclick='switchPage(" . ($pgnum - 1) . ")'><a class='link'  href='#'>".__('Prev')."</a></td>&nbsp";
     }
     for ($i = $minPage; $i <= $maxPage; $i++) {
         if ($pgnum == $i) {
@@ -30,7 +30,7 @@ if ($last_page > 1) {
         }
     }
     if ($pgnum < $last_page && $last_page !== 1) {
-        print "<td style='background-color: #eee; width:30px;' id='link" . $i . " nextlink' class='link' onclick='switchPage(" . ($pgnum + 1) . ")'><a class='link'  href='#'>Next</a></td>&nbsp";
+        print "<td style='background-color: #eee; width:30px;' id='link" . $i . " nextlink' class='link' onclick='switchPage(" . ($pgnum + 1) . ")'><a class='link'  href='#'>".__("Next")."</a></td>&nbsp";
     }
     print "</tr></table>";
 }

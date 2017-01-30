@@ -23,7 +23,7 @@ function taskAjaxGrouptoType_ALL(Web &$w) {
 		}
 	}
 	if (!$types)
-	$types = array(array("No assigned Tasks",""));
+	$types = array(array(__("No assigned Tasks"),""));
 
 	// load type dropdown and return
 	$tasktypes = Html::select("tasktypes",$types,null);

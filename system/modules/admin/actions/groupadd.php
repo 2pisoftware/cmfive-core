@@ -6,9 +6,9 @@
  */
 function groupadd_GET(Web $w)
 {
-	$template['New Group'] = array(array(array("Group Title: ","text","title")));
+	$template[__('New Group')] = array(array(array(__("Group Title: "),"text","title")));
 
-	$w->out(Html::multiColForm($template,"/admin/groupadd","POST","Save"));
+	$w->out(Html::multiColForm($template,"/admin/groupadd","POST",__("Save")));
 
 	$w->setLayout(null);
 }
@@ -20,5 +20,5 @@ function groupadd_POST(Web $w)
 	$user->is_group = 1;
 	$user->insert();
 
-	$w->msg("New group added!", "/admin/groups");
+	$w->msg(__("New group added!"), "/admin/groups");
 }

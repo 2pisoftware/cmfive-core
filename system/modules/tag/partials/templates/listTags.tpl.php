@@ -12,16 +12,16 @@
             <?php endif; ?>
 		<?php endforeach; ?>
 	<?php else: ?>
-		<span class="label radius secondary no_tags tag_selection"><span class="fi-price-tag">No tag</span></span>
+		<span class="label radius secondary no_tags tag_selection"><span class="fi-price-tag"><?php _e('No tag'); ?></span></span>
 	<?php endif; ?>
 		
 	<?php if (!empty($user) && $user->hasAnyRole(["tag_admin", "tag_user"])) : ?>
 		<div class="tag_list_dialog" id="tag_list_dialog_<?php echo ($object_class ? : '') . ($object_id ? : ''); ?>">
 			<div class="tag_list_modal">
 				<div class="tag_list_header">
-					Available tags <span class="fi-x hide_tag_list"></span>
+					<?php _e('Available tags'); ?> <span class="fi-x hide_tag_list"></span>
 					<div>
-						<input type="text" placeholder="<?php echo ($user->hasRole("tag_admin") ? 'Add / ': '') . 'Filter tags'; ?>" class="search_tags" />
+						<input type="text" placeholder="<?php echo ($user->hasRole("tag_admin") ? __('Add').' / ': '') . __('Filter tags'); ?>" class="search_tags" />
 					</div>
 				</div>
 				<div class="tag_list_body"></div>

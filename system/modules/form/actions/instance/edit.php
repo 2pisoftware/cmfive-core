@@ -9,7 +9,7 @@ function edit_GET(Web $w) {
 	$object_id = $w->request("object_id");
 	
 	if (empty($form_id) && empty($p['id'])) {
-		$w->msg("Form instance data missing");
+		$w->msg(__("Form instance data missing"));
 		return;
 	}
 	
@@ -36,7 +36,7 @@ function edit_POST(Web $w) {
 	$object_id = $w->request("object_id");
 	$form=null;
 	if (empty($form_id) && empty($p['id'])) {
-		$w->msg("Form instance data missing");
+		$w->msg(__("Form instance data missing"));
 		return;
 	}
 	
@@ -90,5 +90,5 @@ function edit_POST(Web $w) {
 			}
 		}
 	}
-	$w->msg($form->title . (!empty($p['id']) ? " updated" : " created"), $redirect_url . "#".toSlug($form->title));
+	$w->msg($form->title . (!empty($p['id']) ? __(" updated") : __(" created")), $redirect_url . "#".toSlug($form->title));
 }

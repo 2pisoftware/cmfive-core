@@ -12,12 +12,12 @@ function moreInfo_GET(Web &$w)
 
 	if ($w->Auth->user()->is_admin || $w->Auth->getRoleForLoginUser($option['group_id'], $w->Auth->user()->id) == "owner")
 	{
-		$w->ctx("addMember", Html::box("/admin/groupmember/".$option['group_id'],"New Member",true));
+		$w->ctx("addMember", Html::box("/admin/groupmember/".$option['group_id'],__("New Member"),true));
 	}
-	$w->ctx("editPermission", Html::b("/admin/permissionedit/".$option['group_id'],"Edit Permissions"));
+	$w->ctx("editPermission", Html::b("/admin/permissionedit/".$option['group_id'],__("Edit Permissions")));
 
 	//fill in member table;
-	$table = array(array("Name","Role","Operations"));
+	$table = array(array(__("Name"),__("Role"),__("Operations")));
 
 	$groupMembers = $w->Auth->getGroupMembers($option['group_id']);
 		
@@ -36,7 +36,7 @@ function moreInfo_GET(Web &$w)
 				
 			if ($w->Auth->user()->is_admin || $w->Auth->getRoleForLoginUser($option['group_id'], $w->Auth->user()->id) == "owner")
 			{
-				$line[] = Html::a("/admin/memberdelete/".$option['group_id']."/".$groupMember->id,"Delete",null,null,"Are you sure you want to delete this member?");
+				$line[] = Html::a("/admin/memberdelete/".$option['group_id']."/".$groupMember->id,__("Delete"),null,null,__("Are you sure you want to delete this member?"));
 			}
 			else
 			{

@@ -6,7 +6,7 @@ function edit_GET(Web $w) {
 	$form_id = $w->request("form_id");
 	
 	if (empty($form_id)) {
-		$w->error("Form not found", "/form");
+		$w->error(__("Form not found"), "/form");
 	}
 	
 	$_form_field_object = $p['id'] ? $w->Form->getFormField($p['id']) : new FormField($w);
@@ -85,5 +85,5 @@ function edit_POST(Web $w) {
 	$_form_field_object->form_id = intval($form_id);
 	$_form_field_object->insertOrUpdate();
 	
-	$w->msg("Form " . ($p['id'] ? 'updated' : 'created'), "/form/show/" . $_form_field_object->form_id);
+	$w->msg(__("Form ") . ($p['id'] ? __('updated') : __('created')), "/form/show/" . $_form_field_object->form_id);
 }

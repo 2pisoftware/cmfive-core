@@ -7,7 +7,7 @@ function permissionedit_GET(Web $w) {
 
     $userName = $user->is_group == 1 ? $user->login : $user->getContact()->getFullName();
 
-    $w->Admin->navigation($w, "Permissions - " . $userName);
+    $w->Admin->navigation($w, __("Permissions")." - " . $userName);
 
     //fill in permission tables;
     $groupUsers = $w->Auth->getUser($option['group_id'])->isInGroups();
@@ -78,5 +78,5 @@ function permissionedit_POST(Web &$w) {
     }
     $returnPath = $user->is_group == 1 ? "/admin/moreInfo/" . $option['group_id'] : "/admin/users";
 
-    $w->msg("Permissions are updated!", $returnPath);
+    $w->msg(__("Permissions are updated!"), $returnPath);
 }

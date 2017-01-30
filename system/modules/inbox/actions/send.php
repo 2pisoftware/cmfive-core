@@ -1,6 +1,6 @@
 <?php
 function send_GET(Web $w) {
-	$w->Inbox->navigation($w,"Create Message");
+	$w->Inbox->navigation($w,__("Create Message"));
 }
 function send_POST(Web &$w) {
 	$p = $w->pathMatch('id');
@@ -24,4 +24,5 @@ function send_POST(Web &$w) {
 	} else {
 		$w->error("You must enter a message recipient.","/inbox/send/".$p['id']);
 	}
+	$w->msg(__("Message Sent."),"/inbox/index");
 }

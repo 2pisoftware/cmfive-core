@@ -6,7 +6,7 @@ function unassign_POST(Web $w) {
 	$redirect = $w->request("redirect");
 	
 	if (empty($user_id)) {
-		$w->error("Missing User ID", $redirect ? : "/admin/users");
+		$w->error(__("Missing User ID"), $redirect ? : "/admin/users");
 	}
 	
 	// Remove default assignee from taskgroup
@@ -41,5 +41,5 @@ function unassign_POST(Web $w) {
 		}
 	}
 	
-	$w->msg("User removed from Tasks/Taskgroups", $redirect ? : "/admin/users");
+	$w->msg(__("User removed from Tasks/Taskgroups"), $redirect ? : "/admin/users");
 }

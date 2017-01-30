@@ -7,11 +7,11 @@ function deleteprinter_ALL(Web $w) {
         $printer = $w->Printer->getPrinter($p["id"]);
         if (!empty($printer->id)) {
             $printer->delete();
-            $w->msg("Printer deleted", "/admin");
+            $w->msg(__("Printer deleted"), "/admin");
         }
     }
     
-    $w->error("Could not find printer", "/admin");
+    $w->error(__("Could not find printer"), "/admin");
 
 }
 

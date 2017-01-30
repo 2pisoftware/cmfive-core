@@ -30,11 +30,11 @@ class TaskGroupType_TaskTodo extends TaskGroupType {
 class TaskType_Todo extends TaskType {
 
     function getTaskTypeTitle() {
-        return "Todo Item";
+        return __("Todo Item");
     }
 
     function getTaskTypeDescription() {
-        return "Use this to assign any task.";
+        return __("Use this to assign any task.");
     }
 
 }
@@ -66,11 +66,11 @@ class TaskType_ProgrammingTicket extends TaskType {
     }
 
     function getTaskTypeTitle() {
-        return "Dev Ticket";
+        return __("Dev Ticket");
     }
 
     function getTaskTypeDescription() {
-        return "Use this to report any issue or feature request.";
+        return __("Use this to report any issue or feature request.");
     }
 
     function getFieldFormArray(TaskGroup $taskgroup, Task $task = null) {
@@ -80,8 +80,8 @@ class TaskType_ProgrammingTicket extends TaskType {
         }
         return array(
             array($this->getTaskTypeTitle(), "section"),
-            array("Ticket Type", "select", "b_or_f", $this->getTaskDataValueForKey($taskdata, "b_or_f"), array("Issue", "Feature", "Task")),
-            array("Identifier", "hidden", "ident", $this->getTaskDataValueForKey($taskdata, "ident")),
+            array(__("Ticket Type"), "select", "b_or_f", $this->getTaskDataValueForKey($taskdata, "b_or_f"), array(__("Issue"), __("Feature"), __("Task"))),
+            array(__("Identifier"), "hidden", "ident", $this->getTaskDataValueForKey($taskdata, "ident")),
         );
     }
 

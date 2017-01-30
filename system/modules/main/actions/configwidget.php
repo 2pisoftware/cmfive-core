@@ -8,7 +8,7 @@ function configwidget_GET(Web $w) {
 	// $widgetname = $p["widget"];
 
 	if (empty($widget->id)) {
-		$w->error("Widget not found", "/{$p['origin']}");
+		$w->error(__("Widget not found"), "/{$p['origin']}");
 	}
 	$widgetname = $widget->widget_name;
 	$widget_config = null;
@@ -19,7 +19,7 @@ function configwidget_GET(Web $w) {
 	if (!empty($widget_config)) {
 		$w->out(Html::multiColForm($widget_config->getSettingsForm(), "/main/configwidget/{$p['origin']}/{$p['id']}"));// {$p['origin']}/{$p['source']}/{$p['widget']}"));
 	} else {
-		$w->out("Could not find widget class ({$widgetname})");
+		$w->out(__("Could not find widget class")." ({$widgetname})");
 	}
 }
 
@@ -31,7 +31,7 @@ function configwidget_POST(Web $w) {
 	// $widgetname = $p["widget"];
 
 	if (empty($widget->id)) {
-		$w->error("Widget not found", "/{$p['origin']}");
+		$w->error(__("Widget not found"), "/{$p['origin']}");
 	}
 
 	$vars = $_POST;
@@ -40,5 +40,5 @@ function configwidget_POST(Web $w) {
 	$widget->custom_config = json_encode($vars);
 	$widget->update();
 
-	$w->msg("Widget updated", "/{$p['origin']}");
+	$w->msg(__("Widget updated"), "/{$p['origin']}");
 }

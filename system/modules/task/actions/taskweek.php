@@ -19,7 +19,7 @@ function taskweek_ALL(Web &$w) {
 	$tasks = $w->Task->getTaskWeek($taskgroup, $assignee, $from, $to);
 
 	// set task activity heading
-	$line = array(array("An overview of the activity in Tasks: " . $from . " to " . $to));
+	$line = array(array(__("An overview of the activity in Tasks: ") . $from . __(" to ") . $to));
 	if ($tasks) {
 		// dont wanna keep displaying same date so set a variable for comparison
 		$olddate = "";
@@ -38,8 +38,8 @@ function taskweek_ALL(Web &$w) {
 					$line[] = array("<b>" . date("l jS F, Y", strtotime($task['dt_modified'])) . "</b>");
 				}
 				// display comments. if no group selected, display with link to task list with group preselected
-				$thisgroup = ($taskgroup != "") ? "" : "<a title=\"View Task Group\" href=\"" . WEBROOT . "/task/tasklist/?taskgroups=" . $task['task_group_id'] . "\">" . $w->Task->getTaskGroupTitleById($task['task_group_id']) . "</a>:&nbsp;&nbsp;";
-				$line[] = array("<dd>" . date("g:i a", strtotime($task['dt_modified'])) . " - " . $thisgroup . "<a title=\"View Task Details\" href=\"".WEBROOT."/task/edit/".$task['id']."\"><b>".$task['title']."</b></a>: " . $w->Task->findURL($task['comment']) . " - " . $w->Task->getUserById($task['creator_id']) . "</dd>");
+				$thisgroup = ($taskgroup != "") ? "" : "<a title=\"".__("View Task Group")."\" href=\"" . WEBROOT . "/task/tasklist/?taskgroups=" . $task['task_group_id'] . "\">" . $w->Task->getTaskGroupTitleById($task['task_group_id']) . "</a>:&nbsp;&nbsp;";
+				$line[] = array("<dd>" . date("g:i a", strtotime($task['dt_modified'])) . " - " . $thisgroup . "<a title=\"".__("View Task Details")."\" href=\"".WEBROOT."/task/edit/".$task['id']."\"><b>".$task['title']."</b></a>: " . $w->Task->findURL($task['comment']) . " - " . $w->Task->getUserById($task['creator_id']) . "</dd>");
 				$olddate = formatDate($task['dt_modified']);
 				$i++;
 			}
@@ -47,7 +47,7 @@ function taskweek_ALL(Web &$w) {
 	}
 	else {
 		// if no tasks found, say as much
-		$line[] = array("No Task Activity found for given selections.");
+		$line[] = array(__("No Task Activity found for given selections."));
 	}
 
 	// display

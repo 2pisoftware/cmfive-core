@@ -237,10 +237,10 @@ class InboxService extends DbService {
         }
         $nav = $nav ? $nav : array();
         if ($w->Auth->loggedIn()) {
-            $w->menuLink("inbox", "New Messages", $nav);
-            $w->menuLink("inbox/read", "Read Messages", $nav);
-            $w->menuLink("inbox/showarchive", "Archive", $nav);
-            $w->menuLink("inbox/trash", "Bin", $nav);
+            $w->menuLink("inbox", __("New Messages"), $nav);
+            $w->menuLink("inbox/read", __("Read Messages"), $nav);
+            $w->menuLink("inbox/showarchive", __("Archive"), $nav);
+            $w->menuLink("inbox/trash", __("Bin"), $nav);
         }
         $w->ctx("navigation", $nav);
         return $nav;
@@ -248,7 +248,7 @@ class InboxService extends DbService {
 
     function menuLink() {
         return $this->w->Auth->allowed("/inbox", 
-            Html::a($this->w->localUrl("/inbox"), "Inbox" . $this->inboxCountMarker(), "Inbox", "current active")
+            Html::a($this->w->localUrl("/inbox"), "Inbox" . $this->inboxCountMarker(), __("Inbox"), "current active")
         );
     }
     

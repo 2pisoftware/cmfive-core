@@ -7,7 +7,7 @@ function view_GET(Web &$w) {
 
 	// check if help is allowed for this topic
 	if (!$w->Auth->allowed($p['m'].'/'.$p['a'])) {
-		$w->ctx("help_content","Sorry, there is no help for this topic.");
+		$w->ctx("help_content",__("Sorry, there is no help for this topic."));
 	}
 
 	$submodule = "";
@@ -27,7 +27,7 @@ function view_GET(Web &$w) {
 
 	// load help file
 	$help_file = HelpLib::getHelpFilePath($w,$module,$submodule,$action);
-	$content = "Sorry, this help topic is not yet written.";
+	$content = __("Sorry, this help topic is not yet written.");
 	if (file_exists($help_file)) {
 		$content = file_get_contents($help_file);
 	}

@@ -105,7 +105,7 @@ class MigrationService extends DbService {
 	
 	public function createMigration($module, $name) {
 		if (empty($module) || !in_array($module, $this->w->modules())) {
-			return 'Missing module or it doesn\'t exist';
+			return __('Missing module or it doesn\'t exist');
 		}
 		
 		$module = strtolower($module);
@@ -122,7 +122,7 @@ class MigrationService extends DbService {
 		} else if (is_dir(SYSTEM_MODULE_DIRECTORY . DS . $module)) {
 			$directory = SYSTEM_MODULE_DIRECTORY . DS . $module;
 		} else {
-			return 'Could not find module directory';
+			return __('Could not find module directory');
 		}
 		
 		// Create migration directory if it doesn't exist
@@ -156,7 +156,7 @@ class {$classname} extends CmfiveMigration {
 MIGRATION;
 		file_put_contents($directory . DS . MIGRATION_DIRECTORY . DS . $filename, $data);
 		
-		return "Migration created";
+		return __("Migration created");
 	}
 	
 	public function runMigrations($module, $filename = null) {
@@ -221,7 +221,7 @@ MIGRATION;
 								$this->w->Log->setLogger("MIGRATION")->info("Running migration: " . $migration);
 
 								// Run migration UP
-								$migration_class = (new $migration(1))->setWeb($this->w);
+								$migration_class = new $migration(1);
 								$migration_class->setAdapter($mysql_adapter);
 								$migration_class->up();
 
@@ -230,7 +230,7 @@ MIGRATION;
 								$migration_object->path = $migration_path;
 								$migration_object->classname = $migration;
 								$migration_object->module = strtolower($module);
-								$migration_object->batch = $this->getNextBatchNumber();
+								$migration_object->batch = Migration::getNextBatchNumber();
 								$migration_object->insert();
 								
 								$runMigrations++;
@@ -242,14 +242,14 @@ MIGRATION;
 
 				// Finalise transaction
 				$this->w->db->commitTransaction();
-				return count($runMigrations) . ' migration' . (count($runMigrations) == 1 ? ' has' : 's have') . ' run'; 
+				return count($runMigrations) . __(' migration') . (count($runMigrations) == 1 ? __(' has') : __('s have')) . __(' run'); 
 			} catch (Exception $e) {
-				$this->w->out("Error with a migration: " . $e->getMessage() . "<br/>More info: " . var_export($e));
+				$this->w->out(__("Error with a migration: ") . $e->getMessage() . "<br/>".__("More info: ") . var_export($e));
 				$this->w->Log->setLogger("MIGRATION")->error("Error with a migration: " . $e->getMessage());
 				$this->w->db->rollbackTransaction();
 			}
 		} else {
-			return "No migrations to run!";
+			return __("No migrations to run!");
 		}
 	}
 	
@@ -275,16 +275,16 @@ MIGRATION;
 	 */
 	public function rollback($module, $filename) {
 		if (empty($module) || empty($filename)) {
-			return "Missing parameters required for a rollback";
+			return __("Missing parameters required for a rollback");
 		}
 		
 		if (!in_array($module, $this->w->modules())) {
-			return "Module doesn't exist";
+			return __("Module doesn't exist");
 		}
 		
 		$installed_migrations = $this->getInstalledMigrations($module);
 		if (empty($installed_migrations[$module])) {
-			return "There are no installed migrations to rollback";
+			return __("There are no installed migrations to rollback");
 		}
 		
 		$offset_index = 0;
@@ -333,9 +333,9 @@ MIGRATION;
 
 				// Finalise transaction
 				$this->w->db->commitTransaction();
-				return count($migrations_to_rollback) . ' migration' . (count($migrations_to_rollback) == 1 ? ' has' : 's have') . ' rolled back'; 
+				return count($migrations_to_rollback) . __(' migration') . (count($migrations_to_rollback) == 1 ? __(' has') : __('s have')) . __(' rolled back'); 
 			} catch (Exception $e) {
-				$this->w->out("Error with a migration: " . $e->getMessage());
+				$this->w->out(__("Error with a migration: ") . $e->getMessage());
 				$this->w->Log->setLogger("MIGRATION")->error("Error with a migration: " . $e->getMessage());
 				$this->w->db->rollbackTransaction();
 			}
@@ -345,7 +345,7 @@ MIGRATION;
 	public function batchRollback() {
 		
 		// Get latest batch
-		$batch_no = ($this->getNextBatchNumber() - 1);
+		$batch_no = (new Migration($this->w))->getNextBatchNumber() - 1;
 		
 		$migrations = $this->getObjects("Migration", ["batch" => $batch_no]);
 		$migrations_rolled_back = 0;
@@ -356,7 +356,7 @@ MIGRATION;
 			}
 		}
 		
-		return $migrations_rolled_back . " migration" . ($migrations_rolled_back == 1 ? '' : 's') . " rolled back";
+		return $migrations_rolled_back . __(" migration") . ($migrations_rolled_back == 1 ? '' : 's') . __(" rolled back");
 	}
 	
 	public function installInitialMigration() {
@@ -390,7 +390,6 @@ MIGRATION;
 				$migration_object->path = $directory . DS . $filename;
 				$migration_object->classname = $migration;
 				$migration_object->module = "admin";
-				$migration_object->batch = 1;
 				$migration_object->dt_created = time();
 				$migration_object->creator_id = 1;
 				$migration_object->insert();
@@ -403,90 +402,5 @@ MIGRATION;
 		
 		return false;
 	}
-
-	public function getSeedMigrations() {
-		$availableMigrations = [];
-		
-		// Read all modules directories for any migrations that need to run
-		foreach($this->w->modules() as $module) {
-			$availableMigrations += $this->getSeedMigrationsForModule($module);
-		}
-		
-		return $availableMigrations;
-	}
 	
-	public function getSeedMigrationsForModule($module) {
-		$availableMigrations = [];
-		
-		// Check modules folder
-		$module_path = PROJECT_MODULE_DIRECTORY . DS . $module . DS . SEED_MIGRATION_DIRECTORY;
-		$system_module_path = SYSTEM_MODULE_DIRECTORY . DS . $module . DS . SEED_MIGRATION_DIRECTORY;
-
-		$migration_paths = [$module_path, $system_module_path];
-		if (empty($availableMigrations[$module])) {
-			$availableMigrations[$module] = [];
-		}
-
-		foreach($migration_paths as $migration_path) {
-			if (is_dir(ROOT_PATH . DS . $migration_path)) {
-				foreach(scandir(ROOT_PATH . DS . $migration_path) as $file) {
-					if (!is_dir($file) && $file{0} !== '.') {
-						$classname = explode('.', str_replace('-', '.', $file));
-						if (!empty($classname[0])) {
-							$availableMigrations[$module][$migration_path . DS . $file] = $classname[0];
-						} else {
-							$this->w->Log->error("Migration '" . $file . "' does not conform to naming convention");
-						}
-					}
-				}
-			}
-		}
-
-		return $availableMigrations;
-	}
-
-	public function migrationSeedExists($name) {
-		return $this->w->db->get('migration_seed')->where('name', $name)->count() > 0;
-	}
-
-	public function createMigrationSeed($module, $name) {
-
-		// Check if its a system module
-		$path = SYSTEM_MODULE_DIRECTORY . DS . $module;
-
-		if (!is_dir($path)) {
-			$path = PROJECT_MODULE_DIRECTORY . DS . $module;
-
-			if (!is_dir($path)) {
-				return false;
-			}
-
-		}
-		
-		// Create folder if it doesn't exist
-		if (!is_dir($path . DS . SEED_MIGRATION_DIRECTORY)) {
-			mkdir($path . DS . SEED_MIGRATION_DIRECTORY, 0755, true);
-		}
-
-		$data = <<<MIGRATION
-<?php
-
-class {$name} extends CmfiveSeedMigration {
-
-	public \$name = "{$name}";
-	public \$description = "<Enter description here>";
-
-	public function seed() {
-		
-	}
-
-}
-
-MIGRATION;
-	
-		file_put_contents($_SERVER['DOCUMENT_ROOT'] . DS . $path . DS . SEED_MIGRATION_DIRECTORY . DS . "$name.php", $data);
-		
-		return true;
-	}
-
 }

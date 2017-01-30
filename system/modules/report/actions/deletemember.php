@@ -8,13 +8,13 @@ function deletemember_GET(Web &$w) {
 	if ($member) {
 		// build a static form displaying members details for confirmation of delete
 		$f = Html::form(array(
-		array("Confirm Delete Member","section"),
+		array(__("Confirm Delete Member"),"section"),
 		array("","hidden", "is_deleted","1"),
-		array("Name","static", "name", $w->Report->getUserById($member->user_id)),
-		),$w->localUrl("/report/deletemember/".$member->report_id."/".$member->user_id),"POST"," Delete ");
+		array(__("Name"),"static", "name", $w->Report->getUserById($member->user_id)),
+		),$w->localUrl("/report/deletemember/".$member->report_id."/".$member->user_id),"POST",__(" Delete "));
 	}
 	else {
-		$f = "No such member?";
+		$f = __("No such member?");
 	}
 	// display form
 	$w->setLayout(null);
@@ -32,10 +32,10 @@ function deletemember_POST(Web &$w) {
 		$member->fill($_POST);
 		$member->update();
 
-		$w->msg("Member deleted","/report/viewreport/".$p['report_id']."?tab=2");
+		$w->msg(__("Member deleted"),"/report/viewreport/".$p['report_id']."?tab=2");
 	}
 	else {
 		// if member somehow no longer exists, say as much
-		$w->msg("Member no longer exists?","/report/edit/".$p['report_id']."?tab=2");
+		$w->msg(__("Member no longer exists?"),"/report/edit/".$p['report_id']."?tab=2");
 	}
 }

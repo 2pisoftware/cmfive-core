@@ -7,10 +7,10 @@ function delete_ALL(Web $w) {
         $tag = $w->Tag->getTag($p["id"]);
         if (!empty($tag->tag)) {
             $w->Tag->deleteTag($tag->tag);
-            $w->msg("Tag deleted", "/tag");
+            $w->msg(__("Tag deleted"), "/tag");
         }
     }
     
-    $w->error("Could not find tag", "/tag");
+    $w->error(__("Could not find tag"), "/tag");
 
 }

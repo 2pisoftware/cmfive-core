@@ -7,12 +7,12 @@ function editmember_GET(Web &$w) {
 
 	// build editable form for a member allowing change of membership type
 	$f = Html::form(array(
-		array("Member Details","section"),
+		array(__("Member Details"),"section"),
 		array("","hidden", "report_id",$p['repid']),
-		array("Name","static", "name", $w->Report->getUserById($member->user_id)),
-		array("Role","select","role",$member->role,$w->Report->getReportPermissions()),
-		array("Is email recipient", "checkbox", "is_email_recipient", $member->is_email_recipient)
-	),$w->localUrl("/report/editmember/".$p['userid']),"POST"," Update ");
+		array(__("Name"),"static", "name", $w->Report->getUserById($member->user_id)),
+		array(__("Role"),"select","role",$member->role,$w->Report->getReportPermissions()),
+		array(__("Is email recipient"), "checkbox", "is_email_recipient", $member->is_email_recipient)
+	),$w->localUrl("/report/editmember/".$p['userid']),"POST",__(" Update "));
 
 	// display form
 	$w->setLayout(null);
@@ -27,5 +27,5 @@ function editmember_POST(Web &$w) {
 	$member->is_email_recipient = intval(!empty($_POST['is_email_recipient']));
 	$member->update();
 
-	$w->msg("Member updated","/report/edit/".$_POST['report_id']."#members");
+	$w->msg(__("Member updated"),"/report/edit/".$_POST['report_id']."#members");
 }

@@ -5,7 +5,7 @@ function rollback_GET(Web $w) {
 	$p = $w->pathMatch("module", "file");
 	
 	if (empty($p['module']) || empty($p['file'])) {
-		$w->error("Missing parameters required for rollback", "/admin-migration");
+		$w->error(__("Missing parameters required for rollback"), "/admin-migration");
 	}
 	
 	$response = $w->Migration->rollback($p['module'], $p['file']);

@@ -1,14 +1,14 @@
 <?php
 
 function edit_GET(Web $w) {
-	$w->Tag->navigation($w,"Edit Tag");
+	$w->Tag->navigation($w,__("Edit Tag"));
 	$p = $w->pathMatch("id");
 	
 	$t = $w->Tag->getTag($p['id']);
 	$newForm = array();
-	$newForm["Tag"] = array(
+	$newForm[__("Tag")] = array(
 		array(
-			array("Tag", "text", "tag",$t->tag),
+			array(__("Tag"), "text", "tag",$t->tag),
 		)
 	);
 
@@ -20,8 +20,8 @@ function edit_POST(Web $w) {
 	$t = $w->Tag->getTag($p['id']);
 	$r = $w->Tag->renameTag($t->tag, $_POST['tag']);
 	if(-1 === $r) {
-		$w->msg("Couldn't save tag, \"".$_POST['tag']."\" already exists!", "/tag/edit/".$t->id);
+		$w->msg(__("Couldn't save tag").", \"".$_POST['tag']."\" ".__("already exists!"), "/tag/edit/".$t->id);
 	} else {
-		$w->msg("Tag saved", "/tag/edit/".$t->id);
+		$w->msg(__("Tag saved"), "/tag/edit/".$t->id);
 	}
 }

@@ -13,7 +13,7 @@ function ajaxGetTaskTypeFormFields_GET($w) {
         $form_fields = $w->Task->getFormFieldsByTask($tid,$tg);
         
         if (!empty($form_fields)) {
-            echo Html::form($form_fields, "/task/edit", "POST", "Save", "form_fields_form");
+            echo Html::form($form_fields, "/task/edit", "POST", __("Save"), "form_fields_form");
         }
     }
 }

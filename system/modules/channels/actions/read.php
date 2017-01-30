@@ -14,5 +14,5 @@ function read_GET(Web $w) {
 		}
 	}
 
-	$w->out("No channel found.");
+	$w->out(__("No channel found."));
 }

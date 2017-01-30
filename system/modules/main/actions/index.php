@@ -1,4 +1,4 @@
 <?php
 function index_ALL(Web $w) {
-	$w->ctx("title","Home");
+	$w->ctx("title",__("Home"));
 }

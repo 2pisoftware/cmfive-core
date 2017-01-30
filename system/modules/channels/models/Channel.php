@@ -10,18 +10,18 @@ class Channel extends DbObject {
 
     public function getForm() {
 
-        return array("Channel" => array(
+        return array(__("Channel") => array(
                 array(
-                    array("Name", "text", "name", $this->name),
-                    array("Is Active", "checkbox", "is_active", ($this->is_active === null ? 1 : $this->is_active))
+                    array(__("Name"), "text", "name", $this->name),
+                    array(__("Is Active"), "checkbox", "is_active", ($this->is_active === null ? 1 : $this->is_active))
                 ),
                 array(
-                    array("Notify Email", "text", "notify_user_email", $this->notify_user_email),
+                    array(__("Notify Email"), "text", "notify_user_email", $this->notify_user_email),
                     // TODO: Need to prefil this with user names
-                    array("Notify User", "select", "notify_user_id", $this->notify_user_id, $this->w->Auth->getUsers())
+                    array(__("Notify User"), "select", "notify_user_id", $this->notify_user_id, $this->w->Auth->getUsers())
                 ),
                 array(
-                    array("Run processors?", "checkbox", "do_processing", $this->do_processing)
+                    array(__("Run processors?"), "checkbox", "do_processing", $this->do_processing)
                 )
         ));
     }

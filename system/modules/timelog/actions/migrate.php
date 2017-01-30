@@ -37,9 +37,9 @@ function migrate_GET(Web $w) {
 			}
 		}
 		
-		$w->out("Timelog successfully migrated.<br/>" . Html::a("/timelog", "View Timelog"));
+		$w->out(__("Timelog successfully migrated.")."<br/>" . Html::a("/timelog", __("View Timelog")));
 		file_put_contents($lock_file, "");
 	} else {
-		$w->out("Timelog migration cannot run, lock is in place.<br/>" . Html::a("/timelog", "View Timelog"));
+		$w->out(__("Timelog migration cannot run, lock is in place.")."<br/>" . Html::a("/timelog", __("View Timelog")));
 	}
 }

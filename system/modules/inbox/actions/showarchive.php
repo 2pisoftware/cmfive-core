@@ -1,7 +1,7 @@
 <?php
 
 function showarchive_ALL(Web $w) {
-    $w->Inbox->navigation($w, "Archive");
+    $w->Inbox->navigation($w, __("Archive"));
 
     $p = $w->pathMatch('num');
     $num = $p['num'] ? $p['num'] : 1;
@@ -10,7 +10,7 @@ function showarchive_ALL(Web $w) {
     $arch = $w->Inbox->getMessages($num - 1, 40, $w->Auth->user()->id, 0, 1);
     $arch_count = $w->Inbox->getArchCount($w->Auth->user()->id);
 
-    $table_header = array("<input style='margin: 0px;' type='checkbox' id='allChk' onclick='selectAll()' />", "Subject", "Date", "Sender");
+    $table_header = array("<input style='margin: 0px;' type='checkbox' id='allChk' onclick='selectAll()' />", __("Subject"), __("Date"), __("Sender"));
     $table_data = array();
     if (!empty($new_arch)) {
         foreach ($new_arch as $q) {

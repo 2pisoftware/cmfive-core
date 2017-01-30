@@ -8,8 +8,8 @@ function delete_GET(Web $w) {
 		$channel = $w->Channel->getWebChannel($id);
 		$channel->delete();
 
-		$w->msg("Channel deleted", "/channels/listchannels");
+		$w->msg(__("Channel deleted"), "/channels/listchannels");
 	} else {
-		$w->error("Could not find channel");
+		$w->error(__("Could not find channel"));
 	}
 }

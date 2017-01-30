@@ -8,8 +8,8 @@ function delete_GET(Web $w) {
 		$processor = $w->Channel->getProcessor($id);
 		$processor->delete();
 
-		$w->msg("Processor deleted", "/channels/listprocessors");
+		$w->msg(__("Processor deleted"), "/channels/listprocessors");
 	} else {
-		$w->error("Could not find processor");
+		$w->error(__("Could not find processor"));
 	}
 }

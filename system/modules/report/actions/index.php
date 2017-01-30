@@ -5,8 +5,8 @@
 ////////////////////////////////////////////////////
 
 function index_ALL(Web &$w) {
-    $w->Report->navigation($w, "Reports");
-    History::add("List Reports");
+    $w->Report->navigation($w, __("Reports"));
+    History::add(__("List Reports"));
     // report approval flag: display appropriate image
     $app[0] = "<img alt=\"No\" src=\"/system/templates/img/no.gif\" style=\"display: block; margin-left: auto; margin-right: auto;\">";
     $app[1] = "<img alt=\"Yes\" src=\"/system/templates/img/yes.gif\" style=\"display: block; margin-left: auto; margin-right: auto;\">";
@@ -30,8 +30,8 @@ function index_ALL(Web &$w) {
 
     // set headings based on role: 'user' sees only approved reports and no approval status
     $line = ($w->Auth->user()->hasAnyRole("report_editor", "report_admin")) ?
-            array(array("Title", /* "Approved" ,*/ "Module", /* "Category", */ "Description", "")) :
-            array(array("Title", "Module", /* "Category", */ "Description", ""));
+            array(array(__("Title"), /* "Approved" ,*/ __("Module"), /* "Category", */ __("Description"), "")) :
+            array(array(__("Title"), __("Module"), /* "Category", */ __("Description"), ""));
 
     // if i am a member of a list of reports, lets display them
     if ($reports) {
@@ -41,12 +41,12 @@ function index_ALL(Web &$w) {
             // editor & admin get EDIT button
             //			if (($w->Auth->user()->hasRole("report_editor")) || ($w->Auth->user()->hasRole("report_admin"))) {
             if ((!empty($member->role) && $member->role == "EDITOR") || ($w->Auth->user()->hasRole("report_admin"))) {
-                $btnedit = Html::b(!empty($webroot) ? $webroot : '' . "/report/edit/" . $rep->id, "Edit");
+                $btnedit = Html::b(!empty($webroot) ? $webroot : '' . "/report/edit/" . $rep->id, __("Edit"));
             }
 
             // admin also gets DELETE button
             if ($w->Auth->user()->hasRole("report_admin")) {
-                $btndelete = Html::b(!empty($webroot) ? $webroot : '' . "/report/deletereport/" . $rep->id, "Delete", "Are you sure you want to delete this Report?");
+                $btndelete = Html::b(!empty($webroot) ? $webroot : '' . "/report/deletereport/" . $rep->id, __("Delete"), __("Are you sure you want to delete this Report?"));
             } else {
                 $btndelete = "";
             }
@@ -76,7 +76,7 @@ function index_ALL(Web &$w) {
         }
     } else {
         // i am not a member of any reports
-        $line[] = array("You have no available reports", "", "", "", "", "", "");
+        $line[] = array(__("You have no available reports"), "", "", "", "", "", "");
     }
     // populate search dropdowns
     $modules = $w->Report->getModules();

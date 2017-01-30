@@ -71,11 +71,11 @@ class Contact extends DbObject {
 		}
 		$first = true;
 		if ($this->workphone) {
-			$buf .= "work phone ".$this->workphone;
+			$buf .= __("work phone ").$this->workphone;
 			$first = false;
 		}
 		if ($this->mobile) {
-			$buf.= ($first ? "":", ")."mobile ".$this->mobile;
+			$buf.= ($first ? "":", ").__("mobile ").$this->mobile;
 			$first = false;
 		}
 		if ($this->email) {

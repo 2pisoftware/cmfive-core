@@ -9,7 +9,7 @@ if ($w->auth->hasRole('comment')) {
     // /admin/comment/[COMMENT_ID]/[TABLE_NAME]/[OBJECT_ID]?redirect_url=[REDIRECT_URL]
     // Its a bit farfetched but provides us with a standard commenting interface
     // Dont need to worry about urlencoding the redirect url
-    echo Html::box("/admin/comment/0/{$object->getDbTablename()}/{$object->id}?redirect_url=" . urlencode($redirect), "Add Comment", true);
+    echo Html::box("/admin/comment/0/{$object->getDbTablename()}/{$object->id}?redirect_url=" . urlencode($redirect), __("Add Comment"), true);
     
     if (!empty($comments)) :
         // Now that we have comments on comments, I decided to change the partial structure
@@ -67,13 +67,12 @@ if ($w->auth->hasRole('comment')) {
                             }))
                             .append($('<textarea></textarea>').attr({
                                 id: 'textarea_comment',
-                                placeholder: 'Enter your reply...'
+                                placeholder: __('Enter your reply...')
                             }))
-                            .append('<?php echo $recipients_html; ?>')
-                            .append($('<button>Reply</button>').attr({
+                            .append($('<button>'.__('Reply').'</button>').attr({
                                 type: 'submit'
                             }).addClass('button tiny'))
-                            .append($('<button>Cancel</button>').attr({
+                            .append($('<button>'.__('Cancel').'</button>').attr({
                                 type: 'button',
                                 onclick: 'cancelReply($(this));'
                             }).addClass('button tiny'))
@@ -109,8 +108,7 @@ if ($w->auth->hasRole('comment')) {
                         '<?php echo \CSRF::getTokenID(); ?>': '<?php echo \CSRF::getTokenValue(); ?>'
                     },
                     complete: function(comment_response) {
-                        //alert(comment_response.responseText);
-                        
+                        toggleModalLoading();
                         window.location.reload();
                         
 //                        cancelReply(replyForm);
@@ -178,16 +176,11 @@ if ($w->auth->hasRole('comment')) {
 
                 if (colours_only === false) {
                     if (numElements > 0) {
-                        $(this).children().first().find('.comment_meta > a').before("<i>(" + numElements + (numElements == 1 ? ' reply' : ' replies') + ")</i>");
+                        $(this).children().first().find('.comment_meta > a').before("<i>(" + numElements + (numElements == 1 ? __(' reply') : __(' replies')) + ")</i>");
                     }
                 }
             });
        }
 
     </script>
-    <?php endif;
-} else {
-    ?>
-    <div class="warning"><p>'Comment' permissions are required. See your system administrator.</p></div>
-    <?php
-}
+<?php endif;

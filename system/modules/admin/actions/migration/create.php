@@ -5,12 +5,12 @@ function create_GET(Web $w) {
 	$p = $w->pathMatch("module");
 	
 	if (empty($p['module']) || !in_array($p['module'], $w->modules())) {
-		$w->out("Missing specified module or it doesn't exist");
+		$w->out(__("Missing specified module or it doesn't exist"));
 	}
 	
 	$form = [
-		"Enter the migration name (camel case)" => [
-			[["Name", "text", "name"]]
+		__("Enter the migration name (camel case)") => [
+			[[__("Name"), "text", "name"]]
 		]
 	];
 	
@@ -23,7 +23,7 @@ function create_POST(Web $w) {
 	$p = $w->pathMatch("module");
 	
 	if (empty($p['module']) || !in_array($p['module'], $w->modules())) {
-		$w->error("Missing specified module or it doesn't exist", "/admin-migration");
+		$w->error(__("Missing specified module or it doesn't exist"), "/admin-migration");
 	}
 	
 	$name = $w->request('name', 'migration');

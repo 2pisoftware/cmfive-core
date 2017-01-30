@@ -21,5 +21,5 @@ function groupdelete_GET(Web &$w)
 			$member->delete();
 		}
 	}
-	$w->msg("Group is deleted!", "/admin/groups");
+	$w->msg(__("Group is deleted!"), "/admin/groups");
 }

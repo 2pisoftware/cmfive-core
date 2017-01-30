@@ -668,8 +668,10 @@ class TaskService extends DbService {
     }
 
     function removeMemberFromTaskGroup($taskgroup_id, $user_id) {
+    	$this->Log->debug("before delete Taskgroupmember(".$taskgroup_id."), user({$user_id})");
     	$tgm = $this->getObject("TaskGroupMember", array("task_group_id"=>$taskgroup_id, "user_id"=>$user_id));
     	if (!empty($tgm)) {
+    		$this->Log->debug("delete Taskgroupmember(".$tgm->id."), user({$user_id})");
     		$tgm->delete();
     	}
     }
@@ -902,7 +904,7 @@ class TaskService extends DbService {
 			}
 		}
 		
-		return !empty($message) ? "<br/><p>Additional details:</p>" . $message : '';
+		return !empty($message) ? "<br/><p>".__("Additional details:")."</p>" . $message : '';
 	}
     
     public function navigation(Web $w, $title = null, $nav = null) {
@@ -913,7 +915,7 @@ class TaskService extends DbService {
         $nav = $nav ? $nav : array();
 
         if ($w->Auth->loggedIn()) {
-            $w->menuLink("task/edit", "New Task", $nav);
+            $w->menuLink("task/edit", __("New Task"), $nav);
 //          $w->menuLink("task/index", "Task Dashboard", $nav);
             $w->menuLink("task/tasklist", "Task List", $nav);
             $w->menuLink("task/notifications", "Notifications", $nav);

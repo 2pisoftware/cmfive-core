@@ -16,6 +16,94 @@ function array_unique_multidimensional($input) {
     return array_intersect_key($input, $unique);
 }
 
+/**
+ * Translations shortcuts (for POT marker identification
+ */
+
+// ensure that developers use double underscore  !! requires ADP php module
+//override_function('__', '$key,$context', 'throw new Exception("You must use double underscores in gettext lookups - ".$key."-".$context) ;');
+
+
+// Implement gettext context
+if (!function_exists('pgettext')) {
+    function pgettext($context, $msgid,$domain='') {
+		//echo "pgettext:".$context."|".$msgid."|".$domain;
+		$contextString = "{$context}\004{$msgid}";
+        if (strlen(trim($domain))>0) {
+			//$oldDomain=textdomain(NULL);
+			//echo "olddomain:".$oldDomain;
+			//textDomain($domain);
+			$translation = dgettext($domain,$contextString);
+			//textDomain($oldDomain);
+		} else {
+			$translation = gettext($contextString);
+		}
+        if ($translation === $contextString) return $msgid;
+        else return $translation;
+    }
+
+    function npgettext($context, $msgid, $msgid_plural, $num,$domain='') {
+        $contextString = "{$context}\004{$msgid}";
+        $contextStringp = "{$context}\004{$msgid_plural}";
+        if (strlen(trim($domain))>0) {
+			$translation = dngettext($domain,$contextString, $contextStringp, $num);
+		} else {
+			$translation = ngettext($contextString, $contextStringp, $num);
+		}
+        if ($translation === $contextString) {
+            return $msgid;
+        } else if ($translation === $contextStringp) {
+            return $msgid_plural;
+        } else {
+            return $translation;
+        }
+    }
+}
+
+/**
+ * Lookup translation 
+ */
+function __($key,$context='',$domain='') {
+	if (strlen(trim($context))>0) {
+		return pgettext($context, $key,$domain);
+	} else {
+		if (strlen(trim($domain))>0) {
+			return dgettext($domain,$key);
+		} else {
+			return  gettext($key);
+		}
+	}
+} 
+/**
+ * Echo a translation lookup
+ */
+function _e($key,$context='',$domain='') {
+	echo __($key,$context,$domain);
+} 
+
+/**
+ * Lookup a plural translation
+ */
+function _n($key1,$key2,$n,$context='',$domain='') {
+	if (strlen(trim($context))>0) {
+		return npgettext($context,$key1,$key2,$n,$domain);
+	} else {
+		if (strlen(trim($domain))>0) {
+			return dngettext($domain,$key1,$key2,$n);
+		} else {
+			return ngettext($key1,$key2,$n);
+		}
+	}
+}
+/**
+ * Echo a plural translation lookup
+ */
+function _en($key1,$key2,$n,$context='',$domain='') {
+	echo _n($key1,$key2,$n,$domain,$context);
+}
+
+
+
 function humanReadableBytes($input, $rounding = 2, $bytesValue = true) {
     $ext = array("B", "KB", "MB", "GB", "TB");
     $barrier = 1024;

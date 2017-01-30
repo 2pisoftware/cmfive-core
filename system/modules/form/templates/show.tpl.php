@@ -4,21 +4,21 @@
 
 <div class="tabs">
 	<div class="tab-head">
-		<a href="#fields">Fields</a>
-		<a href="#preview">Preview</a>
-		<a href="#mapping">Mapping</a>
-		<a href="#row_template">Row Templates</a>
-		<a href="#summary_template">Summary Template</a>
+		<a href="#fields"><?php _e('Fields'); ?></a>
+		<a href="#preview"><?php _e('Preview'); ?></a>
+		<a href="#mapping"><?php _e('Mapping'); ?></a>
+		<a href="#row_template"><?php _e('Row Templates'); ?></a>
+		<a href="#summary_template"><?php _e('Summary Template'); ?></a>
 	</div>
 	<div class="tab-body">
 		<div id="fields">
-			<?php echo Html::box("/form-field/edit/?form_id=" . $form->id, "Add a field", true); ?>
+			<?php echo Html::box("/form-field/edit/?form_id=" . $form->id, __("Add a field"), true); ?>
 
 			<?php if (!empty($fields)) : ?>
 				<table class="table small-12">
 					<thead>
 						<tr>
-							<th width="5%">Ordering</th><th>Name</th><th>Technical Name</th><th>Type</th><th>Additional Details</th><th>Actions</th>
+							<th width="5%"><?php _e('Ordering'); ?></th><th><?php _e('Name'); ?></th><th><?php _e('Technical Name'); ?></th><th><?php _e('Type'); ?></th><th><?php _e('Additional Details'); ?></th><th><?php _e('Actions'); ?></th>
 						</tr>
 					</thead>
 					<tbody id="sortable" >
@@ -31,8 +31,8 @@
 								<td><?php echo $field->getAdditionalDetails(); ?></td>
 								<td>
 									<?php
-									echo Html::box("/form-field/edit/" . $field->id . "?form_id=" . $form->id, "Edit", true);
-									echo Html::b("/form-field/delete/" . $field->id, "Delete", "Are you sure you want to delete this form field? (WARNING: there may be existing data saved to this form field!)", null, false, "alert");
+									echo Html::box("/form-field/edit/" . $field->id . "?form_id=" . $form->id, __("Edit"), true);
+									echo Html::b("/form-field/delete/" . $field->id, __("Delete"), __("Are you sure you want to delete this form field? (WARNING: there may be existing data saved to this form field!)"), null, false, "alert");
 									?>
 								</td>
 							</tr>
@@ -89,7 +89,7 @@
 					</div>
 					<div class="row-fluid clearfix">
 						<div class="small-12 columns">
-							<button class="button">Save</button>
+							<button class="button"><?php _e('Save') ?></button>
 						</div>
 					</div>
 				</form>
@@ -98,9 +98,9 @@
 		<div id="row_template" class="clearfix">
 			<?php
 			echo Html::multiColForm([
-				"Row templates" => [
-					[["Header row template", "textarea", "header_template", $form->header_template, null, "4", "codemirror"]],
-					[["Item row template", "textarea", "row_template", $form->row_template, null, "6", "codemirror"]]
+				__("Row templates") => [
+					[[__("Header row template"), "textarea", "header_template", $form->header_template, null, "4", "codemirror"]],
+					[[__("Item row template"), "textarea", "row_template", $form->row_template, null, "6", "codemirror"]]
 				]
 					], "/form/edit/" . $form->id . "?redirect_url=" . urlencode("/form/show/" . $form->id) . "#row_template", "POST");
 			?>
@@ -108,7 +108,7 @@
 		<div id="summary_template" class="clearfix">
 			<?php
 			echo Html::multiColForm([
-				"Summary template" => [
+				__("Summary template") => [
 					[["", "textarea", "summary_template", $form->summary_template, null, "4", "codemirror"]],
 				]
 					], "/form/edit/" . $form->id . "?redirect_url=" . urlencode("/form/show/" . $form->id) . "#summary_template", "POST");

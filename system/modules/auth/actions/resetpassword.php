@@ -10,7 +10,7 @@ function resetpassword_GET(Web $w) {
         // Check that the password reset hasn't expired
         $w->Log->setLogger("AUTH")->debug("USER: " . $user->id . " TIME: " . time() . " USER_RESET: " . $user->dt_password_reset_at . " RESULT: " . (time() - $user->dt_password_reset_at));
         if ((time() - $user->dt_password_reset_at) > 86400) {
-            $w->msg("Your token has expired (max 24 hours), please submit for a new one", "/auth/forgotpassword");
+            $w->msg(__("Your token has expired (max 24 hours), please submit for a new one"), "/auth/forgotpassword");
             return;
         }
 
@@ -19,10 +19,10 @@ function resetpassword_GET(Web $w) {
             if ($user_contact->email == $email) {
                 // We have passed the test
                 $password_form = Html::form(array(
-                            array("Enter new password", "section"),
-                            array("New password", "password", "password"),
-                            array("Confirm password", "password", "password_confirm"),
-                                ), $w->localUrl("auth/resetpassword?email=$email&token=$token"), "POST", "Reset");
+                            array(__("Enter new password"), "section"),
+                            array(__("New password"), "password", "password"),
+                            array(__("Confirm password"), "password", "password_confirm"),
+                                ), $w->localUrl("auth/resetpassword?email=$email&token=$token"), "POST", __("Reset"));
                 $w->out($password_form);
                 $validData = true;
             }
@@ -30,7 +30,7 @@ function resetpassword_GET(Web $w) {
     }
     if (!$validData) {
         $w->Log->warn("Password reset attempt failed with email: $email, token: $token");
-        $w->out("Invalid email or token, this incident has been logged");
+        $w->out(__("Invalid email or token, this incident has been logged"));
     }
 }
 
@@ -41,7 +41,7 @@ function resetpassword_POST(Web $w) {
     $password_confirm = $w->request('password_confirm');
 
     if ($password !== $password_confirm) {
-        $w->error("Passwords do not match", "/auth/resetpassword?email=$email&token=$token");
+        $w->error(__("Passwords do not match"), "/auth/resetpassword?email=$email&token=$token");
         return;
     }
 
@@ -50,7 +50,7 @@ function resetpassword_POST(Web $w) {
     if (!empty($user->id)) {
         // Check that the password reset hasn't expired
         if ((time() - $user->dt_password_reset_at) > 86400) {
-            $w->msg("Your token has expired (max 24 hours), please submit for a new one", "/auth/forgotpassword");
+            $w->msg(__("Your token has expired (max 24 hours), please submit for a new one"), "/auth/forgotpassword");
             return;
         }
 
@@ -73,8 +73,8 @@ function resetpassword_POST(Web $w) {
     }
     if (!$validData) {
         $w->Log->warn("Password reset attempt failed with email: $email, token: $token");
-        $w->out("Invalid email or token, this incident has been logged");
+        $w->out(__("Invalid email or token, this incident has been logged"));
     } else {
-        $w->msg("Your password has been reset", "/auth/login");
+        $w->msg(__("Your password has been reset"), "/auth/login");
     }
 }

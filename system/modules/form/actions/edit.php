@@ -6,9 +6,9 @@ function edit_GET(Web $w) {
 	$_form_object = $p['id'] ? $w->Form->getForm($p['id']) : new Form($w);
 	
 	$form = [
-		"Form" => [
-			[["Title", "text", "title", $_form_object->title]],
-			[["Description", "text", "description", $_form_object->description]],
+		__("Form") => [
+			[[__("Title"), "text", "title", $_form_object->title]],
+			[[__("Description"), "text", "description", $_form_object->description]],
 		]
 	];
 	
@@ -24,6 +24,6 @@ function edit_POST(Web $w) {
 	$_form_object->insertOrUpdate();
 	
 	$redirect_url = $w->request("redirect_url");
-	$w->msg("Form " . ($p['id'] ? 'updated' : 'created'), !empty($redirect_url) ? $redirect_url : "/form");
+	$w->msg(__("Form ") . ($p['id'] ? __('updated') : __('created')), !empty($redirect_url) ? $redirect_url : "/form");
 	
 }

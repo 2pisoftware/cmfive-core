@@ -16,8 +16,8 @@ function delete_ALL(Web &$w) {
         $task->is_closed = 1;
         $task->is_deleted = 1;
         $task->update();
-        $w->msg("Task: " . $task->title . " has been deleted.", "/task/tasklist/");
+        $w->msg(__("Task: ") . $task->title . __(" has been deleted."), "/task/tasklist/");
     } else {
-        $w->error("Task could not be found.", "/task/tasklist/");
+        $w->error(__("Task could not be found."), "/task/tasklist/");
     }
 }

@@ -1,11 +1,11 @@
 <div class="tabs">
     <div class="tab-head">
-        <a href="#tab-1">Create Report</a>
-        <a href="#tab-2">View Database</a>
+        <a href="#tab-1"><?php echo _e('Create Report'); ?></a>
+        <a href="#tab-2"><?php echo _e('View Database'); ?></a>
     </div>
     <div class="tab-body">
         <div id="tab-1">
-            <p>Please review the <b>Help</b> file for full instructions on the special syntax used to create reports.</p>
+            <p><?php echo _e('Please review the <b>Help</b> file for full instructions on the special syntax used to create reports.'); ?></p>
             <div class="clearfix">
                 <?php echo $createreport; ?>
             </div>

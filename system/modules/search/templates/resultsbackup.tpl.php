@@ -22,7 +22,7 @@ if (!empty($results)): ?>
                     </div>
                 <?php else: ?>
                     <div class="search-title"><?php echo $object->printSearchTitle(); ?></div>
-                    <div class="search-listing">(restricted)</div>
+                    <div class="search-listing">(restricted<?php _e('restricted'); ?>)</div>
                 <?php endif; ?>
             </div>
         <?php endif;
@@ -32,6 +32,6 @@ if (!empty($results)): ?>
     echo !empty($pagination) ? $pagination : null;
 else: ?>
     <div class="search-result">
-        No documents found.
+        <?php _e('No documents found,.'); ?>
     </div>
 <?php endif;?>

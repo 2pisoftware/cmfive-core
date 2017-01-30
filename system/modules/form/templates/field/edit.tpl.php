@@ -1,14 +1,14 @@
 <form action='/form-field/edit/<?php echo $field->id; ?>?form_id=<?php echo $form_id; ?>' method="POST">
 	<div class="row">
 		<div class="large-12 columns">
-			<label>Name
-				<input type="text" id="name" name="name" placeholder="Name" value="<?php echo $field->name; ?>" />
+			<label><?php _e('Name'); ?>
+				<input type="text" id="name" name="name" placeholder="<?php _e('Name'); ?>" value="<?php echo $field->name; ?>" />
 			</label>
 		</div>
 	</div>
 	<div class="row">
 		<div class="large-12 columns">
-			<label>Type
+			<label><?php _e('Type'); ?>
 				<select id="type" name="type">
 					<?php $types = FormField::getFieldTypes();
 						if (!empty($types)) :
@@ -30,8 +30,8 @@
 	</div>
 	<div class="row">
 		<div class="large-12 columns">
-			<button class="button">Save</button>
-			<button class="button secondary" type="button" onclick="if($('#cmfive-modal').is(':visible')){ $('#cmfive-modal').foundation('reveal', 'close'); } else { window.history.back(); }">Cancel</button>
+			<button class="button"><?php _e('Save'); ?></button>
+			<button class="button secondary" type="button" onclick="if($('#cmfive-modal').is(':visible')){ $('#cmfive-modal').foundation('reveal', 'close'); } else { window.history.back(); }"><?php _e('Cancel'); ?></button>
 		</div>
 	</div>
 </form>

@@ -69,9 +69,9 @@
 		<table class="tablesorter">
 			<thead>
 				<tr>
-					<th>Filename</th>
-					<th>Title</th>
-					<th>Description</th>
+					<th><?php _e("Filename") ?></th>
+					<th><?php _e("Title") ?></th>
+					<th><?php _e("Description") ?></th>
 				</tr>
 			</thead>
 			<tbody>

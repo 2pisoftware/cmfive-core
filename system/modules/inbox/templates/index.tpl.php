@@ -1,15 +1,15 @@
 <?php
 if ($w->Auth->user()->allowed("/inbox/send")) {
-    echo Html::b($webroot."/inbox/send","Create Message",null,'createmessagebutton');
+    echo Html::b($webroot."/inbox/send",__("Create Message"));
 }
 $button = new \Html\button();
 if (!empty($new)) {
-    echo $button->id('archivebutton')->text("Archive")->onclick("sendArch()")->__toString(); // print "<button onclick='sendArch()'>Archive</button>";
-    echo $button->id('deletebutton')->text("Delete")->onclick("deleteMessage()")->__toString(); // print "<button onclick='deleteMessage()'>Delete</button>";
+    echo $button->text(__("Archive"))->onclick("sendArch()")->__toString(); // print "<button onclick='sendArch()'>Archive</button>";
+    echo $button->text(__("Delete"))->onclick("deleteMessage()")->__toString(); // print "<button onclick='deleteMessage()'>Delete</button>";
 }
 
 if($w->service('Inbox')->inboxCountMarker()){
-    echo Html::b($w->localUrl("/inbox/allread"),"Mark all read","Are you sure to mark all messages as read?",'markallreadbutton');
+    echo Html::b($w->localUrl("/inbox/allread"),__("Mark all read"),__("Are you sure to mark all messages as read?"));
 }
 
 if (!empty($new)) {
@@ -26,7 +26,7 @@ if (!empty($new)) {
     if ($last_page > 1){
         print "<table style='margin:auto;'><tr id='nav'>";
         if($pgnum > 1){
-            print "<td style='background-color:#eee;' id='link".$i." prevlink' class='link' onclick='switchPage(".($pgnum-1).")'><a class='link'  href='#'>Prev</a></td>&nbsp";
+            print "<td style='background-color:#eee;' id='link".$i." prevlink' class='link' onclick='switchPage(".($pgnum-1).")'><a class='link'  href='#'>".__('Prev')."</a></td>&nbsp";
         }
         for($i=$minPage;$i<=$maxPage;$i++){
             if ($pgnum == $i){
@@ -36,13 +36,13 @@ if (!empty($new)) {
             }
         }
         if ($pgnum < $last_page && $last_page !== 1){
-            print "<td style='background-color: #eee; width:30px;' id='link".$i." nextlink' class='link' onclick='switchPage(".($pgnum+1).")'><a class='link'  href='#'>Next</a></td>&nbsp";
+            print "<td style='background-color: #eee; width:30px;' id='link".$i." nextlink' class='link' onclick='switchPage(".($pgnum+1).")'><a class='link'  href='#'>".__('Next')."</a></td>&nbsp";
         }
         print "</tr></table>";
     }
 } else {
     $url = $webroot."/inbox/read";
-    print "<br/><br/>No new messages, <a href='".$url."'>click here</a> to go to your read messages.";
+    print "<br/><br/>".__("No new messages").", <a href='".$url."'>".__("click here")."</a> ".__("to go to your read messages.");
 }
 
 ?>

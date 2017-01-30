@@ -12,11 +12,11 @@
 
 <div class="tabs">
 	<div class="tab-head">
-		<a href="/report/index?tab=1">Report Dashboard</a>
-		<a href="/report/index?tab=2">Create Report</a>
-		<a href="/report/index?tab=3">Approve Reports</a>
-		<a id="tab-link-1" href="#" class=active onclick="switchTab(1);">View Report</a>
-		<a id="tab-link-2" href="#"	onclick="switchTab(2);">Members</a>
+		<a href="/report/index?tab=1"><?php echo _e('Report Dashboard'); ?></a>
+		<a href="/report/index?tab=2"><?php echo _e('Create Report'); ?></a>
+		<a href="/report/index?tab=3"><?php echo _e('Approve Reports'); ?></a>
+		<a id="tab-link-1" href="#" class=active onclick="switchTab(1);"><?php echo _e('View Report'); ?></a>
+		<a id="tab-link-2" href="#"	onclick="switchTab(2);"><?php echo _e('Members'); ?></a>
 	</div>
 	<div class="tab-body">
 		<div id="tab-1">

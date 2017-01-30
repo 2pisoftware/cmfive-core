@@ -8,7 +8,7 @@ function updatestatus_ALL(Web &$w) {
 
 		// if task exists, first gather changes for display in comments
 		if ($task) {
-			$comments = "status updated to: " . $w->request('status') . "\n";
+			$comments = __("status updated to: ") . $w->request('status') . "\n";
 
 			$task->fill($_REQUEST);
 
@@ -37,10 +37,10 @@ function updatestatus_ALL(Web &$w) {
 			$w->ctx("TaskEvent","task_details");
 		}
 		// return
-		$w->msg("Task: " . $task->title . " updated.","/task/tasklist/?assignee=".$w->request('assignee')."&creator=".$w->request('creator')."&taskgroups=".$w->request('taskgroups')."&tasktypes=".$w->request('tasktypes')."&tpriority=".$w->request('tpriority')."&status=".$w->request('tstatus')."&dt_from=".$w->request('dt_from')."&dt_to=".$w->request('dt_to'));
+		$w->msg(__("Task: ") . $task->title . " updated.","/task/tasklist/?assignee=".$w->request('assignee')."&creator=".$w->request('creator')."&taskgroups=".$w->request('taskgroups')."&tasktypes=".$w->request('tasktypes')."&tpriority=".$w->request('tpriority')."&status=".$w->request('tstatus')."&dt_from=".$w->request('dt_from')."&dt_to=".$w->request('dt_to'));
 	}
 
 	// return
-	$w->msg("There was a problem.","/task/tasklist/");
+	$w->msg(__("There was a problem."),"/task/tasklist/");
 
 }

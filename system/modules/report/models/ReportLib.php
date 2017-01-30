@@ -8,7 +8,7 @@ class ReportLib {
 		$report = $w->Report->getReportInfo($id);
 	
 		// set columns headings for display of members
-		$line[] = array("Member","Role","");
+		$line[] = array(__("Member"),__("Role"),"");
 	
 		// if there are members, display their full name, role and button to delete the member
 		if ($members) {
@@ -16,15 +16,15 @@ class ReportLib {
 				$line[] = array(
 				$w->Report->getUserById($member->user_id),
 				$member->role,
-				Html::box("/report/editmember/".$report->id . "/". $member->user_id," Edit ", true) .
+				Html::box("/report/editmember/".$report->id . "/". $member->user_id,__(" Edit "), true) .
 					"&nbsp;&nbsp;" . 
-				Html::box("/report/deletemember/".$report->id."/".$member->user_id," Delete ", true)
+				Html::box("/report/deletemember/".$report->id."/".$member->user_id,__(" Delete "), true)
 				);
 			}
 		}
 		else {
 			// if there are no members, say as much
-			$line[] = array("Group currently has no members. Please Add New Members.", "", "");
+			$line[] = array(__("Group currently has no members. Please Add New Members."), "", "");
 		}
 	
 		$w->ctx("reportid",$report->id);

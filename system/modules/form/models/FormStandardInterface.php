@@ -6,6 +6,7 @@
  */
 class FormStandardInterface extends FormFieldInterface {
 	
+	// cannot use __()  for static
 	protected static $_respondsTo = [
 		["Text", "text"],
 		["Decimal", "decimal"],
@@ -98,11 +99,11 @@ class FormStandardInterface extends FormFieldInterface {
 		
 		switch(strtolower($type)) {
 			case "decimal":
-				return [["Decimal Places", "text", "decimal_places"]];
+				return [[__("Decimal Places"), "text", "decimal_places"]];
 			case "autocomplete":
-				return [["Object", "text", "object_type"],["Filter", "text", "object_filter"],["Options", "text", "options"]];
+				return [[__("Object"), "text", "object_type"],[__("Filter"), "text", "object_filter"],[__("Options"), "text", "options"]];
 			case "select":
-				return [["Object", "text", "object_type"],["Filter", "text", "object_filter"],["Options", "text", "options"]];
+				return [[__("Object"), "text", "object_type"],[__("Filter"), "text", "object_filter"],[__("Options"), "text", "options"]];
 			
 			default:
 				return null;

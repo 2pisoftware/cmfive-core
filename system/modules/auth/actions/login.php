@@ -7,10 +7,10 @@ function login_GET(Web $w) {
         $w->redirect($w->localUrl(!empty($user->redirect_url) ? $user->redirect_url : "/main"));
     }
         $loginform = Html::form(array(
-                    array("Application Login", "section"),
-                    array("Username", "text", "login"),
-                    array("Password", "password", "password"),
-                        ), $w->localUrl("auth/login"), "POST", "Login");
+                    array(__("Application Login"), "section"),
+                    array(__("Username"), "text", "login"),
+                    array(__("Password"), "password", "password"),
+                        ), $w->localUrl("auth/login"), "POST", __("Login"));
     $w->ctx("loginform", $loginform);
 }
 
@@ -33,9 +33,9 @@ function login_POST(Web &$w) {
                 $w->redirect(!empty($user->redirect_url) ? $w->localUrl($user->redirect_url) : $w->localUrl());
             }
         } else {
-            $w->error("Login or Password incorrect", "/auth/login");
+            $w->error(__("Login or Password incorrect"), "/auth/login");
         }
     } else {
-        $w->error("Please enter your login and password", "/auth/login");
+        $w->error(__("Please enter your login and password"), "/auth/login");
     }
 }

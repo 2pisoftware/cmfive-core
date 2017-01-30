@@ -1,7 +1,7 @@
 <?php
 // Step I in creating a task. This function displays the default task creation form
 function createtask_GET(Web &$w) {
-	$w->Task->navigation($w, "Create Task");
+	$w->Task->navigation($w, __("Create Task"));
 
 	// set default dropdowns for these task attributes as empty arrays
 	// dropdowns are populated dynamically via JSON based upon task group type selected
@@ -29,10 +29,10 @@ function createtask_GET(Web &$w) {
 			sort($members);
 				
 			$tasktext = "<table>" .
-				"<tr><td class=section colspan=2>Task Group Description</td></tr>" . 
-				"<tr><td><b>Task Group</td><td>" . $t->title . "</td></tr>" . 
-				"<tr><td><b>Task Type</b></td><td>" . $t->getTypeTitle() . "</td></tr>" . 
-				"<tr><td><b>Description</b></td><td>" . $t->getTypeDescription() . "</td></tr>" . 
+				"<tr><td class=section colspan=2>".__("Task Group Description")."</td></tr>" . 
+				"<tr><td><b>".__("Task Group")."</td><td>" . $t->title . "</td></tr>" . 
+				"<tr><td><b>".__("Task Type")."</b></td><td>" . $t->getTypeTitle() . "</td></tr>" . 
+				"<tr><td><b>".__("Description")."</b></td><td>" . $t->getTypeDescription() . "</td></tr>" . 
 				"</table>";
 
 			$w->ctx("tasktext",$tasktext);
@@ -40,22 +40,22 @@ function createtask_GET(Web &$w) {
 
 		// build form
 		$f = Html::form(array(
-		array("Create a New Task - Step One","section"),
-		array("Task Group","select","task_group_id",$w->request('gid'),$mytaskgroups),
-		array("Task Title","text","title"),
-		array("Task Type","select","task_type",null,$tasktypes),
-		array("Priority","select","priority",null,$priority),
-		array("Date Due","date","dt_due"),
-		array("Description","textarea","description",null,110,15),
-		array("Assigned To","select","first_assignee_id",null,$members),
-		),$w->localUrl("/task/tasktypeform/"),"POST"," Continue >> ");
+		array(__("Create a New Task - Step One"),"section"),
+		array(__("Task Group"),"select","task_group_id",$w->request('gid'),$mytaskgroups),
+		array(__("Task Title"),"text","title"),
+		array(__("Task Type"),"select","task_type",null,$tasktypes),
+		array(__("Priority"),"select","priority",null,$priority),
+		array(__("Date Due"),"date","dt_due"),
+		array(__("Description"),"textarea","description",null,110,15),
+		array(__("Assigned To"),"select","first_assignee_id",null,$members),
+		),$w->localUrl("/task/tasktypeform/"),"POST",__(" Continue >> "));
 
                 $w->ctx("createtask",$f);
 	}
 }
 
 function createtask_POST(Web &$w) {
-	$w->Task->navigation($w, "Create Task");
+	$w->Task->navigation($w, __("Create Task"));
 
 	// unserialise input from step I and store in array: arr_req
 	$arr_req = unserialize($w->request('formone'));
@@ -83,10 +83,10 @@ function createtask_POST(Web &$w) {
 		}
 
 		// return to task dashboard
-		$w->msg("<div id='saved_record_id' data-id='".$task->id."' >Task ".$task->title." added</div>","/task/viewtask/".$task->id);
+		$w->msg("<div id='saved_record_id' data-id='".$task->id."' >".__("Task ").$task->title.__(" added")."</div>","/task/viewtask/".$task->id);
 	}
 	else {
 		// if task insert was unsuccessful, say as much
-		$w->msg("The Task could not be created. Please inform the IT Group","/task/index/");
+		$w->msg(__("The Task could not be created. Please inform the IT Group"),"/task/index/");
 	}
 }

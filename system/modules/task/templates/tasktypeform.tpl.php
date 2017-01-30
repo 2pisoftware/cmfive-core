@@ -12,9 +12,9 @@
 
 <div class="tabs">
 	<div class="tab-head">
-		<a href="/task/index">Task Dashboard</a>
-		<a href="/task/tasklist">Task List</a>
-		<a id="tab-link-1" href="#" class="active">Create Task</a>
+		<a href="/task/index"><?php _e('Task Dashboard'); ?></a>
+		<a href="/task/tasklist"><?php _e('Task List'); ?></a>
+		<a id="tab-link-1" href="#" class="active"><?php _e('Create Task'); ?></a>
 	</div>
 	<div class="tab-body">
 		<div id="tab-1" class="clearfix">

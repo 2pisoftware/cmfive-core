@@ -21,6 +21,7 @@ class User extends DbObject {
     public $password_reset_token;
     public $dt_password_reset_at;
     public $redirect_url;
+    public $language;
     public $_roles;
     public $_contact;
     public $_modifiable;
@@ -128,6 +129,14 @@ class User extends DbObject {
     public function getSelectOptionValue() {
         return $this->id;
     }
+
+	public function getLanguage() {
+		return $this->$language;
+	}
+
+	public function getAvailableLanguages() {
+		return [[__("English"),"en_US.UTF-8"],[__("German"),"de_DE.UTF-8"],[__("French"),"fr_FR.UTF-8"],[__("Chinese"),"zh_CN.UTF-8"],[__("Japanese"),"ja_JP.UTF-8"],[__("Spanish"),"es_ES.UTF-8"],[__("Dutch"),"nl_NL.UTF-8"],[__("Russian"),"ru_RU.UTF-8"],[__("Gaelic"),"gd_GB.UTF-8"]];
+	}
 
     /**
      * @return string, either the login or first name

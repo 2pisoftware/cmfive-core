@@ -23,6 +23,6 @@ function ajaxEditFavorites_ALL(Web $w) {
 			$favorite->insertOrUpdate();
 		}
 	} else {
-		echo "Invalid request";
+		echo __("Invalid request");
 	}
 }

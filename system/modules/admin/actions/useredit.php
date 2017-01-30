@@ -8,11 +8,12 @@
 function useredit_GET(Web &$w) {
     $p = $w->pathMatch("id", "box");
     $user = $w->Auth->getObject("User", $p["id"]);
+    $w->ctx('availableLocales',$user->getAvailableLanguages());
     if ($user) {
-        $w->Admin->navigation($w, "Administration - Edit User - " . $user->login);
+        $w->Admin->navigation($w, __("Administration - Edit User - ") . $user->login);
     } else {
         if (!$p['box']) {
-            $w->error("User " . $w->ctx("id") . " does not exist.", "/admin/users");
+            $w->error("User " . $w->ctx("id") . __(" does not exist."), "/admin/users");
         }
     }
     $w->ctx("user", $user);
@@ -31,14 +32,14 @@ function useredit_GET(Web &$w) {
 function useredit_POST(Web &$w) {
     $w->pathMatch("id");
     $errors = $w->validate(array(
-        array("login", ".+", "Login is mandatory")
+        array("login", ".+", __("Login is mandatory"))
     ));
     if ($_REQUEST['password'] && ($_REQUEST['password'] != $_REQUEST['password2'])) {
-        $error[] = "Passwords don't match";
+        $error[] = __("Passwords don't match");
     }
     $user = $w->Auth->getObject("User", $w->ctx('id'));
     if (!$user) {
-        $errors[] = "User does not exist";
+        $errors[] = __("User does not exist");
     }
     if (sizeof($errors) != 0) {
         $w->error(implode("<br/>\n", $errors), "/admin/useredit/" . $w->ctx("id"));
@@ -63,5 +64,5 @@ function useredit_POST(Web &$w) {
     }
     $w->callHook("admin", "account_changed", $user);
 
-    $w->msg("<div id='saved_record_id' data-id='".$user->id."' >User " . $user->login . " updated.</div>", "/admin/users");
+    $w->msg("<div id='saved_record_id' data-id='".$user->id."' >".__("User ") . $user->login . __(" updated").".</div>", "/admin/users");
 }

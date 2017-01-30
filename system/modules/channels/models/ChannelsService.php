@@ -14,9 +14,9 @@ class ChannelsService extends DbService {
         }
         $nav = $prenav ? $prenav : array();
         if ($w->Auth->loggedIn()) {
-            $w->menuLink("channels/listchannels","List Channels", $nav);
-            $w->menuLink("channels/listprocessors","List Processors", $nav);
-            $w->menuLink("channels/listmessages","List Messages", $nav);
+            $w->menuLink("channels/listchannels",__("List Channels"), $nav);
+            $w->menuLink("channels/listprocessors",__("List Processors"), $nav);
+            $w->menuLink("channels/listmessages",__("List Messages"), $nav);
         }
         $w->ctx("navigation", $nav);
         return $nav;

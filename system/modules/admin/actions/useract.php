@@ -5,9 +5,9 @@ function useract_GET(Web &$w) {
 	if ($user) {
 		$user->is_active = $w->ctx("active");
 		$user->update();
-		$w->msg("User ".$user->login." ".($user->is_active ? "activated" : "suspended"),"/admin/users");
+		$w->msg(__("User ").$user->login." ".($user->is_active ? "activated" : __("suspended")),"/admin/users");
 	} else {
-		$w->error("User ".$w->ctx("id")." does not exist.","/admin/users");
+		$w->error(__("User ").$w->ctx("id").__(" does not exist."),"/admin/users");
 	}
 
 }

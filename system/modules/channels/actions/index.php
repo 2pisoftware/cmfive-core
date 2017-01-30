@@ -1,5 +1,5 @@
 <?php
 
 function index_ALL(Web $w) {
-	$w->Channels->navigation($w, "Channels");
+	$w->Channels->navigation($w, __("Channels"));
 }

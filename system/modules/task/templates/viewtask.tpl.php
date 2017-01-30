@@ -7,11 +7,11 @@
      ./system/modules/timelog/partials/templates/listtimelog.tpl.php
      */
 ?>
-        <a href="#details">Task Details</a>
-        <a href="#timelog">Time Log <span id='total_timelogs' class='label secondary round cmfive__tab-label'></span></a>
-        <a href="#comments">Comments <span id='total_comments' class='label secondary round cmfive__tab-label'></span></a>
-        <a href="#documents">Documents <span id='total_attachments' class='label secondary round cmfive__tab-label'></span></a>
-       	<?php if ($task->getCanINotify()):?><a href="#notification">Notifications</a><?php endif;?>
+        <a href="#details"><?php _e('Task Details'); ?></a>
+        <a href="#timelog"><?php _e('Time Log'); ?> <span id='total_timelogs' class='total_number'></span></a>
+        <a href="#comments"><?php _e('Comments'); ?> <span id='total_comments' class='total_number'></span></a>
+        <a href="#documents"><?php _e('Documents'); ?> <span id='total_attachments' class='total_number'></span></a>
+       	<?php if ($task->getCanINotify()):?><a href="#notification"><?php _e('Notifications'); ?></a><?php endif;?>
     </div>	
 	
     <div class="tab-body">
@@ -35,7 +35,7 @@
         </div>
         <?php if ($task->getCanINotify()):?>
         <div id="notification" class="clearfix">
-            Set your Notifications specific to this Task, otherwise your notifications for this Task Group will be employed.
+            <?php _e('Set your Notifications specific to this Task, otherwise your notifications for this Task Group will be employed.'); ?>
             <?php echo $tasknotify;?>
         </div>
         <?php endif;?>
@@ -55,7 +55,7 @@
     	var screenW = screen.width;
     	var x = screenW - 360;
     	var t = 0; 	
-        var winName = "Task Time Log";
+        var winName = "<?php _e('Task Time Log'); ?>";
     	var winParameters = "width=360,height=300,scrollbars=no,toolbar=no,status=no,menubar=no,location=no";
 
     	var thiscookie = getCookie("thiswin");
@@ -66,7 +66,7 @@
 			thiswin.focus();
 		}
 		else {
-			alert("Please END TIME on your current Task" + "\n" +  "before starting a new Task Time Log");
+			alert("<?php _e('Please END TIME on your current Task'); ?>" + "\n" +  "<?php _e('before starting a new Task Time Log'); ?>");
 
 			if (typeof(thiswin) != "undefined" && !thiswin.closed)
 				thiswin.focus();

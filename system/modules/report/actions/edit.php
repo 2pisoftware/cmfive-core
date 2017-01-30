@@ -2,29 +2,29 @@
 
 function edit_GET(Web &$w) {
     $p = $w->pathMatch("id");
-    $w->Report->navigation($w, (!empty($p['id']) ? "Edit" : "Create") . " Report");
+    $w->Report->navigation($w, (!empty($p['id']) ? __("Edit") : __("Create")) . __(" Report"));
     
     // Get or create report object
     $report = !empty($p['id']) ? $w->Report->getReport($p['id']) : new Report($w);
     if (!empty($p['id']) and empty($report->id)) {
-        $w->error("Report not found", "/report");
+        $w->error(__("Report not found"), "/report");
     }
     
     if (empty($report)) {
-    	History::add("Create Report");
+    	History::add(__("Create Report"));
     } else {
-    	History::add("Edit Report: ".$report->title, null, $report);
+    	History::add(__("Edit Report: ").$report->title);
     }
     
     $w->ctx("report", $report);
     
     $form = array(
-        array((!empty($report->id) ? "Edit" : "Create a New") . " Report", "section"),
-        array("Title", "text", "title", $report->title),
-        array("Module", "select", "module", $report->module, $w->Report->getModules()),
-        array("Description", "textarea", "description", $report->description, "110", "2"),
+        array((!empty($report->id) ? __("Edit") : __("Create a New")) . __(" Report"), "section"),
+        array(__("Title"), "text", "title", $report->title),
+        array(__("Module"), "select", "module", $report->module, $w->Report->getModules()),
+        array(__("Description"), "textarea", "description", $report->description, "110", "2"),
 //        array("Code", "textarea", "report_code", $report->report_code, "110", "22", "codemirror"),
-        array("Connection", "select", "report_connection_id", $report->report_connection_id, $w->Report->getConnections())
+        array(__("Connection"), "select", "report_connection_id", $report->report_connection_id, $w->Report->getConnections())
     );
     
     if (!empty($report)) {
@@ -32,26 +32,26 @@ function edit_GET(Web &$w) {
 	    		array("", "hidden", "title", $report->title),
 	    		array("", "hidden", "module", $report->module),
 	    		array("", "hidden", "description", $report->description),
-	    		array("Code", "textarea", "report_code", $report->report_code, "110", "82", "codemirror"),
+	    		array(__("Code"), "textarea", "report_code", $report->report_code, "110", "82", "codemirror"),
 	    		array("", "hidden", "report_connection_id", $report->report_connection_id, $w->Report->getConnections())
 	    );
     }
 
     // DB view table
     $db_table = Html::form(array(
-        array("Special Parameters", "section"),
-        array("User", "static", "user", "{{current_user_id}}"),
-        array("Roles", "static", "roles", "{{roles}}"),
-        array("Site URL", "static", "webroot", "{{webroot}}"),
-        array("View Database", "section"),
-        array("Tables", "select", "dbtables", null, $w->Report->getAllDBTables()),
-        array("Fields", "static", "dbfields", "<span id=\"dbfields\"></span>")
+        array(__("Special Parameters"), "section"),
+        array(__("User"), "static", "user", "{{current_user_id}}"),
+        array(__("Roles"), "static", "roles", "{{roles}}"),
+        array(__("Site URL"), "static", "webroot", "{{webroot}}"),
+        array(__("View Database"), "section"),
+        array(__("Tables"), "select", "dbtables", null, $w->Report->getAllDBTables()),
+        array(__("Fields"), "static", "dbfields", "<span id=\"dbfields\"></span>")
     ));
     
     $w->ctx("dbform", $db_table);
     
     if (!empty($report->id)) {
-    	$btnrun = Html::b("/report/runreport/" . $report->id, "Execute Report");
+    	$btnrun = Html::b("/report/runreport/" . $report->id, __("Execute Report"));
     	$w->ctx("btnrun", $btnrun);
     } else {
     	$w->ctx("btnrun", "");
@@ -65,22 +65,22 @@ function edit_GET(Web &$w) {
         
         // Check if user can edit this report
         if (!$w->Report->canUserEditReport($report, $member)) {
-            $w->error("You do not have access to this report", "/report");
+            $w->error(__("You do not have access to this report"), "/report");
         }
     } else {
         // If we're creating a report, check that the user has rights
         if ($w->Auth->user()->is_admin == 0 && !$w->Auth->user()->hasAnyRole(array('report_admin', 'report_editor'))) {
-            $w->error("You do not have create report permissions", "/report");
+            $w->error(__("You do not have create report permissions"), "/report");
         }
     }
     
     // Access checked and OK, add approval to form only if is report_admin or admin
     if ($w->Auth->user()->is_admin == 1 || $w->Auth->user()->hasRole("report_admin")) {
-        $form[0][] = array("Approved", "checkbox", "is_approved", $report->is_approved);
+        $form[0][] = array(__("Approved"), "checkbox", "is_approved", $report->is_approved);
     }
     
-    $w->ctx("report_form", Html::form($form, $w->localUrl("/report/edit/{$report->id}"), "POST", "Save Report"));
-    $w->ctx("sql_form", !empty($sqlform) ? Html::form($sqlform, $w->localUrl("/report/edit/{$report->id}"), "POST", "Save Report") : "");
+    $w->ctx("report_form", Html::form($form, $w->localUrl("/report/edit/{$report->id}"), "POST", __("Save Report")));
+    $w->ctx("sql_form", !empty($sqlform) ? Html::form($sqlform, $w->localUrl("/report/edit/{$report->id}"), "POST", __("Save Report")) : "");
     
     if (!empty($report->id)) {
     	
@@ -89,22 +89,22 @@ function edit_GET(Web &$w) {
         $members = $w->Report->getReportMembers($report->id);
         
         // set columns headings for display of members
-        $line[] = array("Member","Is Email Recipient", "Role", "");
+        $line[] = array(__("Member"),__("Is Email Recipient"), __("Role"), "");
 
         // if there are members, display their full name, role and button to delete the member
         if ($members) {
             foreach ($members as $member) {
                 $line[] = array(
                     $w->Report->getUserById($member->user_id),
-					$member->is_email_recipient ? "Yes" : "No",
+					$member->is_email_recipient ? __("Yes") : __("No"),
                     $member->role,
-                    Html::box("/report/editmember/".$report->id . "/". $member->user_id," Edit ", true) .
-                    Html::box("/report/deletemember/".$report->id."/".$member->user_id," Delete ", true)
+                    Html::box("/report/editmember/".$report->id . "/". $member->user_id,__(" Edit "), true) .
+                    Html::box("/report/deletemember/".$report->id."/".$member->user_id,__(" Delete "), true)
                 );
             }
         } else {
             // if there are no members, say as much
-            $line[] = array("Group currently has no members. Please Add New Members.", "", "");
+            $line[] = array(__("Group currently has no members. Please Add New Members."), "", "");
         }
 
         // display list of group members
@@ -115,7 +115,7 @@ function edit_GET(Web &$w) {
         $report_templates = $report->getTemplates();
         
         // Build table
-        $table_header = array("Title", "Category", "Is Email Template", "Type", "Actions");
+        $table_header = array(__("Title"), __("Category"), __("Is Email Template"), __("Type"), __("Actions"));
         $table_data = array();
         
         if (!empty($report_templates)) {
@@ -128,8 +128,8 @@ function edit_GET(Web &$w) {
         				$template->category,
 						$report_template->is_email_template ? "Yes" : "No",
         				$report_template->type,
-        				Html::box("/report-templates/edit/{$report->id}/{$report_template->id}", "Edit", true) .
-        				Html::b("/report-templates/delete/{$report_template->id}", "Delete", "Are you sure you want to delete this Report template entry?")
+        				Html::box("/report-templates/edit/{$report->id}/{$report_template->id}", __("Edit"), true) .
+        				Html::b("/report-templates/delete/{$report_template->id}", __("Delete"), __("Are you sure you want to delete this Report template entry?"))
         		);
         	}
         }
@@ -144,7 +144,7 @@ function edit_POST(Web $w) {
 	
         $report = !empty($p['id']) ? $w->Report->getReport($p['id']) : new Report($w);
         if (!empty($p['id']) && empty($report->id)) {
-            $w->error("Report not found", "/report");
+            $w->error(__("Report not found"), "/report");
         }
         
         // Check access rights
@@ -155,12 +155,12 @@ function edit_POST(Web $w) {
 
             // Check if user can edit this report
             if (!$w->Report->canUserEditReport($report, $member)) {
-                $w->error("You do not have access to this report", "/report");
+                $w->error(__("You do not have access to this report"), "/report");
             }
         } else {
             // If we're creating a report, check that the user has rights
             if ($w->Auth->user()->is_admin == 0 and !$w->Auth->user()->hasAnyRole(array('report_admin', 'report_editor'))) {
-                $w->error("You do not have create report permissions", "/report");
+                $w->error(__("You do not have create report permissions"), "/report");
             }
         }
 
@@ -185,9 +185,9 @@ function edit_POST(Web $w) {
                 $report_member->insert();
             }
             
-            $w->msg("Report " . ($p['id'] ? "updated" : "created"), "/report/edit/{$report->id}");
+            $w->msg(__("Report ") . ($p['id'] ? __("updated") : __("created")), "/report/edit/{$report->id}");
         } else {
-            $w->errorMessage($report, "Report", $response, $p['id'] ? true : false, "/report" . (!empty($account->id) ? "/edit/{$account->id}" : ""));
+            $w->errorMessage($report, __("Report"), $response, $p['id'] ? true : false, "/report" . (!empty($account->id) ? "/edit/{$account->id}" : ""));
         }
         
         

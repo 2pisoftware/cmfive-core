@@ -47,7 +47,7 @@ function results_GET(Web $w) {
                                         $buffer .= "<a class=\"row search-title\" href=\"".$w->localUrl($object->printSearchUrl())."\">{$object->printSearchTitle()}</a>"
                                         . "<div class=\"row search-listing\">{$object->printSearchListing()}</div>";
                                     } else {
-                                        $buffer .= "<div class=\"small-12 columns search-title\">{$object->printSearchTitle()}</div><div class=\"row search-listing\">(restricted)</div>";
+                                        $buffer .= "<div class=\"small-12 columns search-title\">{$object->printSearchTitle()}</div><div class=\"row search-listing\">(".__("restricted").")</div>";
                                     }
                                     $buffer .= "</div>";
                                 }
@@ -61,7 +61,7 @@ function results_GET(Web $w) {
             }
 	} else {
             $response["success"] = false;
-            $response["data"] = "Please enter at least 3 characters for searching.";
+            $response["data"] = __("Please enter at least 3 characters for searching.");
 	}
         
         echo json_encode($response);

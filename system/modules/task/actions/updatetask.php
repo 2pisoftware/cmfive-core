@@ -27,7 +27,7 @@ function updatetask_POST(Web &$w) {
 				if ($name == "assignee_id")
 				$value = $w->Task->getUserById($value);
 
-				$comments .= $name . " updated to: " . $value . "\n";
+				$comments .= $name . __(" updated to: ") . $value . "\n";
 			}
 		}
 
@@ -86,5 +86,5 @@ function updatetask_POST(Web &$w) {
 	}
 
 	// return
-	$w->msg("<div id='saved_record_id' data-id='".$task->id."' >Task: " . $task->title . " updated.</div>","/task/edit/".$task->id."?tab=1");
+	$w->msg("<div id='saved_record_id' data-id='".$task->id."' >".__("Task").": " . $task->title . __(" updated").".</div>","/task/edit/".$task->id."?tab=1");
 }

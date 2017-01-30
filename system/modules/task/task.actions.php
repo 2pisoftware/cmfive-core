@@ -8,12 +8,12 @@ function editComment_GET(Web &$w) {
 
     // build the comment for edit
     $form = array(
-        array("Comment", "section"),
+        array(__("Comment"), "section"),
         array("", "textarea", "comment", strip_tags($comm->comment), 45, 25),
     );
 
     // return the comment for display and edit
-    $form = Html::form($form, $w->localUrl("/task/editComment/" . $p['taskid'] . "/" . $p['comm_id']), "POST", "Save");
+    $form = Html::form($form, $w->localUrl("/task/editComment/" . $p['taskid'] . "/" . $p['comm_id']), "POST", __("Save"));
     $w->setLayout(null);
     $w->out($form);
 }
@@ -26,7 +26,7 @@ function popComment_GET(Web &$w) {
 
     // build the comment for display
     $form = array(
-        array("Comment", "section"),
+        array(__("Comment"), "section"),
         array("", "textarea", "comment", strip_tags($comm->comment), 45, 25),
     );
 
@@ -50,14 +50,14 @@ function editComment_POST(Web $w) {
     if ($comm) {
         $comm->fill($_REQUEST);
         $comm->update();
-        $commsg = "Comment updated.";
+        $commsg = __("Comment updated.");
     } else {
         $comm = new TaskComment($w);
         $comm->fill($_REQUEST);
         $comm->obj_table = $task->getDbTableName();
         $comm->obj_id = $p['taskid'];
         $comm->insert();
-        $commsg = "Comment created.";
+        $commsg = __("Comment created.");
     }
     // add to context for notifications post listener
     $w->ctx("TaskComment", $comm);
@@ -75,13 +75,13 @@ function attachForm_GET(Web $w) {
 
     // build form to upload document/attachment
     $form = array(
-        array("Attach Document", "section"),
-        array("Document", "file", "form"),
-        array("Description", "textarea", "description", null, "26", "6"),
+        array(__("Attach Document"), "section"),
+        array(__("Document"), "file", "form"),
+        array(__("Description"), "textarea", "description", null, "26", "6"),
     );
 
     // diplay form
-    $form = Html::form($form, $w->localUrl("/task/attachForm/" . $task->id), "POST", " Upload ", null, null, null, 'multipart/form-data');
+    $form = Html::form($form, $w->localUrl("/task/attachForm/" . $task->id), "POST", __(" Upload "), null, null, null, 'multipart/form-data');
 
     $w->setLayout(null);
     $w->out($form);
@@ -105,9 +105,9 @@ function attachForm_POST(Web $w) {
 
             $attach = $w->File->uploadAttachment("form", $task, null, $description);
             if (!$attach) {
-                $message = "There was an error. The document could not be saved.";
+                $message = __("There was an error. The document could not be saved.");
             } else {
-                $message = "The Document has been uploaded.";
+                $message = __("The Document has been uploaded.");
             }
         }
 
@@ -115,7 +115,7 @@ function attachForm_POST(Web $w) {
         $comm = new TaskComment($w);
         $comm->obj_table = $task->getDbTableName();
         $comm->obj_id = $task->id;
-        $comm->comment = "File Uploaded: " . $filename;
+        $comm->comment = __("File Uploaded: ") . $filename;
         $comm->insert();
 
         // add to context for notifications post listener
@@ -135,11 +135,11 @@ function addpage_GET(Web &$w) {
 
     // create form
     $f = array(
-        array("Select a Page", "section"),
-        array("Page", "autocomplete", "page", null, $pages)
+        array(__("Select a Page"), "section"),
+        array(__("Page"), "autocomplete", "page", null, $pages)
     );
 
-    $form = Html::form($f, $w->localUrl("/task/addpage/" . $p['id']), "POST", "Save");
+    $form = Html::form($f, $w->localUrl("/task/addpage/" . $p['id']), "POST", __("Save"));
 
     // return and display form
     $w->setLayout(null);
@@ -151,7 +151,7 @@ function addpage_POST(Web &$w) {
 
     if ($_POST['page'] == "0") {
         // 'blank' selected so return
-        $w->msg("Please select a PAGE", "/task/edit/" . $p['id'] . "#documents");
+        $w->msg(__("Please select a PAGE"), "/task/edit/" . $p['id'] . "#documents");
     } else {
         // get relevant task
         $task = $w->Task->getTask($p['id']);
@@ -172,7 +172,7 @@ function addpage_POST(Web &$w) {
         $comm = new TaskComment($w);
         $comm->obj_table = $task->getDbTableName();
         $comm->obj_id = $task->id;
-        $comm->comment = "Page Attached to Task: " . $page->subject;
+        $comm->comment = __("Page Attached to Task: ") . $page->subject;
         $comm->insert();
 
         // add to context for notifications post listener
@@ -180,7 +180,7 @@ function addpage_POST(Web &$w) {
         $w->ctx("TaskEvent", "task_pages");
 
         // return
-        $w->msg("Page Added to Task", "/task/edit/" . $p['id'] . "#documents");
+        $w->msg(__("Page Added to Task"), "/task/edit/" . $p['id'] . "#documents");
     }
 }
 
@@ -221,21 +221,21 @@ function addtime_GET(Web &$w) {
     }
     
     $f = array(
-        array("Add Time Log Entry", "section"),
-        array("Assignee", "select", "user_id", $who, $w->Task->getMembersBeAssigned($task->task_group_id)),
-        array("Select the Start Date & Time", "section"),
-        array("Date/Time", "datetime", "dt_start", $s),
-        array("Select the End Date & Time, or Period worked", "section"),
-        array("Date/Time", "datetime", "dt_end", $e),
-        array("Or Period:", "static", "OR", "<b>Below select the period worked since the Start Date/Time</b>"),
-        array("Hours", "select", "per_hour", null, array_slice($hours, 0, 11)),
-        array("Min", "select", "per_minute", null, $mins),
-    	array("Time Type", "select", "time_type", (!empty($log)) ? $log->time_type : "", $timeTypes),
-        array("Comments", "section"),
-        array("Comments", "textarea", "comments", !empty($comment) ? $comment : null, "40", "10"),
+        array(__("Add Time Log Entry"), "section"),
+        array(__("Assignee"), "select", "user_id", $who, $w->Task->getMembersBeAssigned($task->task_group_id)),
+        array(__("Select the Start Date & Time"), "section"),
+        array(__("Date/Time"), "datetime", "dt_start", $s),
+        array(__("Select the End Date & Time, or Period worked"), "section"),
+        array(__("Date/Time"), "datetime", "dt_end", $e),
+        array(__("Or Period:"), "static", __"OR"_, "<b>".__("Below select the period worked since the Start Date/Time")."</b>"),
+        array(__("Hours"), "select", "per_hour", null, array_slice($hours, 0, 11)),
+        array(__("Min","time in minutes"), "select", "per_minute", null, $mins),
+    	array(__("Time Type"), "select", "time_type", (!empty($log)) ? $log->time_type : "", $timeTypes),
+        array(__("Comments"), "section"),
+        array(__("Comments"), "textarea", "comments", !empty($comment) ? $comment : null, "40", "10"),
     );
 
-    $form = Html::form($f, $w->localUrl("/task/edittime/" . $p['taskid'] . "/" . $p['log_id']), "POST", "Save");
+    $form = Html::form($f, $w->localUrl("/task/edittime/" . $p['taskid'] . "/" . $p['log_id']), "POST", __("Save"));
 
     $w->setLayout(null);
     $w->out($form);
@@ -275,9 +275,9 @@ function edittime_POST(Web $w) {
 
     // check that end time is later than start time
     if (strtotime($arr["dt_start"]) > strtotime($arr["dt_end"])) {
-        $logmsg = "Start is greater than End. Please enter again.";
+        $logmsg = __("Start is greater than End. Please enter again.");
     } else {
-        $logmsg = ($log) ? "Time Log Entry updated." : "Time Log Entry created.";
+        $logmsg = ($log) ? __("Time Log Entry updated.") : __("Time Log Entry created.");
 
         // add comment
         $comm = ($log) ? $w->Task->getObject("Comment", $log->comment_id) : new TaskComment($w);
@@ -317,10 +317,10 @@ function suspecttime_ALL(Web &$w) {
     // toggle database field based on current setting
     if ($log->is_suspect == "0") {
         $log->is_suspect = 1;
-        $logmsg = "Time Log entry marked for review";
+        $logmsg = __("Time Log entry marked for review");
     } else {
         $log->is_suspect = 0;
-        $logmsg = "Time Log entry accepted";
+        $logmsg = __("Time Log entry accepted");
     }
     $log->update();
 
@@ -354,16 +354,16 @@ function deletetime_ALL(Web &$w) {
         $comm = new TaskComment($w);
         $comm->obj_table = "Task";
         $comm->obj_id = $log->task_id;
-        $comm->comment = "Time Log Entry deleted: " . $w->Task->getUserById($log->user_id) . " - " . formatDateTime($log->dt_start) . " to " . formatDateTime($log->dt_end);
+        $comm->comment = __("Time Log Entry deleted: ") . $w->Task->getUserById($log->user_id) . " - " . formatDateTime($log->dt_start) . __(" to ") . formatDateTime($log->dt_end);
         $comm->insert();
 
         // add to context for notifications post listener
         $w->ctx("TaskComment", $comm);
         $w->ctx("TaskEvent", "time_log");
 
-        $w->msg("Time Log entry has been deleted.", "/task/edit/" . $p['taskid'] . "#timelog");
+        $w->msg(__("Time Log entry has been deleted."), "/task/edit/" . $p['taskid'] . "#timelog");
     } else {
-        $w->msg("Time Log entry could not be found.", "/task/edit/" . $p['taskid'] . "#timelog");
+        $w->msg(__("Time Log entry could not be found."), "/task/edit/" . $p['taskid'] . "#timelog");
     }
 }
 
@@ -411,7 +411,7 @@ function starttimelog_ALL(Web &$w) {
     }
 
     // create page
-    $html = "<html><head><title>Task Time Log - " . $task->title . "</title>" .
+    $html = "<html><head><title>".__("Task Time Log")." - " . $task->title . "</title>" .
             "<style type=\"text/css\">" .
             "body { background-color: #8ad228; }" .
             "td { background-color: #ffffff; color: #000000; font-family: verdana, arial; font-weight: bold; font-size: .8em; }" .
@@ -443,16 +443,16 @@ function starttimelog_ALL(Web &$w) {
             "<form name=theForm action=\"/task/starttimelog\" method=POST>" .
             "<input type=\"hidden\" name=\"" . CSRF::getTokenID() . "\" value=\"" . CSRF::getTokenValue() . "\" />" .
             "<table cellpadding=2 cellspacing=2 border=0 width=100%>" .
-            "<tr align=center><td colspan=2 class=timelog>Task Time Log</td></tr>" .
-            "<tr align=center><td colspan=2 class=tasktitle><a title=\"View Task\" href=\"javascript: goTask();\">" . $tasktitle . "</a></td></tr>" .
+            "<tr align=center><td colspan=2 class=timelog>".__("Task Time Log")."</td></tr>" .
+            "<tr align=center><td colspan=2 class=tasktitle><a title=\"".__("View Task")."\" href=\"javascript: goTask();\">" . $tasktitle . "</a></td></tr>" .
             "<tr align=center><td width=50% class=startend>Start</td><td width=50% class=startend>Stop</td></tr>" .
             "<tr align=center><td>" . date("g:i a", strtotime($start)) . "</td><td>" . date("g:i a", strtotime($end)) . "</td></tr>" .
             "<tr align=center><td colspan=2 class=timelog>&nbsp;</td></tr>" .
-            "<tr><td colspan=2 class=startend>Comments</td></tr>" .
+            "<tr><td colspan=2 class=startend>".__("Comments")."</td></tr>" .
             "<tr><td colspan=2 align=center><textarea name=comments rows=4 cols=40>" . (!empty($_POST['comments']) ? $_POST['comments'] : '') . "</textarea></td></tr>" .
             "<tr align=center>" .
-            "<td class=timelog align=right><button id=end onClick=\"javascript: beforeUnLoading();\">Save Comments</button></td>" .
-            "<td class=timelog align=left><button id=end onClick=\"javascript: doUnLoading();\">Stop Time Now</button></td>" .
+            "<td class=timelog align=right><button id=end onClick=\"javascript: beforeUnLoading();\">".__("Save Comments")."</button></td>" .
+            "<td class=timelog align=left><button id=end onClick=\"javascript: doUnLoading();\">".__("Stop Time Now")."</button></td>" .
             "</tr>" .
             "</table>" .
             "<input type=hidden name=started value=\"yes\">" .
@@ -484,9 +484,9 @@ function endtimelog_ALL(Web &$w) {
         $log->dt_end = date("Y-m-d G:i");
 
         // set comment
-        $comment = "Time Log Entry: " . $w->Task->getUserById($log->user_id) . " - " . formatDateTime($log->dt_start) . " to " . formatDateTime($log->dt_end);
+        $comment = __("Time Log Entry: ") . $w->Task->getUserById($log->user_id) . " - " . formatDateTime($log->dt_start) . " to " . formatDateTime($log->dt_end);
         if ($_REQUEST['comments'] != "")
-            $comment .= " - Comments: " . htmlspecialchars($_REQUEST['comments']);
+            $comment .= __(" - Comments: ") . htmlspecialchars($_REQUEST['comments']);
 
         // add comment
         $comm = new TaskComment($w);
@@ -508,7 +508,7 @@ function endtimelog_ALL(Web &$w) {
     // if 'Save Comment' display current entry and restart time log
     if ($_REQUEST['restart'] == "yes") {
         // create page
-        $html = "<html><head><title>Task Time Log - " . $task->title . "</title>" .
+        $html = "<html><head><title>".__("Task Time Log")." - " . $task->title . "</title>" .
                 "<style type=\"text/css\">" .
                 "body { background-color: #8ad228; }" .
                 "td { background-color: #ffffff; color: #000000; font-family: verdana, arial; font-weight: bold; font-size: .8em; }" .
@@ -525,12 +525,12 @@ function endtimelog_ALL(Web &$w) {
                 "var c = setTimeout('reStart()',2000);" .
                 "</script></head><body leftmargin=0 topmargin=0 marginwidth=0 marginheight=0>" .
                 "<table cellpadding=2 cellspacing=2 border=0 width=100%>" .
-                "<tr align=center><td colspan=2 class=timelog>Task Time Log</td></tr>" .
-                "<tr align=center><td colspan=2 class=tasktitle><a title=\"View Task\" href=\"javascript: goTask();\">" . $tasktitle . "</a></td></tr>" .
+                "<tr align=center><td colspan=2 class=timelog>".__("Task Time Log")."</td></tr>" .
+                "<tr align=center><td colspan=2 class=tasktitle><a title=\"".__("View Task")."\" href=\"javascript: goTask();\">" . $tasktitle . "</a></td></tr>" .
                 "<tr align=center><td width=50% class=startend>Start</td><td width=50% class=startend>Stop</td></tr>" .
                 "<tr align=center><td>" . date("g:i a", $log->dt_start) . "</td><td>" . date("g:i a", strtotime($log->dt_end)) . "</td></tr>" .
                 "<tr align=center><td colspan=2 class=timelog>&nbsp;</td></tr>" .
-                "<tr><td colspan=2 class=startend>Comments</td></tr>" .
+                "<tr><td colspan=2 class=startend>".__("Comments")."</td></tr>" .
                 "<tr><td colspan=2>" . str_replace("\n", "<br>", $_POST['comments']) . "</td></tr>" .
                 "</table>" .
                 "</body></html>";
@@ -605,7 +605,7 @@ function updateusergroupnotify_GET(Web &$w) {
         $task_pages = 1;
     }
 
-    $f = array(array($title . " - Notifications", "section"));
+    $f = array(array($title . __(" - Notifications"), "section"));
 
     // so foreach role/type lets get the values and create  checkboxes
     foreach ($v as $role => $types) {
@@ -617,15 +617,15 @@ function updateusergroupnotify_GET(Web &$w) {
     }
 
     // add Task Events to form
-    $f[] = array("For which events should you receive Notification?", "section");
-    $f[] = array("Task Creation", "checkbox", "task_creation", $task_creation);
-    $f[] = array("Task Details Update", "checkbox", "task_details", $task_details);
-    $f[] = array("Comments Added", "checkbox", "task_comments", $task_comments);
-    $f[] = array("Time Log Entry", "checkbox", "time_log", $time_log);
-    $f[] = array("Documents Added", "checkbox", "task_documents", $task_documents);
-    $f[] = array("Pages Added", "checkbox", "task_pages", $task_pages);
+    $f[] = array(__("For which events should you receive Notification?"), "section");
+    $f[] = array(__("Task Creation"), "checkbox", "task_creation", $task_creation);
+    $f[] = array(__("Task Details Update"), "checkbox", "task_details", $task_details);
+    $f[] = array(__("Comments Added"), "checkbox", "task_comments", $task_comments);
+    $f[] = array(__("Time Log Entry"), "checkbox", "time_log", $time_log);
+    $f[] = array(__("Documents Added"), "checkbox", "task_documents", $task_documents);
+    $f[] = array(__("Pages Added"), "checkbox", "task_pages", $task_pages);
 
-    $f = Html::form($f, $w->localUrl("/task/updateusergroupnotify/" . $p['id']), "POST", "Save");
+    $f = Html::form($f, $w->localUrl("/task/updateusergroupnotify/" . $p['id']), "POST", __("Save"));
 
     $w->setLayout(null);
     $w->out($f);
@@ -685,7 +685,7 @@ function updateusergroupnotify_POST(Web &$w) {
     }
 
     // return
-    $w->msg("Notifications Updated", "/task/tasklist/?taskgroups=" . $p['id'] . "&tab=2");
+    $w->msg(__("Notifications Updated"), "/task/tasklist/?taskgroups=" . $p['id'] . "&tab=2");
 }
 
 function updateusertasknotify_POST(Web &$w) {
@@ -725,7 +725,7 @@ function updateusertasknotify_POST(Web &$w) {
     }
 
     // return
-    $w->msg("Notifications Updated", "/task/edit/" . $p['id'] . "#notification");
+    $w->msg(__("Notifications Updated"), "/task/edit/" . $p['id'] . "#notification");
 }
 
 ?>

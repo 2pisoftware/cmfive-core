@@ -134,9 +134,9 @@ class TagService extends DbService {
 			//Build list of tags
 			$buf .= '<span class="tag_list" data-url="'.$url.'">';
 			if( empty($tags) ) {
-				$buf .= '<span class="label radius secondary no_tags tag_selection"><span class="fi-price-tag">No tag</span></span> ';
+				$buf .= '<span class="label radius secondary no_tags tag_selection"><span class="fi-price-tag">'.__('No tag').'</span></span> ';
 			} else {
-				$buf .= '<span style="display:none;" class="label radius secondary no_tags tag_selection"><span class="fi-price-tag">No tag</span></span> ';
+				$buf .= '<span style="display:none;" class="label radius secondary no_tags tag_selection"><span class="fi-price-tag">'.__('No tag').'</span></span> ';
 				foreach($tags as $tag) {
 					$buf .= '<span data-tag="'.$tag->tag.'" class="label radius secondary tag_selection"><span '.(!empty($tag->tag_color) ? 'style="color:'.$tag->tag_color.'"' : '').' class="fi-price-tag">'.$tag->tag.'</span></span> ';
 				}
@@ -147,7 +147,7 @@ class TagService extends DbService {
 				$tagDialogId = 'tag_list_'.$class.$id;
 				$buf .= '<div class="tag_list_dialog" id="'.$tagDialogId.'">
 					<div class="tag_list_modal">
-						<div class="tag_list_header">Available tags <span class="fi-x hide_tag_list"></span><div><input type="text" placeholder="'.($user->hasRole("tag_admin") ? 'Add / ': '').'Filter tags" class="search_tags" /></div></div>
+						<div class="tag_list_header">Available tags <span class="fi-x hide_tag_list"></span><div><input type="text" placeholder="'.($user->hasRole("tag_admin") ? __('Add').' / ': '').__('Filter tags').'" class="search_tags" /></div></div>
 						<div class="tag_list_body"></div>
 					</div>
 				</div></span>';
@@ -163,7 +163,7 @@ class TagService extends DbService {
         $nav = $nav ? $nav : array();
 
         if ($w->Auth->loggedIn() && $this->w->Auth->user()->hasRole('tag_admin')) {
-            $w->menuLink("tag/index", "Tag Admin", $nav);
+            $w->menuLink("tag/index", __("Tag Admin"), $nav);
         }
         $w->ctx("navigation", $nav);
         return $nav;

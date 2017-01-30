@@ -150,15 +150,15 @@ class Report extends DbObject {
         }
         // merge arrays to give all parameter form requirements
         if (!empty($template_values)) {
-        	$arr[] = array("Select an Optional Template", "section");
-        	$arr[] =array("Format", "select", "template", null, $template_values);
+        	$arr[] = array(__("Select an Optional Template"), "section");
+        	$arr[] =array(__("Format"), "select", "template", null, $template_values);
         }
         // return form
         return !empty($arr) ? $arr : null;
     }
 
     // generate the report based on selected parameters
-    function getReportData() {
+    function getReportData($user_id=null) {
         // build array of all contents within any @@...@@
         //		preg_match_all("/@@[a-zA-Z0-9_\s\|,;\(\)\{\}<>\/\-='\.@:%\+\*\$]*?@@/",preg_replace("/\n/"," ",$this->report_code), $arrsql);
         preg_match_all("/@@.*?@@/", preg_replace("/\n/", " ", $this->report_code), $arrsql);
@@ -203,7 +203,7 @@ class Report extends DbObject {
                         // if our SQL is still intact ...
                         if ($sql != "") {
                             // check the SQL statement for special parameter replacements
-                            $sql = $this->Report->putSpecialSQL($sql);
+                            $sql = $this->Report->putSpecialSQL($sql,$user_id);
                             // check the SQL statement for validity
                             $flgsql = $this->Report->getcheckSQL($sql, $this->getDb());
                             
@@ -247,22 +247,22 @@ class Report extends DbObject {
                                         unset($crumbs);
                                         unset($tbl);
                                     } else {
-                                        $alltbl[] = array(array("No Data Returned for selections"), $stitle, array("Results"), array("No data returned for selections"));
+                                        $alltbl[] = array(array(__("No Data Returned for selections")), $stitle, array(__("Results")), array(__("No data returned for selections")));
                                     }
                                 } else {
                                     // create headings
-                                    $hds = array(array("Status", "Message"));
+                                    $hds = array(array(__("Status"), __("Message")));
 
                                     // other SQL types do not return recordset so treat differently from SELECT
                                     try {
                                         $this->startTransaction();
                                         $rows = $this->Report->getExefromSQL($sql, $this->getDb());
                                         $this->commitTransaction();
-                                        $line = array(array("SUCCESS", "SQL has completed successfully"));
+                                        $line = array(array("SUCCESS", __("SQL has completed successfully")));
                                     } catch (Exception $e) {
                                         // SQL returns errors so clean up and return error
                                         $this->rollbackTransaction();
-                                        $line = array(array("ERROR", "A SQL error was encountered: " . $e->getMessage()));
+                                        $line = array(array("ERROR", __("A SQL error was encountered: ") . $e->getMessage()));
                                     }
                                     $tbl = array_merge($crumbs, $title, $hds, $line);
                                     $alltbl[] = $tbl;
@@ -273,17 +273,17 @@ class Report extends DbObject {
                                 }
                             } else {
                                 // if we fail the SQL check, say as much
-                                $alltbl = array(array("ERROR"), array("There is a problem with your SQL statement:" . $sql));
+                                $alltbl = array(array("ERROR"), array(__("There is a problem with your SQL statement").":" . $sql));
                             }
                         } else {
                             // if we fail the SQL check, say as much
-                            $alltbl = array(array("ERROR"), array("There is a problem with your SQL statement"));
+                            $alltbl = array(array("ERROR"), array(__("There is a problem with your SQL statement")));
                         }
                     }
                 }
             }
         } else {
-            $alltbl = array(array("ERROR"), array("There is a problem with your SQL statement"));
+            $alltbl = array(array("ERROR"), array(__("There is a problem with your SQL statement")));
         }
         
         return $alltbl;

@@ -3,7 +3,7 @@
 	$new = $w->Inbox->getMessages(0,5,$w->Auth->user()->id,1);
 	
 	if ($new) {
-		$newqlines = array(array("Subject","Date","Sender"));
+		$newqlines = array(array(__("Subject"),__("Date"),__("Sender")));
 		$total_new_count = 0;
 		foreach ($new as $q => $in) {
 			$line = array();
@@ -16,7 +16,7 @@
 		}
 	else {
 		$url = $webroot."/inbox/read";
-		$inbox = "<b>No new messages</b>";
+		$inbox = "<b>".__("No new messages")."</b>";
 	}
 	
 	return $inbox;

@@ -148,8 +148,8 @@ function comment_POST(Web $w){
     $redirectUrl = $w->request("redirect_url");
 
     if (!empty($redirectUrl)){
-        $w->msg("Comment saved", urldecode($redirectUrl));
+        $w->msg(__("Comment saved"), urldecode($redirectUrl));
     } else {
-        $w->msg("Comment saved", $w->localUrl($_SERVER["REQUEST_URI"]));
+        $w->msg(__("Comment saved"), $w->localUrl($_SERVER["REQUEST_URI"]));
     }
 }

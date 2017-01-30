@@ -17,7 +17,7 @@ function taskAjaxAssigntoGroup_ALL(Web $w) {
 		}
 	}
 	if (!$group)
-	$group = array(array("No assigned Tasks",""));
+	$group = array(array(__("No assigned Tasks"),""));
 
 	// load Group dropdown and return
 	$taskgroups = Html::select("taskgroups",$group,null);

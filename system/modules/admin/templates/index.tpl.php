@@ -1,4 +1,4 @@
-<b>Users Currently Logged In</b>
+<b><?php _e('Users Currently Logged In'); ?></b>
 <ul>
     <?php if (!empty($currentUsers)):foreach($currentUsers as $u):?>
         <li>

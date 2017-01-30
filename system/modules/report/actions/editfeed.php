@@ -1,6 +1,6 @@
 <?php
 function editfeed_GET(Web &$w) {
-	$w->Report->navigation($w, "Edit Feed");
+	$w->Report->navigation($w, __("Edit Feed"));
 
 	$p = $w->pathMatch("id");
 
@@ -18,23 +18,23 @@ function editfeed_GET(Web &$w) {
 		}
 	}
 
-	$note = "Available Formats: html, csv, pdf, xml<br>";
-	$note .= "Date Formats must be <b>d/m/Y</b> to mimic date picker";
+	$note = __("Available Formats: html, csv, pdf, xml")."<br>";
+	$note .= __("Date Formats must be <b>d/m/Y</b> to mimic date picker");
 
 	$f = Html::form(array(
-	array("Create a Feed from a Report","section"),
-	array("Select Report","select","rid",$feed->report_id,$myrep),
-	array("Feed Title","text","title",$feed->title),
-	array("Description","textarea","description",$feed->description,"40","6"),
-	array("Feed URL","static","url", $feed->url),
-	array("Note","static","url", $note),
-	),$w->localUrl("/report/editfeed/".$feed->id),"POST"," Update ");
+	array(__("Create a Feed from a Report"),"section"),
+	array(__("Select Report"),"select","rid",$feed->report_id,$myrep),
+	array(__("Feed Title"),"text","title",$feed->title),
+	array(__("Description"),"textarea","description",$feed->description,"40","6"),
+	array(__("Feed URL"),"static","url", $feed->url),
+	array(__("Note"),"static","url", $note),
+	),$w->localUrl("/report/editfeed/".$feed->id),"POST",__(" Update "));
 
 	$w->ctx("editfeed",$f);
 }
 
 function editfeed_POST(Web &$w) {
-	$w->Report->navigation($w, "Create a Feed");
+	$w->Report->navigation($w, __("Create a Feed"));
 
 	$p = $w->pathMatch("id");
 
@@ -47,5 +47,5 @@ function editfeed_POST(Web &$w) {
 	$feed->fill($arr);
 	$feed->update();
 
-	$w->msg("Feed " . $feed->title . " has been updated","/report/listfeed/");
+	$w->msg(__("Feed ") . $feed->title . __(" has been updated"),"/report/listfeed/");
 }

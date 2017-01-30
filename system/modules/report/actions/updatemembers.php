@@ -25,5 +25,5 @@ function updatemembers_POST(Web &$w) {
 	}
 
 	// return
-	$w->msg("Member Group updated","/report/edit/".$arrdb['report_id']."#members");
+	$w->msg(__("Member Group updated"),"/report/edit/".$arrdb['report_id']."#members");
 }

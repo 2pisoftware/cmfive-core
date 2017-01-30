@@ -1,0 +1,65 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: 2016-03-11 11:31+1100\n"
+"PO-Revision-Date: 2016-03-11 11:35+1100\n"
+"Last-Translator: Steve Ryan <steve@2pisoftware.com>\n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.7\n"
+"X-Poedit-Basepath: ../..\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Poedit-KeywordsList: _e;__\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: partials/templates/listattachments.tpl.php:51
+msgid "Attach a File"
+msgstr "joindre un fichier"
+
+#: partials/templates/listattachments.tpl.php:64
+msgid "View"
+msgstr "Afficher"
+
+#: partials/templates/listattachments.tpl.php:67
+#: partials/templates/listattachments.tpl.php:123
+msgid "Edit"
+msgstr "Éditer"
+
+#: partials/templates/listattachments.tpl.php:70
+#: partials/templates/listattachments.tpl.php:124
+msgid "Delete"
+msgstr "Effacer"
+
+#: partials/templates/listattachments.tpl.php:70
+msgid "Are you sure you want to delete this attachment?"
+msgstr "Êtes-vous sûr de vouloir supprimer ce groupe?"
+
+#: partials/templates/listattachments.tpl.php:92
+msgid "Open in new tab/window"
+msgstr "Ouvre une nouvelle fenêtre ou un nouvel onglet"
+
+#: partials/templates/listattachments.tpl.php:108
+#: partials/templates/listattachmentsplain.tpl.php:72
+msgid "Filename"
+msgstr "Nom de fichier"
+
+#: partials/templates/listattachments.tpl.php:109
+#: partials/templates/listattachmentsplain.tpl.php:73
+msgid "Title"
+msgstr "Titre"
+
+#: partials/templates/listattachments.tpl.php:110
+#: partials/templates/listattachmentsplain.tpl.php:74
+msgid "Description"
+msgstr "La description"
+
+#: partials/templates/listattachments.tpl.php:111
+msgid "Action"
+msgstr "Action"
+
+#: partials/templates/listattachments.tpl.php:124
+msgid "Do you want to delete this attachment?"
+msgstr "Voulez-vous supprimer cette pièce jointe ?"

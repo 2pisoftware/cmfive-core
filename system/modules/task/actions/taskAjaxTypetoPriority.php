@@ -25,7 +25,7 @@ function taskAjaxTypetoPriority_ALL(Web &$w) {
 		}
 	}
 	if (!$priority)
-	$priority = array(array("No assigned Tasks",""));
+	$priority = array(array(__("No assigned Tasks"),""));
 
 	// load priority dropdown and return
 	$priority = Html::select("tpriority",$priority,null);

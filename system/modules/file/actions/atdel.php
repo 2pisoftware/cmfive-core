@@ -9,8 +9,8 @@ function atdel_GET(Web &$w) {
 		$w->ctx('attach_title',$att->title);
 		$w->ctx('attach_description',$att->description);
 		$att->delete();
-		$w->msg("Attachment deleted.","/".str_replace(" ","/",$p['url']));
+		$w->msg(__("Attachment deleted."),"/".str_replace(" ","/",$p['url']));
 	} else {
-		$w->error("Attachment does not exist.","/".str_replace(" ","/",$p['url']));
+		$w->error(__("Attachment does not exist."),"/".str_replace(" ","/",$p['url']));
 	}
 }

@@ -4,21 +4,21 @@
  */
 
 function edit_GET(Web $w) {
-	$w->Admin->navigation($w,"Templates");
+	$w->Admin->navigation($w,__("Templates"));
 	$p = $w->pathMatch("id");
 	
 	$t = $w->Template->getTemplate($p['id']);
 	$t = $t ? $t : new Template($w);
 	
 	$newForm = array();
-	$newForm["Template Details"] = array(
+	$newForm[__("Template Details")] = array(
 		array(
-                    array("Title", "text", "title",$t->title),
-                    array("Active", "checkbox", "is_active",$t->is_active)),
+                    array(__("Title"), "text", "title",$t->title),
+                    array(__("Active"), "checkbox", "is_active",$t->is_active)),
 		array(
-                    array("Module", "text", "module",$t->module),
-                    array("Category", "text", "category",$t->category)));
-	$newForm['Description'] = array(
+                    array(__("Module"), "text", "module",$t->module),
+                    array(__("Category"), "text", "category",$t->category)));
+	$newForm[__('Description')] = array(
 		array(
                     array("", "textarea", "description",$t->description)),
 	);
@@ -26,20 +26,20 @@ function edit_GET(Web $w) {
 	$w->ctx("editdetailsform", Html::multiColForm($newForm, $w->localUrl('/admin-templates/edit/'.$t->id)));
 	
 	$newForm = array();
-	$newForm["Template Title"] = array(
+	$newForm[__("Template Title")] = array(
 			array(array("", "textarea", "template_title",$t->template_title,100,1, false))
 	);
-	$newForm["Template Body"] = array(
+	$newForm[__("Template Body")] = array(
 			array(array("", "textarea", "template_body",$t->template_body,60,100, "codemirror"))
 	);
 
 	$w->ctx("templateform", Html::multiColForm($newForm, $w->localUrl('/admin-templates/edit/'.$t->id)));
 	
 	$newForm = array();
-	$newForm["Title Data"] = array(
+	$newForm[__("Title Data")] = array(
 			array(array("", "textarea", "test_title_json",$t->test_title_json,100,5, false))
 	);
-	$newForm["Body Data"] = array(
+	$newForm[__("Body Data")] = array(
 			array(array("", "textarea", "test_body_json",$t->test_body_json,100,20, false))
 	);
 	
@@ -65,5 +65,5 @@ function edit_POST(Web $w) {
         }
 	
 	$t->insertOrUpdate();
-	$w->msg("Template saved", "/admin-templates/edit/".$t->id);	
+	$w->msg(__("Template saved"), "/admin-templates/edit/".$t->id);	
 }

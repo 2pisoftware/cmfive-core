@@ -8,10 +8,10 @@ function editprinter_GET(Web $w) {
     }
     
     $form = array(
-        "Details" => array(
-            array(array("Printer name", "text", "name", $printer->name)),
-            array(array("Server", "text", "server", $printer->server)),
-            array(array("Port", "text", "port", $printer->port))
+        __("Details") => array(
+            array(array(__("Printer name"), "text", "name", $printer->name)),
+            array(array(__("Server"), "text", "server", $printer->server)),
+            array(array(__("Port"), "text", "port", $printer->port))
         )
     );
             
@@ -28,5 +28,5 @@ function editprinter_POST(Web $w) {
     $printer->fill($_POST);
     $printer->insertOrUpdate();
     
-    $w->msg("Printer added", "/admin/printers");
+    $w->msg(__("Printer added"), "/admin/printers");
 }
