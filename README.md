@@ -73,15 +73,15 @@ function listsongs_GET(Web $W){
 }
 ```
 
-##### Assets
+#### Assets
 
 A place to keep static assets, can be called anything that suits you.
 
-##### Install
+#### Install
 
 The install folder can be used to keep report code and templates, but its main purpose is to house the migrations and database seeds. Inside the install folder needs to be a folder called "migrations". To create a new migration, goto admin -> migrations -> Individual (tab). Go to your module in the list and click "Create a new migration". Enter a name for the migration and click save. See migrations in the system/modules folder for easy ways to create migrations (documentation coming soon).
 
-##### Models
+#### Models
 
 The models folder is used to store Cmfives database ORM objects called "DbObject"(s). A DbObject class name should relate to it's matching table name, but without underscores, and camel cased. E.g:
 
@@ -114,7 +114,7 @@ $my_song = $w->Music->getSong($the_id);
 
 Any other classes that you want autoloaded, like generic interfaces, static helper classes etc., can be put in the models folder.
 
-##### Templates
+#### Templates
 
 Templates act as a compliment to an action. For Cmfive to match a tempalte to an action, it should follow the same submodule layout as its action counterpart and follow this naming convention:
 ```
@@ -130,7 +130,7 @@ e.g.
 </ul>
 ```
 
-##### config.php
+#### config.php
 
 The most cruical part to a module, Cmfive first looks for a config file to load the module, if this is missing then your module won't be used at all by Cmfive. The config.php file uses a static class called Config which is essentially a key value store. A module config requires three values, here is a full example to explain each one:
 ```php
