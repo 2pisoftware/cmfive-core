@@ -90,7 +90,7 @@ The models folder is used to store Cmfives database ORM objects called "DbObject
 |user   | User     |
 |task_group_member|TaskGroupMember|
 
-Thsi conversion is done automatically by Cmfive, but you can override this by setting by adding the static propery "$\_db_table" to your DbObject and setting it to the name of the responsible table.
+This conversion is done automatically by Cmfive, but you can override this by setting by adding the static propery "$\_db_table" to your DbObject and setting it to the name of the responsible table.
 
 The models folder can also store Service classes, called "DbService". These classes provide a global interface to your module via the Web class. Generally, each module has at least one, named after the module itself, e.g. if your module was called "music":
 ```php
@@ -107,7 +107,7 @@ class MusicService extends DbService { // The "Service" suffix is required
 }
 ```
 
-Everything in the models folder gets autoloaded so all you need to do to invoke this function from anywhere there is an instance of Web, is to call:
+Everything in the models folder gets autoloaded, so all you need to do to invoke this function from anywhere (via an instance of Web), is to call:
 ```php
 $my_song = $w->Music->getSong($the_id);
 ```
@@ -116,7 +116,7 @@ Any other classes that you want autoloaded, like generic interfaces, static help
 
 #### Templates
 
-Templates act as a compliment to an action. For Cmfive to match a tempalte to an action, it should follow the same submodule layout as its action counterpart and follow this naming convention:
+Templates act as a compliment to an action. For Cmfive to match a template to an action, it should have the same submodule layout as its action counterpart and follow this naming convention:
 ```
 <action name>.tpl.php
 ```
