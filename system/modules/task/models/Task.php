@@ -35,6 +35,10 @@ class Task extends DbObject {
     );
     public static $_db_table = "task";
 
+    public function getSubscribers() {
+        return $this->getObjects('TaskSubscriber', ['task_id' => $this->id, 'is_deleted' => 0]);
+    }
+
     /**
 	 * Adds task type and task data to the index
 	 * 

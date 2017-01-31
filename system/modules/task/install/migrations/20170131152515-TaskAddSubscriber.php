@@ -19,6 +19,24 @@ class TaskAddSubscriber extends CmfiveMigration {
 				->addCmfiveParameters()
 				->create();
 		}
+
+		$tasks = $this->w->Task->getTasks();
+		if (!empty($tasks)) {
+			foreach($tasks as $task) {
+				$taskgroup = $task->getTaskGroup();
+
+				$members = $taskgroup->getMembers();
+
+				if (!empty($members)) {
+					foreach($members as $member) {
+						$subscriber = new TaskSubscriber($this->w);
+						$subscriber->task_id = $task->id;
+						$subscriber->user_id = $member->user_id;
+						$subscriber->insert();
+					}
+				}
+			}
+		}
 	}
 
 	public function down() {

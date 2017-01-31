@@ -1,6 +1,13 @@
 <?php
 
-class TaskSubscriber extends DbObejct {
+/**
+ * Database model for a task subscriber
+ * A task subscriber is someone who will recieve any
+ * notifications for interactions with a Task.
+ *
+ * @author Adam Buckley
+ */
+class TaskSubscriber extends DbObject {
 
 	public $task_id;
 	public $user_id;

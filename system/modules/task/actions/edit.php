@@ -109,6 +109,11 @@ function edit_GET($w) {
     }
     $w->ctx('createdDate', $createdDate);
 
+    // Subscribers
+    if (!empty($task->id)) {
+        $w->ctx('subscribers', $task->getSubscribers());
+    }
+    
     ///////////////////
     // Notifications //
     ///////////////////

@@ -56,7 +56,23 @@
                     </div>
 
                     <div class="small-12 large-3 right" style="margin-top: 16px;">
-						<!--<h4 class="subheader text-center">Additional details</h4>-->
+                        <?php if (!empty($subscribers)) : ?>
+    						<div class='row-fluid panel clearfix' id='task_subscribers'>
+                                <table class="small-12 columns">
+                                    <tbody>
+                                        <tr>
+                                            <td class="section" colspan="2">Subscribers <?php echo Html::box('/task-subscriber/add/' . $task->id, 'Add', true, false, null, null, 'isbox', null, 'info right'); ?></td>
+                                        </tr>
+                                        <?php foreach($subscribers as $subscriber) : ?>
+                                            <tr>
+                                                <td><?php echo $subscriber->getUser()->getFullName(); ?> - <?php echo $subscriber->getUser()->getContact()->email; ?></td>
+                                                <td><?php echo Html::b('/task-subscriber/delete/' . $subscriber->id, 'Delete', 'Are you sure you want to remove this subscriber?', null, false, 'warning right'); ?></td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <?php endif; ?>
 						<?php
 							// Call hook and filter out empty/false values
 							if (!empty($task->id)) {

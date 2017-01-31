@@ -36,6 +36,10 @@ class TaskGroup extends DbObject {
     
     public static $_db_table = "task_group";
 
+    public function getMembers() {
+        return $this->getObjects("TaskGroupMember", ['task_group_id' => $this->id]);
+    }
+
     public function canList(\User $user) {
         return $this->getCanIView();
     }
