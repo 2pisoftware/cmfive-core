@@ -5,7 +5,8 @@
     $form['User Details'][]=array(
             array("Login","text","login",$user->login),
             array("Admin","checkbox","is_admin",$user->is_admin),
-            array("Active","checkbox","is_active",$user->is_active));
+            array("Active","checkbox","is_active",$user->is_active),
+            array("External", "checkbox", "is_external", $user->is_external));
 
     $form['User Details'][]=array(
             array("Password","password","password"),

@@ -42,8 +42,9 @@ function useradd_POST(Web &$w) {
 	$user = new User($w);
 	$user->login = $_REQUEST['login'];
 	
-	$user->is_active = !empty($_REQUEST['is_active']) ? $_REQUEST['is_active'] : 0;
-	$user->is_admin = !empty($_REQUEST['is_admin']) ? $_REQUEST['is_admin'] : 0;
+	$user->is_admin = isset($_REQUEST['is_admin']) ? 1 : 0;
+    $user->is_active = isset($_REQUEST['is_active']) ? 1 : 0;
+    $user->is_external = isset($_REQUEST['is_external']) ? 1 : 0;
     $user->is_group = 0;
 	$user->dt_created = time();
 	$user->contact_id = $contact->id;

@@ -11,7 +11,7 @@ class AuthService extends DbService {
         // $password = User::encryptPassword($password);
         // $user_data = $this->_db->get("user")->where("login", $login)->and("password", $password)->and("is_active", "1")->and("is_deleted", "0")->fetch_row();
         $user = $this->getUserForLogin($login);
-        if (empty($user->id) || ($user->encryptPassword($password) !== $user->password)) {
+        if (empty($user->id) || ($user->encryptPassword($password) !== $user->password) || $user->is_external == 1) {
             return null;
         }
         // if ($user_data != null) {
