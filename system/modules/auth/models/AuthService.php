@@ -89,6 +89,7 @@ class AuthService extends DbService {
         $user = new User($this->w);
         $user->login = $contact->email;
         $user->is_external = 1;
+        $user->contact_id = $contact->id;
         $user->insert();
 
         return $user->id;
