@@ -64,6 +64,46 @@ class AuthService extends DbService {
     }
 
     /**
+     * There is no way to enforce the creation of a User object when creating a Contact
+     * E.g. for an address book, there is no need to create a User object. However, if you
+     * want to ensure that a Contact will have a User account, call this function before doing
+     * anything else with the Contact.
+     *  
+     * As a security measure, all user accounts created this way are external only.
+     *
+     * @param mixed $contact_id
+     * @return int user_id
+     */
+    function createExernalUserForContact($contact_id) {
+        $contact = $this->getContact($contact_id);
+
+        if (empty($contact->id)) {
+            return false;
+        }
+
+        $user = $contact->getUser();
+        if (!empty($user->id)) {
+            return $user->id;
+        }
+
+        $user = new User($this->w);
+        $user->login = $contact->email;
+        $user->is_external = 1;
+        $user->contact_id = $contact->id;
+        $user->insert();
+
+        return $user->id;
+    }
+
+    function getContacts() {
+        return $this->getObjects('Contact', ['is_deleted' => 0]);
+    }
+
+    function getContact($contact_id) {
+        return $this->getObject("Contact", ['id' => $contact_id]);
+    }
+
+    /**
      * Return the logged in user based on the session variable user_id.
      * 
      * If a user has been set from a REST service, then that user will
