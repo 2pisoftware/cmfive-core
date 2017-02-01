@@ -4,6 +4,10 @@ class TaskService extends DbService {
 
     public $_tasks_loaded;
 
+    public function getSubscriber($subscriber_id) {
+        return $this->getObject("TaskSubscriber", $subscriber_id);
+    }
+
     public function getTaskGroupDetailsForUser() {
         $user_id = $this->w->Auth->user()->id;
 		
