@@ -111,9 +111,12 @@ function edit_GET($w) {
 
     // Subscribers
     if (!empty($task->id)) {
-        $w->ctx('subscribers', $task->getSubscribers());
+        $task_subscribers = $task->getSubscribers();
+
+        
+        $w->ctx('subscribers', $task_subscribers);
     }
-    
+
     ///////////////////
     // Notifications //
     ///////////////////
