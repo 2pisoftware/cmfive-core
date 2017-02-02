@@ -94,11 +94,11 @@ function add_POST(Web $w) {
 		$contact->workphone = $phone;
 		$contact->insert();
 
-		$w->Auth->createExernalUserForContact($contact->id);
+		$user_id = $w->Auth->createExernalUserForContact($contact->id);
 
 		$subscription = new TaskSubscriber($w);
 		$subscription->task_id = $task->id;
-		$subscription->user_id = $user->id;
+		$subscription->user_id = $user_id;
 		$subscription->insert();
 
 		$w->msg('New contact subscribed', '/task/edit/' . $task->id);

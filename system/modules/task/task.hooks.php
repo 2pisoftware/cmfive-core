@@ -406,15 +406,17 @@ function task_comment_get_notification_recipients_task(Web $w, $params) {
     $results = [];
     $task = $w->task->getTask($params['object_id']);
     if (!empty($task)) {
-        //get task group members
-        $members = $w->task->getMembersInGroup($task->task_group_id);
-        //add members to users array
-        if (!empty($members)) {
-            foreach($members as $member) {
-                //check if member is active
-                if (!empty($member)) {
-                    $results[$member[1]] = 1;
+        $subscribers = $task->getSubscribers();
 
+        //add subscribers to users array
+        if (!empty($subscribers)) {
+            foreach($subscribers as $subscriber) {
+                //check if subscriber is active
+                if (!empty($subscriber->user_id)) {
+                	$user = $subscriber->getUser();
+                	if ($user->is_external == 0) {
+	                    $results[$subscriber->user_id] = ($w->Auth->user()->id != $subscriber->user_id);
+	                }
                 }
             }
         }
