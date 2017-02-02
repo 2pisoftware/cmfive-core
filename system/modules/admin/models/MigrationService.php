@@ -362,7 +362,7 @@ MIGRATION;
 	public function installInitialMigration() {
 		$filenames = [
 			"AdminInitialMigration" => "20151030134124-AdminInitialMigration.php",
-			"AmdinMigrationSeed" => "20170123091600-AdminMigrationSeed.php"
+			"AdminMigrationSeed" => "20170123091600-AdminMigrationSeed.php"
 		];
 		
 		$directory = SYSTEM_MODULE_DIRECTORY . DS . "admin" . DS . MIGRATION_DIRECTORY;
