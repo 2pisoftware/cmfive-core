@@ -396,14 +396,16 @@ function task_admin_remove_user(Web $w, User $user) {
 }
 
 /*
- * sends a list of potential notification receivers to the comment partial
- * must return array if this format
+ * Sends a list of potential notification receivers to the comment partial
+ * must return array in this format:
  * array = [
  *      'user_id'=>boolean (sets the default option for user. i.e. are they to receive notifications by default)
  * ]
  */
 function task_comment_get_notification_recipients_task(Web $w, $params) {
     $results = [];
+    $internal_only = array_key_exists('internal_only', $params) ? $params['internal_only'] : false;
+
     $task = $w->task->getTask($params['object_id']);
     if (!empty($task)) {
         $subscribers = $task->getSubscribers();
@@ -414,9 +416,9 @@ function task_comment_get_notification_recipients_task(Web $w, $params) {
                 //check if subscriber is active
                 if (!empty($subscriber->user_id)) {
                 	$user = $subscriber->getUser();
-                	if ($user->is_external == 0) {
-	                    $results[$subscriber->user_id] = ($w->Auth->user()->id != $subscriber->user_id);
-	                }
+                	if ($internal_only === false || $internal_only === true && $user->is_external == 0) {
+                		$results[$subscriber->user_id] = ($w->Auth->user()->id != $subscriber->user_id);
+                	}
                 }
             }
         }
@@ -427,7 +429,7 @@ function task_comment_get_notification_recipients_task(Web $w, $params) {
 
 
 /*
- * receives parameters for users to notify from comments
+ * Receives parameters for users to notify from comments
  * $params = array(
  *      'recipients'=>['user_ids'],
  *      'commentor_id=>int (user_id of comment author),

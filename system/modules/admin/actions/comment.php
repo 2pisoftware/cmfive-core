@@ -2,6 +2,7 @@
 
 function comment_GET(Web $w){
     $p = $w->pathMatch("comment_id", "tablename", "object_id");
+    $internal_only = intval($w->request('internal_only', 0));
 
     $comment_id = intval($p["comment_id"]);
     $comment = $comment_id > 0 ? $w->Comment->getComment($comment_id) : new Comment($w);
@@ -58,7 +59,7 @@ EOF;
     
     if (!$p["comment_id"]) {
         //call hook for notification select
-        $get_recipients = $w->callHook('comment', 'get_notification_recipients_' . $top_table_name,['object_id'=>$top_id]);
+        $get_recipients = $w->callHook('comment', 'get_notification_recipients_' . $top_table_name, ['object_id' => $top_id, 'internal_only' => $internal_only === 1 ? true : false]);
         //add checkboxes to the form for each notification recipient 
         if (!empty($get_recipients)) {
             $unique_recipients = [];
@@ -81,17 +82,13 @@ EOF;
             ];
             $parts = array_chunk($unique_recipients, 4, true);
 
-            foreach ($parts as $key=>$row) {
-                $form['Notifications'][$key+1] = [];
+            foreach ($parts as $key => $row) {
+                $form['Notifications'][$key + 1] = [];
+
                 foreach ($row as $user_id => $is_notify) {
                     $user = $w->Auth->getUser($user_id);
                     if (!empty($user)) {
-                        if ($user->id == $w->auth->loggedIn()) {
-                            $form['Notifications'][$key+1][] = array($user->getFullName() . '    ', 'checkbox', 'recipient_' . $user->id, 0);
-                        } else {
-                            $form['Notifications'][$key+1][] = array($user->getFullName() . '    ', 'checkbox', 'recipient_' . $user->id, $is_notify);
-                        }
-
+                        $form['Notifications'][$key + 1][] = array($user->getFullName() . ($user->is_external == 1 ? ' (external)' : ''), 'checkbox', 'recipient_' . $user->id, $is_notify);
                     }
                 }
             }
