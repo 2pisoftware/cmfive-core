@@ -372,6 +372,7 @@ MIGRATION;
 			'name' => Config::get('database.database')
 		]);
 
+		$count = 0;
 		foreach($filenames as $migration => $filename) {
 			if (file_exists(ROOT_PATH . DS . $directory . DS . $filename)) {
 				include_once ROOT_PATH . DS . $directory . DS . $filename;
@@ -400,12 +401,12 @@ MIGRATION;
 
 					$this->w->Log->setLogger("MIGRATION")->info("Initial migration has run");
 					
-					return true;
+					$count++;
 				}
 			}
 		}
 		
-		return false;
+		return count($filenames) == $count;
 	}
 
 	public function getSeedMigrations() {
