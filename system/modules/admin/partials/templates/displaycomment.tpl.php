@@ -26,5 +26,5 @@
         </div>    
     </div>
     <?php echo empty($displayOnly) ? $w->partial("loopcomments", array("object" => $w->Comment->getCommentsForTable($c->getDbTableName(), $c->id), 
-                                                 "redirect" => $redirect), "admin") : ""; ?>
+                                                 "redirect" => $redirect, 'internal_only' => $internal_only), "admin") : ""; ?>
 </div>

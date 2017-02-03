@@ -3,6 +3,7 @@
 function comment_GET(Web $w){
     $p = $w->pathMatch("comment_id", "tablename", "object_id");
     $internal_only = intval($w->request('internal_only', 0));
+    $redirect_url = $w->request('redirect_url', $w->localUrl($_SERVER["REQUEST_URI"]));
 
     $comment_id = intval($p["comment_id"]);
     $comment = $comment_id > 0 ? $w->Comment->getComment($comment_id) : new Comment($w);
@@ -98,7 +99,7 @@ EOF;
     // return the comment for display and edit
     $w->setLayout(null);
     
-    $w->out(Html::MultiColForm($form, $w->localUrl("/admin/comment/{$comment_id}/{$p["tablename"]}/{$p["object_id"]}"), "POST", "Save"));
+    $w->out(Html::MultiColForm($form, $w->localUrl("/admin/comment/{$comment_id}/{$p["tablename"]}/{$p["object_id"]}?internal_only=" . $internal_only) . "&redirect_url=" . $redirect_url, "POST", "Save"));
     $w->out('<script>$("form").submit(function(event) {toggleModalLoading();});</script>');
     
     
@@ -107,7 +108,8 @@ EOF;
 function comment_POST(Web $w){
     $p = $w->pathMatch("comment_id", "tablename","object_id");
     $comment_id = intval($p["comment_id"]);
-    
+    $internal_only = intval($w->request('internal_only', 0));
+
     $comment = $w->Comment->getComment($comment_id);
     $is_new = false;
     if ($comment === null){
@@ -118,6 +120,7 @@ function comment_POST(Web $w){
     $comment->obj_table = $p["tablename"];
     $comment->obj_id = $p["object_id"];
     $comment->comment = strip_tags($w->request("comment"));
+    $comment->is_internal = $internal_only;
     $comment->insertOrUpdate();
     
     //handle notifications
