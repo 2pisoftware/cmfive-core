@@ -199,22 +199,28 @@ class AuthService extends DbService {
     }
 
     function getUsersAndGroups($includeDeleted = false) {
-    	$where = array();
-        $where["is_active"] = 1;
+    	$where = [
+            "is_active" => 1,
+            "is_external" => 0
+        ];
+
     	if (!$includeDeleted) {
-    		$where["is_deleted"]=0;
+    		$where["is_deleted"] = 0;
     	}
-        return $this->getObjects("User", $where, true);
+        return $this->getObjects("User", $where);
     }
 
     function getUsers($includeDeleted = false) {
-        $where = array();
-        $where["is_group"]=0;
-        $where['is_active'] = 1;
+        $where = [
+            "is_group" => 0,
+            "is_active" => 1,
+            "is_external" => 0
+        ];
+
     	if (!$includeDeleted) {
     		$where["is_deleted"]=0;
     	}
-    	return $this->getObjects("User", $where, true);
+    	return $this->getObjects("User", $where);
     }
     
     function getUserForContact($cid) {
