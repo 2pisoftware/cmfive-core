@@ -508,7 +508,7 @@ class Task extends DbObject {
                 $members = $taskgroup->getMembers();
                 if (!empty($members)) {
                     foreach($members as $member) {
-                        $task_subscriber = new TaskSubscriber($w);
+                        $task_subscriber = new TaskSubscriber($this->w);
                         $task_subscriber->task_id = $this->id;
                         $task_subscriber->user_id = $member->user_id;
                         $task_subscriber->insert();
