@@ -8,8 +8,8 @@ function displaycomment(\Web $w, $params) {
         $w->ctx("displayOnly", true);
     }
 
-    $w->ctx("internal_only", !empty($params['internal_only']) ? $params['internal_only'] : false);
-    $w->ctx("external_only", !empty($params['external_only']) ? $params['external_only'] : false);
+    $w->ctx("internal_only", array_key_exists('internal_only', $params) ? $params['internal_only'] : true);
+    $w->ctx("external_only", array_key_exists('external_only', $params) ? $params['external_only'] : false);
 
     $w->ctx("c", $params['object']);
 }

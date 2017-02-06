@@ -482,6 +482,7 @@ class Task extends DbObject {
             $comm->obj_table = $this->getDbTableName();
             $comm->obj_id = $this->id;
 			$comm->is_system = 1;
+            $comm->is_internal = 1;
             $comm->comment = "Task Created";
             $comm->insert();
 
