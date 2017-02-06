@@ -40,6 +40,10 @@ class TaskGroup extends DbObject {
         return $this->getObjects("TaskGroupMember", ['task_group_id' => $this->id]);
     }
 
+    public function getTasks() {
+        return $this->getObjects("Task", ['task_group_id' => $this->id, 'is_deleted' => 0]);
+    }
+
     public function canList(\User $user) {
         return $this->getCanIView();
     }
@@ -133,13 +137,7 @@ class TaskGroup extends DbObject {
         $assign = $this->Auth->getUser($this->default_assignee_id);
         return $assign ? $assign->getFullName() : "";
     }
-
-    function getTasks($where = array()) {
-		$where["task_group_id"] = $this->id;
-		$where["is_deleted"] = 0;
-        return $this->getObjects("Task", $where);
-    }
-
+    
     public function getSelectOptionTitle() {
         return $this->title;
     }
