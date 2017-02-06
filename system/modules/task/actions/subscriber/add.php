@@ -25,7 +25,8 @@ function add_GET(Web $w) {
 					->setId('contact')
 					->setName('contact')
 					->setOptions($contacts, function($contact) {
-						return $contact->getFullName() . ' - ' . $contact->email;
+						$user = $contact->getUser();
+						return $contact->getFullName() . ' - ' . $contact->email . (empty($user->id) || $user->is_external == 1 ? ' (external)' : '');
 					})
 			]]
 		],
