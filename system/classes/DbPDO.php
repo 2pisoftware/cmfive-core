@@ -18,6 +18,8 @@ class DbPDO extends PDO {
     private static $trx_token = 0;
     
     private $config;
+
+    private $migration_mode = 0;
     
     public function __construct($config = array()) {
         // Set up our PDO class
@@ -55,12 +57,23 @@ class DbPDO extends PDO {
     public function getDriver() {
     	return $this->config['driver'];
     }
+
+    public function setMigrationMode($value) {
+        if ($value) {
+            $this->migration_mode = 1;
+        } else {
+            $this->migration_mode = 0;
+        }
+    }
     
 	public function getAvailableTables() {
-		DbPDO::$table_names = [];
-		foreach($this->query("show tables")->fetchAll(PDO::FETCH_NUM) as $table) {
-			DbPDO::$table_names[] = $table[0];
-		}
+        if ($this->migration_mode || empty(DbPDO::$table_names)) {
+            DbPDO::$table_names = [];
+            foreach($this->query("show tables")->fetchAll(PDO::FETCH_NUM) as $table) {
+                DbPDO::$table_names[] = $table[0];
+            }
+        }
+        return DbPDO::$table_names;
 	}
 	
     /**
@@ -71,11 +84,9 @@ class DbPDO extends PDO {
      * @return \DbPDO|null
      */
     public function get($table_name){
-        if (!in_array($table_name, DbPDO::$table_names)){
-			if (!$this->install($table_name)) {
-				trigger_error("Table $table_name does not exist in the database", E_USER_ERROR);
-				return null;
-			}
+        if (!in_array($table_name, $this->getAvailableTables())){
+			trigger_error("Table $table_name does not exist in the database", E_USER_ERROR);
+			return null;
         }  
         $this->query = $this->fpdo->from($table_name);
         return $this;

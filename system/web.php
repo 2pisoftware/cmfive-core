@@ -1899,11 +1899,15 @@ class Web {
     	return $paths;
     }
     
-	/**
+/**
 	 * Test whether a url contains the passed values for
 	 * module, submodule and action
 	 * 
 	 * Passing "*" to module, submodule or action allows any.
+	 * 
+	 * To skip a submodule, pass in "" as parameter
+	 * 
+	 * $action can be an array of actions
 	 * 
 	 * @param string $url
 	 * @param string $module 
@@ -1916,19 +1920,36 @@ class Web {
     	if (empty($p) || empty($module)) {
     		return false;
     	}
-    	if ($action != $p['action'] && $action != "*") {
-    		return false;
-    	}
-       	if ($submodule != $p['submodule'] && $submodule != "*") {
-    		return false;
-    	}
+    	// first check the module
         if ($module != $p['module'] && $module != "*") {
+    		return false;
+    	}
+    	
+    	// then check the submodule
+    	if ($submodule != $p['submodule'] && $submodule != "*") {
+    		return false;
+    	}
+    	 
+    	// now check actions
+    	if (empty($action)) {
+    		// if no action has been passed in for checking then assume anything is allowed
+    		return true;
+    	}
+   		if (is_array($action)) {
+   			// loop through all actions until we find one that matches
+   			$action_gate = false;
+   			foreach ($action as $ac) {
+   				if ($ac == $p['action']) {
+   					$action_gate = true;
+   				}
+   			}
+   			return $action_gate;
+   		} else if ($action != $p['action'] && $action != "*") {
     		return false;
     	}
     	return true;
     }
 }
-
 ///////////////////////////////////////////////////////////////////////////////
 //                                                                           //
 //                           Page Template System                            //

@@ -360,8 +360,10 @@ MIGRATION;
 	}
 	
 	public function installInitialMigration() {
-		$migration = "AdminInitialMigration";
-		$filename = "20151030134124-AdminInitialMigration.php";
+		$filenames = [
+			"AdminInitialMigration" => "20151030134124-AdminInitialMigration.php",
+			"AdminMigrationSeed" => "20170123091600-AdminMigrationSeed.php"
+		];
 		
 		$directory = SYSTEM_MODULE_DIRECTORY . DS . "admin" . DS . MIGRATION_DIRECTORY;
 		
@@ -370,38 +372,41 @@ MIGRATION;
 			'name' => Config::get('database.database')
 		]);
 
-		if (file_exists(ROOT_PATH . DS . $directory . DS . $filename)) {
-			include_once ROOT_PATH . DS . $directory . DS . $filename;
+		$count = 0;
+		foreach($filenames as $migration => $filename) {
+			if (file_exists(ROOT_PATH . DS . $directory . DS . $filename)) {
+				include_once ROOT_PATH . DS . $directory . DS . $filename;
 
-			// Class name must match filename after timestamp and hyphen 
-			if (class_exists($migration)) {
-				$this->w->Log->setLogger("MIGRATION")->info("Running migration: " . $migration);
+				// Class name must match filename after timestamp and hyphen 
+				if (class_exists($migration)) {
+					$this->w->Log->setLogger("MIGRATION")->info("Running migration: " . $migration);
 
-				// Run migration UP
-				$migration_class = new $migration(1);
-				$migration_class->setAdapter($mysql_adapter);
-				$migration_class->up();
-				
-				// Reload table list in DbPDO
-				$this->w->db->getAvailableTables();
-				
-				// Insert migration record into DB
-				$migration_object = new Migration($this->w);
-				$migration_object->path = $directory . DS . $filename;
-				$migration_object->classname = $migration;
-				$migration_object->module = "admin";
-				$migration_object->batch = 1;
-				$migration_object->dt_created = time();
-				$migration_object->creator_id = 1;
-				$migration_object->insert();
+					// Run migration UP
+					$migration_class = new $migration(1);
+					$migration_class->setAdapter($mysql_adapter);
+					$migration_class->up();
+					
+					// Reload table list in DbPDO
+					$this->w->db->getAvailableTables();
+					
+					// Insert migration record into DB
+					$migration_object = new Migration($this->w);
+					$migration_object->path = $directory . DS . $filename;
+					$migration_object->classname = $migration;
+					$migration_object->module = "admin";
+					$migration_object->batch = 1;
+					$migration_object->dt_created = time();
+					$migration_object->creator_id = 1;
+					$migration_object->insert();
 
-				$this->w->Log->setLogger("MIGRATION")->info("Initial migration has run");
-				
-				return true;
+					$this->w->Log->setLogger("MIGRATION")->info("Initial migration has run");
+					
+					$count++;
+				}
 			}
 		}
 		
-		return false;
+		return count($filenames) == $count;
 	}
 
 	public function getSeedMigrations() {
