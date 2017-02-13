@@ -103,6 +103,10 @@ class AuthService extends DbService {
         return $this->getObject("Contact", ['id' => $contact_id]);
     }
 
+    function getContactByEmail($email) {
+        return $this->getObject("Contact", ['email' => filter_var($email, FILTER_SANITIZE_EMAIL), 'is_deleted' => 0]);
+    }
+
     /**
      * Return the logged in user based on the session variable user_id.
      * 
