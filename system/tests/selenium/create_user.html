@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<link rel="selenium.base" href="http://devtest.isaac/auth/login" />
+<link rel="selenium.base" href="http://cosinedev.isaac/auth/login" />
 <title>create user</title>
 </head>
 <body>
@@ -12,23 +12,8 @@
 <tr><td rowspan="1" colspan="3">create user</td></tr>
 </thead><tbody>
 <tr>
-	<td>open</td>
-	<td>/auth/login</td>
-	<td></td>
-</tr>
-<tr>
-	<td>type</td>
-	<td>id=login</td>
-	<td>admin</td>
-</tr>
-<tr>
-	<td>type</td>
-	<td>id=password</td>
-	<td>admin</td>
-</tr>
-<tr>
-	<td>clickAndWait</td>
-	<td>//button[@type='submit']</td>
+	<td>pause</td>
+	<td>2000</td>
 	<td></td>
 </tr>
 <tr>
@@ -36,6 +21,7 @@
 	<td>link=List Users</td>
 	<td></td>
 </tr>
+<!--add new user-->
 <tr>
 	<td>click</td>
 	<td>css=button.button.tiny </td>
@@ -75,11 +61,6 @@
 	<td>type</td>
 	<td>id=lastname</td>
 	<td>user</td>
-</tr>
-<tr>
-	<td>select</td>
-	<td>id=title</td>
-	<td>The Honerable</td>
 </tr>
 <tr>
 	<td>type</td>
@@ -158,16 +139,6 @@
 </tr>
 <tr>
 	<td>click</td>
-	<td>id=check_calendar_editor</td>
-	<td></td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>id=check_calendar_user</td>
-	<td></td>
-</tr>
-<tr>
-	<td>click</td>
 	<td>id=check_crm_account_viewer</td>
 	<td></td>
 </tr>
@@ -232,38 +203,13 @@
 	<td></td>
 </tr>
 <tr>
-	<td>click</td>
-	<td>id=check_doctemplates_admin</td>
-	<td></td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>id=check_doctemplates_admin</td>
-	<td></td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>id=check_doctemplates_view</td>
-	<td></td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>id=check_hosting_user</td>
-	<td></td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>id=check_scrum_user</td>
-	<td></td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>id=check_staff_user</td>
-	<td></td>
-</tr>
-<tr>
 	<td>clickAndWait</td>
 	<td>//button[@type='submit']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>2000</td>
 	<td></td>
 </tr>
 <tr>
@@ -281,6 +227,7 @@
 	<td>link=Logout</td>
 	<td></td>
 </tr>
+<!--login with new user-->
 <tr>
 	<td>type</td>
 	<td>id=login</td>
@@ -304,6 +251,26 @@
 <tr>
 	<td>clickAndWait</td>
 	<td>link=Logout</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=login</td>
+	<td>admin</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=password</td>
+	<td>admin</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//button[@type='submit']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>2000</td>
 	<td></td>
 </tr>
 </tbody></table>
