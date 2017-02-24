@@ -1,4 +1,6 @@
-<div class="tag_list<?php if($limit > 0){ echo ' limited'; if(!empty($tags) && count($tags) > 1) echo ' show_num_limited'; } ?>" id="tag_list_<?php echo ($object_class ? $object_class : '') . ($object_id ? $object_id : ''); ?>" data-url="/tag/ajaxTag/<?php echo ($object_class ? "?class=" . $object_class : '') . ($object_id ? '&id=' . $object_id : ''); ?>">
+<div class="tag_list<?php if($limit > 0){ echo ' limited'; if(!empty($tags) && count($tags) > 1) echo ' show_num_limited'; } ?>"
+     id="tag_list_<?php echo ($object_class ? $object_class : '') . ($object_id ? $object_id : ''); ?>"
+     data-url="/tag/ajaxTag/<?php echo ($object_class ? "?class=" . $object_class : '') . ($object_id ? '&id=' . $object_id : ''); ?>">
 	<?php if (!empty($tags)) : ?>
 		<?php if (!empty($user) && $user->hasAnyRole(["tag_admin", "tag_user"])) : ?>
 		<span class="label radius secondary no_tags tag_selection hidetag"><span class="fi-price-tag">No tag</span></span>
