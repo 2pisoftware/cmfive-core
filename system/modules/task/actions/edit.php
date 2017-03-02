@@ -14,8 +14,10 @@ function edit_GET($w) {
         $w->error('You have attempted to view a deleted task.');
     }
     
-    // Register for timelog
-    $w->Timelog->registerTrackingObject($task);
+    // Register for timelog if not new task
+    if (!empty($task->id)) {
+        $w->Timelog->registerTrackingObject($task);
+    }
     
     if (!empty($task->id) && !$task->canView($w->Auth->user())) {
         $w->error("You do not have permission to edit this Task", "/task/tasklist");
