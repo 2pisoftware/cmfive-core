@@ -46,6 +46,21 @@
 				</label>
 			</div>
 		</div>
+        <?php if (!empty($form)) : ?>
+            <?php foreach($form as $form_section_heading => $form_array) : ?>
+                <?php foreach($form_array as $form_element_key => $form_elements) : ?>
+                    <?php foreach($form_elements as $form_element) : ?>
+                        <ul class="small-block-grid-1 medium-block-grid-1 section-body">
+                            <li>
+                                <label class="small-12 columns"><?php echo $form_element->label; ?>
+                                    <?php echo $form_element; ?>
+                                </label>
+                            </li>
+                        </ul>
+                    <?php endforeach; ?>
+                <?php endforeach; ?>
+            <?php endforeach; ?>
+        <?php endif; ?>
                 <br/>
 		<div class="row">
 			<div class="large-12 columns">
@@ -109,7 +124,16 @@
 					method: "POST",
 					data: {
 						'description': $("#timelog_description").val(),
-						'start_time': $("#start_time").val()
+						'start_time': $("#start_time").val(),
+                        <?php if (!empty($form)) {
+                            foreach($form as $form_section_heading => $form_array) {
+                                foreach($form_array as $form_element_key => $form_elements) {
+                                    foreach($form_elements as $form_element) {
+                                        echo "'" . $form_element->name . "': $('#" . $form_element->name . "').val(),";
+                                    }
+                                }
+                            }
+                        } ?>
 					},
                     success: function(data) {
                         var object_data = JSON.parse(data);
