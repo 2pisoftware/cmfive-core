@@ -125,6 +125,10 @@ class TicketEmailProcessor extends ProcessorType {
 
                 	$processor->w->Log->setLogger("HELPDESK")->info("External user created, id: " . $user->id);
                 	echo "External user created, id: " . $user->id . "<br/>";
+
+                } else {
+                	// Ensure a user object exists for the contact
+                	$processor->w->Auth->createExernalUserForContact($contact->id);
                 }
 
                 if (empty($contact->id) || empty($user->id)) {
@@ -177,11 +181,10 @@ class TicketEmailProcessor extends ProcessorType {
 					$support_template = $processor->w->Template->findTemplate("task", "accepted_ticket");
 					if (!empty($support_template->id)) {
 						// Send mail
-						if ($has_contact) {
+
+						if (!empty($contact->id)) {
 							// Render email template as Body field
-							$template_body = $processor->w->Template->render($support_template, array("task" => $task, "contact" => $crm_contact->getContact(), "email" => $email));
-						} else if (!empty($external_contact)) {
-							$template_body = $processor->w->Template->render($support_template, array("task" => $task, "contact" => $external_contact, "email" => $email));
+							$template_body = $processor->w->Template->render($support_template, array("task" => $task, "contact" => $contact, "email" => $email));
 						} else {
 							$template_body = $processor->w->Template->render($support_template, array("task" => $task, "email" => $email));
 						}
@@ -219,9 +222,13 @@ class TicketEmailProcessor extends ProcessorType {
 					}
 				}
 
-				if (!empty($contact) || !empty($user->id)) {
+				if (!empty($contact->id) || !empty($user->id)) {
 					if (empty($user->id)) {
 						$user = $contact->getUser();
+					}
+
+					if (empty($user->id)) {
+						$processor->w->Auth->createExternalUserForContact($contact->id);
 					}
 
 					if (!empty($user->id)) {
@@ -233,8 +240,14 @@ class TicketEmailProcessor extends ProcessorType {
 							$subscriber->task_id = $task->id;
 							$subscriber->user_id = $user->id;
 							$subscriber->insert();
+						} else {
+							echo "Found existing subscriber<br/>";
 						}
+					} else {
+						echo "Could not find user object for contact {$contact->id}<br/>";						
 					}
+				} else {
+					echo "Both contact and user could not be found<br/>";
 				}
 
 				// Move Attachments to Task

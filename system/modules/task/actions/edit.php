@@ -64,7 +64,7 @@ function edit_GET($w) {
 				]))->setLabel("Task Type <small>Required</small>")
                     ->setDisabled(!empty($p["id"]) ? "true" : null)
                     ->setOptions($tasktypes)
-                    ->setSelectedOption(!empty($p["id"]) ? $task->task_type : sizeof($tasktypes) === 1 ? $tasktypes[0] : null)
+                    ->setSelectedOption(!empty($p["id"]) ? $task->task_type : (is_array($tasktypes) && count($tasktypes) === 1 ? $tasktypes[0] : null))
                     ->setRequired('required')
             ),
             array(
