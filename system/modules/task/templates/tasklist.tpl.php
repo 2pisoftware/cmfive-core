@@ -6,7 +6,7 @@ if (!empty($tasks)) {
 	$table_data = array();
 
 	// Build table data
-	usort($tasks, array("TaskService", "sortTasksbyDue"));
+	// usort($tasks, array("TaskService", "sortTasksbyDue"));
 	foreach ($tasks as $task) {
 		if ($task->getCanIView()) {
 			$table_line = array();

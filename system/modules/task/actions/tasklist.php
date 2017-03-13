@@ -83,7 +83,7 @@ function tasklist_ALL(Web $w) {
     $query_object->where("task.is_deleted", array(0, null)); //->where("task_group.is_active", 1)->where("task_group.is_deleted", 0);
 
 	// Fetch dataset and get model objects for them
-    $tasks_result_set = $query_object->fetch_all();
+    $tasks_result_set = $query_object->orderBy('task.id DESC')->fetch_all();
     $task_objects = $w->Task->getObjectsFromRows("Task", $tasks_result_set);
     
 	// Filter in or out closed tasks based on given is_closed filter parameter
