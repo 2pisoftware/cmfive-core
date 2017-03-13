@@ -182,8 +182,8 @@ function edit_POST($w) {
     if (empty($task->dt_due)) {
         $task->dt_due = $w->Task->getNextMonth();
     }
-    
-    $task->insertOrUpdate(false);
+
+    // $task->insertOrUpdate(false);
     $task->rate = $task->rate == 0 ? NULL : $task->rate;
     $task->insertOrUpdate(true);
     
