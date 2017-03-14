@@ -80,9 +80,11 @@ function task_core_dbobject_after_insert_Task(Web $w, $object) {
 		$template_data['can_view_task'] = $user->is_external == 0;
 		
 		// Get additional details
-		$additional_details = $w->Task->getNotificationAdditionalDetails($object);
-		if (!empty($additional_details)) {
-			$template_data['footer'] .= $additional_details;
+		if ($user->is_external == 0) {
+			$additional_details = $w->Task->getNotificationAdditionalDetails($object);
+			if (!empty($additional_details)) {
+				$template_data['footer'] .= $additional_details;
+			}
 		}
 
 		if (!empty($object->assignee_id)) {
@@ -135,9 +137,11 @@ function task_core_dbobject_after_update_Task(Web $w, $object) {
 		$template_data['can_view_task'] = $user->is_external == 0;
 		
 		// Get additional details
-		$additional_details = $w->Task->getNotificationAdditionalDetails($object);
-		if (!empty($additional_details)) {
-			$template_data['footer'] .= $additional_details;
+		if ($user->is_external == 0) {
+			$additional_details = $w->Task->getNotificationAdditionalDetails($object);
+			if (!empty($additional_details)) {
+				$template_data['footer'] .= $additional_details;
+			}
 		}
 
 		if (!empty($object->assignee_id)) {
@@ -219,9 +223,11 @@ function task_attachment_attachment_added_task(Web $w, $object) {
 		$template_data['can_view_task'] = $user->is_external == 0;
 		
 		// Get additional details
-		$additional_details = $w->Task->getNotificationAdditionalDetails($task);
-		if (!empty($additional_details)) {
-			$template_data['footer'] .= $additional_details;
+		if ($user->is_external == 0) {
+			$additional_details = $w->Task->getNotificationAdditionalDetails($object);
+			if (!empty($additional_details)) {
+				$template_data['footer'] .= $additional_details;
+			}
 		}
 
 		if (!empty($task->assignee_id)) {
@@ -311,9 +317,11 @@ function task_comment_send_notification_recipients_task(Web $w, $params) {
 		$template_data['footer'] .= $w->partial("displaycomment", array("object" => $params['comment'], "displayOnly" => true, 'redirect' => '/inbox'), "admin");
 
 		// Get additional details
-		$additional_details = $w->Task->getNotificationAdditionalDetails($task);
-		if (!empty($additional_details)) {
-			$template_data['footer'] .= $additional_details;
+		if ($user->is_external == 0) {
+			$additional_details = $w->Task->getNotificationAdditionalDetails($object);
+			if (!empty($additional_details)) {
+				$template_data['footer'] .= $additional_details;
+			}
 		}
 
 		if (!empty($task->assignee_id)) {

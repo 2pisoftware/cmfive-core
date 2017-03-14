@@ -68,10 +68,6 @@ class NotificationService extends DbService {
 	 */
 	public function sendToAllWithCallback(string $subject, string $module, string $template_name, User $sending_user, Array $recipient_users, Callable $callback) {
 
-		if (!is_callable($callback)) {
-			return;
-		}
-
 		// Loop over users
 		foreach($recipient_users ? : [] as $recipient_user) {
 			$recipient_user = $this->resolveUser($recipient_user);
