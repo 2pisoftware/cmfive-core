@@ -115,30 +115,33 @@ class Html {
         $buffer .= "\tvar ctx = jQuery(\"#{$id}\").get(0).getContext(\"2d\");\n";
 
         // Create the chart
-        $buffer .= "var chart{$id} = new Chart(ctx).";
+        $buffer .= "var chart{$id} = new Chart(ctx, {type: '";
         switch (strtolower($type)) {
             case "line":
-                $buffer .= "Line";
+                $buffer .= "line";
                 break;
             case "bar":
-                $buffer .= "Bar";
+                $buffer .= "bar";
                 break;
             case "radar":
-                $buffer .= "Radar";
+                $buffer .= "radar";
                 break;
             case "polar":
-                $buffer .= "PolarArea";
+                $buffer .= "polarArea";
                 break;
             case "pie":
-                $buffer .= "Pie";
+                $buffer .= "pie";
                 break;
-            case "doughtnut":
-                $buffer .= "Doughtnut";
+            case "doughnut":
+                $buffer .= "doughnut";
+                break;
+            case "bubble":
+                $buffer .= "bubble";
                 break;
             default:
                 $buffer .= "Line";
         }
-        $buffer .= "(" . json_encode($data) . ", " . (!empty($options) ? json_encode($options) : "{}") . ");";
+        $buffer .= "', data: " . json_encode($data) . ", options: " . (!empty($options) ? json_encode($options) : "{}") . "});";
         $buffer .= "</script>";
         return $buffer;
     }
