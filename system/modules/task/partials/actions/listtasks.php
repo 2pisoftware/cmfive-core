@@ -41,7 +41,6 @@ function listtasks(\Web $w, $params = array()) {
         $dt_from = $w->request('dt_from');
         $dt_to = $w->request('dt_to');
     }
-    
     // Make the query manually
     $query_object = $w->db->get("task")->leftJoin("task_group");
     
@@ -85,7 +84,6 @@ function listtasks(\Web $w, $params = array()) {
     // Fetch dataset and get model objects for them
     $tasks_result_set = $query_object->fetch_all();
     $task_objects = $w->Task->getObjectsFromRows("Task", $tasks_result_set);
-    
     $w->ctx("tasks", $task_objects);
     
     // Build the filter and its data
@@ -115,48 +113,53 @@ function listtasks(\Web $w, $params = array()) {
     
     // tab: notifications
     // list groups and notification based on my role and permissions
-    $line = array(array("Task Group", "Your Role", "Creator", "Assignee", "All Others", ""));
-    $user_taskgroup_members = $w->Task->getMemberGroups($w->Auth->user()->id);
-    if ($user_taskgroup_members) {
-        usort($user_taskgroup_members, array("TaskService", "sortbyRole"));
+    // $line = array(array("Task Group", "Your Role", "Creator", "Assignee", "All Others", ""));
+    // $user_taskgroup_members = $w->Task->getMemberGroups($w->Auth->user()->id);
+    // if ($user_taskgroup_members) {
+    //     usort($user_taskgroup_members, array("TaskService", "sortbyRole"));
 
-        foreach ($user_taskgroup_members as $member) {
-            $taskgroup = $member->getTaskGroup();
-            $value_array = array();
-            $notify = $w->Task->getTaskGroupUserNotify($w->Auth->user()->id, $member->task_group_id);
-            if ($notify) {
-                foreach ($notify as $n) {
-                    $value = ($n->value == "0") ? "No" : "Yes";
-                    $value_array[$n->role][$n->type] = $value;
-                }
-            } else {
-                $notify = $w->Task->getTaskGroupNotify($member->task_group_id);
-                if ($notify) {
-                    foreach ($notify as $n) {
-                        $value = ($n->value == "0") ? "No" : "Yes";
-                        $value_array[$n->role][$n->type] = $value;
-                    }
-                }
-            }
+    //     $w->profileCurrentTime(__FILE__ , __LINE__);
+    //     foreach ($user_taskgroup_members as $member) {
+    //         $taskgroup = $member->getTaskGroup();
+    //         $value_array = array();
+    //         $notify = $w->Task->getTaskGroupUserNotify($w->Auth->user()->id, $member->task_group_id);
+    //         $w->profileCurrentTime(__FILE__ , __LINE__);
+    //         if ($notify) {
+    //             foreach ($notify as $n) {
+    //                 $value = ($n->value == "0") ? "No" : "Yes";
+    //                 $value_array[$n->role][$n->type] = $value;
+    //             }
+    //         } else {
+    //             $notify = $w->Task->getTaskGroupNotify($member->task_group_id);
+    //             $w->profileCurrentTime(__FILE__ , __LINE__);
+    //             if ($notify) {
+    //                 foreach ($notify as $n) {
+    //                     $value = ($n->value == "0") ? "No" : "Yes";
+    //                     $value_array[$n->role][$n->type] = $value;
+    //                 }
+    //             }
+    //         }
 
-            if ($taskgroup->getCanIView()) {
-                $title = $w->Task->getTaskGroupTitleById($member->task_group_id);
-                $role = strtolower($member->role);
+    //         if ($taskgroup->getCanIView()) {
+    //             $w->profileCurrentTime(__FILE__ , __LINE__);
+    //             $title = $w->Task->getTaskGroupTitleById($member->task_group_id);
+    //             $role = strtolower($member->role);
+    //             $w->profileCurrentTime(__FILE__ , __LINE__);
+    //             $line[] = array(
+    //                 $title,
+    //                 ucfirst($role),
+    //                 !empty($value_array[$role]["creator"]) ? $value_array[$role]["creator"] : null,
+    //                 !empty($value_array[$role]["assignee"]) ? $value_array[$role]["assignee"] : null,
+    //                 !empty($value_array[$role]["other"]) ? $value_array[$role]["other"] : null,
+    //                 \Html::box(WEBROOT . "/task/updateusergroupnotify/" . $member->task_group_id, " Edit ", true)
+    //             );
+    //         }
+    //         unset($value_array);
+    //     }
+    //     $w->profileCurrentTime(__FILE__ , __LINE__);
 
-                $line[] = array(
-                    $title,
-                    ucfirst($role),
-                    !empty($value_array[$role]["creator"]) ? $value_array[$role]["creator"] : null,
-                    !empty($value_array[$role]["assignee"]) ? $value_array[$role]["assignee"] : null,
-                    !empty($value_array[$role]["other"]) ? $value_array[$role]["other"] : null,
-                    \Html::box(WEBROOT . "/task/updateusergroupnotify/" . $member->task_group_id, " Edit ", true)
-                );
-            }
-            unset($value_array);
-        }
-        
-
-        // display list
-        $w->ctx("notify", \Html::table($line, null, "tablesorter", true));
-    }
+    //     // display list
+    //     $w->ctx("notify", \Html::table($line, null, "tablesorter", true));
+    // }
+    
 }
