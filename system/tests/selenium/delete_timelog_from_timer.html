@@ -3,57 +3,37 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<link rel="selenium.base" href="http://devtest.isaac/auth/login" />
-<title>delete taskgroup</title>
+<link rel="selenium.base" href="http://cosinedev.isaac/auth/login" />
+<title>delete timelog from timer</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
-<tr><td rowspan="1" colspan="3">delete taskgroup</td></tr>
+<tr><td rowspan="1" colspan="3">delete timelog from timer</td></tr>
 </thead><tbody>
 <tr>
-	<td>open</td>
-	<td>/auth/login</td>
-	<td></td>
-</tr>
-<tr>
-	<td>type</td>
-	<td>id=login</td>
-	<td>admin</td>
-</tr>
-<tr>
-	<td>type</td>
-	<td>id=password</td>
-	<td>admin</td>
-</tr>
-<tr>
 	<td>clickAndWait</td>
-	<td>//button[@type='submit']</td>
+	<td>link=Task List</td>
 	<td></td>
 </tr>
 <tr>
 	<td>clickAndWait</td>
-	<td>link=Task Groups</td>
-	<td></td>
-</tr>
-<tr>
-	<td>clickAndWait</td>
-	<td>link=testTaskgroup</td>
+	<td>link=testTask</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>//div[@id='members']/button[4]</td>
+	<td>link=Time Log 1</td>
 	<td></td>
 </tr>
 <tr>
-	<td>pause</td>
-	<td>2000</td>
+	<td>click</td>
+	<td>//td[7]/button[2]</td>
 	<td></td>
 </tr>
 <tr>
-	<td>clickAndWait</td>
-	<td>xpath=(//button[@type='submit'])[2]</td>
+	<td>assertConfirmation</td>
+	<td>Are you sure you want to delete this timelog?</td>
 	<td></td>
 </tr>
 <tr>
@@ -64,12 +44,7 @@
 <tr>
 	<td>assertText</td>
 	<td>css=div.alert-box.info</td>
-	<td>Task Group testTaskgroup deleted. ×</td>
-</tr>
-<tr>
-	<td>clickAndWait</td>
-	<td>link=Logout</td>
-	<td></td>
+	<td>Timelog deleted ×</td>
 </tr>
 </tbody></table>
 </body>

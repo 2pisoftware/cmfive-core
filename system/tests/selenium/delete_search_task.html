@@ -3,47 +3,42 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<link rel="selenium.base" href="http://devtest.isaac/auth/login" />
-<title>delete report</title>
+<link rel="selenium.base" href="http://cosinedev.isaac/auth/login" />
+<title>delete_search_task</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
-<tr><td rowspan="1" colspan="3">delete report</td></tr>
+<tr><td rowspan="1" colspan="3">delete_search_task</td></tr>
 </thead><tbody>
 <tr>
 	<td>open</td>
-	<td>/auth/login</td>
-	<td></td>
-</tr>
-<tr>
-	<td>type</td>
-	<td>id=login</td>
-	<td>admin</td>
-</tr>
-<tr>
-	<td>type</td>
-	<td>id=password</td>
-	<td>admin</td>
-</tr>
-<tr>
-	<td>clickAndWait</td>
-	<td>//button[@type='submit']</td>
+	<td>/task/edit/4#details</td>
 	<td></td>
 </tr>
 <tr>
 	<td>clickAndWait</td>
-	<td>link=Report Dashboard</td>
+	<td>link=Task</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Task List</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=search</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>//button[2]</td>
+	<td>//div[2]/div/div/div/button</td>
 	<td></td>
 </tr>
 <tr>
 	<td>assertConfirmation</td>
-	<td>Are you sure you want to delete this Report?</td>
+	<td>Are you sure you want to delete this task?</td>
 	<td></td>
 </tr>
 <tr>
@@ -54,14 +49,8 @@
 <tr>
 	<td>assertText</td>
 	<td>css=div.alert-box.info</td>
-	<td>Report deleted ×</td>
+	<td>Task: search has been deleted. ×</td>
 </tr>
-<tr>
-	<td>clickAndWait</td>
-	<td>link=Logout</td>
-	<td></td>
-</tr>
-
 </tbody></table>
 </body>
 </html>

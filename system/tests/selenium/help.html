@@ -3,47 +3,22 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<link rel="selenium.base" href="http://devtest.isaac/auth/login" />
-<title>create timelog from timer</title>
+<link rel="selenium.base" href="http://cosinedev.isaac/auth/login" />
+<title>help</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
-<tr><td rowspan="1" colspan="3">create timelog from timer</td></tr>
+<tr><td rowspan="1" colspan="3">help</td></tr>
 </thead><tbody>
 <tr>
-	<td>open</td>
-	<td>/auth/login</td>
-	<td></td>
-</tr>
-<tr>
-	<td>type</td>
-	<td>id=login</td>
-	<td>admin</td>
-</tr>
-<tr>
-	<td>type</td>
-	<td>id=password</td>
-	<td>admin</td>
-</tr>
-<tr>
 	<td>clickAndWait</td>
-	<td>//button[@type='submit']</td>
-	<td></td>
-</tr>
-<tr>
-	<td>clickAndWait</td>
-	<td>link=Task List</td>
-	<td></td>
-</tr>
-<tr>
-	<td>clickAndWait</td>
-	<td>link=testTask</td>
+	<td>link=Admin</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>link=Start Timer</td>
+	<td>css=span.fi-q.show-for-medium-up</td>
 	<td></td>
 </tr>
 <tr>
@@ -52,38 +27,8 @@
 	<td></td>
 </tr>
 <tr>
-	<td>type</td>
-	<td>id=timelog_description</td>
-	<td>descriptionTimerOne</td>
-</tr>
-<tr>
-	<td>type</td>
-	<td>id=start_time</td>
-	<td>1:00am</td>
-</tr>
-<tr>
 	<td>click</td>
-	<td>//div[@id='timerModal']/div/div[5]/div/button</td>
-	<td></td>
-</tr>
-<tr>
-	<td>pause</td>
-	<td>200</td>
-	<td></td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>id=active_log_time</td>
-	<td></td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>link=Time Log 0</td>
-	<td></td>
-</tr>
-<tr>
-	<td>refreshAndWait</td>
-	<td></td>
+	<td>xpath=(//a[contains(text(),'Lookup')])[2]</td>
 	<td></td>
 </tr>
 <tr>
@@ -92,15 +37,82 @@
 	<td></td>
 </tr>
 <tr>
-	<td>assertText</td>
-	<td>css=pre.break-pre</td>
-	<td>descriptionTimerOne</td>
-</tr>
-<tr>
-	<td>clickAndWait</td>
-	<td>link=Logout</td>
+	<td>click</td>
+	<td>link=user edit</td>
 	<td></td>
 </tr>
+<tr>
+	<td>pause</td>
+	<td>2000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>xpath=(//a[contains(text(),'Home')])[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>2000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Administration Overview</td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>2000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>xpath=(//a[contains(text(),'Home')])[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>2000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Channels Contents</td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>2000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Contents</td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>2000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Help on Help</td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>2000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=×</td>
+	<td></td>
+</tr>
+
+
 </tbody></table>
 </body>
 </html>
