@@ -20,54 +20,56 @@
                     </h3>
                 </div>
             <?php endif; ?>
-                <div class="row">
-			<div class="large-12 columns">
-				<h2>Start timer</h2>
-			</div>
-		</div>
-                
-		<div class="row">
-			<div class="large-12 columns">
-				<label>Enter Description
-					<?php echo (new \Html\Form\Textarea())->setId("timelog_description")->setName("timelog_description")->setRows(8); ?>
-				</label>
-			</div>
-		</div>
-		<br/>
-                <div class="row">
-			<div class="large-12 columns">
-				<label>Enter Start Time (Optional - Defaults to 'now')
-					<?php echo(new \Html\Form\InputField([
-                            "id|name"		=> "start_time",
-                            "value"			=> !empty($active_log) ? $active_log->getTimeStart() : null,
-                            "pattern"		=> "^(0?[0-9]|1[0-9]|2[0-3]):[0-5][0-9](\s+)?(AM|PM|am|pm)?$",
-                            "placeholder"	=> "12hr format: 11:30pm or 24hr format: 23:30"
-                    ])); ?>
-				</label>
-			</div>
-		</div>
-        <?php if (!empty($form)) : ?>
-            <?php foreach($form as $form_section_heading => $form_array) : ?>
-                <?php foreach($form_array as $form_element_key => $form_elements) : ?>
-                    <?php foreach($form_elements as $form_element) : ?>
-                        <ul class="small-block-grid-1 medium-block-grid-1 section-body">
-                            <li>
-                                <label class="small-12 columns"><?php echo $form_element->label; ?>
-                                    <?php echo $form_element; ?>
-                                </label>
-                            </li>
-                        </ul>
+            <div class="row">
+    			<div class="large-12 columns">
+    				<h2>Start timer</h2>
+    			</div>
+    		</div>
+                    
+    		<div class="row">
+    			<div class="large-12 columns">
+    				<label>Enter Description
+    					<?php echo (new \Html\Form\Textarea())->setId("timelog_description")->setName("timelog_description")->setRows(8); ?>
+    				</label>
+    			</div>
+    		</div>
+    		<br/>
+            <div class="row">
+    			<div class="large-12 columns">
+    				<label>Enter Start Time (Optional - Defaults to 'now')
+    					<?php echo(new \Html\Form\InputField([
+                                "id|name"		=> "start_time",
+                                "value"			=> !empty($active_log) ? $active_log->getTimeStart() : null,
+                                "pattern"		=> "^(0?[0-9]|1[0-9]|2[0-3]):[0-5][0-9](\s+)?(AM|PM|am|pm)?$",
+                                "placeholder"	=> "12hr format: 11:30pm or 24hr format: 23:30"
+                        ])); ?>
+    				</label>
+    			</div>
+    		</div>
+
+            <?php if (!empty($form)) : ?>
+                <?php foreach($form as $form_section_heading => $form_array) : ?>
+                    <?php foreach($form_array as $form_element_key => $form_elements) : ?>
+                        <?php foreach($form_elements as $form_element) : ?>
+                            <br/>
+                            <div class="row">
+                                <div class="large-12 columns">
+                                    <label><?php echo $form_element->label; ?>
+                                        <?php echo $form_element; ?>
+                                    </label>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
                     <?php endforeach; ?>
                 <?php endforeach; ?>
-            <?php endforeach; ?>
-        <?php endif; ?>
-                <br/>
-		<div class="row">
-			<div class="large-12 columns">
-                <button class="button" onclick="saveTimer()">Save</button>
-				<button class="button secondary right" type="button" onclick="$('#timerModal').foundation('reveal', 'close');">Close</button>
-			</div>
-		</div>
+            <?php endif; ?>
+            <br/>
+    		<div class="row">
+    			<div class="large-12 columns">
+                    <button class="button" onclick="saveTimer()">Save</button>
+    				<button class="button secondary right" type="button" onclick="$('#timerModal').foundation('reveal', 'close');">Close</button>
+    			</div>
+    		</div>
         </div>
     </div>
 	
