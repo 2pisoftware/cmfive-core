@@ -163,7 +163,7 @@ function changeTab(hash) {
             location.hash = '#' + hash;
         }
         
-        $(".tab-body > div#" + hash).show().addClass("active");
+        $(".tab-body > div[id='" + hash + "']").show().addClass("active");
         $('.tab-head > a[href$="' + hash + '"]').addClass("active");
         
         // Update codemirror instances

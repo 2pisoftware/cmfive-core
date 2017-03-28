@@ -372,6 +372,11 @@ class Web {
         // Initialise the logger (needs to log "info" to include the request data, see LogService __call function)
         $this->Log->info("info");
         
+        // Reset the session when a user is not logged in. This will ensure the CSRF tokens are always "fresh"
+        if ($_SERVER['REQUEST_METHOD'] == "GET" && empty($this->Auth->loggedIn())) {
+            $_SESSION = [];
+        }
+
         // Generate CSRF tokens and store them in the $_SESSION
         if (Config::get('system.csrf.enabled') === true) {
             CSRF::getTokenID();
