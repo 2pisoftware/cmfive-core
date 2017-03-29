@@ -113,9 +113,9 @@ function task_core_dbobject_after_insert_Task(Web $w, $object) {
 				}
 
 				// Add message to inbox (needed?) but dont send an email
-                                if (Config::get('inbox.active') === true) {
-                                    $w->Inbox->addMessage($subject, $message, $user, null, null, false);
-                                }
+                if (Config::get('inbox.active') === true) {
+                    $w->Inbox->addMessage($subject, $message, $user, null, null, false);
+                }
 			}
 		} else {
 			// Fallback to old style
@@ -144,9 +144,9 @@ function task_core_dbobject_after_insert_Task(Web $w, $object) {
 				}
 				
 				// Add message to inbox (needed?) but dont send an email
-                                if (Config::get('inbox.active') === true) {
-                                    $w->Inbox->addMessage($subject, $message, $user, null, null, false);
-                                }
+                if (Config::get('inbox.active') === true) {
+                    $w->Inbox->addMessage($subject, $message, $user, null, null, false);
+                }
 			}
 			
 			// Add message to inbox (needed?) but dont send an email
@@ -351,7 +351,9 @@ function task_core_dbobject_after_insert_TaskTime(Web $w, $object) {
             $message .= $task->toLink(null, null, $user_object);
             $message .= "<br/><br/><b>Note</b>: Go to " . Html::a(WEBROOT . "/task/tasklist#notifications", "Task > Task List > Notifications") . ", to edit the types of notifications you will receive.";
 
-            $w->Inbox->addMessage($subject, $message, $user);
+            if (Config::get('inbox.active') == true) {
+	            $w->Inbox->addMessage($subject, $message, $user);
+	        }
         }
     }
 }
@@ -385,7 +387,9 @@ function task_attachment_attachment_added_task(Web $w, $object) {
             $message .= $task->toLink(null, null, $user_object);
             $message .= "<br/><br/><b>Note</b>: Go to " . Html::a(WEBROOT . "/task/tasklist#notifications", "Task > Task List > Notifications") . ", to edit the types of notifications you will receive.";
 
-            $w->Inbox->addMessage($subject, $message, $user);
+            if (Config::get('inbox.active') == true) {
+	            $w->Inbox->addMessage($subject, $message, $user);
+	        }
         }
     }
 }
