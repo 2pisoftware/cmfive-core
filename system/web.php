@@ -894,7 +894,7 @@ class Web {
         			'eps' => 'application/postscript',
         			'ps' => 'application/postscript',
         			'doc' => 'application/msword',
-        			'docx' => 'application/msword',
+        			'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
         			'rtf' => 'application/rtf',
         			'xls' => 'application/vnd.ms-excel',
         			'xlsx' => 'application/vnd.ms-excel',

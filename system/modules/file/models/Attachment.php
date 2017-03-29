@@ -123,7 +123,11 @@ class Attachment extends DbObject {
 
 	public function getDocumentEmbedHtml($width = '1024', $height = '724') {
 		if ($this->isDocument() && $this->adapter == 'local') {
-			return Html::embedDocument($this->getViewUrl(), $width, $height);
+			if (stripos($this->filename, '.docx') || stripos($this->filename, '.doc')) {
+                return Html::embedDocument($this->w->localUrl() . 'uploads/attachments/' . $this->parent_table . '/' . date('Y/m/d',$this->dt_created) . '/' . $this->parent_id . '/' . $this->filename, $width, $height);
+            } else {
+                return Html::embedDocument($this->getViewUrl(), $width, $height);
+            }
 		}
 		return Html::a($this->getViewUrl(), $this->title);
 	}
@@ -135,7 +139,7 @@ class Attachment extends DbObject {
 	 */
 	public function isDocument() {
 		$document_mimetypes = ['application/pdf', 'application/msword', 'application/msword', 'application/rtf', 'application/vnd.ms-excel', 'application/vnd.ms-excel',
-			'application/vnd.ms-powerpoint', 'application/vnd.ms-powerpoint', 'application/vnd.oasis.opendocument.text', 'application/vnd.oasis.opendocument.spreadsheet'];
+			'application/vnd.ms-powerpoint', 'application/vnd.ms-powerpoint', 'application/vnd.oasis.opendocument.text', 'application/vnd.oasis.opendocument.spreadsheet','application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
 		return in_array($this->mimetype, $document_mimetypes);
 	}
 

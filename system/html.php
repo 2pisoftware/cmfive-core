@@ -1441,6 +1441,11 @@ UPLOAD;
 	 * @return string
 	 */
 	public static function embedDocument($link, $width = '1024', $height = '724', $zoom = 'page-width') {
+        //if .docx use google's doc viewer
+		if (stripos($link, '.docx') || stripos($link, '.doc')) {
+            return '<iframe src="http://docs.google.com/gview?url=' . $link . '&embedded=true"  width=' . $width . ' height=' . $height . ' allowfullscreen webkitallowfullscreen></iframe>';
+        }
+        
 		return "<iframe src='/system/templates/js/viewerjs-0.5.8/ViewerJS/index.html?zoom={$zoom}#../../../../..{$link}' width='{$width}' height='{$height}' allowfullscreen webkitallowfullscreen></iframe>";
 	}
 }

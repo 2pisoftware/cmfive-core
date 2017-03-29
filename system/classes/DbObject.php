@@ -518,7 +518,7 @@ class DbObject extends DbService {
             // set some default attributes
             if (!property_exists($this, "_modifiable")) { // $this->_modifiable) {
                 // for backwards compatibility
-                if (in_array("dt_created", $columns)) {
+                if (in_array("dt_created", $columns) && empty($this->dt_created)) {
                     $this->dt_created = time();
 				}
 
