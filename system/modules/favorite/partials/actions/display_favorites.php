@@ -12,7 +12,7 @@ function display_favorites(\Web $w) {
 			}
 
 			$object = $favorite->getLinkedObject();
-			if (!empty($object))  {
+			if (!empty($object) && !$object->is_deleted)  {
 				$categorisedFavorites[$favorite->object_class][] = $object;
 			}
 		}
