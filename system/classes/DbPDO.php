@@ -140,7 +140,7 @@ class DbPDO extends PDO {
      */
     public function count(){
         if ($this->query !== null){
-            $result = $this->select("count(*)")->fetch_element("count(*)");
+            $result = $this->select()->select("count(*)")->fetch_element("count(*)");
             return intval($result);
         }
     }
