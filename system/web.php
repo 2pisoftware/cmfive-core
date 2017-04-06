@@ -374,7 +374,12 @@ class Web {
         
         // Reset the session when a user is not logged in. This will ensure the CSRF tokens are always "fresh"
         if ($_SERVER['REQUEST_METHOD'] == "GET" && empty($this->Auth->loggedIn())) {
+            //preserve error messages
+            $error_message = !empty($_SESSION['error']) ? $_SESSION['error'] : null;
             $_SESSION = [];
+            if (!empty($error_message)) {
+                $_SESSION['error'] = $error_message;
+            }
         }
 
         // Generate CSRF tokens and store them in the $_SESSION
