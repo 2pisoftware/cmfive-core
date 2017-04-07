@@ -364,22 +364,17 @@ class Web {
         // start the session
         // $sess = new SessionManager($this);
         try {
-			session_name(SESSION_NAME);
-			session_start();
-		} catch (Exception  $e) {
-			$this->Log->info("Error starting session ".$e->getMessage());
-		}
+            session_name(SESSION_NAME);
+            session_start();
+        } catch (Exception  $e) {
+            $this->Log->info("Error starting session ".$e->getMessage());
+        }
         // Initialise the logger (needs to log "info" to include the request data, see LogService __call function)
         $this->Log->info("info");
         
         // Reset the session when a user is not logged in. This will ensure the CSRF tokens are always "fresh"
         if ($_SERVER['REQUEST_METHOD'] == "GET" && empty($this->Auth->loggedIn())) {
-            //preserve error messages
-            $error_message = !empty($_SESSION['error']) ? $_SESSION['error'] : null;
-            $_SESSION = [];
-            if (!empty($error_message)) {
-                $_SESSION['error'] = $error_message;
-            }
+            CSRF::regenerate();
         }
 
         // Generate CSRF tokens and store them in the $_SESSION

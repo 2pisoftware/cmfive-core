@@ -15,16 +15,16 @@ class CSRF {
     
  
     static function getTokenIdName() {
-		return self::$token_id_name;
-	}
+        return self::$token_id_name;
+    }
     
     static function getTokenValueName() {
-		return self::$token_value_name;
-	}
+        return self::$token_value_name;
+    }
 	
-	static function getTokenHistoryName() {
-		return self::$token_history_name;
-	}
+    static function getTokenHistoryName() {
+        return self::$token_history_name;
+    }
     
     /**
      * Generates new CSRF token_id and store it in the $_SESSION.
