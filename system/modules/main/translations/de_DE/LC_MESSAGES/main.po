@@ -5,11 +5,11 @@ msgstr ""
 "PO-Revision-Date: \n"
 "Last-Translator: Steve Ryan <steve@2pisoftware.com>\n"
 "Language-Team: \n"
-"Language: de_AT\n"
+"Language: de-AT\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.8.7\n"
+"X-Generator: Poedit 2.0\n"
 "X-Poedit-KeywordsList: __:1;__:1,2c;_e:1;_e:1,2c;_n:1,2;_n:1,2,4c;_en:1,2;"
 "_en:1,2,4c\n"
 "X-Poedit-Basepath: ../../../../../..\n"
@@ -17,18 +17,6 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-SearchPath-0: system/modules\n"
 "X-Poedit-SearchPath-1: modules\n"
-
-#: modules/frontend/assets/js/vendor/jquery.js:14
-msgid "<iframe frameborder='0' width='0' height='0'/>"
-msgstr "<Iframe frameborder = \"0\" width = \"0\" height = '0' />"
-
-#: modules/frontend/assets/js/vendor/jquery.js:26
-msgid "<script>"
-msgstr "<Script>"
-
-#: modules/frontend/assets/js/vendor/jquery.js:26
-msgid "<div>"
-msgstr "<Div>"
 
 #: modules/example/actions/delete.php:25
 msgid "Object Deleted"
@@ -187,7 +175,7 @@ msgstr "Aktionen"
 #: system/modules/task/task.group.actions.php:22
 #: system/modules/task/task.group.actions.php:133
 msgid "Yes"
-msgstr "ja"
+msgstr "Ja"
 
 #: modules/example/actions/index.php:17
 #: system/modules/admin/actions/users.php:16

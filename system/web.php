@@ -215,28 +215,27 @@ class Web {
     }
     
     function initLocale() { 
-		$user=$this->Auth->user();
+		$user = $this->Auth->user();
+		
 		// default language
-		$language=Config::get('system.language');
-		// per user language s
+		$language = Config::get('system.language');
+		
+		// Get language set for user
 		if (!empty($user)) {
-			$lang=$user->language;
-			if (!empty($lang))  {
-				$language=$lang;
-			}
+			$language = !empty($user->language) ? $user->language: $language;
 		}
-		$this->Log->info('init locale '.$language);
 		
+		$this->Log->info('Using locale' . (!empty($user->id) ? ' for user ' . $user->getFullName() : '') . ': ' . $language);
 		
-		$results = setlocale(LC_ALL, $language);
+		$results = setlocale(LC_ALL, ''); // $language);
 		if (!$results) {
 			$this->Log->info('setlocale failed: locale function is not available on this platform, or the given locale ('.$language.') does not exist in this environment');
 		}
-		$langParts=explode(".",$language);
-		$this->currentLocale=$langParts[0];
+		
+		
+		$langParts = explode(".", $language);
+		$this->currentLocale = $langParts[0];
 	}
-    
-  
 	
 	/**
 	 * Set the default translation domain (module name)
@@ -244,40 +243,36 @@ class Web {
 	 */
 	function setTranslationDomain($domain) {
 		//if (!in_array($domain,$this->_languageModulesLoaded)) {
-			$this->Log->info('init translations for '.$domain);
-			$path=ROOT_PATH."/".$this->getModuleDir($domain)."translations";
-			$translationFile=$path."/".$this->currentLocale."/LC_MESSAGES/".$domain.".mo";
-			$this->Log->info('translations file is '.$translationFile);
-			if (file_exists($translationFile)) {
-				$this->Log->info('translations file exists for '.$domain);
-				$results=bindtextdomain($domain, $path);
+
+		$path = ROOT_PATH . "/" . $this->getModuleDir($domain) . "translations";
+		$translationFile = $path . "/" . $this->currentLocale . "/LC_MESSAGES/" . $domain . ".mo";
+
+		// Find and load translation file for module
+		if (file_exists($translationFile)) {
+			$results = bindtextdomain($domain, $path);
+			if (!$results) {
+				$domain = 'main';
+				$path = ROOT_PATH . "/" . $this->getModuleDir($domain) . "translations";
+				$results = bindtextdomain($domain, $path);
 				if (!$results) {
-					$this->Log->info('setlocale bindtextdomain failed try again with main domain: '.$domain.' : '.$path);
-					$domain='main';
-					$path=ROOT_PATH."/".$this->getModuleDir($domain)."translations";
-					$results=bindtextdomain($domain, $path);
-					if (!$results) {
-						//$this->Log->info('setlocale bindtextdomain failed on retry with main');
-						throw new Exception('setlocale bindtextdomain failed on retry with main');
-					}
+					throw new Exception('setlocale bindtextdomain failed on retry with main');
 				}
-			} else {
-				$this->Log->info('no translations file exists for '.$domain." using main instead");
-				$domain='main';
-				$path=ROOT_PATH."/".$this->getModuleDir($domain)."translations";
-				$translationFile=$path."/".$this->currentLocale."/LC_MESSAGES/".$domain.".mo";
-				$results=bindtextdomain($domain, $path);
-					if (!$results) {
-						//$this->Log->info('setlocale bindtextdomain failed on retry with main');
-						throw new Exception('setlocale bindtextdomain failed on retry with main');
-					}
 			}
+		} else {
+			$domain = 'main';
+			$path = ROOT_PATH . "/" . $this->getModuleDir($domain) . "translations";
+			$translationFile = $path . "/" . $this->currentLocale . "/LC_MESSAGES/" . $domain . ".mo";
+			$results = bindtextdomain($domain, $path);
+			if (!$results) {
+				throw new Exception('setlocale bindtextdomain failed on retry with main');
+			}
+		}
 		//}
-		bind_textdomain_codeset($domain, 'UTF-8');	
+		bind_textdomain_codeset($domain, 'UTF-8');
 		textdomain($domain);
 	}
 
-    /**
+	/**
      * Enqueue script adds the script entry to the Webs _script var which maintains
      * already registered scripts and helps prevent multiple additions of the same
      * library
@@ -505,8 +500,8 @@ class Web {
         }
         // configure translations lookup for this module
         $this->initLocale();
-        $this->setTranslationDomain('admin');
-        $this->setTranslationDomain('main');
+//        $this->setTranslationDomain('admin');
+//        $this->setTranslationDomain('main');
         $this->setTranslationDomain($this->currentModule());
         
         if (!$this->_action) {
@@ -1308,7 +1303,7 @@ class Web {
         
         // set translations to partial module
         $oldModule=$this->currentModule();
-		if ($oldModule!=$module)  {
+		if ($oldModule != $module)  {
 			$this->setTranslationDomain($module);
 		}
 		
@@ -1393,7 +1388,7 @@ class Web {
         $this->_context = $oldctx;
 		
 		// restore translations module
-		if ($oldModule!=$module)  {
+		if ($oldModule != $module)  {
 			$this->setTranslationDomain($oldModule);
 		}
 		
@@ -1415,7 +1410,7 @@ class Web {
 		
 		// set translations to hook module
         $oldModule=$this->currentModule();
-		if ($oldModule!=$module)  {
+		if ($oldModule != $module)  {
 			$this->setTranslationDomain($module);
 		}
 		
@@ -1474,7 +1469,7 @@ class Web {
         }
         
 		// restore translations module
-		if ($oldModule!=$module)  {
+		if ($oldModule != $module)  {
 			$this->setTranslationDomain($oldModule);
 		}
 		

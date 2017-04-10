@@ -40,7 +40,7 @@ if ($messageid){
 	);
 	print Html::form($lines,WEBROOT."/inbox/send/".$messageid,"POST",__("Send"));
 
-	if ($message_arr){
+	if (!empty($message_arr)){
 		foreach($message_arr as $mes){
 			print_r($mes);
 		}

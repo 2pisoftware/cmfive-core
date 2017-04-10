@@ -29,7 +29,6 @@ Config::set('system.allow_action', array(
  */
 Config::set('system.password_salt', md5('override this in your project config'));
 
-
 /**
  * Syntax for csrf config
  */
