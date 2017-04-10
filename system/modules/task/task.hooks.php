@@ -59,8 +59,8 @@ function task_core_dbobject_after_insert_Task(Web $w, $object) {
     $subject = $object->getHumanReadableAttributeName(TASK_NOTIFICATION_TASK_CREATION) . "[" . $object->id . "]: " . $object->title;
     $users_to_notify = $w->Task->getNotifyUsersForTask($object, TASK_NOTIFICATION_TASK_CREATION);
 
-    $w->Notification->sendToAllWithCallback($subject, "task", "notification_email", $w->Auth->user(), $users_to_notify, function(&$user, &$template_data, &$attachments) use ($object, $w) {
-    	$template_data = [];
+    $w->Notification->sendToAllWithCallback($subject, "task", "notification_email", $w->Auth->user(), $users_to_notify, function($user, $existing_template_data) use ($object, $w) {
+    	$template_data = $existing_template_data;
 		$template_data['status']		= "[{$object->id}] New task created";
 		$template_data['footer']		= $object->description;
 		$template_data['action_url']	= $w->localUrl('/task/edit/' . $object->id);
@@ -97,7 +97,7 @@ function task_core_dbobject_after_insert_Task(Web $w, $object) {
 			$template_data['fields']["Assigned to"] = "No one";
 		}
 
-		$attachments = $w->File->getAttachmentsFileList($object);
+		return new NotificationCallback($user, $template_data, $w->File->getAttachmentsFileList($object));
     });
 }
 
@@ -118,8 +118,8 @@ function task_core_dbobject_after_update_Task(Web $w, $object) {
 		return;
 	}
 
-    $w->Notification->sendToAllWithCallback($subject, "task", "notification_email", $w->Auth->user(), $users_to_notify, function(&$user, &$template_data, &$attachments) use ($object, $w) {
-    	$template_data = [];
+    $w->Notification->sendToAllWithCallback($subject, "task", "notification_email", $w->Auth->user(), $users_to_notify, function($user, $existing_template_data) use ($object, $w) {
+    	$template_data = $existing_template_data;
 		$template_data['status']		= "[{$object->id}] Status change";
 		$template_data['footer']		= $object->description;
 		$template_data['action_url']	= $w->localUrl('/task/edit/' . $object->id);
@@ -154,43 +154,9 @@ function task_core_dbobject_after_update_Task(Web $w, $object) {
 			$template_data['fields']["Assigned to"] = "No one";
 		}
 
-		$attachments = $w->File->getAttachmentsFileList($object);
+		return new NotificationCallback($user, $template_data, $w->File->getAttachmentsFileList($object));
     });
 }
-
-// function task_core_dbobject_after_insert_TaskTime(Web $w, $object) {
-//     $w->Log->setLogger("TASK")->debug("task_core_dbobject_after_insert_TaskTime");
-    
-//     $task = $object->getTask();
-    
-//     if (empty($task->id)) {
-//         return;
-//     }
-    
-//     $users_to_notify = $w->Task->getNotifyUsersForTask($task, TASK_NOTIFICATION_TIME_LOG);
-//     $w->Log->setLogger("TASK")->info("Notifying " . count($users_to_notify) . " users");
-    
-//     if (!empty($users_to_notify)) {
-//         $event_title = $object->getHumanReadableAttributeName(TASK_NOTIFICATION_TIME_LOG);
-        
-//         // send it to the inbox of the user's on our send list
-//         foreach ($users_to_notify as $user) {
-//             // prepare our message, add heading, add URL to task, add notification advice in messgae footer 
-//             $subject = "Task - " . $task->title . ": " . $event_title;
-//             $message = "<b>" . $event_title . "</b><br/>\n";
-//             $message .= "<p>" . $task->title . " has had a new time log entry</p>";
-            
-// 			// Get additional details
-// 			$message .= $w->Task->getNotificationAdditionalDetails($task);
-			
-//             $user_object = $w->Auth->getUser($user);
-//             $message .= $task->toLink(null, null, $user_object);
-//             $message .= "<br/><br/><b>Note</b>: Go to " . Html::a(WEBROOT . "/task/tasklist#notifications", "Task > Task List > Notifications") . ", to edit the types of notifications you will receive.";
-
-//             $w->Inbox->addMessage($subject, $message, $user);
-//         }
-//     }
-// }
 
 function task_attachment_attachment_added_task(Web $w, $object) {
     $w->Log->setLogger("TASK")->debug("task_attachment_attachment_added_task");
@@ -204,8 +170,8 @@ function task_attachment_attachment_added_task(Web $w, $object) {
     $users_to_notify = $w->Task->getNotifyUsersForTask($task, TASK_NOTIFICATION_TASK_DOCUMENTS);
     $subject = "Task - " . $task->title . ": " . $object->getHumanReadableAttributeName(TASK_NOTIFICATION_TASK_DOCUMENTS);
 
-    $w->Notification->sendToAllWithCallback($subject, "task", "notification_email", $w->Auth->user(), $users_to_notify, function(&$user, &$template_data, &$attachments) use ($task, $w) {
-    	$template_data = [];
+    $w->Notification->sendToAllWithCallback($subject, "task", "notification_email", $w->Auth->user(), $users_to_notify, function($user, $existing_template_data) use ($task, $w) {
+    	$template_data = $existing_template_data;
 		$template_data['status']		= "[{$task->id}] New attachment";
 		$template_data['footer']		= $task->description;
 		$template_data['action_url']	= $w->localUrl('/task/edit/' . $task->id);
@@ -240,7 +206,7 @@ function task_attachment_attachment_added_task(Web $w, $object) {
 			$template_data['fields']["Assigned to"] = "No one";
 		}
 
-		$attachments = $w->File->getAttachmentsFileList($task);
+		return new NotificationCallback($user, $template_data, $w->File->getAttachmentsFileList($task));
     });
 }
 
@@ -296,8 +262,8 @@ function task_comment_send_notification_recipients_task(Web $w, $params) {
     $task = $w->task->getTask($params['object_id']);
 	$subject = (!empty($commentor->id) ? $commentor->getFullName() : 'Someone') . ' has commented on a task that you\'re apart of ('.$task->title.')';
 
-	$w->Notification->sendToAllWithCallback($subject, "task", "notification_email", $w->auth->getUser($params['commentor_id']), $params['recipients'], function(&$user, &$template_data, &$attachments) use ($params, $task, $w) {
-    	$template_data = [];
+	$w->Notification->sendToAllWithCallback($subject, "task", "notification_email", $w->auth->getUser($params['commentor_id']), $params['recipients'], function($user, $existing_template_data) use ($params, $task, $w) {
+    	$template_data = $existing_template_data;
 		$template_data['status']		= "[{$task->id}] New comment";
 		$template_data['footer']		= $task->description;
 		$template_data['action_url']	= $w->localUrl('/task/edit/' . $task->id);
@@ -334,7 +300,7 @@ function task_comment_send_notification_recipients_task(Web $w, $params) {
 			$template_data['fields']["Assigned to"] = "No one";
 		}
 
-		$attachments = $w->File->getAttachmentsFileList($task);
+		return new NotificationCallback($user, $template_data, $w->File->getAttachmentsFileList($task));
     });
 
 }

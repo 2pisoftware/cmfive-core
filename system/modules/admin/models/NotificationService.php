@@ -37,17 +37,18 @@ class NotificationService extends DbService {
 			$output = $this->w->Template->render($template, $template_data);
 
 			switch ($method) {
-				case NotificationService::TYPE_EMAIL:
-					$this->w->Mail->sendMail($recipient_user->getContact()->email, 
-						!empty($sending_user->id) ? $sending_user->getContact()->email : Config::get('main.company_support_email'),
-						$subject, $output, null, null, $attachments
-					);
-					break;
-
 				case NotificationService::TYPE_INBOX:
 					if (Config::get('inbox.active') === true) {            
 		                $this->w->Inbox->addMessage($subject, $output, $recipient_user, null, null, false);
 		            }
+					break;
+				
+				case NotificationService::TYPE_EMAIL:
+				default:
+					$this->w->Mail->sendMail($recipient_user->getContact()->email, 
+						!empty($sending_user->id) ? $sending_user->getContact()->email : Config::get('main.company_support_email'),
+						$subject, $output, null, null, $attachments
+					);
 					break;
 			}
 		}
@@ -76,7 +77,7 @@ class NotificationService extends DbService {
 			$attachments = [];
 
 			// Apply callback
-			$callback($recipient_user, $template_data, $attachments);
+			$callback_results = $callback($recipient_user, $template_data, $attachments);
 
 			$this->send($subject, $module, $template_name, $sending_user, $recipient_user, $template_data, $attachments);
 		}
