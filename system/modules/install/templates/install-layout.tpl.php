@@ -14,7 +14,7 @@
         //$w->enqueueStyle(array("name" => "timezonepicker.css", "uri" => "/system/modules/install/assets/css/timezonepicker.css", "weight" => 1003));
             
             
-        $w->enqueueScript(array("name" => "jquery.js", "uri" => "/system/docs/api/js/jquery-1.11.0.min.js", "weight" => 1004));
+        $w->enqueueScript(array("name" => "jquery.js", "uri" => "/system/templates/js/foundation-5.5.0/js/vendor/jquery.js", "weight" => 1004));
         $w->enqueueScript(array("name" => "maphilight.js", "uri" => "/system/modules/install/assets/js/jquery.maphilight.min.js", "weight" => 1003));
         $w->enqueueScript(array("name" => "timezonepicker.js", "uri" => "/system/modules/install/assets/js/jquery.timezone-picker.js", "weight" => 1002));
         $w->enqueueScript(array("name" => "install.js", "uri" => "/system/modules/install/assets/js/install.js", "weight" => 1001));

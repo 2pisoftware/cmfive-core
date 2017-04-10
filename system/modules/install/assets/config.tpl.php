@@ -14,7 +14,7 @@ Config::set("system.timezone", "{{ timezone }}");
 
 //========== Database Configuration ==========================
 
-Config::set("database", array(
+Config::append("database", array(
     "hostname"   => "{{ db_host }}",
     "username"   => "{{ db_username }}",
     "password"   => "{{ db_password }}",
@@ -24,11 +24,11 @@ Config::set("database", array(
 
 //=========== Email Layer Configuration =====================
 
-Config::set("email", [
+Config::append("email", [
     "layer"      => "{{ email_transport }}",		// local, external smtp or sendmail
     "command"    => "{{ email_sendmail }}",		// used for sendmail layer only
-    "host"       => "{{ email_host }}",
-	"port"       => "{{ email_port }}",
+    "host"       => "{{ email_smtp_host }}",
+	"port"       => "{{ email_smtp_port }}",
     "encryption" => "{{ email_encryption }}", // none, SSL or TLS
 	"auth"       => "{{ email_auth }}",
     "username"	 => "{{ email_username }}",

@@ -34,7 +34,7 @@
         $w->enqueueScript(array("name" => "jquery.asmselect.js", "uri" => "/system/templates/js/jquery.asmselect.js", "weight" => 920));
         $w->enqueueScript(array("name" => "boxover.js", "uri" => "/system/templates/js/boxover.js", "weight" => 910));
         $w->enqueueScript(array("name" => "ckeditor.js", "uri" => "/system/templates/js/ckeditor/ckeditor.js", "weight" => 900));
-        $w->enqueueScript(array("name" => "Chart.js", "uri" => "/system/templates/js/chart-js/Chart.min.js", "weight" => 890));
+        $w->enqueueScript(array("name" => "Chart.js", "uri" => "/system/templates/js/chart-js/dist/Chart.min.js", "weight" => 890));
         
         $w->enqueueScript(array("name" => "moment.js", "uri" => "/system/templates/js/moment.min.js", "weight" => 880));
         
