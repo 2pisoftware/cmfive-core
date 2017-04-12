@@ -12,8 +12,6 @@ function ajax_import_ALL(Web &$w)
     catch(Exception $e)
     {
         $installStep->ranTest('ran_db_migration', false);
-        $installStep->addError("Error importing table sql into database \"" . $db_database . "\"<br />" .
-                               //$db_username . "@" . $url . "<br />" .
-                               "* " . $e->getMessage());
+        $installStep->addError("Error importing table sql into database: " . $e->getMessage());
     }
 }
