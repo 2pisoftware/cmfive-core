@@ -57,4 +57,13 @@ class FavoriteService extends DbService {
 		return $response;
 	}
 
+    //returns favorites for all users for specific object. 
+    function getAllFavoritesForObject($class, $object_id) {
+        return $this->getObjects("Favorite", [
+			"is_deleted" => 0,
+			"object_id" => $object_id,
+			"object_class" => $class
+		]);
+    }
+    
 }
