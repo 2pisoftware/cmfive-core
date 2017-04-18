@@ -148,15 +148,15 @@ class DbService {
                 $this->w->Log->setLogger(get_class($this))->error("(getObject) The WHERE condition: " . json_encode($idOrWhere) . " has non-associative elements, this has security implications and is not allowed");
                 return null;
             }
+			
+			// Default is deleted checks to 0
+			$columns = $o->getDbTableColumnNames();
+
+			if (!$includeDeleted && (property_exists(get_class($o), "is_deleted") || (in_array("is_deleted", $columns)))) {
+				$this->_db->where('is_deleted', 0);
+			}
         }
-        
-		// Default is deleted checks to 0
-		$columns = $o->getDbTableColumnNames();
-		
-		if (!$includeDeleted && (property_exists(get_class($o), "is_deleted") || (in_array("is_deleted", $columns)))) {
-			$this->_db->where('is_deleted', 0);
-		}
-		
+
         if (!empty($order_by)) {
             $this->_db->order_by($order_by);
         }
