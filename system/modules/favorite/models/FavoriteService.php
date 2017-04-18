@@ -7,7 +7,7 @@
 class FavoriteService extends DbService {
 
 	public function getFavorites() {
-		return $this->getObjects("Favorite", ["is_deleted" => 0]);
+		return $this->getObjects("Favorite");
 	}
 	
 	public function getFavorite($id) {
@@ -16,7 +16,6 @@ class FavoriteService extends DbService {
 	
 	public function getFavoritesForUser($user_id) {
 		return $this->getObjects("Favorite", [
-			"is_deleted" => 0,
 			"user_id" => $user_id
 		]);
 	}
