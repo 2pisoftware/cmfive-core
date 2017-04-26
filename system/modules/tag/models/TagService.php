@@ -35,7 +35,7 @@ class TagService extends DbService {
 	public function getAllTags($returnObjects=false) {
 		//@TODO: Is there a way to do this without raw SQL?
 		//Loads a list of all tags that were ever created
-		$tags = $this->_db->sql('SELECT id,tag,tag_color FROM tag WHERE 1 GROUP BY tag ORDER BY tag')->fetch_all();
+		$tags = $this->_db->get('tag')->orderBy('tag')->fetch_all();
 		if($returnObjects) {
 			if(!empty($tags)) {
 				$objects = $this->getObjectsFromRows('Tag', $tags);
