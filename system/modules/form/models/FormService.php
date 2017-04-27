@@ -118,4 +118,13 @@ class FormService extends DbService {
 	public function getFormFieldByFormIdAndTitle($form_id, $name) {
 		return $this->getObject("FormField", ["form_id" => $form_id, "technical_name" => $name, "is_deleted" => 0]);
 	}
+	
+	/**
+	 * Load an Application
+	 *
+	 * @param unknown $application_id
+	 */
+	public function getFormApplication($application_id) {
+		return $this->getObject("FormApplication",["id" => $application_id, "is_deleted" => 0]);
+	}
 }
