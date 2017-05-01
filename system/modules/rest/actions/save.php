@@ -1,5 +1,5 @@
 <?php
-function save_POST(Web &$w) {
+function save_ALL(Web &$w) {
 	$w->setLayout(null);
 	$p = $w->pathMatch("classname");
 	$token = $w->request("token");
@@ -7,8 +7,9 @@ function save_POST(Web &$w) {
 	foreach ($_REQUEST as $k => $v) {
 		$record[urldecode($k)]=urldecode($v);
 	}
-	$id=null;
-	if (array_key_exists('id',$record)) $id=$record['id'];
-	$w->out($w->Rest->saveJson($p['classname'],$id,$record, $token));	
-
+	if (!array_key_exists('id',$_REQUEST)) {
+		$record['id']=0;
+	}
+	$w->out($w->Rest->saveJson($p['classname'],$record['id'],$record, $token));
+	
 }

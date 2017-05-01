@@ -1,24 +1,28 @@
 <?php
-class RestService extends RestSearchableService {
-
+class RestService extends SearchableDbObject {
+	
 	private $token;
-	/********************************************
-	 * Check if the requested class is allowed access via the REST api
-	 ********************************************/
+	
 	function checkModuleAccess($className) {
-		if (in_array($className,Config::get('system.rest_allow'))) {
-			return true;
+		// STEVER: TODO I am having problems using Config. It is not returning the expected values as per config.php. Changes are not reflected. New values are ??????
+		if (!in_array('rest',Config::get('system.allow_module'))) return $this->errorJSON('REST module is disabled');
+		//var_dump(Config::get('system'));
+		//die();
+		$allowed="None";
+		if (is_array(Config::get('system.rest_allow'))) {
+			$allowed=implode(",",Config::get('system.rest_allow'));
+			if (!in_array($className,Config::get('system.rest_allow'))) {
+				return $this->errorJSON('REST module is not enabled for this type of record('.$className.')- allowed '.$allowed);
+			}
+		} else {
+			return $this->errorJSON('REST module is not enabled for this type of record('.$className.') - allowed '.$allowed);
 		}
-		return false;
 	}
 	
-	/********************************************
-	 * Get a token for the rest api.
-	 * Only return a token if the user is not already logged in.
-	 ********************************************/
-	function getTokenJson($api,$username = null, $password = null) {
-		$user=$this->w->Auth->user();
-		if (intval($user->id) > 0) { 
+	// only require API key if user is not already logged in
+	function getTokenJson($api='',$username='', $password='') {
+		$user=$this->w->Auth->_user;
+		if (intval($user->id) > 0) {
 			// OK
 		} else {
 			if ($api && trim($api) == trim(Config::get('system.rest_api_key'))) {
@@ -42,115 +46,98 @@ class RestService extends RestSearchableService {
 	 * Will check if token exists and set the REST user
 	 * in the authentication service to facilitate all
 	 * normal permission checks
-	 * 
+	 *
 	 * returns JSON message if error.
-	 * 
+	 *
 	 * @param unknown $token
 	 * @return unknown
 	 */
 	function checkTokenJson($token) {
-		if (!$token) {
-			return $this->errorJson("Missing token");
-		}
-		$this->token=$token;
-		$session = $this->getObject("RestSession", array("token"=>$token));
-		if ($session) {
-			$user = $session->getUser();
-			$this->w->Auth->setRestUser($user); 
-		} else {
-			return $this->errorJson("No session associated with this token");
+		$user=$this->w->Auth->user();
+		// bypass token if user is logged in
+		if (empty($user)) {
+			if (!$token) {
+				return $this->errorJson("Missing token");
+			}
+			$this->token=$token;
+			$session = $this->getObject("RestSession", array("token"=>$token));
+			if ($session) {
+				$user = $session->getUser();
+				$this->w->Auth->setRestUser($user);
+			} else {
+				return $this->errorJson("No session associated with this token");
+			}
 		}
 		return null;
 	}
-
-	function listJson($classname, $query, $token,$allowDeleted=false) {
-		$checkToken=$this->checkTokenJson($token);
-		if (!empty($checkToken)) {
-			return $checkToken;
+	
+	function listJson($classname, $where, $token) {
+		$error = $this->checkTokenJson($token);
+		if (!$error) $error = $this->checkModuleAccess($classname);
+		if ($error) {
+			return $error;
 		}
-		if (!$this->checkModuleAccess($classname)) {
-			return $this->errorJson('No access to '.$classname);
-		}
-		try {
-			$os = $this->search($classname, $query,$allowDeleted);
-		} catch (Exception $e) {
-			return $this->errorJson($e);
-		}
+		$os = $this->searchObjects($classname, $where);
 		if ($os) {
 			foreach ($os as $o) {
 				if ($o->canView($this->w->Auth->user())) {
-					$oJson=$o->toArray();
-					$ar[] = $oJson;
+					$ar[] = $o->toArray();
 				}
 			}
-			
 			return $this->successJson($ar);
 		} else {
 			return $this->successJson([]);
-		}		
+		}
+		
 	}
 	
 	private function _saveNew($classname,$record) {
 		$o = new $classname($this->w);
 		$o->fill($record);
-		$o->insert();	
+		$o->insert(true);
 		$o->id=$this->w->ctx('db_inserts')[$classname][0];
-		//http_response_code(201);
-		//header('Location: '.$this->w->webroot().'/rest/index/'.$classname.'/id/'.$o->id."/?token=".$this->token);
+		http_response_code(201);
+		header('Location: '.$this->w->webroot().'/rest/index/'.$classname.'/id/'.$o->id."/?token=".$this->token);
 		return $this->successJson($o->toArray());
-	} 
+	}
 	
 	function saveJson($classname, $id, $record, $token) {
-		$checkToken=$this->checkTokenJson($token);
-		if (!empty($checkToken)) {
-			return $checkToken;
+		$error = $this->checkTokenJson($token);
+		if (!$error) $error = $this->checkModuleAccess($classname);
+		if ($error) {
+			return $error;
 		}
-		if (!$this->checkModuleAccess($classname)) {
-			return $this->errorJson('No access to '.$classname);
-		}
-		
-		if (intval($id)>0) { 
+		if (intval($id)>0) {
 			$o = $this->getObject($classname, $id);
-			if ($o->canEdit($this->w->Auth->user())) {
-				if ($o) {
+			if ($o) {
+				if ($o->canEdit($this->w->Auth->user())) {
+					// convert json into array and update object
+					//$ar = json_decode($json,true);
 					$o->fill($record);
-					$saveResult=$o->update();
-					// validation
-					if ($saveResult) {
-						if (empty($saveResult['invalid'])) { 
-							//http_response_code(204);
-							//header('Location: '.$this->w->webroot().'/rest/index/'.$classname.'/id/'.$o->id."/?token=".$this->token);
-							// reload database data
-							$o=$this->getObjects($classname,['id'=>$id]);
-							$oJson=$o[0]->toArray();
-							return $this->successJson($oJson);
-						} else {
-							return $this->errorJson($saveResult['invalid']);
-						}
-					} else {
-						return $this->errorJson('No feedback from save.');
-					}
-
-					} else {
-					return $this->_saveNew($classname,$record);
+					$o->update(true);
+					http_response_code(204);
+					//header('Location: '.$this->w->webroot().'/rest/index/'.$classname.'/id/'.$o->id."/?token=".$this->token);
+					return $this->successJson($o->toArray());
+				} else {
+					http_response_code(403);
+					return $this->errorJson('Not allowed');
 				}
 			} else {
-				http_response_code(403);
-				return $this->errorJson('Not allowed');
+				return $this->_saveNew($classname,$record);
 			}
+		} else {
+			return $this->_saveNew($classname,$record);
 		}
 	}
 	
 	
 	function deleteJson($classname, $id, $token) {
-		$checkToken=$this->checkTokenJson($token);
-		if (!empty($checkToken)) {
-			return $checkToken;
+		$error = $this->checkTokenJson($token);
+		if (!$error) $error = $this->checkModuleAccess($classname);
+		if ($error) {
+			return $error;
 		}
-		if (!$this->checkModuleAccess($classname)) {
-			return $this->errorJson('No access to '.$classname);
-		}
-				
+		
 		$o = $this->getObject($classname, $id);
 		if ($o) {
 			if ($o && $o->canDelete($this->w->Auth->user())) {
@@ -174,8 +161,5 @@ class RestService extends RestSearchableService {
 	function successJson($results) {
 		return json_encode(array("success" => $results));
 	}
-	
-	
-	
 	
 }
