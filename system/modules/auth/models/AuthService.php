@@ -7,27 +7,49 @@ class AuthService extends DbService {
     public $_rest_user = null;
 	private static $_cache = array();
 
-    function login($login, $password, $client_timezone, $skip_session = false) {
-        // $password = User::encryptPassword($password);
-        // $user_data = $this->_db->get("user")->where("login", $login)->and("password", $password)->and("is_active", "1")->and("is_deleted", "0")->fetch_row();
-        $user = $this->getUserForLogin($login);
-        if (empty($user->id) || ($user->encryptPassword($password) !== $user->password)) {
-            return null;
-        }
-        // if ($user_data != null) {
-        // $user = new User($this->w);
-        // $user->fill($user_data);
-        $user->updateLastLogin();
-        if (!$skip_session) {
-            $this->w->session('user_id', $user->id);
-            $this->w->session('timezone', $client_timezone);
-        }
-        return $user;
-        // } else {
-        //     return null;
-        // }
-    }
-
+	function login($login, $password, $client_timezone, $skip_session = false) {
+		$credentials['login']=$login;
+		$credentials['password']=$password;
+		
+		//allow pre login hook for alternative authentications.
+		//this hook returns $hook_results[$module]=$user or null.
+		$hook_results = $this->w->callHook("auth", "prelogin", $credentials);
+		foreach($hook_results as $module => $user) {
+			//@TODO: check config for $module.optional or $module.manditory. default to optional for now. if any manditory returns null then return null.
+			if (!empty($user)) {
+				$this->w->Log->info($user->getFullName()." authenticated via ".$module." prelogin hook");
+				break;
+			} else {
+				$this->w->Log->info('prelogin hook did not provide authentication: '.$login);
+			}
+		}
+		
+		//if no valid user check if credentials pass against cmfive user table
+		//if so set user else abort.
+		if (empty($user)) {
+			$user = $this->getUserForLogin($login);
+			if (empty($user)) {
+				$this->w->Log->info('cmfive user does not exist: '.$login);
+				return null;
+			}
+			if ($user->encryptPassword($password) !== $user->password) {
+				$this->w->Log->info('cmfive pasword mismatch for username: '.$login);
+				return null;
+			}
+		}
+		$this->w->Log->info("User logged in: ".$user->getFullName());
+		
+		//allow post login hook to do whatever
+		$hook_results = $this->w->callHook("auth", "postlogin", $user);
+		
+		$user->updateLastLogin();
+		if (!$skip_session) {
+			$this->w->session('user_id', $user->id);
+			$this->w->session('timezone', $client_timezone);
+		}
+		return $user;
+	}
+	
     function forceLogin($user_id = null) {
         if (empty($user_id)) {
             return;
@@ -114,6 +136,28 @@ class AuthService extends DbService {
 			self::$_cache[$key] = $url ? $url : true;
         	return self::$_cache[$key];
         }
+        
+        if (empty($this->user()) && (Config::get('system.use_passthrough_authentication') === TRUE) && !empty($_SERVER['AUTH_USER'])) {
+        	// Get the username
+        	$username = explode('\\', $_SERVER["AUTH_USER"]);
+        	$username = end($username);
+        	$this->w->Log->debug("Passthrough Username: " . $username);
+        	
+        	//this hook returns $hook_results[$module][0]=$user or null.
+        	$hook_results = $this->w->callHook("auth", "get_user_for_passthrough", $username);
+        	foreach($hook_results as $module => $user) {
+        		
+        		if (!empty($user) && $user instanceof User) {
+        			$this->forceLogin($user->id);
+        			if ($user->allowed($path)) {
+        				self::$_cache[$key] = $url ? $url : true;
+        			}
+        		} else {
+        			$this->Log->info($module.' did not provide passthrough user for:'.$username);
+        		}
+        	}
+        }
+        
         self::$_cache[$key] = false;
         return false;
     }

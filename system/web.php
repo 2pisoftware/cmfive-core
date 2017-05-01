@@ -14,6 +14,7 @@ define("SYSTEM_LIBPATH", str_replace("\\", "/", getcwd() . '/system/lib'));
 define("FILE_ROOT", str_replace("\\", "/", getcwd() . "/uploads/")); // dirname(__FILE__)
 define("MEDIA_ROOT", str_replace("\\", "/", dirname(__FILE__) . "/../media/"));
 define("ROOT", str_replace("\\", "/", dirname(__FILE__)));
+define("STORAGE_PATH",str_replace("\\", "/", getcwd() . '/storage'));
 define("SESSION_NAME", "CM5_SID");
 
 set_include_path(get_include_path() . PATH_SEPARATOR . LIBPATH);
@@ -366,6 +367,9 @@ class Web {
         try {
             session_name(SESSION_NAME);
             session_start();
+            // Store the sessions locally to avoid permission errors between OS's
+            // I.e. on Windows by default tries to save to C:\Temp
+            session_save_path(ROOT_PATH. DIRECTORY_SEPARATOR . "storage" . DIRECTORY_SEPARATOR . "session");
         } catch (Exception  $e) {
             $this->Log->info("Error starting session ".$e->getMessage());
         }
