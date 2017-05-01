@@ -369,7 +369,7 @@ class Web {
             session_start();
             // Store the sessions locally to avoid permission errors between OS's
             // I.e. on Windows by default tries to save to C:\Temp
-            session_save_path(ROOT_PATH. DIRECTORY_SEPARATOR . "storage" . DIRECTORY_SEPARATOR . "session");
+            session_save_path(STORAGE_PATH . DIRECTORY_SEPARATOR . "session");
         } catch (Exception  $e) {
             $this->Log->info("Error starting session ".$e->getMessage());
         }
