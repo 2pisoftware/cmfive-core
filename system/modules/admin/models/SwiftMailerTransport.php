@@ -41,7 +41,12 @@ class SwiftMailerTransport implements GenericTransport {
 					$this->w->Log->error("Could not send mail to {$to} from {$replyto} about {$subject} no email transport defined!");
 					return;
 				}
-
+				
+				if (filter_var($to, FILTER_VALIDATE_EMAIL) === false) {
+					$this->w->Log->error("Email address: {$to} is invalid");
+					return;
+				}
+				
 				$mailer = Swift_Mailer::newInstance($this->transport);
 
 				// To, cc, bcc need to be given as arrays when sending to more than one person

@@ -73,13 +73,11 @@ class NotificationService extends DbService {
 		foreach($recipient_users ? : [] as $recipient_user) {
 			$recipient_user = $this->resolveUser($recipient_user);
 
-			$template_data = [];
-			$attachments = [];
-
 			// Apply callback
-			$callback_results = $callback($recipient_user, $template_data, $attachments);
+			// Callback should return an instance of NotificationCallback
+			$data = $callback($recipient_user, [], []);
 
-			$this->send($subject, $module, $template_name, $sending_user, $recipient_user, $template_data, $attachments);
+			$this->send($subject, $module, $template_name, $sending_user, $data->recipient_user, $data->template_data, $data->attachments);
 		}
 
 	}

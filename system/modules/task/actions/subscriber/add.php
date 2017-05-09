@@ -1,5 +1,7 @@
 <?php
 
+use \Html\Form\InputField as InputField;
+
 function add_GET(Web $w) {
 	
 	$w->setLayout(null);
@@ -19,7 +21,7 @@ function add_GET(Web $w) {
 		return strcasecmp($a->getFullName(), $b->getFullName());
 	});
 
-	$w->out(Html::multiColForm([
+	$w->ctx('form', Html::multiColForm([
 		'Add an existing contact' => [
 			[[(new \Html\Form\Autocomplete())->setLabel('Contact')
 					->setId('contact')
@@ -32,15 +34,28 @@ function add_GET(Web $w) {
 		],
 		'Or add an external user' => [
 			[
-				['Firstname', 'text', 'firstname'],
-				['Lastname', 'text', 'lastname']
+				(new InputField([
+					'label' => 'Firstname',
+					'id|name' => 'firstname'
+				])),
+				(new InputField([
+					'label' => 'Lastname',
+					'id|name' => 'lastname'
+				]))
 			],
 			[
-				['Email', 'text', 'email'],
-				['Phone Number', 'text', 'work_number']
+				(new InputField([
+					'label' => 'Email',
+					'id|name' => 'email',
+					'type' => 'email'
+				])),
+				(new InputField([
+					'label' => 'Phone Number',
+					'id|name' => 'work_number'
+				]))
 			]
 		]
-	], '/task-subscriber/add/' . $task_id));
+	], '/task-subscriber/add/' . $task_id, 'POST', 'Save', 'task-subscriber__add'));
 
 }
 

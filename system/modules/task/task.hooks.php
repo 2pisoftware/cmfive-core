@@ -168,7 +168,7 @@ function task_attachment_attachment_added_task(Web $w, $object) {
     }
 
     $users_to_notify = $w->Task->getNotifyUsersForTask($task, TASK_NOTIFICATION_TASK_DOCUMENTS);
-    $subject = "Task - " . $task->title . ": " . $object->getHumanReadableAttributeName(TASK_NOTIFICATION_TASK_DOCUMENTS);
+    $subject = "Task - " . $task->title . ' [' . $task->id . ']: ' . $object->getHumanReadableAttributeName(TASK_NOTIFICATION_TASK_DOCUMENTS);
 
     $w->Notification->sendToAllWithCallback($subject, "task", "notification_email", $w->Auth->user(), $users_to_notify, function($user, $existing_template_data) use ($task, $w) {
     	$template_data = $existing_template_data;
@@ -260,7 +260,7 @@ function task_comment_get_notification_recipients_task(Web $w, $params) {
 function task_comment_send_notification_recipients_task(Web $w, $params) {
     
     $task = $w->task->getTask($params['object_id']);
-	$subject = (!empty($commentor->id) ? $commentor->getFullName() : 'Someone') . ' has commented on a task that you\'re apart of ('.$task->title.')';
+	$subject = (!empty($commentor->id) ? $commentor->getFullName() : 'Someone') . ' has commented on a task that you\'re apart of ('.$task->title . ' [' . $task->id . '])';
 
 	$w->Notification->sendToAllWithCallback($subject, "task", "notification_email", $w->auth->getUser($params['commentor_id']), $params['recipients'], function($user, $existing_template_data) use ($params, $task, $w) {
     	$template_data = $existing_template_data;
@@ -284,7 +284,7 @@ function task_comment_send_notification_recipients_task(Web $w, $params) {
 
 		// Get additional details
 		if ($user->is_external == 0) {
-			$additional_details = $w->Task->getNotificationAdditionalDetails($object);
+			$additional_details = $w->Task->getNotificationAdditionalDetails($task);
 			if (!empty($additional_details)) {
 				$template_data['footer'] .= $additional_details;
 			}
