@@ -68,14 +68,24 @@ class AspectSearchable {
 	 */
 	function update($ignoreAdditional = true) {
 		if ($this->getIndex()) {
-			$this->_index->dt_modified = time();
-			$this->_index->modifier_id = ($this->_index->w->Auth->loggedIn() ? $this->_index->w->Auth->user()->id : 0);
-			
-			$this->_index->content = $this->object->getIndexContent($ignoreAdditional);
-					
-			$this->_index->update();
+			if (property_exists($this->object, 'is_deleted') && $this->object->is_deleted == 1) {
+				$this->delete();
+			} else {
+				$this->_index->dt_modified = time();
+				$this->_index->modifier_id = ($this->_index->w->Auth->loggedIn() ? $this->_index->w->Auth->user()->id : 0);
+
+				$this->_index->content = $this->object->getIndexContent($ignoreAdditional);
+
+				$this->_index->update();
+			}
 		} else {
-			$this->insert();
+			if (property_exists($this->object, 'is_deleted')) {
+				if ($this->object->is_deleted == 0) {
+					$this->insert();
+				}
+			} else {
+				$this->insert();
+			}
 		}
 	}
 	
