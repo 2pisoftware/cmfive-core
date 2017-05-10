@@ -224,11 +224,13 @@ class InboxService extends DbService {
             }
         }
     }
-
+    
     function markAllMessagesRead() {
         $user_id = $this->Auth->user()->id;
-        return $this->_db->update("inbox", array("is_new" => 0, "dt_read" => time()))
+        return $this->_db->update("inbox", array("is_new" => 0, "dt_read" => formatDate(time(), "Y-m-d H:i:s")))
                 ->where("user_id", $user_id)->where("is_new", 1)->execute();
+//        return $this->_db->update("inbox", array("is_new" => 0, "dt_read" => time()))
+//                ->where("user_id", $user_id)->where("is_new", 1)->execute();
 //        return $this->_db->sql("update inbox set is_new = 0, dt_read = NOW() where user_id = $user_id and is_new = 1")->execute();
     }
 

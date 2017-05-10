@@ -717,7 +717,7 @@ class TaskService extends DbService {
         $taskgroup->can_view = $can_view;
         $taskgroup->can_create = $can_create;
         $taskgroup->is_active = $is_active;
-        $taskgroup->is_deleted = $is_deleted;
+        $taskgroup->is_deleted = !empty($is_deleted) ? $is_deleted : 0;
         $taskgroup->default_assignee_id = $default_assignee_id;
         $taskgroup->default_task_type = $default_task_type;
         $taskgroup->default_priority = $default_priority;
