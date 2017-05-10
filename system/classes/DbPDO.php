@@ -454,7 +454,7 @@ class DbPDO extends PDO {
     // Completely clears the select statement (removes table.*)
     public function clearSelect() {
         if (!empty($this->query) && is_a($this->query, "SelectQuery")) {
-            $this->query = $this->query->select(null);
+            return $this->select();
         }
         return $this;
     }
@@ -484,7 +484,9 @@ class DbPDO extends PDO {
                 $this->execute();
 			}
 
-            return $this->query;
+            $last_id = $this->query;
+			$this->query = null;
+			return $last_id;
         }
         return null;
     }

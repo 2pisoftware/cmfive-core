@@ -77,6 +77,7 @@ class AdminService extends DbService {
         if ($w->Auth->loggedIn()) {
             $w->menuLink("admin/users", "List Users", $nav);
             $w->menuLink("admin/groups", "List Groups", $nav);
+			$w->menuLink('admin-maintenance', 'Maintenance', $nav);
             $w->menuLink("admin/lookup", "Lookup", $nav);
             $w->menuLink("admin-templates", "Templates", $nav);
             $w->menuLink("admin/phpinfo", "PHP Info", $nav);
