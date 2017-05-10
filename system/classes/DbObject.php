@@ -500,6 +500,8 @@ class DbObject extends DbService {
     function insert($force_validation = true) {
         try {
             $this->startTransaction();
+            
+            $this->validateBoolianProperties();
 
             if ($force_validation && property_exists($this, "_validation")) {
                 $valid_response = $this->validate();
@@ -649,6 +651,9 @@ class DbObject extends DbService {
                     $this->modifier_id = $this->w->Auth->user()->id;
                 }
             }
+            
+            $this->validateBoolianProperties();
+            
             $data = array();
             foreach (get_object_vars($this) as $k => $v) {
                 if ($k {0} != "_" && $k != "w") { // ignore volatile vars
@@ -666,6 +671,7 @@ class DbObject extends DbService {
                     }
                 }
             }
+            
 
             $this->_db->update($t, $data)->where($this->getDbColumnName('id'), $this->id);
             $this->_db->execute();
@@ -1178,5 +1184,18 @@ class DbObject extends DbService {
 	public function __toString() {
 		return $this->printSearchTitle();
 	}
+    
+    //loops through properties ensuring boolians are either 'true' or 'false'
+    public function validateBoolianProperties() {
+        foreach (get_object_vars($this) as $k => $v) {
+            if ($k {0} != "_" && $k != "w") { // ignore volatile vars
+                if (substr($k, 0, 3) === 'is_') {
+                    //echo $k; echo '<br>';
+                    $this->$k = $v ? 1 : 0;
+                    //echo $this->$k; echo '<br>';
+                }
+            }
+        }
+    }
 	
 }
