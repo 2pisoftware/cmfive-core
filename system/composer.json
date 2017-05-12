@@ -5,6 +5,7 @@
         "bin-dir": "composer/bin"
     },
     "require": {
+        "cebe/markdown": "~1.0.1",
         "monolog/monolog": "1.8.*@dev",
         "knplabs/gaufrette": "0.2.*@dev",
         "aws/aws-sdk-php": "~2",

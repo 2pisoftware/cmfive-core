@@ -5,48 +5,131 @@
 		<?php if (!empty($load)) {
 			echo '<p>Load: ' . implode(' ', $load) . '</p>';
 		} ?>
+		
+		<?php echo Html::b('/admin/phpinfo', "phpinfo", null, null, true, 'secondary'); ?>
 	</div>
 	<div class='small-12 medium-9 columns'>
-		<h4>Actions</h4>
+		<h4>Auditing</h4>
 		<ul class="small-block-grid-1 medium-block-grid-2 large-block-grid-4">
 			<li>
 				<div class='panel action_container'>
-					<button type='button' id='reindex_objects' class='button info small expand'>Reindex Searchable Objects</button>
+					<a id='backup_database' style='margin-bottom: 0px;' class='button secondary small expand' href='/admin-maintenance/ajax_exportaudittable' target='_blank'>Export audit table to CSV</a>
+					<p class='text-center' style='margin-bottom: 0px;'><?php echo $audit_row_count; ?> rows in audit table</p>
+					<p class='text-center' style='line-height: 10px;'><small>Exported audit logs will be removed from the database</small></p>
+				</div>
+			</li>
+		</ul>
+		
+		<h4>Cache and Index</h4>
+		<ul class="small-block-grid-1 medium-block-grid-2 large-block-grid-4">
+			<li>
+				<div class='panel action_container'>
+					<button type='button' id='clear_config' class='button info small expand'>Clear Config cache</button>
+					<p>&nbsp;</p>
+				</div>
+			</li>
+			<?php if (Config::get('file.adapters.local.active') !== true) : ?>
+				<li>
+					<div class='panel action_container'>
+						<button type='button' id='clear_config' class='button info small expand'>Clear cached images</button>
+						<p><?php echo !empty($cache_image_count) ? $cache_image_count : 0; ?> images cached</p>
+					</div>
+				</li>
+			<?php endif; ?>
+			<li>
+				<div class='panel action_container'>
+					<button type='button' id='reindex_objects' class='button info small expand'>Reindex searchable objects</button>
 					<p class='text-center'><span id='reindex_objects_count'><?php echo $count_indexed; ?></span> searchable objects indexed</p>
 				</div>
 			</li>
+		</ul>
+		
+		<h4>Composer</h4>
+		<ul class="small-block-grid-1 medium-block-grid-2 large-block-grid-4">
 			<li>
 				<div class='panel action_container'>
-					<a id='backup_database' style='margin-bottom: 0px;' class='button info small expand' href='/admin-maintenance/ajax_backupdatabase' target='_blank'>Backup database</a>
+					<button id='regenerate_composer_json' style='margin-bottom: 0px;' class='button info small expand'>Regenerate composer.json</button>
+					<a href="/system/composer.json" target='_blank' class='button tiny secondary expand' style='padding: 6px 0px; top: -2px;'>View composer.json</a>
+				</div>
+			</li>
+			<li>
+				<div class='panel action_container'>
+					<a id='' style='margin-bottom: 0px;' class='button secondary small expand disabled' href='/admin-maintenance/' target='_blank' disabled='disabled'>Update composer</a>
+					<p class='text-center alert-box warning' style='padding: 2px 0px;'>May cause downtime</p>
+				</div>
+			</li>
+			<li>
+				<div class='panel action_container'>
+					<a id='' style='margin-bottom: 0px;' class='button info small expand disabled' href='/admin-maintenance/' target='_blank' disabled='disabled'>Manage installed libraries</a>
+					<p class='text-center'>&nbsp;</p>
+				</div>
+			</li>
+		</ul>
+		
+		<h4>Database</h4>
+		<ul class="small-block-grid-1 medium-block-grid-2 large-block-grid-4">
+			<li>
+				<div class='panel action_container'>
+					<a id='' style='margin-bottom: 0px;' class='button info small expand' href='/admin-maintenance/' target='_blank'>Backup database</a>
 					<p class='text-center'>DB size: <span id='backup_database_count'><?php echo $db_size; ?></span> MB</p>
 				</div>
 			</li>
-			<li></li>
-			<li></li>
-			<li>
-				<div class='panel action_container'>
-					<a id='backup_database' style='margin-bottom: 0px;' class='button info small expand' href='/admin-maintenance/ajax_exportaudittable' target='_blank'>Export audit table to CSV</a>
-					<p class='text-center' style='margin-bottom: 0px;'><?php echo $audit_row_count; ?> rows in audit table</p>
-					<p class='text-center'><small>Exported Audit logs will be removed from the database</small></p>
-				</div>
-			</li>
-			<li><!-- Your content goes here --></li>
-			<li><!-- Your content goes here --></li>
-			<li><!-- Your content goes here --></li>
 		</ul>
 		
-		
+		<h4>Printers</h4>
+		<ul class="small-block-grid-1 medium-block-grid-2 large-block-grid-4">
+			<li>
+				<div class='panel action_container'>
+					<a id='backup_database' style='margin-bottom: 0px;' class='button info small expand' href='/admin/printers'>Manage printers</a>
+					<p class='text-center'><?php echo $number_of_printers; ?> printer<?php echo $number_of_printers == 1 ? '' : 's'; ?> found</p>
+				</div>
+			</li>
+			<li>
+				<div class='panel action_container'>
+					<a id='backup_database' style='margin-bottom: 0px;' class='button info small expand' href='/admin/printqueue'>View print queue</a>
+					<p class='text-center'>&nbsp;</p>
+				</div>
+			</li>
+		</ul>
 	</div>
 </div>
 
 <script>
 	
+	$("#clear_config").click(function() {
+		var _this = $(this);
+		var _old_text = _this.text();
+		
+		_this.addClass('disabled');
+		_this.text('Clearing...');
+		$.get('/admin/ajaxClearCache', function(response) {
+			_this.removeClass('disabled');
+			_this.text(_old_text);
+		});
+	});
+	
+	$("#regenerate_composer_json").click(function() {
+		var _this = $(this);
+		var _old_text = _this.text();
+		
+		_this.addClass('disabled');
+		_this.text('Regenerating...');
+		$.get('/admin-maintenance/ajax_regeneratecomposerjson', function(response) {
+			_this.removeClass('disabled');
+			_this.text(_old_text);
+		});
+	});
+	
 	$("#reindex_objects").click(function() {
 		var _this = $(this);
+		var _old_text = _this.text();
+		
 		_this.addClass('disabled');
+		_this.text('Reindexing...');
 		$.get('/admin-maintenance/ajax_reindexobjects', function(response) {
 			$("#reindex_objects_count").text(response);
 			_this.removeClass('disabled');
+			_this.text(_old_text);
 		});
 	});
 	

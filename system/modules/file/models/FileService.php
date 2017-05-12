@@ -16,7 +16,30 @@ class FileService extends DbService {
 	public static $_thumb_height = 200;
 	public static $_thumb_width = 200;
 	public static $_stream_name = "attachment";
-
+	
+	/**
+	 * Recursively counts the number of files in a given directory
+	 * 
+	 * @param String $path path to recursively count
+	 * @return int file count
+	 */
+	public function countFilesInDirectory($path, $exclude = []) {
+		$size = 0;
+		$ignore = array_unique(array_merge($exclude, ['.', '..', 'cgi-bin', '.DS_Store']));
+		$files = scandir($path);
+		foreach($files as $t) {
+			if(in_array($t, $ignore)) {
+				continue;
+			}
+			if (is_dir(rtrim($path, '/') . '/' . $t)) {
+				$size += getFileCount(rtrim($path, '/') . '/' . $t);
+			} else {
+				$size++;
+			}   
+		}
+		return $size;
+	}
+	
 	/**
 	 * Returns the max upload file size in bytes
 	 *
