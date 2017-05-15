@@ -13,8 +13,8 @@
 		<ul class="small-block-grid-1 medium-block-grid-2 large-block-grid-4">
 			<li>
 				<div class='panel action_container'>
-					<a id='backup_database' style='margin-bottom: 0px;' class='button secondary small expand' href='/admin-maintenance/ajax_exportaudittable' target='_blank'>Export audit table to CSV</a>
-					<p class='text-center' style='margin-bottom: 0px;'><?php echo $audit_row_count; ?> rows in audit table</p>
+					<a id='export_audit_table' style='margin-bottom: 0px;' class='button secondary small expand' href='/admin-maintenance/ajax_exportaudittable' target='_blank'>Export audit table to CSV</a>
+					<p class='text-center' style='margin-bottom: 0px;'><span id='export_audit_table_count'><?php echo $audit_row_count; ?></span> row<?php echo $audit_row_count == 1 ? '' : 's'; ?> in audit table</p>
 					<p class='text-center' style='line-height: 10px;'><small>Exported audit logs will be removed from the database</small></p>
 				</div>
 			</li>
@@ -54,13 +54,13 @@
 			</li>
 			<li>
 				<div class='panel action_container'>
-					<a id='' style='margin-bottom: 0px;' class='button secondary small expand disabled' href='/admin-maintenance/' target='_blank' disabled='disabled'>Update composer</a>
+					<a id='' style='margin-bottom: 0px;' class='button secondary small expand disabled' disabled='disabled'>Update composer</a>
 					<p class='text-center alert-box warning' style='padding: 2px 0px;'>May cause downtime</p>
 				</div>
 			</li>
 			<li>
 				<div class='panel action_container'>
-					<a id='' style='margin-bottom: 0px;' class='button info small expand disabled' href='/admin-maintenance/' target='_blank' disabled='disabled'>Manage installed libraries</a>
+					<a id='' style='margin-bottom: 0px;' class='button info small expand disabled' disabled='disabled'>Manage installed libraries</a>
 					<p class='text-center'>&nbsp;</p>
 				</div>
 			</li>
@@ -70,7 +70,7 @@
 		<ul class="small-block-grid-1 medium-block-grid-2 large-block-grid-4">
 			<li>
 				<div class='panel action_container'>
-					<a id='' style='margin-bottom: 0px;' class='button info small expand' href='/admin-maintenance/' target='_blank'>Backup database</a>
+					<a id='' style='margin-bottom: 0px;' class='button info small expand' href='/admin-maintenance/ajax_backupdatabase' target='_blank'>Backup database</a>
 					<p class='text-center'>DB size: <span id='backup_database_count'><?php echo $db_size; ?></span> MB</p>
 				</div>
 			</li>
@@ -131,6 +131,10 @@
 			_this.removeClass('disabled');
 			_this.text(_old_text);
 		});
+	});
+	
+	$('#export_audit_table').click(function() {
+		$('#export_audit_table_count').text('0');
 	});
 	
 </script>

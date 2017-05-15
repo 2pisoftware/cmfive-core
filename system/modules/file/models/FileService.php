@@ -103,8 +103,7 @@ class FileService extends DbService {
 	 * @return \Gaufrette\File
 	 */
 	function getFileObject($filesystem, $filename) {
-		$file = new File($filename, $filesystem);
-		return $file;
+		return new File($filename, $filesystem);
 	}
 
 	/**
