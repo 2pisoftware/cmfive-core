@@ -46,6 +46,8 @@ class TagService extends DbService {
 			}
 		}
 		
+		ksort($unique_tags);
+		
 		if($returnObjects) {
 			if(!empty($unique_tags)) {
 				$objects = $this->getObjectsFromRows('Tag', $unique_tags);
