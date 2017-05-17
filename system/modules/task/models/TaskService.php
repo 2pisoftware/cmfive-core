@@ -797,7 +797,9 @@ class TaskService extends DbService {
         
         // get member object for task creator
         $creator_id = $task->getTaskCreatorId();
-        $creator = array($this->getMemberGroupById($task->task_group_id, $creator_id));
+		
+		// Notify assignee too
+        $creator = array($this->getMemberGroupById($task->task_group_id, $creator_id), !empty($task->assignee_id) ? $this->getMemberGroupById($task->task_group_id, $task->assignee_id) : null);
         // get member object(s) for task group owner(s)
         $owners = $this->getTaskGroupOwners($task->task_group_id);
 
