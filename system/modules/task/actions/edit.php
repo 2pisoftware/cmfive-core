@@ -171,16 +171,15 @@ function edit_POST($w) {
     }
     
     $task->fill($_POST['edit']);
-    
-	if ($task->assignee_id != intval($_POST['edit']['assignee_id'])) {
-		$task->dt_assigned = time();
+	if (empty($task->dt_assigned) || $task->assignee_id != intval($_POST['edit']['assignee_id'])) {
+		$task->dt_assigned = formatDateTime(time());
 	}
+	
     $task->assignee_id = intval($_POST['edit']['assignee_id']);
     if (empty($task->dt_due)) {
         $task->dt_due = $w->Task->getNextMonth();
     }
     $task->estimate_hours = !empty($task->estimate_hours) ? $task->estimate_hours : null;
-    $task->insertOrUpdate(false);
     $task->rate = empty($task->rate) ? NULL : $task->rate;
     $task->insertOrUpdate(true);
     
