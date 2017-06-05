@@ -495,7 +495,11 @@ class Web {
                 if (in_array($this->_action, $allowed[$this->_module]) || (!empty($this->_submodule) && in_array($this->_action, $allowed[$this->_module . '-' . $this->_submodule]))) {
                     // If we get here then we are configured to enforce CSRF checking
                     $this->Log->debug("Checking CSRF");
-                    $this->validateCSRF();
+					try {
+						$this->validateCSRF();
+					} catch (\Exception $e) {
+						$this->msg('The current session has expired, please resubmit the form', $_SERVER['REQUEST_URI']);
+					}
                 }
             }
         }
