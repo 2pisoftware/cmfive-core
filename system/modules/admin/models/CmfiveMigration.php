@@ -129,6 +129,24 @@ class CmfiveMigration extends Phinx\Migration\AbstractMigration {
 			$this->execute($update_statement_string);
 		}
 	}
+
+	/**
+	 * Removes a column from a table. Takes care of checking for table/column
+	 * existance
+	 * 
+	 * @param string $table
+	 * @param string $column
+	 * @param string $type
+	 * @param Array $options
+	 * @return null
+	 */
+	public function changeColumnInTable($table, $column, $type, $options = []) {
+		if ($this->hasTable($table)) {
+			if ($this->table($table)->hasColumn($column)) {
+				$this->table($table)->changeColumn($column, $type, $options)->save();
+			}
+		}
+	}
 	
 	/**
 	 * Checks if the table and column exists and applies an index to that given 

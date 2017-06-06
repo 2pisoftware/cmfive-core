@@ -74,7 +74,7 @@
 </tr>
 <tr>
 	<td>clickAndWait</td>
-	<td>//tr[10]/td[2]/a/b</td>
+	<td>xpath=//b[contains(text(),'a test message')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -114,7 +114,7 @@
 </tr>
 <tr>
 	<td>clickAndWait</td>
-	<td>//tr[10]/td[2]/a/b</td>
+	<td>xpath=//b[contains(text(),'Re:a test message')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -194,7 +194,12 @@
 </tr>
 <tr>
 	<td>click</td>
-	<td>//tr[10]/td/input</td>
+	<td>xpath=//b[contains(text(),'another test')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>2000</td>
 	<td></td>
 </tr>
 <tr>
@@ -269,7 +274,17 @@
 </tr>
 <tr>
 	<td>click</td>
-	<td>//tr[10]/td/input</td>
+	<td>xpath=//b[contains(text(),'yet another test')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>2000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>Delete</td>
 	<td></td>
 </tr>
 <tr>
@@ -329,7 +344,7 @@
 </tr>
 <tr>
 	<td>clickAndWait</td>
-	<td>link=Inbox9</td>
+	<td>link=Inbox*</td>
 	<td></td>
 </tr>
 <tr>
