@@ -7,30 +7,15 @@ class Adminlookupseeding extends CmfiveMigration {
 		
 		$rows = [
 			// inserting Yes / No lookups
-			[ 'type'  	=> 'YesNo',
-			  'code' 	=> '1',
-			  'title' 	=> 'Yes',
-			],
-			[ 'type'  	=> 'YesNo',
-			  'code' 	=> '0',
-			  'title' 	=> 'No',
-			],
+			[ 'YesNo','1','Yes'],
+			[ 'YesNo','0','No'],
 			// inserting person honorific lookups
-			[ 'type'  	=> 'title',
-			  'code' 	=> 'Mr',
-			  'title' 	=> 'Mr',
-			],
-			[ 'type'  	=> 'title',
-			  'code' 	=> 'Mrs',
-			  'title' 	=> 'Mrs',
-			],
-			[ 'type'  	=> 'title',
-			  'code' 	=> 'Ms',
-			  'title' 	=> 'Ms',
-			],
+			[ 'title','Mr','Mr'],
+			[ 'title','Mrs','Mrs'],
+			[ 'title','Ms','Ms'],
 		];
 		
-		$table->insert($rows);
+		$table->insert(['type','code','title'],$rows);
 		$table->saveData();
 		
 	}
