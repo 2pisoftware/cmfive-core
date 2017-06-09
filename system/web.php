@@ -115,7 +115,7 @@ class Web {
 		defined("WEBROOT") ||  define("WEBROOT", $this->_webroot);
 		
         // conditions to start the installer
-        $this->_is_installing = array_key_exists('REQUEST_URI',$_SERVER) && strpos($_SERVER['REQUEST_URI'], '/install') === 0 ||!file_exists(ROOT_PATH . "/config.php");
+        $this->_is_installing = (array_key_exists('REQUEST_URI',$_SERVER) && !file_exists(ROOT_PATH . "/config.php")) || strpos($_SERVER['REQUEST_URI'], '/install') === 0;
 
         $this->loadConfigurationFiles();
          
@@ -700,7 +700,9 @@ class Web {
 	    //if (!file_exists("config.php")) {
 		//	$this->install();
 		//}
-        require ROOT_PATH . "/config.php";
+		if (file_exists(ROOT_PATH . "/config.php")) {
+			require ROOT_PATH . "/config.php";
+		}
         
         // if config cache file doesn't exist, then
         // create it new
