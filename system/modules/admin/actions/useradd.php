@@ -6,8 +6,7 @@
  */
 function useradd_GET(Web &$w) {
 	$p = $w->pathMatch("box");
-	$user = new User($w);
-	$w->ctx('availableLocales', $user->getAvailableLanguages());
+	$w->ctx('availableLocales', $w->getAvailableLanguages());
 
 	if (!$p['box']) {
 		$w->Admin->navigation($w, "Add User");

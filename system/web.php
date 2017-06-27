@@ -125,6 +125,8 @@ class Web {
 		if ($this->_is_installing) {
 			$this->install();
 		}
+
+		clearstatcache();
 	}
 
 	private function modelLoader($className) {
@@ -311,20 +313,33 @@ class Web {
 		$this->currentLocale = $langParts[0];
 	}
 
+	function getAvailableLanguages() {
+		$lang = [];
+		foreach ($this->modules() as $module) {
+			if (Config::get("{$module}.active") === true && !empty(Config::get("{$module}.available_languages"))) {
+				$lang = array_merge($lang, Config::get("{$module}.available_languages"));
+			}
+		}
+
+		$filtered_lang = array_unique(array_filter($lang));
+		$lang = [];
+		foreach ($filtered_lang ?: [] as $key => $value) {
+			$lang[] = [$value, $key];
+		}
+
+		return $lang;
+	}
+
 	/**
 	 * Set the default translation domain (module name)
 	 * Initialise gettext for this module if not already loaded
 	 */
 	function setTranslationDomain($domain) {
-		$this->Log->info('init translations for ' . $domain);
 		$path = ROOT_PATH . "/" . $this->getModuleDir($domain) . "translations";
 		$translationFile = $path . "/" . $this->currentLocale . "/LC_MESSAGES/" . $domain . ".mo";
-		$this->Log->info('translations file is ' . $translationFile);
 		if (file_exists($translationFile)) {
-			$this->Log->info('translations file exists for ' . $domain);
 			$results = bindtextdomain($domain, $path);
 			if (!$results) {
-				$this->Log->info('setlocale bindtextdomain failed try again with main domain: ' . $domain . ' : ' . $path);
 				$domain = 'main';
 				$path = ROOT_PATH . "/" . $this->getModuleDir($domain) . "translations";
 				$results = bindtextdomain($domain, $path);
@@ -333,7 +348,6 @@ class Web {
 				}
 			}
 		} else {
-			$this->Log->info('no translations file exists for ' . $domain . " using main instead");
 			$domain = 'main';
 			$path = ROOT_PATH . "/" . $this->getModuleDir($domain) . "translations";
 			$translationFile = $path . "/" . $this->currentLocale . "/LC_MESSAGES/" . $domain . ".mo";
