@@ -27,10 +27,11 @@ require_once __DIR__ ."/classes/Config.php";
 require_once __DIR__ ."/classes/History.php";
 
 // Load system Composer autoloader
-if (file_exists(__DIR__ . "/composer/vendor/autoload.php")) {
-    require "composer/vendor/autoload.php";
-}
-
+if (file_exists(ROOT_PATH . "/composer/vendor/autoload.php")) {
+    require ROOT_PATH . "/composer/vendor/autoload.php";
+} else if (file_exists(SYSTEM_PATH . "/composer/vendor/autoload.php")) {
+    require SYSTEM_PATH . "/composer/vendor/autoload.php";
+} 
 
 
 class PermissionDeniedException extends Exception {
@@ -114,9 +115,10 @@ class Web {
 		spl_autoload_register(array($this, 'modelLoader'));
 		defined("WEBROOT") ||  define("WEBROOT", $this->_webroot);
 		
-        // conditions to start the installer
-        $this->_is_installing = array_key_exists('REQUEST_URI',$_SERVER) && strpos($_SERVER['REQUEST_URI'], '/install') === 0 ||!file_exists(ROOT_PATH . "/config.php");
-
+        // conditions to start the installer - must be running from web browser
+		if (array_key_exists('REQUEST_URI', $_SERVER)) {
+			$this->_is_installing = !file_exists(ROOT_PATH . "/config.php") || strpos($_SERVER['REQUEST_URI'], '/install') === 0;
+		}
         $this->loadConfigurationFiles();
          
         if($this->_is_installing)
@@ -700,7 +702,9 @@ class Web {
 	    //if (!file_exists("config.php")) {
 		//	$this->install();
 		//}
-        require ROOT_PATH . "/config.php";
+		if (file_exists(ROOT_PATH . "/config.php")) {
+			require ROOT_PATH . "/config.php";
+		}
         
         // if config cache file doesn't exist, then
         // create it new
