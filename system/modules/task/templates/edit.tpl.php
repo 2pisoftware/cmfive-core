@@ -57,29 +57,30 @@
                     </div>
 
                     <div class="small-12 large-3 right" style="margin-top: 16px;">
-						<div class='row-fluid panel clearfix' id='task_subscribers'>
-                            <table class="small-12 columns">
-                                <tbody>
-                                    <tr>
-                                        <td class="section" colspan="2">Subscribers <?php echo Html::box('/task-subscriber/add/' . $task->id, 'Add', true, false, null, null, 'isbox', null, 'info right'); ?></td>
-                                    </tr>
-                                    <?php if (!empty($subscribers)) : ?>
-                                        <?php foreach($subscribers as $subscriber) : ?>
-                                            <?php $subscriber_user = $subscriber->getUser(); ?>
-                                            <tr <?php echo ($subscriber_user->is_external) ? 'style="background-color: #c99;"' : ''; ?>>
-                                                <td><?php echo $subscriber_user->getFullName(); ?> - <?php echo $subscriber_user->getContact()->email; ?></td>
-                                                <td><?php echo Html::b('/task-subscriber/delete/' . $subscriber->id, 'Delete', 'Are you sure you want to remove this subscriber?', null, false, 'warning right'); ?></td>
+                        <?php
+                            // Call hook and filter out empty/false values
+                            if (!empty($task->id)) : ?>
+        						<div class='row-fluid panel clearfix' id='task_subscribers'>
+                                    <table class="small-12 columns">
+                                        <tbody>
+                                            <tr>
+                                                <td class="section" colspan="2">Subscribers <?php echo Html::box('/task-subscriber/add/' . $task->id, 'Add', true, false, null, null, 'isbox', null, 'info right'); ?></td>
                                             </tr>
-                                        <?php endforeach; ?>
-                                    <?php endif; ?>
-                                </tbody>
-                            </table>
-                        </div>
-                        
-						<?php
-							// Call hook and filter out empty/false values
-							if (!empty($task->id)) {
-								$additional_details = $w->callHook('task', 'additional_details', $task);
+                                            <?php if (!empty($subscribers)) : ?>
+                                                <?php foreach($subscribers as $subscriber) : ?>
+                                                    <?php $subscriber_user = $subscriber->getUser(); ?>
+                                                    <tr <?php echo ($subscriber_user->is_external) ? 'style="background-color: #c99;"' : ''; ?>>
+                                                        <td><?php echo $subscriber_user->getFullName(); ?> - <?php echo $subscriber_user->getContact()->email; ?></td>
+                                                        <td><?php echo Html::b('/task-subscriber/delete/' . $subscriber->id, 'Delete', 'Are you sure you want to remove this subscriber?', null, false, 'warning right'); ?></td>
+                                                    </tr>
+                                                <?php endforeach; ?>
+                                            <?php endif; ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                
+						
+								<?php $additional_details = $w->callHook('task', 'additional_details', $task);
 								if (!is_null($additional_details) && is_array($additional_details)) {
 									$additional_details = array_values(array_filter($additional_details ? : []));
 									if (count($additional_details) > 0) : ?>
@@ -95,7 +96,7 @@
 										</div>
 									<?php endif;
 								}
-							}
+							endif;
 						?>
                         <div class="small-12 panel" id="tasktext" style="display: none;"></div>
                         <div class="small-12 panel clearfix" id="formfields" style="display: none;"></div>
