@@ -157,6 +157,19 @@ class DbPDO extends PDO {
         }
         return $this;
     }
+	
+	/**
+     * Adds left outer join to the current query
+     *
+     * @param String $leftjoin left join rule to apply
+     * @return DbPDO $this
+     */
+    public function leftOuterJoin($leftOuterJoin){
+        if ($this->query !== NULL && !empty($leftOuterJoin)){
+            $this->query = $this->query->leftOuterJoin($leftOuterJoin);
+        }
+        return $this;
+    }
 
     /**
      * Adds inner join to the current query
