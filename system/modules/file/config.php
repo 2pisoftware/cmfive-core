@@ -9,9 +9,8 @@ Config::set('file', [
     'search' => ["File Attachments" => "Attachment"],
     "dependencies" => [
         "knplabs/gaufrette" => "0.2.*@dev",
-		"aws/aws-sdk-php" => "~2",
-        "dropbox-php/dropbox-php" => "*"
-    ],
+		"aws/aws-sdk-php" => "~2"
+	],
 	'hooks' => [
 		'admin'
 	],
