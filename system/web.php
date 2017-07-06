@@ -341,9 +341,9 @@ class Web {
 	function setTranslationDomain($domain) {
 		$path = ROOT_PATH . DS . $this->getModuleDir($domain) . "translations";
 		$translationFile = $path . DS . $this->currentLocale . DS . "LC_MESSAGES" . DS . $domain . ".mo";
-		$translationFileOverride = ROOT_PATH . DS . 'translations' . DS . $this->currentLocale . DS . 'LC_MESSAGES' . DS . $domain . '.mo';
+		$translationFileOverride = ROOT_PATH . DS . 'translations' . DS . $domain . DS . $this->currentLocale . DS . 'LC_MESSAGES' . DS . $domain . '.mo';
 		
-		if (file_exists($translationFileOverride) && !empty(bindtextdomain($domain, ROOT_PATH . DS . 'translations'))) {
+		if (file_exists($translationFileOverride) && !empty(bindtextdomain($domain, ROOT_PATH . DS . 'translations' . DS . $domain))) {
 			// Project language override has been loaded
 		} else if (file_exists($translationFile)) {
 			// Fallback to module translation directory
