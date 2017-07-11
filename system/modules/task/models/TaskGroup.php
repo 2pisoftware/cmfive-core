@@ -11,6 +11,8 @@
  */
 class TaskGroup extends DbObject {
 
+	static $_DEFAULT_AUTOMATIC_SUBSCRIPTION = false;
+	
     public $title;   // not null
     public $can_assign;  // ALL, GUEST, MEMBER, OWNER
     public $can_view;   // ALL, GUEST, MEMBER, OWNER
@@ -22,6 +24,7 @@ class TaskGroup extends DbObject {
     public $default_task_type;   // can be null
     public $default_priority;    // can be null
     public $task_group_type; // php class name of concrete TaskGroupType implementation
+	public $is_automatic_subscription;
     public $_modifiable;
     
     
@@ -40,6 +43,10 @@ class TaskGroup extends DbObject {
         return $this->getObjects("TaskGroupMember", ['task_group_id' => $this->id]);
     }
 
+	public function shouldAutomaticallySubscribe() {
+		return !!$this->is_automatic_subscription;
+	}
+	
     public function getTasks() {
         return $this->getObjects("Task", ['task_group_id' => $this->id, 'is_deleted' => 0]);
     }

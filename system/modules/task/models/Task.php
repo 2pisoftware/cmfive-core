@@ -505,15 +505,31 @@ class Task extends DbObject {
             // Add all taskgroup members as subscribers
             $taskgroup = $this->getTaskGroup();
             if (!empty($taskgroup->id)) {
-                $members = $taskgroup->getMembers();
-                if (!empty($members)) {
-                    foreach($members as $member) {
-                        $task_subscriber = new TaskSubscriber($this->w);
-                        $task_subscriber->task_id = $this->id;
-                        $task_subscriber->user_id = $member->user_id;
-                        $task_subscriber->insert();
-                    }
-                }
+				// If automatic subscribe is ticked, assign all members as subscribers
+				if ($taskgroup->shouldAutomaticallySubscribe()) {
+					$members = $taskgroup->getMembers();
+					if (!empty($members)) {
+						foreach($members as $member) {
+							$task_subscriber = new TaskSubscriber($this->w);
+							$task_subscriber->task_id = $this->id;
+							$task_subscriber->user_id = $member->user_id;
+							$task_subscriber->insert();
+						}
+					}
+				// Else only assign the assignee and creator
+				} else {
+					$creator_assigner = new TaskSubscriber($this->w);
+					$creator_assigner->task_id = $this->id;
+					$creator_assigner->user_id = $this->creator_id;
+					$creator_assigner->insert();
+					
+					if (!empty($this->assignee_id)) {
+						$assignee_subscriber = new TaskSubscriber($this->w);
+						$assignee_subscriber->task_id = $this->id;
+						$assignee_subscriber->user_id = $this->assignee_id;
+						$assignee_subscriber->insert();
+					}
+				}
             }
 
             $this->commitTransaction();
@@ -578,6 +594,13 @@ class Task extends DbObject {
                 $tg_type->on_after_update($this);
             }
 
+			if (!$this->isUserSubscribed($this->assignee_id)) {
+				$assignee_subscriber = new TaskSubscriber($this->w);
+				$assignee_subscriber->task_id = $this->id;
+				$assignee_subscriber->user_id = $this->assignee_id;
+				$assignee_subscriber->insert();
+			}
+			
             $this->commitTransaction();
         } catch (Exception $ex) {
             $this->Log->error("Updating Task(" . $this->id . "): " . $ex->getMessage());
@@ -630,6 +653,11 @@ class Task extends DbObject {
         }
     }
 
+	public function isUserSubscribed($user_id) {
+		$existing_subscription = $this->getObject('TaskSubscriber', ['task_id' => $this->id, 'user_id' => $user_id, 'is_deleted' => 0]);
+		return !empty($existing_subscription->id);
+	}
+	
     function getTaskGroup() {
         return $this->Task->getTaskGroup($this->task_group_id);
     }

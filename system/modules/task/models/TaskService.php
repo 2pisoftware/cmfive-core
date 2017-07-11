@@ -701,7 +701,7 @@ class TaskService extends DbService {
      *  
      * @return TaskGroup
      */
-    function createTaskGroup($type, $title, $description, $default_assignee_id, $can_assign = "OWNER", $can_view = "OWNER", $can_create = "OWNER", $is_active = 1, $is_deleted = 0, $default_task_type = null, $default_priority = null) {
+    function createTaskGroup($type, $title, $description, $default_assignee_id, $can_assign = "OWNER", $can_view = "OWNER", $can_create = "OWNER", $is_active = 1, $is_deleted = 0, $default_task_type = null, $default_priority = null, $is_automatic_subscription = false) {
         // title should be unique!
         $taskgroup = $this->getTaskGroupByUniqueTitle($title);
         if (null != $taskgroup) {
@@ -721,6 +721,7 @@ class TaskService extends DbService {
         $taskgroup->default_assignee_id = $default_assignee_id;
         $taskgroup->default_task_type = $default_task_type;
         $taskgroup->default_priority = $default_priority;
+		$taskgroup->is_automatic_subscription = !!$is_automatic_subscription;
         $response = $taskgroup->insert();
         
         // Check the validation

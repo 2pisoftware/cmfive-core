@@ -25,8 +25,10 @@ class TaskGroupMember extends DbObject {
 
 		if ($this->role !== "GUEST") {
 			$taskgroup = $this->getTaskGroup();
-			if (!empty($taskgroup->id)) {
-				$existing_tasks = $this->getTaskGroup()->getTasks();
+			if (!empty($taskgroup->id) && $taskgroup->shouldAutomaticallySubscribe()) {
+				$existing_open_tasks_array = $this->db->get('task')->where('task_group_id', $this->task_group_id)->where('is_deleted', 0)->where('is_closed', 0)->fetchAll(); // $this->getTaskGroup()->getTasks();
+				
+				$existing_tasks = $this->fillObjects('Task', $existing_open_tasks_array);
 				if (!empty($existing_tasks)) {
 					foreach($existing_tasks as $existing_task) {
 						$task_subscriber = new TaskSubscriber($this->w);

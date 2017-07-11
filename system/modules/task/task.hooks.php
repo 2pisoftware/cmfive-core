@@ -130,7 +130,7 @@ function task_core_dbobject_after_update_Task(Web $w, $object) {
 			"Type"			=> $object->getTypeTitle(),
 			"Title"			=> $object->title,
 			"Due"			=> !empty($object->dt_due) ? date('d-m-Y', strtotime(str_replace('/', '-', $object->dt_due))) : '',
-			"Status"		=> '<b>' . $object->_old['status'] . ' => ' . $object->status . '</b>',
+			"Status"		=> '<b>' . $object->__old['status'] . ' => ' . $object->status . '</b>',
 			"Priority"		=> $object->isUrgent() ? "<b style='color: orange;'>{$object->priority}</b>" : $object->priority
 		];
 
