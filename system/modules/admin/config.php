@@ -23,7 +23,7 @@ Config::set('admin', array(
 		// 'backuplocations' => ['dropbox' => ['key' => '<KEY>', 'secret' => '<SECRET>']]
     ),
     "dependencies" => array(
-        "swiftmailer/swiftmailer" => "@stable",
+        "swiftmailer/swiftmailer" => "~4.1",
         "twig/twig" => "1.*",
         "nesbot/carbon" => "1.14",
 		"mandrill/mandrill" => "1.0.*",

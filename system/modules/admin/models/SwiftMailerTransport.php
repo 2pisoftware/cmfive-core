@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Transport implementation for the swiftmailer library
+ * 
+ * @author Adam Buckley <adam@2pisoftware.com>
+ */
 class SwiftMailerTransport implements GenericTransport {
 	private $w;
 	private $transport;
@@ -17,16 +22,30 @@ class SwiftMailerTransport implements GenericTransport {
 		switch(strtolower($layer)) {
 			case "smtp":
 			case "swiftmailer":
-				return Swift_SmtpTransport::newInstance(Config::get('email.host'), Config::get('email.port'), Config::get('email.auth') == true ? 'ssl' : null)
-					->setUsername(Config::get('email.username'))
-					->setPassword(Config::get('email.password'));
+				if (method_exists('Swift_SmtpTransport', 'newInstance')) {
+					return Swift_SmtpTransport::newInstance(Config::get('email.host'), Config::get('email.port'), Config::get('email.auth') == true ? 'ssl' : null)
+						->setUsername(Config::get('email.username'))
+						->setPassword(Config::get('email.password'));
+				} else {
+					return (new Swift_SmtpTransport(Config::get('email.host'), Config::get('email.port'), Config::get('email.auth') == true ? 'ssl' : null))
+						->setUsername(Config::get('email.username'))
+						->setPassword(Config::get('email.password'));
+				}
 			break;
 			case "sendmail":
 				$command = Config::get('email.command');
 				if (!empty($command)) {
-					return Swift_SendmailTransport::newInstance(Config::get('email.command'));
+					if (method_exists('Swift_SendmailTransport', 'newInstance')) {
+						return Swift_SendmailTransport::newInstance($command);
+					} else {
+						return new Swift_SendmailTransport($command);
+					}
 				} else {
-					return Swift_SendmailTransport::newInstance();
+					if (method_exists('Swift_SendmailTransport', 'newInstance')) {
+						return Swift_SendmailTransport::newInstance();
+					} else {
+						return new Swift_SendmailTransport();
+					}
 				}
 			break;
 			default:
@@ -41,9 +60,13 @@ class SwiftMailerTransport implements GenericTransport {
 					$this->w->Log->error("Could not send mail to {$to} from {$replyto} about {$subject} no email transport defined!");
 					return;
 				}
-
-				$mailer = Swift_Mailer::newInstance($this->transport);
-
+				
+				$mailer = null;
+				if (method_exists('Swift_Mailer', 'newInstance')) {
+					$mailer = Swift_Mailer::newInstance($this->transport);
+				} else {
+					$mailer = new Swift_Mailer($this->transport);
+				}
 				// To, cc, bcc need to be given as arrays when sending to more than one person
 				// Ie you separate them by a comma, this will split them into arrays as expected by Swift
 				if (strpos($to, ",") !== FALSE) {
@@ -51,10 +74,17 @@ class SwiftMailerTransport implements GenericTransport {
 				}
 				
 				// Create message
-				$message = Swift_Message::newInstance($subject)
-								->setFrom($replyto)
-								->setTo($to)->setBody($body)
-								->addPart($body, 'text/html');
+				$message = null;
+				if (method_exists('Swift_Message', 'newInstance')) {
+					$message = Swift_Message::newInstance($subject);
+				} else {
+					$message = new Swift_Message($subject);
+				}
+				
+				$message->setFrom($replyto)
+						->setTo($to)->setBody($body)
+						->addPart($body, 'text/html');
+				
 				if (is_array($replyto)) {
 					$message->setReplyTo($replyto);
 				} else {
