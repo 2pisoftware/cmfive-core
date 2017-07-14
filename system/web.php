@@ -726,11 +726,16 @@ class Web {
                 // Loop through listing
                 foreach ($dirListing as $item) {
                     $searchingDir = $dir . "/" . $item;
-                    if (is_dir($searchingDir) and $item[0] !== '.') {
+                    if (is_dir($searchingDir) && $item[0] !== '.') {
 
                         // If is also a directory, look for config.php file
                         if (file_exists($searchingDir . "/config.php")) {
-                            include($searchingDir . "/config.php");
+                            // Sandbox config load to check if module active
+							$sandbox_command = 'php -r "include \'' . SYSTEM_PATH . '/classes/Config.php\'; include \'' . $searchingDir . '/config.php\'; echo !!Config::get(\'' . $item . '.active\');';
+							$moduleIsActive = shell_exec($sandbox_command);
+							if ($moduleIsActive == 1) {
+								include($searchingDir . "/config.php");
+							}
                         }
                     }
                 }
