@@ -14,8 +14,10 @@ function edit_GET($w) {
         $w->error('You have attempted to view a deleted task.');
     }
     
-    // Register for timelog
-    $w->Timelog->registerTrackingObject($task);
+    // Register for timelog if not new task
+    if (!empty($task->id)) {
+        $w->Timelog->registerTrackingObject($task);
+    }
     
     if (!empty($task->id) && !$task->canView($w->Auth->user())) {
         $w->error("You do not have permission to edit this Task", "/task/tasklist");
@@ -169,14 +171,17 @@ function edit_POST($w) {
     }
     
     $task->fill($_POST['edit']);
-    
+	if (empty($task->dt_assigned) || $task->assignee_id != intval($_POST['edit']['assignee_id'])) {
+		$task->dt_assigned = formatDateTime(time());
+	}
+	
     $task->assignee_id = intval($_POST['edit']['assignee_id']);
     if (empty($task->dt_due)) {
         $task->dt_due = $w->Task->getNextMonth();
     }
-    
-    $task->insertOrUpdate(false);
-    $task->rate = $task->rate == 0 ? NULL : $task->rate;
+    $task->estimate_hours = !empty($task->estimate_hours) ? $task->estimate_hours : null;
+	$task->effort = empty($task->effort) ? NULL : floatval($task->effort);
+    $task->rate = empty($task->rate) ? NULL : $task->rate;
     $task->insertOrUpdate(true);
     
     // Tell the template what the task id is (this post action is being called via ajax)

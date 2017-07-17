@@ -9,6 +9,7 @@ function ajaxStart_POST(Web $w) {
     
     $p = $w->pathMatch("class", "id");
     
+    
     if (!class_exists($p['class'])) {
         $w->Log->debug("class " . $p['class'] . " doesnt exist");
         return "0";
@@ -27,7 +28,7 @@ function ajaxStart_POST(Web $w) {
     
     if (!empty($object->id)) {
         $timelog = new Timelog($w);
-        
+        $timelog->fill($_POST);
         $timelog->start($object, $start_time);
 		
 		if (!empty($_POST['description'])) {
