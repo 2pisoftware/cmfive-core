@@ -17,7 +17,7 @@ class AuthInitialMigration extends CmfiveMigration {
 						'primary_key' => 'id'
 					])->addColumn($column)
 					->addColumn('login', 'string', ['limit' => 32])
-					->addColumn('password', 'string', ['limit' => 255])
+					->addColumn('password', 'string', ['limit' => 255, 'null' => true])
 					->addColumn('password_salt', 'string', ['limit' => 255, 'null' => true])
 					->addColumn('contact_id', 'biginteger', ['null' => true])
 					->addColumn('password_reset_token', 'string', ['limit' => 40, 'null' => true])

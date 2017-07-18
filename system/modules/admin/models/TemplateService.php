@@ -99,20 +99,29 @@ class TemplateService extends DbService {
 		// if passing a file path or string template
 		if (is_string($template)) {
 								
-			require_once $this->twig_lib.'/lib/Twig/Autoloader.php';
-			Twig_Autoloader::register();
+			//require_once $this->twig_lib.'/lib/Twig/Autoloader.php';
+			// Twig_Autoloader::register();
 			
 			if ( file_exists($template) ) {
 				$dir = dirname($template);
 				$loader = new Twig_Loader_Filesystem($dir);
 				$template = str_replace($dir.DIRECTORY_SEPARATOR, "", $template);
+				$twig = new Twig_Environment($loader, array('debug' => true));
+				$twig->addExtension(new Twig_Extension_Debug());
+				return $twig->render($template, $data);
 			} else {
-				$loader = new Twig_Loader_String();
-			}
+				// $loader = new Twig_Loader_String();
 
-			$twig = new Twig_Environment($loader, array('debug' => true));
-			$twig->addExtension(new Twig_Extension_Debug());
-			return $twig->render($template, $data);			
+				// Latest version of twig deprecates the use of a string loader
+				// https://stackoverflow.com/questions/31081910/what-to-use-instead-of-twig-loader-string
+				$tpl_name = uniqid('string_template_', true);
+				$loader = new Twig_Loader_Array([]); // $tpl_name => $template
+				$twig = new Twig_Environment($loader, array('debug' => true));
+				$twig->setCache(false);
+				$template = $twig->createTemplate($template);
+				return $template->render($data);
+			}
+						
 		}
 		
 	} 

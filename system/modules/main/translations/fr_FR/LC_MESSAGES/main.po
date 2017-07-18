@@ -1,0 +1,70 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: cmfive\n"
+"POT-Creation-Date: 2017-06-27 10:36+1000\n"
+"PO-Revision-Date: \n"
+"Last-Translator: Steve Ryan <steve@2pisoftware.com>\n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.0.1\n"
+"X-Poedit-KeywordsList: __:1;__:1,2c;_e:1;_e:1,2c;_n:1,2;_n:1,2,4c;_en:1,2;"
+"_en:1,2,4c\n"
+"X-Poedit-Basepath: ../../..\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: actions/addwidget.php:14
+msgid "Add a widget"
+msgstr "Ajoute un Widget"
+
+#: actions/addwidget.php:16
+msgid "Source module"
+msgstr "Module source"
+
+#: actions/addwidget.php:17
+msgid "Widget Name"
+msgstr "Widget nom"
+
+#: actions/addwidget.php:21
+msgid "Add"
+msgstr "Ajoute"
+
+#: actions/addwidget.php:43
+msgid "Widget Added"
+msgstr "Widget ajoutée"
+
+#: actions/addwidget.php:45
+msgid "Could not add widget"
+msgstr "Impossible d'ajouter un widget"
+
+#: actions/configwidget.php:11 actions/configwidget.php:34
+#: actions/removewidget.php:9
+msgid "Widget not found"
+msgstr "Widget non trouvé"
+
+#: actions/configwidget.php:43
+msgid "Widget updated"
+msgstr "Widget a été mis à jour"
+
+#: actions/index.php:3
+msgid "Home"
+msgstr "Accueil"
+
+#: actions/removewidget.php:14
+msgid "Widget removed"
+msgstr "Widget supprimé"
+
+#: partials/templates/listwidgets.tpl.php:11
+msgid "Config"
+msgstr "Config"
+
+#: partials/templates/listwidgets.tpl.php:12
+msgid "Remove"
+msgstr "Retirer"
+
+#: partials/templates/listwidgets.tpl.php:12
+msgid "Remove Widget"
+msgstr "Supprimer un widget"

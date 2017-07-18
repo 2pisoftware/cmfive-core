@@ -8,7 +8,7 @@ function delete_ALL(Web &$w) {
 	foreach ($check as $message) {
 		$mess_obj = $w->Inbox->getMessage($message);
 		$mess_obj->is_deleted = 1;
-		$mess_obj->is_new=false;
+		$mess_obj->is_new=0;
 		//		$mess_obj->dt_archived = time();
 		$mess_obj->update();
 	}
