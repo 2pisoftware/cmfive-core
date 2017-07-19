@@ -1,32 +1,32 @@
 <style>
 	.tag_container {
 		display: inline-block;
-		position: relative;
-		height: 40px;
-		width: 200px;
-		top: -11px;
+		/*position: relative;*/
+		/*height: 40px;*/
+		/*width: 200px;*/
+		/*top: -11px;*/
 	}
 	
-	.tag_container .tag_header {
+/*	.tag_container .tag_header {
 		font-size: 12px;
 		display: block;
-	}
+	}*/
 	
 	.tag_container .tag_container_inner {
-		position: absolute;
-		bottom: 0px; left: 0px;
-		width: 100%;
+		/*position: absolute;*/
+		/*bottom: 0px; left: 0px;*/
+		/*width: 100%;*/
 	}
 </style>
 <div class='tag_container'>
-	<div class='tag_header'>Tags</div>
+	<!--<div class='tag_header'>Tags</div>-->
 	<div class='tag_container_inner'>
 		<?php if (!empty($tags)) : ?>
 			<?php foreach($tags as $tag) : ?>
-				<span class='info label'><?php echo $tag->tag; ?></span>
+				<span class='info label'><i class='fa fa-tag'></i><?php echo $tag->tag; ?></span>
 			<?php endforeach; ?>
 		<?php else: ?>
-			<span class='info label'>No tags</span>
+			<span class='secondary label'>No tags</span>
 		<?php endif; ?>
 	</div>
 </div>

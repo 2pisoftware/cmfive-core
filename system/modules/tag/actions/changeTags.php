@@ -15,6 +15,7 @@ function changeTags_GET(Web $w) {
 		return;
 	}
 	
+	$w->ctx('object', $object);
 	$w->ctx('object_class', $object_class);
 	$w->ctx('id', $id);
 	
@@ -23,4 +24,8 @@ function changeTags_GET(Web $w) {
 	$w->ctx('object_tags', $w->Tag->getTagsByObjClass($object_class));
 	$w->ctx('all_tags', $w->Tag->getAllTags(true));
 	
+}
+
+function changeTags_POST(Web $w) {
+	var_dump($_POST); die();
 }

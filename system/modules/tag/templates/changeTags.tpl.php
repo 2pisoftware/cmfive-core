@@ -1,5 +1,11 @@
-<form action='/tag/changeTags/<?php echo $object_class; ?>/<?php echo $id; ?>'>
-	<input id='display_tags_<?php echo $object_class; ?>_<?php echo $id; ?>' value='<?php echo implode(',', array_map(function($tag) {return $tag->id;}, $tags ? : [])); ?>' />
+<h3>Tags for <span style='color: #444; font-weight: bold;'><?php echo $object_class; ?>: <?php echo $object->getSelectOptionTitle(); ?></span></h3>
+<form action='/tag/changeTags/<?php echo $object_class; ?>/<?php echo $id; ?>' method='POST'>
+	<?php echo (new \Html\Form\InputField([
+		'id' => 'display_tags_' . $object_class . '_' . $id,
+		'name' => 'tags',
+		'value' => implode(',', array_map(function($tag) {return $tag->id;}, $tags ? : []))
+	])); ?>
+	<button>OK</button>
 </form>
 <script>
 
@@ -22,7 +28,7 @@
 		],
 		optgroups: [
 			{$order: 1, id: '<?php echo $object_class; ?>', name: 'Existing tags on a <?php echo $object_class; ?>'},
-			{$order: 2, id: 'All', name: 'All other tags'}
+			{$order: 2, id: 'All', name: 'All tags'}
 		],
 		labelField: 'tag',
 		valueField: 'id',
@@ -31,10 +37,23 @@
 		optgroupLabelField: 'name',
 		optgroupValueField: 'id',
 		searchField: ['tag'],
-		openOnFocus: true,
+//		openOnFocus: true,
 		lockOptgroupOrder: true,
 		hideSelected: false,
-		duplicates: true
+		duplicates: true,
+		create:function (input, callback){
+			$.ajax({
+				url: '/tag/createTag/<?php echo $object_class; ?>/<?php echo $id; ?>?tag=' + input,
+				type: 'GET',
+				success: function (result) {
+					debugger;
+					if (result) {
+						var j_result = JSON.parse(result);
+						callback({ id: j_result.id, tag: j_result.tag, type: '<?php echo $object_class; ?>' });
+					}
+				}
+			});
+		}
 	});
 	
 //	var values = [<?php echo implode(',', array_map(function($tag) {return $tag->id;}, $tags ? : [])); ?>];
