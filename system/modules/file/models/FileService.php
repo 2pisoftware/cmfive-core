@@ -388,13 +388,11 @@ class FileService extends DbService {
 	 * @return Mixed the id of the attachment object or null
 	 */
 	function uploadAttachment($requestkey, $parentObject, $title = null, $description = null, $type_code = null) {
-            
-                if (empty($_POST[$requestkey]) && (empty($_FILES[$requestkey]) || $_FILES[$requestkey]['size'] <= 0)) {
-                    return false;
-                }
-            
-            
-                if (!is_a($parentObject, "DbObject")) {
+		if (empty($_POST[$requestkey]) && (empty($_FILES[$requestkey]) || $_FILES[$requestkey]['size'] <= 0)) {
+			return false;
+		}
+
+		if (!is_a($parentObject, "DbObject")) {
 			$this->w->error("Parent not found.");
 		}
 
@@ -416,8 +414,7 @@ class FileService extends DbService {
 		$att->title = $title;
 		$att->description = $description;
 		$att->type_code = $type_code;
-		$att->insert();
-
+		
 		$filesystemPath = "attachments/" . $parentObject->getDbTableName() . '/' . date('Y/m/d') . '/' . $parentObject->id . '/';
 		$filesystem = $this->getFilesystem($this->getFilePath($filesystemPath));
 		if (empty($filesystem)) {
@@ -434,25 +431,26 @@ class FileService extends DbService {
 		if(!empty($_POST[$requestkey])) {
 			preg_match('%data:(.*);base%', substr($_POST[$requestkey], 0, 25), $mime);
 			$data = substr($_POST[$requestkey], strpos($_POST[$requestkey], ",") + 1);
-			$mime_type = $mime[1];
+//			$mime_type = $mime[1];
 			$content = base64_decode($data);
-            $file->setContent($content, ['contentType' => $mime_type]); 
+            $file->setContent($content, ['contentType' => $mime[1]]); 
 		} else {
 			$content = file_get_contents($_FILES[$requestkey]['tmp_name']);
 			$file->setContent($content);
-			switch($att->adapter) {
-				case "local":
-					$mime_type = $this->w->getMimetype(FILE_ROOT . $att->fullpath);
-                    break;
-				default:
-					$mime_type = $this->w->getMimetypeFromString($content);
-                    
-			}
+//			switch($att->adapter) {
+//				case "local":
+//					$mime_type = $this->w->getMimetype(FILE_ROOT . $att->fullpath);
+//                    break;
+//				default:
+//					$mime_type = $this->w->getMimetypeFromString($content);
+//                    
+//			}
 		}
 		
-		
-		$att->mimetype = $mime_type;		
-		$att->update();
+		$att->insert();
+
+//		$att->mimetype = $mime_type;		
+//		$att->update();
 		return $att->id;
 	}
 
