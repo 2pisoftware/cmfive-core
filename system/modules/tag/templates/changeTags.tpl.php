@@ -71,7 +71,7 @@
 					if (result) {
 						var j_result = JSON.parse(result);
 						var option = { id: j_result.id, tag: j_result.tag, type: '<?php echo $object_class; ?>' };
-						callback(option);
+//						callback(option);
 						_this.addOption(option);
 					}
 				}
@@ -86,8 +86,8 @@
 					if (result) {
 						var j_result = JSON.parse(result);
 						var option = { id: j_result.id, tag: j_result.tag, type: '<?php echo $object_class; ?>' };
-						callback(option);
-						_this.addOption(option);
+//						callback(option);
+//						_this.addOption(option);
 					}
 				}
 			});
