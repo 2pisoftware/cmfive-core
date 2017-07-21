@@ -18,7 +18,7 @@ class TagService extends DbService {
 	 * @return Array<Tag>
 	 */
 	public function getTags() {
-		return $this->getObjects('Tag');
+		return $this->getObjects('Tag', ['is_deleted' => 0]);
 	}
 	
 
@@ -70,7 +70,7 @@ class TagService extends DbService {
 	public function getAllTags($returnObjects = false) {
 		//Loads a list of all tags that were ever created
 		
-		return !!$returnObjects ? $this->_db->get('tag')->orderBy('id, tag')->fetch_all() : $this->getObjects('Tag');
+		return !!$returnObjects ? $this->getObjects('Tag', ['is_deleted' => 0]) : $this->_db->get('tag')->where('is_deleted', 0)->orderBy('id, tag')->fetch_all();
 //		$unique_tags = [];
 //		if (!empty($tags)) {
 //			foreach($tags as $tag) {

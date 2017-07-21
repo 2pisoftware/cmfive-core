@@ -20,9 +20,9 @@ function changeTags_GET(Web $w) {
 	$w->ctx('id', $id);
 	
 	// Get current tags
-	$w->ctx('tags', $w->Tag->getTagsByObject($id, $object_class));
-	$w->ctx('object_tags', $w->Tag->getTagsByObjClass($object_class));
-	$w->ctx('all_tags', $w->Tag->getAllTags(true));
+	$w->ctx('tags', $w->Tag->getTagsByObject($object));
+	$w->ctx('object_tags', $w->Tag->getTagsByObjectClass($object_class));
+	$w->ctx('all_tags', $w->Tag->getTags());
 	
 }
 

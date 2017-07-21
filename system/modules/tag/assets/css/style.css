@@ -1,0 +1,6 @@
+
+.selectize-dropdown-content .option.selected {
+    background-color: #a0d3e8;
+    margin: 2px;
+    border: 1px solid #ddd;
+}

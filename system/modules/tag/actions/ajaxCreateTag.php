@@ -1,6 +1,6 @@
 <?php
 
-function createTag_GET(Web $w) {
+function ajaxCreateTag_GET(Web $w) {
 	$w->setLayout(null);
 	
 	list($class, $id) = $w->pathMatch();
