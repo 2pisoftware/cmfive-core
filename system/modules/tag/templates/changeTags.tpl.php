@@ -1,12 +1,21 @@
-<h3>Tags for <span style='color: #444; font-weight: bold;'><?php echo $object_class; ?>: <?php echo $object->getSelectOptionTitle(); ?></span></h3>
-<form action='/tag/changeTags/<?php echo $object_class; ?>/<?php echo $id; ?>' method='POST'>
-	<?php echo (new \Html\Form\InputField([
-		'id' => 'display_tags_' . $object_class . '_' . $id,
-		'name' => 'tags',
-		'value' => implode(',', array_map(function($tag) {return $tag->id;}, $tags ? : []))
-	])); ?>
-	<button>OK</button>
-</form>
+<style>
+
+	.display_tags_<?php echo $object_class; ?>_<?php echo $id; ?>-selectized {
+		display: relative !important;
+	}
+	
+</style>
+
+<h3 style='text-align: center;'>Tags for <span style='color: #444; font-weight: bold;'><?php echo $object_class; ?>: <?php echo $object->getSelectOptionTitle(); ?></span></h3>
+	<div class='row-fluid'>
+		<div class='small-12'>
+			<?php echo (new \Html\Form\InputField([
+				'id' => 'display_tags_' . $object_class . '_' . $id,
+				'name' => 'tags',
+				'value' => implode(',', array_map(function($tag) {return $tag->id;}, $tags ? : []))
+			])); ?>
+		</div>
+	</div>
 <script>
 
 	var $select_<?php echo $id; ?> = $('#display_tags_<?php echo $object_class; ?>_<?php echo $id; ?>').selectize({
@@ -53,6 +62,12 @@
 					}
 				}
 			});
+		},
+		onItemAdd: function (tag_id, event) {
+			debugger;
+		},
+		onItemRemove: function(tag_id, event) {
+			debugger;
 		}
 	});
 	

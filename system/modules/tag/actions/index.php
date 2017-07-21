@@ -2,7 +2,7 @@
 
 function index_ALL(Web $w) {
     $w->Tag->navigation($w, "Tag Admin");
-	$tags = $w->Tag->getAllTags();
+	$tags = $w->Tag->getTags();
 	$table_header = array("Tag", "Actions");
 	
 	$table_data = [];
