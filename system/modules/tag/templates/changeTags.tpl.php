@@ -41,57 +41,77 @@
 		],
 		labelField: 'tag',
 		valueField: 'id',
-//		persist: false,
+		persist: false,
 		optgroupField: 'tag_type',
 		optgroupLabelField: 'name',
 		optgroupValueField: 'id',
 		searchField: ['tag'],
-//		openOnFocus: true,
 		lockOptgroupOrder: true,
 		hideSelected: false,
 		enableDuplicate: true,
-		create:function (input, callback){
+		create: function (input, callback){
+			var _this = this;
 			$.ajax({
 				url: '/tag/ajaxCreateTag/<?php echo $object_class; ?>/<?php echo $id; ?>?tag=' + input,
 				type: 'GET',
 				success: function (result) {
 					if (result) {
 						var j_result = JSON.parse(result);
-						callback({ id: j_result.id, tag: j_result.tag, type: '<?php echo $object_class; ?>' });
+						var option = { id: j_result.id, tag: j_result.tag, type: '<?php echo $object_class; ?>' };
+//						
+						_this.addOption(option);
+						_this.addItem(option.id);
+								
+						_this.close();
+						_this.setTextboxValue('');
+						_this.setActiveItem(null);
+						_this.setActiveOption(null);
+						_this.setCaret(_this.items.length);
+						_this.refreshState();
+
+						_this.ignoreFocus = false;
+//						
+//						try {
+//							callback(option);
+//						} catch (e) {
+//							console.log("Caught Exception", e);
+//						}
 					}
 				}
 			});
 		},
-		onItemAdd: function (tag_id, callback) {
+		onItemAdd: function (tag_id) {
 			var _this = this;
 			$.ajax({
 				url: '/tag/ajaxAddTag/<?php echo $object_class; ?>/<?php echo $id; ?>?tag_id=' + tag_id,
-				type: 'GET',
-				success: function (result) {
-					if (result) {
-						var j_result = JSON.parse(result);
-						var option = { id: j_result.id, tag: j_result.tag, type: '<?php echo $object_class; ?>' };
-//						callback(option);
-						_this.addOption(option);
-					}
-				}
+				type: 'GET'
+//				success: function (result) {
+//					debugger;
+//					if (result) {
+//						var j_result = JSON.parse(result);
+//						var option = { id: j_result.id, tag: j_result.tag, type: '<?php echo $object_class; ?>' };
+////						callback(option);
+//						_this.addOption(option);
+//						_this.addItem(option.id);
+//					}
+//				}
 			});
 		},
-		onItemRemove: function(tag_id, event) {
+		onItemRemove: function(tag_id) {
 			var _this = this;
 			$.ajax({
 				url: '/tag/ajaxRemoveTag/<?php echo $object_class; ?>/<?php echo $id; ?>?tag_id=' + tag_id,
-				type: 'GET',
-				success: function (result) {
-					if (result) {
-						var j_result = JSON.parse(result);
-						var option = { id: j_result.id, tag: j_result.tag, type: '<?php echo $object_class; ?>' };
+				type: 'GET'
+//				success: function (result) {
+//					if (result) {
+//						var j_result = JSON.parse(result);
+//						var option = { id: j_result.id, tag: j_result.tag, type: '<?php echo $object_class; ?>' };
 //						callback(option);
 //						_this.addOption(option);
-					}
-				}
+//					}
+//				}
 			});
-		},
+		}
 //		render: {
 //			option: function(data, escape) {
 //				console.log(data);
@@ -100,16 +120,19 @@
 //		}
 	});
 	
-	$(document).on('click', '#display_tags_<?php echo $object_class; ?>_<?php echo $id; ?> .selectize-dropdown-content .option.selected', function(e) {
-		debugger;
-		// 1. Get the value
-		var selectedValue = $(this).attr("data-value");
-		// 2. Remove the option
-		$('#display_tags_<?php echo $object_class; ?>_<?php echo $id; ?>')[0].selectize.removeItem(selectedValue);
-		// 3. Refresh the select
-		$('#display_tags_<?php echo $object_class; ?>_<?php echo $id; ?>')[0].selectize.refreshItems();
-		$('#display_tags_<?php echo $object_class; ?>_<?php echo $id; ?>')[0].selectize.refreshOptions();
+	$(document).ready(function() {
+		$('#display_tags_<?php echo $object_class; ?>_<?php echo $id; ?> .selectize-dropdown-content .option.selected').on('click', function(e) {
+			debugger;
+			// 1. Get the value
+			var selectedValue = $(this).attr("data-value");
+			// 2. Remove the option
+			$('#display_tags_<?php echo $object_class; ?>_<?php echo $id; ?>')[0].selectize.removeItem(selectedValue);
+			// 3. Refresh the select
+			$('#display_tags_<?php echo $object_class; ?>_<?php echo $id; ?>')[0].selectize.refreshItems();
+			$('#display_tags_<?php echo $object_class; ?>_<?php echo $id; ?>')[0].selectize.refreshOptions();
+		});
 	});
+	
 	
 //	var values = [<?php echo implode(',', array_map(function($tag) {return $tag->id;}, $tags ? : [])); ?>];
 //	$select_<?php echo $id; ?>[0].selectize.setValue(values);
