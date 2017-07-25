@@ -41,9 +41,6 @@
 				});
 			}
 		}
-//		created: function() {
-//			this.getTags();
-//		}
 	});
 	
 	$(document).ready(function() {

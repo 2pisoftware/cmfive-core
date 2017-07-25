@@ -1,6 +1,6 @@
 <?php namespace System\Modules\Tag;
 
-function displayTags(\Web $w, $params = []) {
+function listTags(\Web $w, $params = []) {
 	
 	if (empty($params['object'])) {
 		return;
@@ -13,6 +13,7 @@ function displayTags(\Web $w, $params = []) {
 	
 	$w->ctx('object', $params['object']);
 	
+	// Filter tags into a displayable group and a group that only shows on hover
 	$tags = $w->Tag->getTagsByObject($params['object']);
 	$filtered_tags = ['display' => [], 'hover' => []];
 	
@@ -29,5 +30,5 @@ function displayTags(\Web $w, $params = []) {
 		}
 	}
 	
-	$w->ctx('tags', $filtered_tags);
+	$w->ctx('tags', $filtered_tags); 
 }
