@@ -25,7 +25,3 @@ function changeTags_GET(Web $w) {
 	$w->ctx('all_tags', $w->Tag->getTags());
 	
 }
-
-function changeTags_POST(Web $w) {
-	var_dump($_POST); die();
-}

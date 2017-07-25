@@ -17,11 +17,11 @@ function edit_GET(Web $w) {
 
 function edit_POST(Web $w) {
 	$p = $w->pathMatch("id");
-	$t = $w->Tag->getTag($p['id']);
-	$r = $w->Tag->renameTag($t->tag, $_POST['tag']);
-	if(-1 === $r) {
-		$w->msg("Couldn't save tag, \"".$_POST['tag']."\" already exists!", "/tag/edit/".$t->id);
-	} else {
-		$w->msg("Tag saved", "/tag/edit/".$t->id);
-	}
+	
+	$tag = $w->Tag->getTag($p['id']);
+	$tag->tag = $w->request('tag');
+	$tag->update();
+	
+	$w->msg("Tag saved", "/tag/edit/".$t->id);
+	
 }

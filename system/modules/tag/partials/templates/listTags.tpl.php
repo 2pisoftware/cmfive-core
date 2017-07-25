@@ -1,6 +1,10 @@
-<div id='tag_<?php echo get_class($object); ?>_<?php echo $object->id; ?>_modal' class='reveal-modal medium' data-reveal>
-	<a class="close-reveal-modal" aria-label="Close">&#215;</a>
-</div>
+<?php if ($w->Auth->user()->hasRole('tag_user') && $object->canView($w->Auth->user())) : ?>
+
+<?php if ($object->canEdit($w->Auth->user())) : ?>
+	<div id='tag_<?php echo get_class($object); ?>_<?php echo $object->id; ?>_modal' class='reveal-modal medium' data-reveal>
+		<a class="close-reveal-modal" aria-label="Close">&#215;</a>
+	</div>
+<?php endif; ?>
 
 <!-- VUE IMPLEMENTATION -->
 <div class='tag_container' id="tag_container_<?php echo get_class($object); ?>_<?php echo $object->id; ?>">
@@ -43,19 +47,21 @@
 		}
 	});
 	
-	$(document).ready(function() {
-	
-		$(document).on('close.fndtn.reveal', '[data-reveal]', function () {
-			var modal = $(this);
-			if (modal.attr('id') == 'tag_<?php echo get_class($object); ?>_<?php echo $object->id; ?>_modal') {
-				tag_vue_instance_<?php echo get_class($object); ?>_<?php echo $object->id; ?>.getTags();
-			}
-		});
-			
-		$('#tag_container_<?php echo get_class($object); ?>_<?php echo $object->id; ?>').click(function () {
-			$('#tag_<?php echo get_class($object); ?>_<?php echo $object->id; ?>_modal').foundation('reveal', 'open', {'animation_speed': 1, 'url': '/tag/changeTags/<?php echo get_class($object); ?>/<?php echo $object->id; ?>'});
-			return false;
-		});
-	});
+	<?php if ($object->canEdit($w->Auth->user())) : ?>
+		$(document).ready(function() {
+			$(document).on('close.fndtn.reveal', '[data-reveal]', function () {
+				var modal = $(this);
+				if (modal.attr('id') == 'tag_<?php echo get_class($object); ?>_<?php echo $object->id; ?>_modal') {
+					tag_vue_instance_<?php echo get_class($object); ?>_<?php echo $object->id; ?>.getTags();
+				}
+			});
 
+			$('#tag_container_<?php echo get_class($object); ?>_<?php echo $object->id; ?>').click(function () {
+				$('#tag_<?php echo get_class($object); ?>_<?php echo $object->id; ?>_modal').foundation('reveal', 'open', {'animation_speed': 1, 'url': '/tag/changeTags/<?php echo get_class($object); ?>/<?php echo $object->id; ?>'});
+				return false;
+			});
+		});
+	<?php endif; ?>
 </script>
+
+<?php endif;
