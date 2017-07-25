@@ -20,14 +20,14 @@ function displayTags(\Web $w, $params = []) {
 	if (!empty($tags)) {
 		foreach($tags as $tag) {
 			if ($tag_str_len < 10) {
-				$filtered_tags['display'][] = $tag;
+				$filtered_tags['display'][] = ['id' => $tag->id, 'tag' => $tag->tag];
 			} else {
-				$filtered_tags['hover'][] = $tag;
+				$filtered_tags['hover'][] = ['id' => $tag->id, 'tag' => $tag->tag];
 			}
 			
 			$tag_str_len += strlen($tag->tag);
 		}
 	}
-	$w->ctx('tags', $filtered_tags);
 	
+	$w->ctx('tags', $filtered_tags);
 }
