@@ -12,7 +12,7 @@ if (!empty($tasks)) {
 			$table_line = array();
 			$table_line[] = $task->id;
 			$table_line[] = $task->toLink() . // Html::a("/task/edit/" . $task->id, $task->title);
-				$w->partial('displayTags', ['object' => $task, 'limit' => 1], 'tag');
+				$w->partial('listTags', ['object' => $task, 'limit' => 1], 'tag');
 
 			// Append the rest of the data
 			$table_line += array(null, null,
