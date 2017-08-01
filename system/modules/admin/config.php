@@ -23,12 +23,11 @@ Config::set('admin', array(
 		// 'backuplocations' => ['dropbox' => ['key' => '<KEY>', 'secret' => '<SECRET>']]
     ),
     "dependencies" => array(
-        "swiftmailer/swiftmailer" => "~4.1",
-        "twig/twig" => "1.*",
-        "nesbot/carbon" => "1.14",
-		"mandrill/mandrill" => "1.0.*",
-		"robmorgan/phinx" => "^0.4.6",
-		"sendgrid/sendgrid" => "~4.0"
+        "swiftmailer/swiftmailer" => "5.4.*",
+        "twig/twig" => "2.4.*",
+        "nesbot/carbon" => "1.22.1",
+		"robmorgan/phinx" => "0.8.*",
+		"sendgrid/sendgrid" => "~5.5"
     ),
     "bulkemail"=> array(
         "number_per_cron" => 5,
