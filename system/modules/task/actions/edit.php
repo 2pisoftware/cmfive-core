@@ -188,6 +188,7 @@ function edit_POST($w) {
         $task->dt_due = $w->Task->getNextMonth();
     }
     $task->estimate_hours = !empty($task->estimate_hours) ? $task->estimate_hours : null;
+	$task->effort = empty($task->effort) ? NULL : floatval($task->effort);
     $task->rate = empty($task->rate) ? NULL : $task->rate;
     $task->insertOrUpdate(true);
     
