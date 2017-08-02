@@ -305,8 +305,12 @@ class Web {
 		}
 		$this->Log->info('init locale ' . $language);
 
-		$results = setlocale(LC_ALL, $language);
-		if (!$results) {
+		$all_locale = getAllLocaleValues($language);
+		
+		putenv("LC_ALL={$language}");
+		$results = setlocale(LC_ALL, $all_locale);
+		
+		if (!empty($results)) {
 			$this->Log->info('setlocale failed: locale function is not available on this platform, or the given locale (' . $language . ') does not exist in this environment');
 		}
 		$langParts = explode(".", $language);
@@ -335,23 +339,28 @@ class Web {
 	 * Initialise gettext for this module if not already loaded
 	 */
 	function setTranslationDomain($domain) {
-		$path = ROOT_PATH . "/" . $this->getModuleDir($domain) . "translations";
-		$translationFile = $path . "/" . $this->currentLocale . "/LC_MESSAGES/" . $domain . ".mo";
-		if (file_exists($translationFile)) {
+		$path = ROOT_PATH . DS . $this->getModuleDir($domain) . "translations";
+		$translationFile = $path . DS . $this->currentLocale . DS . "LC_MESSAGES" . DS . $domain . ".mo";
+		$translationFileOverride = ROOT_PATH . DS . 'translations' . DS . $domain . DS . $this->currentLocale . DS . 'LC_MESSAGES' . DS . $domain . '.mo';
+		
+		if (file_exists($translationFileOverride) && !empty(bindtextdomain($domain, ROOT_PATH . DS . 'translations' . DS . $domain))) {
+			// Project language override has been loaded
+		} else if (file_exists($translationFile)) {
+			// Fallback to module translation directory
 			$results = bindtextdomain($domain, $path);
 			if (!$results) {
-				$domain = 'main';
-				$path = ROOT_PATH . "/" . $this->getModuleDir($domain) . "translations";
-				$results = bindtextdomain($domain, $path);
+				// Fallback to main module
+				$path = ROOT_PATH . "/" . $this->getModuleDir('main') . "translations";
+				$results = bindtextdomain('main', $path);
 				if (!$results) {
 					throw new Exception('setlocale bindtextdomain failed on retry with main');
 				}
 			}
 		} else {
-			$domain = 'main';
-			$path = ROOT_PATH . "/" . $this->getModuleDir($domain) . "translations";
-			$translationFile = $path . "/" . $this->currentLocale . "/LC_MESSAGES/" . $domain . ".mo";
-			$results = bindtextdomain($domain, $path);
+			// Fallback to main module
+			$path = ROOT_PATH . "/" . $this->getModuleDir('main') . "translations";
+			$translationFile = $path . "/" . $this->currentLocale . "/LC_MESSAGES/main.mo";
+			$results = bindtextdomain('main', $path);
 			if (!$results) {
 				throw new Exception('setlocale bindtextdomain failed on retry with main');
 			}

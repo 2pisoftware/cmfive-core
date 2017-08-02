@@ -16,7 +16,7 @@ Config::set('main', array(
 	],
 	'available_languages' => [
 		'en_AU' => 'English',
-		'de_DE' => 'Deutsche',
+		'de_DE' => 'Deutsch',
 		'fr_FR' => 'Français',
 	],
 ));
