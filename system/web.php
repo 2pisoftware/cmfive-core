@@ -437,9 +437,15 @@ class Web {
         $this->_module = array_shift($hsplit);
         $this->_submodule = array_shift($hsplit);
 
+        // Check to see if module exists, if it doesn't, send a 403 header
+        if (Config::get("{$this->_module}.active") === null) {
+            header($_SERVER["SERVER_PROTOCOL"] . ' 404 Not Found');
+            exit();
+        }
+
         // Check to see if the module is active (protect against main disabling)
-        if (null !== Config::get("{$this->_module}.active") && !Config::get("{$this->_module}.active") && $this->_module !== "main") {
-            $this->error("The {$this->_module} module is not active, you can change it's active state in it's config file.", "/");
+        if (!Config::get("{$this->_module}.active") && $this->_module !== "main") {
+            $this->error("The {$this->_module} module is not active", "/");
         }
         
         
@@ -457,20 +463,20 @@ class Web {
         // using <module>_<action>_<type>()
         // or just <action>_<type>()
 
-        $this->_requestMethod = array_key_exists('REQUEST_METHOD',$_SERVER) ? $_SERVER['REQUEST_METHOD'] : '';
-		
-		if ($this->_requestMethod === "HEAD") {
-			$this->_is_head_request = true;
-			$this->_requestMethod = "GET";
-		}
+        $this->_requestMethod = array_key_exists('REQUEST_METHOD', $_SERVER) ? $_SERVER['REQUEST_METHOD'] : '';
 		
         $actionmethods[] = $this->_action . '_' . $this->_requestMethod;
+		if ($this->_requestMethod === "HEAD") {
+			$this->_is_head_request = true;
+			$actionmethods[] = $this->_action . '_GET';
+		}
+		
         $actionmethods[] = $this->_action . '_ALL';
-        $actionmethods[] = 'default_ALL';
+        // $actionmethods[] = 'default_ALL';
 
         // change the submodule and action for installation
         if($this->_is_installing) {
-        	if(is_file(ROOT_PATH.'/config.php')) {
+        	if(is_file(ROOT_PATH . '/config.php')) {
         		unset($this->_submodule);
         		$this->_action = 'index';
         	}
