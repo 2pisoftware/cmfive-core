@@ -221,7 +221,11 @@ class Config {
 	
     // Sanity checking
     public static function dump() {
-        var_dump(self::$register);
+        if (self::$_use_sandbox ) {
+            var_dump(self::$shadow_register);
+        } else {
+            var_dump(self::$register);       
+        }
     }
     
     public static function toJson() {
@@ -248,12 +252,13 @@ class ConfigDependencyLoader {
 	 * @param String $module
 	 * @param Array $config
 	 */
-	public static function registerModule($module, $config) {
+	public static function registerModule($module, $config, $include_path) {
 		$stack_class = new stdClass();
 		$stack_class->config = $config;
 		$stack_class->module_name = $module;
 		$stack_class->loaded = false;
 		$stack_class->visited = false;
+        $stack_class->include_path = $include_path;
 		
 		self::$dependency_stack[] = $stack_class;
 	}
@@ -328,10 +333,11 @@ class ConfigDependencyLoader {
 		}
 		
 		// Load module and flag
-		Config::enableSandbox();
-		Config::setSandbox($node->config);
-		Config::mergeSandbox();
-		Config::disableSandbox();
+        include($node->include_path);
+//		Config::enableSandbox();
+//		Config::setSandbox($node->config);
+//		Config::mergeSandbox();
+//		Config::disableSandbox();
 		$node->loaded = true;
 	}
 	

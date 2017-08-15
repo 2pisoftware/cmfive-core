@@ -579,7 +579,7 @@ class Web {
 					$this->Log->debug("Checking CSRF");
 					try {
 						$this->validateCSRF();
-					} catch (\Exception $e) {
+					} catch (Exception $e) {
 						$this->msg('The current session has expired, please resubmit the form', $_SERVER['REQUEST_URI']);
 					}
 				}
@@ -774,13 +774,13 @@ class Web {
 		// first load the system config file
 		require SYSTEM_PATH . "/config.php";
 
-		// Load System config first
+		// Load System modules config first
 		$baseDir = SYSTEM_PATH . '/modules';
 		$this->scanModuleDirForConfigurationFiles($baseDir);
 
 		// Load project module config second
 		$baseDir = ROOT_PATH . '/modules';
-		$this->scanModuleDirForConfigurationFiles($baseDir);
+		$this->scanModuleDirForConfigurationFiles($baseDir, true);
 
 		// load the root level config file last because it can override everything
 		//if (!file_exists("config.php")) {
@@ -817,7 +817,7 @@ class Web {
 							// Sandbox config load to check if module active
 							Config::enableSandbox();
 							include($searchingDir . '/config.php');
-							
+							$include_path = $searchingDir . '/config.php';
 							// Include the project config to get any module active flag overrides
 							include(ROOT_PATH . '/config.php');
 							
@@ -830,9 +830,11 @@ class Web {
 								// (located in Config.php) instead of putting into base config setup
 								if ($loadWithDependencies === true) {
 									// Set config on current module
-									ConfigDependencyLoader::registerModule($item, Config::getSandbox());
+									ConfigDependencyLoader::registerModule($item, Config::getSandbox(),$include_path);
 								} else {
-									Config::mergeSandbox();
+									Config::disableSandbox();
+                                    include($searchingDir . '/config.php');
+                                    Config::enableSandbox();
 								}
 							}
 							
@@ -849,6 +851,7 @@ class Web {
 						ConfigDependencyLoader::load();
 					} catch (Exception $e) {
 						$this->Log->error($e->getMessage());
+                        echo "Module config load error: " . $e->getMessage(); die;
 					}
 				}
             }
