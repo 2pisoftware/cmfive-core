@@ -11,7 +11,7 @@ function edit_GET($w) {
     $task = (!empty($p["id"]) ? $w->Task->getTask($p["id"]) : new Task($w));
     
     if ($task->is_deleted == 1) {
-        $w->error('You have attempted to view a deleted task.');
+        $w->error('Task not found',"/task/tasklist/");
     }
     
     // Register for timelog if not new task
