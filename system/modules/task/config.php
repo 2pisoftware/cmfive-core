@@ -29,13 +29,13 @@ Config::append('form.mapping', [
 
 //========= Properties of Task Type Todo ==================
 
-Config::set('task.TaskType_Todo',array(
+Config::append('task.TaskType_Todo',array(
 	'time-type' => array("Ordinary Hours", "Overtime", "Weekend"),
 ));
 
 //========= Properties of Taskgroup Type Todo ============
 
-Config::set('task.TaskGroupType_TaskTodo', array(
+Config::append('task.TaskGroupType_TaskTodo', array(
 	'title' => 'To Do',
 	'description' => 'This is a TODO list. Use this for assigning any work.',
 	'can-task-reopen' => true,
@@ -53,13 +53,13 @@ Config::set('task.TaskGroupType_TaskTodo', array(
 
 //========= Properties of Task Type Programming Task =================
 
-Config::set('task.TaskType_ProgrammingTicket',array(
+Config::append('task.TaskType_ProgrammingTicket',array(
 	'time-type' => array("Ordinary Hours", "Overtime", "Weekend"),
 ));
 
 //========= Properties of Taskgroup Type SoftwareDevelopment ==
 
-Config::set('task.TaskGroupType_SoftwareDevelopment', array(
+Config::append('task.TaskGroupType_SoftwareDevelopment', array(
 	'title' => 'Software Development',
 	'description' => 'Use this for tracking software development tasks.',
 	'can-task-reopen' => true,
