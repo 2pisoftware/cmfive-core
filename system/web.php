@@ -577,7 +577,11 @@ class Web {
 				if (in_array($this->_action, $allowed[$this->_module]) || (!empty($this->_submodule) && in_array($this->_action, $allowed[$this->_module . '-' . $this->_submodule]))) {
 					// If we get here then we are configured to enforce CSRF checking
 					$this->Log->debug("Checking CSRF");
-					$this->validateCSRF();
+					try {
+						$this->validateCSRF();
+					} catch (Exception $e) {
+						$this->msg('The current session has expired, please resubmit the form', $_SERVER['REQUEST_URI']);
+					}
 				}
 			}
 		}
@@ -770,13 +774,13 @@ class Web {
 		// first load the system config file
 		require SYSTEM_PATH . "/config.php";
 
-		// Load System config first
+		// Load System modules config first
 		$baseDir = SYSTEM_PATH . '/modules';
 		$this->scanModuleDirForConfigurationFiles($baseDir);
 
 		// Load project module config second
 		$baseDir = ROOT_PATH . '/modules';
-		$this->scanModuleDirForConfigurationFiles($baseDir);
+		$this->scanModuleDirForConfigurationFiles($baseDir, true);
 
 		// load the root level config file last because it can override everything
 		//if (!file_exists("config.php")) {
@@ -795,7 +799,7 @@ class Web {
 	}
 
 	// Helper function for the above, scans a directory for config files in child folders
-	private function scanModuleDirForConfigurationFiles($dir = "") {
+	private function scanModuleDirForConfigurationFiles($dir = "", $loadWithDependencies = false) {
 		// Check that dir is dir
 		if (is_dir($dir)) {
 
@@ -810,13 +814,49 @@ class Web {
 
 						// If is also a directory, look for config.php file
 						if (file_exists($searchingDir . "/config.php")) {
-							include $searchingDir . "/config.php";
-						}
+							// Sandbox config load to check if module active
+							Config::enableSandbox();
+							include($searchingDir . '/config.php');
+							$include_path = $searchingDir . '/config.php';
+							// Include the project config to get any module active flag overrides
+							include(ROOT_PATH . '/config.php');
+							
+							if (Config::get("{$item}.active") === true) {
+								// Need to reset sandbox content to remove inclusion of project config
+								Config::clearSandbox();
+								include($searchingDir . '/config.php');
+								
+								// If we are loading with dependencies, register config in the dependency loader
+								// (located in Config.php) instead of putting into base config setup
+								if ($loadWithDependencies === true) {
+									// Set config on current module
+									ConfigDependencyLoader::registerModule($item, Config::getSandbox(),$include_path);
+								} else {
+									Config::disableSandbox();
+                                    include($searchingDir . '/config.php');
+                                    Config::enableSandbox();
+								}
+							}
+							
+							// Always disable the sandbox to ensure other uses of Config do not get omitted
+							Config::clearSandbox();
+							Config::disableSandbox();
+                        }
+                    }
+                }
+				
+				// Load with dependencies if required
+				if ($loadWithDependencies === true) {
+					try {
+						ConfigDependencyLoader::load();
+					} catch (Exception $e) {
+						$this->Log->error($e->getMessage());
+                        echo "Module config load error: " . $e->getMessage(); die;
 					}
 				}
-			}
-		}
-	}
+            }
+        }
+    }
 
 	public function validateCSRF() {
 		// Check for CSRF token and that we have a valid request method
