@@ -818,9 +818,11 @@ class Web {
 							Config::enableSandbox();
 							include($searchingDir . '/config.php');
 							$include_path = $searchingDir . '/config.php';
-							// Include the project config to get any module active flag overrides
-							include(ROOT_PATH . '/config.php');
-							
+							// Include the project config unless installing to get any module active flag overrides
+							if (!$this->_is_installing) {
+                                include(ROOT_PATH . '/config.php');
+                            }
+                            
 							if (Config::get("{$item}.active") === true) {
 								// Need to reset sandbox content to remove inclusion of project config
 								Config::clearSandbox();
