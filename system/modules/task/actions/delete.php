@@ -13,9 +13,10 @@ function delete_ALL(Web &$w) {
 			return;
 		}
 
-        $task->is_closed = 1;
-        $task->is_deleted = 1;
-        $task->update();
+        //$task->is_closed = 1;
+        //$task->is_deleted = 1;
+        //$task->update();
+        $task->delete();
         $w->msg("Task: " . $task->title . " has been deleted.", "/task/tasklist/");
     } else {
         $w->error("Task could not be found.", "/task/tasklist/");
