@@ -629,6 +629,14 @@ class Task extends DbObject {
             if ($this->task_type) {
                 $this->getTaskTypeObject()->on_before_delete($this);
             }
+            
+            //delete all timelogs attached to the task
+            $timelogs = $this->getTimeLogEntries();
+            if (!empty($timelogs)) {
+                foreach ($timelogs as $log) {
+                    $log->delete();
+                }
+            }
 
             // 3. Delete the task
 
