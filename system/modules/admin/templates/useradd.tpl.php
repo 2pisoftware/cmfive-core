@@ -3,7 +3,7 @@ $form['User Details'][]=array(
 array("Login","text","login"),
 array("Admin","checkbox","is_admin"),
 array("Active","checkbox","is_active"),
-array("External", "checkbox", "is_external"));
+array("External", "checkbox", "is_external"),
 	array("Language", "select", "language", null, $availableLocales));
 
 $form['User Details'][] = array(
