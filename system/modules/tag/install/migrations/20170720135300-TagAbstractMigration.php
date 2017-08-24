@@ -3,6 +3,8 @@
 class TagAbstractMigration extends CmfiveMigration {
 
 	public function up() {
+        
+        
 		$column = parent::Column();
         $column->setName('id')
                ->setType('biginteger')
@@ -33,11 +35,19 @@ class TagAbstractMigration extends CmfiveMigration {
 						if (!array_key_exists($existing_tag['tag'], $unique_tags)) {
 							$unique_tags[$existing_tag['tag']] = [];
 						}
-						$unique_tags[$existing_tag->tag][] = ['object_class' => $existing_tag['obj_class'], 'object_id' => $existing_tag['obj_id']];
+                        if ($existing_tag['is_deleted'] == 0) {
+    						$unique_tags[$existing_tag['tag']][] = ['object_class' => $existing_tag['obj_class'], 'object_id' => $existing_tag['obj_id']];
+                        }
 					}
 					
 					// Remove existing tags
 					$this->w->db->delete('tag')->execute();
+                    
+                    //alter orginal tag table
+                    $this->removeColumnFromTable('tag', 'user_id');
+                    $this->removeColumnFromTable('tag', 'obj_class');
+                    $this->removeColumnFromTable('tag', 'obj_id');
+                    $this->removeColumnFromTable('tag', 'tag_color');
 					
 					foreach($unique_tags as $unique_tag => $assigned_objects) {
 						$tag_object = new Tag($this->w);
@@ -59,7 +69,28 @@ class TagAbstractMigration extends CmfiveMigration {
 	}
 
 	public function down() {
-		
+		$this->addColumnTotable('tag','user_id', 'biginteger',['null'=>true]);
+        $this->addColumnTotable('tag', 'obj_class', 'string', ['null'=>true]);
+        $this->addColumnTotable('tag', 'obj_id', 'biginteger', ['null'=>true]);
+        $this->addColumnTotable('tag', 'tag_color', 'string', ['null'=>true]);
+        
+        $tags = $this->w->db->get('tag')->select('tag_assign.*')->leftJoin('tag_assign on tag.id = tag_assign.tag_id')
+				->where('tag.is_deleted', 0)->and('tag_assign.is_deleted', 0)->fetchAll();
+        
+        // Remove existing tags
+        $this->w->db->delete('tag')->execute();
+        
+        if( !empty($tags)) {
+            foreach ($tags as $tag) {
+                $tag_object = new Tag($this->w);
+                $tag_object->tag = $tag['tag'];
+                $tag_object->obj_class = $tag['object_class'];
+                $tag_object->obj_id = $tag['object_id'];
+                $tag_object->insert();
+            }
+        }
+        
+        $this->dropTable('tag_assign');
 	}
 
 }
