@@ -19,7 +19,7 @@ function index_GET(Web $w) {
 	if (!empty($available)) {
 		foreach($available as $module => $_available) {
 			foreach($_available as $file => $class) {
-				if (!$w->Migration->isInstalled($class)) {
+				if (!$w->Migration->isInstalled($class['class_name'])) {
 					$not_installed[$module][$file] = $class;
 				}
 			}
@@ -33,7 +33,7 @@ function index_GET(Web $w) {
 		} else if (count($available[$a]) == 0 && count($available[$b]) > 0) {
 			return 1;
 		} else {
-			return strcmp($a, $b);
+			return strcmp($available[$a]['class_name'], $available[$b]['class_name']);
 		}
 	});
 

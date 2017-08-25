@@ -64,7 +64,7 @@ class MigrationService extends DbService {
 					if (!is_dir($file) && $file{0} !== '.') {
 						$classname = explode('.', str_replace('-', '.', $file));
 						if (!empty($classname[1])) {
-							$availableMigrations[$module][$migration_path . DS . $file] = $classname[1];
+							$availableMigrations[$module][$migration_path . DS . $file] = ['class_name'=>$classname[1], 'timestamp'=>(int) $classname[0]];
 						} else {
 							$this->w->Log->error("Migration '" . $file . "' does not conform to naming convention");
 						}
@@ -81,7 +81,7 @@ class MigrationService extends DbService {
 	
 	public function isInstalled($classname) {
 		if (empty(self::$_installed[$classname])) {
-			self::$_installed[$classname] = $this->w->db->get('migration')->where('classname', $classname)->count() == 1;
+			self::$_installed[$classname] = $this->w->db->get('migration')->where('classname', $classname)->count() >= 1;
 		}
 		return self::$_installed[$classname];
 	}
@@ -184,17 +184,19 @@ MIGRATION;
 		// If filename is specified then strip out migrations that shouldnt be run
 		if (strtolower($module) !== "all" && !empty($filename)) {
 			$offset_index = 1;
-
-			foreach($availableMigrations[$module] as $availableMigrationsPath => $availableMigrationsClass) {
-				if (strpos($availableMigrationsPath, $filename) !== FALSE) {
-					break;
-				}
-				$offset_index++;
+            $file_timestamp = (int)  explode('.', $filename)[0];
+			foreach($availableMigrations[$module] as $availableMigrationsPath => $data) {
+				//check module timestamp and remove available migrations with grater timestamp value
+                $availableMigrationTimestamp = $data['timestamp'];
+                
+                if ($file_timestamp < $availableMigrationTimestamp) {
+                    unset($availableMigrations[$module][$availableMigrationsPath]);
+                }
+				
 			}
 			
-			$availableMigrations[$module] = array_slice($availableMigrations[$module], 0, $offset_index);
 		}
-		
+        
 		// Install migrations
 		if (!empty($availableMigrations)) {
 			$this->w->db->startTransaction();
@@ -211,14 +213,18 @@ MIGRATION;
 					if (empty($migrations)) {
 						continue;
 					}
+                    //sort module migrations
+                    usort($migrations, function($a,$b){
+                        return $a['timestamp'] < $b['timestamp'];
+                    });
 					
 					foreach($migrations as $migration_path => $migration) {
 						if (file_exists(ROOT_PATH . '/' . $migration_path)) {
 							include_once ROOT_PATH . '/' . $migration_path;
 
 							// Class name must match filename after timestamp and hyphen 
-							if (class_exists($migration)) {
-								$this->w->Log->setLogger("MIGRATION")->info("Running migration: " . $migration);
+							if (class_exists($migration['class_name'])) {
+								$this->w->Log->setLogger("MIGRATION")->info("Running migration: " . $migration['class_name']);
 
 								// Run migration UP
 								$migration_class = (new $migration(1))->setWeb($this->w);
@@ -228,7 +234,7 @@ MIGRATION;
 								// Insert migration record into DB
 								$migration_object = new Migration($this->w);
 								$migration_object->path = $migration_path;
-								$migration_object->classname = $migration;
+								$migration_object->classname = $migration['class_name'];
 								$migration_object->module = strtolower($module);
 								$migration_object->batch = $this->getNextBatchNumber();
 								$migration_object->insert();
@@ -287,15 +293,27 @@ MIGRATION;
 			return "There are no installed migrations to rollback";
 		}
 		
-		$offset_index = 0;
-		foreach($installed_migrations[$module] as $installed_module_migration) {
+        //find id of filename migration and remove migrations from list with lower ids
+        $file_migration_id = '';
+        foreach($installed_migrations[$module] as $installed_module_migration) {
 			if (strpos($installed_module_migration['path'], $filename) !== FALSE) {
-				break;
+				$file_migration_id = $installed_module_migration['id'];
 			}
-			$offset_index++;
 		}
-		
-		$migrations_to_rollback = array_slice($installed_migrations[$module], $offset_index);
+        if ($file_migration_id == '') {
+            return "Could not find migration in database";
+        }
+        foreach ($installed_migrations[$module] as $installed_module_migration) {
+            if ($file_migration_id > $installed_module_migration['id']) {
+                unset($installed_migrations[$module][$installed_module_migration]);
+            }
+        }
+        
+        //sort installed migrations by id largest to smallest
+        $migrations_to_rollback = $installed_migrations[$module];
+        usort($migrations_to_rollback, function($a, $b){
+           return $a['id'] > $b['id']; 
+        });
 		
 		// Attempt to rollback all migrations
 		if (!empty($migrations_to_rollback)) {
