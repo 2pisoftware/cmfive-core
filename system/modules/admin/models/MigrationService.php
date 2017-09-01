@@ -163,6 +163,8 @@ MIGRATION;
 		$alreadyRunMigrations = $this->getInstalledMigrations($module);
 		$availableMigrations = $this->getAvailableMigrations($module);
 
+        
+       
 		// Return if there are no migrations to run
 		if (empty($availableMigrations)) {
 			return;
@@ -181,6 +183,7 @@ MIGRATION;
 			}
 		}
 		
+        
 		// If filename is specified then strip out migrations that shouldnt be run
 		if (strtolower($module) !== "all" && !empty($filename)) {
 			$offset_index = 1;
@@ -213,11 +216,12 @@ MIGRATION;
 					if (empty($migrations)) {
 						continue;
 					}
+//                    var_dump($migrations); die;
                     //sort module migrations
-                    usort($migrations, function($a,$b){
-                        return $a['timestamp'] < $b['timestamp'];
+                    uasort($migrations, function($a,$b){
+                        return $a['timestamp'] > $b['timestamp'];
                     });
-					
+                    
 					foreach($migrations as $migration_path => $migration) {
 						if (file_exists(ROOT_PATH . '/' . $migration_path)) {
 							include_once ROOT_PATH . '/' . $migration_path;
@@ -227,7 +231,7 @@ MIGRATION;
 								$this->w->Log->setLogger("MIGRATION")->info("Running migration: " . $migration['class_name']);
 
 								// Run migration UP
-								$migration_class = (new $migration(1))->setWeb($this->w);
+								$migration_class = (new $migration['class_name'])->setWeb($this->w);
 								$migration_class->setAdapter($mysql_adapter);
 								$migration_class->up();
 
@@ -458,7 +462,7 @@ MIGRATION;
 						if (!empty($classname[0])) {
 							$availableMigrations[$module][$migration_path . DS . $file] = $classname[0];
 						} else {
-							$this->w->Log->error("Migration '" . $file . "' does not conform to naming convention");
+							$this->w->Log->error("Migration '" . $file . "' in " . $module . " does not conform to naming convention");
 						}
 					}
 				}

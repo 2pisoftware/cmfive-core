@@ -293,7 +293,9 @@ class Web {
 	}
 
 	function initLocale() {
-		$user = $this->Auth->user();
+        if (!$this->_is_installing) {
+    		$user = $this->Auth->user();
+        }
 		// default language
 		$language = Config::get('system.language');
 		// per user language s
