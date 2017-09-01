@@ -187,7 +187,8 @@ MIGRATION;
 		// If filename is specified then strip out migrations that shouldnt be run
 		if (strtolower($module) !== "all" && !empty($filename)) {
 			$offset_index = 1;
-            $file_timestamp = (int)  explode('.', $filename)[0];
+            $filename_parts = explode('.', $filename);
+            $file_timestamp = (int)  $filename_parts[0];
 			foreach($availableMigrations[$module] as $availableMigrationsPath => $data) {
 				//check module timestamp and remove available migrations with grater timestamp value
                 $availableMigrationTimestamp = $data['timestamp'];
