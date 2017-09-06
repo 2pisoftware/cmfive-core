@@ -43,12 +43,6 @@ class TagAbstractMigration extends CmfiveMigration {
 					// Remove existing tags
 					$this->w->db->delete('tag')->execute();
                     
-                    //alter orginal tag table
-                    $this->removeColumnFromTable('tag', 'user_id');
-                    $this->removeColumnFromTable('tag', 'obj_class');
-                    $this->removeColumnFromTable('tag', 'obj_id');
-                    $this->removeColumnFromTable('tag', 'tag_color');
-					
 					foreach($unique_tags as $unique_tag => $assigned_objects) {
 						$tag_object = new Tag($this->w);
 						$tag_object->tag = $unique_tag;
@@ -69,12 +63,7 @@ class TagAbstractMigration extends CmfiveMigration {
 	}
 
 	public function down() {
-		$this->addColumnTotable('tag','user_id', 'biginteger',['null'=>true]);
-        $this->addColumnTotable('tag', 'obj_class', 'string', ['null'=>true]);
-        $this->addColumnTotable('tag', 'obj_id', 'biginteger', ['null'=>true]);
-        $this->addColumnTotable('tag', 'tag_color', 'string', ['null'=>true]);
-        
-        $tags = $this->w->db->get('tag')->select('tag_assign.*')->leftJoin('tag_assign on tag.id = tag_assign.tag_id')
+		$tags = $this->w->db->get('tag')->select('tag_assign.*')->leftJoin('tag_assign on tag.id = tag_assign.tag_id')
 				->where('tag.is_deleted', 0)->and('tag_assign.is_deleted', 0)->fetchAll();
         
         // Remove existing tags
