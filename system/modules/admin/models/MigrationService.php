@@ -205,6 +205,7 @@ MIGRATION;
 		if (!empty($availableMigrations)) {
 			$this->w->db->startTransaction();
 
+            $this->w->db->setMigrationMode(true);
 			try {
 				// Use MySQL for now
 				$mysql_adapter = new \Phinx\Db\Adapter\MysqlAdapter([
@@ -253,6 +254,7 @@ MIGRATION;
 
 				// Finalise transaction
 				$this->w->db->commitTransaction();
+                $this->w->db->setMigrationMode(false);
 				return count($runMigrations) . ' migration' . (count($runMigrations) == 1 ? ' has' : 's have') . ' run'; 
 			} catch (Exception $e) {
 				$this->w->out("Error with a migration: " . $e->getMessage() . "<br/>More info: " . var_export($e));
@@ -308,9 +310,9 @@ MIGRATION;
         if ($file_migration_id == '') {
             return "Could not find migration in database";
         }
-        foreach ($installed_migrations[$module] as $installed_module_migration) {
+        foreach ($installed_migrations[$module] as $key => $installed_module_migration) {
             if ($file_migration_id > $installed_module_migration['id']) {
-                unset($installed_migrations[$module][$installed_module_migration]);
+                unset($installed_migrations[$module][$key]);
             }
         }
         
@@ -323,7 +325,9 @@ MIGRATION;
 		// Attempt to rollback all migrations
 		if (!empty($migrations_to_rollback)) {
 			$this->w->db->startTransaction();
-
+            //set migration mode
+            $this->w->db->setMigrationMode(true);
+            
 			try {
 				// Use MySQL for now
 				$mysql_adapter = new \Phinx\Db\Adapter\MysqlAdapter([
@@ -356,6 +360,7 @@ MIGRATION;
 
 				// Finalise transaction
 				$this->w->db->commitTransaction();
+                $this->w->db->setMigrationMode(false);
 				return count($migrations_to_rollback) . ' migration' . (count($migrations_to_rollback) == 1 ? ' has' : 's have') . ' rolled back'; 
 			} catch (Exception $e) {
 				$this->w->out("Error with a migration: " . $e->getMessage());
