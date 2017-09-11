@@ -39,6 +39,13 @@ function useradd_POST(Web &$w) {
 	$contact->dt_created = time();
 	$contact->private_to_user_id = null;
 	$contact->insert();
+	if (empty($_POST['title']) and !empty($_POST['acp_title'])) {
+		$contact->title = $_POST['acp_title'];
+		$lookup = new Lookup($w);
+		$lookup->fill(['type'=>'title', 'code'=>$contact->title, 'title'=>$contact->title]);
+		$lookup->insert();
+
+	}
 
 	// now saving the user
 	$user = new User($w);

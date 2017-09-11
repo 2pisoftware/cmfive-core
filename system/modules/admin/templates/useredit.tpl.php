@@ -16,7 +16,7 @@ $form['Contact Details'][] = array(
 	array("First Name", "text", "firstname", $contact ? $contact->firstname : ""),
 	array("Last Name", "text", "lastname", $contact ? $contact->lastname : ""));
 $form['Contact Details'][] = array(
-	array("Title", "select", "title", $contact ? $contact->title : "", lookupForSelect($w, "title")),
+	array("Title", "autocomplete", "title", $contact ? $contact->title : "", lookupForSelect($w, "title")),
 	array("Email", "text", "email", $contact ? $contact->email : ""));
 
 $groupUsers = $user->isInGroups();

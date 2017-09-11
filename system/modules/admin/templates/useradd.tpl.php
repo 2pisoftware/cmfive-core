@@ -13,7 +13,7 @@ $form['Contact Details'][] = array(
 	array("First Name", "text", "firstname"),
 	array("Last Name", "text", "lastname"));
 $form['Contact Details'][] = array(
-	array("Title", "select", "title", null, lookupForSelect($w, "title")),
+	array("Title", "autocomplete", "title", null, lookupForSelect($w, "title")),
 	array("Email", "text", "email"));
 
 $roles = $w->Auth->getAllRoles();
