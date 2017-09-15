@@ -13,6 +13,7 @@ Config::set('favorite', array(
 		'favorites_widget'
 	),
 	'hooks' => array(
-		'core_template'
+		'core_template',
+        'core_dbobject'
 	)
 ));

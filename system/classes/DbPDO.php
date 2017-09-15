@@ -140,7 +140,7 @@ class DbPDO extends PDO {
      */
     public function count(){
         if ($this->query !== null){
-            $result = $this->select("count(*)")->fetch_element("count(*)");
+            $result = $this->select()->select("count(*)")->fetch_element("count(*)");
             return intval($result);
         }
     }
@@ -154,6 +154,19 @@ class DbPDO extends PDO {
     public function leftJoin($leftJoin){
         if ($this->query !== NULL && !empty($leftJoin)){
             $this->query = $this->query->leftJoin($leftJoin);
+        }
+        return $this;
+    }
+	
+	/**
+     * Adds left outer join to the current query
+     *
+     * @param String $leftjoin left join rule to apply
+     * @return DbPDO $this
+     */
+    public function leftOuterJoin($leftOuterJoin){
+        if ($this->query !== NULL && !empty($leftOuterJoin)){
+            $this->query = $this->query->leftOuterJoin($leftOuterJoin);
         }
         return $this;
     }

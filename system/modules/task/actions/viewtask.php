@@ -15,7 +15,7 @@ function viewtask_GET(Web &$w) {
 
 	// if task is deleted, say as much and return to task list
 	if ($task->is_deleted != 0) {
-		$w->msg("This Task has been deleted","/task/tasklist/");
+		$w->msg("Task not found","/task/tasklist/");
 	}
 	// check if i can view the task: my role in group Vs group can_view value
 	elseif ($task->getCanIView()) {

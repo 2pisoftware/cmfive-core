@@ -450,7 +450,7 @@ function task_comment_send_notification_recipients_task(Web $w, $params) {
                         } else {
                             $subject = (!empty($commentor->id) ? $commentor->getFullName() : 'Someone') . ' has edited commented on a task that you\'re apart of ('.$task->title.')';
                         }
-                        $message = $task->toLink(null, null, $user_object);
+                        $message = $task->toLink(null, null, $user);
                         $message .= $w->partial("displaycomment", array("object" => $params['comment'], "displayOnly" => true, 'redirect' => '/inbox'), "admin");
                         // Get additional details
                         $message .= $w->Task->getNotificationAdditionalDetails($task);
