@@ -10,7 +10,7 @@ class FormApplicationView extends DbObject {
 	public $form_id; // if null, then load all form instances into the template
 	public $title;
 	public $description;
-	public $template;
+	public $template_id;
 	
 	function getForm() {
 		return $this->Form->getForm($this->form_id);

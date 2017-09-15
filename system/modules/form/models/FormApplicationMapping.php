@@ -5,7 +5,7 @@
  * you can choose from all forms which are mapped to the
  * FormApplication class.
  */
-class ApplicationFormMapping extends DbObject {
+class FormApplicationMapping extends DbObject {
 	
 	public $form_id;
 	public $application_id;

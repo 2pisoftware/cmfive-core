@@ -33,7 +33,7 @@ class FormApplication extends DbObject {
 	}
 	
 	public function isMember($user) {
-		return $this->_getApplicationMember($user) != null;
+		return $this->_getApplicationMember($user) !== null;
 	}
 	
 	public function isOwner($user) {

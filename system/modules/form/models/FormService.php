@@ -127,4 +127,26 @@ class FormService extends DbService {
 	public function getFormApplication($application_id) {
 		return $this->getObject("FormApplication",["id" => $application_id, "is_deleted" => 0]);
 	}
+
+	/**
+	 * Submenu navigation for Forms
+	 * 
+	 * @param  Web    $w
+	 * @param  String $title
+	 * @param  Array $prenav
+	 * @return Array
+	 */
+	public function navigation(Web $w, $title = null, $prenav = null) {
+        if ($title) {
+            $w->ctx("title", $title);
+        }
+		
+        $nav = $prenav ? $prenav : array();
+        if ($w->Auth->loggedIn()) {
+            $w->menuLink("form-application", "Applications", $nav);
+            $w->menuLink("form", "Forms", $nav);
+        }
+
+        return $nav;
+    }
 }
