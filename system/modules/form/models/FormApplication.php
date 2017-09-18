@@ -5,8 +5,8 @@
  * It allows for either ad-hoc storage of structural data
  * or quick prototyping of new modules
  * 
- * @author careck
- *
+ * @author Carsten Eckelmann <carsten@2pisoftware.com>
+ * @author Adam Buckley <adam@2pisoftware.com>
  */
 class FormApplication extends DbObject {
 	
@@ -24,12 +24,12 @@ class FormApplication extends DbObject {
 	}
 	
 	public function getMembers() {
-		return $this->getObjects("FormApplicationMember",['application_id'=>$this->id]);
+		return $this->getObjects("FormApplicationMember", ['application_id' => $this->id]);
 	}
 	
 	private function _getApplicationMember($user) {
 		if ($user == null) return null;
-		return $this->getObject("FormApplicationMember", ['application_id'=>$this->id,'member_user_id'=>$user->id]);
+		return $this->getObject("FormApplicationMember", ['application_id' => $this->id, 'member_user_id' => $user->id]);
 	}
 	
 	public function isMember($user) {

@@ -2,6 +2,8 @@
 /**
  * This class represents a form that can be associated with other objects
  * in the system.
+ *
+ * @author Adam Buckley <adam@2pisoftware.com>
  */
 class Form extends DbObject {
 	
@@ -13,7 +15,8 @@ class Form extends DbObject {
 	
 	/**
 	 * Load the fields associated with this form
-	 * @return FormField[]
+	 * 
+	 * @return Array<FormField>
 	 */
 	public function getFields() {
 		return $this->getObjects("FormField", ["form_id" => $this->id, "is_deleted" => 0], false, true, "ordering ASC");
@@ -21,6 +24,7 @@ class Form extends DbObject {
 	
 	/**
 	 * Generate the header row for the form table
+	 * 
 	 * @return string
 	 */
 	public function getTableHeaders() {
@@ -42,6 +46,8 @@ class Form extends DbObject {
 	
 	/**
 	 * Generate the summary row for the form table
+	 *
+	 * @param DbObject $object Linked object
 	 * @return string
 	 */
 	public function getSummaryRow($object) {
@@ -73,7 +79,8 @@ class Form extends DbObject {
 	
 	/**
 	 * Load the form instances containing submitted data for this form
-	 * @return FormInstance[]
+	 * 
+	 * @return Array<FormInstance>
 	 */
 	public function getFormInstances() {
 		return $this->getObjects("FormInstance", ["form_id" => $this->id, "is_deleted" => 0]);
@@ -82,18 +89,27 @@ class Form extends DbObject {
 	/**
 	 * Load the form instances containing submitted data for this form
 	 * that are related to the $object parameter
-	 * @return [FormInstance]
+	 *
+	 * @param  DbObject $object Linked object
+	 * @return Array<FormInstance>
 	 */
 	public function getFormInstancesForObject($object) {
 		return $this->w->Form->getFormInstancesForFormAndObject($this, $object);
 	}
 	
+	/**
+	 * Returns number of instances of submitted data attached to this form
+	 * 
+	 * @param  DbObject $object Linked object
+	 * @return int Number of objects
+	 */
 	public function countFormInstancesForObject($object) {
 		return $this->w->Form->countFormInstancesForFormAndObject($this, $object);
 	}
 	
 	/**
 	 * Generate label to show this record in select inputs
+	 * 
 	 * @return string
 	 */
 	public function getSelectOptionTitle() {
@@ -102,6 +118,7 @@ class Form extends DbObject {
 	
 	/**
 	 * Generate value to use for this record in select inputs
+	 * 
 	 * @return string
 	 */
 	public function getSelectOptionValue() {
@@ -110,6 +127,7 @@ class Form extends DbObject {
 	
 	/**
 	 * Generate text to show this record in search results  
+	 * 
 	 * @return string
 	 */
 	public function printSearchTitle() {
@@ -118,6 +136,7 @@ class Form extends DbObject {
 	
 	/**
 	 * Generate a link to show this form
+	 * 
 	 * @return string
 	 */
 	public function printSearchUrl() {

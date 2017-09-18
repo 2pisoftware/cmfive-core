@@ -3,7 +3,8 @@
 /**
  * FormApplicationView defines a template which can display the data of all the
  * forms for this application in a completely configurable way.
- *
+ * 
+ * @author Carsten Eckelmann <carsten@2pisoftware.com>
  */
 class FormApplicationView extends DbObject {
 	public $application_id;

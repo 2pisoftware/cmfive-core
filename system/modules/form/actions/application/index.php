@@ -12,7 +12,7 @@ function index_GET(Web $w) {
 				Html::a('/form-application/show/' . $application->id, $application->title),
 				$application->description,
 				$application->is_active == 1 ? 'Active' : 'Inactive',
-				Html::box('/form-application/edit/' . $application->id, 'Edit', true) .
+				Html::b('/form-application/edit/' . $application->id, 'Edit') .
 				Html::b('/form-application/delete/' . $application->id, 'Delete', 'Are you sure you want to delete this application? All references to already entered data will be lost!', null, false, "warning")
 			];
 		}

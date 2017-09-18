@@ -2,8 +2,9 @@
 
 function edit_GET(Web $w) {
 
-	$w->setLayout(null);
 	list($id) = $w->pathMatch('id');
+
+	$w->enqueueScript(['name' => 'vue-js', 'uri' => '/system/modules/form/assets/js/vue.js', 'weight' => 200]);
 
 	$application = !empty($id) ? $w->FormApplication->getFormApplication($id) : new FormApplication($w);
 
@@ -15,7 +16,9 @@ function edit_GET(Web $w) {
 		]
 	];
 
-	$w->out(Html::multiColForm($form, '/form-application/edit/' . $application->id));
+	$w->ctx('application', $application);
+	$w->ctx('new_application', !empty($application->id));
+	$w->ctx('form', Html::multiColForm($form, '/form-application/edit/' . $application->id));
 
 }
 
@@ -29,6 +32,6 @@ function edit_POST(Web $w) {
 	$application->is_active = !empty($_POST['is_active']);
 	$application->insertOrUpdate();
 
-	$w->msg('Application ' . (!empty($id) ? 'updated' : 'created'), '/form-application');
+	$w->msg('Application ' . (!empty($id) ? 'updated' : 'created'), '/form-application/show/' . $application->id);
 
 }

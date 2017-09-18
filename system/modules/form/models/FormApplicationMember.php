@@ -10,5 +10,17 @@ class FormApplicationMember extends DbObject {
 	 * EDITOR - can view, edit and delete form entries
 	 * VIEWER - can view form entries
 	 */
-	public $role; 
+	public $role;
+
+	public function getName() {
+		$user = $this->getObject('User', $this->member_user_id);
+		if (!empty($user)) {
+			$contact = $user->getContact();
+			if (!empty($contact)) {
+				return $contact->getFullName();
+			}
+		}
+
+		return '';
+	}
 }
