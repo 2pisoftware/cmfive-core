@@ -1,3 +1,18 @@
+/**
+ * A custom autocomplete component, a huge thanks to Tobias Kriebisch for this.
+ *
+ * Requires matching CSS file to look the part, example usage (taken from Form Application edit page):
+ *     <autocomplete :list="user_list" v-on:autocomplete-select="setSelectedValue" property="name" :required="true" :threshold="1"></autocomplete>
+ *     Where user_list is a vue data property with a list of objects
+ *
+ * Original source was modified to emit the select method up to the parent instead of using the autocompleteBus.
+ * Also added the emission of the 'idProperty' instead of the text selected. Our usage is normally {id: 1, name: 'Adam'}
+ *     where we want to return '1' when 'Adam' is selected.
+ * 
+ * @author Tobias Kriebisch <https://github.com/tecbeast42>
+ * @author Adam Buckley <adam@2pisoftware.com> (modified to fit our needs)
+ * @license spdx.org/licenses/MIT.html MIT License
+ */
 Vue.component('autocomplete', {
    template: '<div :class="classPrefix" v-on:mousedown="mousefocus = true" v-on:mouseout="mousefocus = false"> \
         <input type="text" v-on:blur="focused = false" v-on:focus="focused = true" \
@@ -10,7 +25,7 @@ Vue.component('autocomplete', {
             ref="input" \
             :required="required"> \
         <div v-if="showSuggestions" :class="classPrefix + \'__suggestions\'"> \
-            <div v-for="(entry, index) in filteredEntries" v-on:click="select(index)" :class="[classPrefix + \'__entry\', selectedClass(index)]"> \
+            <div v-for="(entry, index) in filteredEntries" v-on:click.prevent="select(index)" :class="[classPrefix + \'__entry\', selectedClass(index)]"> \
                 {{ entry[property] }} \
             </div> \
         </div> \
@@ -65,7 +80,7 @@ Vue.component('autocomplete', {
         select: function(index) {
             if (this.hasSuggestions) {
                 this.search = this.filteredEntries[index][this.property];
-                this.$emit('autocomplete-select', this.search);
+                this.$emit('autocomplete-select', this.filteredEntries[index][this.idProperty]);
                 if (this.autoHide) {
                     this.mousefocus = false;
                     this.focused = false;
@@ -134,6 +149,11 @@ Vue.component('autocomplete', {
             type: String,
             required: false,
             default: 'name',
+        },
+        idProperty: {
+            type: String,
+            required: false,
+            default: 'id',
         },
         inputClass: {
             type: String,

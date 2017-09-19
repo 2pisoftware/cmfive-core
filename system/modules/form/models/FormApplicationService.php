@@ -10,4 +10,7 @@ class FormApplicationService extends DbService {
 		return $this->getObject('FormApplication', $id);
 	}
 
+	public function getFormApplicationMember($application_id, $member_user_id) {
+		return $this->getObject('FormApplicationMember', ['application_id' => $application_id, 'member_user_id' => $member_user_id, 'is_deleted' => 0]);
+	}
 }

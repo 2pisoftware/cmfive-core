@@ -2,6 +2,8 @@
 
 class FormApplicationMember extends DbObject {
 	
+	public static $_roles = ['OWNER', 'EDITOR', 'VIEWER'];
+
 	public $application_id;
 	public $member_user_id;
 	
