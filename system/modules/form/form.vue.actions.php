@@ -73,8 +73,10 @@ function get_members_GET(Web $w) {
 		foreach($members as $member) {
 			$output['data'][] = [
 				'id' => $member->id,
+				'member_user_id' => $member->member_user_id,
 				'name' => $member->getName(),
-				'role' => $member->role
+				'role' => $member->role,
+				'application_id' => $member->application_id
 			];
 		}
 	}
@@ -85,15 +87,34 @@ function get_members_GET(Web $w) {
 }
 
 function get_forms_GET(Web $w) {
-	
+
 	$w->setLayout(null);
+
+	$output = getResponse_VUE();
+	$application = null;
 
 	try {
 		$application = getFormApplication_VUE($w);
 	} catch (Exception $e) {
-		$w->out(json_encode(['error' => $e->getMessage()]));
+		$ouput['error'] = $e->getMessage();
+		$w->out(json_encode($output));
 		return;
 	}
+
+	$forms = $application->getForms();
+	if (!empty($forms)) {
+		foreach($forms as $form) {
+			$output['data'][] = [
+				'id' => $form->id,
+				'title' => $form->title,
+				'no_instances' => $form->countFormInstancesForObject($application)
+			];
+		}
+	}
+
+	$output['success'] = true;
+	$w->out(json_encode($output));
+
 }
 
 function save_form_GET(Web $w) {
@@ -101,6 +122,49 @@ function save_form_GET(Web $w) {
 }
 
 function save_form_POST(Web $w) {
+
+	$w->setLayout(null);
+
+	$output = getResponse_VUE();
+
+	// Validate data
+	if (empty($_POST['application_id']) || empty($_POST['id'])) {
+		$output['error'] = 'Missing data';
+		$w->out(json_encode($output));
+		return;
+	}
+
+	$application_id = intval($_POST['application_id']);
+	$form_id = intval($_POST['id']);
+
+	// Get application and validate
+	$application = $w->FormApplication->getFormApplication($application_id);
+	if (empty($application->id)) {
+		$output['error'] = 'Application not found';
+		$w->out(json_encode($output));
+		return;
+	}
+
+	// Get form and validate
+	$form = $w->Form->getForm($form_id);
+	if (empty($form->id)) {
+		$output['error'] = 'Form not found';
+		$w->out(json_encode($output));
+		return;
+	}
+
+	// Validate no existing mapping
+	$existing_mapping = $w->FormApplication->getFormApplicationMapping($application_id, $form_id);
+	if (empty($existing_mapping->id)) {
+		$mapping = new FormApplicationMapping($w);
+		$mapping->application_id = $application_id;
+		$mapping->form_id = $form_id;
+		$mapping->insert();
+	}
+
+	// Return
+	$output['success'] = true;
+	$w->out(json_encode($output));
 
 }
 
@@ -123,6 +187,11 @@ function save_member_POST(Web $w) {
 
 	$application_id = intval($_POST['application_id']);
 	$member_user_id = intval($_POST['member_user_id']);
+
+	$existing_record_id = '';
+	if (!empty($_POST['id'])) {
+		$existing_record_id = intval($_POST['id']);
+	}
 
 	// Get application and validate
 	$application = $w->FormApplication->getFormApplication($application_id);
@@ -148,15 +217,24 @@ function save_member_POST(Web $w) {
 	}
 
 	// Find/create
-	$application_member = $w->FormApplication->getFormApplicationMember($application_id, $member_user_id);
-	if (empty($application_member->id)) {
+	if (!empty($existing_record_id)) {
+		$application_member = $w->FormApplication->getObject("FormApplicationMember", $existing_record_id);
+		if (empty($application_member->id)) {
+			$output['error'] = 'Existing record not found';
+			$w->out(json_encode($output));
+			return;
+		} else {
+			$application_member->member_user_id = $member_user_id;
+			$application_member->role = $w->request('role');
+			$application_member->update();
+		}
+	} else {
 		$application_member = new FormApplicationMember($w);
 		$application_member->application_id = $application_id;
 		$application_member->member_user_id = $member_user_id;
+		$application_member->role = $w->request('role');
+		$application_member->insert();
 	}
-
-	$application_member->role = $_POST['role'];
-	$application_member->insertOrUpdate();
 
 	// Return
 	$output['success'] = true;

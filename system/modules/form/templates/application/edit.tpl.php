@@ -16,7 +16,7 @@
 		<form-row label="Description">
 			<textarea v-model='application.description' v-on:keyup.prevent='form_changed = true'>{{ application.description }}</textarea>
 		</form-row>
-		<form-row label="Active" labelfor="active_switch">
+		<form-row label="Active" label-for="active_switch">
 			<div class="switch">
 				<input id="active_switch" name='is_active' type="checkbox" v-on:change='form_changed = true' v-bind:checked='setChecked()' v-model='application.is_active'>
 				<label for='active_switch'></label>
@@ -37,12 +37,12 @@
 			<table style='width: 100%;' v-show='!loading_members'>
 				<thead><tr><th>User</th><th>Role</th><th>Actions</th></tr></thead>
 				<tbody>
-					<tr v-if='application_members.length' v-for='member in application_members'>
+					<tr v-if='application_members.length' v-for='(member, index) in application_members'>
 						<td>{{ member.name }}</td>
 						<td>{{ member.role }}</td>
 						<td>
-							<a class='button tiny' v-on:click='editApplicationMember(member)'>Edit</a>
-							<a class='button tiny warning' v-on:click='deleteApplicationMember(member)'>Delete</a>
+							<a class='button tiny' v-on:click='editApplicationMember(index)'>Edit</a>
+							<a class='button tiny warning' v-on:click='deleteApplicationMember(index)'>Delete</a>
 						</td>
 					</tr>
 					<tr v-if='!application_members.length'><td colspan="3">No members found</td></tr>
@@ -51,14 +51,15 @@
 		</div>
 		<div class='small-12 medium-6 columns'>
 			<h3>Attached Forms <button class='button tiny right' v-on:click='editApplicationForm()'>Attach form</button></h3>
+			<loading-indicator :show="loading_forms"></loading-indicator>
 			<table style='width: 100%;' v-show='!loading_forms'>
 				<thead><tr><th>Form</th><th># saved rows</th><th>Actions</th></tr></thead>
 				<tbody>
 					<tr v-if='application_forms.length' v-for='form in application_forms'>
-						<td>{{ form.name }}</td>
-						<td>{{ form.role }}</td>
+						<td>{{ form.title }}</td>
+						<td><span v-if="form.no_instances">{{ form.no_instances }}</span><span v-else>0</span></td>
 						<td>
-							<a class='button tiny' v-on:click='editApplicationForm(form)'>Edit</a>
+							<!-- <a class='button tiny' v-on:click='editApplicationForm(form)'>Edit</a> -->
 							<a class='button tiny warning' v-on:click='deleteApplicationForm(form)'>Delete</a>
 						</td>
 					</tr>
@@ -69,16 +70,26 @@
 	</div>
 
 	<!-- Form modal -->
-	<modal id="form_application_form_modal" modalTitle="Add Form">
-
+	<modal id="form_application_form_modal" modal-title="Attach Form">
+		<form v-on:submit='saveForm()'>
+			<form-row label="Form">
+				<select v-model='active_form.id'>
+					<option v-for="form in available_forms" :value="form.id">{{ form.title }}</option>
+				</select>
+			</form-row>
+			<br/>
+			<form-row>
+				<button v-on:click.prevent='saveApplicationForm()' class='button tiny'>Save</button>
+				<button v-on:click.prevent='resetActiveForm()' class='button tiny secondary right'>Cancel</button>
+			</form-row>
+		</form>
 	</modal>
 
 	<!-- Member modal -->
-	<div id="form_application_member_modal" class="reveal-modal" data-reveal aria-labelledby="member_modalTitle" aria-hidden="true" role="dialog">
-		<h2 id="member_modalTitle">{{ active_member.id != undefined || active_member.id != null ? 'Edit member' : 'Create member' }}</h2>
+	<modal id="form_application_member_modal" :modal-title="getMemberModalTitle">
 		<form v-on:submit='saveMember()'>
 			<form-row label="User">
-				<autocomplete :list="user_list" v-on:autocomplete-select="setSelectedValue" property="name" :required="true" :threshold="1"></autocomplete>
+				<autocomplete :list="user_list" v-on:autocomplete-select="setSelectedValue" property="name" :required="true" :threshold="1" :value="active_member.name"></autocomplete>
 			</form-row>
 			<form-row label="Role">
 				<select v-model="active_member.role">
@@ -93,8 +104,7 @@
 				<button v-on:click.prevent='resetActiveMember()' class='button tiny secondary right'>Cancel</button>
 			</form-row>
 		</form>
-		<a class="close-reveal-modal" aria-label="Close">&#215;</a>
-	</div>
+	</modal>
 </div>
 
 <script src='/system/templates/vue-components/modal.vue.js'></script>
@@ -120,18 +130,15 @@
 			loading_members: true,
 			loading_forms: true,
 
-
+			available_forms: <?php echo json_encode(array_map(function($available_form) {return ['id' => $available_form->id, 'title' => $available_form->title];}, $available_forms ? : [])); ?>,
 			member_role_options: <?php echo json_encode(FormApplicationMember::$_roles, true); ?>,
-			active_member: {
-				member_user_id: null,
-				role: '',
-				application_id: '<?php echo $application->id; ?>'
-			},
-			active_form: {},
+			active_member: {id: '', member_user_id: '', name: '', role: '', application_id: '<?php echo $application->id; ?>'},
+			active_form: {id: '', title: '',application_id: '<?php echo $application->id; ?>'},
 			user_list: <?php echo json_encode(array_map(function($user) {return ['id' => $user->id, 'name' => $user->getFullName()];}, array_filter($w->Auth->getUsers(), function($user) {return !empty($user->id) && $user->is_active == 1 && $user->is_deleted == 0;})), true); ?>
 		},
 		methods: {
 			setSelectedValue: function(selectedValue) {
+				console.log("new value", selectedValue);
 				this.active_member.member_user_id = selectedValue;
 			},
 			setChecked: function() {
@@ -158,12 +165,23 @@
 				this.form_changed = false;
 			},
 			getApplicationForms: function() {
-				this.loading_forms = false;
+				var _this = this;
+				this.loading_forms = true;
+				$.ajax('/form-vue/get_forms/<?php echo $application->id; ?>').done(function(response) {
+					var _response = JSON.parse(response);
+					if (_response.success) {
+						_this.application_forms = _response.data;
+					} else {
+						alert(_response.error);
+					}
+
+					_this.loading_forms = false;
+				});
 			},
 			getApplicationMembers: function() {
 				var _this = this;
 				this.loading_members = true;
-				$.ajax('/form-vue/get_members/' + this.application.id).done(function(response) {
+				$.ajax('/form-vue/get_members/<?php echo $application->id; ?>').done(function(response) {
 					var _response = JSON.parse(response);
 					if (_response.success) {
 						_this.application_members = _response.data;
@@ -174,20 +192,27 @@
 					_this.loading_members = false;
 				});
 			},
-			editApplicationForm: function() {
-				
+			editApplicationForm: function(form_index) {
+				if (form_index !== undefined && ((this.application_forms.length - 1) >= form_index)) { 
+          			// this.active_form = Vue.util.extend({}, this.application_forms[form_index]);
+          			this.active_form.id = this.application_forms[form_index].id;
+          			this.active_form.title = this.application_forms[form_index].title;
+          		}
+				$('#form_application_form_modal').foundation('reveal', 'open');
 			},
 			deleteApplicationForm: function() {
 
 			},
 			editApplicationMember: function(member_index) {
-				if (member_index && ((this.application_members.length - 1) >= member_index)) {
-					this.active_member = Vue.utils.extend({}, this.application_members[member_index]);
+				if (member_index !== undefined && ((this.application_members.length - 1) >= member_index)) { 
+          			this.active_member = Vue.util.extend({}, this.application_members[member_index]);
+				} else {
+					this.active_member = {id: '', member_user_id: '', name: '', role: '', application_id: '<?php echo $application->id; ?>'};
 				}
 				$('#form_application_member_modal').foundation('reveal', 'open');
 			},
 			saveApplicationMember: function() {
-				if (this.active_member.member_user_id != undefined) {
+				if (this.active_member.id != undefined) {
 					var _this = this;
 					$.ajax('/form-vue/save_member', {
 						method: 'POST',
@@ -198,17 +223,36 @@
 					});
 				}
 			},
+			saveApplicationForm: function() {
+				if (this.active_form.id != undefined) {
+					var _this = this;
+					$.ajax('/form-vue/save_form', {
+						method: 'POST',
+						data: _this.active_form
+					}).done(function(response) {
+						_this.getApplicationForms();
+						_this.resetActiveForm();
+					});
+				}
+			},
 			resetActiveMember: function() {
-				this.active_member = {
-					member_user_id: null,
-					role: '',
-					application_id: '<?php echo $application->id; ?>'
-				};
+				this.active_member = {id: '', member_user_id: '', name: '', role: '', application_id: '<?php echo $application->id; ?>'};
 
 				$('#form_application_member_modal').foundation('reveal', 'close');
 			},
+			resetActiveForm: function() {
+				this.active_form = {id: '', title: '', application_id: '<?php echo $application->id; ?>'};
+
+				$('#form_application_form_modal').foundation('reveal', 'close');
+			},
 			deleteApplicationMember: function() {
 
+			}
+		},
+		computed: {
+			getMemberModalTitle: function() {
+				console.log("member", this.active_member.id, this.active_member.id != undefined && this.active_member.id != null && this.active_member != '');
+				return this.active_member.id != undefined && this.active_member.id != null && this.active_member != '' ? 'Edit member' : 'Create member';
 			}
 		},
 		created: function() {

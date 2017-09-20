@@ -6,15 +6,19 @@ Vue.component('modal', {
 			type: String,
 			required: true
 		},
-		'modal-class': String,
-		'show-close': {
+		modalClass: String,
+		showClose: {
 			type: Boolean,
 			required: false,
 			default: true
 		},
-		'modal-title': String
+		modalTitle: String
 	},
-	template: '<div id="id" class="reveal-modal" v-bind:class="modalClass" data-reveal v-bind:aria-labelledby="getComputedId()" aria-hidden="true" role="dialog"><h2 v-bind:id="getComputedId()" v-if="modalTitle">{{ modalTitle }}</h2><slot></slot></div>',
+	template:  '<div :id="id" class="reveal-modal" :class="modalClass" data-reveal :aria-labelledby="getComputedId" aria-hidden="true" role="dialog"> \
+					<h2 :id="getComputedId" v-if="modalTitle">{{ modalTitle }}</h2> \
+					<slot></slot> \
+					<a v-if="showClose" class="close-reveal-modal" aria-label="Close">&#215;</a> \
+				</div>',
 	data: function() {
 		return {
 			computedId: ''

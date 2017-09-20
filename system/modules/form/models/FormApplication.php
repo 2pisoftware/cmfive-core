@@ -16,15 +16,24 @@ class FormApplication extends DbObject {
 	public $is_deleted;
 	
 	public function getForms() {
-		return $w->Form->getFormsMappedToObject($this);
+		$forms_mapped = $this->db->get('form')->leftJoin('form_application_mapping on form_application_mapping.form_id = form.id')
+									->where('form.is_deleted', 0)->where('form_application_mapping.is_deleted', 0)
+									->where('form_application_mapping.application_id', $this->id)->fetchAll();
+
+		return $this->getObjectsFromRows('Form', $forms_mapped);
+		// return $this->w->Form->getFormsMappedToObject($this);
 	}
 	
 	public function getFormInstances($form) {
-		return $w->Form->getFormInstancesForFormAndObject($form, $this);
+		return $this->w->Form->getFormInstancesForFormAndObject($form, $this);
 	}
 	
 	public function getMembers() {
 		return $this->getObjects("FormApplicationMember", ['application_id' => $this->id]);
+	}
+
+	public function getMapping() {
+		return $this->getObjects("FormApplicationMapping", ["application_id" => $this->id, "is_deleted" => 0]);
 	}
 	
 	private function _getApplicationMember($user) {

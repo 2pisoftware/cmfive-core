@@ -12,7 +12,12 @@
 Vue.component('form-row', {
 	props: {
 		label: String,
-		labelfor: String
+		labelFor: String
 	},
-	template: '<div class="row"><div class="large-12 columns"><label v-if="label" v-bind:for="labelfor">{{ label }}<slot></slot></label><slot v-else></slot></div></div>'
+	template:  '<div class="row"> \
+					<div class="large-12 columns"> \
+						<label v-if="label" v-bind:for="labelFor">{{ label }}<slot></slot></label> \
+						<slot v-else></slot> \
+					</div> \
+				</div>'
 });
