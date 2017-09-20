@@ -52,7 +52,7 @@
 <!-- end error checking -->
 <tr>
 	<td>click</td>
-	<td>css=span.fi-price-tag</td>
+	<td>css=#tag_container_Task_1 &gt; span.secondary.label</td>
 	<td></td>
 </tr>
 <tr>
@@ -74,42 +74,57 @@
 <!-- end error checking -->
 <tr>
 	<td>sendKeys</td>
-	<td>css=input.search_tags</td>
-	<td>testTag</td>
+	<td>//div[@id='tag_Task_1_modal']/div/div/div/div/input</td>
+	<td>testTaskTag</td>
 </tr>
 <tr>
-	<td>click</td>
-	<td>//div[@id='tag_list_dialog_Task1']/div/div[2]/div/div/div/div/span</td>
+	<td>mouseOver</td>
+	<td>//div[@id='tag_Task_1_modal']/div/div/div/div[2]/div/div</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAt</td>
+	<td>//div[@id='tag_Task_1_modal']/div/div/div/div[2]/div/div</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>css=span.fi-price-tag</td>
+	<td>css=a.close-reveal-modal</td>
 	<td></td>
 </tr>
 <tr>
-	<td>type</td>
-	<td>css=input.search_tags</td>
+	<td>pause</td>
+	<td>2000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>testTaskTag</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=span.info.label</td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>2000</td>
 	<td></td>
 </tr>
 <tr>
 	<td>sendKeys</td>
-	<td>css=input.search_tags</td>
-	<td>anothertestTag</td>
+	<td>//div[@id='tag_Task_1_modal']/div/div/div/div/input</td>
+	<td>anotherTestTag</td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>//div[@id='tag_list_dialog_Task1']/div/div[2]/div/div/div/div/span</td>
+	<td>//div[@id='tag_Task_1_modal']/div/div/div/div[2]/div/div</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>css=span.fi-price-tag</td>
-	<td></td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>css=span.fi-x.hide_tag_list</td>
+	<td>css=a.close-reveal-modal</td>
 	<td></td>
 </tr>
 <tr>
@@ -136,7 +151,7 @@
 <!-- end error checking -->
 <tr>
 	<td>click</td>
-	<td>//tr[2]/td[2]/div/span/span</td>
+	<td>css=span.secondary.label</td>
 	<td></td>
 </tr>
 <tr>
@@ -158,12 +173,12 @@
 <!-- end error checking -->
 <tr>
 	<td>click</td>
-	<td>css=div.tag:nth-child(2) &gt; div:nth-child(1) &gt; span:nth-child(1)</td>
+	<td>//div[@id='tag_Task_2_modal']/div/div/div/div</td>
 	<td></td>
 </tr>
 <tr>
-	<td>click</td>
-	<td>css=#tag_list_dialog_Task2 &gt; div.tag_list_modal &gt; div.tag_list_header &gt; span.fi-x.hide_tag_list</td>
+	<td>clickAt</td>
+	<td>//div[@id='tag_Task_2_modal']/div/div/div/div[2]/div/div/div[2]</td>
 	<td></td>
 </tr>
 <tr>
@@ -293,6 +308,16 @@
 <tr>
 	<td>verifyTextNotPresent</td>
 	<td>Warning*</td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>2000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>deleted</td>
 	<td></td>
 </tr>
 <!-- end error checking -->
