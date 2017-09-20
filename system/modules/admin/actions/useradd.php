@@ -34,18 +34,26 @@ function useradd_POST(Web &$w) {
 	}
 
 	// first saving basic contact info
+	$lookup_exists = false;
 	$contact = new Contact($w);
 	$contact->fill($_REQUEST);
 	$contact->dt_created = time();
 	$contact->private_to_user_id = null;
-	$contact->insert();
-	if (empty($_POST['title']) and !empty($_POST['acp_title'])) {
-		$contact->title = $_POST['acp_title'];
-		$lookup = new Lookup($w);
-		$lookup->fill(['type'=>'title', 'code'=>$contact->title, 'title'=>$contact->title]);
-		$lookup->insert();
-
+	$contact->title = $_POST['acp_title'];
+	if ($_POST['acp_title']) {
+		foreach ($w->Admin->getAllLookup(["type" => 'title']) as $lookup) {
+			if ($lookup->title == $_POST['acp_title']) {
+				$lookup_exists = true;
+				break; // found one, don't make a new lookup
+			}
+		} 
+		if (!$lookup_exists) {
+			$lookup = new Lookup($w);
+			$lookup->fill(['type'=>'title', 'code'=>$contact->title, 'title'=>$contact->title]);
+			$lookup->insert();
+		}
 	}
+	$contact->insert();
 
 	// now saving the user
 	$user = new User($w);
