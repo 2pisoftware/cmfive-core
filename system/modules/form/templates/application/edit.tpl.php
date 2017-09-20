@@ -67,6 +67,12 @@
 			</table>
 		</div>
 	</div>
+
+	<!-- Form modal -->
+	<modal id="form_application_form_modal" modalTitle="Add Form">
+
+	</modal>
+
 	<!-- Member modal -->
 	<div id="form_application_member_modal" class="reveal-modal" data-reveal aria-labelledby="member_modalTitle" aria-hidden="true" role="dialog">
 		<h2 id="member_modalTitle">{{ active_member.id != undefined || active_member.id != null ? 'Edit member' : 'Create member' }}</h2>
@@ -90,6 +96,8 @@
 		<a class="close-reveal-modal" aria-label="Close">&#215;</a>
 	</div>
 </div>
+
+<script src='/system/templates/vue-components/modal.vue.js'></script>
 
 <link rel='stylesheet' href='/system/templates/vue-components/form/elements/autocomplete.vue.css' />
 <script src='/system/templates/vue-components/form/elements/autocomplete.vue.js'></script>
@@ -154,6 +162,7 @@
 			},
 			getApplicationMembers: function() {
 				var _this = this;
+				this.loading_members = true;
 				$.ajax('/form-vue/get_members/' + this.application.id).done(function(response) {
 					var _response = JSON.parse(response);
 					if (_response.success) {
