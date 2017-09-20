@@ -15,7 +15,7 @@ function ajaxCreateTag_GET(Web $w) {
 	}
 	
 	// Check if tag exists
-	$tag = $w->Tag->getObject("Tag", ['tag' => $new_tag, 'is_deleted' => 0]);
+	$tag = $w->Tag->getObject("Tag", ['tag' => trim(strip_tags($new_tag)), 'is_deleted' => 0]);
 
 	if (empty($tag->id)) {
 		$tag = new Tag($w);
