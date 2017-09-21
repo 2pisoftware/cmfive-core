@@ -237,8 +237,8 @@
 <!-- end error checking -->
 <tr>
 	<td>assertText</td>
-	<td>css=div.alert-box.info</td>
-	<td>Couldn't save tag, &quot;anotherTestTag&quot; already exists! ×</td>
+	<td>css=div.alert-box.warning</td>
+	<td>Tag named 'anotherTestTag' already exists. ×</td>
 </tr>
 <tr>
 	<td>type</td>
@@ -291,7 +291,12 @@
 </tr>
 <tr>
 	<td>clickAndWait</td>
-	<td>//tr[2]/td[2]/button[2]</td>
+	<td>//button[@onclick=&quot;if(confirm('Are you sure you want to delete the anotherTestTag tag?')) {parent.location='/tag/delete/2'; return false;}&quot;]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertConfirmation</td>
+	<td>Are you sure you want to delete the anotherTestTag tag?</td>
 	<td></td>
 </tr>
 <tr>
