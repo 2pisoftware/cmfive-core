@@ -105,6 +105,24 @@ function _en($key1, $key2, $n, $context = '', $domain = '') {
 	echo _n($key1, $key2, $n, $domain, $context);
 }
 
+/**
+ * Conver
+ * @param String $base_locale
+ * @return Array
+ */
+function getAllLocaleValues($base_locale) {
+	static $language_lookup = [
+		'de_DE' => ['de_DE', 'de_DE@euro', 'deu', 'deu_deu', 'german'],
+		'fr_FR' => ['fr_FR', 'fr_FR@euro', 'french']
+	];
+	
+	if (array_key_exists($base_locale, $language_lookup)) {
+		return $language_lookup[$base_locale];
+	}
+	
+	return false;
+}
+
 function humanReadableBytes($input, $rounding = 2, $bytesValue = true) {
 	$ext = array("B", "KB", "MB", "GB", "TB");
 	$barrier = 1024;

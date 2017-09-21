@@ -305,8 +305,12 @@ class Web {
 		}
 		$this->Log->info('init locale ' . $language);
 
-		$results = setlocale(LC_ALL, $language);
-		if (!$results) {
+		$all_locale = getAllLocaleValues($language);
+		
+		putenv("LC_ALL={$language}");
+		$results = setlocale(LC_ALL, $all_locale);
+		
+		if (!empty($results)) {
 			$this->Log->info('setlocale failed: locale function is not available on this platform, or the given locale (' . $language . ') does not exist in this environment');
 		}
 		$langParts = explode(".", $language);
@@ -335,23 +339,28 @@ class Web {
 	 * Initialise gettext for this module if not already loaded
 	 */
 	function setTranslationDomain($domain) {
-		$path = ROOT_PATH . "/" . $this->getModuleDir($domain) . "translations";
-		$translationFile = $path . "/" . $this->currentLocale . "/LC_MESSAGES/" . $domain . ".mo";
-		if (file_exists($translationFile)) {
+		$path = ROOT_PATH . DS . $this->getModuleDir($domain) . "translations";
+		$translationFile = $path . DS . $this->currentLocale . DS . "LC_MESSAGES" . DS . $domain . ".mo";
+		$translationFileOverride = ROOT_PATH . DS . 'translations' . DS . $domain . DS . $this->currentLocale . DS . 'LC_MESSAGES' . DS . $domain . '.mo';
+		
+		if (file_exists($translationFileOverride) && !empty(bindtextdomain($domain, ROOT_PATH . DS . 'translations' . DS . $domain))) {
+			// Project language override has been loaded
+		} else if (file_exists($translationFile)) {
+			// Fallback to module translation directory
 			$results = bindtextdomain($domain, $path);
 			if (!$results) {
-				$domain = 'main';
-				$path = ROOT_PATH . "/" . $this->getModuleDir($domain) . "translations";
-				$results = bindtextdomain($domain, $path);
+				// Fallback to main module
+				$path = ROOT_PATH . "/" . $this->getModuleDir('main') . "translations";
+				$results = bindtextdomain('main', $path);
 				if (!$results) {
 					throw new Exception('setlocale bindtextdomain failed on retry with main');
 				}
 			}
 		} else {
-			$domain = 'main';
-			$path = ROOT_PATH . "/" . $this->getModuleDir($domain) . "translations";
-			$translationFile = $path . "/" . $this->currentLocale . "/LC_MESSAGES/" . $domain . ".mo";
-			$results = bindtextdomain($domain, $path);
+			// Fallback to main module
+			$path = ROOT_PATH . "/" . $this->getModuleDir('main') . "translations";
+			$translationFile = $path . "/" . $this->currentLocale . "/LC_MESSAGES/main.mo";
+			$results = bindtextdomain('main', $path);
 			if (!$results) {
 				throw new Exception('setlocale bindtextdomain failed on retry with main');
 			}
@@ -573,7 +582,11 @@ class Web {
 				if (in_array($this->_action, $allowed[$this->_module]) || (!empty($this->_submodule) && in_array($this->_action, $allowed[$this->_module . '-' . $this->_submodule]))) {
 					// If we get here then we are configured to enforce CSRF checking
 					$this->Log->debug("Checking CSRF");
-					$this->validateCSRF();
+					try {
+						$this->validateCSRF();
+					} catch (Exception $e) {
+						$this->msg('The current session has expired, please resubmit the form', $_SERVER['REQUEST_URI']);
+					}
 				}
 			}
 		}
@@ -766,13 +779,13 @@ class Web {
 		// first load the system config file
 		require SYSTEM_PATH . "/config.php";
 
-		// Load System config first
+		// Load System modules config first
 		$baseDir = SYSTEM_PATH . '/modules';
 		$this->scanModuleDirForConfigurationFiles($baseDir);
 
 		// Load project module config second
 		$baseDir = ROOT_PATH . '/modules';
-		$this->scanModuleDirForConfigurationFiles($baseDir);
+		$this->scanModuleDirForConfigurationFiles($baseDir, true);
 
 		// load the root level config file last because it can override everything
 		//if (!file_exists("config.php")) {
@@ -791,7 +804,7 @@ class Web {
 	}
 
 	// Helper function for the above, scans a directory for config files in child folders
-	private function scanModuleDirForConfigurationFiles($dir = "") {
+	private function scanModuleDirForConfigurationFiles($dir = "", $loadWithDependencies = false) {
 		// Check that dir is dir
 		if (is_dir($dir)) {
 
@@ -806,13 +819,51 @@ class Web {
 
 						// If is also a directory, look for config.php file
 						if (file_exists($searchingDir . "/config.php")) {
-							include $searchingDir . "/config.php";
-						}
+							// Sandbox config load to check if module active
+							Config::enableSandbox();
+							include($searchingDir . '/config.php');
+							$include_path = $searchingDir . '/config.php';
+							// Include the project config unless installing to get any module active flag overrides
+							if (!$this->_is_installing) {
+                                include(ROOT_PATH . '/config.php');
+                            }
+                            
+							if (Config::get("{$item}.active") === true) {
+								// Need to reset sandbox content to remove inclusion of project config
+								Config::clearSandbox();
+								include($searchingDir . '/config.php');
+								
+								// If we are loading with dependencies, register config in the dependency loader
+								// (located in Config.php) instead of putting into base config setup
+								if ($loadWithDependencies === true) {
+									// Set config on current module
+									ConfigDependencyLoader::registerModule($item, Config::getSandbox(),$include_path);
+								} else {
+									Config::disableSandbox();
+                                    include($searchingDir . '/config.php');
+                                    Config::enableSandbox();
+								}
+							}
+							
+							// Always disable the sandbox to ensure other uses of Config do not get omitted
+							Config::clearSandbox();
+							Config::disableSandbox();
+                        }
+                    }
+                }
+				
+				// Load with dependencies if required
+				if ($loadWithDependencies === true) {
+					try {
+						ConfigDependencyLoader::load();
+					} catch (Exception $e) {
+						$this->Log->error($e->getMessage());
+                        echo "Module config load error: " . $e->getMessage(); die;
 					}
 				}
-			}
-		}
-	}
+            }
+        }
+    }
 
 	public function validateCSRF() {
 		// Check for CSRF token and that we have a valid request method
