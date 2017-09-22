@@ -47,37 +47,33 @@ class FormStandardInterface extends FormFieldInterface {
 	 * 
 	 * @return []
 	 */
-	public static function formConfig($type,$metaData,$w) {
-		//print_r([$type,$metaData]);
-		$options=[];
-		if ($type=="autocomplete" || $type=="select")  {
+	public static function formConfig($type, $metaData, $w) {
+		$options = [];
+		if ($type == "autocomplete" || $type == "select")  {
 			if (!empty($metaData['object_type'])) {
 				try {
 					$service = new DbService($w);
-					$filter='';
+					$filter = '';
 					// eg {"login like ?": "%e%"}
 					if (!empty($metaData['object_filter'])) {
 						try {
-							$filter=json_decode($metaData['object_filter'],true);
+							$filter = json_decode($metaData['object_filter'], true);
 						} catch (Exception $e) {
 							// fallback to following test
 						}
 						if (!is_array($filter)) {
-							$filter=$metaData['object_filter'];
+							$filter = $metaData['object_filter'];
 						}						
 					}
-					$options=$service->getObjects($metaData['object_type'],$filter);
-					//foreach ($options as $option) {
-					//	$options[]=$option->getSelectOptionTitle();
-					//}
+					$options = $service->getObjects($metaData['object_type'], $filter);
 				} catch (Exception $e) {
 					//silently fail no options
 				}
 			} else if (!empty($metaData['options'])) {
-				$options=explode(",",$metaData['options']);
-				foreach ($options as $k=>$option) {
+				$options = explode(",", $metaData['options']);
+				foreach ($options as $k => $option) {
 					if (is_int($k)) {
-						$options[$k]=[$option,$k+1];
+						$options[$k] = [$option, $k + 1];
 					}
 				}
 			}
@@ -133,7 +129,7 @@ class FormStandardInterface extends FormFieldInterface {
 				}
 			case "autocomplete":
 			case "select":
-				return static::modifyAutocompleteForDisplay($value,$metadata,$w);
+				return static::modifyAutocompleteForDisplay($value, $metadata, $w);
 			case "date":
 				return date("d/m/Y", $value);
 			case "datetime":

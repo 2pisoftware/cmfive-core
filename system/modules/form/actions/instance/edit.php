@@ -84,8 +84,8 @@ function edit_POST(Web $w) {
 				$instance_value->form_instance_id = $instance->id;
 				$instance_value->form_field_id = $field->id;
 				$instance_value->value = $value;
-				$instance_value->mask = $field->mask;
-				$instance_value->field_type = $field->type;
+				// $instance_value->mask = $field->mask;
+				// $instance_value->field_type = $field->type;
 				$instance_value->insert();
 			}
 		}

@@ -68,7 +68,13 @@ class FormService extends DbService {
 	 */
 	public function areFormsMappedToObject($object) {
 		$mapping = $this->getObjects("FormMapping", ["object" => get_class($object), "is_deleted" => 0]);
-		return count($mapping) > 0;
+
+		$application_mapping = [];
+		if ($object instanceof FormApplication) {
+			$application_mapping = $this->getObjects('FormApplicationMapping', ['application_id' => $object->id, 'is_deleted' => 0]);
+		}
+
+		return count($mapping) > 0 || count($application_mapping) > 0;
 	}
 	
 	/**
@@ -85,6 +91,16 @@ class FormService extends DbService {
 			}
 		}
 		
+		$application_forms = [];
+		if ($object instanceof FormApplication) {
+			$application_forms = $this->getObjects('FormApplicationMapping', ['application_id' => $object->id, 'is_deleted' => 0]);
+			if (!empty($application_forms)) {
+				foreach($application_forms as $application_form) {
+					$forms[] = $application_form->getForm();
+				}
+			}
+		}
+
 		return $forms;
 	}
 	

@@ -29,7 +29,7 @@ class FormApplication extends DbObject {
 	}
 	
 	public function getMembers() {
-		return $this->getObjects("FormApplicationMember", ['application_id' => $this->id]);
+		return $this->getObjects("FormApplicationMember", ['application_id' => $this->id, 'is_deleted' => 0]);
 	}
 
 	public function getMapping() {
@@ -38,7 +38,7 @@ class FormApplication extends DbObject {
 	
 	private function _getApplicationMember($user) {
 		if ($user == null) return null;
-		return $this->getObject("FormApplicationMember", ['application_id' => $this->id, 'member_user_id' => $user->id]);
+		return $this->getObject("FormApplicationMember", ['application_id' => $this->id, 'member_user_id' => $user->id, 'is_deleted' => 0]);
 	}
 	
 	public function isMember($user) {

@@ -6,10 +6,10 @@
 <div id='form-application-<?php echo $application->id; ?>__vue-instance' style='background-color: #efefef; padding-top: 20px;'>
 	<div class='row'>
 		<div class='small-12 columns'>
-			<h3>Editing Application: {{ application.title }}</h3>
+			<h3>Editing Application: {{ application.title }} <a class='button tiny secondary right' style='margin-bottom: 0px;' href='/form-application/show/<?php echo $application->id; ?>'>View Application</a></h3>
 		</div>
 	</div>
-	<form v-on:submit='saveApplication()'>
+	<form style='margin-top: 0px;' v-on:submit='saveApplication()'>
 		<form-row label="Title">
 			<input type="text" v-model='application.title' v-on:keyup.prevent='form_changed = true' v-bind:value="application.title" />
 		</form-row>
@@ -18,7 +18,7 @@
 		</form-row>
 		<form-row label="Active" label-for="active_switch">
 			<div class="switch">
-				<input id="active_switch" name='is_active' type="checkbox" v-on:change='form_changed = true' v-bind:checked='setChecked()' v-model='application.is_active'>
+				<input id="active_switch" name='is_active' type="checkbox" v-on:change='form_changed = true' :checked='setChecked()' v-model='application.is_active' :true-value='1' :false-value='0'>
 				<label for='active_switch'></label>
 			</div>
 		</form-row>
@@ -42,7 +42,7 @@
 						<td>{{ member.role }}</td>
 						<td>
 							<a class='button tiny' v-on:click='editApplicationMember(index)'>Edit</a>
-							<a class='button tiny warning' v-on:click='deleteApplicationMember(index)'>Delete</a>
+							<a class='button tiny warning' v-on:click='deleteApplicationMember(member)'>Delete</a>
 						</td>
 					</tr>
 					<tr v-if='!application_members.length'><td colspan="3">No members found</td></tr>
@@ -200,8 +200,13 @@
           		}
 				$('#form_application_form_modal').foundation('reveal', 'open');
 			},
-			deleteApplicationForm: function() {
-
+			deleteApplicationForm: function(form) {
+				if (form.id !== undefined && confirm("Are you sure you want to detach this form? (You can reattach it later if needed)")) {
+					var _this = this;
+					$.ajax('/form-vue/delete_form/<?php echo $application->id; ?>/' + form.id).done(function(response) {
+						_this.getApplicationForms();
+					});
+				}
 			},
 			editApplicationMember: function(member_index) {
 				if (member_index !== undefined && ((this.application_members.length - 1) >= member_index)) { 
@@ -245,13 +250,17 @@
 
 				$('#form_application_form_modal').foundation('reveal', 'close');
 			},
-			deleteApplicationMember: function() {
-
+			deleteApplicationMember: function(member) {
+				if (member.id !== undefined && confirm("Are you sure you want to remove this member? (You can re-add them later if needed)")) {
+					var _this = this;
+					$.ajax('/form-vue/delete_member/<?php echo $application->id; ?>/' + member.id).done(function(response) {
+						_this.getApplicationMembers();
+					});
+				}
 			}
 		},
 		computed: {
 			getMemberModalTitle: function() {
-				console.log("member", this.active_member.id, this.active_member.id != undefined && this.active_member.id != null && this.active_member != '');
 				return this.active_member.id != undefined && this.active_member.id != null && this.active_member != '' ? 'Edit member' : 'Create member';
 			}
 		},

@@ -17,4 +17,5 @@ class FormApplicationService extends DbService {
 	public function getFormApplicationMapping($application_id, $form_id) {
 		return $this->getObject('FormApplicationMapping', ['application_id' => $application_id, 'form_id' => $form_id, 'is_deleted' => 0]);
 	}
+	
 }

@@ -117,10 +117,6 @@ function get_forms_GET(Web $w) {
 
 }
 
-function save_form_GET(Web $w) {
-
-}
-
 function save_form_POST(Web $w) {
 
 	$w->setLayout(null);
@@ -165,10 +161,6 @@ function save_form_POST(Web $w) {
 	// Return
 	$output['success'] = true;
 	$w->out(json_encode($output));
-
-}
-
-function save_member_GET(Web $w) {
 
 }
 
@@ -243,8 +235,63 @@ function save_member_POST(Web $w) {
 
 function delete_form_GET(Web $w) {
 
+	$w->setLayout(null);
+
+	$output = getResponse_VUE();
+
+	list($id, $form_id) = $w->pathMatch('id', 'form_id');
+
+	if (empty($id) || empty($form_id)) {
+		$output['error'] = 'Missing ID';
+		$w->out(json_encode($output));
+		return;
+	}
+
+	$application = $w->FormApplication->getFormApplication($id);
+	if (empty($application->id)) {
+		$output['error'] = 'Application not found';
+		$w->out(json_encode($output));
+		return;
+	}
+
+	$existing_mapping = $w->FormApplication->getFormApplicationMapping($application->id, $form_id);
+	if (!empty($existing_mapping->id)) {
+		$existing_mapping->delete();
+	}
+
+	$output['success'] = true;
+	$w->out(json_encode($output));
+
 }
 
 function delete_member_GET(Web $w) {
 
+
+	$w->setLayout(null);
+
+	$output = getResponse_VUE();
+
+	list($id, $member_id) = $w->pathMatch('id', 'member_id');
+
+	if (empty($id) || empty($member_id)) {
+		$output['error'] = 'Missing ID';
+		$w->out(json_encode($output));
+		return;
+	}
+
+	$application = $w->FormApplication->getFormApplication($id);
+	if (empty($application->id)) {
+		$output['error'] = 'Application not found';
+		$w->out(json_encode($output));
+		return;
+	}
+
+	$existing_member = $w->FormApplication->getObject('FormApplicationMember', $member_id);
+	if (!empty($existing_member->id) && $existing_member->application_id == $id && $existing_member->is_deleted == 0) {
+		$existing_member->delete();
+	}
+
+	$output['success'] = true;
+	$w->out(json_encode($output));
+	
 }

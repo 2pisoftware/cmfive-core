@@ -7,8 +7,8 @@ class FormValue extends DbObject {
 	public $form_instance_id;	// form record created when the use entered data
 	public $form_field_id;		// form field that this record holds data for
 	public $value;				// the actual value entered by the user
-	public $field_type;			// the type of the field eg text,date
-	public $mask;				// 
+	// public $field_type;			// the type of the field eg text,date
+	// public $mask;				// 
 
 	/**
 	 * Override insert to prep fields for persistence based on field type
@@ -81,28 +81,14 @@ class FormValue extends DbObject {
 	 * @return string
 	 */
 	public function getMaskedValue() {
-		if (empty($this->field_type)) {
+		$field = $this->getFormField();
+
+		if (empty($field->type)) {
 			return null;
 		}
 		
 		$field = $this->getFormField();
 		$interface = $field->interface_class;
-		return $interface::modifyForDisplay($this->field_type, $this->value, $field->getMetadata(),$this->w);
-//		
-//		switch($this->type) {
-//			case "date": 
-//				return formatDate($this->value);
-//			case "datetime":
-//				return formatDateTime($this->value);
-//			case "number": 
-//				return intval($this->value);
-//			case "decimal":
-//				return round($this->value, 2);
-//			case "money":
-//				return formatMoney("%.2n", $this->value);
-//			case "text":
-//			default:
-//				return $this->value;
-//		}
+		return $interface::modifyForDisplay($field->type, $this->value, $field->getMetadata(), $this->w);
 	}
 }

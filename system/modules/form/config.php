@@ -8,7 +8,10 @@ Config::set('form', [
 		'core_template'
 	],
 	'interfaces' => [
-		'FormStandardInterface'
+		'FormStandardInterface',
+		'FormAdditionalFieldsInterface'
 	],
-	'mapping' => ['FormApplication']
+	'processors' => [
+    	'ExternalFormProcessor'
+	],
 ]);

@@ -20,3 +20,22 @@
 		</div>
 	</div>
 </div>
+
+<div class="tabs">
+    <div class="tab-head">
+    	<?php 
+			$tab_headers = $w->callHook('core_template', 'tab_headers', $application); 
+			if (!empty($tab_headers)) {
+				echo implode('', $tab_headers);
+			}
+		?>
+	</div>
+	<div class="tab-body">
+		<?php
+			$tab_content = $w->callHook('core_template', 'tab_content', ['object' => $application, 'redirect_url' => '/form-application/show/' . $application->id]); 
+			if (!empty($tab_content)) {
+				echo implode('', $tab_content);
+			}
+		?>
+	</div>
+</div>
