@@ -24,7 +24,7 @@ class Contact extends DbObject {
 
 	function getFullName() {
 		if ($this->firstname && $this->lastname) {
-			return $this->firstname." ".$this->lastname;
+			return $this->title . " " . $this->firstname." ".$this->lastname;
 		} else if ($this->firstname) {
 			return $this->firstname;
 		} else if ($this->lastname) {
