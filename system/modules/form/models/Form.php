@@ -21,6 +21,15 @@ class Form extends DbObject {
 	public function getFields() {
 		return $this->getObjects("FormField", ["form_id" => $this->id, "is_deleted" => 0], false, true, "ordering ASC");
 	}
+
+	/**
+	 * Loads the unique ID field for a form if set
+	 *
+	 * @return FormField
+	 */
+	public function getUniqueIdField() {
+		return $this->getObject("FormField", ['form_id' => $this->id, "type" => "unique_id", "is_deleted" => 0]);
+	}
 	
 	/**
 	 * Generate the header row for the form table
@@ -84,6 +93,24 @@ class Form extends DbObject {
 	 */
 	public function getFormInstances() {
 		return $this->getObjects("FormInstance", ["form_id" => $this->id, "is_deleted" => 0]);
+	}
+
+	/**
+	 * Load a form instance based off the value of a unique identifier
+	 *
+	 * @param String $identifier_value
+	 */
+	public function getFormInstanceByUniqueIdentifierFieldValue($identifier_value) {
+		$unique_id_field = $this->getUniqueIdField();
+		if (!empty($unique_id_field->id)) {
+			// Get matching value
+			$value = $this->getObject('FormValue', ['form_field_id' => $unique_id_field->id, 'value' => $identifier_value, 'is_deleted' => 0]);
+			if (!empty($value->id)) {
+				return $value->getFormInstance();
+			}
+		}
+
+		return null;
 	}
 	
 	/**

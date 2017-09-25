@@ -72,11 +72,12 @@ abstract class FormFieldInterface {
 	 * The recommendation is to return the $value in the event of an error (like
 	 * an unknown type)
 	 * 
-	 * @param string $type
-	 * @param mixed $value
+	 * @param FormValue $form_value
+	 * @param \Web $w
+	 * @param mixed $metadata (optional)
 	 * @return mixed
 	 */
-	public static function modifyForDisplay($type, $value, $metadata = null,$w) {
+	public static function modifyForDisplay(FormValue $form_value, $w, $metadata = null) {
 		return $value;
 	}
 	
@@ -91,9 +92,8 @@ abstract class FormFieldInterface {
 	
 	/**
 	 * Much like the modifyForDisplay function, this function is for
-	 * manipulating the value, this value is given by the user interface so
-	 * will generally be a string, from here, you can modify it ready for
-	 * persistance.
+	 * manipulating the value, you can modify it ready for
+	 * persistence.
 	 * 
 	 * An example of these two functions at work would be storing a datetime
 	 * value as a unix timestamp; in modifyForDisplay, you would convert $value
@@ -102,11 +102,10 @@ abstract class FormFieldInterface {
 	 * a unix timestamp using strtotime()
 	 * 
 	 * @see FormFieldInterface::modifyForDisplay()
-	 * @param string $type
-	 * @param mixed $value
+	 * @param FormValue $form_value
 	 * @return mixed
 	 */
-	public static function modifyForPersistance($type, $value) {
+	public static function modifyForPersistance(FormValue $form_value) {
 		return $value;
 	}
 	

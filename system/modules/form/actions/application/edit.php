@@ -16,16 +16,7 @@ function edit_GET(Web $w) {
 		]
 	];
 
-	// $application_mapping = $application->getMapping();
-
-	// $mapped_form_ids = array_map(function($_map) {
-	// 	return $_map->form_id;
-	// }, $application_mapping ? : []);
-
 	$available_forms = $w->Form->getForms();
-	// $available_forms = array_filter($forms_list ? : [], function($_form) use ($mapped_form_ids) {
-	// 	return !in_array($_form->id, $mapped_form_ids);
-	// });
 
 	$w->ctx('available_forms', $available_forms);
 	$w->ctx('application', $application);

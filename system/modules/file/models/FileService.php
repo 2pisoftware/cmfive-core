@@ -297,7 +297,7 @@ class FileService extends DbService {
 		if (!empty($attachments)) {
 			$pluck = array();
 			foreach ($attachments as $attachment) {
-                            $pluck[] = $attachment->getFilePath() . "/" . $attachment->filename;
+                $pluck[] = $attachment->getFilePath() . "/" . $attachment->filename;
 			}
 			return $pluck;
 		}
@@ -312,15 +312,17 @@ class FileService extends DbService {
 	 * @return Attachment
 	 */	
 	function getAttachments($objectOrTable, $id = null) {
+		$table = '';
 		if (is_scalar($objectOrTable)) {
 			$table = $objectOrTable;
 		} elseif (is_a($objectOrTable, "DbObject")) {
 			$table = $objectOrTable->getDbTableName();
 			$id = $objectOrTable->id;
 		}
-		if ($table && $id) {
-			$rows = $this->_db->get("attachment")->where("parent_table", $table)->and("parent_id", $id)->and("is_deleted", 0)->fetch_all();
-			return $this->fillObjects("Attachment", $rows);
+		if (!empty($table) && !empty($id)) {
+			// $rows = $this->_db->get("attachment")->where("parent_table", $table)->and("parent_id", $id)->and("is_deleted", 0)->fetch_all();
+			// return $this->fillObjects("Attachment", $rows);
+			return $this->getObjects('Attachment', ['parent_table'=> $table, 'parent_id' => $id, 'is_deleted' => 0]);
 		}
 		return null;
 	}

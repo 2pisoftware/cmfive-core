@@ -19,7 +19,7 @@ class FormValue extends DbObject {
 		$field = $this->getFormField();
 		
 		$interface = $field->interface_class;
-		$this->value = $interface::modifyForPersistance($field->type, $this->value);
+		$this->value = $interface::modifyForPersistance($this);
 		
 		return parent::insert($force_validation);
 	}
@@ -33,7 +33,7 @@ class FormValue extends DbObject {
 		$field = $this->getFormField();
 		
 		$interface = $field->interface_class;
-		$this->value = $interface::modifyForPersistance($field->type, $this->value);
+		$this->value = $interface::modifyForPersistance($this);
 		
 		return parent::update($force_validation);
 	}
@@ -57,6 +57,16 @@ class FormValue extends DbObject {
 		return $this->getObject("FormField", $this->form_field_id);
 	}
 	
+	/**
+	 * Gets the form instance
+	 *
+	 * @return FormInstance
+	 */
+	public function getFormInstance() {
+		return $this->getObject('FormInstance', $this->form_instance_id);
+	}
+
+
 	/**
 	 * Return an array representing a form row with the masked value 
 	 * provided as the field data
@@ -89,6 +99,6 @@ class FormValue extends DbObject {
 		
 		$field = $this->getFormField();
 		$interface = $field->interface_class;
-		return $interface::modifyForDisplay($field->type, $this->value, $field->getMetadata(), $this->w);
+		return $interface::modifyForDisplay($this, $this->w, $field->getMetadata());
 	}
 }

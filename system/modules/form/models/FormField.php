@@ -26,6 +26,14 @@ class FormField extends DbObject {
 	 * @return  boolean|array true or Array of validation errors
 	 */
 	public function insert($force_validation = true) {
+		if ($this->type === "unique_id") {
+			$existing_unique_field = $this->getForm()->getUniqueIdField();
+			if (!empty($existing_unique_field->id)) {
+				// Reuse the validation structure from DbObject
+				return ["valid" => [], "invalid" => ["type" => "There can only be one field of Unique ID per form"], "success" => false];
+			}
+		}
+
 		$this->technical_name = strtolower(str_replace(" ", "_", $this->name));
 		$this->setInterfaceClass();
 		
@@ -38,6 +46,14 @@ class FormField extends DbObject {
 	 * @return  boolean|array true or Array of validation errors
 	 */
 	public function update($force_null_values = false, $force_validation = true) {
+		if ($this->type === "unique_id") {
+			$existing_unique_field = $this->getForm()->getUniqueIdField();
+			if (!empty($existing_unique_field->id) && $existing_unique_field->id !== $this->id) {
+				// Reuse the validation structure from DbObject
+				return ["valid" => [], "invalid" => ["type" => "There can only be one field of Unique ID per form"], "success" => false];
+			}
+		}
+
 		$this->technical_name = strtolower(str_replace(" ", "_", $this->name));
 		$this->setInterfaceClass();
 		
@@ -72,7 +88,7 @@ class FormField extends DbObject {
 		$fieldTypes = [];
 		if (!empty($interfaces)) {
 			foreach($interfaces as $interface) {
-				$fieldTypes += $interface::respondsTo();  // array append
+				$fieldTypes = array_merge($fieldTypes, $interface::respondsTo());  // array append
 			}
 		}
 		return $fieldTypes;

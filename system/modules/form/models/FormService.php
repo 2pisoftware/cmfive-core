@@ -144,6 +144,10 @@ class FormService extends DbService {
 		return $this->getObject("FormApplication",["id" => $application_id, "is_deleted" => 0]);
 	}
 
+	public function getFormValueForInstanceAndField($instance_id, $field_id) {
+		return $this->getObject('FormValue', ['form_instance_id' => $instance_id, 'form_field_id' => $field_id, 'is_deleted' => 0]);
+	}
+
 	/**
 	 * Submenu navigation for Forms
 	 * 

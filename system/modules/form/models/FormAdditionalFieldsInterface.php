@@ -3,7 +3,9 @@
 class FormAdditionalFieldsInterface extends FormFieldInterface {
 
 	protected static $_respondsTo = [
-		["LatLong", "latlong"]
+		["LatLong", "latlong"],
+		["Unique ID", "unique_id"],
+		["Attachment", "attachment"]
 	];
 
 	/**
@@ -16,7 +18,10 @@ class FormAdditionalFieldsInterface extends FormFieldInterface {
 			return null;
 		}
 		
-		switch(strtolower($type)) {
+		switch (strtolower($type)) {
+			case "attachment":
+				return "file";
+			case "unique_id":
 			case "latlong":
 			default:
 				return "text";
@@ -56,12 +61,31 @@ class FormAdditionalFieldsInterface extends FormFieldInterface {
 	 * 
 	 * @return string
 	 */
-	public static function modifyForDisplay($type, $value, $metadata = null, $w) {
-		// if (!static::doesRespondTo($type)) {
-		// 	return $value;
-		// }
+	public static function modifyForDisplay(FormValue $form_value, $w, $metadata = null) {
+		$field = $form_value->getFormField(); 
 
-		return $value;
+		if (!static::doesRespondTo($field->type)) {
+			return $form_value->value;
+		}
+
+		switch (strtolower($field->type)) {
+			case "attachment":
+				$output = '';
+
+				// Get attachments - value should be the actual FormValue object
+				$attachments = $w->File->getAttachments($form_value);
+				if (!empty($attachments)) {
+					foreach($attachments as $attachment) {
+						$output .= Html::a($attachment->getViewUrl(), 'View ' . $attachment->title, null, null, null, "_blank");
+					}
+				}
+
+				return $output;
+			default:
+				return $form_value->value;
+		}
+
+		return $form_value->value;
 	}
 
 	/**
@@ -70,12 +94,21 @@ class FormAdditionalFieldsInterface extends FormFieldInterface {
 	 * 
 	 * @return string
 	 */
-	public static function modifyForPersistance($type, $value) {
-		// if (!static::doesRespondTo($type)) {
-		// 	return $value;
+	public static function modifyForPersistance(FormValue $form_value) {
+		$field = $form_value->getFormField(); 
+
+		if (!static::doesRespondTo($field->type)) {
+			return $form_value->value;
+		}
+
+		// switch (strtolower($field->type)) {
+		// 	case "attachment":
+		// 		return $form_value->value;
+		// 	default:
+		// 		return $form_value->value;
 		// }
 
-		return $value;	
+		return $form_value->value;	
 	}
 
 }

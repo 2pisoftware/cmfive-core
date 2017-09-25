@@ -54,7 +54,7 @@ class ExternalFormProcessor extends ProcessorType {
         }
 
         // Get the object that form is mapped to
-        $messages = $processor->w->Channel->getNewMessages($processor->channel_id, $processor->id);
+        $messages = $processor->getNewOrFailedMessages(); // w->Channel->getNewOrFailedMessages($processor->channel_id, $processor->id);
         if (!empty($messages)) {
             foreach ($messages as $message) {
             	
@@ -64,24 +64,21 @@ class ExternalFormProcessor extends ProcessorType {
                     $messagestatus->message_id = $message->id;
                     $messagestatus->processor_id = $processor->id;
                 }
-
                 $messagestatus->message = '';
 
             	// Get attached form
-            	$attachments = $processor->w->File->getAttachments($message, (!empty($message->id) ? $message->id : null));
+            	$attachments = $processor->w->File->getAttachments($message);
+            	
 				if (!empty($attachments)) {
+					$non_standard_attachments = array_filter($attachments, function($attachment) {
+						return $attachment->mimetype != "text/xml" && $attachment->type_code == "channel_email_attachment";
+					});
+
 					foreach($attachments as $attachment) {
 						if ($attachment->mimetype == "text/xml") {
 
 							try {
-								// Create form instance
-								$instance = new FormInstance($processor->w);
-								$instance->form_id = $form->id;
-								$instance->object_class = get_class($application);
-								$instance->object_id = $application->id;
-								$instance->insert();
-
-								// Loop over instance fields and grab them from the XML
+								// Load XML
 								$xml = file_get_contents(FILE_ROOT . $attachment->fullpath);
 								
 								if (empty($xml)) {
@@ -93,25 +90,138 @@ class ExternalFormProcessor extends ProcessorType {
 	        						break;
 								}
 
+								// Convert all tags in XML to lower case as our technical names in FormFields are all lower case
+								$xml = preg_replace_callback("/(<\/?\w+)(.*?>)/", function ($m) {
+  										return strtolower($m[1]) . $m[2]; 
+								}, $xml); 
+
 								// Persist values to instance
 								$xml_doc = simplexml_load_string($xml);
 
+								$instance = null;
+								$is_existing_instance = false;
+								$unique_id_field = $form->getUniqueIdField();
+
+								if (!empty($unique_id_field)) {
+									// Get unique id field value from XML
+									$unique_field_value = $xml_doc->xpath('//' . $unique_id_field->technical_name . '[1]/text()');
+									if (!empty($unique_field_value) && is_array($unique_field_value)) {
+										$instance = $form->getFormInstanceByUniqueIdentifierFieldValue((string) $unique_field_value[0]);
+										$is_existing_instance = !empty($instance->id);
+									}
+								};
+								
+								// Create/Find form instance								
+								if (!$is_existing_instance) {
+									$instance = new FormInstance($processor->w);
+									$instance->form_id = $form->id;
+									$instance->object_class = get_class($application);
+									$instance->object_id = $application->id;
+									$instance->insert();
+								}
+								
 								$fields = $form->getFields();
 								if (!empty($fields)) {
 									foreach($fields as $field) {
+
+										$xml_value = '';
 										// Try and get a value from XML
-										$xml_value = $this->getFirstOf($xml_doc, $field->technical_name);
+										switch ($field->type) {
+
+											case "latlong": {
+												// Expect the names to start with "lat" and "lon" under the field xpath
+												$latitude = $xml_doc->xpath('//' . $field->technical_name . '//*[starts-with(name(), "lat")]');
+												$longitude = $xml_doc->xpath('//' . $field->technical_name . '//*[starts-with(name(), "lon")]');
+
+												if (!empty($latitude[0])) {
+													$xml_value .= (string) $latitude[0];
+												}
+
+												if (!empty($longitude[0])) {
+													if (!empty($xml_value)) {
+														$xml_value .= ', ';
+													}
+
+													$xml_value .= (string) $longitude[0];
+												}
+												break;
+											};
+											case "attachment": {
+												$xml_path_attachments = $xml_doc->xpath('//' . $field->technical_name . '//photo');
+
+												if (!empty($xml_path_attachments) && !empty($non_standard_attachments)) {
+													foreach($xml_path_attachments as $xml_path_attachment) {
+														$xml_attachment_value = (string) $xml_path_attachment;
+
+														foreach($non_standard_attachments as $non_standard_attachment) {
+															if ($non_standard_attachment->filename == $xml_path_attachment) {
+																$xml_value .= (!empty($xml_value) ? ',' : '') . $non_standard_attachment->id;
+																break;
+															}
+														}
+													}
+												}
+
+												break;
+											};
+											default:
+												$xml_value = $this->getFirstOf($xml_doc, $field->technical_name);	
+										}
 
 										if ($xml_value !== null) {
-											$form_value = new FormValue($processor->w);
-											$form_value->form_instance_id = $instance->id;
-											$form_value->form_field_id = $field->id;
-											$form_value->value = $xml_value;
-											$form_value->insert();
+											// Check for existing form value
+											$form_value = null;
+											if ($is_existing_instance) {
+												$form_value = $processor->w->Form->getFormValueForInstanceAndField($instance->id, $field->id);
+												
+												if (!empty($form_value->id)) {
+													// if ($field->type === "attachment" && is_array($xml_value)) {
+													// 	$string_xml_value = implode(',', array_map(function($_attachment) {
+													// 		return $_attachment->id;
+													// 	}, $xml_value));
+
+													// 	if ($string_xml_value != $form_value->value) {
+													// 		foreach($xml_value as $_attachment) {
+													// 			$_attachment->parent_table = 'form_value';
+													// 			$_attachment->parent_id = $form_value->id;
+													// 			$_attachment->update();
+													// 		}
+
+													// 		$xml_value = $string_xml_value;
+													// 	}
+													// }
+													$form_value->value = $xml_value;
+													$form_value->update();
+												}
+											}
+
+											if (!$is_existing_instance || empty($form_value->id)) {
+
+												$form_value = new FormValue($processor->w);
+												$form_value->form_instance_id = $instance->id;
+												$form_value->form_field_id = $field->id;
+
+												// if ($field->type === "attachment" && is_array($xml_value)) {
+												// 	$string_xml_value = implode(',', array_map(function($_attachment) {
+												// 		return $_attachment->id;
+												// 	}, $xml_value));
+
+												// 	$form_value->value = $string_xml_value;
+												// 	$form_value->insert();
+
+												// 	foreach($xml_value as $_attachment) {
+												// 		$_attachment->parent_table = 'form_value';
+												// 		$_attachment->parent_id = $form_value->id;
+												// 		$_attachment->update();
+												// 	}
+												// } else {
+													$form_value->value = $xml_value;
+													$form_value->insert();
+												// }
+											}
 										}
 									}
 								}
-
 								// Mark message as complete
 								$messagestatus->is_successful = 1;
 								$messagestatus->insertOrUpdate();
@@ -145,4 +255,4 @@ class ExternalFormProcessor extends ProcessorType {
         }
         return null;
     }
-}
+} 
