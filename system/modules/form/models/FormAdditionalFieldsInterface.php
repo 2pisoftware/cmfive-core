@@ -101,12 +101,21 @@ class FormAdditionalFieldsInterface extends FormFieldInterface {
 			return $form_value->value;
 		}
 
-		// switch (strtolower($field->type)) {
-		// 	case "attachment":
-		// 		return $form_value->value;
-		// 	default:
-		// 		return $form_value->value;
-		// }
+		switch (strtolower($field->type)) {
+			case "attachment":
+				// Upload attachment if FILES superglobal has an entry for the field
+				if (array_key_exists($field->technical_name, $_FILES)) {
+					// Upload attachment to form value object
+					$attachment_id = $form_value->w->File->uploadAttachment($field->technical_name, $form_value);
+					if (!empty($attachment_id)) {
+						// Append attachment ID so a link to the attachment will be displayed
+						$form_value->value .= (!empty($form_value->value) ? ',' : '') . $attachment_id;
+					}
+				}
+				return $form_value->value;
+			default:
+				return $form_value->value;
+		}
 
 		return $form_value->value;	
 	}

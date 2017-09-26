@@ -90,10 +90,12 @@ class ExternalFormProcessor extends ProcessorType {
 	        						break;
 								}
 
-								// Convert all tags in XML to lower case as our technical names in FormFields are all lower case
-								$xml = preg_replace_callback("/(<\/?\w+)(.*?>)/", function ($m) {
-  										return strtolower($m[1]) . $m[2]; 
-								}, $xml); 
+								// Converted all tags in XML to lower case as our technical names in FormFields WERE all lower case
+								/*
+									$xml = preg_replace_callback("/(<\/?\w+)(.*?>)/", function ($m) {
+	  										return strtolower($m[1]) . $m[2]; 
+									}, $xml);
+								*/ 
 
 								// Persist values to instance
 								$xml_doc = simplexml_load_string($xml);

@@ -8,9 +8,11 @@ function edit_GET(Web $w) {
 	if (empty($form_id)) {
 		$w->error("Form not found", "/form");
 	}
-	
+
+
 	$_form_field_object = $p['id'] ? $w->Form->getFormField($p['id']) : new FormField($w);
-	
+	$w->ctx('title', (!empty($_form_field_object->id) ? 'Edit' : 'Create') . ' form field');
+
 //	$form = [
 //		["Name", "text", "name", $_form_field_object->name],
 //		["Type", "select", "type", $_form_field_object->type, FormField::getFieldTypes()],
@@ -49,12 +51,14 @@ function edit_POST(Web $w) {
 	
 	$_form_field_object = $p['id'] ? $w->Form->getFormField($p['id']) : new FormField($w);
 	
-	$_form_field_object->name = $_POST['name'];
-	$_form_field_object->type = $_POST['type'];
+	$_form_field_object->name 			= $w->request('name');
+	$_form_field_object->technical_name = $w->request('technical_name');
+	$_form_field_object->type 			= $w->request('type');
 	
 	// Clear post vars ready for saving metadata
 	unset($_POST[CSRF::getTokenID()]);
 	unset($_POST['name']);
+	unset($_POST['technical_name']);
 	unset($_POST['type']);
 	
 	if (!empty($p['id'])) {

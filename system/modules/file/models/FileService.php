@@ -415,7 +415,7 @@ class FileService extends DbService {
 		$att->fullpath = null;
 		$att->parent_table = $parentObject->getDbTableName();
 		$att->parent_id = $parentObject->id;
-		$att->title = $title;
+		$att->title = (!empty($title) ? $title : $filename);
 		$att->description = $description;
 		$att->type_code = $type_code;
 		$att->insert();

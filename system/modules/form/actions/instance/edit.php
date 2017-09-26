@@ -63,17 +63,22 @@ function edit_POST(Web $w) {
 	$instance_values = $instance->getSavedValues();
 	if (!empty($instance_values)) {
 		foreach($instance_values as $instance_value) {
-			$field_name = $instance_value->getFieldName();
+			$field = $instance_value->getFormField();
 			
-			if (array_key_exists($field_name, $_POST)) {
-				$instance_value->value = $_POST[$field_name];
+			if (array_key_exists($field->technical_name, $_POST)) {
+				$instance_value->value = $_POST[$field->technical_name];
 				$instance_value->update();
-				unset($_POST[$field_name]);
+				unset($_POST[$field->technical_name]);
+			} else if (array_key_exists($field->technical_name, $_FILES)) {
+				// Used for attachment field types
+				// Trigger update to allow the modifyForPersistance to take care of attachment uploads
+				$instance_value->update();
 			} else {
 				$instance_value->delete();
 			}
 		}
 	}
+
 	// Add new values
 	if (!empty($_POST)) {
 		foreach($_POST as $key => $value) {

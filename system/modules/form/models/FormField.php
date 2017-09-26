@@ -34,7 +34,9 @@ class FormField extends DbObject {
 			}
 		}
 
-		$this->technical_name = strtolower(str_replace(" ", "_", $this->name));
+		if (empty($this->technical_name)) {
+			$this->technical_name = strtolower(str_replace(" ", "_", $this->name));
+		}
 		$this->setInterfaceClass();
 		
 		return parent::insert($force_validation);
@@ -54,7 +56,9 @@ class FormField extends DbObject {
 			}
 		}
 
-		$this->technical_name = strtolower(str_replace(" ", "_", $this->name));
+		if (empty($this->technical_name)) {
+			$this->technical_name = strtolower(str_replace(" ", "_", $this->name));
+		}
 		$this->setInterfaceClass();
 		
 		return parent::update($force_null_values, $force_validation);
@@ -143,21 +147,21 @@ class FormField extends DbObject {
 		if (empty($this->type)) {
 			return null;
 		}
+
 		$interface = $this->interface_class;
-		$row=[
-			$this->name, $interface::formType($this->type), $this->technical_name,""
-		];
+		$row = [$this->name, $interface::formType($this->type), $this->technical_name, ""];
 		$metaData=$this->getMetadata();
-		if (is_array($metaData) && count($metaData)>0) {
-			$metaArray=[];
+
+		if (is_array($metaData) && count($metaData) > 0) {
+			$metaArray = [];
 			foreach ($metaData as $meta) {
-				$metaArray[$meta->meta_key]=$meta->meta_value;
+				$metaArray[$meta->meta_key] = $meta->meta_value;
 			}
 			
-			$formConfig=$interface::formConfig($this->type,$metaArray,$this->w);
-			if (is_array($formConfig) && count($formConfig)>0) {
+			$formConfig=$interface::formConfig($this->type, $metaArray, $this->w);
+			if (is_array($formConfig) && count($formConfig) > 0) {
 				foreach ($formConfig as $v) {
-					$row[]=$v;
+					$row[] = $v;
 				}
 			}
 		}

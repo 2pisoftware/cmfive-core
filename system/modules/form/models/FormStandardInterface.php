@@ -11,6 +11,7 @@ class FormStandardInterface extends FormFieldInterface {
 		["Decimal", "decimal"],
 		["Date", "date"],
 		["Date & Time", "datetime"],
+		["Time", "time"],
 		["Select", "select"],
 		["Autocomplete", "autocomplete"]
 	];
@@ -29,6 +30,7 @@ class FormStandardInterface extends FormFieldInterface {
 			case "date": 
 				return "date"; 
 			case "datetime":
+			case "time":
 				return "datetime";
 			case "autocomplete":
 				return "autocomplete";
@@ -133,9 +135,11 @@ class FormStandardInterface extends FormFieldInterface {
 			case "select":
 				return static::modifyAutocompleteForDisplay($form_value->value, $metadata, $w);
 			case "date":
-				return date("d/m/Y", $form_value->value);
+				return (!empty($form_value->value) ? formatDate($form_value->value, "d/m/Y") : $form_value->value);
 			case "datetime":
-				return date("d/m/Y H:i:s", $form_value->value);
+				return (!empty($form_value->value) ? formatDateTime($form_value->value, "d/m/Y H:i:s") : $form_value->value);
+			case "time":
+				return (!empty($form_value->value) ? formatTime($form_value->value) : $form_value->value);
 			default:
 				return $form_value->value;
 		}
@@ -208,6 +212,7 @@ class FormStandardInterface extends FormFieldInterface {
 		switch (strtolower($field->type)) {
 			case "date":
 			case "datetime":
+			case "time":
 				return strtotime(str_replace("/", "-", $form_value->value));
 			default:
 				return $form_value->value;

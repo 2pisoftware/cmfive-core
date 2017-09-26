@@ -8,6 +8,7 @@ function show_GET(Web $w) {
 	}
 	
 	$w->enqueueStyle(["uri" => "/system/modules/form/assets/css/form-style.css", "weight" => 500]);
+	$w->enqueueScript(['name' => 'vue-js', 'uri' => '/system/templates/js/vue.js', 'weight' => 200]);
 	
 	$_form_object = $w->Form->getForm($p['id']);
 	
