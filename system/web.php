@@ -526,10 +526,15 @@ class Web {
 
 		// configure translations lookup for this module
 		$this->initLocale();
-		$this->setTranslationDomain('admin');
-		$this->setTranslationDomain('main');
-		$this->setTranslationDomain($this->currentModule());
-
+		
+		try {
+			$this->setTranslationDomain('admin');
+			$this->setTranslationDomain('main');
+			$this->setTranslationDomain($this->currentModule());
+		} catch (Exception $e) {
+			$this->Log->setLogger('I18N')->error($e->getMessage());
+		}
+		
 		if (!$this->_action) {
 			$this->_action = $this->_defaultAction;
 		}
@@ -1375,7 +1380,11 @@ class Web {
 		// set translations to partial module
 		$oldModule = $this->currentModule();
 		if ($oldModule != $module) {
-			$this->setTranslationDomain($module);
+			try {
+				$this->setTranslationDomain($module);
+			} catch (Exception $e) {
+				$this->Log->setLogger('I18N')->error($e->getMessage());
+			}
 		}
 
 		// Check if the module if active or not
@@ -1460,7 +1469,11 @@ class Web {
 
 		// restore translations module
 		if ($oldModule != $module) {
-			$this->setTranslationDomain($oldModule);
+			try {
+				$this->setTranslationDomain($oldModule);
+			} catch (Exception $e) {
+				$this->Log->setLogger('I18N')->error($e->getMessage());
+			}
 		}
 
 		return $currentbuf;
@@ -1482,7 +1495,11 @@ class Web {
 		// set translations to hook module
 		$oldModule = $this->currentModule();
 		if ($oldModule != $module) {
-			$this->setTranslationDomain($module);
+			try {
+				$this->setTranslationDomain($module);
+			} catch (Exception $e) {
+				$this->Log->setLogger('I18N')->error($e->getMessage());
+			}
 		}
 
 		// Build _hook registry if empty
@@ -1541,7 +1558,11 @@ class Web {
 
 		// restore translations module
 		if ($oldModule != $module) {
-			$this->setTranslationDomain($oldModule);
+			try {
+				$this->setTranslationDomain($oldModule);
+			} catch (Exception $e) {
+				$this->Log->setLogger('I18N')->error($e->getMessage());
+			}
 		}
 
 		return $buffer;

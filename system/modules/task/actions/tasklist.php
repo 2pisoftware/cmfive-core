@@ -9,7 +9,7 @@ function tasklist_ALL(Web $w) {
 	$is_closed = 0;
     if (empty($reset)) {
         // Get filter values
-        $assignee_id = $w->sessionOrRequest("task__assignee-id");
+        $assignee_id = $w->sessionOrRequest("task__assignee-id", $w->Auth->user()->id);
         $creator_id = $w->sessionOrRequest("task__creator-id");
 
         $task_group_id = $w->sessionOrRequest("task__task-group-id");

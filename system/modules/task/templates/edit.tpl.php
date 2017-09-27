@@ -47,7 +47,7 @@
 								echo implode('', $buttons);
 							}
 							
-							echo $w->partial('listTags',['object' => $task], 'tag');
+							echo $w->partial('listTags', ['object' => $task], 'tag');
 						}
 					?>
                 </div>
