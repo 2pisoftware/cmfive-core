@@ -3,7 +3,7 @@
 class TagAbstractMigration extends CmfiveMigration {
 
 	public function up() {
-        
+        ini_set('max_execution_time', 300);
         
 		$column = parent::Column();
         $column->setName('id')
@@ -15,9 +15,9 @@ class TagAbstractMigration extends CmfiveMigration {
 				'id'          => false,
 				'primary_key' => 'id'
 			])->addColumn($column)
-				->addColumn('object_class', 'string', ['limit' => 200])
-				->addColumn('object_id', 'biginteger', ['null' => true])
-				->addColumn('tag_id', 'string', ['limit' => 255])
+				->addColumn('object_class', 'string', ['limit' => 200, 'null' => true, 'default' => null])
+				->addColumn('object_id', 'biginteger', ['null' => true, 'default' => null])
+				->addColumn('tag_id', 'string', ['limit' => 255, 'null' => true, 'default' => null])
 				->addCmfiveParameters()
 				->addIndex(['object_class', 'object_id', 'tag_id'])
 				->create();
@@ -27,6 +27,10 @@ class TagAbstractMigration extends CmfiveMigration {
 			$unique_tags = [];
 			if ($this->table('tag')->hasColumn('obj_class')) {
 				$existing_tags = $this->w->db->get('tag')->fetchAll();
+				$this->removeColumnFromTable('tag', 'user_id');
+		        $this->removeColumnFromTable('tag', 'obj_class');
+		        $this->removeColumnFromTable('tag', 'obj_id');
+		        $this->removeColumnFromTable('tag', 'tag_color');
 				if (!empty($existing_tags)) {
 					foreach($existing_tags as $existing_tag) {
 						if (empty($existing_tag['tag'])) {
@@ -49,11 +53,13 @@ class TagAbstractMigration extends CmfiveMigration {
 						$tag_object->insert();
 						
 						foreach($assigned_objects as $assigned_object) {
-							$tag_assign = new TagAssign($this->w);
-							$tag_assign->tag_id = $tag_object->id;
-							$tag_assign->object_class = $assigned_object['object_class'];
-							$tag_assign->object_id = $assigned_object['object_id'];
-							$tag_assign->insert();
+							if (!empty($assigned_object['object_class']) && !empty($assigned_object['object_id'])) {
+								$tag_assign = new TagAssign($this->w);
+								$tag_assign->tag_id = $tag_object->id;
+								$tag_assign->object_class = $assigned_object['object_class'];
+								$tag_assign->object_id = $assigned_object['object_id'];
+								$tag_assign->insert();
+							}
 						}
 					}
 				}
