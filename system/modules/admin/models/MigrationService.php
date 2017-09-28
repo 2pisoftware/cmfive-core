@@ -163,6 +163,11 @@ MIGRATION;
 		$alreadyRunMigrations = $this->getInstalledMigrations($module);
 		$availableMigrations = $this->getAvailableMigrations($module);
 
+		//if no migrations have run run initial migrations
+		if (empty($alreadyRunMigrations)) {
+			$this->installInitialMigration();
+			$alreadyRunMigrations = $this->getInstalledMigrations($module);
+		}
         
        
 		// Return if there are no migrations to run
