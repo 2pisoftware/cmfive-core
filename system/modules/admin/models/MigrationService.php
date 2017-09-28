@@ -21,6 +21,7 @@ class MigrationService extends DbService {
 			if ($errno === E_USER_ERROR) {
 				// Check if error contains a db error message
 				if (strpos($errstr, "does not exist in the database") !== FALSE) {
+					$this->w->Log->error("Error Table not found. Running initial migration");
 					// Run the admin migrations to install the migration table (the normal cause of this error)
 					$_this->installInitialMigration();
 					
@@ -164,7 +165,9 @@ MIGRATION;
 		$availableMigrations = $this->getAvailableMigrations($module);
 
 		//if no migrations have run run initial migrations
-		if (empty($alreadyRunMigrations)) {
+		$this->w->db->setMigrationMode(true);
+		if (!in_array('migration', $this->w->db->getAvailableTables()) || $this->w->db->get('migration')->select()->count() == 0) {
+			$this->w->Log->setLogger("MIGRATION")->info("initial migration not run. Running initial migration");
 			$this->installInitialMigration();
 			$alreadyRunMigrations = $this->getInstalledMigrations($module);
 		}
@@ -210,7 +213,7 @@ MIGRATION;
 		if (!empty($availableMigrations)) {
 			$this->w->db->startTransaction();
 
-            $this->w->db->setMigrationMode(true);
+            
 			try {
 				// Use MySQL for now
 				$mysql_adapter = new \Phinx\Db\Adapter\MysqlAdapter([
@@ -267,6 +270,7 @@ MIGRATION;
 				$this->w->db->rollbackTransaction();
 			}
 		} else {
+			$this->w->db->setMigrationMode(false);
 			return "No migrations to run!";
 		}
 	}
