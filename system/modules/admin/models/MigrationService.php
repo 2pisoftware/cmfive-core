@@ -161,9 +161,6 @@ MIGRATION;
 	}
 	
 	public function runMigrations($module, $filename = null) {
-		$alreadyRunMigrations = $this->getInstalledMigrations($module);
-		$availableMigrations = $this->getAvailableMigrations($module);
-
 		//if no migrations have run run initial migrations
 		$this->w->db->setMigrationMode(true);
 		if (!in_array('migration', $this->w->db->getAvailableTables()) || $this->w->db->get('migration')->select()->count() == 0) {
@@ -171,6 +168,11 @@ MIGRATION;
 			$this->installInitialMigration();
 			$alreadyRunMigrations = $this->getInstalledMigrations($module);
 		}
+
+		$alreadyRunMigrations = $this->getInstalledMigrations($module);
+		$availableMigrations = $this->getAvailableMigrations($module);
+
+		
         
        
 		// Return if there are no migrations to run
