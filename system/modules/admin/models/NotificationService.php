@@ -39,7 +39,7 @@ class NotificationService extends DbService {
 			switch ($method) {
 				case NotificationService::TYPE_INBOX:
 					if (Config::get('inbox.active') === true) {            
-		                $this->w->Inbox->addMessage($subject, $output, $recipient_user, null, null, false);
+		                $this->w->Inbox->addMessage($subject, $output, $recipient_user->id, null, null, false);
 		            }
 					break;
 				

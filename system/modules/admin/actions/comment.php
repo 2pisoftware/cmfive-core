@@ -134,7 +134,7 @@ function comment_POST(Web $w){
     if($w->request("is_notifications")) {        
         $recipients = [];        
         foreach($_POST as $key=>$value) {
-            //keys of interest are foramtted 'recipient_{user_id}'
+            //keys of interest are formatted 'recipient_{user_id}'
             $exp_key = explode('_',$key);
             if ($exp_key[0] == 'recipient') {
                 $recipients[] = $exp_key[1];

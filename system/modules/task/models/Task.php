@@ -510,20 +510,24 @@ class Task extends DbObject {
 					$members = $taskgroup->getMembers();
 					if (!empty($members)) {
 						foreach($members as $member) {
-							$task_subscriber = new TaskSubscriber($this->w);
-							$task_subscriber->task_id = $this->id;
-							$task_subscriber->user_id = $member->user_id;
-							$task_subscriber->insert();
+                            if (!$this->isUserSubscribed($member->user_id)) {
+                                $task_subscriber = new TaskSubscriber($this->w);
+                                $task_subscriber->task_id = $this->id;
+                                $task_subscriber->user_id = $member->user_id;
+                                $task_subscriber->insert();
+                            }
 						}
 					}
 				// Else only assign the assignee and creator
 				} else {
-					$creator_assigner = new TaskSubscriber($this->w);
-					$creator_assigner->task_id = $this->id;
-					$creator_assigner->user_id = $this->creator_id;
-					$creator_assigner->insert();
-					
-					if (!empty($this->assignee_id)) {
+                    $creator_id = $this->getTaskCreatorId();
+                    if (!$this->isUserSubscribed($creator_id)) {
+                        $creator_assigner = new TaskSubscriber($this->w);
+                        $creator_assigner->task_id = $this->id;
+                        $creator_assigner->user_id = $this->getTaskCreatorId();
+                        $creator_assigner->insert();
+                    }
+					if (!empty($this->assignee_id) && !$this->isUserSubscribed($this->assignee_id)) {
 						$assignee_subscriber = new TaskSubscriber($this->w);
 						$assignee_subscriber->task_id = $this->id;
 						$assignee_subscriber->user_id = $this->assignee_id;
