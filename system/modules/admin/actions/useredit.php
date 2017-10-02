@@ -59,24 +59,10 @@ function useredit_POST(Web &$w) {
 
 	$contact = $user->getContact();
 	if ($contact) {
-		$lookup_exists = false;
 		$contact->fill($_REQUEST);
 		$contact->private_to_user_id = null;
-		$contact->title = $_POST['acp_title'];
-		if ($_POST['acp_title']) {
-			foreach ($w->Admin->getAllLookup(["type" => 'title']) as $lookup) {
-				if ($lookup->title == $_POST['acp_title']) {
-					$lookup_exists = true;
-					break; // found one, don't make a new lookup
-				}
-			} 
-			if (!$lookup_exists) {
-				$lookup = new Lookup($w);
-				$lookup->fill(['type'=>'title', 'code'=>$contact->title, 'title'=>$contact->title]);
-				$lookup->insert();
-			}
-		}
-		$contact->update();
+		$contact->setTitle($_REQUEST['acp_title']);
+		$contact->update(true); // we want to insert null values
 	}
 	$w->callHook("admin", "account_changed", $user);
 

@@ -50,7 +50,7 @@
 <tr>
 	<td>verifyEval</td>
 	<td>window.document.getElementsByClassName('tablesorter')[0]['rows'].length</td>
-	<td>2</td>
+	<td>3</td>
 </tr>
 <tr>
 	<td>verifyText</td>
@@ -83,13 +83,18 @@
 	<td>Prime Minister</td>
 </tr>
 <tr>
+	<td>type</td>
+	<td>id=acp_title</td>
+	<td></td>
+</tr>
+<tr>
 	<td>sendKeys</td>
 	<td>id=acp_title</td>
 	<td>The</td>
 </tr>
 <tr>
-	<td>pause</td>
-	<td>1000</td>
+	<td>waitForElementPresent</td>
+	<td>css=a[id^=ui-id]</td>
 	<td></td>
 </tr>
 <tr>
@@ -100,6 +105,118 @@
 <tr>
 	<td>clickAndWait</td>
 	<td>css=button.savebutton</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Lookup</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyEval</td>
+	<td>window.document.getElementsByClassName('tablesorter')[0]['rows'].length</td>
+	<td>3</td>
+</tr>
+<!--editing a title-->
+<tr>
+	<td>click</td>
+	<td>//button[@onclick='modal_history.push(&quot;http://dev.cmfive/admin/editlookup/1/?isbox=1&quot;); $(&quot;#cmfive-modal&quot;).foundation(&quot;reveal&quot;, &quot;open&quot;, &quot;http://dev.cmfive/admin/editlookup/1/?isbox=1&quot;);return false;']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>xpath=(//select[@id='type'])[3]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>xpath=(//input[@id='code'])[2]</td>
+	<td>President</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>xpath=(//input[@id='title'])[2]</td>
+	<td>President</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>xpath=(//button[@type='submit'])[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=List Users</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>xpath=(//a[contains(text(),'Edit')])[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyValue</td>
+	<td>id=title</td>
+	<td>President</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=acp_title</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//button[@type='submit']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>xpath=(//a[contains(text(),'Edit')])[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Lookup</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyEval</td>
+	<td>window.document.getElementsByClassName('tablesorter')[0]['rows'].length</td>
+	<td>3</td>
+</tr>
+<!--Not clicking autocomplete, but lookup exists-->
+<tr>
+	<td>clickAndWait</td>
+	<td>link=List Users</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>xpath=(//a[contains(text(),'Edit')])[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=acp_title</td>
+	<td>President</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//button[@type='submit']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>xpath=(//a[contains(text(),'Edit')])[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyValue</td>
+	<td>id=acp_title</td>
+	<td>President</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//button[@type='submit']</td>
 	<td></td>
 </tr>
 <tr>

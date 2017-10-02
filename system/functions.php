@@ -286,7 +286,7 @@ function rotateImage($img, $rotation) {
 
 function lookupForSelect(&$w, $type) {
 	$select = array();
-	$rows = $w->db->get("lookup")->where("type", $type)->and("is_deleted", 0)->fetch_all();
+	$rows = $w->db->get("lookup")->where("type", $type)->fetch_all();
 	if ($rows) {
 		foreach ($rows as $row) {
 			$select[] = array($row['title'], $row['code']);
