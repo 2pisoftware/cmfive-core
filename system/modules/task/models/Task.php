@@ -473,6 +473,7 @@ class Task extends DbObject {
             }
 
 			if (empty($this->title)) {
+                $this->Log->debug("Inserting Task: title is empty, calling update");
 				$this->update();
 			}
 			
@@ -521,13 +522,15 @@ class Task extends DbObject {
 				// Else only assign the assignee and creator
 				} else {
                     $creator_id = $this->getTaskCreatorId();
-                    if (!$this->isUserSubscribed($creator_id)) {
+                    if (!empty($creator_id) && !$this->isUserSubscribed($creator_id)) {
+                        //$this->Log->debug("Inserting Task: adding creator as subscriber");
                         $creator_assigner = new TaskSubscriber($this->w);
                         $creator_assigner->task_id = $this->id;
-                        $creator_assigner->user_id = $this->getTaskCreatorId();
+                        $creator_assigner->user_id = $creator_id;
                         $creator_assigner->insert();
                     }
 					if (!empty($this->assignee_id) && !$this->isUserSubscribed($this->assignee_id)) {
+                        //$this->Log->debug("Inserting Task: adding assignee as subscriber");
 						$assignee_subscriber = new TaskSubscriber($this->w);
 						$assignee_subscriber->task_id = $this->id;
 						$assignee_subscriber->user_id = $this->assignee_id;
