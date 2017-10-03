@@ -120,7 +120,7 @@
 <!--editing a title-->
 <tr>
 	<td>click</td>
-	<td>//button[@onclick='modal_history.push(&quot;http://dev.cmfive/admin/editlookup/1/?isbox=1&quot;); $(&quot;#cmfive-modal&quot;).foundation(&quot;reveal&quot;, &quot;open&quot;, &quot;http://dev.cmfive/admin/editlookup/1/?isbox=1&quot;);return false;']</td>
+	<td>css=tr.even &gt; td &gt; button.tiny</td>
 	<td></td>
 </tr>
 <tr>
@@ -236,12 +236,7 @@
 </tr>
 <tr>
 	<td>click</td>
-	<td>//button[@onclick=&quot;if(confirm('Are you sure you wish to DELETE this Lookup item?')) {parent.location='http://dev.cmfive/admin/deletelookup/1/'; return false;}&quot;]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>assertConfirmation</td>
-	<td>Are you sure you wish to DELETE this Lookup item?</td>
+	<td>css=tr button:nth-child(2)</td>
 	<td></td>
 </tr>
 <tr>
@@ -255,18 +250,23 @@
 	<td>Cannot delete lookup as it is used as a title for the contacts: President test user ×</td>
 </tr>
 <tr>
-	<td>click</td>
-	<td>//button[@onclick=&quot;if(confirm('Are you sure you wish to DELETE this Lookup item?')) {parent.location='http://dev.cmfive/admin/deletelookup/2/'; return false;}&quot;]</td>
+	<td>pause</td>
+	<td>1000</td>
 	<td></td>
 </tr>
 <tr>
-	<td>assertConfirmation</td>
-	<td>Are you sure you wish to DELETE this Lookup item?</td>
+	<td>click</td>
+	<td>css=tbody tr + tr button:nth-child(2)</td>
 	<td></td>
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
 	<td>css=div.alert-box.info</td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>1000</td>
 	<td></td>
 </tr>
 <tr>
@@ -301,12 +301,7 @@
 </tr>
 <tr>
 	<td>click</td>
-	<td>//button[@onclick=&quot;if(confirm('Are you sure you wish to DELETE this Lookup item?')) {parent.location='http://dev.cmfive/admin/deletelookup/1/'; return false;}&quot;]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>assertConfirmation</td>
-	<td>Are you sure you wish to DELETE this Lookup item?</td>
+	<td>css=tr button:nth-child(2)</td>
 	<td></td>
 </tr>
 <tr>
@@ -320,8 +315,18 @@
 	<td>Lookup Item deleted ×</td>
 </tr>
 <tr>
+	<td>pause</td>
+	<td>1000</td>
+	<td></td>
+</tr>
+<tr>
 	<td>click</td>
 	<td>link=New Item</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>css=label.small-12.columns &gt; #type</td>
 	<td></td>
 </tr>
 <tr>
