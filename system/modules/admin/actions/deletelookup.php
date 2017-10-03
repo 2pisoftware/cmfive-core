@@ -11,8 +11,8 @@ function deletelookup_ALL(Web &$w) {
 			foreach ($contacts_used_by_lookup as $contact) {
 				$list_of_contacts .= $contact->getFullName() . ', ';
 			}
-			$list_of_contacts = substr($list_of_contacts, 0, -2);
-			$w->msg("Cannot delete title as it is used as a title for the contacts: " . $list_of_contacts, $return_url);
+			$list_of_contacts = substr($list_of_contacts, 0, -2); // remove last comma.
+			$w->msg("Cannot delete lookup as it is used as a title for the contacts: " . $list_of_contacts, $return_url);
 		}
 		$arritem['is_deleted'] = 1;
 		$lookup->fill($arritem);
