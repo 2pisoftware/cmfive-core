@@ -34,7 +34,6 @@ function useradd_POST(Web &$w) {
 	}
 
 	// first saving basic contact info
-	$lookup_exists = false;
 	$contact = new Contact($w);
 	$contact->fill($_REQUEST);
 	$contact->dt_created = time();
