@@ -229,6 +229,121 @@
 	<td>window.document.getElementsByClassName('tablesorter')[0]['rows'].length</td>
 	<td>3</td>
 </tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Lookup</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//button[@onclick=&quot;if(confirm('Are you sure you wish to DELETE this Lookup item?')) {parent.location='http://dev.cmfive/admin/deletelookup/1/'; return false;}&quot;]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertConfirmation</td>
+	<td>Are you sure you wish to DELETE this Lookup item?</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>css=div.alert-box.info</td>
+	<td>Cannot delete title as it is used as a title for the contacts: President test user ×</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//button[@onclick=&quot;if(confirm('Are you sure you wish to DELETE this Lookup item?')) {parent.location='http://dev.cmfive/admin/deletelookup/2/'; return false;}&quot;]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertConfirmation</td>
+	<td>Are you sure you wish to DELETE this Lookup item?</td>
+	<td></td>
+</tr>
+<tr>
+	<td>selectFrame</td>
+	<td></td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=toolbox-close</td>
+	<td></td>
+</tr>
+<tr>
+	<td>selectWindow</td>
+	<td>null</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>css=div.alert-box.info</td>
+	<td>Lookup Item deleted ×</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=List Users</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>xpath=(//a[contains(text(),'Edit')])[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=acp_title</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//button[@type='submit']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Lookup</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//button[@onclick=&quot;if(confirm('Are you sure you wish to DELETE this Lookup item?')) {parent.location='http://dev.cmfive/admin/deletelookup/1/'; return false;}&quot;]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertConfirmation</td>
+	<td>Are you sure you wish to DELETE this Lookup item?</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>css=div.alert-box.info</td>
+	<td>Lookup Item deleted ×</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=New Item</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=ntype</td>
+	<td>title</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=code</td>
+	<td>The Honerable</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=title</td>
+	<td>The Honerable</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//button[@type='submit']</td>
+	<td></td>
+</tr>
 </tbody></table>
 </body>
 </html>
