@@ -50,21 +50,21 @@
 <tr>
 	<td>verifyEval</td>
 	<td>window.document.getElementsByClassName('tablesorter')[0]['rows'].length</td>
-	<td>3</td>
+	<td>8</td>
 </tr>
 <tr>
 	<td>verifyText</td>
-	<td>css=tr.odd &gt; td</td>
+	<td>//div[@id='tab-1']/table/tbody/tr[7]/td</td>
 	<td>title</td>
 </tr>
 <tr>
 	<td>verifyText</td>
-	<td>//div[@id='tab-1']/table/tbody/tr[2]/td[2]</td>
+	<td>//div[@id='tab-1']/table/tbody/tr[7]/td[2]</td>
 	<td>Prime Minister</td>
 </tr>
 <tr>
 	<td>verifyText</td>
-	<td>//div[@id='tab-1']/table/tbody/tr[2]/td[3]</td>
+	<td>//div[@id='tab-1']/table/tbody/tr[7]/td[3]</td>
 	<td>Prime Minister</td>
 </tr>
 <tr>
@@ -115,12 +115,12 @@
 <tr>
 	<td>verifyEval</td>
 	<td>window.document.getElementsByClassName('tablesorter')[0]['rows'].length</td>
-	<td>3</td>
+	<td>8</td>
 </tr>
 <!--editing a title-->
 <tr>
 	<td>click</td>
-	<td>css=tr.even &gt; td &gt; button.tiny</td>
+	<td>css= tbody tr:nth-child(6) button</td>
 	<td></td>
 </tr>
 <tr>
@@ -181,7 +181,7 @@
 <tr>
 	<td>verifyEval</td>
 	<td>window.document.getElementsByClassName('tablesorter')[0]['rows'].length</td>
-	<td>3</td>
+	<td>8</td>
 </tr>
 <!--Not clicking autocomplete, but lookup exists-->
 <tr>
@@ -227,7 +227,7 @@
 <tr>
 	<td>verifyEval</td>
 	<td>window.document.getElementsByClassName('tablesorter')[0]['rows'].length</td>
-	<td>3</td>
+	<td>8</td>
 </tr>
 <tr>
 	<td>clickAndWait</td>
@@ -236,7 +236,12 @@
 </tr>
 <tr>
 	<td>click</td>
-	<td>css=tr button:nth-child(2)</td>
+	<td>css=tbody tr:nth-child(6) button + button</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertConfirmation</td>
+	<td>Are you sure you wish to DELETE this Lookup item?</td>
 	<td></td>
 </tr>
 <tr>
@@ -256,7 +261,12 @@
 </tr>
 <tr>
 	<td>click</td>
-	<td>css=tbody tr + tr button:nth-child(2)</td>
+	<td>css=tbody tr:nth-child(7) button:nth-child(2)</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertConfirmation</td>
+	<td>Are you sure you wish to DELETE this Lookup item?</td>
 	<td></td>
 </tr>
 <tr>
@@ -301,7 +311,12 @@
 </tr>
 <tr>
 	<td>click</td>
-	<td>css=tr button:nth-child(2)</td>
+	<td>css=tbody tr:nth-child(6) button:nth-child(2)</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertConfirmation</td>
+	<td>Are you sure you wish to DELETE this Lookup item?</td>
 	<td></td>
 </tr>
 <tr>
@@ -317,6 +332,11 @@
 <tr>
 	<td>pause</td>
 	<td>1000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>link=New Item</td>
 	<td></td>
 </tr>
 <tr>
@@ -343,6 +363,36 @@
 	<td>type</td>
 	<td>id=title</td>
 	<td>The Honerable</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//button[@type='submit']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=List Users</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>xpath=(//a[contains(text(),'Edit')])[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>sendKeys</td>
+	<td>id=acp_title</td>
+	<td>the</td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>css=a[id^=ui-id]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=a[id^=ui-id]</td>
+	<td></td>
 </tr>
 <tr>
 	<td>clickAndWait</td>
