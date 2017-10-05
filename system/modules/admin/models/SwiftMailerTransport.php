@@ -61,6 +61,12 @@ class SwiftMailerTransport implements GenericTransport {
 					return;
 				}
 				
+				if (filter_var($to, FILTER_VALIDATE_EMAIL) === false) {
+					$this->w->Log->error("Email address: {$to} is invalid");
+					return;
+				}
+				
+				
 				$mailer = null;
 				if (method_exists('Swift_Mailer', 'newInstance')) {
 					$mailer = Swift_Mailer::newInstance($this->transport);
