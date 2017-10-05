@@ -144,7 +144,7 @@ class Timelog extends DbObject {
 		// If user is admin try and set the user_id to the given one from the timelog form
 		if ($this->w->Auth->user()->is_admin) {
 			$this->user_id = !empty($_POST['user_id']) ? intval($_POST['user_id']) : $this->w->Auth->user()->id;
-		} else {
+		} else if (empty($this->user_id)) {
 			$this->user_id = $this->w->Auth->user()->id;
 		}
 		
@@ -154,7 +154,7 @@ class Timelog extends DbObject {
 	public function update($force_null_values = false, $force_validation = true) {
 		if ($this->w->Auth->user()->is_admin) {
 			$this->user_id = !empty($_POST['user_id']) ? intval($_POST['user_id']) : $this->w->Auth->user()->id;
-		} else {
+		} else if (empty($this->user_id)) {
 			$this->user_id = $this->w->Auth->user()->id;
 		}
 		
