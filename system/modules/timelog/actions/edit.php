@@ -5,6 +5,13 @@ function edit_GET(Web $w) {
 	$p = $w->pathMatch("id");
 	
 	$timelog = !empty($p['id']) ? $w->Timelog->getTimelog($p['id']) : new Timelog($w);
+	if (empty($timelog)) {
+		$w->msg("Timelog not found", "/timelog");
+	}
+	
+	if (!$timelog->canEdit($w->Auth->user())) {
+		$w->msg("You cannot edit this Timelog", "/timelog");
+	}
 	$w->ctx("timelog", $timelog);
 	$w->ctx('redirect', $w->request("redirect", ''));
 	
@@ -52,7 +59,6 @@ function edit_GET(Web $w) {
 }
 
 function edit_POST(Web $w) {
-//	var_dump($_POST); die();
 	$p = $w->pathMatch("id");
 	$redirect = $w->request("redirect", '');
 	
