@@ -27,7 +27,7 @@ class TaskAddSubscriber extends CmfiveMigration {
 		if (!empty($taskgroup_ids)) {
 			foreach ($taskgroup_ids as $taskgroup_id) {
 				//get taskgroup active member ids
-				$member_ids = $this->w->db->get("task_group_member")->select()->select('id')->where(["task_group_id"=>$taskgroup_id['id'],"is_active"=>1])->fetchAll();
+				$member_ids = $this->w->db->get("task_group_member")->select()->select('user_id')->where(["task_group_id"=>$taskgroup_id['id'],"is_active"=>1])->fetchAll();
 				//get taskgroup open task ids
 				$task_ids = $this->w->db->get("task")->select()->select('id')->where(["task_group_id"=>$taskgroup_id['id'],"is_closed"=>0])->fetchAll();
 				//if tasks and members
@@ -36,7 +36,7 @@ class TaskAddSubscriber extends CmfiveMigration {
 						foreach ($member_ids as $member_id) {
 							$subscriber = new TaskSubscriber($this->w);
 							$subscriber->task_id = $task_id['id'];
-							$subscriber->user_id = $member_id['id'];
+							$subscriber->user_id = $member_id['user_id'];
 							$subscriber->insert();
 						}
 					}
