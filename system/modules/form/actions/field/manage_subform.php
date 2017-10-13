@@ -19,7 +19,7 @@ function manage_subform_GET(Web $w) {
 		// Handle issue with non subform
 	}
 
-	$metadata = $form_value->getFormField()->getMetadata();
+	$metadata = $field->getMetadata();
 	if (empty($metadata)) {
 		// Handle issue with missing metadata
 	}

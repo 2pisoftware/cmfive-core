@@ -100,134 +100,8 @@ class ExternalFormProcessor extends ProcessorType {
 								// Persist values to instance
 								$xml_doc = simplexml_load_string($xml);
 
-								$instance = null;
-								$is_existing_instance = false;
-								$unique_id_field = $form->getUniqueIdField();
-
-								if (!empty($unique_id_field)) {
-									// Get unique id field value from XML
-									$unique_field_value = $xml_doc->xpath('//' . $unique_id_field->technical_name . '[1]/text()');
-									if (!empty($unique_field_value) && is_array($unique_field_value)) {
-										$instance = $form->getFormInstanceByUniqueIdentifierFieldValue((string) $unique_field_value[0]);
-										$is_existing_instance = !empty($instance->id);
-									}
-								};
+								$return_value = $this->attachFormFromXMLToObject($xml_doc, $form, $application);
 								
-								// Create/Find form instance								
-								if (!$is_existing_instance) {
-									$instance = new FormInstance($processor->w);
-									$instance->form_id = $form->id;
-									$instance->object_class = get_class($application);
-									$instance->object_id = $application->id;
-									$instance->insert();
-								}
-								
-								$fields = $form->getFields();
-								if (!empty($fields)) {
-									foreach($fields as $field) {
-
-										$xml_value = '';
-										// Try and get a value from XML
-										switch ($field->type) {
-
-											case "latlong": {
-												// Expect the names to start with "lat" and "lon" under the field xpath
-												$latitude = $xml_doc->xpath('//' . $field->technical_name . '//*[starts-with(name(), "lat")]');
-												$longitude = $xml_doc->xpath('//' . $field->technical_name . '//*[starts-with(name(), "lon")]');
-
-												if (!empty($latitude[0])) {
-													$xml_value .= (string) $latitude[0];
-												}
-
-												if (!empty($longitude[0])) {
-													if (!empty($xml_value)) {
-														$xml_value .= ', ';
-													}
-
-													$xml_value .= (string) $longitude[0];
-												}
-												break;
-											};
-											case "attachment": {
-												$xml_path_attachments = $xml_doc->xpath('//' . $field->technical_name . '//photo');
-
-												if (!empty($xml_path_attachments) && !empty($non_standard_attachments)) {
-													foreach($xml_path_attachments as $xml_path_attachment) {
-														$xml_attachment_value = (string) $xml_path_attachment;
-
-														foreach($non_standard_attachments as $non_standard_attachment) {
-															if ($non_standard_attachment->filename == $xml_path_attachment) {
-																$xml_value .= (!empty($xml_value) ? ',' : '') . $non_standard_attachment->id;
-																break;
-															}
-														}
-													}
-												}
-
-												break;
-											};
-											case "subform": {
-												
-												break;
-											};
-											default:
-												$xml_value = $this->getFirstOf($xml_doc, $field->technical_name);	
-										}
-
-										if ($xml_value !== null) {
-											// Check for existing form value
-											$form_value = null;
-											if ($is_existing_instance) {
-												$form_value = $processor->w->Form->getFormValueForInstanceAndField($instance->id, $field->id);
-												
-												if (!empty($form_value->id)) {
-													// if ($field->type === "attachment" && is_array($xml_value)) {
-													// 	$string_xml_value = implode(',', array_map(function($_attachment) {
-													// 		return $_attachment->id;
-													// 	}, $xml_value));
-
-													// 	if ($string_xml_value != $form_value->value) {
-													// 		foreach($xml_value as $_attachment) {
-													// 			$_attachment->parent_table = 'form_value';
-													// 			$_attachment->parent_id = $form_value->id;
-													// 			$_attachment->update();
-													// 		}
-
-													// 		$xml_value = $string_xml_value;
-													// 	}
-													// }
-													$form_value->value = $xml_value;
-													$form_value->update();
-												}
-											}
-
-											if (!$is_existing_instance || empty($form_value->id)) {
-
-												$form_value = new FormValue($processor->w);
-												$form_value->form_instance_id = $instance->id;
-												$form_value->form_field_id = $field->id;
-
-												// if ($field->type === "attachment" && is_array($xml_value)) {
-												// 	$string_xml_value = implode(',', array_map(function($_attachment) {
-												// 		return $_attachment->id;
-												// 	}, $xml_value));
-
-												// 	$form_value->value = $string_xml_value;
-												// 	$form_value->insert();
-
-												// 	foreach($xml_value as $_attachment) {
-												// 		$_attachment->parent_table = 'form_value';
-												// 		$_attachment->parent_id = $form_value->id;
-												// 		$_attachment->update();
-												// 	}
-												// } else {
-													$form_value->value = $xml_value;
-													$form_value->insert();
-												// }
-											}
-										}
-									}
-								}
 								// Mark message as complete
 								$messagestatus->is_successful = 1;
 								$messagestatus->insertOrUpdate();
@@ -250,8 +124,139 @@ class ExternalFormProcessor extends ProcessorType {
         }
     }
 
+    private function attachFormFromXMLToObject($xml_doc, $form, $object) {
+    	$instance = null;
+		$is_existing_instance = false;
+		$unique_id_field = $form->getUniqueIdField();
+
+		if (!empty($unique_id_field)) {
+			// Get unique id field value from XML
+			$unique_field_value = $xml_doc->xpath('//' . $unique_id_field->technical_name . '[1]/text()');
+			if (!empty($unique_field_value) && is_array($unique_field_value)) {
+				$instance = $form->getFormInstanceByUniqueIdentifierFieldValue((string) $unique_field_value[0]);
+				$is_existing_instance = !empty($instance->id);
+			}
+		};
+		
+		// Create/Find form instance								
+		if (!$is_existing_instance) {
+			$instance = new FormInstance($form->w);
+			$instance->form_id = $form->id;
+			$instance->object_class = get_class($object);
+			$instance->object_id = $object->id;
+			$instance->insert();
+		}
+		
+		$fields = $form->getFields();
+
+		if (!empty($fields)) {
+			foreach($fields as $field) {
+
+				$xml_value = '';
+
+				// Try and get a value from XML
+				switch ($field->type) {
+					case "latlong": {
+						// Expect the names to start with "lat" and "lon" under the field xpath
+						$latitude = $xml_doc->xpath('//' . $field->technical_name . '//*[starts-with(name(), "lat")]');
+						$longitude = $xml_doc->xpath('//' . $field->technical_name . '//*[starts-with(name(), "lon")]');
+
+						if (!empty($latitude[0])) {
+							$xml_value .= (string) $latitude[0];
+						}
+
+						if (!empty($longitude[0])) {
+							if (!empty($xml_value)) {
+								$xml_value .= ', ';
+							}
+
+							$xml_value .= (string) $longitude[0];
+						}
+
+						$this->createFormValue($form->w, $is_existing_instance, $instance, $field, $xml_value);
+						break;
+					};
+					case "attachment": {
+						$xml_path_attachments = $xml_doc->xpath('//' . $field->technical_name . '//photo');
+
+						if (!empty($xml_path_attachments) && !empty($non_standard_attachments)) {
+							foreach($xml_path_attachments as $xml_path_attachment) {
+								$xml_attachment_value = (string) $xml_path_attachment;
+
+								foreach($non_standard_attachments as $non_standard_attachment) {
+									if ($non_standard_attachment->filename == $xml_path_attachment) {
+										$xml_value .= (!empty($xml_value) ? ',' : '') . $non_standard_attachment->id;
+										break;
+									}
+								}
+							}
+						}
+
+						$this->createFormValue($form->w, $is_existing_instance, $instance, $field, $xml_value);
+						break;
+					};
+					case "subform": {
+						// Subform is a special case because the instances attach to the form value so it needs to exist first
+						$form_value = $this->createFormValue($form->w, $is_existing_instance, $instance, $field, '');
+						$result = $xml_doc->{$field->technical_name};
+
+						// Get form from metadata
+						$metadata = $field->getMetadata();
+						if (empty($metadata)) {
+							// Handle issue with missing metadata
+							continue;
+						}
+
+						$subform = null;
+						foreach($metadata as  $metadata_row) {
+							if ($metadata_row->meta_key === "associated_form") {
+								$subform = $form->w->Form->getForm($metadata_row->meta_value);
+							}
+						}
+
+						if (empty($subform)) {
+							// Handle issue with missing form
+							continue;
+						}
+
+						// @TODO: clear existing entries if existing instance
+
+						if (!empty($result)) {
+							$this->attachFormFromXMLToObject($result, $subform, $form_value);
+						}
+						break;
+					};
+					default:
+						$this->createFormValue($form->w, $is_existing_instance, $instance, $field, $this->getFirstOf($xml_doc, $field->technical_name));
+				}
+			}
+   		}
+   	}
+
+    private function createFormValue($w, $is_existing_instance, $instance, $field, $value) {
+    	$form_value = null;
+		if ($is_existing_instance) {
+			$form_value = $w->Form->getFormValueForInstanceAndField($instance->id, $field->id);
+			
+			if (!empty($form_value->id)) {
+				$form_value->value = $value;
+				$form_value->update();
+			}
+		}
+
+		if (!$is_existing_instance || empty($form_value->id)) {
+			$form_value = new FormValue($w);
+			$form_value->form_instance_id = $instance->id;
+			$form_value->form_field_id = $field->id;
+			$form_value->value = $value;
+			$form_value->insert();
+		}
+
+		return $form_value;
+    }
+
     private function getFirstOf($xml, $attr, $refnode = null) {
-    	 if ($refnode == null) {
+    	if ($refnode == null) {
             $ret = $xml->xpath('//' . $attr . '[1]/text()');
         } else {
             $ret = $refnode->xpath('.//' . $attr . '[1]/text()');
