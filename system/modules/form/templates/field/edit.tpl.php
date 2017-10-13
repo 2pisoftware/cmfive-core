@@ -1,5 +1,7 @@
+<link rel='stylesheet' href='/system/templates/vue-components/loading-indicator.vue.css' />
+
 <h3><?php echo $title; ?></h3>
-<form id="form_edit_<?php echo $field->id; ?>" action='/form-field/edit/<?php echo $field->id; ?>?form_id=<?php echo $form_id; ?>' method="POST">
+<form id="form_field_edit_<?php echo $field->id; ?>" action='/form-field/edit/<?php echo $field->id; ?>?form_id=<?php echo $form_id; ?>' method="POST">
 	<div class="row">
 		<div class="large-12 columns">
 			<label>Name
@@ -17,25 +19,16 @@
 	<div class="row">
 		<div class="large-12 columns">
 			<label>Type
-				<select id="type" name="type">
-					<?php $types = FormField::getFieldTypes();
-						if (!empty($types)) :
-							foreach($types as $type) : ?>
-								<option value="<?php echo $type[1]; ?>" <?php echo ($type[1] == $field->type) ? "selected='selected'" : ""; ?>><?php echo $type[0]; ?></option>
-							<?php endforeach;
-						endif;
-					?>
+				<select id="type" name="type" v-model="selected_type">
+					<option v-for="type in types" :value="type[1]">{{ type[0] }}</option>
 				</select>
 			</label>
 		</div>
 	</div>
-	<div class="row additional_details">
-		<?php 
-			if (!empty($metadata_form)) {
-				echo Html::form($metadata_form);
-			} 
-		?>
+	<div class="row additional_details" v-html="metadata_form_html">
+		
 	</div>
+	<loading-indicator :show="loading_metadata"></loading-indicator>
 	<div class="row">
 		<div class="large-12 columns">
 			<button class="button">Save</button>
@@ -43,36 +36,29 @@
 		</div>
 	</div>
 </form>
+<script src='/system/templates/vue-components/loading-indicator.vue.js'></script>
 <script>
-	
-	$("select[name='type']").change(function (event) {
-		var _this = $(this);
-		$(".additional_details").empty();
-		$.get("/form-field/ajaxGetMetadata/<?php echo $field->id; ?>?type=" + $("option:selected", _this).val(), function (response) {
-			if (response.length) {
-				$(".additional_details").append(response);
-			}
-		});
-	});
 
-
-	// var should_update_technical_name = <?php echo empty($field->technical_name) ? 'true' : 'false'; ?>;
-	// $("#name").keyup(function(event) {
-	// 	if (should_update_technical_name) {
-	// 		$("#technical_name").val($("#name").val().toLowerCase().replace(/ /g, '_'));
-	// 	}
-	// });
-
-	// $("#technical_name").keyup(function(event) {
-	// 	should_update_technical_name = false;
-	// });
-
-	var form_edit_<?php echo $field->id; ?>_vm = new Vue({
-		el: "#form_edit_<?php echo $field->id; ?>",
+	var form_field_edit_<?php echo $field->id; ?>_vm = new Vue({
+		el: "#form_field_edit_<?php echo $field->id; ?>",
 		data: {
 			should_update_technical_name: false,
 			name: '<?php echo $field->name; ?>',
-			technical_name: '<?php echo $field->technical_name; ?>'
+			technical_name: '<?php echo $field->technical_name; ?>',
+			selected_type: '<?php echo $field->type; ?>',
+			types: <?php echo json_encode(FormField::getFieldTypes()); ?>,
+			metadata_form: "<?php echo htmlentities(Html::form($metadata_form)); ?>",
+			loading_metadata: false
+		},
+		computed: {
+			metadata_form_html: function() {
+				return $('<div/>').html(this.metadata_form).text();
+			}
+		},
+		watch: {
+			selected_type: function() {
+				this.getMetadataForm();
+			}
 		},
 		methods: {
 			updateTechnicalName: function() {
@@ -82,6 +68,15 @@
 			},
 			disableUpdate: function() {
 				this.should_update_technical_name = false;
+			},
+			getMetadataForm: function() {
+				var _this = this;
+				this.metadata_form = '';
+				this.loading_metadata = true;
+				$.get('/form-field/ajaxGetMetadata/<?php echo $field->id; ?>?type=' + this.selected_type).done(function(response) {
+					_this.metadata_form = response;
+					_this.loading_metadata = false;
+				});
 			}
 		},
 		created: function() {

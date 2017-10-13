@@ -59,6 +59,7 @@ function edit_POST(Web $w) {
 	if (array_key_exists(CSRF::getTokenID(), $_POST)) {
 		unset($_POST[CSRF::getTokenID()]);
 	}
+
 	// Get existing values to update
 	$instance_values = $instance->getSavedValues();
 	if (!empty($instance_values)) {
@@ -73,13 +74,14 @@ function edit_POST(Web $w) {
 				// Used for attachment field types
 				// Trigger update to allow the modifyForPersistance to take care of attachment uploads
 				$instance_value->update();
+				unset($_FILES[$field->technical_name]);
 			} else {
 				$instance_value->delete();
 			}
 		}
 	}
 
-	// Add new values
+	// Add new POST values
 	if (!empty($_POST)) {
 		foreach($_POST as $key => $value) {
 			$field = $w->Form->getFormFieldByFormIdAndTitle($form->id, $key);
@@ -89,11 +91,25 @@ function edit_POST(Web $w) {
 				$instance_value->form_instance_id = $instance->id;
 				$instance_value->form_field_id = $field->id;
 				$instance_value->value = $value;
-				// $instance_value->mask = $field->mask;
-				// $instance_value->field_type = $field->type;
 				$instance_value->insert();
 			}
 		}
 	}
+
+	// Add new FILE values
+	if (!empty($_FILES)) {
+		foreach($_FILES as $key => $value) {
+			$field = $w->Form->getFormFieldByFormIdAndTitle($form->id, $key);
+			// if post variables don't match form fields, ignore them
+			if (!empty($field)) {
+				$instance_value = new FormValue($w);
+				$instance_value->form_instance_id = $instance->id;
+				$instance_value->form_field_id = $field->id;
+				$instance_value->value = ''; // Attachment types will set the value in the Interface
+				$instance_value->insert();
+			}
+		}
+	}
+
 	$w->msg($form->title . (!empty($p['id']) ? " updated" : " created"), $redirect_url . "#".toSlug($form->title));
 }

@@ -166,6 +166,10 @@ class ExternalFormProcessor extends ProcessorType {
 
 												break;
 											};
+											case "subform": {
+												
+												break;
+											};
 											default:
 												$xml_value = $this->getFirstOf($xml_doc, $field->technical_name);	
 										}

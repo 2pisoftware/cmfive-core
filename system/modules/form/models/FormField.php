@@ -178,7 +178,7 @@ class FormField extends DbObject {
 	public function getMetaDataForm() {
 		$interface = $this->interface_class;
 		if ($interface::respondsTo($this->type)) {
-			return $interface::metadataForm($this->type);
+			return $interface::metadataForm($this->type, $this->w);
 		}
 	}
 }

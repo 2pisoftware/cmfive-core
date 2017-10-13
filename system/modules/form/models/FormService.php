@@ -16,7 +16,8 @@ class FormService extends DbService {
 	/**
 	 * Load a form by id
 	 * 
-	 * @return Form
+	 * @param  Mixed $id
+	 * @return Form|null
 	 */
 	public function getForm($id) {
 		return $this->getObject("Form", $id);
@@ -25,7 +26,8 @@ class FormService extends DbService {
 	/**
 	 * Load a form field by id
 	 * 
-	 * @return FormField
+	 * @param  Mixed $id
+	 * @return FormField|null
 	 */
 	public function getFormField($id) {
 		return $this->getObject("FormField", $id);
@@ -33,11 +35,22 @@ class FormService extends DbService {
 	
 	/**
 	 * Load a form instance by id
-	 * 
-	 * @return FormInstance
+	 *
+	 * @param  Mixed $id
+	 * @return FormInstance|null
 	 */
 	public function getFormInstance($id) {
 		return $this->getObject("FormInstance", $id);
+	}
+
+	/**
+	 * Returns a form value by id
+	 * 
+	 * @param  Mixed $id
+	 * @return FormValue|null 
+	 */
+	public function getFormValue($id) {
+		return $this->getObject('FormValue', $id);
 	}
 	
 	/**

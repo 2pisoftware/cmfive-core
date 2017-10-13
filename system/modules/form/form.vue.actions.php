@@ -117,6 +117,46 @@ function get_forms_GET(Web $w) {
 
 }
 
+function get_form_instances_GET(Web $w) {
+
+	$w->setLayout(null);
+
+	$output = getResponse_VUE();
+	list ($form_id, $object_type, $object_id) = $w->pathMatch('form_id', 'object_type', 'object_id');
+
+	// Check parameters
+	if (empty($form_id) || empty($object_type) || empty($object_id)) {
+		$output['message'] = 'Requried parameters not found';
+		$w->out(json_encode($output));
+		return;
+	}
+
+	// Get form
+	$form = $w->Form->getForm($form_id);
+	if (empty($form->id)) {
+		$output['message'] = 'Form not found';
+		$w->out(json_encode($output));
+		return;
+	}
+
+	// Get Object
+	$object = $w->Form->getObject($object_type, $object_id);
+
+	if (empty($object->id)) {
+		$output['message'] = 'Object not found';
+		$w->out(json_encode($output));
+		return;
+	}
+
+	$output['data'] = array_map(function($instance) {
+		return $instance->toArray();
+	}, $w->Form->getFormInstancesForFormAndObject($form, $object) ? : []);
+
+	$output['success'] = true;
+	$w->out(json_encode($output));
+	
+}
+
 function save_form_POST(Web $w) {
 
 	$w->setLayout(null);

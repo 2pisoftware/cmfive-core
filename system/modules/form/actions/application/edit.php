@@ -4,9 +4,16 @@ function edit_GET(Web $w) {
 
 	list($id) = $w->pathMatch('id');
 
-	$w->enqueueScript(['name' => 'vue-js', 'uri' => '/system/modules/form/assets/js/vue.js', 'weight' => 200]);
+	$w->enqueueScript(['name' => 'vue-js', 'uri' => '/system/templates/js/vue.js', 'weight' => 200]);
 
-	$application = !empty($id) ? $w->FormApplication->getFormApplication($id) : new FormApplication($w);
+	$application = null;
+	if (empty($id)) {
+		$application = new FormApplication($w);
+		$application->insert();
+		$w->redirect('/form-application/edit/' . $application->id);
+	} else {
+		$application = $w->FormApplication->getFormApplication($id);
+	}
 
 	$form = [
 		"Application" => [

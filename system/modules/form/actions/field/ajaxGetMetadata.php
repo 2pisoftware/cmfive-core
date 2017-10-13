@@ -16,7 +16,7 @@ function ajaxGetMetadata_GET(Web $w) {
 		if (!empty($interfaces)) {
 			foreach($interfaces as $interface) {
 				if ($interface::respondsTo($type)) {
-					echo Html::form($interface::metadataForm($type));
+					echo htmlentities(Html::form($interface::metadataForm($type, $w)));
 				}
 			}
 		}
@@ -30,7 +30,7 @@ function ajaxGetMetadata_GET(Web $w) {
 
 			$metadata_form = $field->getMetadataForm();
 			if (!empty($metadata_form)) {
-				echo Html::form($metadata_form);
+				echo htmlentities(Html::form($metadata_form));
 			}
 		} else {
 			header("HTTP/1.1 404 Not Found");

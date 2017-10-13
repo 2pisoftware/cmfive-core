@@ -5,7 +5,8 @@ class FormAdditionalFieldsInterface extends FormFieldInterface {
 	protected static $_respondsTo = [
 		["LatLong", "latlong"],
 		["Unique ID", "unique_id"],
-		["Attachment", "attachment"]
+		["Attachment", "attachment"],
+		["Subform", "subform"]
 	];
 
 	/**
@@ -21,6 +22,8 @@ class FormAdditionalFieldsInterface extends FormFieldInterface {
 		switch (strtolower($type)) {
 			case "attachment":
 				return "file";
+			case "subform":
+				return "hidden";
 			case "unique_id":
 			case "latlong":
 			default:
@@ -36,6 +39,15 @@ class FormAdditionalFieldsInterface extends FormFieldInterface {
 	 * @return []
 	 */
 	public static function formConfig($type, $metaData, $w) {
+		// if (!static::doesRespondTo($type)) {
+		// 	return null;
+		// }
+
+		// switch($type) {
+		//  default:
+		// 		return [];
+		// }
+
 		return [];
 	}
 
@@ -45,10 +57,17 @@ class FormAdditionalFieldsInterface extends FormFieldInterface {
 	 * 
 	 * @return [[$name,$type,$field]]
 	 */
-	public static function metadataForm($type) {
-		// if (!static::doesRespondTo($type)) {
-		// 	return null;
-		// }
+	public static function metadataForm($type, Web $w) {
+		if (!static::doesRespondTo($type)) {
+			return null;
+		}
+
+		switch($type) {
+			case "subform":
+				return [['Associated Form', 'select', 'associated_form', null, $w->Form->getForms()]];
+			default:
+				return null;
+		}
 
 		return null;
 	}
@@ -81,6 +100,18 @@ class FormAdditionalFieldsInterface extends FormFieldInterface {
 				}
 
 				return $output;
+			case "subform":
+				// $form = $w->Form->getForm($form_value->value);
+
+				// if (!empty($form->id)) {
+				// 	$num_instances = $form->countFormInstancesForObject($form_value);
+				// 	return $num_instances . ' ' . $form_value->title . '(s)';
+				// }
+
+				return Html::box('/form-field/manage_subform/' . $form_value->id . '?display_only=1', 'View ' . $field->name) . '<br/>' .
+						Html::a('/form-field/manage_subform/' . $form_value->id, 'Manage ' . $field->name, null, null, null, "_blank");
+
+				break;
 			default:
 				return $form_value->value;
 		}

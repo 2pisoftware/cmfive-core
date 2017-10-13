@@ -89,7 +89,7 @@ class FormStandardInterface extends FormFieldInterface {
 	 * 
 	 * @return [[$name,$type,$field]]
 	 */
-	public static function metadataForm($type) {
+	public static function metadataForm($type, Web $w) {
 		if (!static::doesRespondTo($type)) {
 			return null;
 		}

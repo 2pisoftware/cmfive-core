@@ -1,4 +1,4 @@
-<?php echo Html::box('/form-application/edit', 'Create Application', true); ?>
+<?php echo Html::b('/form-application/edit', 'Create Application', true); ?>
 
 <?php if (!empty($application_table_data)) : ?>
 	<?php echo Html::table($application_table_data, null, 'tablesorter', !empty($application_table_header) ? $application_table_header : null); ?>

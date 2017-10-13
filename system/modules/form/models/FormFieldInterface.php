@@ -60,7 +60,7 @@ abstract class FormFieldInterface {
 	 * @param string $type
 	 * @return null|array
 	 */
-	public static function metadataForm($type) {
+	public static function metadataForm($type, Web $w) {
 		return null;
 	}
 	
