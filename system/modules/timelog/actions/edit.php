@@ -4,14 +4,20 @@ function edit_GET(Web $w) {
 	
 	$p = $w->pathMatch("id");
 	
-	$timelog = !empty($p['id']) ? $w->Timelog->getTimelog($p['id']) : new Timelog($w);
-	if (empty($timelog)) {
-		$w->msg("Timelog not found", "/timelog");
+	if (!empty($p['id'])) {
+		$timelog = $w->Timelog->getTimelog($p['id']);
+		if (empty($timelog)) {
+			$w->msg("Timelog not found", "/timelog");
+		}
+		if (!$timelog->canEdit($w->Auth->user())) {
+			$w->msg("You cannot edit this Timelog", "/timelog");
+		}
+	} else {
+		$timelog = new Timelog($w);
 	}
+
 	
-	if (!$timelog->canEdit($w->Auth->user())) {
-		$w->msg("You cannot edit this Timelog", "/timelog");
-	}
+
 	$w->ctx("timelog", $timelog);
 	$w->ctx('redirect', $w->request("redirect", ''));
 	

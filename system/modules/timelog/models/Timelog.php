@@ -166,8 +166,7 @@ class Timelog extends DbObject {
         if ($user->is_admin) {
 			return True;
 		}
-        
-		// user is the assignee
+		// user is the timelog assignee
 		if ($this->user_id == $user->id) {
 			return True;
 		}
