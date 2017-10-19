@@ -95,21 +95,14 @@ class FormAdditionalFieldsInterface extends FormFieldInterface {
 				$attachments = $w->File->getAttachments($form_value);
 				if (!empty($attachments)) {
 					foreach($attachments as $attachment) {
-						$output .= Html::a($attachment->getViewUrl(), 'View ' . $attachment->title, null, null, null, "_blank");
+						$output .= (new \Html\a())->href($attachment->getViewUrl())->text('View ' . $attachment->title)->target('_blank')->setClass('block-link abbreviated-link')->setTitle($attachment->title);
 					}
 				}
 
 				return $output;
 			case "subform":
-				// $form = $w->Form->getForm($form_value->value);
-
-				// if (!empty($form->id)) {
-				// 	$num_instances = $form->countFormInstancesForObject($form_value);
-				// 	return $num_instances . ' ' . $form_value->title . '(s)';
-				// }
-
-				return Html::box('/form-field/manage_subform/' . $form_value->id . '?display_only=1', 'View ' . $field->name) . '<br/>' .
-						Html::a('/form-field/manage_subform/' . $form_value->id, 'Manage ' . $field->name, null, null, null, "_blank");
+				return Html::box('/form-field/manage_subform/' . $form_value->id . '?display_only=1', 'View ' . $field->name, false, false, null, null, null, null, 'block-link') . 
+					   Html::a('/form-field/manage_subform/' . $form_value->id, 'Manage ' . $field->name, null, 'block-link', null, "_blank");
 
 				break;
 			default:

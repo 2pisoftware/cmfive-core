@@ -10,3 +10,15 @@
 	background-color: #efefef;
 	color: black;
 }
+
+.block-link {
+	display: block;
+	white-space: nowrap;
+}
+
+.abbreviated-link {
+	width: 250px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}

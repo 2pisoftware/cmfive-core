@@ -22,6 +22,7 @@ class ExternalFormProcessor extends ProcessorType {
      * @see ProcessorType::process()
      */
     public function process($processor) {
+
         if (empty($processor->id)) {
             return;
         }
@@ -55,8 +56,9 @@ class ExternalFormProcessor extends ProcessorType {
 
         // Get the object that form is mapped to
         $messages = $processor->getNewOrFailedMessages(); // w->Channel->getNewOrFailedMessages($processor->channel_id, $processor->id);
+
         if (!empty($messages)) {
-            foreach ($messages as $message) {
+        	foreach ($messages as $message) {
             	
             	$messagestatus = $message->messagestatus; //$processor->w->Channel->getMessageStatus($message->id, $processor->id);
                 if (empty($messagestatus)) {
@@ -68,15 +70,14 @@ class ExternalFormProcessor extends ProcessorType {
 
             	// Get attached form
             	$attachments = $processor->w->File->getAttachments($message);
-            	
+
 				if (!empty($attachments)) {
 					$non_standard_attachments = array_filter($attachments, function($attachment) {
-						return $attachment->mimetype != "text/xml" && $attachment->type_code == "channel_email_attachment";
+						return $attachment->mimetype != "application/xml" && $attachment->mimetype != "text/xml" && $attachment->type_code == "channel_email_attachment";
 					});
 
 					foreach($attachments as $attachment) {
-						if ($attachment->mimetype == "text/xml") {
-
+						if ($attachment->mimetype == "application/xml" || $attachment->mimetype == "text/xml") {
 							try {
 								// Load XML
 								$xml = file_get_contents(FILE_ROOT . $attachment->fullpath);
@@ -100,7 +101,7 @@ class ExternalFormProcessor extends ProcessorType {
 								// Persist values to instance
 								$xml_doc = simplexml_load_string($xml);
 
-								$return_value = $this->attachFormFromXMLToObject($xml_doc, $form, $application);
+								$return_value = $this->attachFormFromXMLToObject($xml_doc, $form, $application, $non_standard_attachments);
 								
 								// Mark message as complete
 								$messagestatus->is_successful = 1;
@@ -124,7 +125,7 @@ class ExternalFormProcessor extends ProcessorType {
         }
     }
 
-    private function attachFormFromXMLToObject($xml_doc, $form, $object) {
+    private function attachFormFromXMLToObject($xml_doc, $form, $object, $non_standard_attachments) {
     	$instance = null;
 		$is_existing_instance = false;
 		$unique_id_field = $form->getUniqueIdField();
@@ -220,9 +221,17 @@ class ExternalFormProcessor extends ProcessorType {
 						}
 
 						// @TODO: clear existing entries if existing instance
+						if ($is_existing_instance === true) {
+							$subform_instances = $subform->getFormInstancesForObject($form_value);
+							if (!empty($subform_instances)) {
+								array_map(function($subform_instance) {
+									$subform_instance->delete();
+								}, $subform_instances ? : []);
+							}
+						}
 
-						if (!empty($result)) {
-							$this->attachFormFromXMLToObject($result, $subform, $form_value);
+						if (!empty($result) && is_a($result, 'SimpleXMLElement')) {
+							$this->attachFormFromXMLToObject($result, $subform, $form_value, $non_standard_attachments);
 						}
 						break;
 					};

@@ -12,11 +12,6 @@ function edit_GET(Web $w) {
 
 	$_form_field_object = $p['id'] ? $w->Form->getFormField($p['id']) : new FormField($w);
 	$w->ctx('title', (!empty($_form_field_object->id) ? 'Edit' : 'Create') . ' form field');
-
-//	$form = [
-//		["Name", "text", "name", $_form_field_object->name],
-//		["Type", "select", "type", $_form_field_object->type, FormField::getFieldTypes()],
-//	];
 	
 	$metadata_form = [];
 	if (!empty($_form_field_object->id)) {
@@ -33,10 +28,6 @@ function edit_GET(Web $w) {
 				}
 			}
 		}
-		
-//		if (!empty($metadata_form)) {
-//			$form = array_merge($form, $metadata_form);
-//		}
 	}
 	
 	$w->ctx("form_id", $form_id ? : $_form_field_object->form_id);

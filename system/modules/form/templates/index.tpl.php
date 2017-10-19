@@ -1,6 +1,6 @@
 <div class="row-fluid">
 	<div class="small-12">
-		<?php echo Html::b("/form/edit", "Add a form", true); ?>
+		<?php echo Html::b("/form/edit", "Add a form"); ?>
 	</div>
 </div>
 
