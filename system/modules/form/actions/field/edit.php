@@ -9,30 +9,10 @@ function edit_GET(Web $w) {
 		$w->error("Form not found", "/form");
 	}
 
-
 	$_form_field_object = $p['id'] ? $w->Form->getFormField($p['id']) : new FormField($w);
 	$w->ctx('title', (!empty($_form_field_object->id) ? 'Edit' : 'Create') . ' form field');
-	
-	$metadata_form = [];
-	if (!empty($_form_field_object->id)) {
-		$metadata_form = $_form_field_object->getMetadataForm();
-		
-		// Add saved metadata
-		$field_metadata = $_form_field_object->getMetadata();
-		if (!empty($field_metadata)) {
-			foreach($field_metadata as $_metadata) {
-				foreach($metadata_form as &$metadata_form_element) {
-					if (in_array($_metadata->meta_key, array_values($metadata_form_element))) {
-						$metadata_form_element[3] = $_metadata->meta_value;
-					}
-				}
-			}
-		}
-	}
-	
 	$w->ctx("form_id", $form_id ? : $_form_field_object->form_id);
 	$w->ctx("field", $_form_field_object);
-	$w->ctx("metadata_form", $metadata_form);
 }
 
 function edit_POST(Web $w) {

@@ -126,7 +126,7 @@ class FormField extends DbObject {
 	 * @return FormFieldMetadata
 	 */
 	public function findMetadataByKey($key) {
-		$metadata = $this->getObject("FormFieldMetadata", ["meta_key" => $key, "form_field_id" => $this->id, "is_deleted" => 0]);
+		return $this->getObject("FormFieldMetadata", ["meta_key" => $key, "form_field_id" => $this->id, "is_deleted" => 0]);
 	}
 	
 	/**

@@ -114,6 +114,8 @@ class Web {
 
 		// The order of the following three lines are important
 		spl_autoload_register(array($this, 'modelLoader'));
+		spl_autoload_register(array($this, 'componentLoader'));
+
 		defined("WEBROOT") || define("WEBROOT", $this->_webroot);
 
 		// conditions to start the installer - must be running from web browser
@@ -180,8 +182,6 @@ class Web {
 			$class = array_pop($filePath);
 			$file = 'system' . DS . 'classes' . DS . strtolower(implode("/", $filePath)) . DS . $class . ".php";
 
-			// echo $file; var_dump(file_exists($file)); die();
-
 			if (file_exists($file)) {
 				require_once $file;
 				file_put_contents($classdirectory_cache_file, '$this->_classdirectory["' . $className . '"]="' . $file . '";' . "\n", FILE_APPEND);
@@ -189,6 +189,17 @@ class Web {
 			}
 		}
 		// $this->Log->debug("Class " . $file . " not found.");
+		return false;
+	}
+
+	private function componentLoader($name) {
+		$directory = 'system' . DS . 'classes' . DS . 'components';
+
+		if (file_exists($directory . DS . $name . '.php')) {
+			require_once $directory . DS . $name . '.php';
+			return true;
+		}
+
 		return false;
 	}
 

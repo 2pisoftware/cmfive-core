@@ -22,6 +22,8 @@ function manage_subform_GET(Web $w) {
 	$metadata = $field->getMetadata();
 	if (empty($metadata)) {
 		// Handle issue with missing metadata
+		$w->out("Subform not found");
+		return;
 	}
 
 	$subform = null;
@@ -31,8 +33,11 @@ function manage_subform_GET(Web $w) {
 		}
 	}
 
+
 	if (empty($subform)) {
 		// Handle issue with missing form
+		$w->out("Subform not found");
+		return;
 	}
 
 	$w->ctx('subform', $subform);

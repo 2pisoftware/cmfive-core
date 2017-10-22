@@ -64,7 +64,8 @@ class FormAdditionalFieldsInterface extends FormFieldInterface {
 
 		switch($type) {
 			case "subform":
-				return [['Associated Form', 'select', 'associated_form', null, $w->Form->getForms()]];
+				return VueComponentRegister::getComponent('metadata-subform');
+				// return [['Associated Form', 'select', 'associated_form', null, $w->Form->getForms()]];
 			default:
 				return null;
 		}

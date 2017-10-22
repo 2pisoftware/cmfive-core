@@ -25,9 +25,7 @@
 			</label>
 		</div>
 	</div>
-	<div class="row additional_details" v-html="metadata_form_html">
-		
-	</div>
+	<div class="row additional_details" v-html="metadata_form_html"></div>
 	<loading-indicator :show="loading_metadata"></loading-indicator>
 	<div class="row">
 		<div class="large-12 columns">
@@ -47,7 +45,7 @@
 			technical_name: '<?php echo $field->technical_name; ?>',
 			selected_type: '<?php echo $field->type; ?>',
 			types: <?php echo json_encode(FormField::getFieldTypes()); ?>,
-			metadata_form: "<?php echo htmlentities(Html::form($metadata_form)); ?>",
+			metadata_form: "<?php // echo htmlentities(Html::form($metadata_form)); ?>",
 			loading_metadata: false
 		},
 		computed: {
@@ -76,6 +74,7 @@
 				$.get('/form-field/ajaxGetMetadata/<?php echo $field->id; ?>?type=' + this.selected_type).done(function(response) {
 					_this.metadata_form = response;
 					_this.loading_metadata = false;
+					_this.$compile(_this.metadata_form_html);
 				});
 			}
 		},
@@ -83,6 +82,8 @@
 			if (this.name.length == 0) {
 				this.should_update_technical_name = true;
 			}
+
+			this.getMetadataForm();
 		}
 	});
 
