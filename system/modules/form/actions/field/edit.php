@@ -9,6 +9,8 @@ function edit_GET(Web $w) {
 		$w->error("Form not found", "/form");
 	}
 
+	VueComponentRegister::registerComponent('metadata-subform', new VueComponent('metadata-subform', '/system/modules/form/assets/js/metadata-subform.vue.js'));
+	
 	$_form_field_object = $p['id'] ? $w->Form->getFormField($p['id']) : new FormField($w);
 	$w->ctx('title', (!empty($_form_field_object->id) ? 'Edit' : 'Create') . ' form field');
 	$w->ctx("form_id", $form_id ? : $_form_field_object->form_id);

@@ -25,7 +25,17 @@
 			</label>
 		</div>
 	</div>
-	<div class="row additional_details" v-html="metadata_form_html"></div>
+	<div class="row additional_details" v-show="!loading_metadata">
+		<div class='large-12 columns'>
+			<div v-if='!selectedTypeIsVueComponent()' v-html="metadata_form_html"></div>
+			<metadata-select v-if='selected_type == "select"'></metadata-select>
+			<metadata-autocomplete v-if='selected_type == "autocomplete"'></metadata-autocomplete>
+			<?php echo VueComponentRegister::getComponent('metadata-subform')->display([
+				"v-if" => 'selected_type == "subform"', ':forms' => 'form_list', ':default-value' => 'metadata'
+			]); ?>
+			<!-- <metadata-subform v-if='selected_type == "subform"' :forms="form_list" :default-value="metadata"></metadata-subform> -->
+		</div>
+	</div>
 	<loading-indicator :show="loading_metadata"></loading-indicator>
 	<div class="row">
 		<div class="large-12 columns">
@@ -40,13 +50,16 @@
 	var form_field_edit_<?php echo $field->id; ?>_vm = new Vue({
 		el: "#form_field_edit_<?php echo $field->id; ?>",
 		data: {
+			vue_metadata_components: ['subform', 'select', 'autocomplete'],
 			should_update_technical_name: false,
 			name: '<?php echo $field->name; ?>',
 			technical_name: '<?php echo $field->technical_name; ?>',
 			selected_type: '<?php echo $field->type; ?>',
 			types: <?php echo json_encode(FormField::getFieldTypes()); ?>,
-			metadata_form: "<?php // echo htmlentities(Html::form($metadata_form)); ?>",
-			loading_metadata: false
+			loading_metadata: false,
+			metadata: <?php echo json_encode(array_map(function($metadata) {return $metadata->toArray();}, $field->getMetadata() ? : [])); ?>,
+			form_list: <?php echo json_encode(array_map(function($form) {return $form->toArray();}, $w->Form->getForms() ? : [])); ?>,
+			metadata_form: ''
 		},
 		computed: {
 			metadata_form_html: function() {
@@ -68,14 +81,19 @@
 				this.should_update_technical_name = false;
 			},
 			getMetadataForm: function() {
-				var _this = this;
-				this.metadata_form = '';
-				this.loading_metadata = true;
-				$.get('/form-field/ajaxGetMetadata/<?php echo $field->id; ?>?type=' + this.selected_type).done(function(response) {
-					_this.metadata_form = response;
-					_this.loading_metadata = false;
-					_this.$compile(_this.metadata_form_html);
-				});
+				if (!this.selectedTypeIsVueComponent()) {
+					var _this = this;
+					this.metadata_form = '';
+					this.loading_metadata = true;
+					$.get('/form-field/ajaxGetMetadata/<?php echo $field->id; ?>?type=' + this.selected_type).success(function(response) {
+						_this.metadata_form = response;
+						_this.loading_metadata = false;
+						// _this.$compile(_this.metadata_form_html);
+					});
+				}
+			},
+			selectedTypeIsVueComponent: function() {
+				return this.vue_metadata_components.indexOf(this.selected_type) > -1;
 			}
 		},
 		created: function() {
@@ -83,7 +101,7 @@
 				this.should_update_technical_name = true;
 			}
 
-			this.getMetadataForm();
+			// this.getMetadataForm();
 		}
 	});
 

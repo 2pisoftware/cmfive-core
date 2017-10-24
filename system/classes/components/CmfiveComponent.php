@@ -1,6 +1,6 @@
 <?php
 
-class CmfiveComponent {
+abstract class CmfiveComponent {
 
 	public $tag = 'link';
 	public $has_closing_tag = false;

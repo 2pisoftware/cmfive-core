@@ -27,7 +27,7 @@ class VueComponent extends CmfiveComponent {
 
 		if (!empty($binding_data)) {
 			foreach($binding_data as $field => $value) {
-				$buffer .= $field . '="' . $value . '" ';
+				$buffer .= $field . '=\'' . $value . '\' ';
 			}
 		}
 

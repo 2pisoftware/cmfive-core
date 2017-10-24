@@ -15,4 +15,7 @@ Config::set('form', [
 	'processors' => [
     	'ExternalFormProcessor'
 	],
+	'components' => [
+		'metadata-subform' => ['/system/modules/form/assets/js/metadata-subform.vue.js']
+	]
 ]);

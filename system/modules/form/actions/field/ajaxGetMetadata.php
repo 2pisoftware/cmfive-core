@@ -11,7 +11,7 @@ function ajaxGetMetadata_GET(Web $w) {
 		return;
 	}
 
-	VueComponentRegister::registerComponent('metadata-subform', new VueComponent('metadata-subform', '/system/modules/form/assets/js/metadata-subform.vue.js'));
+	// VueComponentRegister::registerComponent('metadata-subform', new VueComponent('metadata-subform', '/system/modules/form/assets/js/metadata-subform.vue.js'));
 	
 	$field = null;
 	if (!empty($p['id'])) {
@@ -44,8 +44,9 @@ function ajaxGetMetadata_GET(Web $w) {
 						$w->out(htmlentities(Html::form($metadata_form)));
 						return;
 					} else if (is_a($metadata_form, 'VueComponent')) {
-						// Else assume new Vue.js component layout
-						$w->out(htmlentities($metadata_form->display()));
+						// Else assume new Vue.js component layout - will already be in the template
+						header("HTTP/1.1 404 Not Found");
+						// $w->out(htmlentities($metadata_form->display()));
 						return;
 					}
 				}
