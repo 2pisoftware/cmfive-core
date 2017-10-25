@@ -110,3 +110,33 @@ class TaskType_ProgrammingTicket extends TaskType {
 
 
 }
+
+/**
+ * Cmfive support taskgroup
+ *
+ * @author Adam Buckley <adam@2pisoftware.com>
+ */
+class TaskGroupType_CmfiveSupport extends TaskGroupType {
+
+}
+
+/**
+ * Cmfive ticket class
+ *
+ * @author Adam Buckley <adam@2pisoftware.com>
+ */
+class TaskType_CmfiveTicket extends TaskType {
+
+    function getFieldFormArray(\TaskGroup $taskgroup, \Task $task = null) {
+        return [];
+    }
+    
+    function displayExtraButtons(\Task $task) {
+        
+    }
+
+    function displayExtraDetails(\Task $task) {
+        return [];
+    }
+    
+}

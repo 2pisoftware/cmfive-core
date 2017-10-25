@@ -19,6 +19,9 @@ Config::set('task', array(
     ),
     'timelog' => array(
         'Task'
+    ),
+    'processors' => array(
+        'TicketEmailProcessor'
     )
 ));
 
@@ -79,3 +82,25 @@ Config::append('task.TaskGroupType_SoftwareDevelopment', array(
 	'priorities' => array("Urgent", "Normal", "Nice to have"),
 	'urgent-priorities' => array("Urgent")
 ));
+
+Config::set('task.TaskGroupType_CmfiveSupport', [
+	'title' => 'Cmfive Support',
+	'description' => 'Tracking Support Requests.',
+	'can-task-reopen' => true,
+	'tasktypes' => ["CmfiveTicket" => "Support Ticket"],
+	'statuses' => [
+			["New", false],
+            ["Assigned", false],
+            ["WIP", false],
+            ["Wait for Comment", false],
+            ["Done", true], // is closing
+            ["Rejected", true]], // is closing
+	'priorities' => ["Critical","Major", "Minor", "Normal"],
+	'urgent-priorities' => ["Critical", "Major"]
+]);
+
+Config::set('task.TaskType_CmfiveTicket', [
+	'title' => "Support Ticket",
+	'description' => "A Support Ticket.",
+	'time-types' => ["Business Hours", "After Hours", "Quoted", "Non-Billable", "Internal"]
+]);
