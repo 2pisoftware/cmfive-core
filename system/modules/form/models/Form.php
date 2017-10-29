@@ -106,7 +106,10 @@ class Form extends DbObject {
 			// Get matching value
 			$value = $this->getObject('FormValue', ['form_field_id' => $unique_id_field->id, 'value' => $identifier_value, 'is_deleted' => 0]);
 			if (!empty($value->id)) {
-				return $value->getFormInstance();
+				$form_instance = $value->getFormInstance();
+				if ($form_instance->is_deleted == 0) {
+					return $form_instance;
+				}
 			}
 		}
 

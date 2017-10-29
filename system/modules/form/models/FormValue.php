@@ -52,7 +52,7 @@ class FormValue extends DbObject {
 	 * Get the FormField associated with this value
 	 * 
 	 * @return FormField
-	 ************************************************/
+	 */
 	public function getFormField() {
 		return $this->getObject("FormField", $this->form_field_id);
 	}

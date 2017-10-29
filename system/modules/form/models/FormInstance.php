@@ -124,6 +124,18 @@ class FormInstance extends DbObject {
 		}
 		return array($form->title => $form_structure);
 	}
+
+	public function delete($force = false) {
+		$values = $this->getSavedValues();
+
+		if (!empty($values)) {
+			foreach($values as $value) {
+				$value->delete($force);
+			}
+		}
+
+		parent::delete($force);
+	}
 	
 	/**
 	 * Can the user list this form instance
