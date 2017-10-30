@@ -190,7 +190,7 @@ function task_attachment_attachment_added_task(Web $w, $object) {
 		
 		// Get additional details
 		if ($user->is_external == 0) {
-			$additional_details = $w->Task->getNotificationAdditionalDetails($object);
+			$additional_details = $w->Task->getNotificationAdditionalDetails($task);
 			if (!empty($additional_details)) {
 				$template_data['footer'] .= $additional_details;
 			}
