@@ -293,7 +293,11 @@ class Web {
 	}
 
 	function initLocale() {
-		$user = $this->Auth->user();
+        if (!$this->_is_installing) {
+            $user = $this->Auth->user();
+        } else {
+            $user = null;
+        }
 		// default language
 		$language = Config::get('system.language');
 		// per user language s
@@ -1535,7 +1539,9 @@ class Web {
 
 			// if this function is already loaded from an earlier call, execute now
 			if (function_exists($hook_function_name)) {
+				$this->Log->setLogger('HOOKS')->info($hook_function_name . " running.");
 				$buffer[] = $hook_function_name($this, $data);
+				$this->Log->setLogger('HOOKS')->info($hook_function_name . " finished.");
 			} else {
 				// Check if the file exists and load
 				if (!file_exists($this->getModuleDir($toInvoke) . $toInvoke . ".hooks.php")) {
@@ -1547,7 +1553,9 @@ class Web {
 
 				if (function_exists($hook_function_name)) {
 					// Call function
+					$this->Log->setLogger('HOOKS')->info($hook_function_name . " running.");
 					$buffer[] = $hook_function_name($this, $data);
+					$this->Log->setLogger('HOOKS')->info($hook_function_name . " finished.");
 				}
 			}
 		}

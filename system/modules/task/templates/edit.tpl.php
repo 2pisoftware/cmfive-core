@@ -12,7 +12,8 @@
         <a href="#details">Task Details</a>
 		<?php if (!empty($task->id)) : ?>
             <a href="#timelog">Time Log <span class='label secondary round cmfive__tab-label cmfive__count-timelog'></span></a>
-            <a href="#comments">Comments <span class='label secondary round cmfive__tab-label cmfive__count-comment_section'></span></a>
+            <a href="#internal_comments">Internal Comments <span class='label secondary round cmfive__tab-label cmfive__count-internal_comment_section'></span></a>
+            <a href="#external_comments">External Comments <span class='label secondary round cmfive__tab-label cmfive__count-external_comment_section'></span></a>
             <a href="#attachments">Attachments <span class='label secondary round cmfive__tab-label cmfive__count-attachment'></span></a>
 
             <?php if ($task->getCanINotify()):?><a href="#notification">Notifications</a><?php endif;?>
@@ -56,11 +57,30 @@
                     </div>
 
                     <div class="small-12 large-3 right" style="margin-top: 16px;">
-						<!--<h4 class="subheader text-center">Additional details</h4>-->
-						<?php
-							// Call hook and filter out empty/false values
-							if (!empty($task->id)) {
-								$additional_details = $w->callHook('task', 'additional_details', $task);
+                        <?php
+                            // Call hook and filter out empty/false values
+                            if (!empty($task->id)) : ?>
+        						<div class='row-fluid panel clearfix' id='task_subscribers'>
+                                    <table class="small-12 columns">
+                                        <tbody>
+                                            <tr>
+                                                <td class="section" colspan="1">Subscribers <br> <?php echo Html::box('/task-subscriber/add/' . $task->id, 'Add', true, false, null, null, 'isbox', null, 'info center'); ?></td>
+                                            </tr>
+                                            <?php if (!empty($subscribers)) : ?>
+                                                <?php foreach($subscribers as $subscriber) : ?>
+                                                    <?php $subscriber_user = $subscriber->getUser(); ?>
+                                                    <tr <?php echo ($subscriber_user->is_external) ? 'style="background-color: #c99;"' : ''; ?>>
+                                                        <td><?php echo $subscriber_user->getFullName(); ?> - <?php echo $subscriber_user->getContact()->email; ?></br>
+                                                        <?php echo Html::b('/task-subscriber/delete/' . $subscriber->id, 'Delete', 'Are you sure you want to remove this subscriber?', null, false, 'warning center'); ?></td>
+                                                    </tr>
+                                                <?php endforeach; ?>
+                                            <?php endif; ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                
+						
+								<?php $additional_details = $w->callHook('task', 'additional_details', $task);
 								if (!is_null($additional_details) && is_array($additional_details)) {
 									$additional_details = array_values(array_filter($additional_details ? : []));
 									if (count($additional_details) > 0) : ?>
@@ -76,7 +96,7 @@
 										</div>
 									<?php endif;
 								}
-							}
+							endif;
 						?>
                         <div class="small-12 panel" id="tasktext" style="display: none;"></div>
                         <div class="small-12 panel clearfix" id="formfields" style="display: none;"></div>
@@ -89,11 +109,15 @@
             <div id="timelog">
 				<?php echo $w->partial("listtimelog", ["object_class" => "Task", "object_id" => $task->id, "redirect" => "task/edit/{$task->id}#timelog"], "timelog"); ?>
             </div>
-            <div id="comments">
-                <?php echo $w->partial("listcomments",array("object"=>$task,"redirect"=>"task/edit/{$task->id}#comments"), "admin"); ?>
+            <div id="internal_comments">
+                <?php echo $w->partial("listcomments",array("object" => $task, "internal_only" => true, "redirect" => "task/edit/{$task->id}#internal_comments"), "admin"); ?>
+            </div>
+            <div id="external_comments">
+                <div class='alert-box warning'>External comments may be sent to clients, exercise caution!</div>
+                <?php echo $w->partial("listcomments",array("object" => $task, "internal_only" => false, "external_only" => true, "redirect" => "task/edit/{$task->id}#external_comments"), "admin"); ?>
             </div>
             <div id="attachments">
-                <?php echo $w->partial("listattachments",array("object"=>$task,"redirect"=>"task/edit/{$task->id}#attachments"), "file"); ?>
+                <?php echo $w->partial("listattachments",array("object" => $task, "redirect" => "task/edit/{$task->id}#attachments"), "file"); ?>
             </div>
             <?php if ($task->getCanINotify()):?>
             <div id="notification" class="clearfix">

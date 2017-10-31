@@ -7,7 +7,11 @@ function rendertemplate_ALL(Web $w) {
     $t = $t ? $t : new Template($w);
     
     $w->setLayout(null);
-    $w->out($t->testTitle());
-    $w->out("<hr/>");
+
+    $testTitle = $t->testTitle();
+    if (!empty($testTitle)) {
+	    $w->out($testTitle);
+	    $w->out("<hr/>");
+	}
     $w->out($t->testBody());
 }

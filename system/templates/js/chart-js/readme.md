@@ -1,52 +1,54 @@
-Chart.js
-=======
+# Chart.js
+
+[![Build Status](https://travis-ci.org/chartjs/Chart.js.svg?branch=master)](https://travis-ci.org/chartjs/Chart.js) [![Code Climate](https://codeclimate.com/github/nnnick/Chart.js/badges/gpa.svg)](https://codeclimate.com/github/nnnick/Chart.js) [![Coverage Status](https://coveralls.io/repos/github/chartjs/Chart.js/badge.svg?branch=master)](https://coveralls.io/github/chartjs/Chart.js?branch=master)
+
+[![Chart.js on Slack](https://img.shields.io/badge/slack-Chart.js-blue.svg)](https://chart-js-automation.herokuapp.com/)
+
 *Simple HTML5 Charts using the canvas element* [chartjs.org](http://www.chartjs.org)
 
-Quick FYI
--------
-I'm currently working on a big refactor of the library into a more object oriented structure. 
+## Installation
 
-It'll have an extendable class structure for adding community developed chart types. By opening up components into Chart.js into extendable classes, it'll allow for much easier community driven library extensions rather than tacking on new features as required. The refactor will also feature a generisized version of the interaction layer introduced by Regaddi in his tooltips branch - https://github.com/nnnick/Chart.js/pull/51. On top of this, it'll include utility methods on each chart object, for updating, clearing and redrawing charts etc.
+You can download the latest version of Chart.js from the [GitHub releases](https://github.com/chartjs/Chart.js/releases/latest) or use a [Chart.js CDN](https://cdnjs.com/libraries/Chart.js).
 
-I haven't quite got the bandwidth right now to be juggling both issues/requests in master while redesigning all of the core code in Chart.js. By focusing on the refactor, it'll get done WAY quicker.
+To install via npm:
 
-Extensibility will absolutely be at the core of the refactor, allowing for the development of complex extension modules, but also keeping a lightweight set of core code.
+```bash
+npm install chart.js --save
+```
 
-Hang tight - it'll be worth it. 
+To install via bower:
+```bash
+bower install chart.js --save
+```
 
-PS. If you're interested in reviewing some code or trying out writing extensions, shoot me an email.
+#### Selecting the Correct Build
 
-###Update - 8th September
-Just a quick update on the refactor. 
+Chart.js provides two different builds that are available for your use. The `Chart.js` and `Chart.min.js` files include Chart.js and the accompanying color parsing library. If this version is used and you require the use of the time axis, [Moment.js](http://momentjs.com/) will need to be included before Chart.js.
 
-Just wanted to let you guys know it's making really good progress, and it'll be well worth the wait.
+The `Chart.bundle.js` and `Chart.bundle.min.js` builds include Moment.js in a single file. This version should be used if you require time axes and want a single file to include, select this version. Do not use this build if your application already includes Moment.js. If you do, Moment.js will be included twice, increasing the page load time and potentially introducing version issues.
 
-The new version is being broken up into Chart type modules, with each of the current 6 chart types using documented and extendable classes and helper methods from the Chart.js core. This means the community will be able to build new chart types using existing components, or extend existing types to do something a bit different. 
+## Documentation
 
-By splitting the different charts into modules will mean the ability to use AMD if appropriate, but I'll also be writing a simple web interface for concatenating chart types into a minified production ready custom build.
+You can find documentation at [www.chartjs.org/docs](http://www.chartjs.org/docs). The markdown files that build the site are available under `/docs`. Previous version documentation is available at [www.chartjs.org/docs/#notes-previous-versions](http://www.chartjs.org/docs/#notes-previous-versions).
 
-The syntax for creating charts **will not change**, so the upgrade should be a drop in replacement, but give you the ability to have a whole new level of interactivity and animated data updates.
+## Contributing
 
-Right now I've wrote 80% of the core, and refactored the Doughnut and Pie charts, and I'm a good way through the Line and Bar charts. I hope to have the new version ready to release with some new docs late September/early October.
+Before submitting an issue or a pull request to the project, please take a moment to look over the [contributing guidelines](https://github.com/chartjs/Chart.js/blob/master/CONTRIBUTING.md) first.
 
-I know PR and issues are racking up in the repo, and I'll do my best to sort them ASAP, but I think this update is really important for creating flexibility and extensibility to cater for these new features in an elegant way, rather than introducing scope creep into an architecture that wasn't designed to deliver this extra functionality.
+For support using Chart.js, please post questions with the [`chartjs` tag on Stack Overflow](http://stackoverflow.com/questions/tagged/chartjs).
 
-Big thanks for all the support - it's been totally overwhelming.
+## Building and Testing
 
-###Another Quick Update - 16th October
-First of all - my apologies, early October has drifted away from me and we're moving towards late October. This last month has been really unexpectedly busy, and I've had a lot of stuff going on, so I haven't quite managed to find as much time to work on Chart.js as I'd hoped.
+To build, run `gulp build`.
 
-In terms of an updated ETA, I'm really aiming for a pre-November release, and I'll be having some late nights and a few days off to try my best to make this happen.
+To test, run `gulp test`.
 
-Again, really appreciate the support and cheers for your patience for the new version.
+To test against code standards, run `gulp lint`.
 
+More information on building and testing can be found in [gulpfile.js](gulpfile.js).
 
-Documentation
--------
-You can find documentation at [chartjs.org/docs](http://www.chartjs.org/docs).
+Thanks to [BrowserStack](https://browserstack.com) for allowing our team to test on thousands of browsers.
 
-License
--------
-Chart.js was taken down on the 19th March. It is now back online for good and IS available under MIT license.
+## License
 
-Chart.js is available under the [MIT license] (http://opensource.org/licenses/MIT).
+Chart.js is available under the [MIT license](http://opensource.org/licenses/MIT).
