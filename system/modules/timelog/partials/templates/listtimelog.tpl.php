@@ -16,8 +16,14 @@
 					<td><?php echo $timelog->time_type; ?></td>
 					<td><pre class="break-pre" style="font-family: sans-serif;"><?php echo $timelog->getComment()->comment; ?></pre></td>
 					<td>
-						<?php echo Html::box('/timelog/edit/' . $timelog->id . (!empty($redirect) ? "?redirect=$redirect" : ''), 'Edit', true); ?>
-						<?php echo Html::b('/timelog/delete/' . $timelog->id . (!empty($redirect) ? "?redirect=$redirect" : ''), 'Delete', 'Are you sure you want to delete this timelog?'); ?>
+						<?php
+						if ($timelog->canEdit($w->Auth->user())) {
+							echo Html::box('/timelog/edit/' . $timelog->id . (!empty($redirect) ? "?redirect=$redirect" : ''), 'Edit', true);
+						} 
+						if ($timelog->canDelete($w->Auth->user())) {
+							echo Html::b('/timelog/delete/' . $timelog->id . (!empty($redirect) ? "?redirect=$redirect" : ''), 'Delete', 'Are you sure you want to delete this timelog?');
+						}
+						?>
 					</td>
 				</tr>
 			<?php endforeach; ?>
