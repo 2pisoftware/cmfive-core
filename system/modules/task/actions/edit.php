@@ -66,7 +66,7 @@ function edit_GET($w) {
 				]))->setLabel("Task Type <small>Required</small>")
                     ->setDisabled(!empty($p["id"]) ? "true" : null)
                     ->setOptions($tasktypes)
-                    ->setSelectedOption(!empty($p["id"]) ? $task->task_type : sizeof($tasktypes) === 1 ? $tasktypes[0] : null)
+                    ->setSelectedOption(!empty($p["id"]) ? $task->task_type : (is_array($tasktypes) && count($tasktypes) === 1 ? $tasktypes[0] : null))
                     ->setRequired('required')
             ),
             array(
@@ -110,6 +110,14 @@ function edit_GET($w) {
         $createdDate =  formatDate($task->_modifiable->getCreatedDate()) . (!empty($creator) ? ' by <strong>' . @$creator->getFullName() . '</strong>' : '');
     }
     $w->ctx('createdDate', $createdDate);
+
+    // Subscribers
+    if (!empty($task->id)) {
+        $task_subscribers = $task->getSubscribers();
+
+        
+        $w->ctx('subscribers', $task_subscribers);
+    }
 
     ///////////////////
     // Notifications //

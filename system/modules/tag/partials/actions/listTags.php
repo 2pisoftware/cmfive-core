@@ -1,40 +1,34 @@
 <?php namespace System\Modules\Tag;
 
-function listTags(\Web $w, $params) {
-	// Check roles access
-	// Admin gets to add new tags globally
-	// User can attach an existing tag
-	// Different scripts handle this functionality - more checks done in action
-	$user = $w->Auth->user();
+function listTags(\Web $w, $params = []) {
 	
-	// Load scripts into main template
-	if(!empty($user)) {
-		if ($user->hasAnyRole(["tag_admin", "tag_user"])) {
-			$w->enqueueScript(["uri" => "/system/modules/tag/assets/js/tagButton.js", "weight" => 500]);
-			$w->enqueueStyle(["uri" => "/system/modules/tag/assets/css/tagButton.css", "weight" => 500]);
-			
-			if($user->hasRole("tag_admin")) {
-				$w->enqueueScript(["uri" => "/system/modules/tag/assets/js/tagButtonAdmin.js", "weight" => 499]);
+	if (empty($params['object'])) {
+		return;
+	}
+	
+	$w->enqueueStyle(['name' => 'selectize-css', 'uri' => '/system/modules/tag/assets/lib/selectize.js/dist/css/selectize.css', 'weight' => 300]);
+	$w->enqueueStyle(['name' => 'tag-css', 'uri' => '/system/modules/tag/assets/css/style.css', 'weight' => 290]);
+	$w->enqueueScript(['name' => 'selectize-js', 'uri' => '/system/modules/tag/assets/lib/selectize.js/dist/js/standalone/selectize.js', 'weight' => 300]);
+	$w->enqueueScript(['name' => 'vue-js', 'uri' => '/system/modules/tag/assets/js/vue.min.js', 'weight' => 290]);
+	
+	$w->ctx('object', $params['object']);
+	
+	// Filter tags into a displayable group and a group that only shows on hover
+	$tags = $w->Tag->getTagsByObject($params['object']);
+	$filtered_tags = ['display' => [], 'hover' => []];
+	
+	$tag_str_len = 0;
+	if (!empty($tags)) {
+		foreach($tags as $tag) {
+			if ($tag_str_len < 10) {
+				$filtered_tags['display'][] = ['id' => $tag->id, 'tag' => $tag->tag];
+			} else {
+				$filtered_tags['hover'][] = ['id' => $tag->id, 'tag' => $tag->tag];
 			}
+			
+			$tag_str_len += strlen($tag->tag);
 		}
 	}
 	
-	if (!empty($params['object'])) {
-		$object_class = get_class($params['object']);
-		$object_id = ($params['object']->id === null) ? 0 : $params['object']->id; 
-        $limit = (isset($params['limit']) && is_int($params['limit'])) ? $params['limit'] : -1;
-        
-		$w->ctx("object_class", $object_class);
-		$w->ctx("object_id", $object_id);
-		
-		$tags = $w->Tag->getTagsByObject($object_id, $object_class);
-		
-		$w->ctx("tags", $tags);
-        $w->ctx("limit", $limit);
-	} else {
-		$w->ctx("object_class", '');
-		$w->ctx("object_id", '');
-	}
-	
-	$w->ctx("user", $user);
+	$w->ctx('tags', $filtered_tags); 
 }
