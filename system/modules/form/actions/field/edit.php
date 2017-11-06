@@ -10,6 +10,7 @@ function edit_GET(Web $w) {
 	}
 
 	VueComponentRegister::registerComponent('metadata-subform', new VueComponent('metadata-subform', '/system/modules/form/assets/js/metadata-subform.vue.js'));
+	VueComponentRegister::registerComponent('metadata-select', new VueComponent('metadata-select', '/system/modules/form/assets/js/metadata-select.vue.js', '/system/modules/form/assets/js/metadata-select.vue.css'));
 	
 	$_form_field_object = $p['id'] ? $w->Form->getFormField($p['id']) : new FormField($w);
 	$w->ctx('title', (!empty($_form_field_object->id) ? 'Edit' : 'Create') . ' form field');

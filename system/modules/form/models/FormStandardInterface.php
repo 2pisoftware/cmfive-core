@@ -49,35 +49,37 @@ class FormStandardInterface extends FormFieldInterface {
 	 * 
 	 * @return []
 	 */
-	public static function formConfig($type, $metaData, $w) {
+	public static function formConfig($type, $metadata, $w) {
 		$options = [];
 		if ($type == "autocomplete" || $type == "select")  {
-			if (!empty($metaData['object_type'])) {
+			if (!empty($metadata['object_type'])) {
 				try {
 					$service = new DbService($w);
 					$filter = '';
 					// eg {"login like ?": "%e%"}
-					if (!empty($metaData['object_filter'])) {
+					if (!empty($metadata['object_filter'])) {
 						try {
-							$filter = json_decode($metaData['object_filter'], true);
+							$filter = json_decode($metadata['object_filter'], true);
 						} catch (Exception $e) {
 							// fallback to following test
 						}
 						if (!is_array($filter)) {
-							$filter = $metaData['object_filter'];
+							$filter = $metadata['object_filter'];
 						}						
 					}
-					$options = $service->getObjects($metaData['object_type'], $filter);
+					$options = $service->getObjects($metadata['object_type'], $filter);
 				} catch (Exception $e) {
 					//silently fail no options
 				}
-			} else if (!empty($metaData['options'])) {
-				$options = explode(",", $metaData['options']);
+			} else if (!empty($metadata['options'])) {
+				$options = explode(",", $metadata['options']);
 				foreach ($options as $k => $option) {
 					if (is_int($k)) {
 						$options[$k] = [$option, $k + 1];
 					}
 				}
+			} else if (!empty($metadata['user_rows'])) {
+				var_dump($metadata);
 			}
 		}
 		return [$options];
@@ -100,8 +102,8 @@ class FormStandardInterface extends FormFieldInterface {
 			case "autocomplete":
 				return [["Object", "text", "object_type"],["Filter", "text", "object_filter"],["Options", "text", "options"]];
 			case "select":
-				return [["Object", "text", "object_type"],["Filter", "text", "object_filter"],["Options", "text", "options"]];
-			
+				return VueComponentRegister::getComponent('metadata-select');
+				// return [["Object", "text", "object_type"],["Filter", "text", "object_filter"],["Options", "text", "options"]];
 			default:
 				return null;
 		}

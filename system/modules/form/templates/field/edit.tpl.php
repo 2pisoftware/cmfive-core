@@ -28,11 +28,15 @@
 	<div class="row additional_details" v-show="!loading_metadata">
 		<div class='large-12 columns'>
 			<div v-if='!selectedTypeIsVueComponent()' v-html="metadata_form_html"></div>
-			<metadata-select v-if='selected_type == "select"'></metadata-select>
-			<metadata-autocomplete v-if='selected_type == "autocomplete"'></metadata-autocomplete>
-			<?php echo VueComponentRegister::getComponent('metadata-subform')->display([
-				"v-if" => 'selected_type == "subform"', ':forms' => 'form_list', ':default-value' => 'metadata'
-			]); ?>
+			<!-- <metadata-autocomplete v-if='selected_type == "autocomplete"'></metadata-autocomplete> -->
+			<?php 
+				echo VueComponentRegister::getComponent('metadata-select')->display([
+					"v-if" => 'selected_type == "select"', ':default-value' => 'metadata'
+				]);
+				echo VueComponentRegister::getComponent('metadata-subform')->display([
+					"v-if" => 'selected_type == "subform"', ':forms' => 'form_list', ':default-value' => 'metadata'
+				]); 
+			?>
 			<!-- <metadata-subform v-if='selected_type == "subform"' :forms="form_list" :default-value="metadata"></metadata-subform> -->
 		</div>
 	</div>

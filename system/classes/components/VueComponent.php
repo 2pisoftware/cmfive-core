@@ -18,7 +18,7 @@ class VueComponent extends CmfiveComponent {
 		}
 
 		$this->is_included = true;
-		return (!empty($this->css_path) ? '<link href="' . $this->css_path . '" />' : '') .
+		return (!empty($this->css_path) ? '<link rel="stylesheet" href="' . $this->css_path . '" />' : '') .
 			   '<script src="' . $this->js_path . '"></script>';
 	}
 
