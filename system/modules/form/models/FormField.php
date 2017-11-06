@@ -181,4 +181,14 @@ class FormField extends DbObject {
 			return $interface::metadataForm($this->type, $this->w);
 		}
 	}
+
+	/**
+	 * Returns the readable version of this fields type
+	 *
+	 * @return String readable type
+	 */
+	public function getReadableType() {
+		$interface = $this->interface_class;
+		return $interface::getReadableType($this->type);
+	}
 }
