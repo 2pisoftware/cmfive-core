@@ -107,7 +107,7 @@ class FormField extends DbObject {
 		if (!empty($metadata)) {
 			foreach($metadata as &$metadata_row) {
 				if (is_array(json_decode($metadata_row->meta_value, true))) {
-					$metadata_row->meta_value = json_decode($metadata_row->meta_value);
+					$metadata_row->meta_value = json_decode($metadata_row->meta_value, true);
 				}
 			}
 		}
