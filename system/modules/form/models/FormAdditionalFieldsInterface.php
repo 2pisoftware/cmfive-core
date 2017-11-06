@@ -6,7 +6,8 @@ class FormAdditionalFieldsInterface extends FormFieldInterface {
 		["LatLong", "latlong"],
 		["Unique ID", "unique_id"],
 		["Attachment", "attachment"],
-		["Subform", "subform"]
+		["Subform", "subform"],
+		["Yes/No", 'boolean']
 	];
 
 	/**
@@ -24,6 +25,8 @@ class FormAdditionalFieldsInterface extends FormFieldInterface {
 				return "file";
 			case "subform":
 				return "hidden";
+			case "boolean":
+				return "checkbox";
 			case "unique_id":
 			case "latlong":
 			default:
@@ -106,6 +109,8 @@ class FormAdditionalFieldsInterface extends FormFieldInterface {
 					   Html::a('/form-field/manage_subform/' . $form_value->id, 'Manage ' . $field->name, null, 'block-link', null, "_blank");
 
 				break;
+			case "boolean":
+				return $form_value->value == 1 ? "Yes" : ($form_value->value !== null ? "No" : "");
 			default:
 				return $form_value->value;
 		}
@@ -136,6 +141,13 @@ class FormAdditionalFieldsInterface extends FormFieldInterface {
 						// Append attachment ID so a link to the attachment will be displayed
 						$form_value->value .= (!empty($form_value->value) ? ',' : '') . $attachment_id;
 					}
+				}
+				return $form_value->value;
+			case "boolean":
+				if (array_key_exists($field->name, $_POST)) {
+					$form_value->value = 1;
+				} else {
+					$form_value->value = 0;
 				}
 				return $form_value->value;
 			default:

@@ -318,7 +318,7 @@ class Web {
 				$language = $lang;
 			}
 		}
-		$this->Log->info('init locale ' . $language);
+		// $this->Log->info('init locale ' . $language);
 
 		$all_locale = getAllLocaleValues($language);
 		
@@ -326,7 +326,7 @@ class Web {
 		$results = setlocale(LC_ALL, $all_locale);
 		
 		if (!empty($results)) {
-			$this->Log->info('setlocale failed: locale function is not available on this platform, or the given locale (' . $language . ') does not exist in this environment');
+			// $this->Log->info('setlocale failed: locale function is not available on this platform, or the given locale (' . $language . ') does not exist in this environment');
 		}
 		$langParts = explode(".", $language);
 		$this->currentLocale = $langParts[0];

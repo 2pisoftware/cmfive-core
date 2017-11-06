@@ -104,11 +104,12 @@ class FormInstance extends DbObject {
 		
 		$form_values = $this->getSavedValues();
 		$form_structure = []; // $w->Form->buildForm($this);
-		$formValueCollated=[];
+		$formValueCollated = [];
+		
 		// collate available form values
 		if (!empty($form_values)) {
 			foreach($form_values as $value) {
-				$formValueCollated[$value->form_field_id]=$value;
+				$formValueCollated[$value->form_field_id] = $value;
 			}
 		}
 		

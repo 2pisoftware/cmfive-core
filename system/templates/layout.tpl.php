@@ -336,6 +336,7 @@
             
             // Automatically append the close 'x' to reveal modals
             $(document).on('opened', '[data-reveal]', function () {
+                $(this).css('top', $(document).scrollTop() + 100);
                 $(this).append("<a class=\"close-reveal-modal\">&#215;</a>");
                 modal_history.push();
                 bindModalLinks();
