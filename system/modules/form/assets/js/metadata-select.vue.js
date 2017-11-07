@@ -20,7 +20,7 @@ Vue.component('metadata-select', {
 		showObjectMap: function() {
 			return this.is_object_map == "1";
 		},
-		getDefaultValue: function(key) {
+		getDefaultValue: function(key, default_return) {
 			if (this.defaultValue !== undefined) {
 				for(var i in this.defaultValue) {
 					if (this.defaultValue[i].meta_key == key) {
@@ -29,7 +29,7 @@ Vue.component('metadata-select', {
 				}
 			}
 
-			return [];
+			return default_return;
 		},
 		addRow: function() {
 			this.user_rows.push({key: '', value: ''});
@@ -56,18 +56,18 @@ Vue.component('metadata-select', {
 					</div> \
 					<div class="row-fluid clearfix vue-metadata-select__content-container" v-if="showObjectMap()"> \
 						<div class="row-fluid"><div class="small-12"><label class="small-12 columns">Object \
-							<input type="text" name="object_type" :value="getDefaultValue(\'object_type\')" id="vue-metadata-select__object-type" /> \
+							<input type="text" name="object_type" :value="getDefaultValue(\'object_type\', \'\')" id="vue-metadata-select__object-type" /> \
 						</label></div></div>\
 						<div class="row-fluid"><div class="small-12"><label class="small-12 columns">Filter \
-							<input type="text" name="object_filter" :value="getDefaultValue(\'object_filter\')" id="vue-metadata-select__object-filter" /> \
+							<input type="text" name="object_filter" :value="getDefaultValue(\'object_filter\', \'\')" id="vue-metadata-select__object-filter" /> \
 						</label></div></div> \
 						<div class="row-fluid"><div class="small-12"><label class="small-12 columns">Options \
-							<input type="text" name="options" :value="getDefaultValue(\'options\')" id="vue-metadata-select__options" /> \
+							<input type="text" name="options" :value="getDefaultValue(\'options\', \'\')" id="vue-metadata-select__options" /> \
 						</label></div></div> \
 					</div> \
 					<div class="row-fluid clearfix vue-metadata-select__content-container" v-if="!showObjectMap()"> \
 						<div class="row-fluid small-12"> \
-							<button type="button" class="button tiny secondary" @click="addRow()">Add row</button> \
+							<button type="button" class="button tiny info" @click="addRow()">Add row</button> \
 						</div> \
 						<div class="row-fluid" v-for="(row, index) in user_rows"> \
 							<div class="small-12 medium-5 columns">\
@@ -83,7 +83,7 @@ Vue.component('metadata-select', {
 					</div> \
 				</div>',
 	created: function() {
-		this.is_object_map = this.getDefaultValue('is_object_map');
-		this.user_rows = this.getDefaultValue('user_rows')
+		this.is_object_map = this.getDefaultValue('is_object_map', 1);
+		this.user_rows = this.getDefaultValue('user_rows', [])
 	}
 });
