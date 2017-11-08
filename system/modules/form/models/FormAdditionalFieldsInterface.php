@@ -144,11 +144,16 @@ class FormAdditionalFieldsInterface extends FormFieldInterface {
 				}
 				return $form_value->value;
 			case "boolean":
-				if (array_key_exists($field->name, $_POST)) {
-					$form_value->value = 1;
-				} else {
-					$form_value->value = 0;
+				if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+					if (array_key_exists($field->name, $_POST))	{
+						$form_value->value = 1;
+					} else {
+						$form_value->value = 0;
+					}
 				}
+				if ($form_value->value != 1 || $form_value->value != 0) {
+					$form_value->value = !!$form_value->value;
+				} 
 				return $form_value->value;
 			default:
 				return $form_value->value;
