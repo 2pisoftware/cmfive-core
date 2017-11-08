@@ -25,8 +25,8 @@
 			</label>
 		</div>
 	</div>
-	<div class="row additional_details" v-show="!loading_metadata">
-		<div class='large-12 columns'>
+	<div class="additional_details" v-show="!loading_metadata">
+		<!-- <div class='large-12 columns'> -->
 			<div v-if='!selectedTypeIsVueComponent()' v-html="metadata_form_html"></div>
 			<!-- <metadata-autocomplete v-if='selected_type == "autocomplete"'></metadata-autocomplete> -->
 			<?php 
@@ -38,7 +38,7 @@
 				]); 
 			?>
 			<!-- <metadata-subform v-if='selected_type == "subform"' :forms="form_list" :default-value="metadata"></metadata-subform> -->
-		</div>
+		<!-- </div> -->
 	</div>
 	<loading-indicator :show="loading_metadata"></loading-indicator>
 	<div class="row">
@@ -105,7 +105,9 @@
 				this.should_update_technical_name = true;
 			}
 
-			// this.getMetadataForm();
+			if (!this.selectedTypeIsVueComponent()) {
+				this.getMetadataForm();
+			}
 		}
 	});
 

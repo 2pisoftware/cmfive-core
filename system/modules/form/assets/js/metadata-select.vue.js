@@ -41,7 +41,7 @@ Vue.component('metadata-select', {
 			this.user_rows.splice(index, 1);
 		}
 	},
-	template:   '<div class="vue-metadata-select__container"> \
+	template:   '<div class="row small-12 columns"><div class="vue-metadata-select__container"> \
 					<label>Additional Details</label>\
 					<div class="row-fluid clearfix vue-metadata-select__radio-header"> \
 						<div class="small-6 columns"> \
@@ -81,7 +81,7 @@ Vue.component('metadata-select', {
 							</div> \
 						</div> \
 					</div> \
-				</div>',
+				</div></div>',
 	created: function() {
 		this.is_object_map = this.getDefaultValue('is_object_map', 1);
 		this.user_rows = this.getDefaultValue('user_rows', [])

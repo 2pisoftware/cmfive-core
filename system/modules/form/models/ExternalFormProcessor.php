@@ -235,6 +235,16 @@ class ExternalFormProcessor extends ProcessorType {
 						}
 						break;
 					};
+					case "multivalue": {
+						$mutlivalue_string = '';
+						$values = $xml_doc->xpath('//' . $field->technical_name . '[1]/text()');
+						if (!empty($values)) {
+							foreach($values as $value) {
+								$mutlivalue_string .= (!empty($mutlivalue_string) ? ',' : '') . ((string) $value);
+							}
+						}
+						break;
+					};
 					default:
 						$this->createFormValue($form->w, $is_existing_instance, $instance, $field, $this->getFirstOf($xml_doc, $field->technical_name));
 				}

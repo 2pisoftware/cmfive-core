@@ -241,12 +241,11 @@ class EmailChannelOption extends DbObject {
                                             $content_dispositon = $part->getHeader('Content-Disposition');
 
                                             $content_dispositon_array = explode(';', $content_dispositon->getFieldValue('filename'));
-
                                             if (!empty($content_dispositon_array)) {
                                                 foreach($content_dispositon_array as $cda) {
                                                     $arr = explode('=', $cda);
-                                                    if ($arr[0] === 'filename') {
-                                                        $name = $arr[1];
+                                                    if (trim($arr[0]) === 'filename') {
+                                                        $name = trim($arr[1]);
                                                     }
                                                 }
                                             }

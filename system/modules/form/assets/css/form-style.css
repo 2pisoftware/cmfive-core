@@ -22,3 +22,12 @@
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
+
+td .button {
+	display: block;
+	width: 100%;
+}
+
+td button.button + button.button {
+	margin-left: 0px !important;
+}

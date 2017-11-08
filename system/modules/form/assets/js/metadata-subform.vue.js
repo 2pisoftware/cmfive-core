@@ -25,9 +25,13 @@ Vue.component('metadata-subform', {
 			return false;
 		}
 	},
-	template: '<label>Associated Form \
-		<select name="associated_form"> \
-			<option v-for="form in forms" :value="form.id" v-html="form.title" :selected="isSelected(form.id)"></option> \
-		</select> \
-	</label>'
+	template: '<div class="row"> \
+		<div class="small-12 columns"> \
+			<label>Associated Form \
+				<select name="associated_form"> \
+					<option v-for="form in forms" :value="form.id" v-html="form.title" :selected="isSelected(form.id)"></option> \
+				</select> \
+			</label> \
+		</div> \
+	</div>'
 });

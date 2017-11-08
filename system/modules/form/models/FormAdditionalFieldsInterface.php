@@ -7,7 +7,8 @@ class FormAdditionalFieldsInterface extends FormFieldInterface {
 		["Unique ID", "unique_id"],
 		["Attachment", "attachment"],
 		["Subform", "subform"],
-		["Yes/No", 'boolean']
+		["Yes/No", 'boolean'],
+		["Multiple Value", "multivalue"]
 	];
 
 	/**
@@ -68,7 +69,8 @@ class FormAdditionalFieldsInterface extends FormFieldInterface {
 		switch($type) {
 			case "subform":
 				return VueComponentRegister::getComponent('metadata-subform');
-				// return [['Associated Form', 'select', 'associated_form', null, $w->Form->getForms()]];
+			case "multivalue":
+				return [['Delimiter', 'text', 'delimiter']];
 			default:
 				return null;
 		}
@@ -111,6 +113,18 @@ class FormAdditionalFieldsInterface extends FormFieldInterface {
 				break;
 			case "boolean":
 				return $form_value->value == 1 ? "Yes" : ($form_value->value !== null ? "No" : "");
+			case "multivalue":
+				$delimiter = ',';
+				if (!empty($metadata)) {
+					foreach($metadata as $_meta) {
+						if ($_meta->meta_key == 'delimiter') {
+							$delimiter = $_meta->meta_value;
+							break;
+						}
+					}
+				}
+
+				return str_replace($delimiter, '<br/>', $form_value->value);
 			default:
 				return $form_value->value;
 		}
