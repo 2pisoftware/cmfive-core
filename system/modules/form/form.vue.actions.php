@@ -306,7 +306,6 @@ function delete_form_GET(Web $w) {
 
 function delete_member_GET(Web $w) {
 
-
 	$w->setLayout(null);
 
 	$output = getResponse_VUE();
@@ -334,4 +333,54 @@ function delete_member_GET(Web $w) {
 	$output['success'] = true;
 	$w->out(json_encode($output));
 	
+}
+
+function get_form_instance_rows_GET(Web $w) {
+	// $form->id - get_class($object) - $object->id = ?page=' + this.page + '&pagesize=' + this.pagesize
+
+	$output = getResponse_VUE();
+
+	list($form_id, $object, $object_id) = $w->pathMatch('form_id', 'object', 'object_id');
+	$page = intval($w->request('page')) - 1;	
+	$pagesize = intval($w->request('pagesize'));
+	$display_only = intval($w->request('display_only'));
+	$redirect_url = $w->request('redirect_url');
+
+	// Check object class
+	if (!class_exists($object)) {
+		$output['error'] = 'Object not found';
+		$w->out(json_encode($output));
+		return;
+	}
+
+	// Validate objects
+	$form = $w->Form->getForm($form_id);
+	$_object = $w->Form->getObject($object, $object_id);
+
+	if (empty($form->id) || empty($_object->id)) {
+		$output['error'] = 'Form or object not found';
+		$w->out(json_encode($output));
+		return;
+	}
+
+	$instances = $w->Form->getFormInstancesForFormAndObject($form, $_object, ($page * $pagesize), $pagesize);
+	$instances_array = [];
+	if (!empty($instances)) {
+		foreach($instances as $instance) {
+			$row_text = $instance->getTableRow();
+			if (!$display_only) {
+				$row_text .= '<td>' . 
+								Html::box("/form-instance/edit/" . $instance->id . "?form_id=" . $form->id . "&redirect_url=" . $redirect_url . "&object_class=" . get_class($_object) . "&object_id=" . $_object->id, "Edit", true) .
+								Html::b("/form-instance/delete/" . $instance->id . "?redirect_url=" . $redirect_url, "Delete", "Are you sure you want to delete this item?", null, false, 'warning') . 
+							'</td>';
+			}
+
+			$instances_array[] = $row_text;
+		}
+	}
+
+	$output['success'] = true;
+	$output['data'] = $instances_array;
+	$w->out(json_encode($output, true));
+
 }
