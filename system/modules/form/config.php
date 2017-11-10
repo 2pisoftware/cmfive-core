@@ -13,7 +13,7 @@ Config::set('form', [
 		'FormAdditionalFieldsInterface'
 	],
 	'processors' => [
-    	'ExternalFormProcessor'
+    	'ExternalFormXMLProcessor'
 	],
 	'components' => [
 		'metadata-subform' => ['/system/modules/form/assets/js/metadata-subform.vue.js']

@@ -1,6 +1,6 @@
 <?php
 
-class ExternalFormProcessor extends ProcessorType {
+class ExternalFormXMLProcessor extends ProcessorType {
 
     public function getSettingsForm($current_settings = null) {
         // Check if json

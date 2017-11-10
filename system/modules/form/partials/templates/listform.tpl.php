@@ -29,7 +29,7 @@
 			data: {
 				instances: [],
 				page: 1,
-				pagesize: 20,
+				pagesize: 10,
 				total_size: <?php echo $form->countFormInstancesForObject($object); ?>
 			},
 			computed: {
