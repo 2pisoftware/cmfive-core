@@ -28,6 +28,8 @@ function edit_POST(Web $w) {
 	$_form_field_object->name 			= $w->request('name');
 	$_form_field_object->technical_name = $w->request('technical_name');
 	$_form_field_object->type 			= $w->request('type');
+	$_form_field_object->form_id 		= intval($form_id);
+	$_form_field_object->insertOrUpdate();
 	
 	// Clear post vars ready for saving metadata
 	unset($_POST[CSRF::getTokenID()]);
@@ -59,9 +61,6 @@ function edit_POST(Web $w) {
 			$new_metadata->insert();
 		}
 	}
-	
-	$_form_field_object->form_id = intval($form_id);
-	$_form_field_object->insertOrUpdate();
 	
 	$w->msg("Form " . ($p['id'] ? 'updated' : 'created'), "/form/show/" . $_form_field_object->form_id);
 }
