@@ -10,7 +10,7 @@ class CmfiveComponentRegister {
 		}
 	}
 
-	public static function getComponents(): array {
+	public static function getComponents() {
 		return static::$_register;
 	}
 

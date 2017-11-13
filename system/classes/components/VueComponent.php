@@ -12,7 +12,7 @@ class VueComponent extends CmfiveComponent {
 		$this->css_path = $css_path;
 	}
 
-	public function include(): string {
+	public function include() {
 		if ($this->is_included) {
 			return '';
 		}
@@ -22,7 +22,7 @@ class VueComponent extends CmfiveComponent {
 			   '<script src="' . $this->js_path . '"></script>';
 	}
 
-	public function display($binding_data = []): string {
+	public function display($binding_data = []) {
 		$buffer = '<' . $this->name . ' ';
 
 		if (!empty($binding_data)) {
