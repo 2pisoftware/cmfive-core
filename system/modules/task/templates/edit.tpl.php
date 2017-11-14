@@ -69,10 +69,12 @@
                                             <?php if (!empty($subscribers)) : ?>
                                                 <?php foreach($subscribers as $subscriber) : ?>
                                                     <?php $subscriber_user = $subscriber->getUser(); ?>
-                                                    <tr <?php echo ($subscriber_user->is_external) ? 'style="background-color: #c99;"' : ''; ?>>
-                                                        <td><?php echo $subscriber_user->getFullName(); ?> - <?php echo $subscriber_user->getContact()->email; ?></br>
-                                                        <?php echo Html::b('/task-subscriber/delete/' . $subscriber->id, 'Delete', 'Are you sure you want to remove this subscriber?', null, false, 'warning center'); ?></td>
-                                                    </tr>
+                                                        <?php if(!empty($subscriber_user)) : ?>
+                                                            <tr <?php echo ($subscriber_user->is_external) ? 'style="background-color: #c99;"' : ''; ?>>
+                                                                <td><?php echo $subscriber_user->getFullName(); ?> - <?php echo $subscriber_user->getContact()->email; ?></br>
+                                                                <?php echo Html::b('/task-subscriber/delete/' . $subscriber->id, 'Delete', 'Are you sure you want to remove this subscriber?', null, false, 'warning center'); ?></td>
+                                                            </tr>
+                                                        <?php endif; ?>
                                                 <?php endforeach; ?>
                                             <?php endif; ?>
                                         </tbody>
