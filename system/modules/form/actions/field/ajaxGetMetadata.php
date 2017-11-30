@@ -7,7 +7,7 @@ function ajaxGetMetadata_GET(Web $w) {
 	$type = $w->request("type");
 	
 	if (empty($p['id']) && empty($type)) {
-		header("HTTP/1.1 404 Not Found");
+		// header("HTTP/1.1 404 Not Found");
 		return;
 	}
 
@@ -17,7 +17,7 @@ function ajaxGetMetadata_GET(Web $w) {
 	if (!empty($p['id'])) {
 		$field = $w->Form->getFormField($p['id']);
 		if(empty($field->id)) {
-			header("HTTP/1.1 404 Not Found");
+			// header("HTTP/1.1 404 Not Found");
 			return;
 		}
 	}
@@ -45,7 +45,7 @@ function ajaxGetMetadata_GET(Web $w) {
 						return;
 					} else if (is_a($metadata_form, 'VueComponent')) {
 						// Else assume new Vue.js component layout - will already be in the template
-						header("HTTP/1.1 404 Not Found");
+						// header("HTTP/1.1 404 Not Found");
 						// $w->out(htmlentities($metadata_form->display()));
 						return;
 					}
@@ -60,7 +60,7 @@ function ajaxGetMetadata_GET(Web $w) {
 				return;
 			}
 		} else {
-			header("HTTP/1.1 404 Not Found");
+			// header("HTTP/1.1 404 Not Found");
 			return;
 		}
 	}
