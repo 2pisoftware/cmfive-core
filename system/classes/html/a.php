@@ -11,12 +11,10 @@ class a {
 
     public $text;
     public $confirm;
-    public $class;
     public $download; // New to HTML5
     public $href;
     public $hreflang;
     public $media; // New to HTML5
-    public $id;
     public $rel;
     public $target;
     public $type; // New in HTML5
