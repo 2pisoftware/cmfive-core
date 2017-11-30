@@ -9,7 +9,7 @@ defined('SEED_MIGRATION_DIRECTORY') || define('SEED_MIGRATION_DIRECTORY', MIGRAT
 class MigrationService extends DbService {
 	
 	public static $_installed = []; 
-	public static $_NEXT_BATCH;
+	public $_NEXT_BATCH;
 	
 	public function getAvailableMigrations($module_name) {
 		$_this = $this;
