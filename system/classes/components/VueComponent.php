@@ -12,7 +12,7 @@ class VueComponent extends CmfiveComponent {
 		$this->css_path = $css_path;
 	}
 
-	public function include() {
+	public function _include() {
 		if ($this->is_included) {
 			return '';
 		}

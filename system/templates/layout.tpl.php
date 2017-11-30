@@ -48,7 +48,7 @@
 
         // Print registered vue component links 
         foreach(VueComponentRegister::getComponents() as $vue_component) {
-            echo $vue_component->include();
+            echo $vue_component->_include();
         }
         ?>
         <script type="text/javascript">

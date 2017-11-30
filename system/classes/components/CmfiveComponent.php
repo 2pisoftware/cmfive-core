@@ -14,7 +14,7 @@ abstract class CmfiveComponent {
 	 * 
 	 * @return string component include code
 	 */
-	public function include() {
+	public function _include() {
 		if ($this->is_included) {
 			return '';
 		}
