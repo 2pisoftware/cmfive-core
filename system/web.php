@@ -304,7 +304,11 @@ class Web {
 	}
 
 	function initLocale() {
-		$user = $this->Auth->user();
+        if (!$this->_is_installing) {
+            $user = $this->Auth->user();
+        } else {
+            $user = null;
+        }
 		// default language
 		$language = Config::get('system.language');
 		// per user language s
@@ -314,7 +318,7 @@ class Web {
 				$language = $lang;
 			}
 		}
-		$this->Log->info('init locale ' . $language);
+		// $this->Log->info('init locale ' . $language);
 
 		$all_locale = getAllLocaleValues($language);
 		
@@ -322,7 +326,7 @@ class Web {
 		$results = setlocale(LC_ALL, $all_locale);
 		
 		if (!empty($results)) {
-			$this->Log->info('setlocale failed: locale function is not available on this platform, or the given locale (' . $language . ') does not exist in this environment');
+			// $this->Log->info('setlocale failed: locale function is not available on this platform, or the given locale (' . $language . ') does not exist in this environment');
 		}
 		$langParts = explode(".", $language);
 		$this->currentLocale = $langParts[0];
@@ -533,10 +537,15 @@ class Web {
 
 		// configure translations lookup for this module
 		$this->initLocale();
-		$this->setTranslationDomain('admin');
-		$this->setTranslationDomain('main');
-		$this->setTranslationDomain($this->currentModule());
-
+		
+		try {
+			$this->setTranslationDomain('admin');
+			$this->setTranslationDomain('main');
+			$this->setTranslationDomain($this->currentModule());
+		} catch (Exception $e) {
+			$this->Log->setLogger('I18N')->error($e->getMessage());
+		}
+		
 		if (!$this->_action) {
 			$this->_action = $this->_defaultAction;
 		}
@@ -1382,7 +1391,11 @@ class Web {
 		// set translations to partial module
 		$oldModule = $this->currentModule();
 		if ($oldModule != $module) {
-			$this->setTranslationDomain($module);
+			try {
+				$this->setTranslationDomain($module);
+			} catch (Exception $e) {
+				$this->Log->setLogger('I18N')->error($e->getMessage());
+			}
 		}
 
 		// Check if the module if active or not
@@ -1467,7 +1480,11 @@ class Web {
 
 		// restore translations module
 		if ($oldModule != $module) {
-			$this->setTranslationDomain($oldModule);
+			try {
+				$this->setTranslationDomain($oldModule);
+			} catch (Exception $e) {
+				$this->Log->setLogger('I18N')->error($e->getMessage());
+			}
 		}
 
 		return $currentbuf;
@@ -1489,7 +1506,11 @@ class Web {
 		// set translations to hook module
 		$oldModule = $this->currentModule();
 		if ($oldModule != $module) {
-			$this->setTranslationDomain($module);
+			try {
+				$this->setTranslationDomain($module);
+			} catch (Exception $e) {
+				$this->Log->setLogger('I18N')->error($e->getMessage());
+			}
 		}
 
 		// Build _hook registry if empty
@@ -1548,7 +1569,11 @@ class Web {
 
 		// restore translations module
 		if ($oldModule != $module) {
-			$this->setTranslationDomain($oldModule);
+			try {
+				$this->setTranslationDomain($oldModule);
+			} catch (Exception $e) {
+				$this->Log->setLogger('I18N')->error($e->getMessage());
+			}
 		}
 
 		return $buffer;

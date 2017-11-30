@@ -12,17 +12,17 @@ class VueComponent extends CmfiveComponent {
 		$this->css_path = $css_path;
 	}
 
-	public function include(): string {
+	public function include() {
 		if ($this->is_included) {
 			return '';
 		}
 
 		$this->is_included = true;
-		return (!empty($this->css_path) ? '<link href="' . $this->css_path . '" />' : '') .
+		return (!empty($this->css_path) ? '<link rel="stylesheet" href="' . $this->css_path . '" />' : '') .
 			   '<script src="' . $this->js_path . '"></script>';
 	}
 
-	public function display($binding_data = []): string {
+	public function display($binding_data = []) {
 		$buffer = '<' . $this->name . ' ';
 
 		if (!empty($binding_data)) {

@@ -297,7 +297,13 @@ class FileService extends DbService {
 		if (!empty($attachments)) {
 			$pluck = array();
 			foreach ($attachments as $attachment) {
-                $pluck[] = $attachment->getFilePath() . "/" . $attachment->filename;
+				$file_path = $attachment->getFilePath();
+
+				if ($file_path[strlen($file_path) - 1] !== '/') {
+					$file_path .= '/';
+				}
+                
+                $pluck[] = realpath($file_path . $attachment->filename);
 			}
 			return $pluck;
 		}

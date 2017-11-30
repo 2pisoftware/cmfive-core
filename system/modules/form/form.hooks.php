@@ -9,7 +9,7 @@ function form_core_template_tab_headers(Web $w, $object) {
 	if ($w->Form->areFormsMappedToObject($object)) {
 		$tabHeaders=[];
 		foreach ($forms as $form) {
-			$tabHeaders[]="<a href='#".toSlug($form->title)."'>$form->title <span class='secondary round label cmfive__tab-label'>" . $form->countFormInstancesForObject($object) . "</span></a>";
+			$tabHeaders[]="<a href='#".toSlug($form->title)."'>{$form->title} <span class='secondary round label cmfive__tab-label'>" . $form->countFormInstancesForObject($object) . "</span></a>";
 		}
 		return implode("",$tabHeaders);	
 	}

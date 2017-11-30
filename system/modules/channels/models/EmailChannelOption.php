@@ -89,7 +89,7 @@ class Zend_Mail_Protocol_Imap extends \Zend\Mail\Protocol\Imap {
             ), 0, $error);
         }
 
-        if (!$this->_assumedNextLine('* OK')) {
+        if (!$this->assumedNextLine('* OK')) {
             throw new \Zend\Mail\Exception\RuntimeException('host doesn\'t allow connection');
         }
 
@@ -241,12 +241,11 @@ class EmailChannelOption extends DbObject {
                                             $content_dispositon = $part->getHeader('Content-Disposition');
 
                                             $content_dispositon_array = explode(';', $content_dispositon->getFieldValue('filename'));
-
                                             if (!empty($content_dispositon_array)) {
                                                 foreach($content_dispositon_array as $cda) {
                                                     $arr = explode('=', $cda);
-                                                    if ($arr[0] === 'filename') {
-                                                        $name = $arr[1];
+                                                    if (trim($arr[0]) === 'filename') {
+                                                        $name = trim($arr[1]);
                                                     }
                                                 }
                                             }

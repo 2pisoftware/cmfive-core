@@ -49,34 +49,38 @@ class FormStandardInterface extends FormFieldInterface {
 	 * 
 	 * @return []
 	 */
-	public static function formConfig($type, $metaData, $w) {
+	public static function formConfig($type, $metadata, $w) {
 		$options = [];
 		if ($type == "autocomplete" || $type == "select")  {
-			if (!empty($metaData['object_type'])) {
+			if (!empty($metadata['object_type'])) {
 				try {
 					$service = new DbService($w);
 					$filter = '';
 					// eg {"login like ?": "%e%"}
-					if (!empty($metaData['object_filter'])) {
+					if (!empty($metadata['object_filter'])) {
 						try {
-							$filter = json_decode($metaData['object_filter'], true);
+							$filter = json_decode($metadata['object_filter'], true);
 						} catch (Exception $e) {
 							// fallback to following test
 						}
 						if (!is_array($filter)) {
-							$filter = $metaData['object_filter'];
+							$filter = $metadata['object_filter'];
 						}						
 					}
-					$options = $service->getObjects($metaData['object_type'], $filter);
+					$options = $service->getObjects($metadata['object_type'], $filter);
 				} catch (Exception $e) {
 					//silently fail no options
 				}
-			} else if (!empty($metaData['options'])) {
-				$options = explode(",", $metaData['options']);
+			} else if (!empty($metadata['options'])) {
+				$options = explode(",", $metadata['options']);
 				foreach ($options as $k => $option) {
 					if (is_int($k)) {
 						$options[$k] = [$option, $k + 1];
 					}
+				}
+			} else if (!empty($metadata['user_rows'])) {
+				foreach($metadata['user_rows'] as $index => $user_row) {
+					$options[$index] = [$user_row['value'], $user_row['key']];
 				}
 			}
 		}
@@ -100,8 +104,8 @@ class FormStandardInterface extends FormFieldInterface {
 			case "autocomplete":
 				return [["Object", "text", "object_type"],["Filter", "text", "object_filter"],["Options", "text", "options"]];
 			case "select":
-				return [["Object", "text", "object_type"],["Filter", "text", "object_filter"],["Options", "text", "options"]];
-			
+				return VueComponentRegister::getComponent('metadata-select');
+				// return [["Object", "text", "object_type"],["Filter", "text", "object_filter"],["Options", "text", "options"]];
 			default:
 				return null;
 		}
@@ -147,28 +151,28 @@ class FormStandardInterface extends FormFieldInterface {
 	
 	public static function modifyAutocompleteForDisplay($value, $metadataObjects, $w) {
 		if (is_array($metadataObjects)) {
-			$metaData = [];
+			$metadata = [];
 			foreach ($metadataObjects as $meta) {
-				$metaData[$meta->meta_key] = $meta->meta_value;
+				$metadata[$meta->meta_key] = $meta->meta_value;
 			}
 			// DB LOOKUP
-			if (!empty($metaData['object_type'])) {
+			if (!empty($metadata['object_type'])) {
 				try {
 					$filter = '';
 					
 					// eg {"login like ?": "%e%"}
-					if (!empty($metaData['object_filter'])) {
+					if (!empty($metadata['object_filter'])) {
 						try {
-							$filter = json_decode($metaData['object_filter'], true);
+							$filter = json_decode($metadata['object_filter'], true);
 						} catch (Exception $e) {
 							// silent fallback to following test
 							//echo $e->getMessage();
 						}
 						if (!is_array($filter)) {
-							$filter = $metaData['object_filter'];
+							$filter = $metadata['object_filter'];
 						}	
 					}
-					$options = $w->Form->getObjects($metaData['object_type'], $filter);
+					$options = $w->Form->getObjects($metadata['object_type'], $filter);
 					foreach ($options as $option) {
 						if ($option->id == $value)  {
 							return $option->getSelectOptionTitle();
@@ -179,11 +183,17 @@ class FormStandardInterface extends FormFieldInterface {
 					//echo $e->getMessage();
 				}
 			// CSV OPTIONS
-			} else if (!empty($metaData['options'])) {
-				$options=explode(",", $metaData['options']);
+			} else if (!empty($metadata['options'])) {
+				$options=explode(",", $metadata['options']);
 				foreach ($options as $k => $option) {
 					if ($k + 1 == $value) {
 						return $option;
+					}
+				}
+			} else if (!empty($metadata['user_rows'])) {
+				foreach($metadata['user_rows'] as $user_row) {
+					if ($value == $user_row['key']) {
+						return $user_row['value'];
 					}
 				}
 			} else {

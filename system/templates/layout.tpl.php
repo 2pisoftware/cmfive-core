@@ -54,15 +54,14 @@
         <script type="text/javascript">
             var $ = $ || jQuery;
             $(document).ready(function() {
-				
-				
-				
                 $("table.tablesorter").tablesorter({dateFormat: "uk", widthFixed: true, widgets: ['zebra']});
                 $(".tab-head").children("a").each(function() {
-                    $(this).bind("click", {alink: this}, function(event) {
-                        changeTab(event.data.alink.hash);
-                        return false;
-                    });
+                    if (this.href.indexOf("#") != -1) {
+                        $(this).bind("click", {alink: this}, function(event) {
+                            changeTab(event.data.alink.hash);
+                            return false;
+                        });
+                    }
                 });
 
                 // Change tab if hash exists
@@ -337,6 +336,7 @@
             
             // Automatically append the close 'x' to reveal modals
             $(document).on('opened', '[data-reveal]', function () {
+                $(this).css('top', $(document).scrollTop() + 100);
                 $(this).append("<a class=\"close-reveal-modal\">&#215;</a>");
                 modal_history.push();
                 bindModalLinks();

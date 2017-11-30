@@ -103,7 +103,16 @@ class FormField extends DbObject {
 	 * @return [FormFieldMetaData]
 	 */
 	public function getMetadata() {
-		return $this->getObjects("FormFieldMetadata", ["form_field_id" => $this->id, "is_deleted" => 0]);
+		$metadata = $this->getObjects("FormFieldMetadata", ["form_field_id" => $this->id, "is_deleted" => 0]);
+		if (!empty($metadata)) {
+			foreach($metadata as &$metadata_row) {
+				if (is_array(json_decode($metadata_row->meta_value, true))) {
+					$metadata_row->meta_value = json_decode($metadata_row->meta_value, true);
+				}
+			}
+		}
+
+		return $metadata;
 	}
 	
 	/**
@@ -115,7 +124,7 @@ class FormField extends DbObject {
 		$additional_details = '';
 		if (!empty($metadata)){
 			foreach($metadata as $meta) {
-				$additional_details .= ucwords(str_replace("_", " ", $meta->meta_key)) . ": " . $meta->meta_value . ($meta !== end($metadata) ? ', ' : '');
+				$additional_details .= ucwords(str_replace("_", " ", $meta->meta_key)) . ": " . (is_array($meta->meta_value) ? json_encode($meta->meta_value) : $meta->meta_value) . ($meta !== end($metadata) ? ', ' : '');
 			}
 		}
 		return $additional_details;
@@ -180,5 +189,15 @@ class FormField extends DbObject {
 		if ($interface::respondsTo($this->type)) {
 			return $interface::metadataForm($this->type, $this->w);
 		}
+	}
+
+	/**
+	 * Returns the readable version of this fields type
+	 *
+	 * @return String readable type
+	 */
+	public function getReadableType() {
+		$interface = $this->interface_class;
+		return $interface::getReadableType($this->type);
 	}
 }

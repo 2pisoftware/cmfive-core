@@ -15,7 +15,7 @@ abstract class FormFieldInterface {
 	// Format should be ["<NAME>" => "<DB VALUE>"] (note the types
 	// defined here are persisted against the form object)
 	protected static $_respondsTo = [
-		// "Money" => "money"
+		// ["Money" => "money"]
 	];
 	
 	/**
@@ -125,6 +125,16 @@ abstract class FormFieldInterface {
 			}
 		}
 		return null;
+	}
+
+	public static function getReadableType($type) {
+		foreach(static::$_respondsTo as $respondsTo) {
+			if ($type == $respondsTo[1]) {
+				return $respondsTo[0];
+			}
+		}
+
+		return $type;
 	}
 	
 }

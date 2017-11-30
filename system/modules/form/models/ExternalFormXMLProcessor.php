@@ -1,6 +1,6 @@
 <?php
 
-class ExternalFormProcessor extends ProcessorType {
+class ExternalFormXMLProcessor extends ProcessorType {
 
     public function getSettingsForm($current_settings = null) {
         // Check if json
@@ -125,14 +125,14 @@ class ExternalFormProcessor extends ProcessorType {
         }
     }
 
-    private function attachFormFromXMLToObject($xml_doc, $form, $object, $non_standard_attachments) {
+    private function attachFormFromXMLToObject($current_document, $form, $object, $non_standard_attachments) {
     	$instance = null;
 		$is_existing_instance = false;
 		$unique_id_field = $form->getUniqueIdField();
 
 		if (!empty($unique_id_field)) {
 			// Get unique id field value from XML
-			$unique_field_value = $xml_doc->xpath('//' . $unique_id_field->technical_name . '[1]/text()');
+			$unique_field_value = $current_document->xpath('//' . $unique_id_field->technical_name . '[1]/text()');
 			if (!empty($unique_field_value) && is_array($unique_field_value)) {
 				$instance = $form->getFormInstanceByUniqueIdentifierFieldValue((string) $unique_field_value[0]);
 				$is_existing_instance = !empty($instance->id);
@@ -149,7 +149,7 @@ class ExternalFormProcessor extends ProcessorType {
 		}
 		
 		$fields = $form->getFields();
-
+		$reuslt = null;
 		if (!empty($fields)) {
 			foreach($fields as $field) {
 
@@ -159,8 +159,8 @@ class ExternalFormProcessor extends ProcessorType {
 				switch ($field->type) {
 					case "latlong": {
 						// Expect the names to start with "lat" and "lon" under the field xpath
-						$latitude = $xml_doc->xpath('//' . $field->technical_name . '//*[starts-with(name(), "lat")]');
-						$longitude = $xml_doc->xpath('//' . $field->technical_name . '//*[starts-with(name(), "lon")]');
+						$latitude = $current_document->xpath('//' . $field->technical_name . '//*[starts-with(name(), "lat")]');
+						$longitude = $current_document->xpath('//' . $field->technical_name . '//*[starts-with(name(), "lon")]');
 
 						if (!empty($latitude[0])) {
 							$xml_value .= (string) $latitude[0];
@@ -178,7 +178,7 @@ class ExternalFormProcessor extends ProcessorType {
 						break;
 					};
 					case "attachment": {
-						$xml_path_attachments = $xml_doc->xpath('//' . $field->technical_name . '//photo');
+						$xml_path_attachments = $current_document->xpath('//' . $field->technical_name . '//photo');
 
 						if (!empty($xml_path_attachments) && !empty($non_standard_attachments)) {
 							foreach($xml_path_attachments as $xml_path_attachment) {
@@ -199,7 +199,9 @@ class ExternalFormProcessor extends ProcessorType {
 					case "subform": {
 						// Subform is a special case because the instances attach to the form value so it needs to exist first
 						$form_value = $this->createFormValue($form->w, $is_existing_instance, $instance, $field, '');
-						$result = $xml_doc->{$field->technical_name};
+						// $result = $current_document->{$field->technical_name};
+
+						$result = $current_document->xpath('//' . $field->technical_name);
 
 						// Get form from metadata
 						$metadata = $field->getMetadata();
@@ -220,7 +222,7 @@ class ExternalFormProcessor extends ProcessorType {
 							continue;
 						}
 
-						// @TODO: clear existing entries if existing instance
+						// Clear any entries if existing instance
 						if ($is_existing_instance === true) {
 							$subform_instances = $subform->getFormInstancesForObject($form_value);
 							if (!empty($subform_instances)) {
@@ -230,13 +232,31 @@ class ExternalFormProcessor extends ProcessorType {
 							}
 						}
 
-						if (!empty($result) && is_a($result, 'SimpleXMLElement')) {
-							$this->attachFormFromXMLToObject($result, $subform, $form_value, $non_standard_attachments);
+						if (!empty($result) && is_array($result)) {
+							// var_dump($result);
+							foreach($result as $_index => $subform_row) {
+								if (is_a($subform_row, 'SimpleXMLElement')) {
+									$this->attachFormFromXMLToObject($subform_row, $subform, $form_value, $non_standard_attachments);
+								}
+							}
 						}
 						break;
 					};
+					case "multivalue": {
+						$mutlivalue_string = '';
+						$values = $current_document->xpath('//' . $field->technical_name . '/text()');
+						
+						if (!empty($values)) {
+							foreach($values as $value) {
+								$mutlivalue_string .= (!empty($mutlivalue_string) ? ',' : '') . ((string) $value);
+							}
+						}
+						
+						$this->createFormValue($form->w, $is_existing_instance, $instance, $field, $mutlivalue_string);
+						break;
+					};
 					default:
-						$this->createFormValue($form->w, $is_existing_instance, $instance, $field, $this->getFirstOf($xml_doc, $field->technical_name));
+						$this->createFormValue($form->w, $is_existing_instance, $instance, $field, $this->getFirstOf($current_document, $field->technical_name, $current_document));
 				}
 			}
    		}
