@@ -4,7 +4,7 @@ class CmfiveComponentRegister {
 
 	protected static $_register = [];
 
-	public static function registerComponent(string $key, CmfiveComponent $details) {
+	public static function registerComponent($key, CmfiveComponent $details) {
 		if (!array_key_exists($key, static::$_register)) {
 			static::$_register[$key] = $details;
 		}
