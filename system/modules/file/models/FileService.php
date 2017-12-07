@@ -330,6 +330,12 @@ class FileService extends DbService {
 		}
 		return null;
 	}
+
+	function getAttachmentsForAdapter($adapter) {
+		if (Config::get('file.adapters.' . $adapter) !== null) {
+			return $this->getObjects('Attachment', ['adapter' => $adapter, 'is_deleted' => 0]);
+		}
+	}
 	
 	/**
 	 * Counts attachments for a given object/table and id

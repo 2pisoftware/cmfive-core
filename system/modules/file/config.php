@@ -1,8 +1,7 @@
 <?php
 
 Config::set('file', [
-	'version' => '0.8.0',
-    'active' => true,
+	'active' => true,
     'path' => 'system/modules',
     'fileroot' => dirname(__FILE__) . '/../uploads',
     'topmenu' => false,
@@ -27,10 +26,6 @@ Config::set('file', [
 			'secret' => '',
 			'bucket' => '',
 			'options' => []
-		],
-		'dropbox' => [
-			'active' => false,
-			'app_id' => ''
 		]
 	]
 ]);
