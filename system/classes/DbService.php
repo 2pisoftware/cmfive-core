@@ -162,10 +162,7 @@ class DbService {
         }
 		
 		$this->buildSelect($o, $table, $class);
-//        $this->w->Log->setLogger("DB_SERVICE")->debug("(getObject) TABLE: " . $table . " WHERE: " . json_encode($idOrWhere));
-        //$this->w->Log->setLogger("DB_SERVICE")->debug("SQL: " . $this->_db->getSql());
         $result = $this->_db->fetch_row();
-//        $this->w->Log->setLogger("DB_SERVICE")->debug("RESULT: " . json_encode($result));
 
         if ($result) {
             $obj = $this->getObjectFromRow($class, $result, true);

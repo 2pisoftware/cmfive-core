@@ -572,8 +572,7 @@ class DbObject extends DbService {
 
             $this->id = $this->_db->last_insert_id();
 
-            // calling hooks AFTER inserting the object
-            $this->_callHooks("after", "insert");
+            
 
             // call standard aspect methods
 
@@ -586,6 +585,9 @@ class DbObject extends DbService {
             if (property_exists($this, "_searchable") && (null !== $this->_searchable)) {
                 $this->_searchable->insert(false);
             }
+
+            // calling hooks AFTER inserting the object
+            $this->_callHooks("after", "insert");
 
             // give related objects the chance to update their index
             $this->w->callHook("core_dbobject", "indexChange_".get_class($this), $this);
