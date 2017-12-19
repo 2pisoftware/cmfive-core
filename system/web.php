@@ -73,6 +73,7 @@ class Web {
 	public $_partialsdir = "partials";
 	public $db;
 	public $_isFrontend = false;
+	public $_isPortal = false;
 	public $_is_installing = false;
 	public $_is_head_request = false;
 	public $_languageModulesLoaded = [];
@@ -443,45 +444,31 @@ class Web {
 			ini_set('session.gc_maxlifetime', $gc_maxlifetime);
 		}
 
-		// start the session
-		// $sess = new SessionManager($this);
-		try {
-			session_name(SESSION_NAME);
-			session_start();
-		} catch (Exception $e) {
-			$this->Log->info("Error starting session " . $e->getMessage());
-		}
-		// Initialise the logger (needs to log "info" to include the request data, see LogService __call function)
-		$this->Log->info("info");
-
-		// Reset the session when a user is not logged in. This will ensure the CSRF tokens are always "fresh"
-		if ($_SERVER['REQUEST_METHOD'] == "GET" && empty($this->Auth->loggedIn())) {
-			CSRF::regenerate();
-		}
-
-		// Generate CSRF tokens and store them in the $_SESSION
-		if (Config::get('system.csrf.enabled') === true) {
-			CSRF::getTokenID();
-			CSRF::getTokenValue();
-		}
-
-		$_SESSION['last_request'] = time();
-
-		//$this->debug("Start processing: ".$_SERVER['REQUEST_URI']);
-		// find out which module to use
-		$module_found = false;
+		// Try and determine if the request is for a portal module
 		$action_found = false;
 
 		$this->_paths = $this->_getCommandPath();
 
 		// based on request domain we can route everything to a frontend module
 		// look into the domain routing and prepend the module
-		$routing = Config::get('domain.route');
-		$domainmodule = isset($routing[$_SERVER['HTTP_HOST']]) ? $routing[$_SERVER['HTTP_HOST']] : null;
+		// Check for frontend/portal modules first
+		$domainmodule = null;
+		foreach($this->modules() as $module) {
+			// Module config must be active and either 'portal' or 'frontend' flag set to true
+			if (Config::get($module . '.active') == true && (Config::get($module . '.portal') == true || Config::get($module . '.frontend') == true)) {
+				if (strpos($_SERVER['HTTP_HOST'], Config::get($module . '.domain_name')) === 0) {
+					// Found module
+					$domainmodule = $module;
+					break;
+				}
+			}
+		}
 
 		if (!empty($domainmodule)) {
 			$this->_loginpath = "auth";
 			$this->_isFrontend = true;
+			$this->_isPortal = !!Config::get($domainmodule . '.portal');
+
 			// now we have to decide whether the path points to
 			// a) a single top level action
 			// b) an action on a submodule
@@ -497,7 +484,34 @@ class Web {
 			}
 		}
 
-		// continue as usual
+		// start the session
+		// $sess = new SessionManager($this);
+		try {
+			if ($this->_isPortal === true) {
+				session_name(!empty($domainmodule) ? $domainmodule . '_SID' : 'PORTAL_SID');
+			} else {
+				session_name(SESSION_NAME);
+			}
+			session_start();
+		} catch (Exception $e) {
+			$this->Log->info("Error starting session " . $e->getMessage());
+		}
+
+		// Initialise the logger (needs to log "info" to include the request data, see LogService __call function)
+		$this->Log->info("info");
+
+		// Reset the session when a user is not logged in. This will ensure the CSRF tokens are always "fresh"
+		if ($_SERVER['REQUEST_METHOD'] == "GET" && empty($this->Auth->loggedIn())) {
+			CSRF::regenerate();
+		}
+
+		// Generate CSRF tokens and store them in the $_SESSION
+		if (Config::get('system.csrf.enabled') === true) {
+			CSRF::getTokenID();
+			CSRF::getTokenValue();
+		}
+
+		$_SESSION['last_request'] = time();
 
 		// first find the module file
 		if ($this->_paths && sizeof($this->_paths) > 0) {
@@ -928,9 +942,10 @@ class Web {
 		$path = $this->_module . $submodule . "/" . $this->_action;
 		$actual_path = $path;
 		// Check for frontend modules
-		if ($this->_isFrontend) {
+		if ($this->_isFrontend || $this->_isPortal) {
 			$actual_path = $this->_action;
 		}
+
 		if ($this->Auth && $this->Auth->user()) {
 			$user = $this->Auth->user();
 			$usrmsg = $user ? " for " . $user->login : "";
@@ -1315,7 +1330,6 @@ class Web {
 				$this->_services[$name] = &$s;
 			} else {
 				return null;
-//                throw new Exception("Class $name not found!");
 			}
 		}
 
@@ -1340,7 +1354,6 @@ class Web {
 		// Sanity check
 		$module = null;
 		if (end($exp_directory) == "models") {
-			// Yay for internal array pointers!
 			$module = prev($exp_directory);
 		}
 		return $module;
@@ -2023,38 +2036,43 @@ class Web {
 
 		$split = $this->_getCommandPath($url);
 
-		/*
-			    	 * Not sure yet how to handle frontend urls here
-			    	 *
-			    	// based on request domain we can route everything to a frontend module
-			    	// look into the domain routing and prepend the module
-			    	$routing = Config::get('domain.route');
-			    	$domainmodule = isset($routing[$_SERVER['HTTP_HOST']]) ? $routing[$_SERVER['HTTP_HOST']] : null;
+		// Check for frontend/portal modules first
+		$frontend_module = null;
+		foreach($this->modules() as $module) {
+			// Module config must be active and either 'portal' or 'frontend' flag set to true
+			if (Config::get($module . '.active') == true && (Config::get($module . '.portal') == true || Config::get($module . '.frontend') == true)) {
+				if (strpos($_SERVER['HTTP_HOST'], Config::get($module . '.domain_name')) === 0) {
+					// Found module
+					$frontend_module = $module;
+					break;
+				}
+			}
+		}
 
-			    	if (!empty($domainmodule)) {
-			    		$this->_loginpath = "auth";
-			    		$this->_isFrontend = true;
-			    		// now we have to decide whether the path points to
-			    		// a) a single top level action
-			    		// b) an action on a submodule
-			    		// but we need to make sure not to mistake a path paramater for a submodule or an action!
-			    		$domainsubmodules = $this->getSubmodules($domainmodule);
-			    		$action_or_module = !empty($this->_paths[0]) ? $this->_paths[0] : null;
-			    		if (!empty($domainsubmodules) && !empty($action_or_module) && array_search($action_or_module, $domainsubmodules) !== false) {
-			    			// just add the module to the first path entry, eg. frontend-page/1
-			    			$this->_paths[0] = $domainmodule."-".$this->_paths[0];
-			    		} else {
-			    			// add the module as an entry to the front of paths, eg. frontent/index
-			    			array_unshift($this->_paths, $domainmodule);
-			    		}
-			    	}
-		*/
-
-		// first find the module
 		$paths['module'] = null;
 		$paths['submodule'] = null;
 
-		if (!empty($split)) {
+		if (!empty($frontend_module)) {
+			$this->_loginpath = "auth";
+			$this->_isFrontend = true;
+			$this->_isPortal = true;
+
+			$paths['module'] = $frontend_module;
+
+			// now we have to decide whether the path points to
+			// a) a single top level action
+			// b) an action on a submodule
+			// but we need to make sure not to mistake a path paramater for a submodule or an action!
+			$domainsubmodules = $this->getSubmodules($frontend_module);
+			if (!empty($domainsubmodules)) {
+				$paths['submodule'] = $domainsubmodules;
+			}
+
+			if (!$this->Auth->loggedIn()) {
+				$paths['action'] = 'login';
+				return $paths;
+			}
+		} else if (!empty($split)) {
 			$paths['module'] = array_shift($split);
 			// see if the module is a sub module
 			// eg. /sales-report/showreport/1..
@@ -2068,6 +2086,9 @@ class Web {
 
 		// then find the action
 		$paths['action'] = null;
+		if ($this->Auth->user()->redirect_url == $url) {
+			$paths['action'] = 'index';
+		}
 		if (!empty($split)) {
 			$paths['action'] = array_shift($split);
 		}
@@ -2077,6 +2098,8 @@ class Web {
 		}
 
 		$paths['tail'] = $split;
+
+		// var_dump($paths);
 		return $paths;
 	}
 
