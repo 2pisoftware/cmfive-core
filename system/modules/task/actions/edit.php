@@ -24,7 +24,16 @@ function edit_GET($w) {
     }
 	
     // Get a list of the taskgroups and filter by what can be used
-    $taskgroups = array_filter($w->Task->getTaskGroups(), function($taskgroup){
+    $taskgroup_list = $w->Task->getTaskGroups();
+    if (empty($taskgroup_list)) {
+        if ((new Taskgroup($w))->canEdit($w->Auth->user())) {
+            $w->msg('Please set up a taskgroup before continuing', '/task-group/viewtaskgrouptypes');
+        } else {
+            $w->error('There are no Tasks currently set up, please notify an Administrator', '/task');
+        }
+    }
+
+    $taskgroups = array_filter($taskgroup_list, function($taskgroup){
         return $taskgroup->getCanICreate();
     });
     

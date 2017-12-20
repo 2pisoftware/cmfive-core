@@ -32,13 +32,15 @@ class Channel extends DbObject {
             $channelImpl->read();
         }
         if ($this->do_processing) {
-            // Clear anything in buffer before redirect
+            // Run processors
             $processors = $this->w->Channel->getProcessors($this->id);
             if (!empty($processors)) {
                 foreach ($processors as $processor) {
                     $processor_class = $processor->retrieveProcessor();
                     $processor_class->process($processor);
                 }
+
+                $this->Channel->markMessagesAsProcessed($this->id);
             }
         }
     }
