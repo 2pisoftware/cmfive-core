@@ -17,6 +17,31 @@
 	<td></td>
 </tr>
 <tr>
+	<td>verifyTextPresent</td>
+	<td>Administrator</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>name=reset</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>testTask</td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>2000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>2000</td>
+	<td></td>
+</tr>
+<tr>
 	<td>clickAndWait</td>
 	<td>link=testNewTask</td>
 	<td></td>
@@ -42,9 +67,29 @@
 	<td></td>
 </tr>
 <tr>
+	<td>waitForTextPresent</td>
+	<td>deleted</td>
+	<td></td>
+</tr>
+<tr>
 	<td>assertText</td>
 	<td>css=div.alert-box.info</td>
 	<td>Task: testNewTask has been deleted. ×</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>name=reset</td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>2000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>testTask -Copy</td>
+	<td></td>
 </tr>
 <tr>
 	<td>clickAndWait</td>
@@ -72,9 +117,29 @@
 	<td></td>
 </tr>
 <tr>
+	<td>waitForTextPresent</td>
+	<td>deleted</td>
+	<td></td>
+</tr>
+<tr>
 	<td>assertText</td>
 	<td>css=div.alert-box.info</td>
 	<td>Task: testTask -Copy has been deleted. ×</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>name=reset</td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>2000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>testTask</td>
+	<td></td>
 </tr>
 <tr>
 	<td>clickAndWait</td>
@@ -99,6 +164,11 @@
 <tr>
 	<td>pause</td>
 	<td>2000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>deleted</td>
 	<td></td>
 </tr>
 <tr>

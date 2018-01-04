@@ -737,3 +737,12 @@ th.sorted_column {
 .file__pdf-modal {
 	max-width: 100%;
 }
+
+input[type='checkbox'] {
+    display: block;
+    margin: 5px 0px;
+}
+
+.close-reveal-modal {
+    padding-top: 8px;
+}

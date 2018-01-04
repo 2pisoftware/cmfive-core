@@ -4,6 +4,10 @@ class TaskService extends DbService {
 
     public $_tasks_loaded;
 
+    public function getSubscriber($subscriber_id) {
+        return $this->getObject("TaskSubscriber", $subscriber_id);
+    }
+
     public function getTaskGroupDetailsForUser() {
         $user_id = $this->w->Auth->user()->id;
 		
@@ -51,8 +55,8 @@ class TaskService extends DbService {
 			}
 		}
 		
-		$members = $this->w->db->get("task_group_member")->select()->select("DISTINCT task_group_member.user_id")->fetchAll(); // ->leftJoin("user on user.id = task_group_member.user_id")->leftJoin("contact on contact.id = user.contact_id")
-//				->order_by("contact.firstname ASC")
+		$members = $this->w->db->get("task_group_member")->select()->select("DISTINCT task_group_member.user_id")->fetchAll(); 
+		
 		$flat_members = [];
 		if (!empty($members)) {
 			foreach($members as $member) {
@@ -60,35 +64,16 @@ class TaskService extends DbService {
 			}
 		}
 		
-		$taskgroup_members = $this->w->Task->getObjects("User", ["id" => $flat_members]);
+		$taskgroup_members = [];
+		if (!empty($flat_members)) {
+			$taskgroup_members = $this->getObjects("User", ["id" => $flat_members]);
+
+			uasort($taskgroup_members, function($a, $b) {
+				return strcmp($a->getFullName(), $b->getFullName());
+			});
+		}
 		
-		uasort($taskgroup_members, function($a, $b) {
-			return strcmp($a->getFullName(), $b->getFullName());
-		});
-		
-		$taskgroup_details = ["statuses" => $statuses, "priorities" => $priorities, "members" => $taskgroup_members, "types" => $tasktypes];
-//        $taskgroups = $this->getTaskGroupsForMember($user_id);
-//        
-//        $taskgroup_details = array("taskgroups" => array(), "statuses" => array(), "priorities" => array(), "members" => array(), "types" => array());
-//        if (!empty($taskgroups)) {
-//            foreach($taskgroups as $taskgroup) {
-//                $taskgroup_details["taskgroups"][] = $taskgroup;
-//                $taskgroup_details["statuses"] = array_merge($taskgroup_details["statuses"], $taskgroup->getStatus());
-//                $taskgroup_details["priorities"] = array_merge($taskgroup_details["priorities"], $taskgroup->getPriority());
-//                $taskgroup_details["members"] = array_merge($taskgroup_details["members"], $this->getMembersInGroup($taskgroup->id));
-//                $task_type_array = $taskgroup->getTaskGroupTypeObject()->getTaskTypeArray();
-//                
-//                $taskgroup_details["types"][key($task_type_array)] = array($task_type_array[key($task_type_array)], key($task_type_array));
-//            }
-//        }
-//        
-//        // Flatten arrays
-//        $taskgroup_details["statuses"] = array_unique($this->flattenTaskGroupArray($taskgroup_details["statuses"]));
-//        $taskgroup_details["priorities"] = array_unique($this->flattenTaskGroupArray($taskgroup_details["priorities"]));
-////        $taskgroup_details["types"] = array_unique($taskgroup_details["types"]);
-//        $taskgroup_details["members"] = array_unique_multidimensional($taskgroup_details["members"]);
-        
-        return $taskgroup_details;
+		return ["statuses" => $statuses, "priorities" => $priorities, "members" => $taskgroup_members, "types" => $tasktypes];
     }
 
     public function getTaskGroupDetailsForTaskGroup($taskgroup_id) {
@@ -716,7 +701,7 @@ class TaskService extends DbService {
      *  
      * @return TaskGroup
      */
-    function createTaskGroup($type, $title, $description, $default_assignee_id, $can_assign = "OWNER", $can_view = "OWNER", $can_create = "OWNER", $is_active = 1, $is_deleted = 0, $default_task_type = null, $default_priority = null) {
+    function createTaskGroup($type, $title, $description, $default_assignee_id, $can_assign = "OWNER", $can_view = "OWNER", $can_create = "OWNER", $is_active = 1, $is_deleted = 0, $default_task_type = null, $default_priority = null, $is_automatic_subscription = false) {
         // title should be unique!
         $taskgroup = $this->getTaskGroupByUniqueTitle($title);
         if (null != $taskgroup) {
@@ -732,10 +717,11 @@ class TaskService extends DbService {
         $taskgroup->can_view = $can_view;
         $taskgroup->can_create = $can_create;
         $taskgroup->is_active = $is_active;
-        $taskgroup->is_deleted = $is_deleted;
+        $taskgroup->is_deleted = !empty($is_deleted) ? $is_deleted : 0;
         $taskgroup->default_assignee_id = $default_assignee_id;
         $taskgroup->default_task_type = $default_task_type;
         $taskgroup->default_priority = $default_priority;
+		$taskgroup->is_automatic_subscription = !!$is_automatic_subscription;
         $response = $taskgroup->insert();
         
         // Check the validation
@@ -797,7 +783,9 @@ class TaskService extends DbService {
         
         // get member object for task creator
         $creator_id = $task->getTaskCreatorId();
-        $creator = array($this->getMemberGroupById($task->task_group_id, $creator_id));
+		
+		// Notify assignee too
+        $creator = array($this->getMemberGroupById($task->task_group_id, $creator_id), !empty($task->assignee_id) ? $this->getMemberGroupById($task->task_group_id, $task->assignee_id) : null);
         // get member object(s) for task group owner(s)
         $owners = $this->getTaskGroupOwners($task->task_group_id);
 

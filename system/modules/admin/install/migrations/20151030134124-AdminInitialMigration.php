@@ -18,10 +18,10 @@ class AdminInitialMigration extends CmfiveMigration {
 						'id' => false,
 						'primary_key' => 'id'
 					])->addColumn($column)
-					->addColumn('path', 'string', ['limit' => 1024])
-					->addColumn('classname', 'string', ['limit' => 1024])
-					->addColumn('module', 'string', ['limit' => 1024])
-					->addColumn("batch", "integer")
+					->addColumn('path', 'string', ['limit' => 1024, 'null' => true])
+					->addColumn('classname', 'string', ['limit' => 1024, 'null' => true])
+					->addColumn('module', 'string', ['limit' => 1024, 'null' => true])
+					->addColumn("batch", "integer", ['default' => 0])
 					->addCmfiveParameters(['dt_modified', 'modifier_id', 'is_deleted'])
 					->create();
 		}
@@ -34,14 +34,14 @@ class AdminInitialMigration extends CmfiveMigration {
 						'id' => false,
 						'primary_key' => 'id'
 					])->addColumn($column)
-					->addColumn('submodule', 'text',["null"=>true])
-					->addColumn('message', 'text',["null"=>true])
-					->addColumn('module', 'string', ['limit' => 128])
-					->addColumn('action', 'string', ['limit' => 128])
-					->addColumn('path', 'string', ['limit' => 1024])
-					->addColumn('ip', 'string', ['limit' => 128])
-					->addColumn('db_class', 'string', ['limit' => 128,"null"=>true])
-					->addColumn('db_action', 'string', ['limit' => 128,"null"=>true])
+					->addColumn('submodule', 'text',["null" => true])
+					->addColumn('message', 'text',["null" => true])
+					->addColumn('module', 'string', ['limit' => 128, 'null' => true])
+					->addColumn('action', 'string', ['limit' => 128, 'null' => true])
+					->addColumn('path', 'string', ['limit' => 1024, 'null' => true])
+					->addColumn('ip', 'string', ['limit' => 128, 'null' => true])
+					->addColumn('db_class', 'string', ['limit' => 128, "null" => true])
+					->addColumn('db_action', 'string', ['limit' => 128, "null" => true])
 					->addColumn('db_id', 'biginteger',["null"=>true])
 					->addCmfiveParameters(['dt_modified', 'modifier_id', 'is_deleted'])
 					->create();
@@ -57,7 +57,7 @@ class AdminInitialMigration extends CmfiveMigration {
 					])->addColumn($column)
 					->addColumn('obj_table', 'string', ['limit' => 200])
 					->addColumn('obj_id', 'biginteger', ['null' => true])
-					->addColumn('comment', 'text')
+					->addColumn('comment', 'text', ['null' => true])
 					->addColumn('is_internal', 'boolean', ['default' => 0])
 					->addColumn('is_system', 'boolean', ['default' => 0])
 					->addCmfiveParameters()
@@ -73,9 +73,9 @@ class AdminInitialMigration extends CmfiveMigration {
 						'primary_key' => 'id'
 					])->addColumn($column)
 					->addColumn('weight', 'integer', ['limit' => 11,'null' => true])
-					->addColumn('type', 'string', ['limit' => 255])
-					->addColumn('code', 'string', ['limit' => 255])
-					->addColumn('title', 'string', ['limit' => 255])
+					->addColumn('type', 'string', ['limit' => 255, 'null' => true])
+					->addColumn('code', 'string', ['limit' => 255, 'null' => true])
+					->addColumn('title', 'string', ['limit' => 255, 'null' => true])
 					->addCmfiveParameters(['dt_created', 'creator_id', 'dt_modified', 'modifier_id'])
 					->create();
 		}
@@ -88,8 +88,8 @@ class AdminInitialMigration extends CmfiveMigration {
 						'id' => false,
 						'primary_key' => 'id'
 					])->addColumn($column)
-					->addColumn('name', 'string', ['limit' => 512])
-					->addColumn('server', 'string', ['limit' => 512])
+					->addColumn('name', 'string', ['limit' => 512, 'null' => true])
+					->addColumn('server', 'string', ['limit' => 512, 'null' => true])
 					->addColumn('port', 'string', ['limit' => 256,'null' => true])
 					->create();
 		}
@@ -102,12 +102,12 @@ class AdminInitialMigration extends CmfiveMigration {
 						'id' => false,
 						'primary_key' => 'id'
 					])->addColumn($column)
-					->addColumn('title', 'string', ['limit' => 255])
+					->addColumn('title', 'string', ['limit' => 255, 'null' => true])
 					->addColumn('description', 'string', ['limit' => 255, 'null' => true])
 					->addColumn('category', 'string', ['limit' => 255, 'null' => true])
 					->addColumn('module', 'string', ['limit' => 255, 'null' => true])
-					->addColumn('template_title', 'text')
-					->addColumn('template_body', 'text', ['limit' => \Phinx\Db\Adapter\MysqlAdapter::TEXT_LONG])
+					->addColumn('template_title', 'text', ['null' => true])
+					->addColumn('template_body', 'text', ['limit' => \Phinx\Db\Adapter\MysqlAdapter::TEXT_LONG, 'null' => true])
 					->addColumn('test_title_json', 'text',['null' => true])
 					->addColumn('test_body_json', 'text',['null' => true])
 					->addColumn('is_active', 'boolean', ['default' => 1])

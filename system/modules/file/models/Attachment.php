@@ -336,6 +336,25 @@ class Attachment extends DbObject {
         }
 	}
 
+	function createCachedThumbnail($width = null, $height = null) {
+		if ($this->isImage()) {
+            // Generate thumbnail and cache
+            require_once 'phpthumb/ThumbLib.inc.php';
+            $width = (!empty($width) && is_int($width) ? $width : FileService::$_thumb_width);
+            $height = (!empty($height) && is_int($height) ? $height : FileService::$_thumb_height);
+            $thumb = PhpThumbFactory::create($this->getContent(), [], true);
+            $thumb->adaptiveResize($width, $height);
+
+            // Create cached folder
+            if (!is_dir(dirname($this->getThumbnailCachePath()))) {
+                mkdir(dirname($this->getThumbnailCachePath()), 0755, true);
+            }
+
+            // Write thumbnail to cache
+            file_put_contents($this->getThumbnailCachePath(), $thumb->getImageAsString());
+        }
+	}
+
 	function getSelectOptionTitle() {
 		return $this->filename;
 	}

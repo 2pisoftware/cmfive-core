@@ -21,6 +21,11 @@
 	<td>2000</td>
 	<td></td>
 </tr>
+<tr>
+	<td>waitForText</td>
+	<td>//form[@id='edit_form']/div/div/div/h4</td>
+	<td>Create a new task</td>
+</tr>
 <!-- check for php error messages -->
 <tr>
 	<td>verifyTextNotPresent</td>
@@ -51,6 +56,11 @@
 <tr>
 	<td>clickAt</td>
 	<td>link=testTaskgroup</td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>2000</td>
 	<td></td>
 </tr>
 <tr>
@@ -103,26 +113,19 @@
 	<td>2000</td>
 	<td></td>
 </tr>
-<!-- check for php error messages -->
 <tr>
-	<td>verifyTextNotPresent</td>
-	<td>Notice*</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyTextNotPresent</td>
-	<td>Warning*</td>
-	<td></td>
-</tr>
-<!-- end error checking -->
-<tr>
-	<td>clickAndWait</td>
-	<td>//div[@id='details']/div/div/button[2]</td>
+	<td>waitForNotVisible</td>
+	<td>class=loading_overlay</td>
 	<td></td>
 </tr>
 <tr>
 	<td>pause</td>
-	<td>3000</td>
+	<td>2000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>testTask</td>
 	<td></td>
 </tr>
 <!-- check for php error messages -->
@@ -137,6 +140,203 @@
 	<td></td>
 </tr>
 <!-- end error checking -->
+<tr>
+	<td>click</td>
+	<td>link=Internal Comments 1</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=#internal_comments &gt; button.button.tiny </td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>id=comment</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=comment</td>
+	<td>Test Comment</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>xpath=(//button[@type='submit'])[3]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>link=Internal Comments 2</td>
+	<td>Internal Comments 2</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>css=p:contains('Test Comment')</td>
+	<td>Test Comment</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>xpath=(//a[contains(text(),'Edit')])[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>id=comment</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=comment</td>
+	<td>Edited Test comment</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>xpath=(//button[@type='submit'])[3]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Internal Comments 2</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>link=Internal Comments 2</td>
+	<td>Internal Comments 2</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>css=p:contains('Edited Test comment')</td>
+	<td>Edited Test comment</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=External Comments 0</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=#external_comments &gt; button.button.tiny </td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>id=comment</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=comment</td>
+	<td>External Test Comment</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>xpath=(//button[@type='submit'])[3]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>link=Internal Comments 2</td>
+	<td>Internal Comments 2</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>link=External Comments 1</td>
+	<td>External Comments 1</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>xpath=(//a[contains(text(),'Edit')])[3]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>id=comment</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=comment</td>
+	<td>Edited External Test Comment</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>xpath=(//button[@type='submit'])[3]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=External Comments 1</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>css=p:contains('Edited External Test Comment')</td>
+	<td>Edited External Test Comment</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>link=Internal Comments 2</td>
+	<td>Internal Comments 2</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>link=External Comments 1</td>
+	<td>External Comments 1</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Internal Comments 2</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>xpath=(//a[contains(text(),'Delete')])[3]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Task Details</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//div[2]/div/div/div/button[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>4000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>Copy</td>
+	<td></td>
+</tr>
+<!-- check for php error messages -->
+<tr>
+	<td>verifyTextNotPresent</td>
+	<td>Notice*</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextNotPresent</td>
+	<td>Warning*</td>
+	<td></td>
+</tr>
+<!-- end error checking -->
+<tr>
+	<td>pause</td>
+	<td>2000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>duplicated</td>
+	<td></td>
+</tr>
 <tr>
 	<td>assertText</td>
 	<td>css=div.alert-box.info</td>
@@ -150,6 +350,11 @@
 <tr>
 	<td>pause</td>
 	<td>2000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>Create a new task</td>
 	<td></td>
 </tr>
 <!-- check for php error messages -->
@@ -179,6 +384,11 @@
 	<td>2000</td>
 	<td></td>
 </tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>testNewTask</td>
+	<td></td>
+</tr>
 <!-- check for php error messages -->
 <tr>
 	<td>verifyTextNotPresent</td>
@@ -201,6 +411,11 @@
 	<td>2000</td>
 	<td></td>
 </tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>Taskgroup</td>
+	<td></td>
+</tr>
 <!-- check for php error messages -->
 <tr>
 	<td>verifyTextNotPresent</td>
@@ -213,6 +428,11 @@
 	<td></td>
 </tr>
 <!-- end error checking -->
+<tr>
+	<td>pause</td>
+	<td>2000</td>
+	<td></td>
+</tr>
 <tr>
 	<td>sendKeys</td>
 	<td>id=acp_taskgroup</td>
@@ -258,6 +478,11 @@
 <tr>
 	<td>pause</td>
 	<td>2000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>testNewTask</td>
 	<td></td>
 </tr>
 <!-- check for php error messages -->
