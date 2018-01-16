@@ -8,9 +8,11 @@ Config::set('main', array(
 	'application_name' => 'cmfive',
 	'company_name' => 'cmfive',
 	'company_url' => 'http://github.com/careck/cmfive',
-	"dependencies" => array(
+	"dependencies" => [
 		"monolog/monolog" => "1.22.*@dev",
-	),
+		"zurb/foundation" => "6.4.3",
+		"leafo/scssphp" => "0.7.4"
+	],
 	'hooks' => [
 		'core_dbobject',
 	],

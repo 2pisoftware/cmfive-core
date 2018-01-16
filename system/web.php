@@ -271,10 +271,17 @@ class Web {
 	function outputScripts() {
 		if (!empty($this->_scripts)) {
 			usort($this->_scripts, array($this, "cmp_weights"));
+
 			foreach ($this->_scripts as $script) {
-				echo "<script src='" . $script["uri"] . "'></script>";
+				try  {
+					CmfiveScriptComponentRegister::registerComponent($script['name'], new CmfiveScriptComponent($script['uri']));
+				} catch (Exception $e) {
+					$this->Log->error($e->getMessage());
+				}
 			}
 		}
+
+		CmfiveScriptComponentRegister::outputScripts();
 	}
 
 	/**
@@ -283,10 +290,24 @@ class Web {
 	function outputStyles() {
 		if (!empty($this->_styles)) {
 			usort($this->_styles, array($this, "cmp_weights"));
+
 			foreach ($this->_styles as $style) {
-				echo "<link rel='stylesheet' href='" . $style["uri"] . "'/>";
+				try {
+					CmfiveStyleComponentRegister::registerComponent($style['name'], new CmfiveStyleComponent($style['uri']));
+				} catch (Exception $e) {
+					$this->Log->error($e->getMessage());
+				}
 			}
 		}
+
+		CmfiveStyleComponentRegister::outputStyles();
+
+		// if (!empty($this->_styles)) {
+		// 	usort($this->_styles, array($this, "cmp_weights"));
+		// 	foreach ($this->_styles as $style) {
+		// 		echo "<link rel='stylesheet' href='" . $style["uri"] . "'/>";
+		// 	}
+		// }
 	}
 
 	/**
