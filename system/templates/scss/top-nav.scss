@@ -1,0 +1,46 @@
+// Top navigation
+.cmfive-nav {
+	color: white;
+	padding: 0px;
+	background-color: $primary_colour !important;
+
+	ul {
+		background-color: $primary_colour;
+
+		&:not(.accordion-menu) {
+			&>li > a::after {
+				display: none !important;
+			}
+		}
+
+		&> li {
+			height: 100%;
+
+			&> a {
+				color: $text_accent_colour !important;
+
+				img.home_logo {					// Main home logo
+					max-height: 50px;
+					height: 50px;
+				}
+			}
+
+			ul {
+				background-color: #426AB2 !important;
+				
+				&> li {
+				
+					a {
+						color: #dae2e7 !important;
+					}
+				}
+			}
+		}
+	}
+	
+	.comment_avatar {
+		border-radius: 50px;
+		height: 50px;
+		width: 50px;
+	}
+}

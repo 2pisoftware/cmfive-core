@@ -24,8 +24,8 @@ abstract class CmfiveComponent {
 		$buffer = '<' . $this->tag . ' ';
 
 		foreach(get_object_vars($this) as $field => $value) {
-			if (!is_null($value) && !in_array($field, static::$_excludeFromOutput) && strpos($field, '_') !== 0) {
-				$buffer .= $field . '=\'' . $this->{$field} . '\' ';
+			if (!in_array($field, static::$_excludeFromOutput) && strpos($field, '_') !== 0) {
+				$buffer .= $field . ($value !== null ? '=\'' . $value . '\' ' : ' ');
 			}
 		}
 

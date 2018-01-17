@@ -10,7 +10,6 @@ Config::set('main', array(
 	'company_url' => 'http://github.com/careck/cmfive',
 	"dependencies" => [
 		"monolog/monolog" => "1.22.*@dev",
-		"zurb/foundation" => "6.4.3",
 		"leafo/scssphp" => "0.7.4"
 	],
 	'hooks' => [

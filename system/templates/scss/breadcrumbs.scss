@@ -1,0 +1,53 @@
+// Breadcrumbs
+
+.breadcrumb-container {
+	
+	ul.cmfive_breadcrumbs {
+		background-color: $secondary-colour;
+		border: none;
+		
+
+		li {
+			margin-top: 8px;
+
+			&.current {
+				a {
+					color: white;
+				}
+			}
+
+			&:last-child {
+				padding-right: 80px;
+			}
+
+			@include phone() {
+				&:last-child {
+					padding-right: 10px;
+				}
+			}
+
+			a {
+				color: #ccc;
+			}
+		}
+	}
+
+	span.icon-container {
+		background-color: $secondary-colour;
+		position: absolute;
+		right: 0px;
+		padding: 7px 5px;
+
+		a {
+			padding: 20px 10px;
+			color: white;
+		}
+	}
+
+	@include phone() {
+		span.icon-container {
+			display: block;
+			position: relative;
+		}
+	}
+}

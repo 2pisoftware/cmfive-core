@@ -1,0 +1,41 @@
+$primary_colour: #2A2869;
+$secondary_colour: #159CD4;
+
+$primary_text_colour: #444444;
+$secondary_text_colour: #987654;
+
+$text_accent_colour: #A3D0EA;
+
+$accent_colour: #DEE5EB;
+
+html, body {
+	background-color: $accent_colour !important;
+}
+
+$tablet-width: 768px;
+$desktop-width: 1024px;
+
+@mixin phone {
+	@media (max-width: #{$tablet-width - 1px}) {
+    	@content;
+ 	}
+}
+
+@mixin tablet {
+  @media (min-width: #{$tablet-width}) and (max-width: #{$desktop-width - 1px}) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media (min-width: #{$desktop-width}) {
+    @content;
+  }
+}
+
+// Top navigation
+@import 'top-nav.scss';
+
+// Breadcrumbs
+@import 'breadcrumbs.scss';
+
