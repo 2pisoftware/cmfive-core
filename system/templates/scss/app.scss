@@ -1,14 +1,15 @@
-$primary_colour: #2A2869;
-$secondary_colour: #159CD4;
+$primary_colour: #2a2869;
+$secondary_colour: #159cd4;
 
 $primary_text_colour: #444444;
 $secondary_text_colour: #987654;
 
-$text_accent_colour: #A3D0EA;
+$text_accent_colour: #a3d0ea;
 
-$accent_colour: #DEE5EB;
+$accent_colour: #dee5eb;
 
-html, body {
+html,
+body {
 	background-color: $accent_colour !important;
 }
 
@@ -17,25 +18,27 @@ $desktop-width: 1024px;
 
 @mixin phone {
 	@media (max-width: #{$tablet-width - 1px}) {
-    	@content;
- 	}
+		@content;
+	}
 }
 
 @mixin tablet {
-  @media (min-width: #{$tablet-width}) and (max-width: #{$desktop-width - 1px}) {
-    @content;
-  }
+	@media (min-width: #{$tablet-width}) and (max-width: #{$desktop-width - 1px}) {
+		@content;
+	}
 }
 
 @mixin desktop {
-  @media (min-width: #{$desktop-width}) {
-    @content;
-  }
+	@media (min-width: #{$desktop-width}) {
+		@content;
+	}
 }
 
 // Top navigation
-@import 'top-nav.scss';
+@import "top-nav.scss";
+
+// Side navigation
+@import "side-nav.scss";
 
 // Breadcrumbs
-@import 'breadcrumbs.scss';
-
+@import "breadcrumbs.scss";

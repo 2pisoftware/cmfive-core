@@ -3,9 +3,9 @@
 	color: white;
 	padding: 0px;
 	background-color: $primary_colour !important;
+	min-height: 50px;
 
 	ul {
-		background-color: $primary_colour;
 
 		&:not(.accordion-menu) {
 			&>li > a::after {
@@ -17,11 +17,23 @@
 			height: 100%;
 
 			&> a {
+				background-color: $primary_colour !important;
 				color: $text_accent_colour !important;
+
+				&.side-menu-toggle-button {
+					padding: 8px 16px !important;
+				}
 
 				img.home_logo {					// Main home logo
 					max-height: 50px;
 					height: 50px;
+				}
+
+				img.comment_avatar {
+					border-radius: 50px;
+					height: 40px;
+					width: 40px;
+					border: none;
 				}
 			}
 
@@ -31,16 +43,28 @@
 				&> li {
 				
 					a {
+						background-color: #426AB2 !important;
 						color: #dae2e7 !important;
+
+						&:hover {
+							background-color: $primary_colour !important;
+						}
+					}
+				}
+
+				&.side-nav {
+					li {
+						margin-bottom: 0px;
+
+						a {
+							&:hover {
+								background-color: $primary_colour;
+							}
+						}
 					}
 				}
 			}
 		}
 	}
-	
-	.comment_avatar {
-		border-radius: 50px;
-		height: 50px;
-		width: 50px;
-	}
+
 }

@@ -5,14 +5,18 @@
 	ul.cmfive_breadcrumbs {
 		background-color: $secondary-colour;
 		border: none;
-		
+		height: 25px;
 
 		li {
-			margin-top: 8px;
+			margin-top: -4px;
 
 			&.current {
-				a {
-					color: white;
+				border-bottom: 2px solid $primary_colour;
+				color: white;
+				margin-left: 10px;
+
+				span {
+					margin-left: -15px;
 				}
 			}
 
@@ -27,7 +31,8 @@
 			}
 
 			a {
-				color: #ccc;
+				color: white;
+				padding: 0px;
 			}
 		}
 	}
@@ -36,7 +41,7 @@
 		background-color: $secondary-colour;
 		position: absolute;
 		right: 0px;
-		padding: 7px 5px;
+		padding: 2px 5px;
 
 		a {
 			padding: 20px 10px;

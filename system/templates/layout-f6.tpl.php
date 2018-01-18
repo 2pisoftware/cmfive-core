@@ -10,8 +10,8 @@
 
         <?php
 
-		CmfiveStyleComponentRegister::registerComponent('foundation-6', new CmfiveStyleComponent(
-			"/system/templates/lib/foundation-6/css/foundation.min.css"
+		CmfiveStyleComponentRegister::registerComponent('foundation-5', new CmfiveStyleComponent(
+			"/system/templates/js/foundation-5.5.0/css/foundation.min.css"
 		));
 
         // Old styles
@@ -19,10 +19,11 @@
 
         // New styles
         CmfiveStyleComponentRegister::registerComponent('app', new CmfiveStyleComponent("/system/templates/scss/app.scss", ['/system/templates/scss/']));
-
-        $w->enqueueScript(array("name" => "jquery", "uri" => "/system/templates/lib/foundation-6/js/vendor/jquery.js", "weight" => 1000));
-        $w->enqueueScript(array("name" => "what-input", "uri" => "/system/templates/lib/foundation-6/js/vendor/what-input.js", "weight" => 999));
-        $w->enqueueScript(array("name" => "foundation", "uri" => "/system/templates/lib/foundation-6/js/vendor/foundation.min.js", "weight" => 998));
+        
+        $w->enqueueScript(array("name" => "modernizr", "uri" => "/system/templates/js/foundation-5.5.0/js/vendor/modernizr.js", "weight" => 1001));
+        $w->enqueueScript(array("name" => "jquery", "uri" => "/system/templates/js/foundation-5.5.0/js/vendor/jquery.js", "weight" => 1000));
+      
+        $w->enqueueScript(array("name" => "foundation", "uri" => "/system/templates/js/foundation-5.5.0/js/foundation.min.js", "weight" => 998));
         $w->enqueueScript(array("name" => "jquery.tablesorter.js", "uri" => "/system/templates/js/tablesorter/jquery.tablesorter.js", "weight" => 990));
         
         $fontawesome_js = new CmfiveScriptComponent("/system/templates/js/fontawesome-all.min.js");
@@ -30,10 +31,12 @@
         CmfiveScriptComponentRegister::registerComponent('fa-shim', new CmfiveScriptComponent("/system/templates/js/fa-v4-shims.min.js"));
         CmfiveScriptComponentRegister::registerComponent('fontawesome5', $fontawesome_js);
 
+        CmfiveScriptComponentRegister::registerComponent('slideout', new CmfiveScriptComponent("/system/templates/js/slideout-1.0.1/dist/slideout.min.js"));
+        CmfiveScriptComponentRegister::registerComponent('vue', new CmfiveScriptComponent('/system/templates/js/vue.js'));
+
         $w->enqueueScript(array("name" => "main.js", "uri" => "/system/templates/js/main.js", "weight" => 995));
         
-        $w->enqueueScript(['name' => 'vue.js', 'uri' => '/system/templates/js/vue.js', 'weight' => 800]);
-
+        
         $w->outputStyles();
         $w->outputScripts();
 
@@ -134,199 +137,210 @@
         </script>
     </head>
     <body>
-        <div class="off-canvas-wrapper">
-            <div class="off-canvas position-left" id="offCanvasLeft" data-off-canvas>
-                <div class='cmfive-nav'>
-                    <ul class='vertical menu accordion-menu' data-accordion-menu>
-                        <?php foreach ($w->modules() as $module) :
-                            // Check if config is set to display on topmenu
-                            if (Config::get("{$module}.topmenu") && Config::get("{$module}.active")) :
-                                // Check for navigation
-                                $service_module = ucfirst($module);
-                                $menu_link = method_exists($w->$service_module, "menuLink") ? $w->$service_module->menuLink() : $w->menuLink($module, is_bool(Config::get("{$module}.topmenu")) ? ucfirst($module) : Config::get("{$module}.topmenu"));
-                                if ($menu_link !== false) :
-                                    if (method_exists($module . "Service", "navigation")) : ?>
-                                        <li class="has-dropdown <?php echo $w->_module == $module ? 'active' : ''; ?>" id="topnav_<?php echo $module; ?>">
-                                        <?php // Try and get a badge count for the menu item
-                                            echo $menu_link;
-                                            $module_navigation = $w->service($module)->navigation($w);
-                                            
-                                            // Invoke hook to inject extra navigation
-                                            $hook_navigation_items = $w->callHook($module, "extra_navigation_items", $module_navigation);
-                                            if (!empty($hook_navigation_items)) {
-                                                foreach($hook_navigation_items as $hook_navigation_item) {
-                                                    if (is_array($hook_navigation_item)) {
-                                                        $module_navigation = array_merge($module_navigation, $hook_navigation_item);
-                                                    } else {
-                                                        $module_navigation[] = $hook_navigation_item;
-                                                    }
-                                                }
+        <!-- Side (slideout) menu -->
+        <nav id='cmfive-side-menu' class='cmfive-nav menu slideout-menu slideout-menu-left'>
+            <ul class="accordion side-nav" data-accordion>
+                <?php foreach ($w->modules() as $module) :
+                    // Check if config is set to display on topmenu
+                    if (Config::get("{$module}.topmenu") && Config::get("{$module}.active")) :
+                        // Check for navigation
+                        $service_module = ucfirst($module);
+                        $menu_link = method_exists($w->$service_module, "menuLink") ? $w->$service_module->menuLink() : $w->menuLink($module, is_bool(Config::get("{$module}.topmenu")) ? ucfirst($module) : Config::get("{$module}.topmenu"));
+                        if ($menu_link !== false) :
+                            if (method_exists($module . "Service", "navigation")) : ?>
+                                <li class="accordion-navigation <?php echo $w->_module == $module ? 'active' : ''; ?>" id="topnav_<?php echo $module; ?>">
+                                    <a href='#side_menu_panel-<?php echo $module; ?>'><?php echo is_bool(Config::get("{$module}.topmenu")) ? ucfirst($module) : Config::get("{$module}.topmenu"); ?><?php // echo $menu_link; ?></a>
+                                <?php // Try and get a badge count for the menu item
+                                    $module_navigation = $w->service($module)->navigation($w);
+                                    
+                                    // Invoke hook to inject extra navigation
+                                    $hook_navigation_items = $w->callHook($module, "extra_navigation_items", $module_navigation);
+                                    if (!empty($hook_navigation_items)) {
+                                        foreach($hook_navigation_items as $hook_navigation_item) {
+                                            if (is_array($hook_navigation_item)) {
+                                                $module_navigation = array_merge($module_navigation, $hook_navigation_item);
+                                            } else {
+                                                $module_navigation[] = $hook_navigation_item;
                                             }
-                                            echo Html::ul($module_navigation, null, "menu nested"); ?>
-                                        </li>
-                                    <?php else: ?>
-                                        <li <?php echo $w->_module == $module ? 'class="active"' : ''; ?>><?php echo $menu_link; ?></li>
-                                    <?php endif; ?>
-                                    <li class="divider"></li>
-                                <?php endif;
-                            endif;
-                        endforeach; ?>
-                    </ul>
-                </div>
-            </div>
-            <div class="off-canvas-content" data-off-canvas-content>
-                <div class="loading_overlay" <?php echo $w->request('show_overlay') == null ? 'style="display:none;"' : ''; ?>>
-                    <div class="circle"></div>
-        			<img class="center_image" width="100px" height="100px" src="/system/templates/img/cmfive_V_logo.png" />
-                    <h4 class="subheader">Please wait</h4>
-                </div>
-        		<div class="global_file_drop_area" style="display:none;" id="global_file_drop_area">
-        			<div class="global_file_drop_overlay_init">
-        				<h4 class="subheader">Drop files here...</h4>
-        			</div>
-        		</div>
-        		<div class="global_file_drop_overlay" id="global_file_drop_overlay" style="display:none;">
-        			<div class="global_file_drop_overlay_loading">
-        				<div class="circle"></div>
-        				<img class="center_image" width="100px" height="100px" src="/system/templates/img/cmfive_V_logo.png" />
-        				<h4 class="subheader">Uploading (0%)</h4>
-        			</div>
-        		</div>
-        		
-        		<?php if (Config::get('system.test_mode') === true) : ?>
-        			<div class="row-fluid">
-        				<div class="small-12">
-        					<div data-alert class="alert-box warning" style="margin-bottom: 0px; padding: 5px 0px;">
-        						<h4 style="font-weight: lighter; text-align: center; color: white; padding: 5px 0px 0px 0px;"><?php echo Config::get('system.test_mode_message')?></h4>
-        					</div>
-        				</div>
-        			</div>
-        		<?php endif; ?>
-                
-                <div class="top-bar cmfive-nav">
-                    <div class="top-bar-left">
-                        <ul class="vertical medium-horizontal dropdown menu icons icon-top align-middle" data-responsive-menu="drilldown medium-dropdown">
-                            <li>
-                                <a href='#' data-toggle="offCanvasLeft"><span class='fas fa-bars fa-2x'></span></a>
-                            </li>
-                            <?php if ($w->Auth->loggedIn()) : ?>
-                                <li>
-                                    <a href='<?php echo $w->Main->getUserRedirectURL(); ?>'>
-                                        <?php if (!empty(Config::get('main.application_logo'))) : ?>
-                                            <img class='home_logo' src='<?php echo Config::get('main.application_logo'); ?>' />
-                                        <?php else: ?>
-                                            <span class='fi-home show-for-medium-up'></span><span class='show-for-small'>Home</span>
-                                        <?php endif; ?>
-                                    </a>
-                                </li>
-                                <li class="has-dropdown">
-                                    <a href="#">
-                                        <img class='comment_avatar' src='https://www.gravatar.com/avatar/<?php echo md5(strtolower(trim(@$w->Auth->user()->getContact()->email))); ?>?d=identicon' />
-                                    </a>
-                                    <?php
-                                    echo Html::ul(
-                                        array(
-                                            $w->menuBox("auth/profile/box", $w->Auth->user()->getShortName()),
-                                            $w->menuLink("auth/logout", "Logout")
-                                        ), null, "menu");
-                                    ?>    
-                                </li>
-                            <?php endif; ?>
-                        </ul>
-                    </div>
-                    <div class="top-bar-right">
-                        <ul class="menu">
-                            <?php
-                                $inject = $w->callHook('core_template', 'menu');
-                                if (!empty($inject)) :
-                                    foreach($inject as $i) : ?>
-                                        <li><?php echo $i; ?></li>
-                                    <?php endforeach;
-                                endif;
-                            ?>
-                        </ul>
-                    </div>
-                </div>
+                                        }
+                                    }
 
-                <!-- Breadcrumbs -->
-                <div class="row-fluid breadcrumb-container">
-                    <?php echo Html::breadcrumbs(array(), $w); ?>
-                    <span class='icon-container'>
-                        <?php if ($w->Auth->allowed('help/view')) {
-                                echo Html::box(WEBROOT . "/help/view/" . $w->_module . ($w->_submodule ? "-" . $w->_submodule : "") . "/" . $w->_action, "<span class='fas fa-info show-for-medium'></span><span class='show-for-small-only'>Help</span>", false, true, 750, 500, "isbox", null, null, null, 'cmfive-help-modal');
-                            }
-                            echo Html::box("/search", "<span class='fas fa-search show-for-medium'></span><span class='show-for-small-only'>Search</span>", false, false, null, null, null, "cmfive_search_button"); ?>
-                    </span>
-                </div>
-                
-                <div class="row-fluid body">
-                    <?php // Body section w/ message and body from template ?>
-                    <div class="row-fluid <?php // if(!empty($boxes)) echo "medium-10 small-12 "; ?>">
-                        <?php if (empty($hideTitle) && !empty ($title)):?>
+                                    if (!empty($module_navigation)) : ?>
+                                        <div id='side_menu_panel-<?php echo $module; ?>' class="content">
+                                            <?php echo Html::ul($module_navigation, null, "side-nav"); ?>
+                                        </div>
+                                    <?php endif; ?>
+                                </li>
+                            <?php else: ?>
+                                <li class='accordion-navigation <?php echo $w->_module == $module ? 'active' : ''; ?>'><?php echo $menu_link; ?></li>
+                            <?php endif; ?>
+                        <?php endif;
+                    endif;
+                endforeach; ?>
+            </ul>
+        </nav>
+        <main id='cmfive-main-content' class='slideout-panel slideout-panel-left'>
+            <div class="loading_overlay" <?php echo $w->request('show_overlay') == null ? 'style="display:none;"' : ''; ?>>
+                <div class="circle"></div>
+    			<img class="center_image" width="100px" height="100px" src="/system/templates/img/cmfive_V_logo.png" />
+                <h4 class="subheader">Please wait</h4>
+            </div>
+    		<div class="global_file_drop_area" style="display:none;" id="global_file_drop_area">
+    			<div class="global_file_drop_overlay_init">
+    				<h4 class="subheader">Drop files here...</h4>
+    			</div>
+    		</div>
+    		<div class="global_file_drop_overlay" id="global_file_drop_overlay" style="display:none;">
+    			<div class="global_file_drop_overlay_loading">
+    				<div class="circle"></div>
+    				<img class="center_image" width="100px" height="100px" src="/system/templates/img/cmfive_V_logo.png" />
+    				<h4 class="subheader">Uploading (0%)</h4>
+    			</div>
+    		</div>
+    		
+    		<?php if (Config::get('system.test_mode') === true) : ?>
+    			<div class="row-fluid">
+    				<div class="small-12">
+    					<div data-alert class="alert-box warning" style="margin-bottom: 0px; padding: 5px 0px;">
+    						<h4 style="font-weight: lighter; text-align: center; color: white; padding: 5px 0px 0px 0px;"><?php echo Config::get('system.test_mode_message')?></h4>
+    					</div>
+    				</div>
+    			</div>
+    		<?php endif; ?>
+            
+
+            <nav class="top-bar cmfive-nav" data-topbar role="navigation">
+                <section class="top-bar-section">
+                    <!-- Right Nav Section -->
+                    <ul class="right">
+                        <?php
+                            $inject = $w->callHook('core_template', 'menu');
+                            if (!empty($inject)) :
+                                foreach($inject as $i) : ?>
+                                    <li><?php echo $i; ?></li>
+                                <?php endforeach;
+                            endif;
+                        ?>
+                    </ul>
+
+                    <!-- Left Nav Section -->
+                    <ul class="left">
+                        <li>
+                            <a href='#' class='side-menu-toggle-button'><span class='fas fa-bars fa-2x'></span></a>
+                        </li>
+                        
+                        <li>
+                            <a href='<?php echo $w->Main->getUserRedirectURL(); ?>'>
+                                <?php if (!empty(Config::get('main.application_logo'))) : ?>
+                                    <img class='home_logo' src='<?php echo Config::get('main.application_logo'); ?>' />
+                                <?php else: ?>
+                                    <span class='fi-home show-for-medium-up'></span><span class='show-for-small'>Home</span>
+                                <?php endif; ?>
+                            </a>
+                        </li>
+                        <li class="has-dropdown">
+                            <a href="#">
+                                <img class='comment_avatar' src='https://www.gravatar.com/avatar/<?php echo md5(strtolower(trim(@$w->Auth->user()->getContact()->email))); ?>?d=identicon' />
+                            </a>
+                            <?php
+                            echo Html::ul(
+                                array(
+                                    $w->menuBox("auth/profile/box", $w->Auth->user()->getShortName()),
+                                    $w->menuLink("auth/logout", "Logout")
+                                ), null, "dropdown");
+                            ?>    
+                        </li>
+                    </ul>
+                </section>
+            </nav>
+
+            <!-- Breadcrumbs -->
+            <div class="row-fluid breadcrumb-container">
+                <?php echo Html::breadcrumbs(array(), $w); ?>
+                <span class='icon-container'>
+                    <?php if ($w->Auth->allowed('help/view')) {
+                            echo Html::box(WEBROOT . "/help/view/" . $w->_module . ($w->_submodule ? "-" . $w->_submodule : "") . "/" . $w->_action, "<span class='fas fa-info show-for-medium'></span><span class='show-for-small-only'>Help</span>", false, true, 750, 500, "isbox", null, null, null, 'cmfive-help-modal');
+                        }
+                        echo Html::box("/search", "<span class='fas fa-search show-for-medium'></span><span class='show-for-small-only'>Search</span>", false, false, null, null, null, "cmfive_search_button"); ?>
+                </span>
+            </div>
+            
+            <!-- Action content -->
+            <div class="row-fluid body">
+                <?php // Body section w/ message and body from template ?>
+                <div class="row-fluid <?php // if(!empty($boxes)) echo "medium-10 small-12 "; ?>">
+                    <?php if (empty($hideTitle) && !empty ($title)):?>
                         <div class="row-fluid small-12">
                             <h3 class="header"><?php echo $title; ?></h3>
                         </div>
-                        <?php endif;?>
-                        <?php if (!empty($error) || !empty($msg)) : ?>
-                            <?php 
-        						$type = [];
-        						$nameValue='';
-        						if (!empty($error)) {
-        							$type= array("name" => "error", "class" => "warning");
-        							$nameValue=$error;
-        						} else {
-        							$type=array("name" => "msg", "class" => "info"); 
-        							$nameValue=$msg;
-        						}
-                            ?>
-                            <div data-alert class="alert-box <?php echo $type["class"]; ?>">
-                                <?php echo $nameValue; ?>
-                                <a href="#" class="close">&times;</a>
-                            </div>
-                        <?php endif; ?>
-
-                        <div class="row-fluid" style="overflow: hidden;">
-                            <?php echo !empty($body) ? $body : ''; ?>
+                    <?php endif; ?>
+                    <?php if (!empty($error)) : ?>
+                        <div class='callout alert' data-closable>
+                            <?php echo $error; ?>
+                            <button class="close-button" aria-label="Dismiss alert" type="button" data-close>
+                                <span aria-hidden="true">&times;</span>
+                            </button>
                         </div>
-                    </div>
-                </div>
-
-                <div class="row-fluid align-center">
-                    <div class="columns small-12" data-sticky-container>
-                        <div class="sticky" data-sticky data-stick-to="bottom">
-                            <div class='text-center'>
-                                Copyright &#169; <?php echo date('Y'); ?>&nbsp;&nbsp;&nbsp;<a href="<?php echo $w->moduleConf('main', 'company_url'); ?>"><?php echo $w->moduleConf('main', 'company_name'); ?></a>
-                            </div>
+                    <?php endif; ?>
+                    <?php if (!empty($msg)) : ?>
+                       <div class="callout primary" data-closable>
+                            <?php echo $msg; ?>
+                            <button class="close-button" aria-label="Dismiss message" type="button" data-close>
+                                <span aria-hidden="true">&times;</span>
+                            </button>
                         </div>
+                    <?php endif; ?>
+
+                    <div class="row-fluid" style="overflow: hidden;">
+                        <?php echo !empty($body) ? $body : ''; ?>
                     </div>
                 </div>
             </div>
-        </div>
 
+            <!-- Footer -->
+            <div class="row-fluid align-center footer clearfix" data-sticky-container>
+                <div class="columns small-12 sticky" data-sticky data-stick-to="bottom" data-top-anchor=".body" data-btm-anchor='off-canvas-content:bottom'>
+                    <div class='text-center'>
+                        Copyright &#169; <?php echo date('Y'); ?>&nbsp;&nbsp;&nbsp;<a href="<?php echo $w->moduleConf('main', 'company_url'); ?>"><?php echo $w->moduleConf('main', 'company_name'); ?></a>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Modals -->
         <div id="cmfive-modal" class="reveal-modal xlarge" data-reveal></div>
         <div id="cmfive-help-modal" class="reveal-modal xlarge" data-reveal></div>
-        <!-- <script type="text/javascript" src="/system/templates/js/foundation-5.5.0/js/foundation.min.js"></script>
-        <script type="text/javascript" src="/system/templates/js/foundation-5.5.0/js/foundation/foundation.clearing.js"></script>
-         --><script>
-            $(document).foundation();
-            // {
-   //              reveal : {
-   //                  animation_speed: <?php echo defaultVal(Config::get('core_template.foundation.reveal.animation_speed'), 150); ?>,
-   //                  animation: '<?php echo defaultVal(Config::get('core_template.foundation.reveal.animation'), 'fade'); ?>',
-			// 		close_on_background_click: <?php echo defaultVal(Config::get('core_template.foundation.reveal.close_on_background_click'), 'true'); // Must be string value in PHP ?>
-			// 	},
-			// 	accordion: {
-			// 		multi_expand: <?php echo defaultVal(Config::get('core_template.foundation.accordion.multi_expand'), 'true'); ?>,
-			// 	}
-			// });
+        
+        <script>
+            var slideout = new Slideout({
+                'panel': document.getElementById('cmfive-main-content'),
+                'menu': document.getElementById('cmfive-side-menu'),
+                'padding': 256,
+                'tolerance': 70
+            });
+
+            document.querySelector('.side-menu-toggle-button').addEventListener('click', function() {
+                slideout.toggle();
+            });
+
+            $(document).foundation({
+                reveal : {
+                    animation_speed: <?php echo defaultVal(Config::get('core_template.foundation.reveal.animation_speed'), 150); ?>,
+                    animation: '<?php echo defaultVal(Config::get('core_template.foundation.reveal.animation'), 'fade'); ?>',
+					close_on_background_click: <?php echo defaultVal(Config::get('core_template.foundation.reveal.close_on_background_click'), 'true'); // Must be string value in PHP ?>
+				},
+				accordion: {
+					multi_expand: <?php echo defaultVal(Config::get('core_template.foundation.accordion.multi_expand'), 'true'); ?>,
+				}
+			});
             
             var modal_history = [];
             var modal_history_pop = false;
             
             // Automatically append the close 'x' to reveal modals
-            $(document).on('opened', '[data-reveal]', function () {
+            $(document).on('opened', '[data-reveal]', function () { 
                 $(this).css('top', $(document).scrollTop() + 100);
-                $(this).append("<a class=\"close-reveal-modal\">&#215;</a>");
+                $(this).append("<a class=\"close-reveal-modal\">&#215;</a>"); 
                 modal_history.push();
                 bindModalLinks();
             });
@@ -377,7 +391,6 @@
                         if (modal_history.length > 0) {
                             changeModalWindow($(this).closest('.reveal-modal'), modal_history.pop());
                         }
-//                        console.log(modal_history);
                     } 
                     return false;
                 });
