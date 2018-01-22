@@ -193,10 +193,16 @@ class Web {
 	}
 
 	private function componentLoader($name) {
-		$directory = 'system' . DS . 'classes' . DS . 'components';
+		$classes_directory = 'system' . DS . 'classes';
+		$directory = $classes_directory . DS . 'components';
 
 		if (file_exists($directory . DS . $name . '.php')) {
 			require_once $directory . DS . $name . '.php';
+			return true;
+		}
+
+		if (file_exists($classes_directory . DS . $name . '.php')) {
+			require_once $classes_directory . DS . $name . '.php';
 			return true;
 		}
 

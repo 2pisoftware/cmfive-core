@@ -13,7 +13,7 @@ class CmfiveStyleComponent extends CmfiveComponent {
 	public function __construct($path, $include_paths = []) {
 		$style_path = pathinfo($path);
 
-		if (empty($style_path['extension']) || !in_array($style_path['extension'], self::$_allowed_extensions)) {
+		if (empty($style_path['extension']) || !in_array($style_path['extension'], static::$_allowed_extensions)) {
 			throw new Exception('Invalid file path given to component');
 		}
 

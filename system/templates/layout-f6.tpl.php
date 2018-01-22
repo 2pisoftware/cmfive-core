@@ -34,16 +34,19 @@
         CmfiveScriptComponentRegister::registerComponent('slideout', new CmfiveScriptComponent("/system/templates/js/slideout-1.0.1/dist/slideout.min.js"));
         CmfiveScriptComponentRegister::registerComponent('vue', new CmfiveScriptComponent('/system/templates/js/vue.js'));
 
+        // Print registered vue component links
+        foreach(VueComponentRegister::getComponents() as $name => $vue_component) {
+            CmfiveScriptComponentRegister::registerComponent($name, new CmfiveScriptComponent($vue_component->js_path));
+            if (!empty($vue_component->css_path) && file_exists(ROOT_PATH . $vue_component->css_path)) {
+                CmfiveStyleComponentRegister::registerComponent($name, new CmfiveStyleComponent($vue_component->css_path));
+            }
+        }
+
         $w->enqueueScript(array("name" => "main.js", "uri" => "/system/templates/js/main.js", "weight" => 995));
-        
         
         $w->outputStyles();
         $w->outputScripts();
 
-        // Print registered vue component links 
-        foreach(VueComponentRegister::getComponents() as $vue_component) {
-            echo $vue_component->_include();
-        }
         ?>
         <script type="text/javascript">
             var $ = $ || jQuery;
@@ -208,9 +211,9 @@
     			</div>
     		<?php endif; ?>
             
-
             <nav class="top-bar cmfive-nav" data-topbar role="navigation">
                 <section class="top-bar-section">
+
                     <!-- Right Nav Section -->
                     <ul class="right">
                         <?php
@@ -267,12 +270,10 @@
             
             <!-- Action content -->
             <div class="row-fluid body">
-                <?php // Body section w/ message and body from template ?>
-                <div class="row-fluid <?php // if(!empty($boxes)) echo "medium-10 small-12 "; ?>">
+                <div class='small-12 columns'>
+                    <!-- Title and messages -->
                     <?php if (empty($hideTitle) && !empty ($title)):?>
-                        <div class="row-fluid small-12">
-                            <h3 class="header"><?php echo $title; ?></h3>
-                        </div>
+                        <header><?php echo $title; ?></header>
                     <?php endif; ?>
                     <?php if (!empty($error)) : ?>
                         <div class='callout alert' data-closable>
@@ -291,9 +292,7 @@
                         </div>
                     <?php endif; ?>
 
-                    <div class="row-fluid" style="overflow: hidden;">
-                        <?php echo !empty($body) ? $body : ''; ?>
-                    </div>
+                    <?php echo !empty($body) ? $body : ''; ?>
                 </div>
             </div>
 
@@ -305,6 +304,9 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Slider overlay -->
+            <div id='slider_overlay'></div>
         </main>
 
         <!-- Modals -->
@@ -320,8 +322,14 @@
             });
 
             document.querySelector('.side-menu-toggle-button').addEventListener('click', function() {
-                slideout.toggle();
+                slideout.open();
+                $("#slider_overlay").fadeIn(100);
             });
+
+            $("#slider_overlay").click(function(){
+                slideout.close();
+                $("#slider_overlay").fadeOut(100);
+            })
 
             $(document).foundation({
                 reveal : {
