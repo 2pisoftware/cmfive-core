@@ -12,7 +12,7 @@
 		</div>
 		<div class='row-fluid'>
 			<div class='small-12 columns'>
-				<html-table :header="['ID', 'Title', 'Status']" :data='task_list' :include="['id', 'title', 'status']"></html-table>
+				<html-table :header="['ID', 'Title', 'Task Group', 'Assignee', 'Type', 'Priority', 'Status', 'Due']" :data='task_list' :include="['id', 'title', 'task_group_name', 'assignee_name', 'task_type', 'priority', 'status', 'dt_due']"></html-table>
 			</div>
 		</div>
 	</div>
@@ -23,7 +23,7 @@
 		el: '#vue_task_list',
 		data: {
 			filter: {
-				assignees: <?php echo json_encode(array_map(function($user) {return ['id' => $user->id, 'name' => $user->getFullName()];}, $w->Auth->getUsers())); ?>,
+				assignees: <?php echo json_encode(array_map(function($user) {return ['id' => $user->id, 'name' => $user->getSelectOptionTitle()];}, $w->Auth->getUsers())); ?>,
 				creators: <?php echo json_encode(array_map(function($user) {return ['id' => $user->id, 'name' => $user->getFullName()];}, $w->Auth->getUsers())); ?>,
 				task_groups: <?php echo json_encode(array_map(function($task_group) {return ['id' => $task_group->id, 'name' => $task_group->title];}, $w->Task->getTaskGroups())); ?>,
 				assignee: null,

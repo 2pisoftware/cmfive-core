@@ -12,7 +12,6 @@ class Task extends DbObject {
     public $status;
     public $priority;
 
-	public $effort;
 	public $rate;
     public $estimate_hours;
 
@@ -21,7 +20,6 @@ class Task extends DbObject {
 
     public $dt_completed;
     public $is_closed;
-    public $dt_planned;
     public $dt_due;
     
     public $_modifiable;
