@@ -11,15 +11,25 @@ $text_accent_colour: #a3d0ea;
 html,
 body {
 	background-color: $accent_colour !important;
+        height:auto;
 
 	.body {
-		padding: 0px 40px;
+		padding: 0px 40px 40px ;
+                
+                
 
 		header {
 			font-size: 2em;
 			font-weight: bold;
 		}
 	}
+        .footer{
+            position:absolute;
+            left:0px;
+            right:0px;
+            bottom:5px;
+            
+        }
 }
 
 $tablet-width: 40.063em;
@@ -50,4 +60,8 @@ $desktop-width: 1024px;
 @import "side-nav.scss";
 
 // Breadcrumbs
-@import "breadcrumbs.scss";
+@import "breadcrumbs.scss"; 
+
+
+
+
