@@ -35,6 +35,22 @@ class JsonResponse {
 		return $this;
 	}
 
+	public function setMissingResponse($message) {
+		$this->status = 404;
+		$this->success = false;
+		$this->message = $message;
+		$this->data = null;
+		return $this;
+	}
+
+	public function setErrorResponse($message, $data) {
+		$this->status = 500;
+		$this->success = false;
+		$this->message = $message;
+		$this->data = $data;
+		return $this;
+	}
+
 	public function __toString() {
 		return json_encode($this);
 	}
