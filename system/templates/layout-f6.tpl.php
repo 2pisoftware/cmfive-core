@@ -262,9 +262,9 @@
                 <?php echo Html::breadcrumbs(array(), $w); ?>
                 <span class='icon-container'>
                     <?php if ($w->Auth->allowed('help/view')) {
-                            echo Html::box(WEBROOT . "/help/view/" . $w->_module . ($w->_submodule ? "-" . $w->_submodule : "") . "/" . $w->_action, "<span class='fas fa-info show-for-medium'></span><span class='show-for-small-only'>Help</span>", false, true, 750, 500, "isbox", null, null, null, 'cmfive-help-modal');
+                            echo Html::box(WEBROOT . "/help/view/" . $w->_module . ($w->_submodule ? "-" . $w->_submodule : "") . "/" . $w->_action, "<span class='fas fa-info show-for-medium-up'></span><span class='show-for-small-only'>Help</span>", false, true, 750, 500, "isbox", null, null, null, 'cmfive-help-modal');
                         }
-                        echo Html::box("/search", "<span class='fas fa-search show-for-medium'></span><span class='show-for-small-only'>Search</span>", false, false, null, null, null, "cmfive_search_button"); ?>
+                        echo Html::box("/search", "<span class='fas fa-search show-for-medium-up'></span><span class='show-for-small-only'>Search</span>", false, false, null, null, null, "cmfive_search_button"); ?>
                 </span>
             </div>
             
@@ -297,8 +297,8 @@
             </div>
 
             <!-- Footer -->
-            <div class="row-fluid align-center footer clearfix" data-sticky-container>
-                <div class="columns small-12 sticky" data-sticky data-stick-to="bottom" data-top-anchor=".body" data-btm-anchor='off-canvas-content:bottom'>
+            <div class="row-fluid align-center footer clearfix">
+                <div class="columns small-12">
                     <div class='text-center'>
                         Copyright &#169; <?php echo date('Y'); ?>&nbsp;&nbsp;&nbsp;<a href="<?php echo $w->moduleConf('main', 'company_url'); ?>"><?php echo $w->moduleConf('main', 'company_name'); ?></a>
                     </div>
