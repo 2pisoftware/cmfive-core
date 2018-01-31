@@ -39,7 +39,7 @@ class TaskGroup extends DbObject {
     }
     
     public function canView(\User $user) {
-        return $this->getCanIView();
+        return $this->canList($user);
     }
     
     // Only owner of taskgroup or admin can edit
@@ -70,4 +70,15 @@ class TaskGroup extends DbObject {
         return null != $this->getObject("TaskGroupMember", array("task_group_id" => $this->id, "is_active" => 1, "user_id" => $user->id, "role" => "OWNER"));
     }
 
+    public function printSearchTitle() {
+        return $this->title;
+    }
+
+    public function printSearchUrl() {
+        return '/task-group/view/' . $this->id;
+    }
+
+    public function getSelectOptionTitle() {
+        return $this->title;
+    }
 }

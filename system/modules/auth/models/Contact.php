@@ -52,10 +52,6 @@ class Contact extends DbObject {
 		}
 	}
 
-	function getPartner() {
-		return null;
-	}
-
 	function getUser() {
 		return $this->w->Auth->getUserForContact($this->id);
 	}

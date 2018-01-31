@@ -12,7 +12,28 @@
 		</div>
 		<div class='row-fluid'>
 			<div class='small-12 columns'>
-				<html-table :header="['ID', 'Title', 'Task Group', 'Assignee', 'Type', 'Priority', 'Status', 'Due']" :data='task_list' :include="['id', 'title', 'task_group_name', 'assignee_name', 'task_type', 'priority', 'status', 'dt_due']"></html-table>
+				<table class="cmfive-html-table" border="0">
+					<thead>
+						<tr><th v-for="head in ['ID', 'Title', 'Task Group', 'Assignee', 'Type', 'Priority', 'Status', 'Due']">{{ head }}</th></tr>
+					</thead>
+					<tbody>
+						<tr v-for="_task in task_list">
+							<td v-html="_task['id']"></td>
+							<td v-html="_task['title']"></td>
+							<td v-html="_task['task_group_name']"></td>
+							<td v-html="_task['assignee_name']"></td>
+							<td v-html="_task['task_type']"></td>
+							<td v-html="_task['priority']"></td>
+							<td>
+								
+							</td>
+							<td v-html="_task['dt_due']"></td>
+						</tr>
+					</tbody>
+				</table>
+				<!-- <html-table :header="" :data='task_list' :include="['id', 'title', 'task_group_name', 'assignee_name', 'task_type', 'priority', 'status', 'dt_due']">
+					
+				</html-table> -->
 			</div>
 		</div>
 	</div>
@@ -26,6 +47,7 @@
 				assignees: <?php echo json_encode(array_map(function($user) {return ['id' => $user->id, 'name' => $user->getSelectOptionTitle()];}, $w->Auth->getUsers())); ?>,
 				creators: <?php echo json_encode(array_map(function($user) {return ['id' => $user->id, 'name' => $user->getFullName()];}, $w->Auth->getUsers())); ?>,
 				task_groups: <?php echo json_encode(array_map(function($task_group) {return ['id' => $task_group->id, 'name' => $task_group->title];}, $w->Task->getTaskGroups())); ?>,
+				task_types: <?php echo json_encode($task_types); ?>,
 				assignee: null,
 				creator: null,
 				task_group: null,
@@ -39,7 +61,7 @@
 		methods: {
 			getTaskList: function() {
 				var _this = this;
-				$.ajax('/task-vue/task_list', {
+				$.ajax('/task-ajax/task_list', {
 
 				}).done(function(response) {
 					var _response = JSON.parse(response);

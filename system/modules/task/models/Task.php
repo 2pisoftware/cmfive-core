@@ -32,6 +32,10 @@ class Task extends DbObject {
         "task_type" => ['required']
     ];
 
+    public function isOverdue() {
+        return $this->dt_due < time();
+    }
+
     /**
      * Returns attached task group
      * 
@@ -59,8 +63,9 @@ class Task extends DbObject {
     	return $this->getObject('Task', $this->parent_id);
     }
 
-
-    // Task access
+    /**
+     * Access funtions
+     */
     public function canList(User $user) {
 		return true;
     }
@@ -77,4 +82,18 @@ class Task extends DbObject {
     	return true;
     }
 
+    /**
+     * Printing functions
+     */
+    public function printSearchTitle() {
+        return $this->title;
+    }
+
+    public function printSearchUrl() {
+        return '/task/view/' . $this->id;
+    }
+
+    public function getSelectOptionTitle() {
+        return $this->printSearchTitle();
+    }
 }
