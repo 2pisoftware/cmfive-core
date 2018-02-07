@@ -126,6 +126,30 @@ class TaskService extends DbService {
 	// 	return ["statuses" => $statuses, "priorities" => $priorities, "members" => $taskgroup_members, "types" => $tasktypes];
  //    }
     
+    /**
+     * Task type functions
+     */
+    
+    public function getTaskStatus($taskgroup) {
+        if (is_string($taskgroup) && class_exists($taskgroup)) {
+            $c = new $taskgroup($this->w);
+            if (is_a($c, "TaskGroupType")) {
+                return $c->getStatusArray();
+            }
+        }
+    }
+
+    public function getTaskTypeStatus($taskgroup) {
+    	$statuses = [];
+        $task_status = $this->getTaskStatus($taskgroup);
+        if ($task_status) {
+            foreach ($task_status as $status) {
+                $statuses[] = array($status[0], $status[0]);
+            }
+            return $statuses;
+        }
+    }
+
     public function _loadTaskFiles() {
         // do this only once
         if ($this->_tasks_loaded) {

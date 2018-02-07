@@ -25,6 +25,54 @@ class TaskGroup extends DbObject {
     	'task_group_type' => ['required']
     ];
 
+    //////////////////////////////////////
+    ///REMOVE THESE
+    // get my member object. compare my role with group role required to view task group
+    function getCanIView() {
+        if ($this->Auth->user()->is_admin == 1) {
+            return true;
+        }
+        
+        $me = $this->Task->getMemberGroupById($this->id, $this->Auth->user()->id);
+        if (empty($me)) {
+            return false;
+        }
+        return ($this->can_view == "ALL") ? true : $this->Task->getMyPerms($me->role, $this->can_view);
+    }
+
+    // get my member object. compare my role with group role required to create tasks in this group
+    function getCanICreate() {
+        if ($this->Auth->user()->is_admin == 1) {
+            return true;
+        }
+        
+        $me = $this->Task->getMemberGroupById($this->id, $this->w->Auth->user()->id);
+        if (empty($me)) {
+            return false;
+        }
+        return ($this->can_create == "ALL") ? true : $this->Task->getMyPerms($me->role, $this->can_create);
+    }
+
+    // get my member object. compare my role with group role required to assign tasks in this group
+    function getCanIAssign() {
+        if ($this->Auth->user()->is_admin == 1) {
+            return true;
+        }
+        
+        $me = $this->Task->getMemberGroupById($this->id, $this->w->Auth->user()->id);
+        if (empty($me)) {
+            return false;
+        }
+        return ($this->can_assign == "ALL") ? true : $this->w->Task->getMyPerms($me->role, $this->can_assign);
+    }
+    //////////////
+
+
+
+    public function getTasks() {
+        return $this->getObjects('Task', ['task_group_id' => $this->id, 'is_deleted' => 0]);
+    }
+
     public function canList(\User $user) {
         if ($this->Auth->user()->is_admin == 1) {
             return true;

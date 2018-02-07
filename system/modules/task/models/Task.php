@@ -96,4 +96,11 @@ class Task extends DbObject {
     public function getSelectOptionTitle() {
         return $this->printSearchTitle();
     }
+
+    /**
+     * Helper functions
+     */
+    public function getTimeLogEntries() {
+        return $this->getObjects("timelog", ["object_class" => "Task", "object_id" => $this->id, "is_deleted" => 0]);
+    }
 }

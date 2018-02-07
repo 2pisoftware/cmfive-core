@@ -7,9 +7,9 @@
 	</div>
 </div>
 
-<div id="task_view_<?php echo $task->id; ?>">
+<div id="task_view_<?php echo $task->id; ?>" v-on:editTask="editTask()">
 	<div class='row-fluid'>
-		<div class='small-12 medium-9 columns'>
+		<div class='small-12 large-9 columns'>
 			<html-tabs>
 				<html-tab title='Details' icon='fa-clock' :selected="true">
 					<h4 class='display-heading'>Assigned to</h4>
@@ -19,10 +19,10 @@
 					<div class='display-content' v-html="task_description"></div>
 
 					<html-button-bar>
-						<button class='button tiny radius' @click="editTask()">Edit</button>
-						<button class='button tiny radius secondary' @click="duplicateTask()">Duplicate</button>
-						<button class='button tiny radius info' @click="newTask()">New Task</button>
-						<button class='button tiny radius warning' @click="deleteTask()">Delete</button>
+						<button class='button tiny radius' v-on:click.prevent="$emit('editTask')">Edit</button>
+						<button class='button tiny radius secondary' v-on:click.prevent="duplicateTask()">Duplicate</button>
+						<button class='button tiny radius info' v-on:click.prevent="newTask()">New Task</button>
+						<button class='button tiny radius warning' v-on:click.prevent="deleteTask()">Delete</button>
 					</html-button-bar>
 				</html-tab>
 				<html-tab title='Comments' icon='fa-quote-left'>
@@ -37,7 +37,7 @@
 				<!-- Attachment partial -->
 			</html-tabs>
 		</div>
-		<div class='small-12 medium-3 columns'>
+		<div class='small-12 large-3 columns'>
 			<html-segment title='Task group details'>
 				<table class='basic-table'>
 					<tbody>
@@ -69,6 +69,11 @@
 		computed: {
 			task_description: function() {
 				return this.task.description ? this.task.description : 'No description';
+			}
+		},
+		methods: {
+			editTask: function() {
+				$("#cmfive_modal").foundation('reveal', 'open', '/task/edit/<?php echo $task->id; ?>');
 			}
 		}
 	});
