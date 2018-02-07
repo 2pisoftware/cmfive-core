@@ -301,12 +301,19 @@ class Web {
 		// default language
 		$language = Config::get('system.language');
 		// per user language s
-		if (!empty($user)) {
+		if (!empty($user)) 
+		{
 			$lang = $user->language;
 			if (!empty($lang)) {
 				$language = $lang;
 			}
 		}
+		
+		// Fallback to en_AU if language is not set
+		if (empty($language)) {
+			$language = 'en_AU';
+		}
+		
 		$this->Log->info('init locale ' . $language);
 
 		$all_locale = getAllLocaleValues($language);
