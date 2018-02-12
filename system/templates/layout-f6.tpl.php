@@ -10,6 +10,8 @@
 
         <?php
 
+        CmfiveScriptComponentRegister::registerComponent('moment', new CmfiveScriptComponent('/system/templates/js/moment.min.js'));        
+
 		CmfiveStyleComponentRegister::registerComponent('foundation-5', new CmfiveStyleComponent(
 			"/system/templates/js/foundation-5.5.0/css/foundation.min.css"
 		));
@@ -26,23 +28,25 @@
         $w->enqueueScript(array("name" => "foundation", "uri" => "/system/templates/js/foundation-5.5.0/js/foundation.min.js", "weight" => 998));
         $w->enqueueScript(array("name" => "jquery.tablesorter.js", "uri" => "/system/templates/js/tablesorter/jquery.tablesorter.js", "weight" => 990));
         
+        CmfiveScriptComponentRegister::registerComponent('vue', new CmfiveScriptComponent('/system/templates/js/vue.js'));
+        CmfiveScriptComponentRegister::registerComponent('main', new CmfiveScriptComponent("/system/templates/js/main.js"));
         $fontawesome_js = new CmfiveScriptComponent("/system/templates/js/fontawesome-all.min.js");
         $fontawesome_js->defer = null;
         CmfiveScriptComponentRegister::registerComponent('fa-shim', new CmfiveScriptComponent("/system/templates/js/fa-v4-shims.min.js"));
         CmfiveScriptComponentRegister::registerComponent('fontawesome5', $fontawesome_js);
 
         CmfiveScriptComponentRegister::registerComponent('slideout', new CmfiveScriptComponent("/system/templates/js/slideout-1.0.1/dist/slideout.min.js"));
-        CmfiveScriptComponentRegister::registerComponent('vue', new CmfiveScriptComponent('/system/templates/js/vue.js'));
-
+        
+        
         // Print registered vue component links
-        foreach(VueComponentRegister::getComponents() as $name => $vue_component) {
-            CmfiveScriptComponentRegister::registerComponent($name, new CmfiveScriptComponent($vue_component->js_path));
-            if (!empty($vue_component->css_path) && file_exists(ROOT_PATH . $vue_component->css_path)) {
-                CmfiveStyleComponentRegister::registerComponent($name, new CmfiveStyleComponent($vue_component->css_path));
-            }
-        }
-
-        $w->enqueueScript(array("name" => "main.js", "uri" => "/system/templates/js/main.js", "weight" => 995));
+        $w->loadVueComponents();
+        
+        // foreach(VueComponentRegister::getComponents() as $name => $vue_component) {
+        //     CmfiveScriptComponentRegister::registerComponent($name, new CmfiveScriptComponent($vue_component->js_path));
+        //     if (!empty($vue_component->css_path) && file_exists(ROOT_PATH . $vue_component->css_path)) {
+        //         CmfiveStyleComponentRegister::registerComponent($name, new CmfiveStyleComponent($vue_component->css_path));
+        //     }
+        // }
         
         $w->outputStyles();
         $w->outputScripts();
