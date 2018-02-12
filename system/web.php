@@ -301,8 +301,7 @@ class Web {
 		// default language
 		$language = Config::get('system.language');
 		// per user language s
-		if (!empty($user)) 
-		{
+		if (!empty($user)) {
 			$lang = $user->language;
 			if (!empty($lang)) {
 				$language = $lang;
@@ -321,7 +320,7 @@ class Web {
 		putenv("LC_ALL={$language}");
 		$results = setlocale(LC_ALL, $all_locale);
 		
-		if (!empty($results)) {
+		if (empty($results)) {
 			$this->Log->info('setlocale failed: locale function is not available on this platform, or the given locale (' . $language . ') does not exist in this environment');
 		}
 		$langParts = explode(".", $language);
