@@ -18,8 +18,10 @@ class TaskService extends DbService {
         return $this->getObject('TaskGroup', $id);
     }
 
-	public function getTasks() {
-		return $this->getObjects('Task', ['is_deleted' => 0]);
+	public function getTasks($where = [], $sort = 'id', $sort_direction = 'DESC') {
+		$where = array_merge($where, ['is_deleted' => 0]);
+
+		return $this->getObjects('Task', $where, false, true, $sort ? $sort . ' ' . $sort_direction : null);
 	}
 
 	public function getTask($id) {

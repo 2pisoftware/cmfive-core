@@ -26,7 +26,8 @@
 					</html-button-bar>
 				</html-tab>
 				<html-tab title='Comments' icon='fa-quote-left'>
-					<?php echo $w->partial("listcomments", ["object" => $task, "internal_only" => true, "redirect" => "task/view/{$task->id}#internal_comments"], "admin"); ?>
+					<?php // echo $w->partial("listcomments", ["object" => $task, "internal_only" => true, "redirect" => "task/view/{$task->id}#internal_comments"], "admin"); ?>
+					<comments object-class="Task" :object-id="task.id"></comments>
 				</html-tab>
 				<html-tab title='Attachments' icon='fa-quote-right'>
 					<?php echo $w->partial("listattachments", ["object" => $task, "redirect" => "task/view/{$task->id}#attachments"], "file"); ?>

@@ -14,20 +14,20 @@
 			<div class='small-12 columns'>
 				<table class="cmfive-html-table" border="0">
 					<thead>
-						<tr><th v-for="head in ['ID', 'Title', 'Task Group', 'Assignee', 'Type', 'Priority', 'Status', 'Due']">{{ head }}</th></tr>
+						<tr><th v-for="(head, index) in task_table_header" v-on:click="sort(head.key)" :key="head.key">{{ head.value }} <i class='fas' :class='{"fa-angle-up": (sort_direction == 1), "fa-angle-down": (sort_direction == -1)}'></i></th></tr>
 					</thead>
 					<tbody>
 						<tr v-for="_task in task_list">
 							<td v-html="_task['id']"></td>
-							<td v-html="_task['title']"></td>
-							<td v-html="_task['task_group_name']"></td>
+							<td><a :href="_task['task_url']">{{ _task['title'] }}</a></td>
+							<td><a :href="_task['task_group_url']">{{ _task['task_group_title'] }}</td>
 							<td v-html="_task['assignee_name']"></td>
 							<td v-html="_task['task_type']"></td>
 							<td v-html="_task['priority']"></td>
 							<td>
-								
+								{{ _task['status'] }}
 							</td>
-							<td v-html="_task['dt_due']"></td>
+							<td>{{ _task['dt_due'] | formatDate }}</td>
 						</tr>
 					</tbody>
 				</table>
@@ -56,7 +56,19 @@
 				task_status: 'statuses',
 				closed: 'is_closed'
 			},
-			task_list: []
+			sort_key: 'id',
+			sort_direction: -1,
+			task_list: [],
+			task_table_header: [
+				{key: 'id', value: 'ID', sorting: true},
+				{key: 'title', value: 'Title', sorting: false},
+				{key: 'task_group_title', value: 'Task Group', sorting: false},
+				{key: 'assignee_name', value: 'Assignee', sorting: false},
+				{key: 'task_type', value: 'Type', sorting: false},
+				{key: 'priority', value: 'Priority', sorting: false},
+				{key: 'status', value: 'Status', sorting: false},
+				{key: 'dt_due', value: 'Due', sorting: false}
+			]
 		},
 		methods: {
 			getTaskList: function() {
@@ -67,6 +79,37 @@
 					var _response = JSON.parse(response);
 					_this.task_list = _response.data;
 				});
+			},
+			sort: function(key) {
+				if (this.sort_key != key) {
+					this.sort_direction = 1;
+					this.sort_key = key;
+				} else {
+					this.sort_direction *= -1;
+				}
+
+				for(var i in this.task_table_header) {
+					if (this.task_table_header[i].key == key) {
+						this.task_table_header[i].sorting = true;
+					} else {
+						this.task_table_header[i].sorting = false;
+					}
+				}
+
+				console.log('key', this.sort_key, 'dir', this.sort_direction);
+
+				var _this = this;
+				_this.task_list.sort(function(a, b) {
+					if (key in a && key in b && a[key] !== null && b[key] !== null) {
+						return (a[key].localeCompare(b[key]) * _this.sort_direction);
+					} else {
+						return 0;
+					}
+				});
+			},
+			isSortKey: function(key) {
+				console.log(this.sort_key, key);
+				return this.sort_key == key;
 			}
 		},
 		created: function() {

@@ -4,12 +4,15 @@ function task_list_GET(Web $w) {
 	
 	$tasks = $w->Task->getTasks();
 
-	$tasks_as_array = array_map(function($task) {
+	$tasks_as_array = array_map(function($task) use ($w) {
 		$task_array = $task->toArray();
-		$task_array['title'] = $task->toLink();
-		$task_array['task_group_name'] = $task->getTaskGroup()->toLink();
+		$task_group = $task->getTaskGroup();
+
+		$task_array['task_url'] = $w->localUrl($task->printSearchUrl());
+		$task_array['task_group_title'] = $task_group->title; // ->toLink();
+		$task_array['task_group_url'] = $w->localUrl($task_group->printSearchUrl());
 		$task_array['assignee_name'] = $task->getAssignee()->getSelectOptionTitle();
-		$task_array['dt_due'] = formatDate($task->dt_due);
+		// $task_array['dt_due'] = formatDate($task->dt_due);
 
 		return $task_array;
 	}, $tasks ? : []);
