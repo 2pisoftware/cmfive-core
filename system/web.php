@@ -258,6 +258,25 @@ class Web {
 		}
 	}
 
+	function loadVueComponents() {
+		$components = [];
+
+		foreach($this->modules() as $module) {
+			if (Config::get($module . '.active') === true && Config::get($module . '.vue_components') !== null) {
+				$components = array_merge($components, Config::get($module . '.vue_components'));
+			}
+		}
+		
+		if (!empty($components)) {
+			foreach($components as $component => $paths) {
+				CmfiveScriptComponentRegister::registerComponent($component, new CmfiveScriptComponent($paths[0]));
+	            if (!empty($paths[1]) && file_exists(ROOT_PATH . $paths[1])) {
+	                CmfiveStyleComponentRegister::registerComponent($component, new CmfiveStyleComponent($paths[1]));
+	            }
+			}
+		}
+	}
+
 	/**
 	 * Enqueue style adds the style entry to the Webs _style var which maintains
 	 * already registered styles and helps prevent multiple additions of the same
