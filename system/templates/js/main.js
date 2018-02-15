@@ -1,3 +1,12 @@
+// Vue filters
+
+Vue.filter('formatDate', function (value, format) {
+	if (!value) return '';
+	format = format ? format : 'DD/MM/YYYY';
+	value = value.toString();
+	return moment(value, 'X').format(format);
+});
+
 // placeholder function to stop JS complaining 
 function selectAutocompleteCallback(event, ui) {
 }

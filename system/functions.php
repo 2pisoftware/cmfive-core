@@ -425,6 +425,10 @@ function formatDateTime($date, $format = "d/m/Y h:i a", $usetimezone = true) {
 	return formatDate($date, $format);
 }
 
+function formatTime($date, $format = "H:i") {
+	return formatDate($date, $format);
+}
+
 /**
  * A replacement function for the money_format PHP function that is only
  * available on most Linux based systems with the strfmon C function.
@@ -838,4 +842,36 @@ function delete_all_between($beginning, $end, $string, $remove_every_instance = 
 
 		return $string;
 	}
+}
+
+/**
+ * Returns all months between two dates in the specified format
+ *
+ * Thanks to this SO answer: https://stackoverflow.com/a/18743012
+ *
+ * @param String from date in the format d-m-Y
+ * @param String to date in the format d-m-Y
+ * @param String optional format of returned values
+ * @return Array<String> month list
+ */
+function get_list_of_months_between_dates($from, $to, $format = 'M Y') {
+	if (is_numeric($from)) {
+		$from = date('d-m-Y', $from);
+	}
+
+	if (is_numeric($to)) {
+		$to = date('d-m-Y', $to);
+	}	
+
+	$start    = (new DateTime($from))->modify('first day of this month');
+	$end      = (new DateTime($to))->modify('first day of next month');
+	$interval = DateInterval::createFromDateString('1 month');
+	$period   = new DatePeriod($start, $interval, $end);
+
+	$month_list = [];
+	foreach ($period as $dt) {
+	    $month_list[] = $dt->format($format);
+	}
+
+	return $month_list;
 }

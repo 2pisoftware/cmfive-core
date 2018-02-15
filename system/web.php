@@ -115,6 +115,8 @@ class Web {
 
 		// The order of the following three lines are important
 		spl_autoload_register(array($this, 'modelLoader'));
+		spl_autoload_register(array($this, 'componentLoader'));
+
 		defined("WEBROOT") || define("WEBROOT", $this->_webroot);
 
 		// conditions to start the installer - must be running from web browser
@@ -181,8 +183,6 @@ class Web {
 			$class = array_pop($filePath);
 			$file = 'system' . DS . 'classes' . DS . strtolower(implode("/", $filePath)) . DS . $class . ".php";
 
-			// echo $file; var_dump(file_exists($file)); die();
-
 			if (file_exists($file)) {
 				require_once $file;
 				file_put_contents($classdirectory_cache_file, '$this->_classdirectory["' . $className . '"]="' . $file . '";' . "\n", FILE_APPEND);
@@ -190,6 +190,23 @@ class Web {
 			}
 		}
 		// $this->Log->debug("Class " . $file . " not found.");
+		return false;
+	}
+
+	private function componentLoader($name) {
+		$classes_directory = 'system' . DS . 'classes';
+		$directory = $classes_directory . DS . 'components';
+
+		if (file_exists($directory . DS . $name . '.php')) {
+			require_once $directory . DS . $name . '.php';
+			return true;
+		}
+
+		if (file_exists($classes_directory . DS . $name . '.php')) {
+			require_once $classes_directory . DS . $name . '.php';
+			return true;
+		}
+
 		return false;
 	}
 
@@ -242,6 +259,25 @@ class Web {
 		}
 	}
 
+	function loadVueComponents() {
+		$components = [];
+
+		foreach($this->modules() as $module) {
+			if (Config::get($module . '.active') === true && Config::get($module . '.vue_components') !== null) {
+				$components = array_merge($components, Config::get($module . '.vue_components'));
+			}
+		}
+		
+		if (!empty($components)) {
+			foreach($components as $component => $paths) {
+				CmfiveScriptComponentRegister::registerComponent($component, new CmfiveScriptComponent($paths[0]));
+	            if (!empty($paths[1]) && file_exists(ROOT_PATH . $paths[1])) {
+	                CmfiveStyleComponentRegister::registerComponent($component, new CmfiveStyleComponent($paths[1]));
+	            }
+			}
+		}
+	}
+
 	/**
 	 * Enqueue style adds the style entry to the Webs _style var which maintains
 	 * already registered styles and helps prevent multiple additions of the same
@@ -261,10 +297,17 @@ class Web {
 	function outputScripts() {
 		if (!empty($this->_scripts)) {
 			usort($this->_scripts, array($this, "cmp_weights"));
+
 			foreach ($this->_scripts as $script) {
-				echo "<script src='" . $script["uri"] . "'></script>";
+				try  {
+					CmfiveScriptComponentRegister::registerComponent($script['name'], new CmfiveScriptComponent($script['uri']));
+				} catch (Exception $e) {
+					$this->Log->error($e->getMessage());
+				}
 			}
 		}
+
+		CmfiveScriptComponentRegister::outputScripts();
 	}
 
 	/**
@@ -273,10 +316,24 @@ class Web {
 	function outputStyles() {
 		if (!empty($this->_styles)) {
 			usort($this->_styles, array($this, "cmp_weights"));
+
 			foreach ($this->_styles as $style) {
-				echo "<link rel='stylesheet' href='" . $style["uri"] . "'/>";
+				try {
+					CmfiveStyleComponentRegister::registerComponent($style['name'], new CmfiveStyleComponent($style['uri']));
+				} catch (Exception $e) {
+					$this->Log->error($e->getMessage());
+				}
 			}
 		}
+
+		CmfiveStyleComponentRegister::outputStyles();
+
+		// if (!empty($this->_styles)) {
+		// 	usort($this->_styles, array($this, "cmp_weights"));
+		// 	foreach ($this->_styles as $style) {
+		// 		echo "<link rel='stylesheet' href='" . $style["uri"] . "'/>";
+		// 	}
+		// }
 	}
 
 	/**
@@ -308,7 +365,7 @@ class Web {
 				$language = $lang;
 			}
 		}
-		$this->Log->info('init locale ' . $language);
+		// $this->Log->info('init locale ' . $language);
 
 		$all_locale = getAllLocaleValues($language);
 		
@@ -316,7 +373,7 @@ class Web {
 		$results = setlocale(LC_ALL, $all_locale);
 		
 		if (!empty($results)) {
-			$this->Log->info('setlocale failed: locale function is not available on this platform, or the given locale (' . $language . ') does not exist in this environment');
+			// $this->Log->info('setlocale failed: locale function is not available on this platform, or the given locale (' . $language . ') does not exist in this environment');
 		}
 		$langParts = explode(".", $language);
 		$this->currentLocale = $langParts[0];

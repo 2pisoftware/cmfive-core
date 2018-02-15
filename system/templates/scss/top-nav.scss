@@ -1,0 +1,96 @@
+// Top navigation
+
+@mixin nav_submenu_style() {
+	ul {
+		background-color: $tertiary_colour !important;
+		
+		&> li {
+		
+			a {
+				background-color: $tertiary_colour !important;
+				color: #dae2e7 !important;
+
+				&:hover {
+					background-color: $primary_colour !important;
+				}
+			}
+		}
+
+		&.side-nav {
+			background-color: $primary_colour !important;
+			color: $text_accent_colour !important;
+
+			li {
+				margin-bottom: 0px;
+
+				a {
+					&:hover {
+						background-color: $primary_colour;
+					}
+				}
+			}
+		}
+	}
+}
+
+.cmfive-nav {
+	color: white;
+	padding: 0px;
+	background-color: $primary_colour !important;
+	min-height: 50px;
+
+	section {
+		height: 100%;
+		clear: both;
+
+		ul {
+			height: 100% !important;
+
+			&:not(.accordion-menu) {
+				&>li > a::after {
+					display: none !important;
+				}
+			}
+
+			&> li {
+				height: 100%;
+				background-color: $primary_colour !important;
+				color: $text_accent_colour !important;
+
+				&> a {
+					height: 100% !important;
+					background-color: inherit !important;
+					color: inherit !important;
+
+					&.side-menu-toggle-button {
+						padding: 8px 16px !important;
+					}
+
+					&:hover {
+						background-color: $tertiary_colour !important;
+					}
+
+					img.home_logo {					// Main home logo
+						max-height: 50px;
+						height: 50px;
+					}
+
+					img.comment_avatar {
+						border-radius: 50px;
+						height: 40px;
+						width: 40px;
+						border: none;
+					}
+				}
+
+				&:hover > a {
+					background-color: $tertiary_colour !important;
+				}
+
+				@include nav_submenu_style();
+			}
+		}
+	}
+
+	@include nav_submenu_style();
+}
