@@ -60,6 +60,10 @@ Config::set('main', array(
 		],
 		'select-filter' => [
 			'/system/templates/vue-components/filter/select-filter.vue.js'
-		]
+		],
+		'loading-indicator' => [
+			'/system/templates/vue-components/loading-indicator.vue.js',
+			'/system/templates/vue-components/loading-indicator.vue.css'
+		],
 	]
 ));

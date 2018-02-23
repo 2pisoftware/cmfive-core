@@ -276,6 +276,14 @@ class Web {
 	            }
 			}
 		}
+
+		// Load components loaded in actions
+		foreach(VueComponentRegister::getComponents() ? : [] as $name => $vue_component) {
+			CmfiveScriptComponentRegister::registerComponent($name, new CmfiveScriptComponent($vue_component->js_path));
+            if (!empty($vue_component->css_path) && file_exists(ROOT_PATH . $vue_component->css_path)) {
+                CmfiveStyleComponentRegister::registerComponent($name, new CmfiveStyleComponent($vue_component->css_path));
+            }
+		}
 	}
 
 	/**

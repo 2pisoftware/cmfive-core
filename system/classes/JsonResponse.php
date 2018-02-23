@@ -52,6 +52,8 @@ class JsonResponse {
 	}
 
 	public function __toString() {
+		http_response_code($this->status);
+		
 		return json_encode($this);
 	}
 
