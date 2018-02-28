@@ -7,6 +7,8 @@ Vue.filter('formatDate', function (value, format) {
 	return moment(value, 'X').format(format);
 });
 
+Vue.filter('capitalise', ([first, ...rest]) => first.toUpperCase() + rest.join('').toLowerCase());
+
 // placeholder function to stop JS complaining 
 function selectAutocompleteCallback(event, ui) {
 }

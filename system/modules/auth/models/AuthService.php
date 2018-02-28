@@ -8,24 +8,17 @@ class AuthService extends DbService {
 	private static $_cache = array();
 
     function login($login, $password, $client_timezone, $skip_session = false) {
-        // $password = User::encryptPassword($password);
-        // $user_data = $this->_db->get("user")->where("login", $login)->and("password", $password)->and("is_active", "1")->and("is_deleted", "0")->fetch_row();
         $user = $this->getUserForLogin($login);
         if (empty($user->id) || ($user->encryptPassword($password) !== $user->password) || $user->is_external == 1) {
             return null;
         }
-        // if ($user_data != null) {
-        // $user = new User($this->w);
-        // $user->fill($user_data);
+        
         $user->updateLastLogin();
         if (!$skip_session) {
             $this->w->session('user_id', $user->id);
             $this->w->session('timezone', $client_timezone);
         }
         return $user;
-        // } else {
-        //     return null;
-        // }
     }
 
     function externalLogin($login, $password, $skip_session = false) {
