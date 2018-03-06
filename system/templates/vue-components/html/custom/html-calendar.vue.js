@@ -12,6 +12,10 @@ Vue.component('html-calendar', {
 			type: Boolean,
 			required: false,
 			default: false
+		},
+		selectedDate: {
+			type: Date,
+			required: false
 		}
 	},
 	data: function() {
@@ -46,8 +50,10 @@ Vue.component('html-calendar', {
 			for(i = 0; i < this.month.daysInMonth(); i++) {
 				let today = (moment().startOf('day').isSame(start_date))
 				let disabled = (start_date.isSameOrBefore(moment().startOf('day')))
+				
+				let selected_date = this.selectedDate ? moment(this.selectedDate).startOf('day').isSame(start_date) : false;
 
-				this.days.push({day: start_date.date(), classes: 'day' + (today ? ' today' : '') + (disabled ? ' disabled' : ''), obj: start_date.clone()})
+				this.days.push({day: start_date.date(), classes: 'day' + (today ? ' today' : '') + (disabled ? ' disabled' : '') + (selected_date ? ' selected' : ''), obj: start_date.clone()})
 				start_date = start_date.add(1, 'day')
 			}
 		},
@@ -61,7 +67,9 @@ Vue.component('html-calendar', {
 				return 'disabled'
 			}
 		},
-		days_of_week: () => {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']}
+		days_of_week: () => {
+			return ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+		}
 	},
 	created: function() {
 		this.getDays()

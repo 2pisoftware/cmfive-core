@@ -91,9 +91,12 @@ $light-background-colour: #f8f9fb;
 					cursor: not-allowed;
 				}
 
-
 				&.today {
 					background-color: darken($light-border-colour, 10%);
+				}
+
+				&.selected {
+					background-color: lighten($primary_colour, 5%);
 				}
 			}
 		}
