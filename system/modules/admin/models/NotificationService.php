@@ -46,7 +46,7 @@ class NotificationService extends DbService {
 				case NotificationService::TYPE_EMAIL:
 				default:
 					$this->w->Mail->sendMail($recipient_user->getContact()->email, 
-						!empty($sending_user->id) ? $sending_user->getContact()->email : Config::get('main.company_support_email'),
+						($recipient_user->is_external || empty($sending_user->id)) ? Config::get('main.company_support_email') : $sending_user->getContact()->email,
 						$subject, $output, null, null, $attachments
 					);
 					break;
