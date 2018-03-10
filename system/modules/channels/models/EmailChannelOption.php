@@ -83,7 +83,7 @@ class Zend_Mail_Protocol_Imap extends \Zend\Mail\Protocol\Imap {
 
         $error = ErrorHandler::stop();
         if (!$this->socket) {
-            throw new Exception\RuntimeException(sprintf(
+            throw new \Zend\Mail\Exception\RuntimeException(sprintf(
                 'cannot connect to host %s',
                 ($error ? sprintf('; error = %s (errno = %d )', $error->getMessage(), $error->getCode()) : '')
             ), 0, $error);
@@ -256,7 +256,11 @@ class EmailChannelOption extends DbObject {
                                         if (empty($name)) {
                                             $name = "attachment_" . substr(uniqid('', true), -6);
                                         }
-
+										
+										// Try and trim quotes off the name
+										$name = trim($name, '"');
+										$name = trim($name, "'");
+										
                                         $this->w->File->saveFileContent($channel_message, 
                                                 ($transferEncoding == "base64" ? base64_decode(trim($part->__toString())) : trim($part->__toString())), $name, "channel_email_attachment", $contentType);
                                 }
