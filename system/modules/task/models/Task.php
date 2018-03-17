@@ -601,7 +601,10 @@ class Task extends DbObject {
                 $tg_type->on_after_update($this);
             }
 
-			if (!$this->isUserSubscribed($this->assignee_id)) {
+            //if not 'unassigned' add user to subscribers
+            //check user exists
+            $user = $this->w->auth->getUser($this->assignee_id);
+			if (!empty($user) && !$this->isUserSubscribed($this->assignee_id)) {
 				$assignee_subscriber = new TaskSubscriber($this->w);
 				$assignee_subscriber->task_id = $this->id;
 				$assignee_subscriber->user_id = $this->assignee_id;
@@ -637,14 +640,6 @@ class Task extends DbObject {
                 $this->getTaskTypeObject()->on_before_delete($this);
             }
             
-            //delete all timelogs attached to the task
-            $timelogs = $this->getTimeLogEntries();
-            if (!empty($timelogs)) {
-                foreach ($timelogs as $log) {
-                    $log->delete();
-                }
-            }
-
             // 3. Delete the task
 
             parent::delete($force);
