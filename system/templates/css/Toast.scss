@@ -1,0 +1,26 @@
+// Toast message stylesheet
+
+.cmfive-toast-message {
+
+	visibility: hidden;
+	opacity: 0;
+	background-color: #333;
+	color: white;
+	text-align: center;
+	padding: 16px;
+	position: fixed;
+	z-index: 1000000;
+	left: 50%;
+	bottom: 0px;
+	min-width: 320px;
+	margin-left: -160px;
+
+	transition: 0.4s;
+
+	&.cmfive-toast-message-appear {
+		bottom: 20px;
+		opacity: 1;
+		visibility: visible;
+	}
+	
+}

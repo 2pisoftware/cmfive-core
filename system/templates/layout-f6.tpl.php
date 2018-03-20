@@ -10,7 +10,8 @@
 
         <?php
 
-        CmfiveScriptComponentRegister::registerComponent('moment', new CmfiveScriptComponent('/system/templates/js/moment.min.js'));        
+        CmfiveScriptComponentRegister::registerComponent('moment', new CmfiveScriptComponent('/system/templates/js/moment.min.js'));
+        CmfiveScriptComponentRegister::registerComponent('axios', new CmfiveScriptComponent('/system/templates/js/axios.min.js'));     
 
 		CmfiveStyleComponentRegister::registerComponent('foundation-5', new CmfiveStyleComponent(
 			"/system/templates/js/foundation-5.5.0/css/foundation.min.css"
@@ -40,14 +41,7 @@
         
         // Print registered vue component links
         $w->loadVueComponents();
-        
-        // foreach(VueComponentRegister::getComponents() as $name => $vue_component) {
-        //     CmfiveScriptComponentRegister::registerComponent($name, new CmfiveScriptComponent($vue_component->js_path));
-        //     if (!empty($vue_component->css_path) && file_exists(ROOT_PATH . $vue_component->css_path)) {
-        //         CmfiveStyleComponentRegister::registerComponent($name, new CmfiveStyleComponent($vue_component->css_path));
-        //     }
-        // }
-        
+
         $w->outputStyles();
         $w->outputScripts();
 

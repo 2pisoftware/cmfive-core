@@ -83,7 +83,7 @@ class Zend_Mail_Protocol_Imap extends \Zend\Mail\Protocol\Imap {
 
         $error = ErrorHandler::stop();
         if (!$this->socket) {
-            throw new Exception\RuntimeException(sprintf(
+            throw new \Zend\Mail\Exception\RuntimeException(sprintf(
                 'cannot connect to host %s',
                 ($error ? sprintf('; error = %s (errno = %d )', $error->getMessage(), $error->getCode()) : '')
             ), 0, $error);

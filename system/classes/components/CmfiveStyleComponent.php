@@ -8,19 +8,25 @@ class CmfiveStyleComponent extends CmfiveComponent {
 	public $_dirname;
 	public $_extension = 'css';
 	public $_include_paths = [];
+	public $_external = false;
 	public static $_allowed_extensions = ['css', 'scss'];
 
-	public function __construct($path, $include_paths = []) {
-		$style_path = pathinfo($path);
+	public function __construct($path, $include_paths = [], $is_external = false) {
+		$this->_external = $is_external;
+		if (!$this->_external) {
+			$style_path = pathinfo($path);
 
-		if (empty($style_path['extension']) || !in_array($style_path['extension'], static::$_allowed_extensions)) {
-			throw new Exception('Invalid file path given to component');
+			if (empty($style_path['extension']) || !in_array($style_path['extension'], static::$_allowed_extensions)) {
+				throw new Exception('Invalid file path given to component');
+			}
+
+			$this->_extension = $style_path['extension'];
+			$this->_filename = $style_path['filename'];
+			$this->_dirname = $style_path['dirname'];
+			$this->_include_paths = $include_paths;
+		} else {
+			$this->href = $path;
 		}
-
-		$this->_extension = $style_path['extension'];
-		$this->_filename = $style_path['filename'];
-		$this->_dirname = $style_path['dirname'];
-		$this->_include_paths = $include_paths;
 	}
 
 	public function _include() {
@@ -59,7 +65,9 @@ class CmfiveStyleComponent extends CmfiveComponent {
 			case 'css':
 			default:
 				$this->rel = 'stylesheet';
-				$this->href = $this->_dirname . '/' . $this->_filename . '.' . $this->_extension;
+				if (!$this->_external) {
+					$this->href = $this->_dirname . '/' . $this->_filename . '.' . $this->_extension;
+				}
 				return parent::_include();
 		}
 	}
