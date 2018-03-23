@@ -63,6 +63,15 @@ class FormService extends DbService {
 		$form_structure = $form_instance->getEditForm($form);
 		return $form_structure;
 	}
+
+	/**
+	 * get form mappings for form id.
+	 * 
+	 * @return array[]
+	 */
+	public function getFormMappingsForForm($form_id) {
+		return $this->getObjects("FormMapping", ["form_id" => $form_id, "is_deleted" => 0]);
+	}
 	
 	/**
 	 * Check if this form is mapped to the object.
@@ -159,6 +168,30 @@ class FormService extends DbService {
 
 	public function getFormValueForInstanceAndField($instance_id, $field_id) {
 		return $this->getObject('FormValue', ['form_instance_id' => $instance_id, 'form_field_id' => $field_id, 'is_deleted' => 0]);
+	}
+
+	/**
+	 * Checks imported form title and updates to remove duplications
+	 *
+	 * @param string $form_title
+	 * @param int 
+	 *
+	 * @return string
+	 */
+	public function checkImportedFormTitle($form_title, $number = 0) {
+		if ($number == 0 && ($this->getFormByTitle($form_title)) || $this->getFormByTitle($form_title . ' (' . $number . ')')) {
+			$number += 1;
+			return $this->checkImportedFormTitle($form_title, $number);
+		} else {
+			if ($number > 0) {
+				$form_title .= ' (' . $number . ')';
+			}
+			return $form_title;
+		}
+	}
+
+	public function getFormByTitle($form_title) {
+		return $this->getObjects('Form', ['title'=>$form_title,'is_deleted'=>0]);
 	}
 
 	/**

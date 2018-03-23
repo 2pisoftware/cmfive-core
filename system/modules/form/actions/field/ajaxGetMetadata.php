@@ -31,15 +31,18 @@ function ajaxGetMetadata_GET(Web $w) {
 
 					// If form is an array assume its based on the Html::form layout
 					if (is_array($metadata_form)) {
-						// Try and fill existing data in the event that the user changes back to the original field type
-						foreach($metadata_form as $metadata_form_row_index => &$metadata_form_row) {
-							if (is_array($metadata_form_row)) {
-								$existing_metadata_field = $field->findMetadataByKey($metadata_form_row[2]);
-								if (!empty($existing_metadata_field->id)) {
-									$metadata_form_row[3] = $existing_metadata_field->meta_value;	
+						// Try and fill existing data in the event that the user changes back to the original field type if field already exists
+						if (!empty($field)) {
+							foreach($metadata_form as $metadata_form_row_index => &$metadata_form_row) {
+								if (is_array($metadata_form_row)) {
+									$existing_metadata_field = $field->findMetadataByKey($metadata_form_row[2]);
+									if (!empty($existing_metadata_field->id)) {
+										$metadata_form_row[3] = $existing_metadata_field->meta_value;	
+									}
 								}
 							}
 						}
+						
 
 						$w->out(htmlentities(Html::form($metadata_form)));
 						return;
