@@ -1,15 +1,50 @@
 
-<div id='vue_task_list' class='row-fluid'>
-	<div class='small-12 columns'>
-		<div class='row-fluid'>
-			<div class='small-12 columns'>
-				<list-filter>
-					<select-filter :dataset='filter.assignees' dataset-key="id" dataset-value='name' v-model='filter.assignee' label="Assignee"></select-filter>
-					<select-filter :dataset='filter.creators' dataset-key="id" dataset-value='name' v-model='filter.creator' label="Creator"></select-filter>
-					<select-filter :dataset='filter.task_groups' dataset-key="id" dataset-value='name' v-model='filter.task_group' label="Task Group"></select-filter>
-				</list-filter>
-			</div>
-		</div>
+<div id='vue_task_list'>
+	
+		
+			
+                           
+                                <div class='row-fluid'>
+                                    <div class='small-3 columns'>
+                                        <label>Assignee</label>
+                                        <autocomplete :list="filter.assignees" v-on:autocomplete-select="setAssignee" property="name" :required="false" :threshold="0"></autocomplete>
+                                    </div>
+                                    <div class='small-3 columns'>
+                                        <label>Creator</label>
+                                        <autocomplete :list="filter.creators" v-on:autocomplete-select="setCreator" property="name" :required="false" :threshold="0"></autocomplete>
+                                    </div>
+                                    <div class='small-3 columns'>
+                                        <label>Task Group</label>
+                                        <autocomplete :list="filter.task_groups" v-on:autocomplete-select="setTaskgroup" property="name" :required="false" :threshold="0"></autocomplete>
+                                    </div>
+                                    <div class='small-3 columns'>
+                                        <label>Task status</label>
+                                        <autocomplete :list="filter.task_statuslist" v-on:autocomplete-select="setTaskstatus" property="name" :required="false" :threshold="0"></autocomplete>
+                                    </div>
+                                </div>
+                                <div class='row-fluid'>
+                                    <div class='small-3 columns'>
+                                        <label>Priority</label>
+                                        <autocomplete :list="filter.priority_list" v-on:autocomplete-select="setPriority" property="name" :required="false" :threshold="0"></autocomplete>
+                                    </div>
+                                    <div class='small-3 columns'>
+                                        <label>Task type</label>
+                                        <autocomplete :list="filter.task_types" v-on:autocomplete-select="setTasktype" property="name" :required="false" :threshold="0"></autocomplete>
+                                    </div>
+                                    <div class='small-3 columns'>
+                                        
+                                    </div>
+                                    <div class='small-3 columns'>
+                                        
+                                    </div>
+                                </div>
+                            <div class='row-fluid'>
+                                <div class='small-12 columns text-center'>
+                                    <button v-on:click="getTaskList()" class="tiny button info radius" style="width: 45%;">Filter</button>
+                                    <button class="tiny button info radius" style="width: 45%;">Reset</button>
+                                </div>
+                            </div>
+			
 		<div class='row-fluid'>
 			<div class='small-12 columns'>
 				<table class="cmfive-html-table" border="0">
@@ -36,10 +71,10 @@
 				</html-table> -->
 			</div>
 		</div>
-	</div>
+	
 </div>
-<script>
 
+<script> 
 	var vue_task_list = new Vue({
 		el: '#vue_task_list',
 		data: {
@@ -47,14 +82,17 @@
 				assignees: <?php echo json_encode(array_map(function($user) {return ['id' => $user->id, 'name' => $user->getSelectOptionTitle()];}, $w->Auth->getUsers())); ?>,
 				creators: <?php echo json_encode(array_map(function($user) {return ['id' => $user->id, 'name' => $user->getFullName()];}, $w->Auth->getUsers())); ?>,
 				task_groups: <?php echo json_encode(array_map(function($task_group) {return ['id' => $task_group->id, 'name' => $task_group->title];}, $w->Task->getTaskGroups())); ?>,
-				task_types: <?php echo json_encode($task_types); ?>,
+				task_types: <?php echo json_encode(array_map(function($task_type) {return ['id' => $task_type['task_type'], 'name' => $task_type['task_type']];}, $w->db->get("task")->select()->select("DISTINCT task_type")->fetchAll())); ?>,
+                                priority_list: <?php echo json_encode(array_map(function($priority) {return ['id' => $priority['priority'], 'name' => $priority['priority']];}, $w->db->get("task")->select()->select("DISTINCT priority")->fetchAll())); ?>,
+                                task_statuslist: <?php echo json_encode(array_map(function($task_status) {return ['id' => $task_status['status'], 'name' => $task_status['status']];}, $w->db->get("task")->select()->select("DISTINCT status")->fetchAll())); ?>,
 				assignee: null,
 				creator: null,
 				task_group: null,
-				task_type: 'task_types',
-				task_priority: 'task_priority',
-				task_status: 'statuses',
-				closed: 'is_closed'
+				task_type: null,
+				task_priority: null,
+				task_status: null,
+				closed: 'is_closed',
+                                filterdata: {}
 			},
 			sort_key: 'id',
 			sort_direction: -1,
@@ -73,7 +111,18 @@
 		methods: {
 			getTaskList: function() {
 				var _this = this;
-				$.ajax('/task-ajax/task_list', {
+                                var params = {
+                                    /*assignee: this.assignee,
+                                    creator: this.creator,
+                                    task_group: this.task_group,*/
+                                    //title: "";
+                                    task_type: this.filter.task_type,
+                                    priority: this.filter.task_priority,
+                                    status: this.filter.task_status
+                                };
+                                
+                                var filtered = params.filter(a=>a.type !== "" || null);
+				$.ajax({url: '/task-ajax/task_list', data: this.filter.filterdata }, {
 
 				}).done(function(response) {
 					var _response = JSON.parse(response);
@@ -110,7 +159,28 @@
 			isSortKey: function(key) {
 				console.log(this.sort_key, key);
 				return this.sort_key == key;
-			}
+			},
+                        setPriority: function(selectedValue) {
+                            this.filter.task_priority = selectedValue;
+			},
+                        setAssignee: function(selectedValue) {
+                            this.filter.assignee = selectedValue;
+                        },
+                        setCreator: function(selectedValue) {
+                            this.filter.creator = selectedValue;
+                        },
+                        setTaskgroup: function(selectedValue) {
+                            this.filter.task_group = selectedValue;
+                        },
+                        setTasktype: function(selectedValue) {
+                            this.filter.task_type = selectedValue;
+                        },
+                        setTaskstatus: function(selectedValue) {
+                            if (selectedValue !== null && selectedValue !== "") {
+                                this.filter.task_status = selectedValue;
+                                this.filter.filterdata.status = selectedValue;
+                            }
+                        }
 		},
 		created: function() {
 			this.getTaskList();

@@ -1,8 +1,8 @@
 <?php
 
 function task_list_GET(Web $w) {
-	
-	$tasks = $w->Task->getTasks();
+        $filter = !empty($_GET) ? $_GET : [];
+	$tasks = $w->Task->getTasks($filter);
 
 	$tasks_as_array = array_map(function($task) use ($w) {
 		$task_array = $task->toArray();

@@ -13,6 +13,7 @@
  * @author Adam Buckley <adam@2pisoftware.com> (modified to fit our needs)
  * @license spdx.org/licenses/MIT.html MIT License
  */
+
 Vue.component('autocomplete', {
    template: '<div :class="classPrefix" v-on:mousedown="mousefocus = true" v-on:mouseout="mousefocus = false"> \
         <input type="text" v-on:blur="focused = false" v-on:focus="focused = true" \
@@ -42,11 +43,13 @@ Vue.component('autocomplete', {
         filteredEntries: function() {
             if (this.search.length <= this.threshold) {
                 return [];
+            } else if (this.search === ' ') {
+                return this.entries;
             } else {
                 var _this = this;
                 return this.entries.filter(function(entry) {
                     if (_this.ignoreCase) {
-                        return entry[_this.property].toLowerCase().indexOf(_this.search.toLowerCase()) > -1;
+                        return entry[_this.property.toLowerCase()].indexOf(_this.search.toLowerCase()) > -1;
                     }
                     return entry[_this.property].indexOf(_this.search) > -1;
                 });
@@ -78,9 +81,11 @@ Vue.component('autocomplete', {
     },
     methods: {
         select: function(index) {
+            // console.log(this.filteredEntries[index][this.idProperty]);
             if (this.hasSuggestions) {
-                this.search = this.filteredEntries[index][this.property];
-                this.$emit('autocomplete-select', this.filteredEntries[index][this.idProperty]);
+                var e = this.filteredEntries[index][this.property];
+                this.search = e;
+                this.$emit('autocomplete-select', e);
                 if (this.autoHide) {
                     this.mousefocus = false;
                     this.focused = false;

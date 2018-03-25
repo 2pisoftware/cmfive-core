@@ -65,5 +65,9 @@ Config::set('main', array(
 			'/system/templates/vue-components/loading-indicator.vue.js',
 			'/system/templates/vue-components/loading-indicator.vue.css'
 		],
+                'autocomplete' => [
+			'/system/templates/vue-components/form/elements/autocomplete.vue.js',
+			'/system/templates/vue-components/form/elements/autocomplete.vue.css'
+		]
 	]
 ));
