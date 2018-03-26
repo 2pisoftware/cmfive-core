@@ -49,9 +49,9 @@ Vue.component('autocomplete', {
                 var _this = this;
                 return this.entries.filter(function(entry) {
                     if (_this.ignoreCase) {
-                        return entry[_this.property.toLowerCase()].indexOf(_this.search.toLowerCase()) > -1;
+                        return entry[_this.property].toLowerCase().indexOf(_this.search.toLowerCase()) !== -1;
                     }
-                    return entry[_this.property].indexOf(_this.search) > -1;
+                    return entry[_this.property].indexOf(_this.search) !== -1;
                 });
             }
         },
