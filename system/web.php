@@ -77,6 +77,7 @@ class Web {
 	public $_is_head_request = false;
 	public $_languageModulesLoaded = [];
 	public $currentLocale = '';
+        public $migrating = false;
 
 	private $_classdirectory; // used by the class auto loader
 
@@ -638,6 +639,24 @@ class Web {
 			$this->ctx("msg", $this->session('msg'));
 			$this->sessionUnset('msg');
 			$this->ctx("w", $this);
+                        $this->ctx("cryptoException", "");
+                        
+                        // notify to move from AES to openSSL
+                        if (!$this->_is_installing && !$this->migrating) {
+                            // check if the migration is installed
+                            if ($this->Auth->loggedIn()) {
+                                if (PHP_VERSION_ID < 70100 && $this->Auth->user()->is_admin) {
+                                    // prompt admin to migrate from aes to openssl and continue using aes
+                                    $this->ctx("migrationMessage", '<div data-alert class="alert-box warning radius"><h3 class="text-center"><strong style="color: #ffffff;">To use cmfive with newer versions of PHP, migration from aes to openssl is needed</strong></h3><a href="#" class="close">&times;</a></div>');
+                                }
+                            }
+
+                            else {
+                                // display global message
+                                // throw exceptions while encrypting / decrypting
+                                $this->ctx("migrationMessage", '<div data-alert class="alert-box alert radius"><h3 class="text-center"><strong style="color: #ffffff;">Cmfive doesn´t support this version of PHP</strong></h3><a href="#" class="close">&times;</a></div>');
+                            }
+                        }
 
 			try {
 				// call hooks, generic to specific

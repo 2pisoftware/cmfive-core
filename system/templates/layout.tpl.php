@@ -304,6 +304,8 @@
                 <?php endif; ?>
 
                 <div class="row-fluid" style="overflow: hidden;">
+                    <?php echo $cryptoException; ?>
+                    <?php echo $migrationMessage; ?>
                     <?php echo !empty($body) ? $body : ''; ?>
                 </div>
             </div>

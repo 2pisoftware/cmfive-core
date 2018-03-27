@@ -144,7 +144,23 @@ class DbObject extends DbService {
         foreach (get_object_vars($this) as $k => $v) {
             if (strpos($k, "s_") === 0) {
                 if ($v) {
-                    $this->$k = AESdecrypt($v, Config::get('system.password_salt'));
+                    // check whether to use the old AESdecrypt or new openssl_decrypt method
+                    if ($this->w->Migration->isInstalled("AesToOpenssl") || $this->w->migrating) {
+                        $this->$k = openssl_decrypt($v, "AES-256-CBC", Config::get('system.password_salt'), 0, "ash17hr39fu12cva");
+                    }
+                    
+                    else {
+                        $this->$k = AESdecrypt($v, Config::get('system.password_salt'));
+                        
+                        // throw exception if php version > 7.0
+                        if (PHP_VERSION_ID > 70000) {
+                            $this->w->ctx("cryptoException", '<div data-alert class="alert-box alert radius"><h4 class="text-center"><strong style="color: #ffffff;">Error occured while decrypting a database field: ' . $k . '</strong></h4><a href="#" class="close">&times;</a></div>');
+                        }
+
+                        else {
+                            $this->w->sessionUnset('cryptoException');
+                        }
+                    }
                 }
             }
         }
@@ -558,7 +574,24 @@ class DbObject extends DbService {
                         }
                     } else if (strpos($k, "s_") === 0) {
                         if ($v) {
-                            $v = AESencrypt($v, Config::get('system.password_salt'));
+                            // check whether to use the old AESencrypt or new openssl_encrypt method
+                            if ($this->w->Migration->isInstalled("AesToOpenssl") || $this->w->migrating) {
+                                $v = openssl_encrypt($v, "AES-256-CBC", Config::get('system.password_salt'), 0, "ash17hr39fu12cva");
+                            }
+                            
+                            else {
+                                $v = AESencrypt($v, Config::get('system.password_salt'));
+                                
+                                // throw exception if php version > 7.0
+                                if (PHP_VERSION_ID > 70000) {
+                                    $this->w->ctx("cryptoException", '<div data-alert class="alert-box alert radius"><h4 class="text-center"><strong style="color: #ffffff;">Error occured while encrypting a database field: ' . $k . '</strong></h4><a href="#" class="close">&times;</a></div>');
+                                }
+
+                                else {
+                                    $this->w->sessionUnset('cryptoException');
+                                }
+                            }
+                            
                             $data [$dbk] = $v;
                         }
                     } else {
@@ -1193,7 +1226,23 @@ class DbObject extends DbService {
                 return null;
         } else if (strpos($k, "s_") === 0) {
             if (!empty($v)) {
-                return AESencrypt($v, Config::get('system.password_salt'));
+                // check whether to use the old AESencrypt or new openssl_encrypt method
+                if ($this->w->Migration->isInstalled("AesToOpenssl") || $this->w->migrating) {
+                    return openssl_encrypt($v, "AES-256-CBC", Config::get('system.password_salt'), 0, "ash17hr39fu12cva");
+                }
+
+                else {
+                    // throw exception if php version > 7.0
+                    if (PHP_VERSION_ID > 70000) {
+                        $this->w->ctx("cryptoException", '<div data-alert class="alert-box alert radius"><h4 class="text-center"><strong style="color: #ffffff;">Error occured while encrypting database field: ' . $k . '</strong></h4><a href="#" class="close">&times;</a></div>');
+                    }
+
+                    else {
+                        $this->w->sessionUnset('cryptoException');
+                    }
+                    
+                    return AESencrypt($v, Config::get('system.password_salt'));
+                }
             }
         }
         return $v;
