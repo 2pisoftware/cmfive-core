@@ -16,6 +16,7 @@ function import_GET(Web $w) {
 
 function import_POST(Web $w) {
 
+
 	if(isset($_FILES['file'])) {
 	    $filename = $_FILES['file']['name'];
 	    $source = $_FILES['file']['tmp_name'];
@@ -67,11 +68,14 @@ function import_POST(Web $w) {
 	    }
 	     
 	    $content = json_decode(file_get_contents($target.$name[0]));
-	    
+	    if (empty($content)) {
+	    	$w->error('no content found. PLease ensure that your zip filename matches your report name');
+	    }
+
 	    //delete file upload from directory
 	    unlink($target.$name[0]);
 	    rmdir($target);
-	    
+	//echo $target.$name[0]; die;
 	    //create form structure from $content
 	    if (!empty($content)) {
 	    	//check for form title override and check title

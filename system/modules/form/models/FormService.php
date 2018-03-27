@@ -190,6 +190,29 @@ class FormService extends DbService {
 		}
 	}
 
+	/**
+	 * Checks imported application title and updates to remove duplications
+	 *
+	 * @param string $form_title
+	 * @param int 
+	 *
+	 * @return string
+	 */
+	public function checkImportedApplicationTitle($app_title, $number = 0) {
+		if ($number == 0 && ($this->getApplicationByTitle($app_title)) || $this->getApplicationByTitle($app_title . ' (' . $number . ')')) {
+			$number += 1;
+			return $this->checkImportedApplicationTitle($app_title, $number);
+		} else {
+			if ($number > 0) {
+				$app_title .= ' (' . $number . ')';
+			}
+			return $app_title;
+		}
+	}
+	public function getApplicationByTitle($app_title) {
+		return $this->getObjects('FormApplication', ['title'=>$app_title,'is_deleted'=>0]);
+	}
+
 	public function getFormByTitle($form_title) {
 		return $this->getObjects('Form', ['title'=>$form_title,'is_deleted'=>0]);
 	}
