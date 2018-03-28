@@ -146,7 +146,7 @@ class DbObject extends DbService {
                 if ($v) {
                     // check whether to use the old AESdecrypt or new openssl_decrypt method
                     if ($this->w->Migration->isInstalled("AesToOpenssl") || $this->w->migrating) {
-                        $this->$k = openssl_decrypt($v, "AES-256-CBC", Config::get('system.password_salt'), 0, "ash17hr39fu12cva");
+                        $this->$k = openssl_decrypt($v, "AES-256-CBC", "lvewfopkkzsxnjjws1zc66rucgh8lt", 0, "ash17hr39fu12cva");
                     }
                     
                     else {
@@ -576,7 +576,7 @@ class DbObject extends DbService {
                         if ($v) {
                             // check whether to use the old AESencrypt or new openssl_encrypt method
                             if ($this->w->Migration->isInstalled("AesToOpenssl") || $this->w->migrating) {
-                                $v = openssl_encrypt($v, "AES-256-CBC", Config::get('system.password_salt'), 0, "ash17hr39fu12cva");
+                                $v = openssl_encrypt($v, "AES-256-CBC", "lvewfopkkzsxnjjws1zc66rucgh8lt", 0, "ash17hr39fu12cva");
                             }
                             
                             else {
@@ -1228,7 +1228,7 @@ class DbObject extends DbService {
             if (!empty($v)) {
                 // check whether to use the old AESencrypt or new openssl_encrypt method
                 if ($this->w->Migration->isInstalled("AesToOpenssl") || $this->w->migrating) {
-                    return openssl_encrypt($v, "AES-256-CBC", Config::get('system.password_salt'), 0, "ash17hr39fu12cva");
+                    return openssl_encrypt($v, "AES-256-CBC", "lvewfopkkzsxnjjws1zc66rucgh8lt", 0, "ash17hr39fu12cva");
                 }
 
                 else {
