@@ -2,7 +2,7 @@
     <div class='row-fluid'>
         <div class='small-3 columns'>
             <label>Assignee</label>
-            <autocomplete :list="filter.assignees" v-on:autocomplete-select="setAssignee" property="name" :required="false" :threshold="0"></autocomplete>
+            <autocomplete id="assignee" :list="filter.assignees" v-on:autocomplete-select="setAssignee" property="name" :required="false" :threshold="0"></autocomplete>
         </div>
         <div class='small-3 columns'>
             <label>Creator</label>
@@ -69,7 +69,7 @@
 	
 </div>
 
-<script> 
+<script>
 	var vue_task_list = new Vue({
 		el: '#vue_task_list',
 		data: {
@@ -179,6 +179,7 @@
 			},
                         setAssignee: function(selectedValue) {
                             this.filter.assignee_id = selectedValue;
+                            console.log(document.getElementById("assignee"));
                         },
                         setCreator: function(selectedValue) {
                             this.filter.creator_id = selectedValue;
