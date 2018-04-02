@@ -152,8 +152,8 @@ class DbObject extends DbService {
                     else {
                         $this->$k = AESdecrypt($v, Config::get('system.password_salt'));
                         
-                        // throw exception if php version > 7.0
-                        if (PHP_VERSION_ID > 70000) {
+                        // throw exception if php version >= 70100
+                        if (PHP_VERSION_ID >= 70100) {
                             $this->w->ctx("cryptoException", '<div data-alert class="alert-box alert radius"><h4 class="text-center"><strong style="color: #ffffff;">Error occured while decrypting a database field: ' . $k . '</strong></h4><a href="#" class="close">&times;</a></div>');
                         }
 
@@ -582,8 +582,8 @@ class DbObject extends DbService {
                             else {
                                 $v = AESencrypt($v, Config::get('system.password_salt'));
                                 
-                                // throw exception if php version > 7.0
-                                if (PHP_VERSION_ID > 70000) {
+                                // throw exception if php version >= 70100
+                                if (PHP_VERSION_ID >= 70100) {
                                     $this->w->ctx("cryptoException", '<div data-alert class="alert-box alert radius"><h4 class="text-center"><strong style="color: #ffffff;">Error occured while encrypting a database field: ' . $k . '</strong></h4><a href="#" class="close">&times;</a></div>');
                                 }
 
@@ -1232,8 +1232,8 @@ class DbObject extends DbService {
                 }
 
                 else {
-                    // throw exception if php version > 7.0
-                    if (PHP_VERSION_ID > 70000) {
+                    // throw exception if php version >= 70100
+                    if (PHP_VERSION_ID >= 70100) {
                         $this->w->ctx("cryptoException", '<div data-alert class="alert-box alert radius"><h4 class="text-center"><strong style="color: #ffffff;">Error occured while encrypting database field: ' . $k . '</strong></h4><a href="#" class="close">&times;</a></div>');
                     }
 

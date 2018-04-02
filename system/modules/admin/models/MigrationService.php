@@ -213,6 +213,10 @@ MIGRATION;
 					}
 					
 					foreach($migrations as $migration_path => $migration) {
+                                            if ($migration == "AesToOpenssl" && PHP_VERSION_ID >= 70100) {
+                                                $this->w->ctx("migrationMessage", '<div data-alert class="alert-box alert radius"><h4 class="text-center"><strong style="color: #ffffff;">Migration from AES to Openssl or backwards is only supported on PHP version <= 7.1</strong></h4><a href="#" class="close">&times;</a></div>');
+                                                continue;
+                                            }
 						if (file_exists(ROOT_PATH . '/' . $migration_path)) {
 							include_once ROOT_PATH . '/' . $migration_path;
 
@@ -309,6 +313,11 @@ MIGRATION;
 				]);
 				
 				foreach($migrations_to_rollback as $migration) {
+                                    if ($migration['classname'] == "AesToOpenssl" && PHP_VERSION_ID >= 70100) {
+                                        $this->w->ctx("migrationMessage", '<div data-alert class="alert-box alert radius"><h4 class="text-center"><strong style="color: #ffffff;">Migration from AES to Openssl or backwards is only supported on PHP version <= 7.1</strong></h4><a href="#" class="close">&times;</a></div>');
+                                        continue;
+                                    }
+                                    
 					if (file_exists(ROOT_PATH . '/' . $migration['path'])) {
 						include_once ROOT_PATH . '/' . $migration['path'];
 
