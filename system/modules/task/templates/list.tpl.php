@@ -1,3 +1,6 @@
+<!--<link rel='stylesheet' href='' />-->
+
+
 <div id='vue_task_list' class="container-fluid">
     <div class='row-fluid'>
         <div class='small-3 columns'>
@@ -39,7 +42,25 @@
             <button v-on:click="getTaskList(true)" class="tiny button info radius" style="width: 45%;">Reset</button>
         </div>
     </div>
-			
+    
+    <div class='row-fluid'>
+        <div class='small-12 columns'>
+            <!--<v-server-table url="/task-ajax/task_list" :columns="columns"></v-server-table>-->
+            <v-client-table :columns="columns" :data="task_list" :options="options">
+                <!--<a slot="uri" slot-scope="props" target="_blank" :href="props.row.uri" class="glyphicon glyphicon-eye-open"></a>
+                <div slot="child_row" slot-scope="props">
+                    The link to {{props.row.name}} is <a :href="props.row.uri">{{props.row.uri}}</a>
+                </div>-->
+            </v-client-table>
+            
+            <!--<v2-table :data="task_list" style="width: 100%;">
+                <v2-table-column label="Name" prop="assignee_name" :sortable="true" :width="100"></v2-table-column>
+                <v2-table-column label="Date" prop="date"></v2-table-column>
+                <v2-table-column label="Address" prop="address"></v2-table-column>  
+            </v2-table>-->  
+        </div>
+    </div>
+    
     <div class='row-fluid'>
         <div class='small-12 columns'>
             <table class="cmfive-html-table" border="0">
@@ -69,6 +90,7 @@
 	
 </div>
 
+<script src='/system/modules/task/assets/js/vue-tables-2.min.js'></script>
 <script>
 	var vue_task_list = new Vue({
 		el: '#vue_task_list',
@@ -88,6 +110,15 @@
 				task_status: null,
 				closed: 'is_closed'
 			},
+                        
+                        options: {
+                            headings: {
+                                id: 'ID',
+                                dt_due: 'Date due'
+                            }
+                        },
+    
+                        columns: ['id', 'title', 'task_group_title', 'assignee_name', 'task_type', 'priority', 'status', 'dt_due'],
 			sort_key: 'id',
 			sort_direction: -1,
 			task_list: [],
@@ -198,5 +229,7 @@
 			this.getTaskList();
 		}
 	});
+        
+        Vue.use(VueTables.ClientTable);
 
 </script>
