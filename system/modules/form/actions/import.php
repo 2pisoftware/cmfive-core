@@ -84,50 +84,9 @@ function import_POST(Web $w) {
 	    	} else {
 	    		$new_title = $content->form_title;
 	    	}
-	    	$new_title = $w->Form->checkImportedFormTitle($new_title);
-	    	//var_dump($content);
-	    	$new_form = new Form($w);
-	    	$new_form->title = $new_title;
-	    	$new_form->description = $content->description;
-	    	$new_form->header_template = $content->header_template;
-	    	$new_form->row_template = $content->row_template;
-	    	$new_form->summary_template = $content->summary_template;
-	    	$new_form->insert();
-	    	
-	    	//set up the form fields
-	    	if (!empty($content->form_fields)) {
-	    		foreach ($content->form_fields as $field) {
-	    			$new_field = new FormField($w);
-	    			$new_field->form_id = $new_form->id;
-	    			$new_field->name = $field->field_name;
-	    			$new_field->technical_name = $field->technical_name;
-	    			$new_field->interface_class = $field->interface_class;
-	    			$new_field->type = $field->type;
-	    			$new_field->mask = $field->mask;
-	    			$new_field->ordering = $field->ordering;
-	    			$new_field->insert();
-	    			//set up field metadata
-	    			if (!empty($field->field_metadata)) {
-	    				foreach ($field->field_metadata as $metadata) {
-	    					$new_metadata = new FormFieldMetadata($w);
-	    					$new_metadata->form_field_id = $new_field->id;
-	    					$new_metadata->meta_key = $metadata->meta_key;
-	    					$new_metadata->meta_value = $metadata->meta_value;
-	    					$new_metadata->insert();
-	    				}
-	    			}
-	    		}
-	    	}
+	    
+	    	$w->Form->importForm($new_title,$content);
 
-	    	//set up the form mapping
-	    	if (!empty($content->form_mappings)) {
-	    		foreach ($content->form_mappings as $mapping) {
-	    			$new_mapping = new FormMapping($w);
-	    			$new_mapping->form_id = $new_form->id;
-	    			$new_mapping->object = $mapping;
-	    			$new_mapping->insert();
-	    		}
-	    	}
 	    }
 	    $w->msg('Form import completed','/form');
 	} else {
