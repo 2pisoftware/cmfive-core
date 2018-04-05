@@ -1,41 +1,24 @@
-<!--<link rel='stylesheet' href='' />-->
+<!--<link rel='stylesheet' href='/system/modules/task/assets/js/vue2-autocomplete-js/style/vue2-autocomplete.css' />-->
+<script src='/system/modules/task/assets/js/vue-tables-2.min.js'></script>
+<script src='/system/modules/task/assets/js/vue-select.js'></script>
 
 
 <div id='vue_task_list' class="container-fluid">
     <div class='row-fluid'>
+        <div class='small-12 columns'>
+    <v-select :options="filter.assignees" v-model="filter.assignee_id"></v-select>
+    <v-select :options="filter.creators" v-model="filter.creator_id"></v-select>
+    <v-select :options="filter.task_groups" v-model="filter.task_group_id"></v-select>
+    <v-select :options="filter.task_statuslist" v-model="filter.task_status"></v-select>
+    <v-select :options="filter.priority_list" v-model="filter.task_priority"></v-select>
+    <v-select :options="filter.task_types" v-model="filter.task_type"></v-select>
+        </div></div>
+    <!--<div class='row-fluid'>
         <div class='small-3 columns'>
             <label>Assignee</label>
             <autocomplete id="assignee" :list="filter.assignees" v-on:autocomplete-select="setAssignee" property="name" :required="false" :threshold="0"></autocomplete>
         </div>
-        <div class='small-3 columns'>
-            <label>Creator</label>
-            <autocomplete :list="filter.creators" v-on:autocomplete-select="setCreator" property="name" :required="false" :threshold="0"></autocomplete>
-        </div>
-        <div class='small-3 columns'>
-            <label>Task Group</label>
-            <autocomplete :list="filter.task_groups" v-on:autocomplete-select="setTaskgroup" property="name" :required="false" :threshold="0"></autocomplete>
-        </div>
-        <div class='small-3 columns'>
-            <label>Task status</label>
-            <autocomplete :list="filter.task_statuslist" v-on:autocomplete-select="setTaskstatus" property="name" :required="false" :threshold="0"></autocomplete>
-        </div>
-    </div>
-    <div class='row-fluid'>
-        <div class='small-3 columns'>
-            <label>Priority</label>
-            <autocomplete :list="filter.priority_list" v-on:autocomplete-select="setPriority" property="name" :required="false" :threshold="0"></autocomplete>
-        </div>
-        <div class='small-3 columns'>
-            <label>Task type</label>
-            <autocomplete :list="filter.task_types" v-on:autocomplete-select="setTasktype" property="name" :required="false" :threshold="0"></autocomplete>
-        </div>
-        <div class='small-3 columns'>
-
-        </div>
-        <div class='small-3 columns'>
-
-        </div>
-    </div>
+    </div>-->
     <div class='row-fluid'>
         <div class='small-12 columns text-center'>
             <button v-on:click="getTaskList()" class="tiny button info radius" style="width: 45%;">Filter</button>
@@ -45,13 +28,13 @@
     
     <div class='row-fluid'>
         <div class='small-12 columns'>
-            <!--<v-server-table url="/task-ajax/task_list" :columns="columns"></v-server-table>-->
-            <v-client-table :columns="columns" :data="task_list" :options="options">
-                <!--<a slot="uri" slot-scope="props" target="_blank" :href="props.row.uri" class="glyphicon glyphicon-eye-open"></a>
+            <v-server-table url="/task-ajax/task_list" :columns="columns" :options="options" ref="serverTable"></v-server-table>
+            <!--<v-client-table :columns="columns" :data="task_list" :options="options">
+                <a slot="uri" slot-scope="props" target="_blank" :href="props.row.uri" class="glyphicon glyphicon-eye-open"></a>
                 <div slot="child_row" slot-scope="props">
                     The link to {{props.row.name}} is <a :href="props.row.uri">{{props.row.uri}}</a>
-                </div>-->
-            </v-client-table>
+                </div>
+            </v-client-table>-->
             
             <!--<v2-table :data="task_list" style="width: 100%;">
                 <v2-table-column label="Name" prop="assignee_name" :sortable="true" :width="100"></v2-table-column>
@@ -61,7 +44,7 @@
         </div>
     </div>
     
-    <div class='row-fluid'>
+    <!-- <div class='row-fluid'>
         <div class='small-12 columns'>
             <table class="cmfive-html-table" border="0">
                 <thead>
@@ -82,26 +65,28 @@
                     </tr>
                 </tbody>
             </table>
-            <!-- <html-table :header="" :data='task_list' :include="['id', 'title', 'task_group_name', 'assignee_name', 'task_type', 'priority', 'status', 'dt_due']">
+            <html-table :header="" :data='task_list' :include="['id', 'title', 'task_group_name', 'assignee_name', 'task_type', 'priority', 'status', 'dt_due']">
 
-            </html-table> -->
+            </html-table> 
         </div>
-    </div>
+    </div> -->
 	
 </div>
 
-<script src='/system/modules/task/assets/js/vue-tables-2.min.js'></script>
 <script>
-	var vue_task_list = new Vue({
+    Vue.use(VueTables.ServerTable);
+    Vue.use(VueTables.Event);
+    Vue.component('v-select', VueSelect.VueSelect);
+	new Vue({
 		el: '#vue_task_list',
 		data: {
 			filter: {
-				assignees: <?php echo json_encode(array_map(function($user) {return ['id' => $user->id, 'name' => $user->getSelectOptionTitle()];}, $w->Auth->getUsers())); ?>,
-				creators: <?php echo json_encode(array_map(function($user) {return ['id' => $user->id, 'name' => $user->getFullName()];}, $w->Auth->getUsers())); ?>,
-				task_groups: <?php echo json_encode(array_map(function($task_group) {return ['id' => $task_group->id, 'name' => $task_group->title];}, $w->Task->getTaskGroups())); ?>,
-				task_types: <?php echo json_encode(array_map(function($task_type) {return ['id' => $task_type['task_type'], 'name' => $task_type['task_type']];}, $w->db->get("task")->select()->select("DISTINCT task_type")->fetchAll())); ?>,
-                                priority_list: <?php echo json_encode(array_map(function($priority) {return ['id' => $priority['priority'], 'name' => $priority['priority']];}, $w->db->get("task")->select()->select("DISTINCT priority")->fetchAll())); ?>,
-                                task_statuslist: <?php echo json_encode(array_map(function($task_status) {return ['id' => $task_status['status'], 'name' => $task_status['status']];}, $w->db->get("task")->select()->select("DISTINCT status")->fetchAll())); ?>,
+				assignees: <?php echo $assignees; ?>,
+				creators: <?php echo $creators; ?>,
+				task_groups: <?php echo $task_groups; ?>,
+				task_types: <?php echo $task_types; ?>,
+                                priority_list: <?php echo $priority_list; ?>,
+                                task_statuslist: <?php echo $task_statuslist; ?>,
 				assignee_id: null,
 				creator_id: null,
 				task_group_id: null,
@@ -110,11 +95,35 @@
 				task_status: null,
 				closed: 'is_closed'
 			},
-                        
                         options: {
+                            pagination: { dropdown:false, edge: true },
+                            filterByColumn: true,
+                            filterable: true,
+                            perPage: 5,
+                            listColumns: {
+                                
+                            },
                             headings: {
                                 id: 'ID',
                                 dt_due: 'Date due'
+                            },
+                            responseAdapter: function(resp) {
+                                var f = resp.data;
+                                return { data: f.data, count: f.count };
+                            },
+                            /*requestAdapter(data) {
+                                return {
+                                    sort: data.orderBy ? data.orderBy : 'name',
+                                    direction: data.ascending ? 'asc' : 'desc'
+                                }
+                            },*/
+                            requestFunction: function (data) {
+                                return $.ajax({
+                                    type: "GET",
+                                    url: '/task-ajax/task_list',
+                                    data: data,
+                                    dataType: 'json'
+                                });
                             }
                         },
     
@@ -146,10 +155,10 @@
                                     this.filter.task_priority = null;
                                     this.filter.task_status = null;
                                     
-                                    var acs = document.getElementsByClassName("autocomplete");
+                                    /*var acs = document.getElementsByClassName("autocomplete");
                                     for (var i = 0; i < acs.length; i++) {
                                         acs[i].lastElementChild.value = null;
-                                    }
+                                    }*/
                                 }
                                 
                                 else if (!reset) {
@@ -167,14 +176,10 @@
                                             delete params[v];
                                         }
                                     }
+                                    
+                                    this.$refs.serverTable.setFilter(params);
+                                    console.log(params);
                                 }
-                                
-				$.ajax({url: '/task-ajax/task_list', data: params }, {
-
-				}).done(function(response) {
-					var _response = JSON.parse(response);
-					_this.task_list = _response.data;
-				});
 			},
 			sort: function(key) {
 				if (this.sort_key != key) {
@@ -204,8 +209,8 @@
 			isSortKey: function(key) {
 				console.log(this.sort_key, key);
 				return this.sort_key == key;
-			},
-                        setPriority: function(selectedValue) {
+			}
+                        /*setPriority: function(selectedValue) {
                             this.filter.task_priority = selectedValue;
 			},
                         setAssignee: function(selectedValue) {
@@ -223,13 +228,10 @@
                         },
                         setTaskstatus: function(selectedValue) {
                             this.filter.task_status = selectedValue;
-                        }
+                        }*/
 		},
 		created: function() {
-			this.getTaskList();
+                    
 		}
 	});
-        
-        Vue.use(VueTables.ClientTable);
-
 </script>

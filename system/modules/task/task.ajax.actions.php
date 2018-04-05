@@ -2,7 +2,34 @@
 
 function task_list_GET(Web $w) {
         $filter = !empty($_GET) ? $_GET : [];
-	$tasks = $w->Task->getTasks($filter);
+        $q = null;
+        if (!empty($filter)) {
+            $limit = (int)$filter["limit"];
+            $orderBy = !empty($filter["orderBy"]) ? "order by " . $filter["orderBy"] . " " : "";
+            $sort = $filter["ascending"] == 0 ? "desc" : "asc";
+            $sortDirection = !empty($orderBy) ? $sort : "";
+            $page = (int)$filter["page"];
+            $offset = ($page * $limit) - $limit;
+            $search = !empty($filter["query"]) ? $filter["query"] : "";
+            if (!empty($search)) {
+                foreach ($search as $key => $value) {
+                    
+                }
+            }
+            $searchQuery = !empty($search) ? " where id = " . $search["id"] : "";
+            
+            $q = $w->db->query("select t.id, t.title, tg.title as task_group_title, concat(c.firstname, ' ', c.lastname) as assignee_name, t.task_type, t.priority, t.status, t.dt_due from task t inner join task_group tg on t.task_group_id = tg.id inner join user u on t.assignee_id = u.id inner join contact c on u.contact_id = c.id limit $offset, 5")->fetchAll(); // $searchQuery limit $offset, 5 $orderBy $sortDirection
+            
+            for ($a = 0; $a < count($q); $a++) {
+                foreach($q[$a] as $column => $value) {
+                    if (is_numeric($column)) {
+                        unset($q[$a][$column]);
+                    }
+                }
+            }
+        }
+        
+	$tasks = $w->Task->getTasks();
 
 	$tasks_as_array = array_map(function($task) use ($w) {
 		$task_array = $task->toArray();
@@ -12,13 +39,17 @@ function task_list_GET(Web $w) {
 		$task_array['task_group_title'] = $task_group->title; // ->toLink();
 		$task_array['task_group_url'] = $w->localUrl($task_group->printSearchUrl());
 		$task_array['assignee_name'] = $task->getAssignee()->getSelectOptionTitle();
-		// $task_array['dt_due'] = formatDate($task->dt_due);
+		$task_array['dt_due'] = formatDate($task->dt_due);
 
 		return $task_array;
 	}, $tasks ? : []);
+        
+        $data = [
+            'data' => $q,
+            'count' => count($tasks_as_array)
+	];
 
-	$w->out((new JsonResponse())->setSuccessfulResponse('OK', $tasks_as_array));
-
+        $w->out((new JsonResponse())->setSuccessfulResponse('OK', $data));
 }
 
 function task_group_list_GET(Web $w) {
