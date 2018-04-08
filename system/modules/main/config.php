@@ -33,6 +33,9 @@ Config::set('main', array(
 			'/system/templates/vue-components/html/html-table.vue.js',
 			'/system/templates/vue-components/html/html-table.vue.scss'
 		],
+		'html-pagination' => [
+			'/system/templates/vue-components/html/html-pagination.vue.js'
+		],
 		'user-card' => [
 			'/system/templates/vue-components/html/custom/user-card.vue.js',
 			'/system/templates/vue-components/html/custom/user-card.vue.scss'
