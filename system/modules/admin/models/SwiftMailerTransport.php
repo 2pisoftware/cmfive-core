@@ -118,7 +118,7 @@ class SwiftMailerTransport implements GenericTransport {
 					}
 				}
 
-				$this->w->Log->setLogger(MailService::$logger)->info("Sending email to {$to} from {$replyto} with {$subject} (" . count($attachments) . " attachments");
+				$this->w->Log->setLogger(MailService::$logger)->info("Sending email to {$to} from {$replyto} with {$subject} (" . count($attachments) . " attachments)");
 				$mailer_status = $mailer->send($message, $failures);
 				if (!empty($failures)) {
 					$this->w->Log->setLogger(MailService::$logger)->error("Failed to send email: " . serialize($failures));

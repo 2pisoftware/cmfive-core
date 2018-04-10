@@ -269,7 +269,7 @@ class Html {
             $next = $i < sizeof($array) - 1 ? $array[$i + 1] : null;
             $buf .= "<li>" . $cur;
             if (is_array($next)) {
-                $buf.= $this->ul($next, null, $subclass);
+                $buf.= self::ul($next, null, $subclass);
             }
             $buf .="</li>\n";
         }
