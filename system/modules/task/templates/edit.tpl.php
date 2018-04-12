@@ -1,14 +1,10 @@
-<div class="row-fluid clearfix panel">
-    <h3>Task [<?php echo $task->id; ?>]: <?php echo $task->title; ?></h3>
-    <blockquote>
-        Created: <?php // echo $createdDate; ?><br/>
-        Taskgroup: <?php echo $task->getTaskGroupTypeTitle(); ?>
-    </blockquote>
-</div>
-
 <div id="task_edit">
 <div class='row-fluid'>
 <div class='small-12 columns'>
+    <h3><?php echo $task->title; ?></h3>
+    Created: <?php // echo $createdDate; ?><br>
+    Taskgroup: <?php echo $task->getTaskGroupTypeTitle(); ?>
+    <br><br>
 <html-tabs>
     <html-tab title='Details' icon='' :selected="true">
         <div class="row-fluid columns">
@@ -43,9 +39,22 @@
                 <a class="small alert button radius" href="/task/delete/<?php echo $task->id; ?>">Delete Task</a>
             <?php endif ?>
             
-            <button class="small button radius">Duplicate Task</button>
-            <button class="small success button radius">New Task</button>
-            <button class="small warning button radius">Move to Taskgroup</button>
+            <a class="small button radius" href="/task/duplicatetask/<?php echo $task->id; ?>">Duplicate Task</a>
+            <a class="small success button radius" href="/task/edit/?gid=<?php echo $task->task_group_id; ?>">New Task</a>
+            <a class="small warning button radius" href="/task-group/moveTaskgroup/<?php echo $task->id; ?>">Move to Taskgroup</a>
+            
+            <html-segment title='Subscribers'>
+                <?php foreach($task->getSubscribers() as $subscriber): ?>
+                    <button class='button tiny secondary radius disabled <?php echo $subscriber->getUser()->is_external ? 'warning' : ''; ?>'>
+                        <?php echo $subscriber->getUser()->getFullName(); ?> - <?php echo $subscriber->getUser()->getContact()->email; ?>
+                    </button>
+                <?php endforeach; ?>
+                <button class='button tiny secondary radius'>
+                    <i class="fa fa-plus" aria-hidden="true"></i>
+                </button>
+            </html-segment>
+            
+            
             
             
             <?php 
@@ -55,11 +64,7 @@
                 echo !empty($tasktypeobject) ? $tasktypeobject->displayExtraButtons($task) : null; 
          
                    // "Delete", "Are you sure you want to delete this task?", null, false, 'warning') 
-                    
-                echo Html::b($task->w->localURL('task/duplicatetask/' . $task->id), "Duplicate Task");
-                echo Html::b($task->w->localURL('/task/edit/?gid=' . $task->task_group_id), "New Task");
-                echo Html::box("/task-group/moveTaskgroup/" . $task->id, "Move to Taskgroup", true, false, null, null, null, null, 'secondary');
-
+                   
                 // Extra buttons for task
                 $buttons = $w->callHook("task", "extra_buttons", $task);
                 if (!empty($buttons) && is_array($buttons)) {
@@ -75,49 +80,32 @@
                 <?php
                     // Call hook and filter out empty/false values
                     if (!empty($task->id)) : ?>
-                                                <div class='row-fluid panel clearfix' id='task_subscribers'>
-                            <table class="small-12 columns">
-                                <tbody>
-                                    <tr>
-                                        <td class="section" colspan="1">Subscribers <br> <?php echo Html::box('/task-subscriber/add/' . $task->id, 'Add', true, false, null, null, 'isbox', null, 'info center'); ?></td>
-                                    </tr>
-                                    <?php if (!empty($subscribers)) : ?>
-                                        <?php foreach($subscribers as $subscriber) : ?>
-                                            <?php $subscriber_user = $subscriber->getUser(); ?>
-                                                <?php if(!empty($subscriber_user)) : ?>
-                                                    <tr <?php echo ($subscriber_user->is_external) ? 'style="background-color: #c99;"' : ''; ?>>
-                                                        <td><?php echo $subscriber_user->getFullName(); ?> - <?php echo $subscriber_user->getContact()->email; ?></br>
-                                                        <?php echo Html::b('/task-subscriber/delete/' . $subscriber->id, 'Delete', 'Are you sure you want to remove this subscriber?', null, false, 'warning center'); ?></td>
-                                                    </tr>
-                                                <?php endif; ?>
-                                        <?php endforeach; ?>
-                                    <?php endif; ?>
-                                </tbody>
-                            </table>
-                        </div>
+                                               
+                            
+<?php echo Html::box('/task-subscriber/add/' . $task->id, 'Add', true, false, null, null, 'isbox', null, 'info center'); ?>
+<?php echo Html::b('/task-subscriber/delete/' . $subscriber->id, 'Delete', 'Are you sure you want to remove this subscriber?', null, false, 'warning center'); ?>
+                                                   
+                             
+                       
 
-
-                                                        <?php $additional_details = $w->callHook('task', 'additional_details', $task);
-                                                        if (!is_null($additional_details) && is_array($additional_details)) {
-                                                                $additional_details = array_values(array_filter($additional_details ? : []));
-                                                                if (count($additional_details) > 0) : ?>
-                                                                        <div class="row-fluid clearfix panel">
-                                                                                <table class="small-12 columns">
-                                                                                        <tbody>
-                                                                                                <tr><td class="section" colspan="2">Additional Details</td></tr>
-                                                                                                <?php foreach($additional_details as $additional_detail) : ?>
-                                                                                                        <tr><td><?php echo $additional_detail[0]; ?></td><td><?php echo $additional_detail[1]; ?></td></tr>
-                                                                                                <?php endforeach; ?>
-                                                                                        </tbody>
-                                                                                </table>
-                                                                        </div>
-                                                                <?php endif;
-                                                        }
-                                                endif;
-                                        ?>
-                <div class="small-12 panel" id="tasktext" style="display: none;"></div>
-                <div class="small-12 panel clearfix" id="formfields" style="display: none;"></div>
-                <div class="small-12 panel clearfix" id="formdetails" style="display: none;"></div>
+                        <?php $additional_details = $w->callHook('task', 'additional_details', $task);
+                        if (!is_null($additional_details) && is_array($additional_details)) {
+                                $additional_details = array_values(array_filter($additional_details ? : []));
+                                if (count($additional_details) > 0) : ?>
+                                        <div class="row-fluid clearfix panel">
+                                                <table class="small-12 columns">
+                                                        <tbody>
+                                                                <tr><td class="section" colspan="2">Additional Details</td></tr>
+                                                                <?php foreach($additional_details as $additional_detail) : ?>
+                                                                        <tr><td><?php echo $additional_detail[0]; ?></td><td><?php echo $additional_detail[1]; ?></td></tr>
+                                                                <?php endforeach; ?>
+                                                        </tbody>
+                                                </table>
+                                        </div>
+                                <?php endif;
+                        }
+                endif;
+        ?>
             </div>
         </div>
     </html-tab>

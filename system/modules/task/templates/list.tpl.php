@@ -9,23 +9,33 @@
         <div class='small-12 columns'>
             <div style="display: inline-block;">
             <label>Assignee</label>
-            <model-list-select v-model="filter.assignee_id" :list="filter.assignees" placeholder="select item" option-value="value" option-text="text"></model-list-select>
+            <model-list-select style="width: 20em;" v-model="filter.assignee_id" :list="filter.assignees" placeholder="select item" option-value="value" option-text="text"></model-list-select>
             </div>
+            
             <div style="display: inline-block;">
             <label>Creator</label>
-            <model-list-select v-model="filter.creator_id" :list="filter.creators" placeholder="select item" option-value="value" option-text="text"></model-list-select>
+            <model-list-select style="width: 15em;" v-model="filter.creator_id" :list="filter.creators" placeholder="select item" option-value="value" option-text="text"></model-list-select>
             </div>
+            
+            <div style="display: inline-block;">
             <label>Group</label>
-            <model-list-select v-model="filter.task_group_id" :list="filter.task_groups" placeholder="select item" option-value="value" option-text="text"></model-list-select>
+            <model-list-select style="width: 20em;" v-model="filter.task_group_id" :list="filter.task_groups" placeholder="select item" option-value="value" option-text="text"></model-list-select>
+            </div>
             
+            <div style="display: inline-block;">
             <label>Status</label>
-            <model-list-select v-model="filter.task_status" :list="filter.task_statuslist" placeholder="select item" option-value="value" option-text="text"></model-list-select>
+            <model-list-select style="width: 15em;" v-model="filter.task_status" :list="filter.task_statuslist" placeholder="select item" option-value="value" option-text="text"></model-list-select>
+            </div>
             
+            <div style="display: inline-block;">
             <label>Priority</label>
-            <model-list-select v-model="filter.task_priority" :list="filter.priority_list" placeholder="select item" option-value="value" option-text="text"></model-list-select>
+            <model-list-select style="width: 15em;" v-model="filter.task_priority" :list="filter.priority_list" placeholder="select item" option-value="value" option-text="text"></model-list-select>
+            </div>
             
+            <div style="display: inline-block;">
             <label>Type</label>
-            <model-list-select v-model="filter.task_type" :list="filter.task_types" placeholder="select item" option-value="value" option-text="text"></model-list-select>
+            <model-list-select style="width: 15em;" v-model="filter.task_type" :list="filter.task_types" placeholder="select item" option-value="value" option-text="text"></model-list-select>
+            </div>
         </div>
     </div>
     
