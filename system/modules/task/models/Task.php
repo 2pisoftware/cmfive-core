@@ -103,4 +103,40 @@ class Task extends DbObject {
     public function getTimeLogEntries() {
         return $this->getObjects("timelog", ["object_class" => "Task", "object_id" => $this->id, "is_deleted" => 0]);
     }
+    
+    // return the task group title given a task group ID
+    public function getTaskGroupTypeTitle() {
+        return (!empty($this->_taskgroup->id) ? $this->_taskgroup->title : null);
+    }
+    
+    // if i am assignee, creator or task group owner, i can set notifications for this Task
+    public function getCanINotify() {
+        if ($this->Auth->user()->is_admin == 1) {
+            return true;
+        }
+
+        $logged_in_user_id = $this->w->Auth->user()->id;
+        $me = $this->Task->getMemberGroupById($this->task_group_id, $logged_in_user_id);
+
+        if (($logged_in_user_id == $this->assignee_id) || ($logged_in_user_id == $this->getTaskCreatorId()) || (!empty($me->role) && $this->w->Task->getMyPerms($me->role, "OWNER"))) {
+            return true;
+        }
+        return false;
+    }
+    
+    // return a task type object given a task type
+    public function getTaskTypeObject() {
+        if ($this->task_type) {
+            return $this->Task->getTaskTypeObject($this->task_type);
+        }
+    }
+    
+    // return the task statuses as array for a task group given a task group ID
+    function getTaskGroupStatus() {
+        return (!empty($this->_taskgroup->id) ? $this->_taskgroup->getTypeStatus() : null);
+    }
+    
+    public function getSubscribers() {
+        return $this->getObjects('TaskSubscriber', ['task_id' => $this->id, 'is_deleted' => 0]);
+    }
 }

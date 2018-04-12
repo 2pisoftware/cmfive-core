@@ -1,24 +1,34 @@
-<!--<link rel='stylesheet' href='/system/modules/task/assets/js/vue2-autocomplete-js/style/vue2-autocomplete.css' />-->
-<script src='/system/modules/task/assets/js/vue-tables-2.min.js'></script>
-<script src='/system/modules/task/assets/js/vue-select.js'></script>
+<script src='/system/templates/vue-components/form/elements/vue-tables-2.min.js'></script>
+<script src='/system/templates/vue-components/form/elements/vue-search-select/vue-search-select.min.js'></script>
 
+<div id="task_modal" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog"> 
+</div>
 
 <div id='vue_task_list' class="container-fluid">
     <div class='row-fluid'>
         <div class='small-12 columns'>
-    <v-select :options="filter.assignees" v-model="filter.assignee_id"></v-select>
-    <v-select :options="filter.creators" v-model="filter.creator_id"></v-select>
-    <v-select :options="filter.task_groups" v-model="filter.task_group_id"></v-select>
-    <v-select :options="filter.task_statuslist" v-model="filter.task_status"></v-select>
-    <v-select :options="filter.priority_list" v-model="filter.task_priority"></v-select>
-    <v-select :options="filter.task_types" v-model="filter.task_type"></v-select>
-        </div></div>
-    <!--<div class='row-fluid'>
-        <div class='small-3 columns'>
+            <div style="display: inline-block;">
             <label>Assignee</label>
-            <autocomplete id="assignee" :list="filter.assignees" v-on:autocomplete-select="setAssignee" property="name" :required="false" :threshold="0"></autocomplete>
+            <model-list-select v-model="filter.assignee_id" :list="filter.assignees" placeholder="select item" option-value="value" option-text="text"></model-list-select>
+            </div>
+            <div style="display: inline-block;">
+            <label>Creator</label>
+            <model-list-select v-model="filter.creator_id" :list="filter.creators" placeholder="select item" option-value="value" option-text="text"></model-list-select>
+            </div>
+            <label>Group</label>
+            <model-list-select v-model="filter.task_group_id" :list="filter.task_groups" placeholder="select item" option-value="value" option-text="text"></model-list-select>
+            
+            <label>Status</label>
+            <model-list-select v-model="filter.task_status" :list="filter.task_statuslist" placeholder="select item" option-value="value" option-text="text"></model-list-select>
+            
+            <label>Priority</label>
+            <model-list-select v-model="filter.task_priority" :list="filter.priority_list" placeholder="select item" option-value="value" option-text="text"></model-list-select>
+            
+            <label>Type</label>
+            <model-list-select v-model="filter.task_type" :list="filter.task_types" placeholder="select item" option-value="value" option-text="text"></model-list-select>
         </div>
-    </div>-->
+    </div>
+    
     <div class='row-fluid'>
         <div class='small-12 columns text-center'>
             <button v-on:click="getTaskList()" class="tiny button info radius" style="width: 45%;">Filter</button>
@@ -28,7 +38,7 @@
     
     <div class='row-fluid'>
         <div class='small-12 columns'>
-            <v-server-table url="/task-ajax/task_list" :columns="columns" :options="options" ref="serverTable"></v-server-table>
+            <v-server-table url="" :columns="columns" :options="options" ref="serverTable"></v-server-table>
             <!--<v-client-table :columns="columns" :data="task_list" :options="options">
                 <a slot="uri" slot-scope="props" target="_blank" :href="props.row.uri" class="glyphicon glyphicon-eye-open"></a>
                 <div slot="child_row" slot-scope="props">
@@ -74,9 +84,22 @@
 </div>
 
 <script>
+    var params = null;
+    
     Vue.use(VueTables.ServerTable);
-    Vue.use(VueTables.Event);
-    Vue.component('v-select', VueSelect.VueSelect);
+    Vue.component("model-list-select", VueSearchSelect.ModelListSelect);
+    
+    Vue.component('task-url', {
+        props: ['data', 'index'],
+        template: `<a :href="'/task/view/' + this.data.id" data-reveal-ajax="true" data-reveal-id="task_modal">{{this.data.title}}</a>`,
+        methods: {
+            
+        }
+    });
+    Vue.component('task-group-url', {
+        props: ['data', 'index'],
+        template: `<a href="#">{{this.data.task_group_title}}</a>`
+    });
 	new Vue({
 		el: '#vue_task_list',
 		data: {
@@ -87,36 +110,46 @@
 				task_types: <?php echo $task_types; ?>,
                                 priority_list: <?php echo $priority_list; ?>,
                                 task_statuslist: <?php echo $task_statuslist; ?>,
-				assignee_id: null,
-				creator_id: null,
-				task_group_id: null,
-				task_type: null,
-				task_priority: null,
-				task_status: null,
+				assignee_id: "",
+				creator_id: "",
+				task_group_id: "",
+				task_type: "",
+				task_priority: "",
+				task_status: "",
 				closed: 'is_closed'
 			},
                         options: {
-                            pagination: { dropdown:false, edge: true },
+                            pagination: { dropdown: false, edge: true },
                             filterByColumn: true,
                             filterable: true,
-                            perPage: 5,
+                            perPage: 2,
                             listColumns: {
-                                
+                                priority: <?php echo $priority_list_select; ?>,
+                                status: <?php echo $task_statuslist_select; ?>
                             },
+                            //dateColumns: {
+                                
+                            //},
                             headings: {
                                 id: 'ID',
-                                dt_due: 'Date due'
+                                dt_due: 'Date due',
+                                task_group_title: 'Task group',
+                                assignee_name: 'Assignee'
                             },
                             responseAdapter: function(resp) {
                                 var f = resp.data;
                                 return { data: f.data, count: f.count };
                             },
-                            /*requestAdapter(data) {
+                            requestAdapter(data) {
                                 return {
-                                    sort: data.orderBy ? data.orderBy : 'name',
-                                    direction: data.ascending ? 'asc' : 'desc'
-                                }
-                            },*/
+                                    orderBy: data.orderBy ? " order by " + data.orderBy + " " + (data.ascending ? "asc" : "desc") + " " : "",
+                                    byColumn: data.byColumn ? data.byColumn : "",
+                                    limit: data.limit,
+                                    page: data.page,
+                                    query: data.query,
+                                    params: params ? params : ""
+                                };
+                            },
                             requestFunction: function (data) {
                                 return $.ajax({
                                     type: "GET",
@@ -124,6 +157,10 @@
                                     data: data,
                                     dataType: 'json'
                                 });
+                            },   
+                            templates: {
+                                title: 'task-url',
+                                task_group_title: 'task-group-url'
                             }
                         },
     
@@ -144,9 +181,6 @@
 		},
 		methods: {
 			getTaskList: function(reset = false) {
-				var _this = this;
-                                var params = null;
-                                
                                 if (reset) {
                                     this.filter.assignee_id = null;
                                     this.filter.creator_id = null;
@@ -155,14 +189,14 @@
                                     this.filter.task_priority = null;
                                     this.filter.task_status = null;
                                     
-                                    /*var acs = document.getElementsByClassName("autocomplete");
-                                    for (var i = 0; i < acs.length; i++) {
-                                        acs[i].lastElementChild.value = null;
-                                    }*/
+                                    params = null;
+                                    
+                                    this.$refs.serverTable.getData();
+                                    this.$refs.serverTable.refresh();
                                 }
                                 
                                 else if (!reset) {
-                                    params = {
+                                     params = {
                                         assignee_id: this.filter.assignee_id,
                                         creator_id: this.filter.creator_id,
                                         task_group_id: this.filter.task_group_id,
@@ -177,8 +211,8 @@
                                         }
                                     }
                                     
-                                    this.$refs.serverTable.setFilter(params);
-                                    console.log(params);
+                                    this.$refs.serverTable.getData();
+                                    this.$refs.serverTable.refresh();
                                 }
 			},
 			sort: function(key) {
@@ -207,28 +241,8 @@
 				});
 			},
 			isSortKey: function(key) {
-				console.log(this.sort_key, key);
 				return this.sort_key == key;
 			}
-                        /*setPriority: function(selectedValue) {
-                            this.filter.task_priority = selectedValue;
-			},
-                        setAssignee: function(selectedValue) {
-                            this.filter.assignee_id = selectedValue;
-                            console.log(document.getElementById("assignee"));
-                        },
-                        setCreator: function(selectedValue) {
-                            this.filter.creator_id = selectedValue;
-                        },
-                        setTaskgroup: function(selectedValue) {
-                            this.filter.task_group_id = selectedValue;
-                        },
-                        setTasktype: function(selectedValue) {
-                            this.filter.task_type = selectedValue;
-                        },
-                        setTaskstatus: function(selectedValue) {
-                            this.filter.task_status = selectedValue;
-                        }*/
 		},
 		created: function() {
                     

@@ -129,4 +129,8 @@ class TaskGroup extends DbObject {
     public function getSelectOptionTitle() {
         return $this->title;
     }
+    
+    public function getTypeStatus() {
+        return $this->Task->getTaskTypeStatus($this->task_group_type);
+    }
 }

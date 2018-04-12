@@ -2,11 +2,11 @@
 
 use \Html\Form\InputField as InputField;
 use \Html\Form\Select as Select;
-use \Html\Form\Autocomplete as Autocomplete;
 
 function edit_GET(Web $w) {
+    $w->setLayout('layout-f6');
 
-	list($task_id) = $w->pathMatch("id");
+    list($task_id) = $w->pathMatch("id");
     $task = (!empty($task_id) ? $w->Task->getTask($task_id) : new Task($w));
     
     // if ($task->is_deleted == 1) {
@@ -57,46 +57,6 @@ function edit_GET(Web $w) {
         }
     }
 
-	// Create form
-    $form = [
-        (!empty($task_id) ? 'Edit task' : "Create a new task") => [
-            [
-                (new Autocomplete())
-                    ->setLabel("Task Group <small>Required</small>")
-                    ->setName(!empty($task_id) ? "task_group_id_text" : "task_group_id")
-                    ->setReadOnly(!empty($task_id) ? 'true' : null)
-                    ->setOptions($taskgroups)
-                    ->setValue(!empty($taskgroup) ? $taskgroup->id : null)
-                    ->setTitle(!empty($taskgroup) ? $taskgroup->getSelectOptionTitle(): null)
-                    ->setRequired('required'),
-                (new Select([
-					"id|name" => "task_type"
-				]))->setLabel("Task Type <small>Required</small>")
-                    ->setDisabled(!empty($task_id) ? "true" : null)
-                    ->setOptions($tasktypes)
-                    ->setSelectedOption(!empty($task_id) ? $task->task_type : (is_array($tasktypes) && count($tasktypes) === 1 ? $tasktypes[0] : null))
-                    ->setRequired('required')
-            ],
-            [
-            	["Task Title", "text", "title", $task->title],
-                ["Status", "select", "status", $task->status, $task->getTaskGroupStatus()],
-            ],
-            [
-                ["Priority", "select", "priority", $task->priority, $priority],
-                ["Date Due", "date", "dt_due", formatDate($task->dt_due)],
-                !empty($taskgroup) && $taskgroup->getCanIAssign() ?
-                	["Assigned To", "select", "assignee_id", $assigned, $members] :
-                	["Assigned To", "select", "-assignee_id", $assigned, $members]
-            ],
-			[
-				["Estimated hours", "text", "estimate_hours", $task->estimate_hours],
-				["Effort", "text", "effort", $task->effort],
-			],
-            [["Description", "textarea", "description", $task->description]],
-        	!empty($p['id']) ? [["Task Group ID", "hidden", "task_group_id", $task->task_group_id]] : null
-        ]
-    ];
-
     // Add history item
     if (empty($p['id'])) {
     	History::add("New Task");
@@ -104,6 +64,16 @@ function edit_GET(Web $w) {
     	History::add("Task: {$task->title}", null, $task);
     }
 
+    $status_list = Config::get("task." . $taskgroup->task_group_type)['statuses'];
+    
+    $w->ctx("t", (array)$task);
     $w->ctx("task", $task);
-    $w->ctx("form", Html::multiColForm($form, $w->localUrl("/task/edit/{$task->id}"), "POST", "Save", "edit_form", "prompt", null, "_self", true, Task::$_validation));
+    $w->ctx("taskgroup_list", json_encode(array_map(function($task_group) {return ['value' => $task_group->id, 'text' => $task_group->title];}, $taskgroups)));
+    $w->ctx("task_type_list", json_encode(array_map(function($tasktype) {return ['value' => $tasktype, 'text' => $tasktype];}, !empty($tasktypes[0]) ? $tasktypes[0] : [])));
+    $w->ctx("task_status_list", json_encode(array_map(function($status) {return ['value' => $status[0], 'text' => $status[0]];}, $status_list)));
+    $w->ctx("task_priority_list", json_encode(array_map(function($p) {return ['value' => $p[0], 'text' => $p[0]];}, $priority)));
+    $w->ctx("task_assignee_list", json_encode(array_map(function($assignee) {return ['value' => $assignee[1], 'text' => $assignee[0]];}, $members)));
+    $w->ctx("task_assignee", $assigned);
+    $w->ctx("can_i_assign", $taskgroup->getCanIAssign());
+    //$w->ctx("canDelete", $task->canDelete($w->Auth->user()));
 }

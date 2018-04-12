@@ -5,20 +5,30 @@ function task_list_GET(Web $w) {
         $q = null;
         if (!empty($filter)) {
             $limit = (int)$filter["limit"];
-            $orderBy = !empty($filter["orderBy"]) ? "order by " . $filter["orderBy"] . " " : "";
-            $sort = $filter["ascending"] == 0 ? "desc" : "asc";
-            $sortDirection = !empty($orderBy) ? $sort : "";
+            $orderBy = $filter["orderBy"];
             $page = (int)$filter["page"];
             $offset = ($page * $limit) - $limit;
-            $search = !empty($filter["query"]) ? $filter["query"] : "";
-            if (!empty($search)) {
-                foreach ($search as $key => $value) {
-                    
+            $filterBy = array_key_exists("query", $filter) ? $filter["query"] : "";
+            $search = $filter["params"];
+            $searchQuery = "";
+            
+            if (!empty($filterBy)) {
+                $searchQuery = " where";
+                foreach ($filterBy as $key => $value) {
+                    $searchQuery .= " $key like '%$value%'";
                 }
             }
-            $searchQuery = !empty($search) ? " where id = " . $search["id"] : "";
             
-            $q = $w->db->query("select t.id, t.title, tg.title as task_group_title, concat(c.firstname, ' ', c.lastname) as assignee_name, t.task_type, t.priority, t.status, t.dt_due from task t inner join task_group tg on t.task_group_id = tg.id inner join user u on t.assignee_id = u.id inner join contact c on u.contact_id = c.id limit $offset, 5")->fetchAll(); // $searchQuery limit $offset, 5 $orderBy $sortDirection
+            if (!empty($search)) {
+                $searchQuery = " where";
+                foreach ($search as $key => $value) {
+                    $searchQuery .= " $key like '%$value%' and";
+                }
+                
+                $searchQuery = preg_replace('/and$/', '', $searchQuery);
+            }
+            
+            $q = $w->db->query("select * from (select t.id, t.task_group_id, t.title, tg.title as task_group_title, t.assignee_id, concat(c.firstname, ' ', c.lastname) as assignee_name, t.task_type, t.priority, t.status, t.dt_due from task t inner join task_group tg on t.task_group_id = tg.id inner join user u on t.assignee_id = u.id inner join contact c on u.contact_id = c.id) t $searchQuery $orderBy limit $offset, $limit")->fetchAll();
             
             for ($a = 0; $a < count($q); $a++) {
                 foreach($q[$a] as $column => $value) {
