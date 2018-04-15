@@ -1,7 +1,7 @@
 <?php
 
 function task_list_GET(Web $w) {
-        $filter = !empty($_GET) ? $_GET : [];
+        /*$filter = !empty($_GET) ? $_GET : [];
         $q = null;
         if (!empty($filter)) {
             $limit = (int)$filter["limit"];
@@ -37,8 +37,8 @@ function task_list_GET(Web $w) {
                     }
                 }
             }
-        }
-        
+        }*/
+    
 	$tasks = $w->Task->getTasks();
 
 	$tasks_as_array = array_map(function($task) use ($w) {
@@ -54,12 +54,12 @@ function task_list_GET(Web $w) {
 		return $task_array;
 	}, $tasks ? : []);
         
-        $data = [
-            'data' => $q,
+        /*$data = [
+            'data' => $tasks_as_array,
             'count' => count($tasks_as_array)
-	];
+	];*/
 
-        $w->out((new JsonResponse())->setSuccessfulResponse('OK', $data));
+        $w->out((new JsonResponse())->setSuccessfulResponse('OK', $tasks_as_array));
 }
 
 function task_group_list_GET(Web $w) {

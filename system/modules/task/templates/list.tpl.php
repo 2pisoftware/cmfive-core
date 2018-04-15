@@ -1,6 +1,12 @@
 <script src='/system/templates/vue-components/form/elements/vue-tables-2.min.js'></script>
 <script src='/system/templates/vue-components/form/elements/vue-search-select/vue-search-select.min.js'></script>
 
+<style>
+    .VueTables__filters-row {
+        display: none;
+    }
+</style>
+
 <div id="task_modal" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog"> 
 </div>
 
@@ -9,52 +15,45 @@
         <div class='small-12 columns'>
             <div style="display: inline-block;">
             <label>Assignee</label>
-            <model-list-select style="width: 20em;" v-model="filter.assignee_id" :list="filter.assignees" placeholder="select item" option-value="value" option-text="text"></model-list-select>
+            <model-list-select style="width: 20em;" v-model="assignee_id" :list="filter.assignees" placeholder="select assignee" option-value="value" option-text="text"></model-list-select>
             </div>
             
             <div style="display: inline-block;">
             <label>Creator</label>
-            <model-list-select style="width: 15em;" v-model="filter.creator_id" :list="filter.creators" placeholder="select item" option-value="value" option-text="text"></model-list-select>
+            <model-list-select style="width: 15em;" v-model="creator_id" :list="filter.creators" placeholder="select creator" option-value="value" option-text="text"></model-list-select>
             </div>
             
             <div style="display: inline-block;">
             <label>Group</label>
-            <model-list-select style="width: 20em;" v-model="filter.task_group_id" :list="filter.task_groups" placeholder="select item" option-value="value" option-text="text"></model-list-select>
+            <model-list-select style="width: 20em;" v-model="task_group_id" :list="filter.task_groups" placeholder="select task group" option-value="value" option-text="text"></model-list-select>
             </div>
             
             <div style="display: inline-block;">
             <label>Status</label>
-            <model-list-select style="width: 15em;" v-model="filter.task_status" :list="filter.task_statuslist" placeholder="select item" option-value="value" option-text="text"></model-list-select>
+            <model-list-select style="width: 15em;" v-model="task_status" :list="filter.task_statuslist" placeholder="select status" option-value="value" option-text="text"></model-list-select>
             </div>
             
             <div style="display: inline-block;">
             <label>Priority</label>
-            <model-list-select style="width: 15em;" v-model="filter.task_priority" :list="filter.priority_list" placeholder="select item" option-value="value" option-text="text"></model-list-select>
+            <model-list-select style="width: 15em;" v-model="task_priority" :list="filter.priority_list" placeholder="select priority" option-value="value" option-text="text"></model-list-select>
             </div>
             
             <div style="display: inline-block;">
             <label>Type</label>
-            <model-list-select style="width: 15em;" v-model="filter.task_type" :list="filter.task_types" placeholder="select item" option-value="value" option-text="text"></model-list-select>
+            <model-list-select style="width: 15em;" v-model="task_type" :list="filter.task_types" placeholder="select task type" option-value="value" option-text="text"></model-list-select>
             </div>
-        </div>
-    </div>
-    
-    <div class='row-fluid'>
-        <div class='small-12 columns text-center'>
-            <button v-on:click="getTaskList()" class="tiny button info radius" style="width: 45%;">Filter</button>
-            <button v-on:click="getTaskList(true)" class="tiny button info radius" style="width: 45%;">Reset</button>
         </div>
     </div>
     
     <div class='row-fluid'>
         <div class='small-12 columns'>
-            <v-server-table url="" :columns="columns" :options="options" ref="serverTable"></v-server-table>
-            <!--<v-client-table :columns="columns" :data="task_list" :options="options">
-                <a slot="uri" slot-scope="props" target="_blank" :href="props.row.uri" class="glyphicon glyphicon-eye-open"></a>
+            <!--<v-server-table url="" :columns="columns" :options="options" ref="serverTable"></v-server-table>-->
+            <v-client-table :columns="columns" :data="task_list" :options="options" ref="clientTable" id="clientTable" name="clientTable">
+                <!--<a slot="uri" slot-scope="props" target="_blank" :href="props.row.uri" class="glyphicon glyphicon-eye-open"></a>
                 <div slot="child_row" slot-scope="props">
                     The link to {{props.row.name}} is <a :href="props.row.uri">{{props.row.uri}}</a>
-                </div>
-            </v-client-table>-->
+                </div>-->
+            </v-client-table>
             
             <!--<v2-table :data="task_list" style="width: 100%;">
                 <v2-table-column label="Name" prop="assignee_name" :sortable="true" :width="100"></v2-table-column>
@@ -96,7 +95,8 @@
 <script>
     var params = null;
     
-    Vue.use(VueTables.ServerTable);
+    //Vue.use(VueTables.ServerTable);
+    Vue.use(VueTables.ClientTable);
     Vue.component("model-list-select", VueSearchSelect.ModelListSelect);
     
     Vue.component('task-url', {
@@ -110,9 +110,15 @@
         props: ['data', 'index'],
         template: `<a href="#">{{this.data.task_group_title}}</a>`
     });
-	new Vue({
+	var test = new Vue({ 
 		el: '#vue_task_list',
 		data: {
+                    task_status: "",
+                    task_type: "",
+                    task_priority: "",
+                    assignee_id: "",
+                    creator_id: "",
+                    task_group_id: "",
 			filter: {
 				assignees: <?php echo $assignees; ?>,
 				creators: <?php echo $creators; ?>,
@@ -120,12 +126,6 @@
 				task_types: <?php echo $task_types; ?>,
                                 priority_list: <?php echo $priority_list; ?>,
                                 task_statuslist: <?php echo $task_statuslist; ?>,
-				assignee_id: "",
-				creator_id: "",
-				task_group_id: "",
-				task_type: "",
-				task_priority: "",
-				task_status: "",
 				closed: 'is_closed'
 			},
                         options: {
@@ -133,10 +133,17 @@
                             filterByColumn: true,
                             filterable: true,
                             perPage: 2,
-                            listColumns: {
+                            customFilters: [{
+                                name: 'status',
+                                callback: function (row, query) {
+                                    return row.name[0] === query;
+                                }
+                                }
+                            ],
+                            /*listColumns: {
                                 priority: <?php echo $priority_list_select; ?>,
                                 status: <?php echo $task_statuslist_select; ?>
-                            },
+                            },*/
                             //dateColumns: {
                                 
                             //},
@@ -146,7 +153,7 @@
                                 task_group_title: 'Task group',
                                 assignee_name: 'Assignee'
                             },
-                            responseAdapter: function(resp) {
+                            /*responseAdapter: function(resp) {
                                 var f = resp.data;
                                 return { data: f.data, count: f.count };
                             },
@@ -167,7 +174,7 @@
                                     data: data,
                                     dataType: 'json'
                                 });
-                            },   
+                            },   */
                             templates: {
                                 title: 'task-url',
                                 task_group_title: 'task-group-url'
@@ -189,15 +196,48 @@
 				{key: 'dt_due', value: 'Due', sorting: false}
 			]
 		},
+                watch: {
+                    task_status: function(val) {
+                        this.$refs.clientTable.setFilter({ status: val });
+                        //this.$emit('vue-tables.clientTable.filter::status', val);
+                    },
+                    
+                    task_type: function(val) {
+                        this.$refs.clientTable.setFilter({ task_type: val });
+                    },
+                    
+                    task_priority: function(val) {
+                        this.$refs.clientTable.setFilter({ priority: val });
+                    },
+                    
+                    assignee_id: function(val) {
+                        this.$refs.clientTable.setFilter({ assignee_name: val });
+                    },
+                    
+                    creator_id: function(val) {
+                        this.$refs.clientTable.setFilter({ priority: val });
+                    },
+                    
+                    task_group_id: function(val) {
+                        this.$refs.clientTable.setFilter({ task_group_title: val });
+                    }
+                },
 		methods: {
 			getTaskList: function(reset = false) {
-                                if (reset) {
-                                    this.filter.assignee_id = null;
-                                    this.filter.creator_id = null;
-                                    this.filter.task_group_id = null;
-                                    this.filter.task_type = null;
-                                    this.filter.task_priority = null;
-                                    this.filter.task_status = null;
+                            var _this = this;
+                            $.ajax('/task-ajax/task_list', {
+
+                            }).done(function(response) {
+                                var _response = JSON.parse(response);
+                                _this.task_list = _response.data;
+                            });
+                                /*if (reset) {
+                                    this.assignee_id = null;
+                                    this.creator_id = null;
+                                    this.task_group_id = null;
+                                    this.task_type = null;
+                                    this.task_priority = null;
+                                    this.task_status = null;
                                     
                                     params = null;
                                     
@@ -207,12 +247,12 @@
                                 
                                 else if (!reset) {
                                      params = {
-                                        assignee_id: this.filter.assignee_id,
-                                        creator_id: this.filter.creator_id,
-                                        task_group_id: this.filter.task_group_id,
-                                        task_type: this.filter.task_type,
-                                        priority: this.filter.task_priority,
-                                        status: this.filter.task_status
+                                        assignee_id: this.assignee_id,
+                                        creator_id: this.creator_id,
+                                        task_group_id: this.task_group_id,
+                                        task_type: this.task_type,
+                                        priority: this.task_priority,
+                                        status: this.task_status
                                     };
                                 
                                     for (var v in params) { 
@@ -223,7 +263,7 @@
                                     
                                     this.$refs.serverTable.getData();
                                     this.$refs.serverTable.refresh();
-                                }
+                                }*/
 			},
 			sort: function(key) {
 				if (this.sort_key != key) {
@@ -255,7 +295,7 @@
 			}
 		},
 		created: function() {
-                    
+                    this.getTaskList();
 		}
 	});
 </script>

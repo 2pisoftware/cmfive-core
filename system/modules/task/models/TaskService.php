@@ -179,6 +179,7 @@ class TaskService extends DbService {
         if ($w->Auth->loggedIn()) {
             $w->menuLink("task/index", "Task Dashboard", $nav);
             $w->menuLink("task/list", "Task List", $nav);
+            $w->menuLink("task-group/viewtaskgrouptypes", "Task Groups", $nav);
         }
         $w->ctx("navigation", $nav);
         return $nav;
@@ -261,5 +262,35 @@ class TaskService extends DbService {
             $mins = str_pad($mins, 2, "0", STR_PAD_LEFT);
             return $hours . ":" . $mins;
         }
+    }
+    
+    // function to sort task group list by task type
+    static function sortbyGroup($a, $b) {
+        if (strcasecmp($a->task_group_type, $b->task_group_type) == 0) {
+            return 0;
+        }
+        return (strcasecmp($a->task_group_type, $b->task_group_type) > 0) ? +1 : -1;
+    }
+    
+    // prepare to get all task groups of type $class as defined in our tasks file
+    function getTaskGroupTypeObject($class) {
+        return $this->_getTaskObjectGeneric($class, "TaskGroupType_");
+    }
+    
+    // static list of group permissions for can_view, can_assign, can_create
+    function getTaskGroupPermissions() {
+        return array("ALL", "GUEST", "MEMBER", "OWNER");
+    }
+    
+    // get all task group types as defined in our tasks file
+    function getAllTaskGroupTypes() {
+        $this->_loadTaskFiles();
+        foreach (get_declared_classes() as $class) {
+            if (startsWith($class, "TaskGroupType_")) {
+                $tgt = new $class($this->w);
+                $taskgrouptypes[] = array($tgt->getTaskGroupTypeTitle(), $class);
+            }
+        }
+        return $taskgrouptypes;
     }
 }

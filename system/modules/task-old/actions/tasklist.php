@@ -1,10 +1,7 @@
 <?php
 
 function tasklist_ALL(Web $w) {
-
-    $w->setLayout('layout-f6');
-
-	History::add("List Tasks");
+    History::add("List Tasks");
 	$w->ctx("title", "Task List");
 	
     // Look for reset

@@ -1,7 +1,14 @@
 <div id="task_edit">
+    
+<div id="taskmodal" class="reveal-modal small" data-reveal>
+    Are you sure you want to remove this subscriber?<br><br>
+    <button class="button radius success" v-on:click="deleteSubscriber">Yes</button>
+    <button class="button radius alert" data-close>No</button>
+</div>
+    
 <div class='row-fluid'>
 <div class='small-12 columns'>
-    <h3><?php echo $task->title; ?></h3>
+    <h3><?php echo $task->title?></h3><?php echo $w->Favorite->getFavoriteButton($task); ?>
     Created: <?php // echo $createdDate; ?><br>
     Taskgroup: <?php echo $task->getTaskGroupTypeTitle(); ?>
     <br><br>
@@ -45,13 +52,12 @@
             
             <html-segment title='Subscribers'>
                 <?php foreach($task->getSubscribers() as $subscriber): ?>
-                    <button class='button tiny secondary radius disabled <?php echo $subscriber->getUser()->is_external ? 'warning' : ''; ?>'>
+                    <div class='button tiny secondary radius <?php echo $subscriber->getUser()->is_external ? 'warning' : ''; ?>'>
                         <?php echo $subscriber->getUser()->getFullName(); ?> - <?php echo $subscriber->getUser()->getContact()->email; ?>
-                    </button>
+                        <a href="#" data-reveal-id="taskmodal"><i class="fa fa-times" aria-hidden="true"></i></a>
+                    </div>
                 <?php endforeach; ?>
-                <button class='button tiny secondary radius'>
-                    <i class="fa fa-plus" aria-hidden="true"></i>
-                </button>
+                    <a class='button tiny secondary radius' href="/task-subscriber/add/<?php echo $task->id; ?>" data-reveal-ajax="true" data-reveal-id="taskmodal"><i class="fa fa-plus" aria-hidden="true"></i></a>
             </html-segment>
             
             
@@ -74,14 +80,8 @@
                 echo $w->partial('listTags', ['object' => $task], 'tag');
             ?>
         </div>
-        <div class="row-fluid clearfix">
-            
-            <div class="small-12 large-3 right" style="margin-top: 16px;">
-                <?php
-                    // Call hook and filter out empty/false values
-                    if (!empty($task->id)) : ?>
-                                               
-                            
+
+             
 <?php echo Html::box('/task-subscriber/add/' . $task->id, 'Add', true, false, null, null, 'isbox', null, 'info center'); ?>
 <?php echo Html::b('/task-subscriber/delete/' . $subscriber->id, 'Delete', 'Are you sure you want to remove this subscriber?', null, false, 'warning center'); ?>
                                                    
@@ -104,10 +104,9 @@
                                         </div>
                                 <?php endif;
                         }
-                endif;
+                
         ?>
-            </div>
-        </div>
+            
     </html-tab>
     <html-tab title='Time Log' icon='fa-clock'>
         <?php echo $w->partial("listtimelog", ["object_class" => "Task", "object_id" => $task->id, "redirect" => "task/edit/{$task->id}#timelog"], "timelog"); ?>
@@ -131,6 +130,8 @@
         </html-tab>
     <?php endif;?>
 </html-tabs>
+    </div>
+        </div>
 </div>
 </div>
 </div>
@@ -156,6 +157,12 @@
             task_status_list: <?php echo $task_status_list; ?>,
             task_priority_list: <?php echo $task_priority_list; ?>,
             task_assignee_list: <?php echo $task_assignee_list; ?>
+        },
+                
+        methods: {
+            deleteSubscriber: function(subscriber) {
+                
+            }
         }
     });
     
