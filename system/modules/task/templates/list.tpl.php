@@ -47,55 +47,18 @@
     
     <div class='row-fluid'>
         <div class='small-12 columns'>
-            <!--<v-server-table url="" :columns="columns" :options="options" ref="serverTable"></v-server-table>-->
             <v-client-table :columns="columns" :data="task_list" :options="options" ref="clientTable" id="clientTable" name="clientTable">
                 <!--<a slot="uri" slot-scope="props" target="_blank" :href="props.row.uri" class="glyphicon glyphicon-eye-open"></a>
                 <div slot="child_row" slot-scope="props">
                     The link to {{props.row.name}} is <a :href="props.row.uri">{{props.row.uri}}</a>
                 </div>-->
             </v-client-table>
-            
-            <!--<v2-table :data="task_list" style="width: 100%;">
-                <v2-table-column label="Name" prop="assignee_name" :sortable="true" :width="100"></v2-table-column>
-                <v2-table-column label="Date" prop="date"></v2-table-column>
-                <v2-table-column label="Address" prop="address"></v2-table-column>  
-            </v2-table>-->  
         </div>
     </div>
-    
-    <!-- <div class='row-fluid'>
-        <div class='small-12 columns'>
-            <table class="cmfive-html-table" border="0">
-                <thead>
-                    <tr><th v-for="(head, index) in task_table_header" v-on:click="sort(head.key)" :key="head.key">{{ head.value }} <i class='fas' :class='{"fa-angle-up": (sort_direction == 1), "fa-angle-down": (sort_direction == -1)}'></i></th></tr>
-                </thead>
-                <tbody>
-                    <tr v-for="_task in task_list">
-                        <td v-html="_task['id']"></td>
-                        <td><a :href="_task['task_url']">{{ _task['title'] }}</a></td>
-                        <td><a :href="_task['task_group_url']">{{ _task['task_group_title'] }}</td>
-                        <td v-html="_task['assignee_name']"></td>
-                        <td v-html="_task['task_type']"></td>
-                        <td v-html="_task['priority']"></td>
-                        <td>
-                                {{ _task['status'] }}
-                        </td>
-                        <td>{{ _task['dt_due'] | formatDate }}</td>
-                    </tr>
-                </tbody>
-            </table>
-            <html-table :header="" :data='task_list' :include="['id', 'title', 'task_group_name', 'assignee_name', 'task_type', 'priority', 'status', 'dt_due']">
-
-            </html-table> 
-        </div>
-    </div> -->
-	
 </div>
 
 <script>
     var params = null;
-    
-    //Vue.use(VueTables.ServerTable);
     Vue.use(VueTables.ClientTable);
     Vue.component("model-list-select", VueSearchSelect.ModelListSelect);
     
@@ -140,41 +103,12 @@
                                 }
                                 }
                             ],
-                            /*listColumns: {
-                                priority: <?php echo $priority_list_select; ?>,
-                                status: <?php echo $task_statuslist_select; ?>
-                            },*/
-                            //dateColumns: {
-                                
-                            //},
                             headings: {
                                 id: 'ID',
                                 dt_due: 'Date due',
                                 task_group_title: 'Task group',
                                 assignee_name: 'Assignee'
                             },
-                            /*responseAdapter: function(resp) {
-                                var f = resp.data;
-                                return { data: f.data, count: f.count };
-                            },
-                            requestAdapter(data) {
-                                return {
-                                    orderBy: data.orderBy ? " order by " + data.orderBy + " " + (data.ascending ? "asc" : "desc") + " " : "",
-                                    byColumn: data.byColumn ? data.byColumn : "",
-                                    limit: data.limit,
-                                    page: data.page,
-                                    query: data.query,
-                                    params: params ? params : ""
-                                };
-                            },
-                            requestFunction: function (data) {
-                                return $.ajax({
-                                    type: "GET",
-                                    url: '/task-ajax/task_list',
-                                    data: data,
-                                    dataType: 'json'
-                                });
-                            },   */
                             templates: {
                                 title: 'task-url',
                                 task_group_title: 'task-group-url'
@@ -199,7 +133,6 @@
                 watch: {
                     task_status: function(val) {
                         this.$refs.clientTable.setFilter({ status: val });
-                        //this.$emit('vue-tables.clientTable.filter::status', val);
                     },
                     
                     task_type: function(val) {
@@ -223,7 +156,7 @@
                     }
                 },
 		methods: {
-			getTaskList: function(reset = false) {
+			getTaskList: function() {
                             var _this = this;
                             $.ajax('/task-ajax/task_list', {
 
@@ -231,67 +164,6 @@
                                 var _response = JSON.parse(response);
                                 _this.task_list = _response.data;
                             });
-                                /*if (reset) {
-                                    this.assignee_id = null;
-                                    this.creator_id = null;
-                                    this.task_group_id = null;
-                                    this.task_type = null;
-                                    this.task_priority = null;
-                                    this.task_status = null;
-                                    
-                                    params = null;
-                                    
-                                    this.$refs.serverTable.getData();
-                                    this.$refs.serverTable.refresh();
-                                }
-                                
-                                else if (!reset) {
-                                     params = {
-                                        assignee_id: this.assignee_id,
-                                        creator_id: this.creator_id,
-                                        task_group_id: this.task_group_id,
-                                        task_type: this.task_type,
-                                        priority: this.task_priority,
-                                        status: this.task_status
-                                    };
-                                
-                                    for (var v in params) { 
-                                        if (params[v] === null || params[v] === undefined || params[v] === "") {
-                                            delete params[v];
-                                        }
-                                    }
-                                    
-                                    this.$refs.serverTable.getData();
-                                    this.$refs.serverTable.refresh();
-                                }*/
-			},
-			sort: function(key) {
-				if (this.sort_key != key) {
-					this.sort_direction = 1;
-					this.sort_key = key;
-				} else {
-					this.sort_direction *= -1;
-				}
-
-				for(var i in this.task_table_header) {
-					if (this.task_table_header[i].key == key) {
-						this.task_table_header[i].sorting = true;
-					} else {
-						this.task_table_header[i].sorting = false;
-					}
-				}
-
-				var _this = this;
-				_this.task_list.sort(function(a, b) {
-					if (key in a && key in b && a[key] !== null && b[key] !== null) {
-						return (a[key].localeCompare(b[key]) * _this.sort_direction);
-					} else {
-						return 0;
-					}
-				});
-			},
-			isSortKey: function(key) {
-				return this.sort_key == key;
 			}
 		},
 		created: function() {
