@@ -25,13 +25,6 @@
     <body>
         <div class="row">
             <div class="large-6 small-10 columns small-centered">
-                <div class="row small-6 small-centered">
-                	<?php if (Config::get("main.application_logo")):?>
-                		<center><img src="<?php echo Config::get("main.application_logo");?>" alt="<?php echo Config::get("main.application_name");?> Logo"/></center>
-                	<?php endif;?>
-                    <h1 style="text-align: center;"><?php echo $w->moduleConf('main','application_name'); ?></h1>
-                </div>
-
                 <?php if (!empty($error) || !empty($msg)) : ?>
                     <?php 
 						$type = [];
