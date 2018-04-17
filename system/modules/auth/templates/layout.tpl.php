@@ -31,7 +31,9 @@
               
               header {
                   background-color: #2A2869;
-                  height: 2.5em;
+                    text-align: center;
+                    color: #ffffff;
+                    padding: 0.5em 0 0.5em 0;
               }
 
               main {
@@ -48,7 +50,9 @@
     </head>
     
     <body>
-        <header></header>
+        <header>
+            <?php echo Config::get('main.company_name'); ?>
+        </header>
         <main>
             <div style="height: 1em;"></div>
             <?php if (!empty($error) || !empty($msg)) : ?>
@@ -71,7 +75,7 @@
             <?php echo !empty($body) ? $body : ''; ?>
             <div style="height: 1em;"></div>
         </main>
-        <footer>© 2pi Software</footer>
+        <footer>©<?php echo date("Y"); ?> <?php echo Config::get('main.company_name'); ?>. Developed by 2pi Software.</footer>
     </body>
 
     
