@@ -270,7 +270,7 @@ class Web {
 		
 		if (!empty($components)) {
 			foreach($components as $component => $paths) {
-				CmfiveScriptComponentRegister::registerComponent($component, new CmfiveScriptComponent($paths[0]));
+				CmfiveScriptComponentRegister::registerComponent($component, new CmfiveScriptComponent($paths[0], ['defer' => '']));
 	            if (!empty($paths[1]) && file_exists(ROOT_PATH . $paths[1])) {
 	                CmfiveStyleComponentRegister::registerComponent($component, new CmfiveStyleComponent($paths[1]));
 	            }
@@ -279,7 +279,7 @@ class Web {
 
 		// Load components loaded in actions
 		foreach(VueComponentRegister::getComponents() ? : [] as $name => $vue_component) {
-			CmfiveScriptComponentRegister::registerComponent($name, new CmfiveScriptComponent($vue_component->js_path));
+			CmfiveScriptComponentRegister::registerComponent($name, new CmfiveScriptComponent($vue_component->js_path, ['defer' => '']));
             if (!empty($vue_component->css_path) && file_exists(ROOT_PATH . $vue_component->css_path)) {
                 CmfiveStyleComponentRegister::registerComponent($name, new CmfiveStyleComponent($vue_component->css_path));
             }
