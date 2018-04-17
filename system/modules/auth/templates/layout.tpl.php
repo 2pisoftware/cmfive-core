@@ -21,40 +21,73 @@
             $w->outputScripts();
         ?>
         <?php echo (!empty($htmlheader) ? $htmlheader : ''); ?>
+        <style>
+            body {
+                display: flex;
+                display: -webkit-flex;
+                min-height: 100vh;
+                flex-direction: column;
+              }
+              
+              header {
+                  background-color: #2A2869;
+                  height: 2.5em;
+              }
+
+              main {
+                flex: 1;
+              }
+              
+              footer {
+                  background-color: #2A2869;
+                  text-align: center;
+                  color: #ffffff;
+                  padding: 0.5em 0 0.5em 0;
+              }
+        </style>
     </head>
+    
     <body>
-        <div class="row">
+        <header></header>
+        <main>
+            <div style="height: 1em;"></div>
+            <?php if (!empty($error) || !empty($msg)) : ?>
+                <?php 
+                    $type = [];
+                    $nameValue='';
+                    if (!empty($error)) {
+                        $type= array("name" => "error", "class" => "warning");
+                        $nameValue=$error;
+                    } else {
+                        $type=array("name" => "msg", "class" => "info"); 
+                        $nameValue=$msg;
+                    }
+                ?>
+                <div data-alert class="alert-box <?php echo $type["class"]; ?>">
+                    <?php echo $nameValue; ?>
+                    <a href="#" class="close">&times;</a>
+                </div>
+            <?php endif; ?>
+            <?php echo !empty($body) ? $body : ''; ?>
+            <div style="height: 1em;"></div>
+        </main>
+        <footer>© 2pi Software</footer>
+    </body>
+
+    
+  
+        <!--<div class="row">
             <div class="large-6 small-10 columns small-centered">
-                <?php if (!empty($error) || !empty($msg)) : ?>
-                    <?php 
-						$type = [];
-						$nameValue='';
-						if (!empty($error)) {
-							$type= array("name" => "error", "class" => "warning");
-							$nameValue=$error;
-						} else {
-							$type=array("name" => "msg", "class" => "info"); 
-							$nameValue=$msg;
-						}
-                    ?>
-                    <div data-alert class="alert-box <?php echo $type["class"]; ?>">
-                        <?php echo $nameValue; ?>
-                        <a href="#" class="close">&times;</a>
-                    </div>
-                <?php endif; ?>
+                
 
 
                 <div class="row">
-                    <?php echo !empty($body) ? $body : ''; ?>
+                    
                 </div>
             </div>
-        </div>
+        </div>-->
+        
         <script>
-			try {
-				jQuery(document).foundation();
-			} catch (e) {
-				console.log(e);
-			}
+            jQuery(document).foundation();
         </script>
-	</body>
 </html>
