@@ -86,11 +86,12 @@ if ($w->auth->hasRole('comment')) {
                 var closest = element.closest('.medium-11').siblings('.medium-1').first();
                 var comment_section = element.closest(".comment_section");
                 var comment_id = comment_section.attr('id').substr(comment_section.attr('id').indexOf('_') + 1);
+                var sHttps = "<?php echo (empty($w->sHttps) || $w->sHttps == "off") ? "http" : "https"; ?>";
                 
                 var replyForm = $('<div></div>').addClass('comment_section')
                     .append($('<div></div>').addClass('comment_body clearfix')
                         .append($('<div></div>').addClass('medium-1 column')
-                            .append($('<img/>').addClass('comment_avatar').attr('src', 'http://www.gravatar.com/avatar/<?php echo md5(strtolower(trim(@$w->Auth->user()->getContact()->email))); ?>?d=identicon')))
+                            .append($('<img/>').addClass('comment_avatar').attr('src', sHttps + '://www.gravatar.com/avatar/<?php echo md5(strtolower(trim(@$w->Auth->user()->getContact()->email))); ?>?d=identicon')))
                         .append($('<div></div>').addClass('medium-11 columns')
                             .append($('<form></form>').attr({id: 'comment_reply_form'})
                                 .append($('<input>').attr({

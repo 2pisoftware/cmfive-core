@@ -82,6 +82,7 @@ class Web {
 
 	public $_scripts = array();
 	public $_styles = array();
+        public $sHttps = null;
 
 	/**
 	 * Constructor
