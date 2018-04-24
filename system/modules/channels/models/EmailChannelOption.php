@@ -235,11 +235,30 @@ class EmailChannelOption extends DbObject {
                                         $content_type_header = $part->getHeader("Content-Type");
                                         // Name is stored under "parameters" in an array
                                         $nameArray = $content_type_header->getParameters();
+                                        $name = '';
+                                        
+                                        if (empty($nameArray) || !is_array($nameArray) || !array_key_exists('name', $nameArray)) {
+                                            $content_dispositon = $part->getHeader('Content-Disposition');
+
+                                            $content_dispositon_array = explode(';', $content_dispositon->getFieldValue('filename'));
+                                            if (!empty($content_dispositon_array)) {
+                                                foreach($content_dispositon_array as $cda) {
+                                                    $arr = explode('=', $cda);
+                                                    if (trim($arr[0]) === 'filename') {
+                                                        $name = trim($arr[1]);
+                                                    }
+                                                }
+                                            }
+                                        } else {
+                                            $name = $nameArray['name'];
+                                        }
+
+                                        if (empty($name)) {
+                                            $name = "attachment_" . substr(uniqid('', true), -6);
+                                        }
+
                                         $this->w->File->saveFileContent($channel_message, 
-                                                ($transferEncoding == "base64" ? base64_decode(trim($part->__toString())) : trim($part->__toString())) , 
-                                                !empty($nameArray["name"]) ? $nameArray["name"] : ("attachment" . time()), 
-                                                "channel_email_attachment", 
-                                                $contentType);
+                                                ($transferEncoding == "base64" ? base64_decode(trim($part->__toString())) : trim($part->__toString())), $name, "channel_email_attachment", $contentType);
                                 }
                             } catch (Zend_Mail_Exception $e) {
                                 // Ignore

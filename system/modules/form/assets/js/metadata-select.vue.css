@@ -1,0 +1,29 @@
+.vue-metadata-select__container {
+	display: block; 
+	padding-bottom: 20px;
+}
+
+.vue-metadata-select__radio-header {
+	background-color: #efefef; 
+	padding: 10px; 
+	border: 1px solid #ccc;
+}
+
+.vue-metadata-select__radio-header input[type="radio"] {
+	margin-bottom: 0px;
+}
+
+.vue-metadata-select__content-container {
+	padding: 10px 10px 20px;
+	border-left: 1px solid #ccc;
+	border-right: 1px solid #ccc;
+	border-bottom: 1px solid #ccc;
+}
+
+.vue-metadata-select__content-container input[type="text"] {
+	width: 100%;
+}
+
+.vue-metadata-select__button {
+	margin-top: 20px !important;
+}

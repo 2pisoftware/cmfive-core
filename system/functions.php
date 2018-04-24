@@ -426,6 +426,10 @@ function formatDateTime($date, $format = "d/m/Y h:i a", $usetimezone = true) {
 	return formatDate($date, $format);
 }
 
+function formatTime($date, $format = "H:i") {
+	return formatDate($date, $format);
+}
+
 /**
  * A replacement function for the money_format PHP function that is only
  * available on most Linux based systems with the strfmon C function.
@@ -625,6 +629,33 @@ function in_multiarray($value, $array) {
 		}
 	}
 	return false;
+}
+
+/**
+ * Returns a value in a multidimension array
+ * NOTE: This function uses strict type comparison, with one exception where
+ * a string $value will match it's integer equivalent (i.e. '1' == 1, but '1s' != 1)
+ *
+ * Similar to above except it will return the value
+ * 
+ * @param <Mixed> $value
+ * @param <Mixed> $array
+ * @return <boolean> $in_multiarray
+ */
+function getValueFromMultiarray($key, $array) {
+	if (is_array($array)) {
+		if (array_key_exists($key, $array)) {
+			return $array[$key];
+		} else {
+			foreach ($array as $_key => $arr_key) {
+				$value = getValueFromMultiarray($key, $arr_key);
+				if ($value !== null) {
+					return $value;
+				}
+			}
+		}
+	}
+	return null;
 }
 
 /**
