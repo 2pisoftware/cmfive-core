@@ -319,15 +319,21 @@ class Web {
 				$language = $lang;
 			}
 		}
-		// $this->Log->info('init locale ' . $language);
+		
+		// Fallback to en_AU if language is not set
+		if (empty($language)) {
+			$language = 'en_AU';
+		}
+		
+		$this->Log->info('init locale ' . $language);
 
 		$all_locale = getAllLocaleValues($language);
 		
 		putenv("LC_ALL={$language}");
 		$results = setlocale(LC_ALL, $all_locale);
 		
-		if (!empty($results)) {
-			// $this->Log->info('setlocale failed: locale function is not available on this platform, or the given locale (' . $language . ') does not exist in this environment');
+		if (empty($results)) {
+			$this->Log->info('setlocale failed: locale function is not available on this platform, or the given locale (' . $language . ') does not exist in this environment');
 		}
 		$langParts = explode(".", $language);
 		$this->currentLocale = $langParts[0];
