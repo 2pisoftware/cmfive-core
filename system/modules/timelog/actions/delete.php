@@ -21,7 +21,7 @@ function delete_GET(Web $w) {
 	
 	// Check permissions
 	if (!$timelog->canDelete($w->Auth->user())) {
-		$w->error("You cannot delete Timelogs", "/timelog");
+		$w->error("You cannot delete this Timelog", "/timelog");
 	}
 	
 	$timelog->delete();

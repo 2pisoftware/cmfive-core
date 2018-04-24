@@ -35,6 +35,10 @@ class Task extends DbObject {
     );
     public static $_db_table = "task";
 
+    public function getSubscribers() {
+        return $this->getObjects('TaskSubscriber', ['task_id' => $this->id, 'is_deleted' => 0]);
+    }
+
     /**
 	 * Adds task type and task data to the index
 	 * 
@@ -68,7 +72,11 @@ class Task extends DbObject {
 
 	public function isUrgent() {
 		$taskgroup_type_object = $this->w->Task->getTaskGroupTypeObject($this->_taskgroup->task_group_type);
-		return $taskgroup_type_object->isUrgentPriority($this->priority);
+        if (!empty($taskgroup_type_object->id)) {
+    		return $taskgroup_type_object->isUrgentPriority($this->priority);
+        } else {
+            return false;
+        }
 	}
 
     /**
@@ -465,6 +473,7 @@ class Task extends DbObject {
             }
 
 			if (empty($this->title)) {
+                $this->Log->debug("Inserting Task: title is empty, calling update");
 				$this->update();
 			}
 			
@@ -474,6 +483,7 @@ class Task extends DbObject {
             $comm->obj_table = $this->getDbTableName();
             $comm->obj_id = $this->id;
 			$comm->is_system = 1;
+            $comm->is_internal = 1;
             $comm->comment = "Task Created";
             $comm->insert();
 
@@ -491,6 +501,42 @@ class Task extends DbObject {
 
             if (!empty($tg_type)) {
                 $tg_type->on_after_insert($this);
+            }
+
+            // Add all taskgroup members as subscribers
+            $taskgroup = $this->getTaskGroup();
+            if (!empty($taskgroup->id)) {
+				// If automatic subscribe is ticked, assign all members as subscribers
+				if ($taskgroup->shouldAutomaticallySubscribe()) {
+					$members = $taskgroup->getMembers();
+					if (!empty($members)) {
+						foreach($members as $member) {
+                            if (!$this->isUserSubscribed($member->user_id)) {
+                                $task_subscriber = new TaskSubscriber($this->w);
+                                $task_subscriber->task_id = $this->id;
+                                $task_subscriber->user_id = $member->user_id;
+                                $task_subscriber->insert();
+                            }
+						}
+					}
+				// Else only assign the assignee and creator
+				} else {
+                    $creator_id = $this->getTaskCreatorId();
+                    if (!empty($creator_id) && !$this->isUserSubscribed($creator_id)) {
+                        //$this->Log->debug("Inserting Task: adding creator as subscriber");
+                        $creator_assigner = new TaskSubscriber($this->w);
+                        $creator_assigner->task_id = $this->id;
+                        $creator_assigner->user_id = $creator_id;
+                        $creator_assigner->insert();
+                    }
+					if (!empty($this->assignee_id) && !$this->isUserSubscribed($this->assignee_id)) {
+                        //$this->Log->debug("Inserting Task: adding assignee as subscriber");
+						$assignee_subscriber = new TaskSubscriber($this->w);
+						$assignee_subscriber->task_id = $this->id;
+						$assignee_subscriber->user_id = $this->assignee_id;
+						$assignee_subscriber->insert();
+					}
+				}
             }
 
             $this->commitTransaction();
@@ -555,6 +601,16 @@ class Task extends DbObject {
                 $tg_type->on_after_update($this);
             }
 
+            //if not 'unassigned' add user to subscribers
+            //check user exists
+            $user = $this->w->auth->getUser($this->assignee_id);
+			if (!empty($user) && !$this->isUserSubscribed($this->assignee_id)) {
+				$assignee_subscriber = new TaskSubscriber($this->w);
+				$assignee_subscriber->task_id = $this->id;
+				$assignee_subscriber->user_id = $this->assignee_id;
+				$assignee_subscriber->insert();
+			}
+			
             $this->commitTransaction();
         } catch (Exception $ex) {
             $this->Log->error("Updating Task(" . $this->id . "): " . $ex->getMessage());
@@ -583,7 +639,7 @@ class Task extends DbObject {
             if ($this->task_type) {
                 $this->getTaskTypeObject()->on_before_delete($this);
             }
-
+            
             // 3. Delete the task
 
             parent::delete($force);
@@ -607,6 +663,11 @@ class Task extends DbObject {
         }
     }
 
+	public function isUserSubscribed($user_id) {
+		$existing_subscription = $this->getObject('TaskSubscriber', ['task_id' => $this->id, 'user_id' => $user_id, 'is_deleted' => 0]);
+		return !empty($existing_subscription->id);
+	}
+	
     function getTaskGroup() {
         return $this->Task->getTaskGroup($this->task_group_id);
     }

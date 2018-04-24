@@ -11,7 +11,7 @@ function edit_GET($w) {
     $task = (!empty($p["id"]) ? $w->Task->getTask($p["id"]) : new Task($w));
     
     if ($task->is_deleted == 1) {
-        $w->error('You have attempted to view a deleted task.');
+        $w->error('Task not found',"/task/tasklist/");
     }
     
     // Register for timelog if not new task
@@ -24,7 +24,16 @@ function edit_GET($w) {
     }
 	
     // Get a list of the taskgroups and filter by what can be used
-    $taskgroups = array_filter($w->Task->getTaskGroups(), function($taskgroup){
+    $taskgroup_list = $w->Task->getTaskGroups();
+    if (empty($taskgroup_list)) {
+        if ((new Taskgroup($w))->canEdit($w->Auth->user())) {
+            $w->msg('Please set up a taskgroup before continuing', '/task-group/viewtaskgrouptypes');
+        } else {
+            $w->error('There are no Tasks currently set up, please notify an Administrator', '/task');
+        }
+    }
+
+    $taskgroups = array_filter($taskgroup_list, function($taskgroup){
         return $taskgroup->getCanICreate();
     });
     
@@ -66,7 +75,7 @@ function edit_GET($w) {
 				]))->setLabel("Task Type <small>Required</small>")
                     ->setDisabled(!empty($p["id"]) ? "true" : null)
                     ->setOptions($tasktypes)
-                    ->setSelectedOption(!empty($p["id"]) ? $task->task_type : sizeof($tasktypes) === 1 ? $tasktypes[0] : null)
+                    ->setSelectedOption(!empty($p["id"]) ? $task->task_type : (is_array($tasktypes) && count($tasktypes) === 1 ? $tasktypes[0] : null))
                     ->setRequired('required')
             ),
             array(
@@ -110,6 +119,14 @@ function edit_GET($w) {
         $createdDate =  formatDate($task->_modifiable->getCreatedDate()) . (!empty($creator) ? ' by <strong>' . @$creator->getFullName() . '</strong>' : '');
     }
     $w->ctx('createdDate', $createdDate);
+
+    // Subscribers
+    if (!empty($task->id)) {
+        $task_subscribers = $task->getSubscribers();
+
+        
+        $w->ctx('subscribers', $task_subscribers);
+    }
 
     ///////////////////
     // Notifications //

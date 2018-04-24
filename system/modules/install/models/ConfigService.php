@@ -14,8 +14,8 @@ class ConfigService extends DbService {
 	 */
 	public static function saveConfigData($data) {
 		$template_path = INSTALLER_CONFIG_FILE;
-		require_once 'Twig-1.13.2/lib/Twig/Autoloader.php';
-		Twig_Autoloader::register();
+		//require_once 'Twig-1.13.2/lib/Twig/Autoloader.php';
+		//Twig_Autoloader::register();
 
 		$template = null;
 		if (file_exists($template_path)) {
