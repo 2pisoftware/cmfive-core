@@ -27,7 +27,7 @@
 								<td><i class="draggable-icon fi-list large"></i></td>
 								<td><?php echo $field->name; ?></td>
 								<td><?php echo $field->technical_name; ?></td>
-								<td><?php echo $field->type; ?></td>
+								<td><?php echo $field->getReadableType(); ?></td>
 								<td><?php echo $field->getAdditionalDetails(); ?></td>
 								<td>
 									<?php

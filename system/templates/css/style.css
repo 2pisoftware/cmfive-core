@@ -742,3 +742,7 @@ input[type='checkbox'] {
     display: block;
     margin: 5px 0px;
 }
+
+.close-reveal-modal {
+    padding-top: 8px;
+}

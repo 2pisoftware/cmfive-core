@@ -109,6 +109,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>pause</td>
+	<td>2000</td>
+	<td></td>
+</tr>
+<tr>
 	<td>waitForNotVisible</td>
 	<td>class=loading_overlay</td>
 	<td></td>
@@ -135,6 +140,166 @@
 	<td></td>
 </tr>
 <!-- end error checking -->
+<tr>
+	<td>click</td>
+	<td>link=Internal Comments 1</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=#internal_comments &gt; button.button.tiny </td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>id=comment</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=comment</td>
+	<td>Test Comment</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>xpath=(//button[@type='submit'])[3]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>link=Internal Comments 2</td>
+	<td>Internal Comments 2</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>css=p:contains('Test Comment')</td>
+	<td>Test Comment</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>xpath=(//a[contains(text(),'Edit')])[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>id=comment</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=comment</td>
+	<td>Edited Test comment</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>xpath=(//button[@type='submit'])[3]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Internal Comments 2</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>link=Internal Comments 2</td>
+	<td>Internal Comments 2</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>css=p:contains('Edited Test comment')</td>
+	<td>Edited Test comment</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=External Comments 0</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=#external_comments &gt; button.button.tiny </td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>id=comment</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=comment</td>
+	<td>External Test Comment</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>xpath=(//button[@type='submit'])[3]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>link=Internal Comments 2</td>
+	<td>Internal Comments 2</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>link=External Comments 1</td>
+	<td>External Comments 1</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>xpath=(//a[contains(text(),'Edit')])[3]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>id=comment</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=comment</td>
+	<td>Edited External Test Comment</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>xpath=(//button[@type='submit'])[3]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=External Comments 1</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>css=p:contains('Edited External Test Comment')</td>
+	<td>Edited External Test Comment</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>link=Internal Comments 2</td>
+	<td>Internal Comments 2</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>link=External Comments 1</td>
+	<td>External Comments 1</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Internal Comments 2</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>xpath=(//a[contains(text(),'Delete')])[3]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Task Details</td>
+	<td></td>
+</tr>
 <tr>
 	<td>clickAndWait</td>
 	<td>//div[2]/div/div/div/button[2]</td>
