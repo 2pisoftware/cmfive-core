@@ -113,7 +113,8 @@ function _en($key1, $key2, $n, $context = '', $domain = '') {
 function getAllLocaleValues($base_locale) {
 	static $language_lookup = [
 		'de_DE' => ['de_DE', 'de_DE@euro', 'deu', 'deu_deu', 'german'],
-		'fr_FR' => ['fr_FR', 'fr_FR@euro', 'french']
+		'fr_FR' => ['fr_FR', 'fr_FR@euro', 'french'],
+		'en_AU' => ['en_AU.utf8', 'en_AU', 'australian']
 	];
 	
 	if (array_key_exists($base_locale, $language_lookup)) {
