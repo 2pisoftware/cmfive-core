@@ -1,0 +1,12 @@
+{
+    "require-dev": {
+        "codeception/codeception": "^2.4",
+        "agalmar/chromiuman": "^1.1",
+        "lbaey/chromedriver": "1.1"
+    },
+    "extra": {
+       "lbaey/chromedriver": {
+           "chromedriver-version": "2.36"
+       }
+   }
+}

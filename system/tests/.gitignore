@@ -1,0 +1,7 @@
+composer.lock
+codeception.yml
+acceptance.suite.yml
+unit.suite.yml
+_output/
+vendor/
+support/_generated/

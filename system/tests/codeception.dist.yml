@@ -1,0 +1,14 @@
+paths:
+    tests: .
+    output: ./_output
+    data: ./data
+    support: ./support
+    envs: ./_envs
+actor_suffix: Tester
+extensions:
+    enabled:
+        - Codeception\Extension\RunFailed
+        - Codeception\Extension\Chromiuman
+    config:
+        Codeception\Extension\Chromiuman:
+          url_base: wd/hub

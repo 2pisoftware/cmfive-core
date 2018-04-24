@@ -1,0 +1,8 @@
+class_name: CmfiveGuy
+modules:
+  enabled:
+    - WebDriver:
+        url:
+        browser: chrome
+        wait: 60
+        port: 9515
