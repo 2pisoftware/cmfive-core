@@ -7,14 +7,14 @@
  */
 class a {
 
+    use GlobalAttributes;
+
     public $text;
     public $confirm;
-    public $class;
     public $download; // New to HTML5
     public $href;
     public $hreflang;
     public $media; // New to HTML5
-    public $id;
     public $rel;
     public $target;
     public $type; // New in HTML5
@@ -26,7 +26,6 @@ class a {
     }
     
     public function __set($property, $value) {
-        echo $property . " " . $value;
         if (method_exists($this, $property)) {
             $this->$property($value);
         } else {
@@ -39,9 +38,19 @@ class a {
         return $this;
     }
 
+    // A static list of labels to exclude from the output string
+    public static $_excludeFromOutput = [
+        "text", "onclick", "confirm"
+    ];
+
+    /**
+     * Returns built string of input field
+     * 
+     * @return string string representation
+     */
     public function __toString() {
-        $buffer = "";
-        $buffer .= "<a ";
+        $buffer = '<a ';
+
         if (!empty($this->onclick)){
             $buffer .= "onclick=\"{$this->onclick}\"";
         } else {
@@ -49,18 +58,38 @@ class a {
                 $buffer .= "onclick=\"javascript:return confirm('" . $this->confirm . "');\" ";
             }
         }
-        if (!empty($this->download)) $buffer .= "download='{$this->download}' ";
-        if (!empty($this->href)) $buffer .= "href='{$this->href}' ";
-        if (!empty($this->hreflang)) $buffer .= "hreflang='{$this->hreflang}' ";
-        if (!empty($this->media)) $buffer .= "media='{$this->media}' ";
-        if (!empty($this->id)) $buffer .= "id='{$this->id}' ";
-        if (!empty($this->class)) $buffer .= "class='{$this->class}' ";
-        if (!empty($this->rel)) $buffer .= "rel='{$this->rel}' ";
-        if (!empty($this->target)) $buffer .= "target='{$this->target}' ";
-        if (!empty($this->type)) $buffer .= "type='{$this->type}' ";
-        $buffer .= (">{$this->text}</a>");
-        return $buffer;
+        
+        foreach(get_object_vars($this) as $field => $value) {
+            if (!is_null($value) && !in_array($field, static::$_excludeFromOutput)) {
+                $buffer .= $field . '=\'' . $this->{$field} . '\' ';
+            }
+        }
+
+        return $buffer . '>' . $this->text . '</a>';
     }
+    
+
+    // public function __toString() {
+    //     $buffer = "<a ";
+    //     if (!empty($this->onclick)){
+    //         $buffer .= "onclick=\"{$this->onclick}\"";
+    //     } else {
+    //         if (!empty($this->confirm)) {
+    //             $buffer .= "onclick=\"javascript:return confirm('" . $this->confirm . "');\" ";
+    //         }
+    //     }
+    //     if (!empty($this->download)) $buffer .= "download='{$this->download}' ";
+    //     if (!empty($this->href)) $buffer .= "href='{$this->href}' ";
+    //     if (!empty($this->hreflang)) $buffer .= "hreflang='{$this->hreflang}' ";
+    //     if (!empty($this->media)) $buffer .= "media='{$this->media}' ";
+    //     if (!empty($this->id)) $buffer .= "id='{$this->id}' ";
+    //     if (!empty($this->class)) $buffer .= "class='{$this->class}' ";
+    //     if (!empty($this->rel)) $buffer .= "rel='{$this->rel}' ";
+    //     if (!empty($this->target)) $buffer .= "target='{$this->target}' ";
+    //     if (!empty($this->type)) $buffer .= "type='{$this->type}' ";
+    //     $buffer .= (">{$this->text}</a>");
+    //     return $buffer;
+    // }
     
     public function confirm($confirmation) {
         $this->confirm = $confirmation;

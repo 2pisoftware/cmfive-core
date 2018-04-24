@@ -1,0 +1,21 @@
+div[class$="__suggestions"] {
+	position: absolute;
+	z-index: 1000;
+	background-color: white;
+}
+
+div[class$="__suggestions"] > div {
+	padding: 10px;
+	border-top: 1px solid #cdcdcd;
+	border-left: 1px solid #cdcdcd;
+	border-right: 1px solid #cdcdcd;
+}
+
+div[class$="__suggestions"] > div:hover {
+	cursor: pointer;
+	background-color: #dedede;
+}
+
+div[class$="__suggestions"] > div:last-child {
+	border-bottom: 1px solid #cdcdcd;
+}
