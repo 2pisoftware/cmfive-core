@@ -86,6 +86,7 @@ if ($w->auth->hasRole('comment')) {
                 var closest = element.closest('.medium-11').siblings('.medium-1').first();
                 var comment_section = element.closest(".comment_section");
                 var comment_id = comment_section.attr('id').substr(comment_section.attr('id').indexOf('_') + 1);
+                var sHttps = "<?php echo (empty($w->sHttps) || $w->sHttps == "off") ? "http" : "https"; ?>";
                 
                 var replyForm = $('<div></div>').addClass('comment_section')
                     .append($('<div></div>').addClass('comment_body clearfix')
