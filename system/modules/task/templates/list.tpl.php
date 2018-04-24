@@ -5,6 +5,12 @@
     .VueTables__filters-row {
         display: none;
     }
+    
+    .VuePagination__pagination {
+        display: table !important; 
+        margin-left: auto !important; 
+        margin-right: auto !important;
+    }
 </style>
 
 <div id="task_modal" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog"> 
@@ -13,34 +19,34 @@
 <div id='vue_task_list' class="container-fluid">
     <div class='row-fluid'>
         <div class='small-12 columns'>
-            <div style="display: inline-block;">
+            <div style="">
             <label>Assignee</label>
-            <model-list-select style="width: 20em;" v-model="assignee_id" :list="filter.assignees" placeholder="select assignee" option-value="value" option-text="text"></model-list-select>
+            <model-list-select style="" ref="assigneeselect" v-on:searchchange="assignee_autocomplete" v-model="assignee_id" :list="filter.assignees" placeholder="select assignee" option-value="value" option-text="text"></model-list-select>
             </div>
             
-            <div style="display: inline-block;">
+            <div style="">
             <label>Creator</label>
-            <model-list-select style="width: 15em;" v-model="creator_id" :list="filter.creators" placeholder="select creator" option-value="value" option-text="text"></model-list-select>
+            <model-list-select style="" v-model="creator_id" :list="filter.creators" placeholder="select creator" option-value="value" option-text="text"></model-list-select>
             </div>
             
-            <div style="display: inline-block;">
+            <div style="">
             <label>Group</label>
-            <model-list-select style="width: 20em;" v-model="task_group_id" :list="filter.task_groups" placeholder="select task group" option-value="value" option-text="text"></model-list-select>
+            <model-list-select style="" v-model="task_group_id" :list="filter.task_groups" placeholder="select task group" option-value="value" option-text="text"></model-list-select>
             </div>
             
-            <div style="display: inline-block;">
+            <div style="">
             <label>Status</label>
-            <model-list-select style="width: 15em;" v-model="task_status" :list="filter.task_statuslist" placeholder="select status" option-value="value" option-text="text"></model-list-select>
+            <model-list-select style="" v-model="task_status" :list="filter.task_statuslist" placeholder="select status" option-value="value" option-text="text"></model-list-select>
             </div>
             
-            <div style="display: inline-block;">
+            <div style="">
             <label>Priority</label>
-            <model-list-select style="width: 15em;" v-model="task_priority" :list="filter.priority_list" placeholder="select priority" option-value="value" option-text="text"></model-list-select>
+            <model-list-select style="" v-model="task_priority" :list="filter.priority_list" placeholder="select priority" option-value="value" option-text="text"></model-list-select>
             </div>
             
-            <div style="display: inline-block;">
+            <div style="">
             <label>Type</label>
-            <model-list-select style="width: 15em;" v-model="task_type" :list="filter.task_types" placeholder="select task type" option-value="value" option-text="text"></model-list-select>
+            <model-list-select style="" v-model="task_type" :list="filter.task_types" placeholder="select task type" option-value="value" option-text="text"></model-list-select>
             </div>
         </div>
     </div>
@@ -83,7 +89,7 @@
                     creator_id: "",
                     task_group_id: "",
 			filter: {
-				assignees: <?php echo $assignees; ?>,
+				assignees: [],
 				creators: <?php echo $creators; ?>,
 				task_groups: <?php echo $task_groups; ?>,
 				task_types: <?php echo $task_types; ?>,
@@ -145,6 +151,7 @@
                     
                     assignee_id: function(val) {
                         this.$refs.clientTable.setFilter({ assignee_name: val });
+                        this.filter.assignees = val === "" ? [] : [ { text: this.assignee_id, value: this.assignee_id } ];
                     },
                     
                     creator_id: function(val) {
@@ -164,7 +171,20 @@
                                 var _response = JSON.parse(response);
                                 _this.task_list = _response.data;
                             });
-			}
+			},
+                        
+                    assignee_autocomplete: function(text) {
+                        var _this = this;
+                        if (text === "") return;
+                        $.ajax({
+                            method: "GET",
+                            url: "/task-ajax/assignee_autocomplete",
+                            data: { filter: text }
+                        }).done(function(response) {
+                            var _response = JSON.parse(response);
+                            _this.filter.assignees = _response.data;
+                        });
+                    }
 		},
 		created: function() {
                     this.getTaskList();

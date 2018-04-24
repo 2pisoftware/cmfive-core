@@ -93,5 +93,10 @@ function user_details_GET(Web $w) {
 	];
 
 	$w->out((new JsonResponse())->setSuccessfulResponse('OK', $data));
+}
 
+function assignee_autocomplete_GET(Web $w) {
+    $filter = $_GET['filter'];
+    $assignees = array_map(function($user) {return ['value' => $user['fullname'], 'text' => $user['fullname']];}, $w->db->query("select distinct t.assignee_id, concat(c.firstname, ' ', c.lastname) as fullname from task t inner join `user` u on u.id = t.assignee_id inner join contact c on u.contact_id = c.id where c.firstname like '$filter%' or c.lastname like '$filter%';")->fetchAll());
+    $w->out((new JsonResponse())->setSuccessfulResponse('OK', $assignees));
 }
