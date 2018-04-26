@@ -23,6 +23,16 @@ class Form extends DbObject {
 	}
 
 	/**
+	 * Load the events associated with this form
+	 * 
+	 * @return Array<FormEvent>
+	 */
+	public function getEvents() {
+		return $this->getObjects("FormEvent", ["form_id" => $this->id, "is_deleted" => 0]);
+	}
+
+
+	/**
 	 * Loads the unique ID field for a form if set
 	 *
 	 * @return FormField

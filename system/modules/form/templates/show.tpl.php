@@ -10,6 +10,7 @@
 		<a href="#mapping">Mapping</a>
 		<a href="#row_template">Row Templates</a>
 		<a href="#summary_template">Summary Template</a>
+		<a href="#events">Events</a>
 	</div>
 	<div class="tab-body">
 		<div id="fields">
@@ -114,6 +115,10 @@
 				]
 					], "/form/edit/" . $form->id . "?redirect_url=" . urlencode("/form/show/" . $form->id) . "#summary_template", "POST");
 			?>
+		</div>
+		<div id="events">
+			<?php echo Html::box('/form-event/edit','Add New Event', true); ?>
+			<?php echo isset($event_table) ? $event_table : ''; ?>
 		</div>
 	</div>
 </div>

@@ -17,4 +17,23 @@ function show_GET(Web $w) {
 	$w->ctx("title", "Form: " . $_form_object->printSearchTitle());
 	$w->ctx("form", $_form_object);
 	$w->ctx("fields", $_form_object->getFields());
+	$events = $_form_object->getEvents();
+	if (!empty($events)) {
+		//prepare events table
+		$event_table_headers = ['ID','Type','Name','ON/Off','Actions'];
+		$event_table = [];
+		foreach ($events as $event) {
+			$row = [];
+			$row[] = $event->id;
+			$row[] = $event->type;
+			$row[] = $event->title;
+			$row[] = $event->is_active ? 'ON' : 'OFF';
+			$actions = [];
+			$actions[] = Html::box('/form-event/edit/' . $event->id, 'Edit', true);
+			$actions[] = Html::b('/form-event/delete/' . $event->id, 'Delete', 'Are you sure you want to delete this event?', null, false, "alert");
+			$row[] = implode('', $actions);
+			$event_table[] = $row;
+		} 
+		$w->ctx('event_table',Html::table($event_table, null, 'tablesorter', $event_table_headers));
+	}
 }
