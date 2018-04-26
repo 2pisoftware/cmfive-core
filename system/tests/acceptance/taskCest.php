@@ -14,7 +14,7 @@ class tasksCest
 	var $username='admin';
 	var $password='admin';
 
-	public function testTasks($I) {
+	public function testTasks($I, $scenario) {
     $I->wantTo('Verify that the tasks module is functioning correctly');
 		$I->login($this->username,$this->password);
 		$I->createUser('testuser','password','test','user','test@user.com');
