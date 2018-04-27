@@ -2,7 +2,7 @@
 /**
  * This class represents a form event processor definition that is used in a form
  */
-class FormEvent extends DbObject {
+class FormEventProcessor extends DbObject {
 	public $form_event_id;
 	public $class;
 	public $module;

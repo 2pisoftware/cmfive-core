@@ -52,6 +52,26 @@ class FormService extends DbService {
 	public function getFormValue($id) {
 		return $this->getObject('FormValue', $id);
 	}
+
+	/**
+	 * Returns a form event by id
+	 * 
+	 * @param  Mixed $id
+	 * @return FormEvent|null 
+	 */
+	public function getFormEvent($id) {
+		return $this->getObject('FormEvent', ['id'=>$id,'is_deleted'=>0]);
+	}
+
+	/**
+	 * Returns a form event processor by id
+	 * 
+	 * @param  Mixed $id
+	 * @return FormEvent|null 
+	 */
+	public function getEventProcessor($id) {
+		return $this->getObject('FormEventProcessor', ['id'=>$id,'is_deleted'=>0]);
+	}
 	
 	/**
 	 * Get an array structure describing the form for use with 
@@ -344,6 +364,105 @@ class FormService extends DbService {
     	}
 
     	return $new_form;
+	}
+
+	/**
+	 * Returns a parsed list of available event processors
+	 * @return Array list
+	 */
+	public function getEventProcessorList() {
+            // Get Modules => Processor list
+            $list = array();
+            foreach($this->w->modules() as $module) {
+                $processors = Config::get("{$module}.form_event_processors");
+                if (!empty($processors)) {
+                    foreach($processors as $processor) {
+                        $list[] = $module.".".$processor;
+                    }
+                }
+            }
+
+            return $list;
+	}
+
+	/**
+	 * Saves a form and returns the instance
+	 * @return FormInstance 
+	 */
+	public function saveForm($form_id,$field_values,$file_values,$form_instance_id = null,$object_class = null,$object_id = null) {
+	
+		$instance = null;
+		$form = null;
+		if (!empty($form_instance_id)) {
+			$instance = $this->w->Form->getFormInstance($form_instance_id);
+			$form = $instance->getForm();
+		} else {
+			$form = $this->w->Form->getForm($form_id);
+			$instance = new FormInstance($this->w);
+			$instance->form_id = $form_id;
+		}
+		
+		$instance->object_class = $object_class;
+		$instance->object_id = $object_id;
+		$instance->insertOrUpdate();
+
+		// Get existing values to update
+		$instance_values = $instance->getSavedValues();
+		if (!empty($instance_values)) {
+			foreach($instance_values as $instance_value) {
+				$field = $instance_value->getFormField();
+				
+				if (array_key_exists($field->technical_name, $field_values)) {
+					$instance_value->value = $field_values[$field->technical_name];
+					$instance_value->update();
+					unset($field_values[$field->technical_name]);
+				} else if (array_key_exists($field->technical_name, $file_values)) {
+					// Used for attachment field types
+					// Trigger update to allow the modifyForPersistance to take care of attachment uploads
+					$instance_value->update();
+					unset($file_values[$field->technical_name]);
+				} else {
+					$instance_value->delete();
+				}
+			}
+		}
+
+		// Add new POST values
+		if (!empty($field_values)) {
+			foreach($field_values as $key => $value) {
+				$field = $this->w->Form->getFormFieldByFormIdAndTitle($form->id, $key);
+				// if post variables don't match form fields, ignore them
+				if (!empty($field)) {
+					$instance_value = new FormValue($this->w);
+					$instance_value->form_instance_id = $instance->id;
+					$instance_value->form_field_id = $field->id;
+					$instance_value->value = $value;
+					$instance_value->insert();
+				}
+			}
+		}
+
+		// Add new FILE values
+		if (!empty($file_values)) {
+			foreach($file_values as $key => $value) {
+				$field = $this->w->Form->getFormFieldByFormIdAndTitle($form->id, $key);
+				// if post variables don't match form fields, ignore them
+				if (!empty($field)) {
+					$instance_value = new FormValue($this->w);
+					$instance_value->form_instance_id = $instance->id;
+					$instance_value->form_field_id = $field->id;
+					$instance_value->value = ''; // Attachment types will set the value in the Interface
+					$instance_value->insert();
+				}
+			}
+		}
+
+		//run 'on created' or 'on modified' processors here
+		// echo "<pre>";
+		// var_dump($instance); die;
+
+		return $instance;
+
 	}
 
 

@@ -79,7 +79,7 @@ class FormInstance extends DbObject {
 		if (!empty($form_fields)) {
 			foreach($form_fields as $field) {
 				if (!empty($formValueCollated[$field->id])) {
-					$table_row .= "<td>" . $formValueCollated[$field->id]->getMaskedValue() . "</td>";
+					$table_row .= "<td class=form_instance_" . $this->id . ">" . $formValueCollated[$field->id]->getMaskedValue() . "</td>";
 				} else {
 					$table_row .= "<td>&nbsp;</td>";
 				}
