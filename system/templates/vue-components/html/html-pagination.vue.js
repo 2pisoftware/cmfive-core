@@ -15,14 +15,14 @@ Vue.component('html-pagination', {
 			default: 20
 		}
 	},
-	data() {
+	data: function() {
 		return {
 			current_page: 1
 		}
 	},
 	computed: {
-		num_pages() {
-			let _num_pages = Math.ceil(this.numItems / this.perPage);
+		num_pages: function() {
+			var _num_pages = Math.ceil(this.numItems / this.perPage);
 			if (_num_pages) {
 				return _num_pages
 			} else {
@@ -31,17 +31,17 @@ Vue.component('html-pagination', {
 		}
 	},
 	methods: {
-		changePage(page) {
+		changePage: function(page) {
 			if (page > 0 && page <= this.num_pages) {
 				this.current_page = page
 				this.$emit('paginate', this.current_page)
 			}
 		},
-		incrementPage(increment) {
+		incrementPage: function(increment) {
 			this.changePage(this.current_page + increment);
 		}
 	},
-	onCreate() {
+	onCreate: function() {
 		this.changePage(1)
 	},
 	template:  '<div class="pagination-centered"> \
