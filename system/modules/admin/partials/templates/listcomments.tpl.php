@@ -90,7 +90,7 @@ if ($w->auth->hasRole('comment')) {
                 var replyForm = $('<div></div>').addClass('comment_section')
                     .append($('<div></div>').addClass('comment_body clearfix')
                         .append($('<div></div>').addClass('medium-1 column')
-                            .append($('<img/>').addClass('comment_avatar').attr('src', 'http://www.gravatar.com/avatar/<?php echo md5(strtolower(trim(@$w->Auth->user()->getContact()->email))); ?>?d=identicon')))
+                            .append($('<img/>').addClass('comment_avatar').attr('src', 'https://www.gravatar.com/avatar/<?php echo md5(strtolower(trim(@$w->Auth->user()->getContact()->email))); ?>?d=identicon')))
                         .append($('<div></div>').addClass('medium-11 columns')
                             .append($('<form></form>').attr({id: 'comment_reply_form'})
                                 .append($('<input>').attr({

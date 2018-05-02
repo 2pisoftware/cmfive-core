@@ -29,7 +29,7 @@
 		},
 		methods: {
 			getTags: function() {
-				let _this = this;
+				var _this = this;
 				_this.loading = true;
 				$.ajax({
 					url: '/tag/ajaxGetTags/<?php echo get_class($object); ?>/<?php echo $object->id; ?>',

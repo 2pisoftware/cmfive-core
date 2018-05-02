@@ -120,7 +120,11 @@ function comment_POST(Web $w){
     $comment->obj_table = $p["tablename"];
     $comment->obj_id = $p["object_id"];
     $comment->comment = strip_tags($w->request("comment"));
-    $comment->is_internal = $internal_only;
+    
+    // Only set the internal flag on new comments
+    if ($is_new === true) {
+        $comment->is_internal = $internal_only;
+    }
     $comment->insertOrUpdate();
     
     //handle notifications

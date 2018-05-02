@@ -82,6 +82,7 @@ class Web {
 
 	public $_scripts = array();
 	public $_styles = array();
+        public $sHttps = null;
 
 	/**
 	 * Constructor
@@ -114,6 +115,8 @@ class Web {
 
 		// The order of the following three lines are important
 		spl_autoload_register(array($this, 'modelLoader'));
+		spl_autoload_register(array($this, 'componentLoader'));
+
 		defined("WEBROOT") || define("WEBROOT", $this->_webroot);
 
 		// conditions to start the installer - must be running from web browser
@@ -180,8 +183,6 @@ class Web {
 			$class = array_pop($filePath);
 			$file = 'system' . DS . 'classes' . DS . strtolower(implode("/", $filePath)) . DS . $class . ".php";
 
-			// echo $file; var_dump(file_exists($file)); die();
-
 			if (file_exists($file)) {
 				require_once $file;
 				file_put_contents($classdirectory_cache_file, '$this->_classdirectory["' . $className . '"]="' . $file . '";' . "\n", FILE_APPEND);
@@ -189,6 +190,17 @@ class Web {
 			}
 		}
 		// $this->Log->debug("Class " . $file . " not found.");
+		return false;
+	}
+
+	private function componentLoader($name) {
+		$directory = 'system' . DS . 'classes' . DS . 'components';
+
+		if (file_exists($directory . DS . $name . '.php')) {
+			require_once $directory . DS . $name . '.php';
+			return true;
+		}
+
 		return false;
 	}
 
@@ -307,6 +319,12 @@ class Web {
 				$language = $lang;
 			}
 		}
+		
+		// Fallback to en_AU if language is not set
+		if (empty($language)) {
+			$language = 'en_AU';
+		}
+		
 		$this->Log->info('init locale ' . $language);
 
 		$all_locale = getAllLocaleValues($language);
@@ -314,7 +332,7 @@ class Web {
 		putenv("LC_ALL={$language}");
 		$results = setlocale(LC_ALL, $all_locale);
 		
-		if (!empty($results)) {
+		if (empty($results)) {
 			$this->Log->info('setlocale failed: locale function is not available on this platform, or the given locale (' . $language . ') does not exist in this environment');
 		}
 		$langParts = explode(".", $language);
@@ -519,9 +537,15 @@ class Web {
 		$this->_module = array_shift($hsplit);
 		$this->_submodule = array_shift($hsplit);
 
+		// Check to see if module exists, if it doesn't, send a 403 header
+        if (Config::get("{$this->_module}.active") === null) {
+            header($_SERVER["SERVER_PROTOCOL"] . ' 404 Not Found');
+            exit();
+        }
+
 		// Check to see if the module is active (protect against main disabling)
-		if (null !== Config::get("{$this->_module}.active") && !Config::get("{$this->_module}.active") && $this->_module !== "main") {
-			$this->error("The {$this->_module} module is not active, you can change it's active state in it's config file.", "/");
+		if (!Config::get("{$this->_module}.active") && $this->_module !== "main") {
+            $this->error("The {$this->_module} module is not active", "/");
 		}
 
 		// configure translations lookup for this module
@@ -551,14 +575,16 @@ class Web {
 
 		$this->_requestMethod = array_key_exists('REQUEST_METHOD', $_SERVER) ? $_SERVER['REQUEST_METHOD'] : '';
 
+		$actionmethods[] = $this->_action . '_' . $this->_requestMethod;
+
 		if ($this->_requestMethod === "HEAD") {
 			$this->_is_head_request = true;
-			$this->_requestMethod = "GET";
+			$actionmethods[] = $this->_action . '_GET';
 		}
 
 		$actionmethods[] = $this->_action . '_' . $this->_requestMethod;
 		$actionmethods[] = $this->_action . '_ALL';
-		$actionmethods[] = 'default_ALL';
+		//$actionmethods[] = 'default_ALL';
 
 		// change the submodule and action for installation
 		if ($this->_is_installing) {
@@ -1539,9 +1565,7 @@ class Web {
 
 			// if this function is already loaded from an earlier call, execute now
 			if (function_exists($hook_function_name)) {
-				$this->Log->setLogger('HOOKS')->info($hook_function_name . " running.");
 				$buffer[] = $hook_function_name($this, $data);
-				$this->Log->setLogger('HOOKS')->info($hook_function_name . " finished.");
 			} else {
 				// Check if the file exists and load
 				if (!file_exists($this->getModuleDir($toInvoke) . $toInvoke . ".hooks.php")) {
@@ -1553,9 +1577,7 @@ class Web {
 
 				if (function_exists($hook_function_name)) {
 					// Call function
-					$this->Log->setLogger('HOOKS')->info($hook_function_name . " running.");
 					$buffer[] = $hook_function_name($this, $data);
-					$this->Log->setLogger('HOOKS')->info($hook_function_name . " finished.");
 				}
 			}
 		}

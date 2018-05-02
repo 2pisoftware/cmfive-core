@@ -16,7 +16,8 @@ class FormService extends DbService {
 	/**
 	 * Load a form by id
 	 * 
-	 * @return Form
+	 * @param  Mixed $id
+	 * @return Form|null
 	 */
 	public function getForm($id) {
 		return $this->getObject("Form", $id);
@@ -25,7 +26,8 @@ class FormService extends DbService {
 	/**
 	 * Load a form field by id
 	 * 
-	 * @return FormField
+	 * @param  Mixed $id
+	 * @return FormField|null
 	 */
 	public function getFormField($id) {
 		return $this->getObject("FormField", $id);
@@ -33,11 +35,22 @@ class FormService extends DbService {
 	
 	/**
 	 * Load a form instance by id
-	 * 
-	 * @return FormInstance
+	 *
+	 * @param  Mixed $id
+	 * @return FormInstance|null
 	 */
 	public function getFormInstance($id) {
 		return $this->getObject("FormInstance", $id);
+	}
+
+	/**
+	 * Returns a form value by id
+	 * 
+	 * @param  Mixed $id
+	 * @return FormValue|null 
+	 */
+	public function getFormValue($id) {
+		return $this->getObject('FormValue', $id);
 	}
 	
 	/**
@@ -68,7 +81,13 @@ class FormService extends DbService {
 	 */
 	public function areFormsMappedToObject($object) {
 		$mapping = $this->getObjects("FormMapping", ["object" => get_class($object), "is_deleted" => 0]);
-		return count($mapping) > 0;
+
+		$application_mapping = [];
+		if ($object instanceof FormApplication) {
+			$application_mapping = $this->getObjects('FormApplicationMapping', ['application_id' => $object->id, 'is_deleted' => 0]);
+		}
+
+		return count($mapping) > 0 || count($application_mapping) > 0;
 	}
 	
 	/**
@@ -85,6 +104,16 @@ class FormService extends DbService {
 			}
 		}
 		
+		$application_forms = [];
+		if ($object instanceof FormApplication) {
+			$application_forms = $this->getObjects('FormApplicationMapping', ['application_id' => $object->id, 'is_deleted' => 0]);
+			if (!empty($application_forms)) {
+				foreach($application_forms as $application_form) {
+					$forms[] = $application_form->getForm();
+				}
+			}
+		}
+
 		return $forms;
 	}
 	
@@ -93,8 +122,8 @@ class FormService extends DbService {
 	 *
 	 * @return FormInstance[]
 	 */
-	public function getFormInstancesForFormAndObject($form, $object) {
-		return $this->getObjects("FormInstance", ["form_id" => $form->id, "object_class" => get_class($object), "object_id" => $object->id, "is_deleted" => 0]);
+	public function getFormInstancesForFormAndObject($form, $object, $page = null, $pagesize = null) {
+		return $this->getObjects("FormInstance", ["form_id" => $form->id, "object_class" => get_class($object), "object_id" => $object->id, "is_deleted" => 0], false, true, null, $page, $pagesize);
 	}
 	
 	/**
@@ -118,4 +147,39 @@ class FormService extends DbService {
 	public function getFormFieldByFormIdAndTitle($form_id, $name) {
 		return $this->getObject("FormField", ["form_id" => $form_id, "technical_name" => $name, "is_deleted" => 0]);
 	}
+	
+	/**
+	 * Load an Application
+	 *
+	 * @param unknown $application_id
+	 */
+	public function getFormApplication($application_id) {
+		return $this->getObject("FormApplication",["id" => $application_id, "is_deleted" => 0]);
+	}
+
+	public function getFormValueForInstanceAndField($instance_id, $field_id) {
+		return $this->getObject('FormValue', ['form_instance_id' => $instance_id, 'form_field_id' => $field_id, 'is_deleted' => 0]);
+	}
+
+	/**
+	 * Submenu navigation for Forms
+	 * 
+	 * @param  Web    $w
+	 * @param  String $title
+	 * @param  Array $prenav
+	 * @return Array
+	 */
+	public function navigation(Web $w, $title = null, $prenav = null) {
+        if ($title) {
+            $w->ctx("title", $title);
+        }
+		
+        $nav = $prenav ? $prenav : array();
+        if ($w->Auth->loggedIn()) {
+            $w->menuLink("form-application", "Applications", $nav);
+            $w->menuLink("form", "Forms", $nav);
+        }
+
+        return $nav;
+    }
 }
