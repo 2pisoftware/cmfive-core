@@ -5,36 +5,13 @@ $accent_colour: #dee5eb;
 
 $border_colour: #d4dbe1;
 $primary_text_colour: #222222;
-$text_accent_colour: #a3d0ea;
+$text_accent_colour: white; // #a3d0ea;
 
 $dark-border-colour: #d3d7dc;
 $dark-background-colour: #bbc9d4;
 
 $light-border-colour: #e5eaf0;
 $light-background-colour: #f8f9fb;
-
-html,
-body {
-	background-color: $accent_colour !important;
-    height:auto;
-
-	.body {
-		padding: 0px 40px 60px ;
-           
-		header {
-			font-size: 2em;
-			font-weight: bold;
-			margin-bottom: 0px;
-		}
-	}
-
-    .footer {
-        position: absolute;
-        left: 0px;
-        right: 0px;
-        bottom: 16px;
-    }
-}
 
 // Responsive mixins
 @import "responsive.scss";
@@ -50,6 +27,33 @@ body {
 
 // Tabs
 @import "tabs.scss";
+
+html,
+body {
+	font-family: 'Hind Vadodara', sans-serif;
+	background-color: $accent_colour !important;
+    height:auto;
+
+	.body {
+		padding: 0px 40px 60px ;
+        @include phone() {
+        	padding: 0px 20px 60px;
+        }
+
+		header {
+			font-size: 2em;
+			font-weight: bold;
+			margin-bottom: 0px;
+		}
+	}
+
+    .footer {
+        position: absolute;
+        left: 0px;
+        right: 0px;
+        bottom: 16px;
+    }
+}
 
 table {
 	margin-bottom: 0px;

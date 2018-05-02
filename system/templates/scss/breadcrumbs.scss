@@ -1,13 +1,18 @@
 // Breadcrumbs
+@import "responsive";
 
 .breadcrumb-container {
-	
+	@include phone() {
+		display: none !important;
+	}
+
 	ul.cmfive_breadcrumbs {
 		background-color: $secondary-colour;
 		border: none;
 		height: 25px;
 
 		li {
+			color: darken(white, 5%);
 			margin-top: -4px;
 
 			&.current {

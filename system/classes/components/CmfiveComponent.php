@@ -7,7 +7,10 @@ abstract class CmfiveComponent {
 
 	public $is_included = false;
 
-	public static $_excludeFromOutput = ['tag', 'has_closing_tag', 'is_included'];
+	// The weight is an integer that allows cmfive to organise the load order of components
+	// Higher numbers will appear first
+	public $weight = 1000;
+	public static $_excludeFromOutput = ['tag', 'has_closing_tag', 'is_included', 'weight'];
 
 	/**
 	 * Returns the HTML to include this component on the page

@@ -38,6 +38,11 @@
 	padding: 0px;
 	background-color: $primary_colour !important;
 	min-height: 50px;
+	height: 50px;
+
+	@include phone() {
+		display: none;	
+	}
 
 	section {
 		height: 100%;
@@ -45,6 +50,9 @@
 
 		ul {
 			height: 100% !important;
+			width: auto;
+			display: block;
+			list-style-type: none;
 
 			&:not(.accordion-menu) {
 				&>li > a::after {
@@ -54,6 +62,7 @@
 
 			&> li {
 				height: 100%;
+				width: auto;
 				background-color: $primary_colour !important;
 				color: $text_accent_colour !important;
 
@@ -83,6 +92,13 @@
 					}
 				}
 
+				&>span {
+					font-weight: lighter;
+					font-size: 18pt;
+					padding: 5px 15px;
+					display: inline-block;
+				}
+
 				&:hover > a {
 					background-color: $tertiary_colour !important;
 				}
@@ -93,4 +109,37 @@
 	}
 
 	@include nav_submenu_style();
+}
+
+.cmfive-phone-nav {
+	color: white;
+	padding: 0px;
+	background-color: $primary_colour !important;
+	min-height: 50px;
+	height: 50px;
+	display: block;
+
+	@include tablet-up() {
+		display: none;
+	}
+
+	div {
+		a {
+			color: $text-accent-colour;
+			padding: 8px 15px;
+			display: inline-block;
+
+			&:hover {
+				background-color: $tertiary_colour !important;
+			}
+		}
+
+		span {
+			display: inline-block;
+			color: $text-accent-colour;
+			font-size: 18pt;
+			font-weight: lighter;
+			padding: 5px 15px;
+		}
+	}
 }

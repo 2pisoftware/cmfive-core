@@ -31,6 +31,12 @@ $desktop-width: 1024px;
 	}
 }
 
+@mixin phone-or-desktop {
+	@media (max-width: #{$tablet-width - 1px}), (min-width: #{$desktop-width}) {
+		@content;
+	}
+}
+
 // A site point article {https://www.sitepoint.com/sass-mixin-media-merging/} gave me the code below
 // But it has caused recursion issues somehow, might still be useful
 

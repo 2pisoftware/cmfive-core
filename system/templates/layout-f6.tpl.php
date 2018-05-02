@@ -9,7 +9,7 @@
         <title><?php echo ucfirst($w->currentModule()); ?><?php echo!empty($title) ? ' - ' . $title : ''; ?></title>
 
         <?php
-
+         CmfiveScriptComponentRegister::registerComponent('polyfill', new CmfiveScriptComponent('https://cdn.polyfill.io/v2/polyfill.min.js?features=es6'));
         CmfiveScriptComponentRegister::registerComponent('moment', new CmfiveScriptComponent('/system/templates/js/moment.min.js'));
         CmfiveScriptComponentRegister::registerComponent('axios', new CmfiveScriptComponent('/system/templates/js/axios.min.js'));     
 
@@ -21,6 +21,7 @@
         CmfiveStyleComponentRegister::registerComponent('style', new CmfiveStyleComponent("/system/templates/css/style.css"));
 
         // New styles
+        CmfiveStyleComponentRegister::registerComponent('hind_vadodara', new CmfiveStyleComponent("https://fonts.googleapis.com/css?family=Hind+Vadodara:300,400", [], true));
         CmfiveStyleComponentRegister::registerComponent('app', new CmfiveStyleComponent("/system/templates/scss/app.scss", ['/system/templates/scss/']));
         
         $w->enqueueScript(array("name" => "modernizr", "uri" => "/system/templates/js/foundation-5.5.0/js/vendor/modernizr.js", "weight" => 1001));
@@ -222,6 +223,7 @@
                                 <?php endforeach;
                             endif;
                         ?>
+                        <li><span><?php echo Config::get('main.company_name'); ?></span>    </li>
                     </ul>
 
                     <!-- Left Nav Section -->
@@ -255,9 +257,14 @@
                 </section>
             </nav>
 
+            <nav class="cmfive-phone-nav" data-topbar role="navigation">
+                <div class='left'><a href='#' class='side-menu-toggle-button'><span class='fas fa-bars fa-2x'></span></a></div>
+                <div class='text-right'><span><?php echo Config::get('main.company_name'); ?></span></div>
+            </nav>
+
             <!-- Breadcrumbs -->
             <div class="row-fluid breadcrumb-container">
-                <?php echo Html::breadcrumbs(array(), $w); ?>
+                <?php echo Html::breadcrumbs([], $w); ?>
                 <span class='icon-container'>
                     <?php if ($w->Auth->allowed('help/view')) {
                             echo Html::box(WEBROOT . "/help/view/" . $w->_module . ($w->_submodule ? "-" . $w->_submodule : "") . "/" . $w->_action, "<span class='fas fa-info show-for-medium-up'></span><span class='show-for-small-only'>Help</span>", false, true, 750, 500, "isbox", null, null, null, 'cmfive-help-modal');
@@ -319,9 +326,11 @@
                 'tolerance': 70
             });
 
-            document.querySelector('.side-menu-toggle-button').addEventListener('click', function() {
-                slideout.open();
-                $("#slider_overlay").fadeIn(100);
+            document.querySelectorAll('.side-menu-toggle-button').forEach(function(toggle_button) {
+                toggle_button.addEventListener('click', function() {
+                    slideout.open();
+                    $("#slider_overlay").fadeIn(100);
+                });
             });
 
             $("#slider_overlay").click(function(){
