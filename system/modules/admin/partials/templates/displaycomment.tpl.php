@@ -1,9 +1,8 @@
 <?php use Carbon\Carbon; ?>
-<?php $https = (empty($w->sHttps) || $w->sHttps == "off") ? "http" : "https"; ?>
 <div id="comment_<?php echo $c->id; ?>" class="<?php echo isset($internal_only) && $internal_only === true ? 'internal' : 'external'; ?>_comment_section comment_section">
     <div class="comment_body clearfix">
         <div class='medium-1 column'>
-            <img class='comment_avatar' src='<?php echo $https; ?>://www.gravatar.com/avatar/<?php echo md5(strtolower(trim(@$c->w->Auth->getUser($c->creator_id)->getContact()->email))); ?>?d=identicon' />
+            <img class='comment_avatar' src='https://www.gravatar.com/avatar/<?php echo md5(strtolower(trim(@$c->w->Auth->getUser($c->creator_id)->getContact()->email))); ?>?d=identicon' />
         </div>
         <div class='medium-11 columns comment_right_column'>
             <p><b><?php echo !empty($c->creator_id) ?@$c->w->Auth->getUser($c->creator_id)->getFullName() : ""; ?></b></p>
