@@ -190,13 +190,12 @@ function edit_POST($w) {
     $task->fill($_POST['edit']);
 
     // set first assigned date time
-    if (empty($task->__old['dt_first_assigned']) && is_numeric($task->assignee_id))
+    if (empty($task->__old['dt_first_assigned']) && $task->assignee_id > 0)
         $task->dt_first_assigned = formatDateTime(time());
 
     // set assigned date time
-	if ($task->propertyHasChanged('assignee_id') && is_numeric($task->assignee_id)) {
+	if ($task->propertyHasChanged('assignee_id') && $task->assignee_id > 0) 
         $task->dt_assigned = formatDateTime(time());
-    }
 
     // set completed date time
     if ($task->status == "Deploy" || $task->status == "Live" || $task->status == "DONE")
