@@ -26,5 +26,5 @@ function view_GET(Web $w) {
 	// VueComponentRegister::registerComponent('html-button-bar', new VueComponent('html-button-bar', '/system/templates/vue-components/html/custom/html-button-bar.vue.js', '/system/templates/vue-components/html/custom/html-button-bar.vue.scss'));
 
 	$w->ctx('task', $task);
-
+	$w->ctx("subscribers", json_encode($task->getSubscribers()));
 }

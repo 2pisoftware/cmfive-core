@@ -100,3 +100,39 @@ function assignee_autocomplete_GET(Web $w) {
     $assignees = array_map(function($user) {return ['value' => $user['fullname'], 'text' => $user['fullname']];}, $w->db->query("select distinct t.assignee_id, concat(c.firstname, ' ', c.lastname) as fullname from task t inner join `user` u on u.id = t.assignee_id inner join contact c on u.contact_id = c.id where c.firstname like '$filter%' or c.lastname like '$filter%';")->fetchAll());
     $w->out((new JsonResponse())->setSuccessfulResponse('OK', $assignees));
 }
+
+function delete_GET(Web $w) {
+    $task = $w->Task->getTask($w->request("task_id"));
+
+	// if task exists, continue
+    if (!empty($task)) {
+		if (!$task->canDelete($w->Auth->user())) {
+            $w->out((new JsonResponse())->setSuccessfulResponse('OK', "You aren't allowed to delete this Task"));
+			return;
+		}
+
+        $task->delete();
+        $w->out((new JsonResponse())->setSuccessfulResponse('OK', "deleted"));
+    } else {
+        $w->out((new JsonResponse())->setSuccessfulResponse('OK', "deleted"));
+    }
+}
+
+function save_GET(Web $w) {
+    $task = $w->Task->getTask($w->request("task_id"));
+
+    $task->title = $w->request("");
+    $task->dt_due = $w->request("");
+    $task->assignee_id = $w->request("");
+    $task->status = $w->request("");
+    $task->priority = $w->request("");
+    $task->task_group_id = $w->request("");
+    $task->task_type = $w->request("");
+    $task->description = $w->request("");
+    $task->estimate_hours = $w->request("");
+    $task->rate = $w->request("");
+
+    $task->update();
+
+    $w->out((new JsonResponse())->setSuccessfulResponse('OK', "updated"));
+}

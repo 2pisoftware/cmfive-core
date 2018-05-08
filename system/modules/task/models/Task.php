@@ -137,6 +137,11 @@ class Task extends DbObject {
     }
     
     public function getSubscribers() {
-        return $this->getObjects('TaskSubscriber', ['task_id' => $this->id, 'is_deleted' => 0]);
+        return $this->w->db->get("task_subscriber")->select()
+        ->select("task_subscriber.id, task_subscriber.user_id, concat(contact.firstname, ' ', contact.lastname) as fullname, user.is_external")
+        ->where("task_subscriber.task_id", $this->id)->where('task_subscriber.is_deleted', 0)
+        ->innerJoin("user on user.id = task_subscriber.user_id")
+        ->innerJoin("contact on contact.id = user.contact_id")
+        ->fetchAll();
     }
 }

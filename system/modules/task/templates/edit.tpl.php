@@ -1,8 +1,22 @@
+<script src='/system/templates/vue-components/form/elements/vue-search-select/vue-search-select.min.js'></script>
+<script src='/system/templates/vue-components/vue-resource.min.js'></script>
+<script src='/system/templates/vue-components/vue-resource.min.js'></script>
+<script src='/system/templates/vue-components/flatpickr/flatpickr.min.js'></script>
+<script src='/system/templates/vue-components/vue-flatpickr.min.js'></script>
+<link rel="stylesheet" type="text/css" href="/system/templates/vue-components/flatpickr/flatpickr.min.css">
+<script src='/system/templates/vue-components/ckeditor5-build-classic/ckeditor.js'></script>
+
 <div id="task_edit">
     
-<div id="taskmodal" class="reveal-modal small" data-reveal>
+<div id="taskmodal" class="reveal-modal small" data-reveal data-closable>
     Are you sure you want to remove this subscriber?<br><br>
-    <button class="button radius success" v-on:click="deleteSubscriber">Yes</button>
+    <button class="button radius success" v-on:click="delete_subscriber">Yes</button>
+    <button class="button radius alert" data-close>No</button>
+</div>
+
+<div id="delete-modal" class="reveal-modal small" data-reveal data-closable>
+    Are you sure you want to delete this task?<br><br>
+    <button class="button radius success" v-on:click="delete_task">Yes</button>
     <button class="button radius alert" data-close>No</button>
 </div>
     
@@ -15,52 +29,57 @@
 <html-tabs>
     <html-tab title='Details' icon='' :selected="true">
         <div class="row-fluid columns">
-            Group <small>Required</small>
-            <model-list-select v-model="taskgroup_id" :list="taskgroup_list" placeholder="select item" option-value="value" option-text="text"></model-list-select>
-            
-            Type <small>Required</small>
-            <model-list-select v-model="task_type" :list="task_type_list" placeholder="select item" option-value="value" option-text="text"></model-list-select>
-
-            Title <small>Required</small>
+            Task title <small>Required</small>
             <input name="title" id="title" required="required" type="text" v-model="task_title">
-           
+
+            Due date
+            <datepicker v-model="date" :config="dateconfig" placeholder="Due date"></datepicker>
+
+            Assigned
+            <model-list-select v-model="task_assignee" :list="task_assignee_list" placeholder="select item" option-value="value" option-text="text"></model-list-select>
+
             Status
             <model-list-select v-model="task_status" :list="task_status_list" placeholder="select item" option-value="value" option-text="text"></model-list-select>
 
             Priority
             <model-list-select v-model="task_priority" :list="task_priority_list" placeholder="select item" option-value="value" option-text="text"></model-list-select>
 
-            Assigned To
-            <model-list-select v-model="task_assignee" :list="task_assignee_list" placeholder="select item" option-value="value" option-text="text"></model-list-select>
+            Group <small>Required</small>
+            <model-list-select v-model="taskgroup_id" :list="taskgroup_list" placeholder="select item" option-value="value" option-text="text"></model-list-select>
             
+            Type <small>Required</small>
+            <model-list-select v-model="task_type" :list="task_type_list" placeholder="select item" option-value="value" option-text="text"></model-list-select>
+
+            Description
+            <textarea name="description" id="description"></textarea>
+
             Estimated hours
             <input name="estimate_hours" id="estimate_hours" type="text" v-model="estimate_hours">
             
             Effort
             <input name="effort" id="effort" type="text" v-model="effort">
-            
-            Description
-            <textarea id="description" name="description" v-model="description"></textarea>
+
             <br>
-            <?php if ($task->canDelete($w->Auth->user())): ?>
-                <a class="small alert button radius" href="/task/delete/<?php echo $task->id; ?>">Delete Task</a>
-            <?php endif ?>
             
-            <a class="small button radius" href="/task/duplicatetask/<?php echo $task->id; ?>">Duplicate Task</a>
+            <a class="small button radius" href="/task/duplicatetask/<?php echo $task->id; ?>">Save</a>
+            <a class="small button radius" href="/task/duplicatetask/<?php echo $task->id; ?>">Duplicate</a>
             <a class="small success button radius" href="/task/edit/?gid=<?php echo $task->task_group_id; ?>">New Task</a>
-            <a class="small warning button radius" href="/task-group/moveTaskgroup/<?php echo $task->id; ?>">Move to Taskgroup</a>
-            
-            <html-segment title='Subscribers'>
-                <?php foreach($task->getSubscribers() as $subscriber): ?>
-                    <div class='button tiny secondary radius <?php echo $subscriber->getUser()->is_external ? 'warning' : ''; ?>'>
-                        <?php echo $subscriber->getUser()->getFullName(); ?> - <?php echo $subscriber->getUser()->getContact()->email; ?>
-                        <a href="#" data-reveal-id="taskmodal"><i class="fa fa-times" aria-hidden="true"></i></a>
-                    </div>
-                <?php endforeach; ?>
-                    <a class='button tiny secondary radius' href="/task-subscriber/add/<?php echo $task->id; ?>" data-reveal-ajax="true" data-reveal-id="taskmodal"><i class="fa fa-plus" aria-hidden="true"></i></a>
+            <?php if ($task->canDelete($w->Auth->user())): ?>
+                <button class="small alert button radius" data-reveal-id="delete-modal">Delete</button>
+            <?php endif ?>
+            <a class="small warning button radius" href="/task/list">Cancel</a>
+
+            <html-segment title='Subscribers' v-if="subscribers">
+                <div v-for="subscriber in subscribers" :class="{ button: true, tiny: true, radius: true, secondary: true, warning: subscriber.is_external === 0 ? true : false }">
+                    {{subscriber.fullname}}
+                    <a href="#" data-reveal-id="taskmodal"><i class="fa fa-times" aria-hidden="true"></i></a>
+                </div>
+                <a class='button tiny secondary radius' href="/task-subscriber/add/<?php echo $task->id; ?>" data-reveal-ajax="true" data-reveal-id="taskmodal"><i class="fa fa-plus" aria-hidden="true"></i></a>
             </html-segment>
             
-            
+            <html-segment title='Tags'>
+                <?php echo $w->partial('listTags', ['object' => $task], 'tag'); ?>
+            </html-segment>
             
             
             <?php 
@@ -76,14 +95,11 @@
                 if (!empty($buttons) && is_array($buttons)) {
                         echo implode('', $buttons);
                 }
-
-                echo $w->partial('listTags', ['object' => $task], 'tag');
             ?>
         </div>
 
-             
-<?php echo Html::box('/task-subscriber/add/' . $task->id, 'Add', true, false, null, null, 'isbox', null, 'info center'); ?>
-<?php echo Html::b('/task-subscriber/delete/' . $subscriber->id, 'Delete', 'Are you sure you want to remove this subscriber?', null, false, 'warning center'); ?>
+<?php //echo Html::box('/task-subscriber/add/' . $task->id, 'Add', true, false, null, null, 'isbox', null, 'info center'); ?>
+<?php //echo Html::b('/task-subscriber/delete/' . $subscriber->id, 'Delete', 'Are you sure you want to remove this subscriber?', null, false, 'warning center'); ?>
                                                    
                              
                        
@@ -137,6 +153,9 @@
 </div>
 
 <script>
+    Vue.component("model-list-select", VueSearchSelect.ModelListSelect);
+    Vue.component('datepicker', VueFlatpickr);
+
     new Vue({
         el: '#task_edit',
         
@@ -144,6 +163,7 @@
             taskgroup_id: "<?php echo $t['task_group_id']; ?>",
             task_type: "<?php echo $t['task_type']; ?>",
             task_title: "<?php echo $t['title']; ?>",
+            task_id: "<?php echo $t['id']; ?>",
             task_status: "<?php echo $t['status']; ?>",
             task_priority: "<?php echo $t['priority']; ?>",
             task_assignee: "<?php echo $task_assignee; ?>",
@@ -151,18 +171,49 @@
             effort: "<?php echo $task->effort; ?>",
             description: "<?php echo $task->description; ?>",
             can_i_assign: "<?php echo $can_i_assign; ?>",
+            subscribers: <?php echo $subscribers; ?>,
             
             taskgroup_list: <?php echo $taskgroup_list; ?>,
             task_type_list: <?php echo $task_type_list; ?>,
             task_status_list: <?php echo $task_status_list; ?>,
             task_priority_list: <?php echo $task_priority_list; ?>,
-            task_assignee_list: <?php echo $task_assignee_list; ?>
+            task_assignee_list: <?php echo $task_assignee_list; ?>,
+
+            date: null,
+            dateconfig: {
+                altFormat: "j F Y",
+                altInput: true
+            }
         },
                 
         methods: {
-            deleteSubscriber: function(subscriber) {
+            delete_task: function() {
+                Vue.http.get('/task-ajax/delete', {params:{task_id: this.task_id}}).then(function (response) {
+                    if (response.body.data === "deleted")
+                        window.location.replace("/task/list");
+                },
+                function (error) {
+
+                });
+            },
+
+            save_task: function() {
+                Vue.http.get('/task-ajax/save', {params:{task_id: this.task_id}}).then(function (response) {
+                    if (response.body.data === "saved"){}
+                        
+                },
+                function (error) {
+
+                });
+            },
+
+            delete_subscriber: function(subscriber) {
                 
             }
+        },
+
+        created: function() {
+            //ClassicEditor.create('description');
         }
     });
     
@@ -176,8 +227,6 @@
 
         getTaskGroupData(<?php echo !empty($task->task_group_id) ? $task->task_group_id : $w->request('gid'); ?>);
         $("#task_type").trigger("change");
-        
-        console.log("<?php echo $t['task_group_id']; ?>");
     });
     
     function selectAutocompleteCallback(event, ui) {

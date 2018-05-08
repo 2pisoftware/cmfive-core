@@ -15,14 +15,10 @@
             <a style="background-color: #2A2869;" class='button expand' href="/task/edit/<?php echo $task->id; ?>">Edit</a>
             <br><br>
             <html-segment title='Task group'><?php echo $task->getTaskGroup()->title; ?></html-segment>
-            <html-segment title='Subscribers'>
-                <?php if (!empty($task->getSubscribers())): ?>
-                    <?php foreach($task->getSubscribers() as $subscriber): ?>
-                        <button class='button tiny secondary radius disabled'>
-                            <?php echo $subscriber->getUser()->getFullName(); ?>
-                        </button>
-                    <?php endforeach; ?>
-                <?php endif; ?>
+            <html-segment title='Subscribers' v-if="subscribers">
+                <div v-for="subscriber in subscribers" :class="{ button: true, tiny: true, radius: true, secondary: true, disabled: true, warning: subscriber.is_external === 0 ? true : false }">
+                    {{subscriber.fullname}}
+                </div>
             </html-segment>
             <html-segment title='Tags'>
                 <?php echo $w->partial('listTags', ['object' => $task], 'tag'); ?>
@@ -39,7 +35,8 @@
         el: '#task_view_<?php echo $task->id; ?>',
         data: function() {
             return {
-                task: <?php echo json_encode($task->toArray()); ?>
+                task: <?php echo json_encode($task->toArray()); ?>,
+                subscribers: <?php echo $subscribers; ?>
             };
         },
         computed: {
