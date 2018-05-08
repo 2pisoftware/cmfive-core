@@ -116,8 +116,9 @@
 	padding: 0px;
 	background-color: $primary_colour !important;
 	min-height: 50px;
-	height: 50px;
+	// height: 50px;
 	display: block;
+	overflow: auto;
 
 	@include tablet-up() {
 		display: none;
@@ -125,7 +126,7 @@
 
 	div {
 		a {
-			color: $text-accent-colour;
+			color: $text_accent_colour;
 			padding: 8px 15px;
 			display: inline-block;
 
@@ -140,6 +141,12 @@
 			font-size: 18pt;
 			font-weight: lighter;
 			padding: 5px 15px;
+		}
+
+		&.cmfive__company-name {
+			width: 80%;
+			float: right;
+			display: inline-block;
 		}
 	}
 }

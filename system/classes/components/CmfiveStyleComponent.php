@@ -11,7 +11,13 @@ class CmfiveStyleComponent extends CmfiveComponent {
 	public $_external = false;
 	public static $_allowed_extensions = ['css', 'scss'];
 
-	public function __construct($path, $include_paths = [], $is_external = false) {
+	public function __construct($path, $include_paths = [], $is_external = false, $props = []) {
+		if (!empty($props)) {
+		    foreach($props as $key => $value) {
+				$this->$key = $value;
+			}
+		}
+
 		$this->_external = $is_external;
 		if (!$this->_external) {
 			$style_path = pathinfo($path);
@@ -27,6 +33,16 @@ class CmfiveStyleComponent extends CmfiveComponent {
 		} else {
 			$this->href = $path;
 		}
+	}
+
+	public function setProps(Array $props) {
+		if (!empty($props)) {
+		    foreach($props as $key => $value) {
+				$this->$key = $value;
+			}
+		}
+
+		return $this;
 	}
 
 	public function _include() {

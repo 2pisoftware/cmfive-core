@@ -2,6 +2,8 @@
 @import "responsive";
 
 .breadcrumb-container {
+	position: relative;
+
 	@include phone() {
 		display: none !important;
 	}
@@ -10,6 +12,7 @@
 		background-color: $secondary-colour;
 		border: none;
 		height: 25px;
+		margin-bottom: 0px;
 
 		li {
 			color: darken(white, 5%);
@@ -45,6 +48,7 @@
 	span.icon-container {
 		background-color: $secondary-colour;
 		position: absolute;
+		top: 0px;
 		right: 0px;
 		padding: 2px 5px;
 

@@ -8,8 +8,14 @@ class AxiosResponse extends JsonResponse {
 
 	public function __toString() {
 		http_response_code($this->status);
-		
-		return json_encode($this->data);
+
+		// If you're not getting any response, this is most likely why
+		$json = json_encode($this->data);
+		if (json_last_error() == JSON_ERROR_NONE) {
+			return $json;
+		} else {
+			return '';
+		}
 	}
 
 }

@@ -21,16 +21,15 @@
         CmfiveStyleComponentRegister::registerComponent('style', new CmfiveStyleComponent("/system/templates/css/style.css"));
 
         // New styles
-        CmfiveStyleComponentRegister::registerComponent('hind_vadodara', new CmfiveStyleComponent("https://fonts.googleapis.com/css?family=Hind+Vadodara:300,400", [], true));
+        CmfiveStyleComponentRegister::registerComponent('hind_vadodara', new CmfiveStyleComponent("https://fonts.googleapis.com/css?family=Hind+Vadodara:300,400,700", [], true));
         CmfiveStyleComponentRegister::registerComponent('app', new CmfiveStyleComponent("/system/templates/scss/app.scss", ['/system/templates/scss/']));
         
-        $w->enqueueScript(array("name" => "modernizr", "uri" => "/system/templates/js/foundation-5.5.0/js/vendor/modernizr.js", "weight" => 1001));
-        $w->enqueueScript(array("name" => "jquery", "uri" => "/system/templates/js/foundation-5.5.0/js/vendor/jquery.js", "weight" => 1000));
-      
-        $w->enqueueScript(array("name" => "foundation", "uri" => "/system/templates/js/foundation-5.5.0/js/foundation.min.js", "weight" => 998));
-        $w->enqueueScript(array("name" => "jquery.tablesorter.js", "uri" => "/system/templates/js/tablesorter/jquery.tablesorter.js", "weight" => 990));
+        CmfiveScriptComponentRegister::registerComponent('modernizr', new CmfiveScriptComponent('/system/templates/js/foundation-5.5.0/js/vendor/modernizr.js', ['weight' => 1010]));
+        CmfiveScriptComponentRegister::registerComponent('jquery', new CmfiveScriptComponent('/system/templates/js/foundation-5.5.0/js/vendor/jquery.js', ['weight' => 1009]));
+        CmfiveScriptComponentRegister::registerComponent('foundation', new CmfiveScriptComponent('/system/templates/js/foundation-5.5.0/js/foundation.min.js', ['weight' => 1008]));
+        CmfiveScriptComponentRegister::registerComponent('jquery-tablesorter', new CmfiveScriptComponent('/system/templates/js/tablesorter/jquery.tablesorter.js', ['weight' => 990]));
         
-        CmfiveScriptComponentRegister::registerComponent('vue', new CmfiveScriptComponent('/system/templates/js/vue.js'));
+        CmfiveScriptComponentRegister::registerComponent('vue', new CmfiveScriptComponent('/system/templates/js/vue.js', ['weight' => 1010]));
         CmfiveScriptComponentRegister::registerComponent('main', new CmfiveScriptComponent("/system/templates/js/main.js"));
         $fontawesome_js = new CmfiveScriptComponent("/system/templates/js/fontawesome-all.min.js");
         $fontawesome_js->defer = null;
@@ -259,7 +258,7 @@
 
             <nav class="cmfive-phone-nav" data-topbar role="navigation">
                 <div class='left'><a href='#' class='side-menu-toggle-button'><span class='fas fa-bars fa-2x'></span></a></div>
-                <div class='text-right'><span><?php echo Config::get('main.company_name'); ?></span></div>
+                <div class='text-right cmfive__company-name'><span><?php echo Config::get('main.company_name'); ?></span></div>
             </nav>
 
             <!-- Breadcrumbs -->
@@ -323,19 +322,25 @@
                 'panel': document.getElementById('cmfive-main-content'),
                 'menu': document.getElementById('cmfive-side-menu'),
                 'padding': 256,
-                'tolerance': 70
+                'tolerance': 140
+            });
+
+            slideout.on('beforeopen', function() {
+                $("#slider_overlay").fadeIn(100);
+            }).on('beforeclose', function() {
+                $("#slider_overlay").fadeOut(100);
             });
 
             document.querySelectorAll('.side-menu-toggle-button').forEach(function(toggle_button) {
                 toggle_button.addEventListener('click', function() {
                     slideout.open();
-                    $("#slider_overlay").fadeIn(100);
+                    // $("#slider_overlay").fadeIn(100);
                 });
             });
 
             $("#slider_overlay").click(function(){
                 slideout.close();
-                $("#slider_overlay").fadeOut(100);
+                // $("#slider_overlay").fadeOut(100);
             })
 
             $(document).foundation({

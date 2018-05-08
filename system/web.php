@@ -270,18 +270,18 @@ class Web {
 		
 		if (!empty($components)) {
 			foreach($components as $component => $paths) {
-				CmfiveScriptComponentRegister::registerComponent($component, new CmfiveScriptComponent($paths[0]));
+				CmfiveScriptComponentRegister::registerComponent($component, new CmfiveScriptComponent($paths[0], ['weight' => 100]));
 	            if (!empty($paths[1]) && file_exists(ROOT_PATH . $paths[1])) {
-	                CmfiveStyleComponentRegister::registerComponent($component, new CmfiveStyleComponent($paths[1]));
+	                CmfiveStyleComponentRegister::registerComponent($component, (new CmfiveStyleComponent($paths[1]))->setProps(['weight' => 100]));
 	            }
 			}
 		}
 
 		// Load components loaded in actions
 		foreach(VueComponentRegister::getComponents() ? : [] as $name => $vue_component) {
-			CmfiveScriptComponentRegister::registerComponent($name, new CmfiveScriptComponent($vue_component->js_path));
+			CmfiveScriptComponentRegister::registerComponent($name, new CmfiveScriptComponent($vue_component->js_path, ['weight' => 100]));
             if (!empty($vue_component->css_path) && file_exists(ROOT_PATH . $vue_component->css_path)) {
-                CmfiveStyleComponentRegister::registerComponent($name, new CmfiveStyleComponent($vue_component->css_path));
+                CmfiveStyleComponentRegister::registerComponent($name, (new CmfiveStyleComponent($vue_component->css_path))->setProps(['weight' => 100]));
             }
 		}
 	}
@@ -308,7 +308,7 @@ class Web {
 
 			foreach ($this->_scripts as $script) {
 				try  {
-					CmfiveScriptComponentRegister::registerComponent($script['name'], new CmfiveScriptComponent($script['uri']));
+					CmfiveScriptComponentRegister::registerComponent($script['name'], new CmfiveScriptComponent($script['uri'], ['weight' => $script['weight']]));
 				} catch (Exception $e) {
 					$this->Log->error($e->getMessage());
 				}
@@ -327,7 +327,7 @@ class Web {
 
 			foreach ($this->_styles as $style) {
 				try {
-					CmfiveStyleComponentRegister::registerComponent($style['name'], new CmfiveStyleComponent($style['uri']));
+					CmfiveStyleComponentRegister::registerComponent($style['name'], (new CmfiveStyleComponent($style['uri']))->setProps(['weight' => $style['weight']]));
 				} catch (Exception $e) {
 					$this->Log->error($e->getMessage());
 				}

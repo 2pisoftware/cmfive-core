@@ -1,17 +1,4 @@
-$primary_colour: #2a2869;
-$secondary_colour: #159cd4;
-$tertiary_colour: #426AB2;
-$accent_colour: #dee5eb;
-
-$border_colour: #d4dbe1;
-$primary_text_colour: #222222;
-$text_accent_colour: white; // #a3d0ea;
-
-$dark-border-colour: #d3d7dc;
-$dark-background-colour: #bbc9d4;
-
-$light-border-colour: #e5eaf0;
-$light-background-colour: #f8f9fb;
+@import "_settings.scss";
 
 // Responsive mixins
 @import "responsive.scss";
@@ -37,7 +24,7 @@ body {
 	.body {
 		padding: 0px 40px 60px ;
         @include phone() {
-        	padding: 0px 20px 60px;
+        	padding: 0px 10px 60px;
         }
 
 		header {
@@ -86,4 +73,8 @@ table {
 .display-content {
 	padding: 10px;
 	background-color: $light-background-colour;
+}
+
+.cmfive__no-margin {
+	margin: 0 -15px;
 }
