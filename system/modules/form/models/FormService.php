@@ -460,9 +460,33 @@ class FormService extends DbService {
 		//run 'on created' or 'on modified' processors here
 		// echo "<pre>";
 		// var_dump($instance); die;
+		if (!empty($form_instance_id)) {
+			//run 'on modified processor'
+			$this->processEvents($instance,'On Modified',$form);
+		} else {
+			//run 'on created processor'
+			$this->processEvents($instance,'On Created',$form);
+		}
 
 		return $instance;
 
+	}
+
+	public function processEvents($form_instance,$event_type,$form) {
+		$on_create_events = $form->getEvents($event_type,true);
+			if (!empty($on_create_events)) {
+				foreach ($on_create_events as $event) {
+					$processors = $event->getEventProcessors();
+					if (!empty($processors)) {
+						foreach ($processors as $processor) {
+							$processor_class = $processor->retrieveProcessor();
+							if (!empty($processor_class)) {
+								$processor_class->process($processor,$form_instance);
+							}
+						}
+					}
+				}
+			}
 	}
 
 

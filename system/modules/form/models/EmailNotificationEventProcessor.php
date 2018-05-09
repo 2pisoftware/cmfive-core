@@ -13,6 +13,7 @@ class EmailNotificationEventProcessor extends EventProcessorType {
 
         return ["Settings" => [
         	[["Email To Notify", "text", "email_to_notify", @$current_settings->email_to_notify]]
+
         ]];
 	}
 
@@ -31,18 +32,37 @@ class EmailNotificationEventProcessor extends EventProcessorType {
         }
 
         //check if form has a summary template
-        $form = $w->Form->getForm($form_instance->form_id);
+        $form = $this->w->Form->getForm($form_instance->form_id);
         if (empty($form)) {
         	return;
         }
-        if (!empty($from->summary_template)) {
-        	//use the form summary template
+        
+        $subject = ''; 
+        $message = '';
+        $event = $processor->getEvent();
 
-        } else {
-        	//generate list of form fields and values from sql view
+        if ($event->type == 'On Created') {
+            $subject .= 'New ' . $form->title . 'submitted';
+            $message .= 'A new ' . $form->title . ' form has been submitted.<br/>';
+        } else if ($event->type == 'On Modified') {
+            $subject .= $form->title . ' Modified'; 
+            $message .= $form->title . ': ' . $form_instance->id . ' Has been modified.<br/>';
+        } else if ($event->type == 'On Deleted') {
+            $subject .= $form->title . ' Deleted';
+            $message .= $form->title . ': ' . $form_instance->id . ' has been deleted.<br/>';
+        }
+
+        //templating may be required. for now just list form fields.
+        $form_values = $form_instance->getValuesArray();
+        if (!empty($form_values)) {
+            foreach ($form_values as $key => $value) {
+                
+                $message .= '<b>' . $key . ":</b> " . $value . "<br/>";
+            }
         }
 
         //for now just 
-        echo "test"; die;
+        echo $message . "<br/><pre>";
+        var_dump($form_values); die;
 	}
 }

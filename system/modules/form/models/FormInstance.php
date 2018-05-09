@@ -35,6 +35,16 @@ class FormInstance extends DbObject {
 	public function getSavedValues() {
 		return $this->getObjects("FormValue", ["form_instance_id" => $this->id, "is_deleted" => 0]);
 	}
+
+	//returns array of values from sql view
+	public function getValuesArray() {
+		$view_name = str_replace(' ', '_', $this->getForm()->title) . '_view';
+		$query = "SELECT * FROM "
+			. $view_name
+			. " WHERE  instance_id = "
+			. $this->id;
+		return $this->w->db->query($query)->fetchRow(PDO::FETCH_ASSOC);
+	}
 	
 	/**
 	 * Generate the contents of a table row as HTML
