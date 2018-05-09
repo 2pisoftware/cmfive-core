@@ -10,7 +10,7 @@
 				background-color: $tertiary_colour !important;
 				color: #dae2e7 !important;
 
-				&:hover {
+				&:hover, &:active, &:focus {
 					background-color: $primary_colour !important;
 				}
 			}
@@ -19,12 +19,13 @@
 		&.side-nav {
 			background-color: $primary_colour !important;
 			color: $text_accent_colour !important;
+			padding-bottom: 15px;
 
 			li {
 				margin-bottom: 0px;
 
 				a {
-					&:hover {
+					&:hover, &:active, &:focus {
 						background-color: $primary_colour;
 					}
 				}
@@ -108,7 +109,20 @@
 		}
 	}
 
+	.active {
+		padding: 0px !important;
+	}
+
 	@include nav_submenu_style();
+
+    .footer {
+        // position: absolute;
+        left: 0px;
+        right: 0px;
+		bottom: 15px;
+		font-size: 10pt;
+		padding-bottom: 15px;
+    }
 }
 
 .cmfive-phone-nav {
@@ -130,7 +144,7 @@
 			padding: 8px 15px;
 			display: inline-block;
 
-			&:hover {
+			&:hover, &:active, &:focus {
 				background-color: $tertiary_colour !important;
 			}
 		}

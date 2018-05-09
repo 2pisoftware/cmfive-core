@@ -22,9 +22,9 @@ body {
     height:auto;
 
 	.body {
-		padding: 0px 40px 60px ;
+		padding: 0px 40px 40px ;
         @include phone() {
-        	padding: 0px 10px 60px;
+        	padding: 0px 15px 15px;
         }
 
 		header {
@@ -33,13 +33,6 @@ body {
 			margin-bottom: 0px;
 		}
 	}
-
-    .footer {
-        position: absolute;
-        left: 0px;
-        right: 0px;
-        bottom: 16px;
-    }
 }
 
 table {
@@ -75,6 +68,19 @@ table {
 	background-color: $light-background-colour;
 }
 
-.cmfive__no-margin {
-	margin: 0 -15px;
+.row, .row-fluid {
+	&.cmfive__no-margin {
+		.column, .columns {
+			// margin: 0px -15px !important;
+			padding: 0px;
+		}
+	}
+
+	&.cmfive__no-margin-phone {
+		@include phone() {
+			.column, .columns {
+				padding: 0px;
+			}
+		}
+	}
 }

@@ -140,45 +140,56 @@
     <body>
         <!-- Side (slideout) menu -->
         <nav id='cmfive-side-menu' class='cmfive-nav menu slideout-menu slideout-menu-left'>
-            <ul class="accordion side-nav" data-accordion>
-                <?php foreach ($w->modules() as $module) :
-                    // Check if config is set to display on topmenu
-                    if (Config::get("{$module}.topmenu") && Config::get("{$module}.active")) :
-                        // Check for navigation
-                        $service_module = ucfirst($module);
-                        $menu_link = method_exists($w->$service_module, "menuLink") ? $w->$service_module->menuLink() : $w->menuLink($module, is_bool(Config::get("{$module}.topmenu")) ? ucfirst($module) : Config::get("{$module}.topmenu"));
-                        if ($menu_link !== false) :
-                            if (method_exists($module . "Service", "navigation")) : ?>
-                                <li class="accordion-navigation <?php echo $w->_module == $module ? 'active' : ''; ?>" id="topnav_<?php echo $module; ?>">
-                                    <a href='#side_menu_panel-<?php echo $module; ?>'><?php echo is_bool(Config::get("{$module}.topmenu")) ? ucfirst($module) : Config::get("{$module}.topmenu"); ?><?php // echo $menu_link; ?></a>
-                                <?php // Try and get a badge count for the menu item
-                                    $module_navigation = $w->service($module)->navigation($w);
-                                    
-                                    // Invoke hook to inject extra navigation
-                                    $hook_navigation_items = $w->callHook($module, "extra_navigation_items", $module_navigation);
-                                    if (!empty($hook_navigation_items)) {
-                                        foreach($hook_navigation_items as $hook_navigation_item) {
-                                            if (is_array($hook_navigation_item)) {
-                                                $module_navigation = array_merge($module_navigation, $hook_navigation_item);
-                                            } else {
-                                                $module_navigation[] = $hook_navigation_item;
+            <div>
+                <ul class="accordion side-nav" data-accordion>
+                    <?php foreach ($w->modules() as $module) :
+                        // Check if config is set to display on topmenu
+                        if (Config::get("{$module}.topmenu") && Config::get("{$module}.active")) :
+                            // Check for navigation
+                            $service_module = ucfirst($module);
+                            $menu_link = method_exists($w->$service_module, "menuLink") ? $w->$service_module->menuLink() : $w->menuLink($module, is_bool(Config::get("{$module}.topmenu")) ? ucfirst($module) : Config::get("{$module}.topmenu"));
+                            if ($menu_link !== false) :
+                                if (method_exists($module . "Service", "navigation")) : ?>
+                                    <li class="accordion-navigation <?php echo $w->_module == $module ? 'active' : ''; ?>" id="topnav_<?php echo $module; ?>">
+                                        <a href='#side_menu_panel-<?php echo $module; ?>'><?php echo is_bool(Config::get("{$module}.topmenu")) ? ucfirst($module) : Config::get("{$module}.topmenu"); ?><?php // echo $menu_link; ?></a>
+                                    <?php // Try and get a badge count for the menu item
+                                        $module_navigation = $w->service($module)->navigation($w);
+                                        
+                                        // Invoke hook to inject extra navigation
+                                        $hook_navigation_items = $w->callHook($module, "extra_navigation_items", $module_navigation);
+                                        if (!empty($hook_navigation_items)) {
+                                            foreach($hook_navigation_items as $hook_navigation_item) {
+                                                if (is_array($hook_navigation_item)) {
+                                                    $module_navigation = array_merge($module_navigation, $hook_navigation_item);
+                                                } else {
+                                                    $module_navigation[] = $hook_navigation_item;
+                                                }
                                             }
                                         }
-                                    }
 
-                                    if (!empty($module_navigation)) : ?>
-                                        <div id='side_menu_panel-<?php echo $module; ?>' class="content">
-                                            <?php echo Html::ul($module_navigation, null, "side-nav"); ?>
-                                        </div>
-                                    <?php endif; ?>
-                                </li>
-                            <?php else: ?>
-                                <li class='accordion-navigation <?php echo $w->_module == $module ? 'active' : ''; ?>'><?php echo $menu_link; ?></li>
-                            <?php endif; ?>
-                        <?php endif;
-                    endif;
-                endforeach; ?>
-            </ul>
+                                        if (!empty($module_navigation)) : ?>
+                                            <div id='side_menu_panel-<?php echo $module; ?>' class="content">
+                                                <?php echo Html::ul($module_navigation, null, "side-nav"); ?>
+                                            </div>
+                                        <?php endif; ?>
+                                    </li>
+                                <?php else: ?>
+                                    <li class='accordion-navigation <?php echo $w->_module == $module ? 'active' : ''; ?>'><?php echo $menu_link; ?></li>
+                                <?php endif; ?>
+                            <?php endif;
+                        endif;
+                    endforeach; ?>
+                </ul>
+                
+                <!-- Footer -->
+                <div class="row-fluid align-center footer clearfix">
+                    <div class="columns small-12">
+                        <div class='text-center'>
+                            Copyright &#169; <?php echo date('Y'); ?>&nbsp;&nbsp;&nbsp;<a href="<?php echo $w->moduleConf('main', 'company_url'); ?>"><?php echo $w->moduleConf('main', 'company_name'); ?></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </nav>
         <main id='cmfive-main-content' class='slideout-panel slideout-panel-left'>
             <div class="loading_overlay" <?php echo $w->request('show_overlay') == null ? 'style="display:none;"' : ''; ?>>
@@ -273,7 +284,7 @@
             </div>
             
             <!-- Action content -->
-            <div class="row-fluid body">
+            <div class="row-fluid body cmfive__no-margin-phone">
                 <div class='small-12 columns'>
                     <!-- Title and messages -->
                     <?php if (empty($hideTitle) && !empty ($title)):?>
@@ -297,15 +308,6 @@
                     <?php endif; ?>
 
                     <?php echo !empty($body) ? $body : ''; ?>
-                </div>
-            </div>
-
-            <!-- Footer -->
-            <div class="row-fluid align-center footer clearfix">
-                <div class="columns small-12">
-                    <div class='text-center'>
-                        Copyright &#169; <?php echo date('Y'); ?>&nbsp;&nbsp;&nbsp;<a href="<?php echo $w->moduleConf('main', 'company_url'); ?>"><?php echo $w->moduleConf('main', 'company_name'); ?></a>
-                    </div>
                 </div>
             </div>
 
