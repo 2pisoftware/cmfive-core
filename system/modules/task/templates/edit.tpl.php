@@ -4,20 +4,27 @@
 <script src='/system/templates/vue-components/flatpickr/flatpickr.min.js'></script>
 <script src='/system/templates/vue-components/vue-flatpickr.min.js'></script>
 <link rel="stylesheet" type="text/css" href="/system/templates/vue-components/flatpickr/flatpickr.min.css">
-<script src='/system/templates/vue-components/ckeditor5-build-classic/ckeditor.js'></script>
+<script src='/system/templates/vue-components/quill/quill.min.js'></script>
+<script src='/system/templates/vue-components/quill/vue2-editor.js'></script>
+<link rel="stylesheet" type="text/css" href="/system/templates/vue-components/quill/quill.snow.css">
 
 <div id="task_edit">
     
 <div id="taskmodal" class="reveal-modal small" data-reveal data-closable>
     Are you sure you want to remove this subscriber?<br><br>
-    <button class="button radius success" v-on:click="delete_subscriber">Yes</button>
-    <button class="button radius alert" data-close>No</button>
+    <button class="button radius tiny success" v-on:click="delete_subscriber">Yes</button>
+    <button class="button radius tiny alert" data-close>No</button>
 </div>
 
 <div id="delete-modal" class="reveal-modal small" data-reveal data-closable>
     Are you sure you want to delete this task?<br><br>
-    <button class="button radius success" v-on:click="delete_task">Yes</button>
-    <button class="button radius alert" data-close>No</button>
+    <button class="button tiny radius success" v-on:click="delete_task">Yes</button>
+    <button class="button tiny radius alert" data-close>No</button>
+</div>
+
+<div id="save-modal" class="reveal-modal small" data-reveal data-closable>
+    The task was saved successfully<br><br>
+    <button class="button tiny radius success" data-close>OK</button>
 </div>
     
 <div class='row-fluid'>
@@ -28,46 +35,65 @@
     <br><br>
 <html-tabs>
     <html-tab title='Details' icon='' :selected="true">
+        <div class="row-fluid">
+            <div class="medium-12 large-8 columns">
+                Task title <small>Required</small>
+                <input name="title" id="title" required="required" type="text" v-model="title">
+            </div>
+
+            <div class="medium-12 large-4 columns">
+                Due date
+                <datepicker v-model="date" :config="dateconfig" placeholder="Due date"></datepicker>
+            </div>
+        </div>
+
+        <div class="row-fluid">
+            <div class="medium-12 large-4 columns">
+                Assigned
+                <model-list-select v-model="assignee_id" :list="assignee_list" placeholder="select item" option-value="value" option-text="text"></model-list-select>
+            </div>
+            <div class="medium-12 large-4 columns">
+                Status
+                <model-list-select v-model="status" :list="status_list" placeholder="select item" option-value="value" option-text="text"></model-list-select>
+            </div>
+            <div class="medium-12 large-4 columns">
+                Priority
+                <model-list-select v-model="priority" :list="priority_list" placeholder="select item" option-value="value" option-text="text"></model-list-select>
+            </div>
+        </div>
+        <div class="row-fluid">
+            <div class="medium-12 large-6 columns">
+                Group <small>Required</small>
+                <model-list-select v-model="taskgroup_id" :list="taskgroup_list" placeholder="select item" option-value="value" option-text="text"></model-list-select>
+            </div>
+            <div class="medium-12 large-6 columns">
+                Type <small>Required</small>
+                <model-list-select v-model="type" :list="type_list" placeholder="select item" option-value="value" option-text="text"></model-list-select>
+            </div>
+        </div>
         <div class="row-fluid columns">
-            Task title <small>Required</small>
-            <input name="title" id="title" required="required" type="text" v-model="task_title">
-
-            Due date
-            <datepicker v-model="date" :config="dateconfig" placeholder="Due date"></datepicker>
-
-            Assigned
-            <model-list-select v-model="task_assignee" :list="task_assignee_list" placeholder="select item" option-value="value" option-text="text"></model-list-select>
-
-            Status
-            <model-list-select v-model="task_status" :list="task_status_list" placeholder="select item" option-value="value" option-text="text"></model-list-select>
-
-            Priority
-            <model-list-select v-model="task_priority" :list="task_priority_list" placeholder="select item" option-value="value" option-text="text"></model-list-select>
-
-            Group <small>Required</small>
-            <model-list-select v-model="taskgroup_id" :list="taskgroup_list" placeholder="select item" option-value="value" option-text="text"></model-list-select>
-            
-            Type <small>Required</small>
-            <model-list-select v-model="task_type" :list="task_type_list" placeholder="select item" option-value="value" option-text="text"></model-list-select>
-
             Description
             <textarea name="description" id="description"></textarea>
-
-            Estimated hours
-            <input name="estimate_hours" id="estimate_hours" type="text" v-model="estimate_hours">
-            
-            Effort
-            <input name="effort" id="effort" type="text" v-model="effort">
-
+        </div>
+        <div class="row-fluid">
+            <div class="medium-12 large-6 columns">
+                Estimated hours
+                <input name="estimate_hours" id="estimate_hours" type="text" v-model="estimate_hours">
+            </div>
+            <div class="medium-12 large-6 columns">
+                Effort
+                <input name="effort" id="effort" type="text" v-model="effort">
+            </div>
+        </div>
             <br>
             
-            <a class="small button radius" href="/task/duplicatetask/<?php echo $task->id; ?>">Save</a>
-            <a class="small button radius" href="/task/duplicatetask/<?php echo $task->id; ?>">Duplicate</a>
-            <a class="small success button radius" href="/task/edit/?gid=<?php echo $task->task_group_id; ?>">New Task</a>
+            <a class="tiny button radius" style="background-color: #59BC3B;" @click="save">Save</a>
+            <a class="tiny button radius" style="background-color: #95ACBC;" href="/task/duplicatetask/<?php echo $task->id; ?>">Duplicate</a>
+            <a class="tiny button radius" style="background-color: #68C2CD;" href="/task/edit/?gid=<?php echo $task->task_group_id; ?>">New Task</a>
             <?php if ($task->canDelete($w->Auth->user())): ?>
-                <button class="small alert button radius" data-reveal-id="delete-modal">Delete</button>
+                <button class="tiny button radius" style="background-color: #D12229;" data-reveal-id="delete-modal">Delete</button>
             <?php endif ?>
-            <a class="small warning button radius" href="/task/list">Cancel</a>
+            <a class="tiny button radius" style="background-color: #FF7A13;" href="/task/list">Cancel</a>
 
             <html-segment title='Subscribers' v-if="subscribers">
                 <div v-for="subscriber in subscribers" :class="{ button: true, tiny: true, radius: true, secondary: true, warning: subscriber.is_external === 0 ? true : false }">
@@ -84,7 +110,7 @@
             
             <?php 
                 echo $w->Favorite->getFavoriteButton($task);
-                // Note the extra buttons only show when the task_type object
+                // Note the extra buttons only show when the type object
                 $tasktypeobject = $task->getTaskTypeObject();
                 echo !empty($tasktypeobject) ? $tasktypeobject->displayExtraButtons($task) : null; 
          
@@ -96,7 +122,7 @@
                         echo implode('', $buttons);
                 }
             ?>
-        </div>
+        
 
 <?php //echo Html::box('/task-subscriber/add/' . $task->id, 'Add', true, false, null, null, 'isbox', null, 'info center'); ?>
 <?php //echo Html::b('/task-subscriber/delete/' . $subscriber->id, 'Delete', 'Are you sure you want to remove this subscriber?', null, false, 'warning center'); ?>
@@ -153,20 +179,23 @@
 </div>
 
 <script>
-    Vue.component("model-list-select", VueSearchSelect.ModelListSelect);
-    Vue.component('datepicker', VueFlatpickr);
-
     new Vue({
         el: '#task_edit',
         
+        components: {
+            //VueEditor,
+            "model-list-select": VueSearchSelect.ModelListSelect,
+            "datepicker": VueFlatpickr
+        },
+        
         data: {
             taskgroup_id: "<?php echo $t['task_group_id']; ?>",
-            task_type: "<?php echo $t['task_type']; ?>",
-            task_title: "<?php echo $t['title']; ?>",
-            task_id: "<?php echo $t['id']; ?>",
-            task_status: "<?php echo $t['status']; ?>",
-            task_priority: "<?php echo $t['priority']; ?>",
-            task_assignee: "<?php echo $task_assignee; ?>",
+            type: "<?php echo $t['task_type']; ?>",
+            title: "<?php echo $t['title']; ?>",
+            id: "<?php echo $t['id']; ?>",
+            status: "<?php echo $t['status']; ?>",
+            priority: "<?php echo $t['priority']; ?>",
+            assignee_id: "<?php echo $assignee_id; ?>",
             estimate_hours: "<?php echo $task->estimate_hours; ?>",
             effort: "<?php echo $task->effort; ?>",
             description: "<?php echo $task->description; ?>",
@@ -174,10 +203,10 @@
             subscribers: <?php echo $subscribers; ?>,
             
             taskgroup_list: <?php echo $taskgroup_list; ?>,
-            task_type_list: <?php echo $task_type_list; ?>,
-            task_status_list: <?php echo $task_status_list; ?>,
-            task_priority_list: <?php echo $task_priority_list; ?>,
-            task_assignee_list: <?php echo $task_assignee_list; ?>,
+            type_list: <?php echo $type_list; ?>,
+            status_list: <?php echo $status_list; ?>,
+            priority_list: <?php echo $priority_list; ?>,
+            assignee_list: <?php echo $assignee_list; ?>,
 
             date: null,
             dateconfig: {
@@ -188,7 +217,7 @@
                 
         methods: {
             delete_task: function() {
-                Vue.http.get('/task-ajax/delete', {params:{task_id: this.task_id}}).then(function (response) {
+                Vue.http.get('/task-ajax/delete', {params:{id: this.id}}).then(function (response) {
                     if (response.body.data === "deleted")
                         window.location.replace("/task/list");
                 },
@@ -197,9 +226,25 @@
                 });
             },
 
-            save_task: function() {
-                Vue.http.get('/task-ajax/save', {params:{task_id: this.task_id}}).then(function (response) {
-                    if (response.body.data === "saved"){}
+            save: function() {
+                var params = {
+                    id: this.id,
+                    title: this.title,
+                    dt_due: this.date,
+                    assignee_id: this.assignee_id,
+                    status: this.status,
+                    priority: this.priority,
+                    task_group_id: this.taskgroup_id,
+                    type: this.type,
+                    description: this.description,
+                    estimate_hours: this.estimate_hours,
+                    effort: this.effort
+                };
+                Vue.http.get('/task-ajax/save', {params: params}).then(function (response) {
+                    console.log(response);
+                    if (response.body.data === "updated"){
+                        $('#save-modal').foundation('reveal','open');
+                    }
                         
                 },
                 function (error) {
@@ -213,7 +258,7 @@
         },
 
         created: function() {
-            //ClassicEditor.create('description');
+            
         }
     });
     
@@ -226,7 +271,7 @@
         bindTypeChangeEvent();
 
         getTaskGroupData(<?php echo !empty($task->task_group_id) ? $task->task_group_id : $w->request('gid'); ?>);
-        $("#task_type").trigger("change");
+        $("#type").trigger("change");
     });
     
     function selectAutocompleteCallback(event, ui) {
@@ -242,7 +287,7 @@
         $.getJSON("/task/taskAjaxSelectbyTaskGroup/" + taskgroup_id + "/<?php echo !empty($task->id) ? $task->id : null; ?>",
             function(result) {
                 if (initialChange == false) {
-                    $('#task_type').parent().html(result[0]);
+                    $('#type').parent().html(result[0]);
                     $('#priority').parent().html(result[1]);
                     $('#assignee_id').parent().html(result[2]);
                     $('#status').html(result[4])
@@ -257,13 +302,13 @@
     }
     
     function bindTypeChangeEvent() {
-        $("#task_type").on("change", function(event) {
+        $("#type").on("change", function(event) {
             // Reset custom fields
             $("#formfields").fadeOut();
             $("#formfields").html("");
             
             // Get/check for extra form fields
-            $.getJSON("/task/ajaxGetFieldForm/" + $("#task_type").val() + "/" + $("#task_group_id").val() + "/<?php echo !empty($task->id) ? $task->id : ''; ?>",
+            $.getJSON("/task/ajaxGetFieldForm/" + $("#type").val() + "/" + $("#task_group_id").val() + "/<?php echo !empty($task->id) ? $task->id : ''; ?>",
                 function(result) {
                     if (result) {
                         $("#formfields").html(result);
@@ -272,10 +317,10 @@
                 }
             );
             <?php if (!empty($task->id)) : ?>
-                var task_type_value = document.getElementById("task_type").value;
-                if (task_type_value.length > 0) {
+                var type_value = document.getElementById("type").value;
+                if (type_value.length > 0) {
                     $("#formdetails").hide();
-                    $.getJSON("/task/ajaxGetExtraDetails/<?php echo $task->id; ?>/" + task_type_value, function(result) {
+                    $.getJSON("/task/ajaxGetExtraDetails/<?php echo $task->id; ?>/" + type_value, function(result) {
                         if (result[0]) {
                             $("#formdetails").html(result[0]);
                             $("#formdetails").fadeIn();

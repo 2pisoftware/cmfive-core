@@ -102,7 +102,7 @@ function assignee_autocomplete_GET(Web $w) {
 }
 
 function delete_GET(Web $w) {
-    $task = $w->Task->getTask($w->request("task_id"));
+    $task = $w->Task->getTask($w->request("id"));
 
 	// if task exists, continue
     if (!empty($task)) {
@@ -119,18 +119,18 @@ function delete_GET(Web $w) {
 }
 
 function save_GET(Web $w) {
-    $task = $w->Task->getTask($w->request("task_id"));
+    $task = $w->Task->getTask($w->request("id"));
 
-    $task->title = $w->request("");
-    $task->dt_due = $w->request("");
-    $task->assignee_id = $w->request("");
-    $task->status = $w->request("");
-    $task->priority = $w->request("");
-    $task->task_group_id = $w->request("");
-    $task->task_type = $w->request("");
-    $task->description = $w->request("");
-    $task->estimate_hours = $w->request("");
-    $task->rate = $w->request("");
+    $task->title = $w->request("title");
+    $task->dt_due = $w->request("dt_due");
+    $task->assignee_id = $w->request("assignee_id");
+    $task->status = $w->request("status");
+    $task->priority = $w->request("priority");
+    $task->task_group_id = $w->request("task_group_id");
+    $task->task_type = $w->request("type");
+    $task->description = $w->request("description");
+    $task->estimate_hours = $w->request("estimate_hours");
+    $task->effort = $w->request("effort");
 
     $task->update();
 

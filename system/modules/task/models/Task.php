@@ -14,6 +14,7 @@ class Task extends DbObject {
 
 	public $rate;
     public $estimate_hours;
+    public $effort;
 
     public $assignee_id;
     public $dt_assigned;

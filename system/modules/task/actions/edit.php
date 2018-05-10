@@ -43,7 +43,7 @@ function edit_GET(Web $w) {
     // Try and prefetch the taskgroup by given id
     $taskgroup = null;
     $taskgroup_id = $w->request("gid");
-    $assigned = 0;
+    $assignee_id = 0;
     if (!empty($taskgroup_id) || !empty($task->task_group_id)) {
         $taskgroup = $w->Task->getTaskGroup(!empty($task->task_group_id) ? $task->task_group_id : $taskgroup_id);
         
@@ -53,7 +53,7 @@ function edit_GET(Web $w) {
             $members = $w->Task->getMembersBeAssigned($taskgroup->id);
             sort($members);
             array_unshift($members,array("Unassigned","unassigned"));
-            $assigned = (empty($task->assignee_id)) ? "unassigned" : $task->assignee_id;
+            $assignee_id = (empty($task->assignee_id)) ? "unassigned" : $task->assignee_id;
         }
     }
 
@@ -69,11 +69,11 @@ function edit_GET(Web $w) {
     $w->ctx("t", (array)$task);
     $w->ctx("task", $task);
     $w->ctx("taskgroup_list", json_encode(array_map(function($task_group) {return ['value' => $task_group->id, 'text' => $task_group->title];}, $taskgroups)));
-    $w->ctx("task_type_list", json_encode(array_map(function($tasktype) {return ['value' => $tasktype, 'text' => $tasktype];}, !empty($tasktypes[0]) ? $tasktypes[0] : [])));
-    $w->ctx("task_status_list", json_encode(array_map(function($status) {return ['value' => $status[0], 'text' => $status[0]];}, $status_list)));
-    $w->ctx("task_priority_list", json_encode(array_map(function($p) {return ['value' => $p[0], 'text' => $p[0]];}, $priority)));
-    $w->ctx("task_assignee_list", json_encode(array_map(function($assignee) {return ['value' => $assignee[1], 'text' => $assignee[0]];}, $members)));
-    $w->ctx("task_assignee", $assigned);
+    $w->ctx("type_list", json_encode(array_map(function($tasktype) {return ['value' => $tasktype, 'text' => $tasktype];}, !empty($tasktypes[0]) ? $tasktypes[0] : [])));
+    $w->ctx("status_list", json_encode(array_map(function($status) {return ['value' => $status[0], 'text' => $status[0]];}, $status_list)));
+    $w->ctx("priority_list", json_encode(array_map(function($p) {return ['value' => $p[0], 'text' => $p[0]];}, $priority)));
+    $w->ctx("assignee_list", json_encode(array_map(function($assignee) {return ['value' => $assignee[1], 'text' => $assignee[0]];}, $members)));
+    $w->ctx("assignee_id", $assignee_id);
     $w->ctx("can_i_assign", $taskgroup->getCanIAssign());
     $w->ctx("subscribers", json_encode($task->getSubscribers()));
     //$w->ctx("canDelete", $task->canDelete($w->Auth->user()));
