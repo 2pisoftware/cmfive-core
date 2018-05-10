@@ -54,7 +54,12 @@ function task_timelog_type_options_for_Task(Web $w, $object) {
  * @param Task $object
  */
 function task_core_dbobject_after_insert_Task(Web $w, $object) {
-    $w->Log->setLogger("TASK")->debug("task_core_dbobject_after_insert_Task");
+	$w->Log->setLogger("TASK")->debug("task_core_dbobject_after_insert_Task");
+	
+	// if the task belongs to a catalog, don't notify associated users
+	if (module_active("crm", $w)) {
+
+	}
     
     $subject = $object->getHumanReadableAttributeName(TASK_NOTIFICATION_TASK_CREATION) . "[" . $object->id . "]: " . $object->title;
     $users_to_notify = $w->Task->getNotifyUsersForTask($object, TASK_NOTIFICATION_TASK_CREATION);

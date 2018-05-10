@@ -903,3 +903,22 @@ function get_list_of_months_between_dates($from, $to, $format = 'M Y') {
 
 	return $month_list;
 }
+
+function module_active($module_name, Web &$w) {
+	if(Config::get($module_name . ".active") != true)
+		return false;
+
+	$migration_dir = ROOT_PATH . '/modules/' . $module_name . '/install/migrations';
+	$migration_files = scandir($migration_dir);
+
+	foreach($migration_files as $migration_file) {
+		if ($migration_file == "." || $migration_file == ".." || $migration_file == "seeds" || is_dir($migration_file))
+			continue; 
+
+		$migration_name = explode("-", $migration_file)[1];
+		if (!$w->Migration->isInstalled($migration_name))
+			return false;
+	}
+
+	return true;
+}
