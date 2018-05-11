@@ -58,7 +58,8 @@ function task_core_dbobject_after_insert_Task(Web $w, $object) {
 	
 	// if the task belongs to a catalog, don't notify associated users
 	if (module_active("crm", $w)) {
-
+		$item = $w->Task->getObject("CrmCatalogItemTask", ["task_id" => $object->id]);
+		if ($item) return;
 	}
     
     $subject = $object->getHumanReadableAttributeName(TASK_NOTIFICATION_TASK_CREATION) . "[" . $object->id . "]: " . $object->title;
