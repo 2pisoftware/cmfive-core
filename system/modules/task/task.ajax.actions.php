@@ -49,7 +49,8 @@ function task_list_GET(Web $w) {
 		$task_array['task_group_title'] = $task_group->title; // ->toLink();
 		$task_array['task_group_url'] = $w->localUrl($task_group->printSearchUrl());
 		$task_array['assignee_name'] = $task->getAssignee()->getSelectOptionTitle();
-		$task_array['dt_due'] = formatDate($task->dt_due);
+        $task_array['dt_due'] = formatDate($task->dt_due);
+        $task_array['creator_id'] = $task->getTaskCreatorId();
 
 		return $task_array;
 	}, $tasks ? : []);

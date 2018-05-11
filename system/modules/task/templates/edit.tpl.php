@@ -1,6 +1,5 @@
 <script src='/system/templates/vue-components/form/elements/vue-search-select/vue-search-select.min.js'></script>
 <script src='/system/templates/vue-components/vue-resource.min.js'></script>
-<script src='/system/templates/vue-components/vue-resource.min.js'></script>
 <script src='/system/templates/vue-components/flatpickr/flatpickr.min.js'></script>
 <script src='/system/templates/vue-components/vue-flatpickr.min.js'></script>
 <link rel="stylesheet" type="text/css" href="/system/templates/vue-components/flatpickr/flatpickr.min.css">
@@ -73,7 +72,8 @@
         </div>
         <div class="row-fluid columns">
             Description
-            <textarea name="description" id="description"></textarea>
+            <vue-editor v-model="content"></vue-editor>
+            <!-- <textarea name="description" id="description"></textarea> -->
         </div>
         <div class="row-fluid">
             <div class="medium-12 large-6 columns">
@@ -183,7 +183,7 @@
         el: '#task_edit',
         
         components: {
-            //VueEditor,
+            "vue-editor": 'vue2-editor',
             "model-list-select": VueSearchSelect.ModelListSelect,
             "datepicker": VueFlatpickr
         },

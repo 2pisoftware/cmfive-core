@@ -1,5 +1,6 @@
 <script src='/system/templates/vue-components/vue-tables-2.min.js'></script>
 <script src='/system/templates/vue-components/form/elements/vue-search-select/vue-search-select.min.js'></script>
+<script src='/system/templates/js/natsort.min.js'></script>
 
 <style>
     .test > td {
@@ -16,6 +17,10 @@
 
     .test:nth-child(even) {
         background-color: #FDF4F5;
+    }
+
+    #pi-table > thead > tr > th {
+        cursor: pointer;
     }
 </style>
 
@@ -59,17 +64,34 @@
 
     <div class='row-fluid columns' style="height: 2em;"></div>
 
-    <table style="width:100%" v-if="task_list">
+    <div class='row-fluid'>
+        <div class='small-4 columns' style="min-height:1px;"></div>
+        <div class='small-4 columns'>
+            <label for="selectPerPage">Tasks per page:</label>
+            <select v-model="pageSize" id="selectPerPage">
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="30">30</option>
+                <option value="40">40</option>
+                <option value="50">50</option>
+            </select>
+        </div>
+        <div class='small-4 columns' style="min-height:1px;"></div>
+    </div>
+
+    <div class='row-fluid columns' style="height: 2em;"></div>
+
+    <table style="width:100%" v-if="task_list" id="pi-table">
         <thead>
             <tr>
-                <th @click="sortTable('id', $event)">ID <span><i class="fas fa-sort"></i></span></th>
-                <th @click="sortTable('title', $event)">Title <span><i class="fas fa-sort"></i></span></th>
-                <th @click="sortTable('task_group_title', $event)">Task group <span><i class="fas fa-sort"></i></span></th>
-                <th @click="sortTable('assignee_name', $event)">Assigned to <span><i class="fas fa-sort"></i></span></th>
-                <th @click="sortTable('task_type', $event)">Type <span><i class="fas fa-sort"></i></span></th>
-                <th @click="sortTable('priority', $event)">Priority <span><i class="fas fa-sort"></i></span></th>
-                <th @click="sortTable('status', $event)">Status <span><i class="fas fa-sort"></i></span></th>
-                <th @click="sortTable('dt_due', $event)">Due <span><i class="fas fa-sort"></i></span></th>
+                <th @click="sortTable('id', $event)" id="id">ID <span><i class="fas fa-sort"></i></span></th>
+                <th @click="sortTable('title', $event)" id="title">Title <span><i class="fas fa-sort"></i></span></th>
+                <th @click="sortTable('task_group_title', $event)" id="task_group_title">Task group <span><i class="fas fa-sort"></i></span></th>
+                <th @click="sortTable('assignee_name', $event)" id="assignee_name">Assigned to <span><i class="fas fa-sort"></i></span></th>
+                <th @click="sortTable('task_type', $event)" id="task_type">Type <span><i class="fas fa-sort"></i></span></th>
+                <th @click="sortTable('priority', $event)" id="priority">Priority <span><i class="fas fa-sort"></i></span></th>
+                <th @click="sortTable('status', $event)" id="status">Status <span><i class="fas fa-sort"></i></span></th>
+                <th @click="sortTable('dt_due', $event)" id="dt_due">Due <span><i class="fas fa-sort"></i></span></th>
             </tr>
         </thead>
         <tbody>
@@ -105,7 +127,10 @@
     <div class='row-fluid text-center' v-if="numberOfPages > 1">
         <br>
         <button class="tiny radius" @click="firstPage"><i class="fas fa-angle-double-left"></i></button>
-        <button class="tiny radius" @click="prevPage"><i class="fas fa-angle-left"></i></button> 
+        <button class="tiny radius" @click="prevPage"><i class="fas fa-angle-left"></i></button>
+
+        <button class="tiny radius" v-for="n in numberOfPages" @click="if (currentPage !== n) currentPage = n">{{n}}</button>
+
         <button class="tiny radius" @click="nextPage"><i class="fas fa-angle-right"></i></button>
         <button class="tiny radius" @click="lastPage"><i class="fas fa-angle-double-right"></i></button>
         <br>
@@ -117,7 +142,6 @@
 
 <script>
     var params = null;
-    Vue.use(VueTables.ClientTable);
     Vue.component("model-list-select", VueSearchSelect.ModelListSelect);
     
 	var test = new Vue({ 
@@ -147,7 +171,7 @@
                 status: null,
                 task_type: null,
                 priority: null,
-                assignee_name: null,
+                assignee_id: null,
                 creator_id: null,
                 task_group_id: null
             },
@@ -168,7 +192,7 @@
                     },
                     
                     assignee_id: function(val) {
-                        this.filter_array.assignee_name = val;
+                        this.filter_array.assignee_id = val;
                         //this.filter.assignees = val === "" ? [] : [ { text: this.assignee_id, value: this.assignee_id } ];
                     },
                     
@@ -220,6 +244,8 @@
 
                     sortTable: function(s, event) {
                         //if s == current sort, reverse
+                        document.getElementById(this.currentSort).getElementsByTagName("span")[0].innerHTML = '<i class="fas fa-sort"></i>';
+                        
                         if (s === this.currentSort) {
                             this.currentSortDir = this.currentSortDir==='asc'?'desc':'asc';
                         }
@@ -270,6 +296,8 @@
                 var t = this;
                 
                 return t.task_list.sort( function(a,b) {
+                    //natsort({ desc: false, insensitive: true });
+
                     var modifier = 1;
                     if (t.currentSortDir === 'desc') modifier = -1;
                     if (a[t.currentSort] < b[t.currentSort]) return -1 * modifier;

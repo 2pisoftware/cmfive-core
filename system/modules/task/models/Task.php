@@ -124,6 +124,12 @@ class Task extends DbObject {
         }
         return false;
     }
+
+    // return the ID of the task creator given a task ID
+    function getTaskCreatorId() {
+        $c = $this->Task->getObject("ObjectModification", array("object_id" => $this->id, "table_name" => $this->getDbTableName()));
+        return $c ? $c->creator_id : "";
+    }
     
     // return a task type object given a task type
     public function getTaskTypeObject() {
