@@ -33,8 +33,9 @@ function edit_GET($w) {
         }
     }
 
-    $taskgroups = array_filter($taskgroup_list, function($taskgroup){
-        return $taskgroup->getCanICreate();
+    $taskgroups = array_filter($taskgroup_list, function($taskgroup) use ($w) {
+        // if a project has a catalog linked, prevent adding new tasks to the project
+        return $taskgroup->getCanICreate() && !$w->callHook("crm", "crm_task_prevent_creation", ["task_group_id" => $taskgroup->id]);
     });
     
     $tasktypes = array();

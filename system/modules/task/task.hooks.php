@@ -57,11 +57,14 @@ function task_core_dbobject_after_insert_Task(Web $w, $object) {
 	$w->Log->setLogger("TASK")->debug("task_core_dbobject_after_insert_Task");
 	
 	// if the task belongs to a catalog, don't notify associated users
-	if (module_active("crm", $w)) {
-		$item = $w->Task->getObject("CrmCatalogItemTask", ["task_id" => $object->id]);
-		if ($item) return;
-	}
-    
+	$prevent_result = array_filter($w->callHook("task", "prevent_creation_email", $object),
+	function($result) use ($w) {
+		return $result === true;
+	});
+
+	if (count($prevent_result) > 0) 
+		return;
+	
     $subject = $object->getHumanReadableAttributeName(TASK_NOTIFICATION_TASK_CREATION) . "[" . $object->id . "]: " . $object->title;
     $users_to_notify = $w->Task->getNotifyUsersForTask($object, TASK_NOTIFICATION_TASK_CREATION);
 
