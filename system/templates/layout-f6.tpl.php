@@ -37,7 +37,9 @@
         CmfiveScriptComponentRegister::registerComponent('fontawesome5', $fontawesome_js);
 
         CmfiveScriptComponentRegister::registerComponent('slideout', new CmfiveScriptComponent("/system/templates/js/slideout-1.0.1/dist/slideout.min.js"));
-        
+        CmfiveScriptComponentRegister::registerComponent('toast', new CmfiveScriptComponent("/system/templates/js/Toast.js"));
+        CmfiveStyleComponentRegister::registerComponent('toast', new CmfiveStyleComponent("/system/templates/css/Toast.scss", ['/system/templates/scss/']));
+
         
         // Print registered vue component links
         $w->loadVueComponents();

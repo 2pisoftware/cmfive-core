@@ -281,7 +281,7 @@ class Web {
 		foreach(VueComponentRegister::getComponents() ? : [] as $name => $vue_component) {
 			CmfiveScriptComponentRegister::registerComponent($name, new CmfiveScriptComponent($vue_component->js_path, ['weight' => 100]));
             if (!empty($vue_component->css_path) && file_exists(ROOT_PATH . $vue_component->css_path)) {
-                CmfiveStyleComponentRegister::registerComponent($name, (new CmfiveStyleComponent($vue_component->css_path))->setProps(['weight' => 100]));
+                CmfiveStyleComponentRegister::registerComponent($name, (new CmfiveStyleComponent($vue_component->css_path, ['/system/templates/scss/']))->setProps(['weight' => 100]));
             }
 		}
 	}
@@ -327,7 +327,7 @@ class Web {
 
 			foreach ($this->_styles as $style) {
 				try {
-					CmfiveStyleComponentRegister::registerComponent($style['name'], (new CmfiveStyleComponent($style['uri']))->setProps(['weight' => $style['weight']]));
+					CmfiveStyleComponentRegister::registerComponent($style['name'], (new CmfiveStyleComponent($style['uri'], ['/system/templates/scss/']))->setProps(['weight' => $style['weight']]));
 				} catch (Exception $e) {
 					$this->Log->error($e->getMessage());
 				}

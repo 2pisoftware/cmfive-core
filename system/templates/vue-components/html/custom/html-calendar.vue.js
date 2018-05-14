@@ -49,7 +49,7 @@ Vue.component('html-calendar', {
 			
 			for(i = 0; i < this.month.daysInMonth(); i++) {
 				var today = (moment().startOf('day').isSame(start_date))
-				var disabled = (start_date.isSameOrBefore(moment().startOf('day')))
+				var disabled = (this.preventPast === true && start_date.isSameOrBefore(moment().startOf('day')))
 				
 				var selected_date = this.selectedDate ? moment(this.selectedDate).startOf('day').isSame(start_date) : false;
 
@@ -63,7 +63,7 @@ Vue.component('html-calendar', {
 	},
 	computed: {
 		can_go_back: function() {
-			if (this.preventPast && this.month.isSame(this.current_month)) {
+			if (this.preventPast === true && this.month.isSame(this.current_month)) {
 				return 'disabled'
 			}
 		},
