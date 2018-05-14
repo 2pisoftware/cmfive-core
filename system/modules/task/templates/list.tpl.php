@@ -95,7 +95,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr v-for="task in paginedCandidates" :class="{ test: task.status === 'Overdue' || task.priority === 'Urgent' }">
+            <tr @mouseenter="show_options($event)" @mouseleave="hide_options" v-for="task in paginedCandidates" :class="{ test: task.status === 'Overdue' || task.priority === 'Urgent' }">
                 <td>
                     {{task.id}}
                 </td>
@@ -126,13 +126,13 @@
 
     <div class='row-fluid text-center' v-if="numberOfPages > 1">
         <br>
-        <button class="tiny radius" @click="firstPage"><i class="fas fa-angle-double-left"></i></button>
-        <button class="tiny radius" @click="prevPage"><i class="fas fa-angle-left"></i></button>
+        <button class="button tiny radius" @click="firstPage"><i class="fas fa-angle-double-left"></i></button>
+        <button class="button tiny radius" @click="prevPage"><i class="fas fa-angle-left"></i></button>
 
-        <button class="tiny radius" v-for="n in numberOfPages" @click="if (currentPage !== n) currentPage = n">{{n}}</button>
+        <button v-if="" :class="{button: true, tiny: true, radius: true, success: currentPage === n}" v-for="n in numberOfPages" @click="if (currentPage !== n) currentPage = n">{{n}}</button>
 
-        <button class="tiny radius" @click="nextPage"><i class="fas fa-angle-right"></i></button>
-        <button class="tiny radius" @click="lastPage"><i class="fas fa-angle-double-right"></i></button>
+        <button class="button tiny radius" @click="nextPage"><i class="fas fa-angle-right"></i></button>
+        <button class="button tiny radius" @click="lastPage"><i class="fas fa-angle-double-right"></i></button>
         <br>
         page {{currentPage}} of {{numberOfPages}}
     </div>
@@ -175,7 +175,7 @@
                 creator_id: null,
                 task_group_id: null
             },
-            pageSize: 10,
+            pageSize: 2,
             currentPage: 1
 		},
                 watch: {
@@ -270,17 +270,25 @@
                         });
                     },
 
-                    nextPage:function() {
+                    nextPage: function() {
                         if((this.currentPage * this.pageSize) < this.tableData.length) this.currentPage++;
                     },
-                    prevPage:function() {
+                    prevPage: function() {
                         if(this.currentPage > 1) this.currentPage--;
                     },
-                    firstPage:function() {
+                    firstPage: function() {
                         if(this.currentPage > 1) this.currentPage = 1;
                     },
-                    lastPage:function() {
+                    lastPage: function() {
                         if(this.currentPage < this.numberOfPages) this.currentPage = this.numberOfPages;
+                    },
+
+                    show_options: function(event) {
+                        
+                    },
+
+                    hide_options: function() {
+                        
                     }
 		},
 		created: function() {

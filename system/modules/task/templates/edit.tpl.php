@@ -183,7 +183,7 @@
         el: '#task_edit',
         
         components: {
-            "vue-editor": 'vue2-editor',
+            "vue-editor": ,
             "model-list-select": VueSearchSelect.ModelListSelect,
             "datepicker": VueFlatpickr
         },
