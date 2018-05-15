@@ -130,6 +130,17 @@ class Task extends DbObject {
         $c = $this->Task->getObject("ObjectModification", array("object_id" => $this->id, "table_name" => $this->getDbTableName()));
         return $c ? $c->creator_id : "";
     }
+
+    // return creator's name of given a task
+    function getCreatorName() {
+        $creator = null;
+        $c = $this->Task->getObject("ObjectModification", array("object_id" => $this->id, "table_name" => $this->getDbTableName()));
+        
+        if (!empty($c->creator_id)) 
+            $creator = $this->Auth->getUser($c->creator_id);
+        
+        return $creator ? $creator->getFullName() : "";
+    }
     
     // return a task type object given a task type
     public function getTaskTypeObject() {
@@ -150,5 +161,13 @@ class Task extends DbObject {
         ->innerJoin("user on user.id = task_subscriber.user_id")
         ->innerJoin("contact on contact.id = user.contact_id")
         ->fetchAll();
+    }
+
+    public function getCreatedDate() {
+        return formatDate($this->_modifiable->getCreatedDate(), "j F, Y");
+    }
+
+    public function getDueDate() {
+        return formatDate($this->dt_due, "j F Y");
     }
 }

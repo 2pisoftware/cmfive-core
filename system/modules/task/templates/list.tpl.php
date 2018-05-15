@@ -126,13 +126,15 @@
 
     <div class='row-fluid text-center' v-if="numberOfPages > 1">
         <br>
-        <button class="button tiny radius" @click="firstPage"><i class="fas fa-angle-double-left"></i></button>
+        <button class="button tiny radius" @click="firstPage">First page</button>
+        <button class="button tiny radius" @click="prev_chunk"><i class="fas fa-angle-double-left"></i></button>
         <button class="button tiny radius" @click="prevPage"><i class="fas fa-angle-left"></i></button>
 
         <button v-if="" :class="{button: true, tiny: true, radius: true, success: currentPage === n}" v-for="n in numberOfPages" @click="if (currentPage !== n) currentPage = n">{{n}}</button>
 
         <button class="button tiny radius" @click="nextPage"><i class="fas fa-angle-right"></i></button>
-        <button class="button tiny radius" @click="lastPage"><i class="fas fa-angle-double-right"></i></button>
+        <button class="button tiny radius" @click="next_chunk"><i class="fas fa-angle-double-right"></i></button>
+        <button class="button tiny radius" @click="lastPage">Last page</button>
         <br>
         page {{currentPage}} of {{numberOfPages}}
     </div>
@@ -281,6 +283,14 @@
                     },
                     lastPage: function() {
                         if(this.currentPage < this.numberOfPages) this.currentPage = this.numberOfPages;
+                    },
+
+                    next_chunk: function() {
+
+                    },
+
+                    prev_chunk: function() {
+
                     },
 
                     show_options: function(event) {

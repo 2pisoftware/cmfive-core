@@ -7,150 +7,93 @@
 <script src='/system/templates/vue-components/quill/vue2-editor.js'></script>
 <link rel="stylesheet" type="text/css" href="/system/templates/vue-components/quill/quill.snow.css">
 
+<style>
+    .div1 {
+        width: 7em; 
+        height: 7em; 
+        border-radius: 50%; 
+        background-color: #DEE5EB; 
+        margin-left: auto; 
+        margin-right: auto;
+    }
+
+    .p1 {
+        line-height: 7em;
+    }
+</style>
+
 <div id="task_edit">
-    
-<div id="taskmodal" class="reveal-modal small" data-reveal data-closable>
-    Are you sure you want to remove this subscriber?<br><br>
-    <button class="button radius tiny success" v-on:click="delete_subscriber">Yes</button>
-    <button class="button radius tiny alert" data-close>No</button>
-</div>
+    <div id="taskmodal" class="reveal-modal small" data-reveal data-closable>
+        Are you sure you want to remove this subscriber?<br><br>
+        <button class="button radius tiny success" v-on:click="delete_subscriber">Yes</button>
+        <button class="button radius tiny alert" data-close>No</button>
+    </div>
 
-<div id="delete-modal" class="reveal-modal small" data-reveal data-closable>
-    Are you sure you want to delete this task?<br><br>
-    <button class="button tiny radius success" v-on:click="delete_task">Yes</button>
-    <button class="button tiny radius alert" data-close>No</button>
-</div>
+    <div id="delete-modal" class="reveal-modal small" data-reveal data-closable>
+        Are you sure you want to delete this task?<br><br>
+        <button class="button tiny radius success" v-on:click="delete_task">Yes</button>
+        <button class="button tiny radius alert" data-close>No</button>
+    </div>
 
-<div id="save-modal" class="reveal-modal small" data-reveal data-closable>
-    The task was saved successfully<br><br>
-    <button class="button tiny radius success" data-close>OK</button>
-</div>
+    <div id="save-modal" class="reveal-modal small" data-reveal data-closable>
+        The task was saved successfully<br><br>
+        <button class="button tiny radius success" data-close>OK</button>
+    </div>
+
+    <div id="modal_edit" class="reveal-modal" data-reveal aria-hidden="true" role="dialog">
+    </div>
     
-<div class='row-fluid'>
-<div class='small-12 columns'>
-    <h3>Edit Task</h3>
-    <h4><?php echo $task->title?></h4>
-    Created: <?php // echo $createdDate; ?><br>
-    Taskgroup: <?php echo $task->getTaskGroupTypeTitle(); ?>
+    <h4>Task: <?php echo $task->title?></h4>
+    Created <?php echo $task->getCreatedDate(); ?> by <?php echo $task->getCreatorName(); ?> and is due by <?php echo $task->getDueDate(); ?><br>
     <br><br>
+<div class='row-fluid'>
+<div class='small-12 large-8 columns'>
 <html-tabs>
-    <html-tab title='Details' icon='' :selected="true">
-        <div class="row-fluid">
-            <div class="medium-12 large-8 columns">
-                Task title <small>Required</small>
-                <input name="title" id="title" required="required" type="text" v-model="title">
+    <html-tab title='Task details' icon='' :selected="true">
+        <div class="row">
+            <div class="medium-12 large-2 columns text-center">
+                Assigned to<br>
+                <img style="width: 6em; height: 6em; border-radius: 50%;" src='https://www.gravatar.com/avatar/<?php echo $gravatar; ?>?d=identicon&s=250' />
+                <br>{{assignee_name}}
             </div>
-
-            <div class="medium-12 large-4 columns">
-                Due date
-                <datepicker v-model="date" :config="dateconfig" placeholder="Due date"></datepicker>
+            <div class="medium-12 large-2 columns text-center">
+                Status<br>
+                <div class="div1"><p class="p1">{{status}}</p></div>
+            </div>
+            <div class="medium-12 large-2 columns text-center">
+                Priority<br>
+                <div class="div1"><p class="p1">{{priority}}</p></div>
+            </div>
+            <div class="medium-12 large-2 columns text-center">
+                Due Date<br>
+                <div class="div1"><p class="p1"><?php echo $task->getDueDate(); ?></p></div>
+            </div>
+            <div class="medium-12 large-2 columns text-center">
+                Est.Hours<br>
+                <div class="div1"><p class="p1">{{estimate_hours}}</p></div>
+            </div>
+            <div class="medium-12 large-2 columns">
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="large-12 columns">
+            <br>Description<br><br>
+                {{description}}
             </div>
         </div>
 
-        <div class="row-fluid">
-            <div class="medium-12 large-4 columns">
-                Assigned
-                <model-list-select v-model="assignee_id" :list="assignee_list" placeholder="select item" option-value="value" option-text="text"></model-list-select>
-            </div>
-            <div class="medium-12 large-4 columns">
-                Status
-                <model-list-select v-model="status" :list="status_list" placeholder="select item" option-value="value" option-text="text"></model-list-select>
-            </div>
-            <div class="medium-12 large-4 columns">
-                Priority
-                <model-list-select v-model="priority" :list="priority_list" placeholder="select item" option-value="value" option-text="text"></model-list-select>
-            </div>
-        </div>
-        <div class="row-fluid">
-            <div class="medium-12 large-6 columns">
-                Group <small>Required</small>
-                <model-list-select v-model="taskgroup_id" :list="taskgroup_list" placeholder="select item" option-value="value" option-text="text"></model-list-select>
-            </div>
-            <div class="medium-12 large-6 columns">
-                Type <small>Required</small>
-                <model-list-select v-model="type" :list="type_list" placeholder="select item" option-value="value" option-text="text"></model-list-select>
-            </div>
-        </div>
-        <div class="row-fluid columns">
-            Description
-            <vue-editor v-model="description"></vue-editor>
-            <!-- <textarea name="description" id="description"></textarea> -->
-        </div>
-        <div class="row-fluid">
-            <div class="medium-12 large-6 columns">
-                Estimated hours
-                <input name="estimate_hours" id="estimate_hours" type="text" v-model="estimate_hours">
-            </div>
-            <div class="medium-12 large-6 columns">
-                Effort
-                <input name="effort" id="effort" type="text" v-model="effort">
-            </div>
-        </div>
-            <br>
-            
-            <a class="tiny button radius" style="background-color: #59BC3B;" @click="save">Save</a>
+        <div class="row">
+            <a data-reveal-ajax="true" data-reveal-id="modal_edit" href="/task/edit/<?php echo $task->id; ?>"><button style="background-color: #59BC3B;" class='tiny button radius'>Edit</button></a>
             <a class="tiny button radius" style="background-color: #95ACBC;" href="/task/duplicatetask/<?php echo $task->id; ?>">Duplicate</a>
             <a class="tiny button radius" style="background-color: #68C2CD;" href="/task/edit/?gid=<?php echo $task->task_group_id; ?>">New Task</a>
             <?php if ($task->canDelete($w->Auth->user())): ?>
                 <button class="tiny button radius" style="background-color: #D12229;" data-reveal-id="delete-modal">Delete</button>
             <?php endif ?>
-            <a class="tiny button radius" style="background-color: #FF7A13;" href="/task/list">Cancel</a>
-
-            <html-segment title='Subscribers' v-if="subscribers">
-                <div v-for="subscriber in subscribers" :class="{ button: true, tiny: true, radius: true, secondary: true, warning: subscriber.is_external === 0 ? true : false }">
-                    {{subscriber.fullname}}
-                    <a href="#" data-reveal-id="taskmodal"><i class="fa fa-times" aria-hidden="true"></i></a>
-                </div>
-                <a class='button tiny secondary radius' href="/task-subscriber/add/<?php echo $task->id; ?>" data-reveal-ajax="true" data-reveal-id="taskmodal"><i class="fa fa-plus" aria-hidden="true"></i></a>
-            </html-segment>
-            
-            <html-segment title='Tags'>
-                <?php echo $w->partial('listTags', ['object' => $task], 'tag'); ?>
-            </html-segment>
-            
-            
-            <?php 
-                echo $w->Favorite->getFavoriteButton($task);
-                // Note the extra buttons only show when the type object
-                $tasktypeobject = $task->getTaskTypeObject();
-                echo !empty($tasktypeobject) ? $tasktypeobject->displayExtraButtons($task) : null; 
-         
-                   // "Delete", "Are you sure you want to delete this task?", null, false, 'warning') 
-                   
-                // Extra buttons for task
-                $buttons = $w->callHook("task", "extra_buttons", $task);
-                if (!empty($buttons) && is_array($buttons)) {
-                        echo implode('', $buttons);
-                }
-            ?>
-        
-
-<?php //echo Html::box('/task-subscriber/add/' . $task->id, 'Add', true, false, null, null, 'isbox', null, 'info center'); ?>
-<?php //echo Html::b('/task-subscriber/delete/' . $subscriber->id, 'Delete', 'Are you sure you want to remove this subscriber?', null, false, 'warning center'); ?>
-                                                   
-                             
-                       
-
-                        <?php $additional_details = $w->callHook('task', 'additional_details', $task);
-                        if (!is_null($additional_details) && is_array($additional_details)) {
-                                $additional_details = array_values(array_filter($additional_details ? : []));
-                                if (count($additional_details) > 0) : ?>
-                                        <div class="row-fluid clearfix panel">
-                                                <table class="small-12 columns">
-                                                        <tbody>
-                                                                <tr><td class="section" colspan="2">Additional Details</td></tr>
-                                                                <?php foreach($additional_details as $additional_detail) : ?>
-                                                                        <tr><td><?php echo $additional_detail[0]; ?></td><td><?php echo $additional_detail[1]; ?></td></tr>
-                                                                <?php endforeach; ?>
-                                                        </tbody>
-                                                </table>
-                                        </div>
-                                <?php endif;
-                        }
-                
-        ?>
-            
+            <a href="/task/list"><button class="tiny button radius" style="background-color: #FF7A13;">Cancel</button></a>
+        </div>
     </html-tab>
+    
     <html-tab title='Time Log' icon='fa-clock'>
         <?php echo $w->partial("listtimelog", ["object_class" => "Task", "object_id" => $task->id, "redirect" => "task/edit/{$task->id}#timelog"], "timelog"); ?>
     </html-tab>
@@ -173,9 +116,25 @@
         </html-tab>
     <?php endif;?>
 </html-tabs>
-    </div>
-        </div>
 </div>
+    <div class='small-12 large-4 columns'>
+        <html-segment title='Task group details'>
+            Task group <?php echo $taskgroup->title; ?><br>
+            Task type <?php echo $task->task_type; ?><br>
+            Description <?php echo $taskgroup->description; ?>
+        </html-segment>
+        <html-segment title='Subscribers' v-if="subscribers">
+            <div v-for="subscriber in subscribers" :class="{ button: true, tiny: true, radius: true, secondary: true, warning: subscriber.is_external === 0 ? true : false }">
+                {{subscriber.fullname}}
+                <a href="#" data-reveal-id="taskmodal"><i class="fa fa-times" aria-hidden="true"></i></a>
+            </div>
+            <a class='button tiny secondary radius' href="/task-subscriber/add/<?php echo $task->id; ?>" data-reveal-ajax="true" data-reveal-id="taskmodal"><i class="fa fa-plus" aria-hidden="true"></i></a>
+        </html-segment>
+        
+        <html-segment title='Tags'>
+            <?php echo $w->partial('listTags', ['object' => $task], 'tag'); ?>
+        </html-segment>
+    </div>
 </div>
 </div>
 
@@ -195,7 +154,7 @@
             id: "<?php echo $t['id']; ?>",
             status: "<?php echo $t['status']; ?>",
             priority: "<?php echo $t['priority']; ?>",
-            assignee_id: "<?php echo $assignee_id; ?>",
+            assignee_name: "<?php echo $assignee_name; ?>",
             estimate_hours: "<?php echo $task->estimate_hours; ?>",
             effort: "<?php echo $task->effort; ?>",
             description: "<?php echo $task->description; ?>",
@@ -263,111 +222,4 @@
             
         }
     });
-    
-    // Force an ajax request initially, because if the group id is provided
-    // and this doesn't exist then the user would have to reselect the taskgroup
-    // manually, which is bad.
-    var initialChange = <?php echo (empty($task->id) ? "false" : "true"); ?>;
-
-    $(document).ready(function() {
-        bindTypeChangeEvent();
-
-        getTaskGroupData(<?php echo !empty($task->task_group_id) ? $task->task_group_id : $w->request('gid'); ?>);
-        $("#type").trigger("change");
-    });
-    
-    function selectAutocompleteCallback(event, ui) {
-    	if (event.target.id == "acp_task_group_id") {
-            $("#formfields").hide().html("");
-        	$("#tasktext").hide().html("");
-        
-	        getTaskGroupData(ui.item.id);
-    	}
-    }
-    
-    function getTaskGroupData(taskgroup_id) {
-        $.getJSON("/task/taskAjaxSelectbyTaskGroup/" + taskgroup_id + "/<?php echo !empty($task->id) ? $task->id : null; ?>",
-            function(result) {
-                if (initialChange == false) {
-                    $('#type').parent().html(result[0]);
-                    $('#priority').parent().html(result[1]);
-                    $('#assignee_id').parent().html(result[2]);
-                    $('#status').html(result[4])
-                }
-                initialChange = true;
-                $('#tasktext').html(result[3]);
-                $("#tasktext").fadeIn();
-
-                bindTypeChangeEvent();  
-            }
-        );
-    }
-    
-    function bindTypeChangeEvent() {
-        $("#type").on("change", function(event) {
-            // Reset custom fields
-            $("#formfields").fadeOut();
-            $("#formfields").html("");
-            
-            // Get/check for extra form fields
-            $.getJSON("/task/ajaxGetFieldForm/" + $("#type").val() + "/" + $("#task_group_id").val() + "/<?php echo !empty($task->id) ? $task->id : ''; ?>",
-                function(result) {
-                    if (result) {
-                        $("#formfields").html(result);
-                        $("#formfields").fadeIn();
-                    }
-                }
-            );
-            <?php if (!empty($task->id)) : ?>
-                var type_value = document.getElementById("type").value;
-                if (type_value.length > 0) {
-                    $("#formdetails").hide();
-                    $.getJSON("/task/ajaxGetExtraDetails/<?php echo $task->id; ?>/" + type_value, function(result) {
-                        if (result[0]) {
-                            $("#formdetails").html(result[0]);
-                            $("#formdetails").fadeIn();
-                        }
-                    });
-                }
-            <?php endif; ?>
-        });
-    }
-    
-    // Submit both forms 
-    $("#edit_form, #form_fields_form").submit(function() {
-        for(var instanceName in CKEDITOR.instances) {
-            CKEDITOR.instances[instanceName].updateElement();
-        }
-        
-        toggleModalLoading();
-        var edit_form = {};
-        var extras_form = {};
-        $.each($('#edit_form').serializeArray(), function(){
-            edit_form[this.name] = this.value;
-        });
-        $.each($('#form_fields_form').serializeArray(), function(){
-            extras_form[this.name] = this.value;
-        });
-        
-        var action = $(this).attr('action');
-        $.ajax({
-            url  : action,
-            type : 'POST',
-            data : {
-                '<?php echo \CSRF::getTokenId(); ?>': '<?php echo \CSRF::getTokenValue(); ?>', 
-                'edit': edit_form, 
-                'extra': extras_form
-            },
-            complete: function(response) {
-				window.onbeforeunload = null;
-                if ($.isNumeric(response.responseText)) {
-                    window.location.href = "/task/edit/" + response.responseText;
-                } else {
-                    window.location.reload();
-                }
-            }
-        });
-        return false;
-    });
-    
 </script>
