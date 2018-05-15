@@ -284,11 +284,22 @@
                     },
 
                     show_options: function(event) {
-                        
+                        /*var coord = event.target.getBoundingClientRect();
+
+                        var el = document.createElement("div");
+                        el.innerHTML = "hello hello hello hello hello";
+                        el.id = "options";
+                        el.style.position = "absolute";
+                        el.style.top = coord.y;
+                        el.style.left = coord.x;
+                        el.style.height = coord.height;
+                        el.style.width = coord.width;
+                        el.style.zIndex = 1000;
+                        event.target.appendChild(el);*/ 
                     },
 
                     hide_options: function() {
-                        
+                        //event.target.removeChild(document.getElementById("options"));
                     }
 		},
 		created: function() {

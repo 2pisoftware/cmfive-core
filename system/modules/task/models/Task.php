@@ -91,7 +91,7 @@ class Task extends DbObject {
     }
 
     public function printSearchUrl() {
-        return '/task/view/' . $this->id;
+        return '/task/preview/' . $this->id;
     }
 
     public function getSelectOptionTitle() {
