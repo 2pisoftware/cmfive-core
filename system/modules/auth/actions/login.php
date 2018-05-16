@@ -6,13 +6,6 @@ function login_GET(Web $w) {
     if ($w->Auth->loggedIn() && $w->Auth->allowed($user->redirect_url)) {
         $w->redirect($w->localUrl(!empty($user->redirect_url) ? $user->redirect_url : "/main"));
     }
-        $loginform = Html::form(array(
-                    array("Application Login", "section"),
-                    array("Username", "text", "login"),
-                    array("Password", "password", "password"),
-                        ), $w->localUrl("auth/login"), "POST", "Login");
-    $w->ctx("loginform", $loginform);
-    $w->ctx("active_2fa", $w->Auth->user()->active_2fa);
 }
 
 function login_POST(Web &$w) {
