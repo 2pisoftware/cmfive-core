@@ -16,8 +16,8 @@ function profile_GET(Web &$w) {
 	$lines[] = array("Repeat Password","password","password2","");
 
 	$lines[] = ["2-factor authentication","section"];
-	$lines[] = ["Enable 2-factor authentication", "checkbox", "2fa", $user->is_2fa];
-	$lines[] = ["Re / generate code", "b", "generate_qr"];
+	$lines[] = ["Enable 2-factor authentication", "checkbox", "active_2fa", $user->active_2fa];
+	$lines[] = ["<button type='button' id='2fa_btn' name='2fa_btn' data-reveal-id='twoFAmodal' class='button tiny radius' onclick=''>Regenerate code</button>"];
 
 	$lines[] = array("Contact Details","section");
 	$lines[] = array("First Name","text","firstname",$contact ? $contact->firstname : "");
@@ -36,7 +36,10 @@ function profile_GET(Web &$w) {
 		$w->setLayout(null);
 		$f = "<h2>Edit Profile</h2>".$f;
 	}
+
 	$w->ctx("form", $f);
+	$w->ctx("username", $w->Auth->user()->login);
+	$w->ctx("salt", $w->Auth->user()->password_salt);
 }
 
 function profile_POST(Web &$w) {
@@ -79,6 +82,7 @@ function profile_POST(Web &$w) {
 	} else {
 		$user->password = null;
 	}
+
 	$user->update();
 
 	$contact = $user->getContact();

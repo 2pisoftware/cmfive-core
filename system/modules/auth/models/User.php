@@ -26,7 +26,7 @@ class User extends DbObject {
     public $_contact;
     public $_modifiable;
 	public $language;
-	public $is_2fa;
+	public $active_2fa;
 	
     
 

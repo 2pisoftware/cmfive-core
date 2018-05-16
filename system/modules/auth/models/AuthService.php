@@ -14,6 +14,18 @@ class AuthService extends DbService {
         if (empty($user->id) || ($user->encryptPassword($password) !== $user->password) || $user->is_external == 1) {
             return null;
         }
+
+        // 2-factor authentication
+        if ($user->active_2fa == 1) {
+            $g = new \Google\Authenticator\GoogleAuthenticator();
+            $salt = $user->password_salt;
+            $secret = $user->login.$salt;
+            $code = $this->w->request('code');
+            
+            if (!$g->checkCode($secret, $code)) 
+                return null;
+        }
+        
         // if ($user_data != null) {
         // $user = new User($this->w);
         // $user->fill($user_data);

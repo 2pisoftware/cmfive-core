@@ -12,6 +12,7 @@ function login_GET(Web $w) {
                     array("Password", "password", "password"),
                         ), $w->localUrl("auth/login"), "POST", "Login");
     $w->ctx("loginform", $loginform);
+    $w->ctx("active_2fa", $w->Auth->user()->active_2fa);
 }
 
 function login_POST(Web &$w) {
