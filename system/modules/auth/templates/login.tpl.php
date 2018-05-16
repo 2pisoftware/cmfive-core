@@ -5,6 +5,12 @@
     <input id="login" name="login" type="text" placeholder="Your login" />
     <label for="password">Password</label>
     <input id="password" name="password" type="password" placeholder="Your password" />
+
+    <?php if ($active_2fa == 1): ?>
+        <label for="two_fa">2-Factor Authentication</label>
+        <input id="two_fa" name="two_fa" type="text" placeholder="Your 2FA code" />
+    <?php endif ?>
+
     <button type="submit" class="button large-5 small-12">Login</button>
     <button type="button" onclick="window.location.href='/auth/forgotpassword';" class="button alert large-5 small-12 right">Forgot Password</button>
 </form>
