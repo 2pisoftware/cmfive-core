@@ -38,8 +38,9 @@ function profile_GET(Web &$w) {
 	}
 
 	$w->ctx("form", $f);
-	$w->ctx("username", $w->Auth->user()->login);
-	$w->ctx("salt", $w->Auth->user()->password_salt);
+	$w->ctx("username", $user->login);
+	$w->ctx("salt", $user->password_salt);
+	$w->ctx("active_2fa", $user->active_2fa);
 }
 
 function profile_POST(Web &$w) {
