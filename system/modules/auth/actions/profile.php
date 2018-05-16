@@ -14,6 +14,11 @@ function profile_GET(Web &$w) {
 	$lines[] = array("Change Password","section");
 	$lines[] = array("Password","password","password","");
 	$lines[] = array("Repeat Password","password","password2","");
+
+	$lines[] = ["2-factor authentication","section"];
+	$lines[] = ["Enable 2-factor authentication", "checkbox", "2fa", $user->is_2fa];
+	$lines[] = ["Re / generate code", "b", "generate_qr"];
+
 	$lines[] = array("Contact Details","section");
 	$lines[] = array("First Name","text","firstname",$contact ? $contact->firstname : "");
 	$lines[] = array("Last Name","text","lastname",$contact ? $contact->lastname : "");
@@ -31,7 +36,7 @@ function profile_GET(Web &$w) {
 		$w->setLayout(null);
 		$f = "<h2>Edit Profile</h2>".$f;
 	}
-	$w->out($f);
+	$w->ctx("form", $f);
 }
 
 function profile_POST(Web &$w) {
