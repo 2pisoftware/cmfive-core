@@ -27,6 +27,7 @@ class User extends DbObject {
     public $_modifiable;
 	public $language;
 	public $active_2fa;
+	public $secret_2fa;
 	
     
 

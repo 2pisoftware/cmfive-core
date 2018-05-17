@@ -2,10 +2,14 @@
 
 function login_GET(Web $w) {
     // Check if logged in already
-    $user = $w->Auth->user();
-    if ($w->Auth->loggedIn() && $w->Auth->allowed($user->redirect_url)) {
-        $w->redirect($w->localUrl(!empty($user->redirect_url) ? $user->redirect_url : "/main"));
+    if ($w->Auth->loggedIn()) {
+        $user = $w->Auth->user();
+        if ($w->Auth->allowed($user->redirect_url))
+            $w->redirect($w->localUrl(!empty($user->redirect_url) ? $user->redirect_url : "/main"));
     }
+
+    // 2 factor authentication
+    //$w->session("current_get_time", time());
 }
 
 function login_POST(Web &$w) {

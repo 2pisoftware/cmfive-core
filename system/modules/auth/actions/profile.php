@@ -16,8 +16,9 @@ function profile_GET(Web &$w) {
 	$lines[] = array("Repeat Password","password","password2","");
 
 	$lines[] = ["2-factor authentication","section"];
-	$lines[] = ["Enable 2-factor authentication", "checkbox", "active_2fa", $user->active_2fa];
-	$lines[] = ["<button type='button' id='2fa_btn' name='2fa_btn' data-reveal-id='twoFAmodal' class='button tiny radius' onclick=''>Regenerate code</button>"];
+	// Enable 2-factor authentication
+	$lines[] = ["<input type='checkbox' name='active_2fa' id='active_2fa' v-model='active_2fa'>"];
+	$lines[] = ["<button data-reveal-ajax='/auth/barcode' type='button' id='2fa_btn' name='2fa_btn' data-reveal-id='twoFAmodal' class='button tiny radius' onclick=''>Regenerate code</button>"];
 
 	$lines[] = array("Contact Details","section");
 	$lines[] = array("First Name","text","firstname",$contact ? $contact->firstname : "");
@@ -38,9 +39,7 @@ function profile_GET(Web &$w) {
 	}
 
 	$w->ctx("form", $f);
-	$w->ctx("username", $user->login);
-	$w->ctx("salt", $user->password_salt);
-	$w->ctx("active_2fa", $user->active_2fa);
+	$w->ctx("active_2fa", $user->active_2fa == 1 ? true : false);
 }
 
 function profile_POST(Web &$w) {
@@ -68,6 +67,7 @@ function profile_POST(Web &$w) {
 	}
 
 	$user->fill($_REQUEST);
+	$user->active_2fa = $user->active_2fa == "on" ? 1 : 0;
 	// Filter out everything except the path so that users cant make redirect urls out of cmfive
     $parse_url = parse_url($user->redirect_url);
     $redirect_url = $parse_url["path"];

@@ -17,11 +17,16 @@ class AuthService extends DbService {
 
         // 2-factor authentication
         if ($user->active_2fa == 1) {
+            /*$current_submit_time = time();
+            $current_get_time = $this->w->session("current_get_time");
+            $diff = $current_submit_time - $current_get_time;
+            if ($diff > 60)
+                return null;*/
+
             $g = new \Google\Authenticator\GoogleAuthenticator();
-            $salt = $user->password_salt;
-            $secret = $user->login.$salt;
-            $code = $this->w->request('code');
-            
+            $secret = $user->secret_2fa;
+            $code = $this->w->request('two_fa_code');
+
             if (!$g->checkCode($secret, $code)) 
                 return null;
         }
