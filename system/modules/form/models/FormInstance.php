@@ -36,6 +36,39 @@ class FormInstance extends DbObject {
 		return $this->getObjects("FormValue", ["form_instance_id" => $this->id, "is_deleted" => 0]);
 	}
 
+	//returns array of values for use with generic templates. includes sub form values
+	public function getValuesForGenericTemplate() {
+		$form_values = $this->getSavedValues();
+		$fields = [];
+		if (!empty($form_values)) {
+            foreach ($form_values as $value) {
+                //functionality for sub forms
+                $form_field = $value->getFormField();
+                if ($form_field->type == "subform") {
+                    $field_metadata = $form_field->findMetadataByKey('associated_form');
+                    if (!empty($field_metadata)) {
+                        $sub_form = $this->w->Form->getForm($field_metadata->meta_value);
+                        if (!empty($sub_form)) {
+                            $sub_instances = $this->w->Form->getFormInstancesForFormAndObject($sub_form, $value);
+                            $sub_form_data = [];
+                            if (!empty($sub_instances)) {
+                            	foreach ($sub_instances as $sub_instance) {
+                            		$sub_form_data[] = $sub_instance->getValuesForGenericTemplate();
+                            	}
+
+                            }
+                            $fields[$value->getFieldName()] = $sub_form_data;
+                        }
+                    }
+                } else {
+                    $fields[$value->getFieldName()] = $value->value;
+                }
+                
+            }
+        }
+        return $fields;
+	}
+
 	//returns array of values from sql view
 	public function getValuesArray() {
 		$view_name = str_replace(' ', '_', $this->getForm()->title) . '_view';
@@ -43,7 +76,7 @@ class FormInstance extends DbObject {
 			. $view_name
 			. " WHERE  instance_id = "
 			. $this->id;
-		return $this->w->db->query($query)->fetchRow(PDO::FETCH_ASSOC);
+		return $this->w->db->query($query)->fetch(PDO::FETCH_ASSOC);
 	}
 	
 	/**

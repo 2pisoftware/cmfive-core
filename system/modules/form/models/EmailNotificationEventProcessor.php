@@ -11,8 +11,11 @@ class EmailNotificationEventProcessor extends EventProcessorType {
             }
         }
 
+        $template_select_opotions = $this->w->Template->findTemplates('form', 'event');
+
         return ["Settings" => [
-        	[["Email To Notify", "text", "email_to_notify", @$current_settings->email_to_notify]]
+        	[["Email To Notify", "text", "email_to_notify", @$current_settings->email_to_notify],
+            ["Template (Optional)", "select", "template_id", @$current_settings->template_id, $template_select_opotions ]]
 
         ]];
 	}
@@ -39,30 +42,62 @@ class EmailNotificationEventProcessor extends EventProcessorType {
         
         $subject = ''; 
         $message = '';
+        $tmp_message = '';
         $event = $processor->getEvent();
 
+        //generate subject and massage line based on event type
         if ($event->type == 'On Created') {
             $subject .= 'New ' . $form->title . 'submitted';
-            $message .= 'A new ' . $form->title . ' form has been submitted.<br/>';
+            $message .= 'A new ' . $form->title . ' form has been submitted.<br/><br/>';
+            $data['header'] = 'A new ' . $form->title . ' form has been submitted.';
         } else if ($event->type == 'On Modified') {
             $subject .= $form->title . ' Modified'; 
-            $message .= $form->title . ': ' . $form_instance->id . ' Has been modified.<br/>';
+            $message .= $form->title . ': ' . $form_instance->id . ' Has been modified.<br/><br/>';
+            $data['header'] = $form->title . ': ' . $form_instance->id . ' Has been modified.';
         } else if ($event->type == 'On Deleted') {
             $subject .= $form->title . ' Deleted';
-            $message .= $form->title . ': ' . $form_instance->id . ' has been deleted.<br/>';
+            $message .= $form->title . ': ' . $form_instance->id . ' has been deleted.<br/><br/>';
+            $data['header'] = $form->title . ': ' . $form_instance->id . ' has been deleted.';
         }
 
-        //templating may be required. for now just list form fields.
-        $form_values = $form_instance->getValuesArray();
-        if (!empty($form_values)) {
-            foreach ($form_values as $key => $value) {
-                
-                $message .= '<b>' . $key . ":</b> " . $value . "<br/>";
+        //if template is set then use it, otherwise generate simple list of form values
+        $template = '';
+        $data['fields'] = $form_instance->getValuesForGenericTemplate();
+        if (!empty($settings->template_id)) {
+            $template = $this->w->Template->getTemplate($settings->template_id);
+        }
+        if (!empty($template)) {
+            $tmp_message .= $this->w->Template->render($template, $data);
+        } else {
+            if (!empty($data['fields'])) {
+                foreach ($data['fields'] as $key=>$value) {
+                    //need to add functionality for sub forms
+                    if (is_array($value)) {
+                        $message .= "<b>" . $key . ":</b> <br/>";
+                        foreach ($value as $sub_form) {
+                            foreach ($sub_form as $sub_key=>$sub_value) {
+                                $message .= "   <b>" . $sub_key . ":</b> " . $sub_value . "<br/>";
+                            }
+                        }
+                    } else {
+                        $message .= "<b>" . $key . ":</b> " . $value . "<br/>";
+                    }
+                    
+                }
             }
         }
+        
 
-        //for now just 
-        echo $message . "<br/><pre>";
-        var_dump($form_values); die;
+        //check which version of message body to send 
+        if (!empty($template)) {
+            $final_message = $tmp_message;
+        } else {
+            $final_message = $message;
+        }
+        $this->w->Mail->sendMail(
+                            $settings->email_to_notify, 
+                            Config::get('main.company_support_email'),
+                            $subject, $final_message
+                        );
 	}
 }
