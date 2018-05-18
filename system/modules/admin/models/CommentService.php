@@ -69,8 +69,9 @@ class CommentService extends DbService {
     }
     
     public function renderComment($text) {
-    	require_once 'creole/creole.php';
-    	return (new creole())->parse(strip_tags($text));
+    	// require_once 'creole/creole.php';
+    	// return (new creole())->parse(strip_tags($text));
+        return (new \softark\creole\Creole())->parse($text);
     }
     
 }
