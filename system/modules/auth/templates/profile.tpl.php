@@ -4,6 +4,8 @@
     <?php echo $form; ?>
 </div>
 
+<script src="/system/templates/vue-components/loading-indicator.vue.js"></script>
+
 <script>
     new Vue({
         el: "#app",
@@ -15,10 +17,10 @@
         watch: {
             active_2fa: function(v) {
                 var barcode = document.getElementById("barcode");
-
+                
                 if (v) {
-                    barcode.innerHTML = "<loading-indicator :v-show='true'></loading-indicator>";
-
+                    barcode.innerHTML = "<loading-indicator :show='true'></loading-indicator>";
+                    
                     $.get("/auth/gettwofactorbarcode", function(data, status){
                         barcode.innerHTML = data;
                     });
@@ -31,5 +33,3 @@
         }
     });
 </script>
-
-<script src="/system/templates/vue-components/loading-indicator.vue.js"></script>
