@@ -18,8 +18,8 @@ function profile_GET(Web &$w) {
 	$lines[] = ["2-factor authentication","section"];
 	// Enable 2-factor authentication
 	$lines[] = ["<input type='checkbox' name='active_2fa' id='active_2fa' v-model='active_2fa'>"];
-	$lines[] = ["<button data-reveal-ajax='/auth/barcode' type='button' id='2fa_btn' name='2fa_btn' data-reveal-id='twoFAmodal' class='button tiny radius' onclick=''>Regenerate code</button>"];
-
+	$lines[] = ["<div id='barcode'></div>"];
+	
 	$lines[] = array("Contact Details","section");
 	$lines[] = array("First Name","text","firstname",$contact ? $contact->firstname : "");
 	$lines[] = array("Last Name","text","lastname",$contact ? $contact->lastname : "");

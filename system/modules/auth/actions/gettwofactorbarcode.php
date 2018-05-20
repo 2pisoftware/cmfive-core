@@ -1,6 +1,6 @@
 <?php
 
-function barcode_GET(Web &$w) {
+function gettwofactorbarcode_GET(Web &$w) {
     if (!$w->Auth->loggedIn()) return;
 
     $g = new \Google\Authenticator\GoogleAuthenticator();
