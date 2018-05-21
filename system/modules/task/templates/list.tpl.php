@@ -22,12 +22,22 @@
     #pi-table > thead > tr > th {
         cursor: pointer;
     }
+
+     #options {
+        display: none;
+        background-color: Silver;
+        text-align: center;
+        position: absolute;
+        z-index: 10000;
+        opacity: 0.5;
+    }
 </style>
 
 <div id="task_modal" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog"> 
 </div>
 
-<div id='vue_task_list' class="container-fluid">
+<div id='vue_task_list' class="container-fluid" style="position: relative;">
+    <div id="options">serfgnvhsokgcs</div>
     <div class='row-fluid'>
         <div class='medium-12 large-4 columns'>
             <label>Assignee</label>
@@ -297,9 +307,6 @@
                         
                         this.pages = [];
                         for (var i = this.first_page; i < this.last_page + 1; i++) this.pages.push(i);
-                        console.log(this.first_page);
-                        console.log(this.last_page);
-                        console.log(this.pages);
                     },
 
                     prev_chunk: function() {
@@ -310,28 +317,31 @@
 
                         this.pages = [];
                         for (var i = this.first_page; i < this.last_page + 1; i++) this.pages.push(i);
-                        console.log(this.first_page);
-                        console.log(this.last_page);
-                        console.log(this.pages);
                     },
 
                     show_options: function(event) {
-                        /*var coord = event.target.getBoundingClientRect();
+                        var coord = event.target.getBoundingClientRect();
 
-                        var el = document.createElement("div");
-                        el.innerHTML = "hello hello hello hello hello";
-                        el.id = "options";
-                        el.style.position = "absolute";
-                        el.style.top = coord.y;
-                        el.style.left = coord.x;
-                        el.style.height = coord.height;
-                        el.style.width = coord.width;
-                        el.style.zIndex = 1000;
-                        event.target.appendChild(el);*/ 
+                        var $divOverlay = $('#options');
+                       
+                        var bottomWidth = $(event.target).css('width');
+                        var bottomHeight = $(event.target).css('height');
+                        var rowPos = $(event.target).position();
+                        bottomTop = rowPos.top;
+                        bottomLeft = rowPos.left;
+                        $divOverlay.css({
+                            position: 'absolute',
+                            top: bottomTop,
+                            left: bottomLeft,
+                            width: coord.width,
+                            height: bottomHeight
+                        });
+                        
+                        $divOverlay.show();
                     },
 
                     hide_options: function() {
-                        //event.target.removeChild(document.getElementById("options"));
+                        $('#options').hide();
                     }
 		},
 		created: function() {
@@ -347,8 +357,6 @@
                 var t = this;
                 
                 return t.task_list.sort( function(a,b) {
-                    //natsort({ desc: false, insensitive: true });
-
                     var modifier = 1;
                     if (t.currentSortDir === 'desc') modifier = -1;
                     if (a[t.currentSort] < b[t.currentSort]) return -1 * modifier;
