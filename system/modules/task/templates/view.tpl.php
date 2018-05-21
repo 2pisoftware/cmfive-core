@@ -22,7 +22,7 @@
     }
 </style>
 
-<div id="task_edit">
+<div id="task_view">
     <div id="taskmodal" class="reveal-modal small" data-reveal data-closable>
         Are you sure you want to remove this subscriber?<br><br>
         <button class="button radius tiny success" v-on:click="delete_subscriber">Yes</button>
@@ -140,7 +140,7 @@
 
 <script>
     new Vue({
-        el: '#task_edit',
+        el: '#task_view',
         
         components: {
             "model-list-select": VueSearchSelect.ModelListSelect,

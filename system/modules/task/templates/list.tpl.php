@@ -130,7 +130,7 @@
         <button class="button tiny radius" @click="prev_chunk"><i class="fas fa-angle-double-left"></i></button>
         <button class="button tiny radius" @click="prevPage"><i class="fas fa-angle-left"></i></button>
 
-        <button v-if="" :class="{button: true, tiny: true, radius: true, success: currentPage === n}" v-for="n in numberOfPages" @click="if (currentPage !== n) currentPage = n">{{n}}</button>
+        <button :class="{button: true, tiny: true, radius: true, success: currentPage === n}" v-for="n in pages" @click="if (currentPage !== n) currentPage = n">{{n}}</button>
 
         <button class="button tiny radius" @click="nextPage"><i class="fas fa-angle-right"></i></button>
         <button class="button tiny radius" @click="next_chunk"><i class="fas fa-angle-double-right"></i></button>
@@ -178,7 +178,11 @@
                 task_group_id: null
             },
             pageSize: 2,
-            currentPage: 1
+            currentPage: 1,
+            chunk_size: 5,
+            first_page: 1,
+            last_page: 5,
+            pages: [1, 2, 3, 4, 5]
 		},
                 watch: {
                     task_status: function(val) {
@@ -273,24 +277,42 @@
                     },
 
                     nextPage: function() {
-                        if((this.currentPage * this.pageSize) < this.tableData.length) this.currentPage++;
+                        if ((this.currentPage * this.pageSize) < this.tableData.length) this.currentPage++;
                     },
                     prevPage: function() {
-                        if(this.currentPage > 1) this.currentPage--;
+                        if (this.currentPage > 1) this.currentPage--;
                     },
                     firstPage: function() {
-                        if(this.currentPage > 1) this.currentPage = 1;
+                        if (this.currentPage > 1) this.currentPage = 1;
                     },
                     lastPage: function() {
-                        if(this.currentPage < this.numberOfPages) this.currentPage = this.numberOfPages;
+                        if (this.currentPage < this.numberOfPages) this.currentPage = this.numberOfPages;
                     },
 
                     next_chunk: function() {
-
+                        if (this.last_page === this.numberOfPages) return;
+                        
+                        this.first_page += this.chunk_size;
+                        this.last_page += this.chunk_size;
+                        
+                        this.pages = [];
+                        for (var i = this.first_page; i < this.last_page + 1; i++) this.pages.push(i);
+                        console.log(this.first_page);
+                        console.log(this.last_page);
+                        console.log(this.pages);
                     },
 
                     prev_chunk: function() {
+                        if (this.first_page === 1) return;
 
+                        this.first_page -= this.chunk_size;
+                        this.last_page -= this.chunk_size;
+
+                        this.pages = [];
+                        for (var i = this.first_page; i < this.last_page + 1; i++) this.pages.push(i);
+                        console.log(this.first_page);
+                        console.log(this.last_page);
+                        console.log(this.pages);
                     },
 
                     show_options: function(event) {

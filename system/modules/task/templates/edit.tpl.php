@@ -158,10 +158,9 @@
                 };
                 Vue.http.get('/task-ajax/save', {params: params}).then(function (response) {
                     console.log(response);
-                    if (response.body.data === "updated"){
+                    if (response.body.data === "updated") {
                         $('#save-modal').foundation('reveal','open');
                     }
-                        
                 },
                 function (error) {
 
