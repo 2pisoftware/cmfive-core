@@ -26,7 +26,7 @@
      #options {
         display: none;
         background-color: Silver;
-        text-align: center;
+        text-align: right;
         position: absolute;
         z-index: 10000;
         opacity: 0.5;
@@ -37,7 +37,15 @@
 </div>
 
 <div id='vue_task_list' class="container-fluid" style="position: relative;">
-    <div id="options">serfgnvhsokgcs</div>
+    <div id="options">
+        <a class="tiny button radius" style="background-color: #68C2CD;" href="/task/edit/?gid=task_group_id">Quick View</a>
+        <a href="/task/list"><button class="tiny button radius" style="background-color: #FF7A13;">View</button></a>
+        
+        <a data-reveal-ajax="true" data-reveal-id="modal_edit" href="/task/edit/task_id"><button style="background-color: #59BC3B;" class='tiny button radius'>Edit</button></a>
+        <a class="tiny button radius" style="background-color: #95ACBC;" href="/task/duplicatetask/task_id">Duplicate</a>
+        <!-- if can delete -->
+        <button class="tiny button radius" style="background-color: #D12229;" data-reveal-id="delete-modal">Delete</button>
+    </div>
     <div class='row-fluid'>
         <div class='medium-12 large-4 columns'>
             <label>Assignee</label>
@@ -338,10 +346,14 @@
                         });
                         
                         $divOverlay.show();
+
+                        $divOverlay.mouseleave(function() {
+                            $divOverlay.hide();
+                        });
                     },
 
                     hide_options: function() {
-                        $('#options').hide();
+                        
                     }
 		},
 		created: function() {
