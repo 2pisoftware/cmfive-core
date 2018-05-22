@@ -21,7 +21,7 @@ function create_GET(Web $w) {
     $priority = [];
     $members = [];
 
-    $status_list = Config::get("task." . "")['statuses'];
+    $status_list = []; //Config::get("task." . "")['statuses']
     
     $w->ctx("taskgroup_list", json_encode(array_map(function($task_group) {return ['value' => $task_group->id, 'text' => $task_group->title];}, $taskgroups)));
     $w->ctx("type_list", json_encode(array_map(function($tasktype) {return ['value' => $tasktype, 'text' => $tasktype];}, !empty($tasktypes[0]) ? $tasktypes[0] : [])));
