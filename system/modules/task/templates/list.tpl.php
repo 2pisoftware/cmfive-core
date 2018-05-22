@@ -328,7 +328,7 @@
                     },
 
                     show_options: function(event) {
-                        var coord = event.target.getBoundingClientRect();
+                        /* var coord = event.target.getBoundingClientRect();
 
                         var $divOverlay = $('#options');
                        
@@ -349,7 +349,7 @@
 
                         $divOverlay.mouseleave(function() {
                             $divOverlay.hide();
-                        });
+                        }); */
                     },
 
                     hide_options: function() {

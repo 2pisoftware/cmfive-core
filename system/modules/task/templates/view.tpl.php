@@ -20,6 +20,11 @@
     .p1 {
         line-height: 7em;
     }
+
+    .summary {
+        display: inline-table;
+        margin: 0 0.5em 0 0.5em;
+    }
 </style>
 
 <div id="task_view">
@@ -43,36 +48,36 @@
     <div id="modal_edit" class="reveal-modal" data-reveal aria-hidden="true" role="dialog">
     </div>
     
-    <h4>Task: <?php echo $task->title?></h4>
-    Created <?php echo $task->getCreatedDate(); ?> by <?php echo $task->getCreatorName(); ?> and is due by <?php echo $task->getDueDate(); ?><br>
+    <h4><strong>Task: <span style="color: #D12229;"><?php echo $task->title?></span></strong></h4>
+    Created <?php echo $task->getCreatedDate(); ?> by <?php echo $task->getCreatorName(); ?> and is due by <span style="color: #D12229;"><?php echo $task->getDueDate(); ?></span><br>
     <br><br>
 <div class='row-fluid'>
 <div class='small-12 large-8 columns'>
 <html-tabs>
     <html-tab title='Task details' icon='' :selected="true">
         <div class="row">
-            <div class="medium-12 large-2 columns text-center">
-                Assigned to<br>
-                <img style="width: 6em; height: 6em; border-radius: 50%;" src='https://www.gravatar.com/avatar/<?php echo $gravatar; ?>?d=identicon&s=250' />
-                <br>{{assignee_name}}
-            </div>
-            <div class="medium-12 large-2 columns text-center">
-                Status<br>
-                <div class="div1"><p class="p1">{{status}}</p></div>
-            </div>
-            <div class="medium-12 large-2 columns text-center">
-                Priority<br>
-                <div class="div1"><p class="p1">{{priority}}</p></div>
-            </div>
-            <div class="medium-12 large-2 columns text-center">
-                Due Date<br>
-                <div class="div1"><p class="p1"><?php echo $task->getDueDate(); ?></p></div>
-            </div>
-            <div class="medium-12 large-2 columns text-center">
-                Est.Hours<br>
-                <div class="div1"><p class="p1">{{estimate_hours}}</p></div>
-            </div>
-            <div class="medium-12 large-2 columns">
+            <div class="large-12 columns">
+                <div class="text-center summary">
+                    Assigned to<br>
+                    <img style="width: 7em; height: 7em; border-radius: 50%;" src='https://www.gravatar.com/avatar/<?php echo $gravatar; ?>?d=identicon&s=250' />
+                    <br>{{assignee_name}}
+                </div>
+                <div class="text-center summary">
+                    Status<br>
+                    <div class="div1"><p class="p1">{{status}}</p></div>
+                </div>
+                <div class="text-center summary">
+                    Priority<br>
+                    <div class="div1" style="background-color: #D12229;"><p class="p1" style="color: #ffffff;">{{priority}}</p></div>
+                </div>
+                <div class="text-center summary">
+                    Due Date<br>
+                    <div class="div1"><p class="p1"><?php echo $task->getDueDate(); ?></p></div>
+                </div>
+                <div class="text-center summary">
+                    Est.Hours<br>
+                    <div class="div1"><p class="p1">{{estimate_hours}}</p></div>
+                </div>
             </div>
         </div>
         
@@ -86,7 +91,7 @@
         <div class="row">
             <a data-reveal-ajax="true" data-reveal-id="modal_edit" href="/task/edit/<?php echo $task->id; ?>"><button style="background-color: #59BC3B;" class='tiny button radius'>Edit</button></a>
             <a class="tiny button radius" style="background-color: #95ACBC;" href="/task/duplicatetask/<?php echo $task->id; ?>">Duplicate</a>
-            <a class="tiny button radius" style="background-color: #68C2CD;" href="/task/edit/?gid=<?php echo $task->task_group_id; ?>">New Task</a>
+            <a href="/task/create" data-reveal-ajax="true" data-reveal-id="modal_edit"><button class="tiny button radius" style="background-color: #68C2CD;">New Task</button></a>
             <?php if ($task->canDelete($w->Auth->user())): ?>
                 <button class="tiny button radius" style="background-color: #D12229;" data-reveal-id="delete-modal">Delete</button>
             <?php endif ?>
@@ -95,17 +100,17 @@
     </html-tab>
     
     <html-tab title='Time Log' icon='fa-clock'>
-        <?php echo $w->partial("listtimelog", ["object_class" => "Task", "object_id" => $task->id, "redirect" => "task/edit/{$task->id}#timelog"], "timelog"); ?>
+        <?php echo $w->partial("listtimelog", ["object_class" => "Task", "object_id" => $task->id, "redirect" => "task/view/{$task->id}#timelog"], "timelog"); ?>
     </html-tab>
     <html-tab title='Internal Comments' icon='fa-comments'>
-        <?php echo $w->partial("listcomments",array("object" => $task, "internal_only" => true, "redirect" => "task/edit/{$task->id}#internal_comments"), "admin"); ?>
+        <?php echo $w->partial("listcomments",array("object" => $task, "internal_only" => true, "redirect" => "task/view/{$task->id}#internal_comments"), "admin"); ?>
     </html-tab>
     <html-tab title='External Comments' icon='fa-comments'>
         <div class='alert-box warning'>External comments may be sent to clients, exercise caution!</div>
-        <?php echo $w->partial("listcomments",array("object" => $task, "internal_only" => false, "external_only" => true, "redirect" => "task/edit/{$task->id}#external_comments"), "admin"); ?>
+        <?php echo $w->partial("listcomments",array("object" => $task, "internal_only" => false, "external_only" => true, "redirect" => "task/view/{$task->id}#external_comments"), "admin"); ?>
     </html-tab>
     <html-tab title='Attachments' icon='fa-file'>
-        <?php echo $w->partial("listattachments",array("object" => $task, "redirect" => "task/edit/{$task->id}#attachments"), "file"); ?>
+        <?php echo $w->partial("listattachments",array("object" => $task, "redirect" => "task/view/{$task->id}#attachments"), "file"); ?>
     </html-tab>
     <?php if ($task->getCanINotify()):?>
         <html-tab title='Notifications' icon=''>
@@ -119,9 +124,9 @@
 </div>
     <div class='small-12 large-4 columns'>
         <html-segment title='Task group details'>
-            Task group <?php echo $taskgroup->title; ?><br>
-            Task type <?php echo $task->task_type; ?><br>
-            Description <?php echo $taskgroup->description; ?>
+            Task group <strong><?php echo $taskgroup->title; ?></strong><br>
+            Task type <strong><?php echo $task->task_type; ?></strong><br>
+            Description <strong><?php echo $taskgroup->description; ?></strong>
         </html-segment>
         <html-segment title='Subscribers' v-if="subscribers">
             <div v-for="subscriber in subscribers" :class="{ button: true, tiny: true, radius: true, secondary: true, warning: subscriber.is_external === 0 ? true : false }">

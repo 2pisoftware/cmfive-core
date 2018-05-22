@@ -165,10 +165,6 @@
                 function (error) {
 
                 });
-            },
-
-            delete_subscriber: function(subscriber) {
-                
             }
         },
 

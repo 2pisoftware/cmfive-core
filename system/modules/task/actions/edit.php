@@ -1,25 +1,18 @@
 <?php
 
-use \Html\Form\InputField as InputField;
-use \Html\Form\Select as Select;
-
 function edit_GET(Web $w) {
     $w->setLayout('layout-f6');
 
     list($task_id) = $w->pathMatch("id");
-    $task = (!empty($task_id) ? $w->Task->getTask($task_id) : new Task($w));
+    if (empty($task_id)) return;
     
-    // if ($task->is_deleted == 1) {
-    //     $w->error('Task has been deleted',"/task/list/");
-    // }
+    $task = $w->Task->getTask($task_id);
     
     // Register for timelog if not new task
-    if (!empty($task->id)) {
-        $w->Timelog->registerTrackingObject($task);
-    }
+    $w->Timelog->registerTrackingObject($task);
     
-    if (!empty($task->id) && !$task->canView($w->Auth->user())) {
-        $w->error("You do not have permission to edit this Task", "/task/tasklist");
+    if (!$task->canView($w->Auth->user())) {
+        $w->error("You do not have permission to edit this Task", "/task/list");
     }
 	
     // Get a list of the taskgroups and filter by what can be used
@@ -36,14 +29,15 @@ function edit_GET(Web $w) {
         return $taskgroup->getCanICreate();
     });
     
-    $tasktypes = array();
-    $priority = array();
-    $members = array();
+    $tasktypes = [];
+    $priority = [];
+    $members = [];
     
     // Try and prefetch the taskgroup by given id
     $taskgroup = null;
     $taskgroup_id = $w->request("gid");
     $assignee_id = 0;
+    
     if (!empty($taskgroup_id) || !empty($task->task_group_id)) {
         $taskgroup = $w->Task->getTaskGroup(!empty($task->task_group_id) ? $task->task_group_id : $taskgroup_id);
         
@@ -58,12 +52,8 @@ function edit_GET(Web $w) {
     }
 
     // Add history item
-    if (empty($p['id'])) {
-    	History::add("New Task");
-    } else {
-    	History::add("Task: {$task->title}", null, $task);
-    }
-
+    History::add("Task: {$task->title}", null, $task);
+    
     $status_list = Config::get("task." . $taskgroup->task_group_type)['statuses'];
     
     $w->ctx("t", (array)$task);
@@ -75,6 +65,5 @@ function edit_GET(Web $w) {
     $w->ctx("assignee_list", json_encode(array_map(function($assignee) {return ['value' => $assignee[1], 'text' => $assignee[0]];}, $members)));
     $w->ctx("assignee_id", $assignee_id);
     $w->ctx("can_i_assign", $taskgroup->getCanIAssign());
-    $w->ctx("subscribers", json_encode($task->getSubscribers()));
     //$w->ctx("canDelete", $task->canDelete($w->Auth->user()));
 }
