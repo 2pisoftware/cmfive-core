@@ -120,20 +120,21 @@ function delete_GET(Web $w) {
 }
 
 function save_GET(Web $w) {
-    $task = $w->Task->getTask($w->request("id"));
+    $id = $w->request("task")["id"];
 
-    $task->title = $w->request("title");
-    $task->dt_due = $w->request("dt_due");
-    $task->assignee_id = $w->request("assignee_id");
-    $task->status = $w->request("status");
-    $task->priority = $w->request("priority");
-    $task->task_group_id = $w->request("task_group_id");
-    $task->task_type = $w->request("type");
-    $task->description = $w->request("description");
-    $task->estimate_hours = $w->request("estimate_hours");
-    $task->effort = $w->request("effort");
+    if (empty($id)) return;
 
+    $task = $w->Task->getTask($id);
+    $task->fill($w->request("task"));
     $task->update();
 
     $w->out((new JsonResponse())->setSuccessfulResponse('OK', "updated"));
+}
+
+function create_GET(Web $w) {
+    $task = new Task($w);
+    $task->fill($w->request("task"));
+    $task->insert();
+
+    $w->out((new JsonResponse())->setSuccessfulResponse('OK', "created"));
 }

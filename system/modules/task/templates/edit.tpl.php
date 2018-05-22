@@ -116,7 +116,6 @@
             effort: "<?php echo $task->effort; ?>",
             description: "<?php echo $task->description; ?>",
             can_i_assign: "<?php echo $can_i_assign; ?>",
-            subscribers: <?php echo $subscribers; ?>,
             
             taskgroup_list: <?php echo $taskgroup_list; ?>,
             type_list: <?php echo $type_list; ?>,
@@ -144,17 +143,19 @@
 
             save: function() {
                 var params = {
-                    id: this.id,
-                    title: this.title,
-                    dt_due: this.date,
-                    assignee_id: this.assignee_id,
-                    status: this.status,
-                    priority: this.priority,
-                    task_group_id: this.taskgroup_id,
-                    type: this.type,
-                    description: this.description,
-                    estimate_hours: this.estimate_hours,
-                    effort: this.effort
+                    task: {
+                        id: this.id,
+                        title: this.title,
+                        dt_due: this.date,
+                        assignee_id: this.assignee_id,
+                        status: this.status,
+                        priority: this.priority,
+                        task_group_id: this.taskgroup_id,
+                        type: this.type,
+                        description: this.description,
+                        estimate_hours: this.estimate_hours,
+                        effort: this.effort
+                    }
                 };
                 Vue.http.get('/task-ajax/save', {params: params}).then(function (response) {
                     console.log(response);
