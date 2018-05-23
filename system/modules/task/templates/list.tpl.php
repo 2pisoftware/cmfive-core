@@ -113,7 +113,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr @mouseenter="show_options($event)" @mouseleave="hide_options" v-for="task in paginedCandidates" :class="{ test: task.status === 'Overdue' || task.priority === 'Urgent' }">
+            <tr @mouseenter="show_options($event)" @mouseleave="hide_options" v-for="task in paginatedCandidates" :class="{ test: task.status === 'Overdue' || task.priority === 'Urgent' }">
                 <td>
                     {{task.id}}
                 </td>
@@ -371,11 +371,8 @@
                 var t = this;
                 
                 return t.task_list.sort( function(a,b) {
-                    var modifier = 1;
-                    if (t.currentSortDir === 'desc') modifier = -1;
-                    if (a[t.currentSort] < b[t.currentSort]) return -1 * modifier;
-                    if (a[t.currentSort] > b[t.currentSort]) return 1 * modifier;
-                    return 0;
+                    var sorter = natsort({ insensitive: true, desc: t.currentSortDir === 'desc' ? true : false });
+                    return sorter(a[t.currentSort], b[t.currentSort]);
                 }).filter(function(row, index) {
                     if (t.filter_array) {
                         for (var key in t.filter_array) {
@@ -389,7 +386,7 @@
                 });
             },
 
-            paginedCandidates: function() {
+            paginatedCandidates: function() {
                 return this.paginate();
             }
         }
