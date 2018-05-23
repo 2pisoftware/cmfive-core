@@ -162,10 +162,12 @@
 
 <script>
     var params = null;
-    Vue.component("model-list-select", VueSearchSelect.ModelListSelect);
     
 	var test = new Vue({ 
 		el: '#vue_task_list',
+        components: {
+            "model-list-select": VueSearchSelect.ModelListSelect
+        },
 		data: {
                     task_status: "",
                     task_type: "",
