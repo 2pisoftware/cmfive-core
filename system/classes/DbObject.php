@@ -146,7 +146,7 @@ class DbObject extends DbService {
                 if ($v) {
                     // check whether to use the old AESdecrypt or new openssl_decrypt method
                     if ($this->w->Migration->isInstalled("AesToOpenssl") || $this->w->migrating) {
-                        $this->$k = openssl_decrypt($v, "AES-256-CBC", "lvewfopkkzsxnjjws1zc66rucgh8lt", 0, "ash17hr39fu12cva");
+                        $this->$k = openssl_decrypt($v, "AES-256-CBC", Config::get("openssl")["key"], 0, Config::get("openssl")["iv"]);
                     }
                     
                     else {
@@ -154,7 +154,7 @@ class DbObject extends DbService {
                         
                         // throw exception if php version >= 70100
                         if (PHP_VERSION_ID >= 70100) {
-                            $this->w->ctx("cryptoException", '<div data-alert class="alert-box alert radius"><h4 class="text-center"><strong style="color: #ffffff;">Error occured while decrypting a database field: ' . $k . '</strong></h4><a href="#" class="close">&times;</a></div>');
+                            $this->w->ctx("cryptoException", 'Error occured while decrypting a database field: ' . $k);
                         }
 
                         else {
@@ -576,7 +576,7 @@ class DbObject extends DbService {
                         if ($v) {
                             // check whether to use the old AESencrypt or new openssl_encrypt method
                             if ($this->w->Migration->isInstalled("AesToOpenssl") || $this->w->migrating) {
-                                $v = openssl_encrypt($v, "AES-256-CBC", "lvewfopkkzsxnjjws1zc66rucgh8lt", 0, "ash17hr39fu12cva");
+                                $v = openssl_encrypt($v, "AES-256-CBC", Config::get("openssl")["key"], 0, Config::get("openssl")["iv"]);
                             }
                             
                             else {
@@ -584,7 +584,7 @@ class DbObject extends DbService {
                                 
                                 // throw exception if php version >= 70100
                                 if (PHP_VERSION_ID >= 70100) {
-                                    $this->w->ctx("cryptoException", '<div data-alert class="alert-box alert radius"><h4 class="text-center"><strong style="color: #ffffff;">Error occured while encrypting a database field: ' . $k . '</strong></h4><a href="#" class="close">&times;</a></div>');
+                                    $this->w->ctx("cryptoException", 'Error occured while encrypting a database field: ' . $k);
                                 }
 
                                 else {
@@ -1228,13 +1228,13 @@ class DbObject extends DbService {
             if (!empty($v)) {
                 // check whether to use the old AESencrypt or new openssl_encrypt method
                 if ($this->w->Migration->isInstalled("AesToOpenssl") || $this->w->migrating) {
-                    return openssl_encrypt($v, "AES-256-CBC", "lvewfopkkzsxnjjws1zc66rucgh8lt", 0, "ash17hr39fu12cva");
+                    return openssl_encrypt($v, "AES-256-CBC", Config::get("openssl")["key"], 0, Config::get("openssl")["iv"]);
                 }
 
                 else {
                     // throw exception if php version >= 70100
                     if (PHP_VERSION_ID >= 70100) {
-                        $this->w->ctx("cryptoException", '<div data-alert class="alert-box alert radius"><h4 class="text-center"><strong style="color: #ffffff;">Error occured while encrypting database field: ' . $k . '</strong></h4><a href="#" class="close">&times;</a></div>');
+                        $this->w->ctx("cryptoException", 'Error occured while encrypting database field: ' . $k);
                     }
 
                     else {

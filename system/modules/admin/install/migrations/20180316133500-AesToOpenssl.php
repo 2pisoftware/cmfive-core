@@ -10,7 +10,7 @@ class AesToOpenssl extends CmfiveMigration {
         
         // throw exception if php version >= 70100
         /*if (PHP_VERSION_ID >= 70100) {
-            $this->w->ctx("migrationMessage", '<div data-alert class="alert-box alert radius"><h4 class="text-center"><strong style="color: #ffffff;">Migration from AES to Openssl or backwards is only supported on PHP version <= 7.1</strong></h4><a href="#" class="close">&times;</a></div>');
+            $this->w->ctx("migrationMessage", 'Migration from AES to Openssl or backwards is only supported on PHP version <= 7.1');
             return;
         }*/
         
@@ -60,11 +60,11 @@ class AesToOpenssl extends CmfiveMigration {
                 
                 if ($up) {
                     $decrypted = AESdecrypt($r[$columnName], $passwordSalt);
-                    $encrypted = openssl_encrypt($decrypted, "AES-256-CBC", "lvewfopkkzsxnjjws1zc66rucgh8lt", 0, "ash17hr39fu12cva");
+                    $encrypted = openssl_encrypt($decrypted, "AES-256-CBC", Config::get("openssl")["key"], 0, Config::get("openssl")["iv"]);
                 }
                 
                 else {
-                    $decrypted = openssl_decrypt($r[$columnName], "AES-256-CBC", "lvewfopkkzsxnjjws1zc66rucgh8lt", 0, "ash17hr39fu12cva");
+                    $decrypted = openssl_decrypt($r[$columnName], "AES-256-CBC", Config::get("openssl")["key"], 0, Config::get("openssl")["iv"]);
                     $encrypted = AESencrypt($decrypted, $passwordSalt);
                 }
                 
@@ -85,7 +85,7 @@ class AesToOpenssl extends CmfiveMigration {
                     $object->update();
                     if (!$object->update()) {
                         $this->down();
-                        $this->w->ctx("migrationMessage", '<div data-alert class="alert-box alert radius"><h3 class="text-center"><strong style="color: #ffffff;">Migration from AES to openSSL was not successful</strong></h3><a href="#" class="close">&times;</a></div>');
+                        $this->w->ctx("migrationMessage", 'Migration from AES to openSSL was not successful');
                         return;
                     }
                 }
@@ -96,7 +96,7 @@ class AesToOpenssl extends CmfiveMigration {
     public function up() {
         $this->w->migrating = true;
         $this->migrate();
-        $this->w->ctx("migrationMessage", '<div data-alert class="alert-box success radius"><h3 class="text-center"><strong style="color: #ffffff;">Migration from AES to openSSL was successful</strong></h3><a href="#" class="close">&times;</a></div>');
+        $this->w->ctx("migrationMessage", 'Migration from AES to openSSL was successful');
     }
 
     public function down() {

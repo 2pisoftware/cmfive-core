@@ -304,8 +304,12 @@
                 <?php endif; ?>
 
                 <div class="row-fluid" style="overflow: hidden;">
-                    <?php echo $cryptoException; ?>
-                    <?php echo $migrationMessage; ?>
+                    <?php if (!empty($cryptoException)): ?>
+                        <div data-alert class="alert-box alert radius"><h4 class="text-center"><strong style="color: #ffffff;"><?php echo $cryptoException; ?></strong></h4><a href="#" class="close">&times;</a></div>
+                    <?php endif; ?>
+                    <?php if (!empty($migrationMessage)): ?>
+                        <div data-alert class="alert-box info radius"><h3 class="text-center"><strong style="color: #808080;"><?php echo $migrationMessage; ?></strong></h3><a href="#" class="close">&times;</a></div>
+                    <?php endif; ?>
                     <?php echo !empty($body) ? $body : ''; ?>
                 </div>
             </div>
