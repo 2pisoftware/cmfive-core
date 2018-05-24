@@ -1,4 +1,3 @@
-<script src='/system/templates/vue-components/vue-tables-2.min.js'></script>
 <script src='/system/templates/vue-components/form/elements/vue-search-select/vue-search-select.min.js'></script>
 <script src='/system/templates/js/natsort.min.js'></script>
 
@@ -102,14 +101,7 @@
     <table style="width:100%" v-if="task_list" id="pi-table">
         <thead>
             <tr>
-                <th @click="sortTable('id', $event)" id="id">ID <span><i class="fas fa-sort"></i></span></th>
-                <th @click="sortTable('title', $event)" id="title">Title <span><i class="fas fa-sort"></i></span></th>
-                <th @click="sortTable('task_group_title', $event)" id="task_group_title">Task group <span><i class="fas fa-sort"></i></span></th>
-                <th @click="sortTable('assignee_name', $event)" id="assignee_name">Assigned to <span><i class="fas fa-sort"></i></span></th>
-                <th @click="sortTable('task_type', $event)" id="task_type">Type <span><i class="fas fa-sort"></i></span></th>
-                <th @click="sortTable('priority', $event)" id="priority">Priority <span><i class="fas fa-sort"></i></span></th>
-                <th @click="sortTable('status', $event)" id="status">Status <span><i class="fas fa-sort"></i></span></th>
-                <th @click="sortTable('dt_due', $event)" id="dt_due">Due <span><i class="fas fa-sort"></i></span></th>
+                <th v-for="field in header" @click="sort(field.name, $event)" :id="field.name">{{field.caption}} <span><i class="fas fa-sort"></i></span></th>
             </tr>
         </thead>
         <tbody>
@@ -148,7 +140,7 @@
         <button class="button tiny radius" @click="prev_chunk"><i class="fas fa-angle-double-left"></i></button>
         <button class="button tiny radius" @click="prevPage"><i class="fas fa-angle-left"></i></button>
 
-        <button :class="{button: true, tiny: true, radius: true, success: currentPage === n}" v-for="n in pages" @click="if (currentPage !== n) currentPage = n">{{n}}</button>
+        <button :class="{button: true, tiny: true, radius: true, success: currentPage === n}" v-for="n in pages" v-if="n <= numberOfPages" @click="set_current_page(n)">{{n}}</button>
 
         <button class="button tiny radius" @click="nextPage"><i class="fas fa-angle-right"></i></button>
         <button class="button tiny radius" @click="next_chunk"><i class="fas fa-angle-double-right"></i></button>
@@ -202,7 +194,17 @@
             chunk_size: 5,
             first_page: 1,
             last_page: 5,
-            pages: [1, 2, 3, 4, 5]
+            pages: [1, 2, 3, 4, 5],
+            header: [
+                { name: "id", caption: "ID" },
+                { name: "title", caption: "Title" },
+                { name: "task_group_title", caption: "Task group" },
+                { name: "assignee_name", caption: "Assigned to" },
+                { name: "task_type", caption: "Type" },
+                { name: "priority", caption: "Priority" },
+                { name: "status", caption: "Status" },
+                { name: "dt_due", caption: "Due" }
+            ]
 		},
                 watch: {
                     task_status: function(val) {
@@ -268,7 +270,7 @@
                         });
                     },
 
-                    sortTable: function(s, event) {
+                    sort: function(s, event) {
                         //if s == current sort, reverse
                         document.getElementById(this.currentSort).getElementsByTagName("span")[0].innerHTML = '<i class="fas fa-sort"></i>';
                         
@@ -278,7 +280,7 @@
                         
                         this.currentSort = s;
                         
-                        if (this.currentSortDir === 'desc') {
+                        if (this.currentSortDir === 'asc') {
                             event.target.getElementsByTagName("span")[0].innerHTML = '<i class="fas fa-sort-down"></i>';
                         } else {
                             event.target.getElementsByTagName("span")[0].innerHTML = '<i class="fas fa-sort-up"></i>';
@@ -296,24 +298,39 @@
                         });
                     },
 
+                    set_current_page: function(page) { 
+                        if (this.currentPage !== page) this.currentPage = page;
+                    },
+
                     nextPage: function() {
                         if ((this.currentPage * this.pageSize) < this.tableData.length) this.currentPage++;
                     },
                     prevPage: function() {
                         if (this.currentPage > 1) this.currentPage--;
                     },
+
                     firstPage: function() {
+                        this.first_page = 1;
+                        this.last_page = this.chunk_size;
+                        this.pages = [];
+                        for (var i = this.first_page; i < this.last_page + 1; i++) this.pages.push(i);
                         if (this.currentPage > 1) this.currentPage = 1;
                     },
+
                     lastPage: function() {
+                        this.first_page = this.numberOfPages - this.chunk_size + 1;
+                        this.last_page = this.numberOfPages;
+                        this.pages = [];
+                        for (var i = this.first_page; i < this.last_page + 1; i++) this.pages.push(i);
                         if (this.currentPage < this.numberOfPages) this.currentPage = this.numberOfPages;
                     },
 
                     next_chunk: function() {
-                        if (this.last_page === this.numberOfPages) return;
+                        if (this.last_page >= this.numberOfPages) return;
                         
                         this.first_page += this.chunk_size;
                         this.last_page += this.chunk_size;
+                        this.currentPage = this.first_page;
                         
                         this.pages = [];
                         for (var i = this.first_page; i < this.last_page + 1; i++) this.pages.push(i);
@@ -324,6 +341,7 @@
 
                         this.first_page -= this.chunk_size;
                         this.last_page -= this.chunk_size;
+                        this.currentPage = this.first_page;
 
                         this.pages = [];
                         for (var i = this.first_page; i < this.last_page + 1; i++) this.pages.push(i);
@@ -369,9 +387,9 @@
             
             tableData: function() {
                 var t = this;
+                var sorter = natsort({ insensitive: true, desc: t.currentSortDir === 'desc' ? true : false });
                 
                 return t.task_list.sort( function(a,b) {
-                    var sorter = natsort({ insensitive: true, desc: t.currentSortDir === 'desc' ? true : false });
                     return sorter(a[t.currentSort], b[t.currentSort]);
                 }).filter(function(row, index) {
                     if (t.filter_array) {
