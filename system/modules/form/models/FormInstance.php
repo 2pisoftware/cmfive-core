@@ -170,6 +170,8 @@ class FormInstance extends DbObject {
 	}
 
 	public function delete($force = false) {
+		$this->w->Form->processEvents($this,'On Deleted',$this->getForm());
+		
 		$values = $this->getSavedValues();
 
 		if (!empty($values)) {
@@ -179,6 +181,8 @@ class FormInstance extends DbObject {
 		}
 
 		parent::delete($force);
+
+
 	}
 	
 	/**

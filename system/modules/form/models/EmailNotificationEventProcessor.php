@@ -20,14 +20,15 @@ class EmailNotificationEventProcessor extends EventProcessorType {
         ]];
 	}
 
-	public function process($processor,$form_instance) {
-		if (empty($processor->id)) {
+    //$processor = EventProcessorType
+	public function process($form_event,$form_instance) {
+		if (empty($form_event->id)) {
             return;
         }
         
         $settings = null;
-        if (!empty($processor->settings)) {
-            $settings = json_decode($processor->settings);
+        if (!empty($form_event->settings)) {
+            $settings = json_decode($form_event->settings);
         }
 
         if (empty($form_instance)) {
@@ -43,18 +44,18 @@ class EmailNotificationEventProcessor extends EventProcessorType {
         $subject = ''; 
         $message = '';
         $tmp_message = '';
-        $event = $processor->getEvent();
+        
 
         //generate subject and massage line based on event type
-        if ($event->type == 'On Created') {
+        if ($form_event->event_type == 'On Created') {
             $subject .= 'New ' . $form->title . 'submitted';
             $message .= 'A new ' . $form->title . ' form has been submitted.<br/><br/>';
             $data['header'] = 'A new ' . $form->title . ' form has been submitted.';
-        } else if ($event->type == 'On Modified') {
+        } else if ($form_event->event_type == 'On Modified') {
             $subject .= $form->title . ' Modified'; 
             $message .= $form->title . ': ' . $form_instance->id . ' Has been modified.<br/><br/>';
             $data['header'] = $form->title . ': ' . $form_instance->id . ' Has been modified.';
-        } else if ($event->type == 'On Deleted') {
+        } else if ($form_event->event_type == 'On Deleted') {
             $subject .= $form->title . ' Deleted';
             $message .= $form->title . ': ' . $form_instance->id . ' has been deleted.<br/><br/>';
             $data['header'] = $form->title . ': ' . $form_instance->id . ' has been deleted.';

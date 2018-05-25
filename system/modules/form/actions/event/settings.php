@@ -6,9 +6,9 @@ function settings_GET (Web $w) {
     if (empty($p['id'])) {
     	$w->error('No id found');
     }
-    $processor = $w->Form->getEventProcessor($p['id']);
-    if (empty($processor->id)) {
-        $w->error("Invalid processor ID");
+    $event = $w->Form->getFormEvent($p['id']);
+    if (empty($event->id)) {
+        $w->error("Invalid Form Event ID");
     }
     $form_id = $w->request('form_id');
     if (empty($form_id)) {
@@ -17,13 +17,13 @@ function settings_GET (Web $w) {
     
 
     // Instantiate processor
-    $class = new $processor->class($w);
+    $class = new $event->class($w);
     if (method_exists($class, "getSettingsForm")) {
         // Call getSettingsForm
-        $form = $class->getSettingsForm($processor->settings, $w);
+        $form = $class->getSettingsForm($event->settings, $w);
 
         if (!empty($form)) {
-            $w->out(Html::multiColForm($form, "/form-processor/settings/{$processor->id}?form_id=" . $form_id));
+            $w->out(Html::multiColForm($form, "/form-event/settings/{$event->id}?form_id=" . $form_id));
         } else {
             $w->error("Form implementation is empty");
         }
@@ -43,9 +43,9 @@ function settings_POST (Web $w) {
     if (empty($form_id)) {
     	$w->error('no form id found');
     }
-    $processor = $w->Form->getEventProcessor($p['id']);
-    if (empty($processor->id)) {
-        $w->error("Invalid processor ID");
+    $event = $w->Form->getFormEvent($p['id']);
+    if (empty($event->id)) {
+        $w->error("Invalid form event ID");
     }
 
 
@@ -55,9 +55,9 @@ function settings_POST (Web $w) {
         unset($post[CSRF::getTokenID()]);
     }
 
-    $processor->settings = json_encode($post);
-    $processor->update();
+    $event->settings = json_encode($post);
+    $event->update();
 
-    $w->msg("Processor settings saved", "/form/show/" . $form_id . '#events');
+    $w->msg("Form Event settings saved", "/form/show/" . $form_id . '#events');
 
 }

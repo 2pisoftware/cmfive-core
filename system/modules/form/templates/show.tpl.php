@@ -118,15 +118,11 @@
 		</div>
 		<div id="events">
 			<?php echo Html::box('/form-event/edit?form_id=' . $form->id,'Add New Event', true); ?>
-			<?php echo isset($event_table) ? Html::box('/form-processor/edit?form_id=' . $form->id,'Add Processor', true) : ''; ?>
+			
 			<?php if (isset($event_table)): ?> 
 				<h4>Events</h4>
 			<?php endif; ?>
 			<?php echo isset($event_table) ? $event_table : ''; ?>
-			<?php if (isset($processors_table)): ?> 
-				<h4>Processors</h4>
-			<?php endif; ?>
-			<?php echo isset($processors_table) ? $processors_table : ''; ?>
 		</div>
 	</div>
 </div>

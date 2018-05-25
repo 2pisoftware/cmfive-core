@@ -27,10 +27,10 @@ class Form extends DbObject {
 	 * 
 	 * @return Array<FormEvent>
 	 */
-	public function getEvents($type = null, $is_acitve = 'all') {
+	public function getFormEvents($type = null, $is_acitve = 'all') {
 		$where = ["form_id" => $this->id, "is_deleted" => 0];
 		if (!empty($type)) {
-			$where['type'] = $type;
+			$where['event_type'] = $type;
 		}
 		if ($is_acitve != 'all') {
 			$where['is_active'] = $is_active;

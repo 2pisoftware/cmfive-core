@@ -24,10 +24,11 @@ abstract class EventProcessorType extends DbService {
 	 * A processor job should never return anything because it has
 	 * nothing to return to.
 	 *
-	 * @param ChannelProcessor $process
+	 * @param FormEvent $form_event
+	 * @param FormInstance $form_instance
 	 * @return none
 	 */
-	public function process($processor, $form_instance) {
+	public function process($form_event, $form_instance) {
 		
 	}
 

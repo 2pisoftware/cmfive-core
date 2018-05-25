@@ -5,14 +5,23 @@
 class FormEvent extends DbObject {
 
 	public $form_id;
+	public $form_application_id;
 	public $title;
-	public $description;
-	public $type;
-	public static $_type_ui_select_options = ['On Created','On Modified','On Deleted'];
+	public $event_type;
+	public static $_event_type_ui_select_options = ['On Created','On Modified','On Deleted'];
 	public $is_active;
+	public $class;
+	public $module;
+	public $processor_settings;
+	public $settings;
 
-	//get processors for event
-	public function getEventProcessors() {
-		return $this->getObjects('FormEventProcessor',['form_event_id'=>$this->id,'is_deleted'=>0]);
-	} 
+
+	public function retrieveProcessor() {
+        try {
+            $processor = new $this->class($this->w);
+            return $processor;
+        } catch (Exception $e) {
+            return null;
+        }
+    }
 }

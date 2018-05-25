@@ -190,6 +190,11 @@ class FormService extends DbService {
 		return $this->getObject('FormValue', ['form_instance_id' => $instance_id, 'form_field_id' => $field_id, 'is_deleted' => 0]);
 	}
 
+	//retrun all form applications
+	public function getFormApplications() {
+		return $this->getObjects('FormApplication',['is_deleted' => 0]);
+	}
+
 	/**
 	 * Checks imported form title and updates to remove duplications
 	 *
@@ -458,8 +463,6 @@ class FormService extends DbService {
 		}
 
 		//run 'on created' or 'on modified' processors here
-		// echo "<pre>";
-		// var_dump($instance); die;
 		if (!empty($form_instance_id)) {
 			//run 'on modified processor'
 			$this->processEvents($instance,'On Modified',$form);
@@ -473,20 +476,18 @@ class FormService extends DbService {
 	}
 
 	public function processEvents($form_instance,$event_type,$form) {
-		$on_create_events = $form->getEvents($event_type,true);
-			if (!empty($on_create_events)) {
-				foreach ($on_create_events as $event) {
-					$processors = $event->getEventProcessors();
-					if (!empty($processors)) {
-						foreach ($processors as $processor) {
-							$processor_class = $processor->retrieveProcessor();
-							if (!empty($processor_class)) {
-								$processor_class->process($processor,$form_instance);
-							}
-						}
+		$events = $form->getFormEvents($event_type,true);
+		if (!empty($events)) {
+			foreach ($events as $event) {
+				//check if event has application set or matching
+				if (empty($event->form_application_id) || ($form_instance->object_class = "FormApplication" && $event->form_application_id == $form_instance->object_id)) {
+					$processor_class = $event->retrieveProcessor();
+					if (!empty($processor_class)) {
+						$processor_class->process($event,$form_instance);
 					}
 				}
 			}
+		}
 	}
 
 
