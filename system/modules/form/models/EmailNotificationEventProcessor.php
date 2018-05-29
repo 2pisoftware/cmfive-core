@@ -48,7 +48,7 @@ class EmailNotificationEventProcessor extends EventProcessorType {
 
         //generate subject and massage line based on event type
         if ($form_event->event_type == 'On Created') {
-            $subject .= 'New ' . $form->title . 'submitted';
+            $subject .= 'New ' . $form->title . ' Submitted';
             $message .= 'A new ' . $form->title . ' form has been submitted.<br/><br/>';
             $data['header'] = 'A new ' . $form->title . ' form has been submitted.';
         } else if ($form_event->event_type == 'On Modified') {

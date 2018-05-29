@@ -195,6 +195,23 @@ class FormService extends DbService {
 		return $this->getObjects('FormApplication',['is_deleted' => 0]);
 	}
 
+	//return form applications mapped to form
+	public function getFormApplicationsForFormId($form_id) {
+		$mappings = $this->getFormApplicationMappingForFormId($form_id);
+		$results = [];
+		if (!empty($mappings)) {
+			foreach ($mappings as $map) {
+				$results[] = $this->getFormApplication($map->application_id);
+			}
+		}
+		return $results;
+	}
+
+	//return form application mappings for form id
+	public function getFormApplicationMappingForFormId($form_id) {
+		return $this->getObjects('FormApplicationMapping',['form_id'=>$form_id]);
+	}
+
 	/**
 	 * Checks imported form title and updates to remove duplications
 	 *

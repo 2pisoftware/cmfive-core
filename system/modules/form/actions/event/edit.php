@@ -19,7 +19,7 @@ function edit_GET (Web $w) {
 	$processor_options = $w->Form->getEventProcessorList();
 
 	//setup application select options
-	$applications = $w->Form->getFormApplications();
+	$applications = $w->Form->getFormApplicationsForFormId($form_id);
 	$application_select_options = [['label'=>'--- Select ---','value'=> null]];
 	foreach ($applications as $application) {
 		$application_select_options[] = ['label'=>$application->title,'value'=>$application->id];
