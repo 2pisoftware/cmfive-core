@@ -7,8 +7,5 @@ Config::set('auth', array(
     'topmenu' => false,
 	'hooks' => [
 		'admin'
-    ],
-    "dependencies" => [
-        "sonata-project/google-authenticator" => "^2.0"
-    ]
+	]
 ));
