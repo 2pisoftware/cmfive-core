@@ -1,6 +1,7 @@
 <div class="row-fluid panel">
 	<?php echo $form->description; ?>
 </div>
+<?php echo Html::b("/form/export/" . $form->id, "Export", null,null,false,'right'); ?>
 
 <div class="tabs">
 	<div class="tab-head">

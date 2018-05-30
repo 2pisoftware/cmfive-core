@@ -63,6 +63,15 @@ class FormService extends DbService {
 		$form_structure = $form_instance->getEditForm($form);
 		return $form_structure;
 	}
+
+	/**
+	 * get form mappings for form id.
+	 * 
+	 * @return array[]
+	 */
+	public function getFormMappingsForForm($form_id) {
+		return $this->getObjects("FormMapping", ["form_id" => $form_id, "is_deleted" => 0]);
+	}
 	
 	/**
 	 * Check if this form is mapped to the object.
@@ -160,6 +169,183 @@ class FormService extends DbService {
 	public function getFormValueForInstanceAndField($instance_id, $field_id) {
 		return $this->getObject('FormValue', ['form_instance_id' => $instance_id, 'form_field_id' => $field_id, 'is_deleted' => 0]);
 	}
+
+	/**
+	 * Checks imported form title and updates to remove duplications
+	 *
+	 * @param string $form_title
+	 * @param int 
+	 *
+	 * @return string
+	 */
+	public function checkImportedFormTitle($form_title, $number = 0) {
+		if ($number == 0 && ($this->getFormByTitle($form_title)) || $this->getFormByTitle($form_title . ' (' . $number . ')')) {
+			$number += 1;
+			return $this->checkImportedFormTitle($form_title, $number);
+		} else {
+			if ($number > 0) {
+				$form_title .= ' (' . $number . ')';
+			}
+			return $form_title;
+		}
+	}
+
+	/**
+	 * Checks imported application title and updates to remove duplications
+	 *
+	 * @param string $form_title
+	 * @param int 
+	 *
+	 * @return string
+	 */
+	public function checkImportedApplicationTitle($app_title, $number = 0) {
+		if ($number == 0 && ($this->getApplicationByTitle($app_title)) || $this->getApplicationByTitle($app_title . ' (' . $number . ')')) {
+			$number += 1;
+			return $this->checkImportedApplicationTitle($app_title, $number);
+		} else {
+			if ($number > 0) {
+				$app_title .= ' (' . $number . ')';
+			}
+			return $app_title;
+		}
+	}
+	public function getApplicationByTitle($app_title) {
+		return $this->getObjects('FormApplication', ['title'=>$app_title,'is_deleted'=>0]);
+	}
+
+	public function getFormByTitle($form_title) {
+		return $this->getObjects('Form', ['title'=>$form_title,'is_deleted'=>0]);
+	}
+
+	/**
+	 * loops through form parmaeters and returns array
+	 *
+	 * @param form_id
+	 * @return array
+	 */
+	public function getFormForExport($form_id) {
+		$export = [];
+		$form = $this->getForm($form_id);
+		if (!empty($form)) {
+
+			$export = [
+				"form_title" => $form->title,
+				"description" => $form->description,
+				"header_template" => $form->header_template,
+				"row_template" => $form->row_template,
+				"summary_template" => $form->summary_template,
+				"form_fields" => [],
+				"form_mappings" => []
+			];
+			$form_fields = $form->getFields();
+			if (!empty($form_fields)) {
+				$fields = [];
+				foreach ($form_fields as $form_field) {
+					$field = [
+						"field_name" => $form_field->name,
+						"technical_name" => $form_field->technical_name,
+						"interface_class" => $form_field->interface_class,
+						"type" => $form_field->type,
+						"mask" => $form_field->mask,
+						"ordering" => $form_field->ordering,
+						"field_metadata" => [] 
+					];
+					$field_metadata = $form_field->getMetadata();
+					if (!empty($field_metadata)) {
+						$fmd_array = [];
+						foreach ($field_metadata as $field_md) {
+							$md_array = [
+								"meta_key" => $field_md->meta_key,
+								"meta_value" => $field_md->meta_value
+							];
+							//if meta key = associated form add the form to the array
+							if ($field_md->meta_key == 'associated_form') {
+								$md_array["sub_form"] = $this->getFormForExport($field_md->meta_value); 
+							}
+							$fmd_array[] = $md_array;
+						}
+						$field['field_metadata'] = $fmd_array;
+					}
+					$fields[] = $field;
+				}
+				$export['form_fields'] = $fields;
+			}
+			//copy form mapping
+			$form_mappings = $this->getFormMappingsForForm($form->id);
+			if (!empty($form_mappings)) {
+				$mappings = [];
+				foreach ($form_mappings as $mapping) {
+					$mappings[] = $mapping->object;
+				}
+				$export['form_mappings'] = $mappings;
+			}
+		}
+		return $export;
+	}
+
+	/**
+	 * imports a form and sub forms
+	 *
+	 * 
+	 */
+	public function importForm($form_title,$form_array) {
+		//check for form title override and check title
+    	$form_title = $this->checkImportedFormTitle($form_title);
+    	// echo "<pre>";
+    	// print_r($form_array);
+    	// echo "</pre>";
+    	$new_form = new Form($this->w);
+    	$new_form->title = $form_title;
+    	$new_form->description = $form_array->description;
+    	$new_form->header_template = $form_array->header_template;
+    	$new_form->row_template = $form_array->row_template;
+    	$new_form->summary_template = $form_array->summary_template;
+    	$new_form->insert();
+    	
+    	//set up the form fields
+    	if (!empty($form_array->form_fields)) {
+    		foreach ($form_array->form_fields as $field) {
+    			$new_field = new FormField($this->w);
+    			$new_field->form_id = $new_form->id;
+    			$new_field->name = $field->field_name;
+    			$new_field->technical_name = $field->technical_name;
+    			$new_field->interface_class = $field->interface_class;
+    			$new_field->type = $field->type;
+    			$new_field->mask = $field->mask;
+    			$new_field->ordering = $field->ordering;
+    			$new_field->insert();
+    			//set up field metadata
+    			if (!empty($field->field_metadata)) {
+    				foreach ($field->field_metadata as $metadata) {
+    					$new_metadata = new FormFieldMetadata($this->w);
+    					$new_metadata->form_field_id = $new_field->id;
+    					$new_metadata->meta_key = $metadata->meta_key;
+    					$new_metadata->meta_value = $metadata->meta_value;
+    					$new_metadata->insert();
+    					//check if field is sub form
+    					if ($metadata->meta_key == 'associated_form') {
+    						$sub_form = $this->importForm($metadata->sub_form->form_title,$metadata->sub_form);
+    						$new_metadata->meta_value = $sub_form->id;
+    						$new_metadata->update();
+    					}
+    				}
+    			}
+    		}
+    	}
+
+    	//set up the form mapping
+    	if (!empty($form_array->form_mappings)) {
+    		foreach ($form_array->form_mappings as $mapping) {
+    			$new_mapping = new FormMapping($this->w);
+    			$new_mapping->form_id = $new_form->id;
+    			$new_mapping->object = $mapping;
+    			$new_mapping->insert();
+    		}
+    	}
+
+    	return $new_form;
+	}
+
 
 	/**
 	 * Submenu navigation for Forms
