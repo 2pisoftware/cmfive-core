@@ -23,6 +23,23 @@ class Form extends DbObject {
 	}
 
 	/**
+	 * Load the events associated with this form
+	 * 
+	 * @return Array<FormEvent>
+	 */
+	public function getFormEvents($type = null, $is_acitve = 'all') {
+		$where = ["form_id" => $this->id, "is_deleted" => 0];
+		if (!empty($type)) {
+			$where['event_type'] = $type;
+		}
+		if ($is_acitve != 'all') {
+			$where['is_active'] = $is_active;
+		}
+		return $this->getObjects("FormEvent", $where);
+	}
+
+
+	/**
 	 * Loads the unique ID field for a form if set
 	 *
 	 * @return FormField

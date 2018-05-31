@@ -35,6 +35,49 @@ class FormInstance extends DbObject {
 	public function getSavedValues() {
 		return $this->getObjects("FormValue", ["form_instance_id" => $this->id, "is_deleted" => 0]);
 	}
+
+	//returns array of values for use with generic templates. includes sub form values
+	public function getValuesForGenericTemplate() {
+		$form_values = $this->getSavedValues();
+		$fields = [];
+		if (!empty($form_values)) {
+            foreach ($form_values as $value) {
+                //functionality for sub forms
+                $form_field = $value->getFormField();
+                if ($form_field->type == "subform") {
+                    $field_metadata = $form_field->findMetadataByKey('associated_form');
+                    if (!empty($field_metadata)) {
+                        $sub_form = $this->w->Form->getForm($field_metadata->meta_value);
+                        if (!empty($sub_form)) {
+                            $sub_instances = $this->w->Form->getFormInstancesForFormAndObject($sub_form, $value);
+                            $sub_form_data = [];
+                            if (!empty($sub_instances)) {
+                            	foreach ($sub_instances as $sub_instance) {
+                            		$sub_form_data[] = $sub_instance->getValuesForGenericTemplate();
+                            	}
+
+                            }
+                            $fields[$value->getFieldName()] = $sub_form_data;
+                        }
+                    }
+                } else {
+                    $fields[$value->getFieldName()] = $value->value;
+                }
+                
+            }
+        }
+        return $fields;
+	}
+
+	//returns array of values from sql view
+	public function getValuesArray() {
+		$view_name = str_replace(' ', '_', $this->getForm()->title) . '_view';
+		$query = "SELECT * FROM "
+			. $view_name
+			. " WHERE  instance_id = "
+			. $this->id;
+		return $this->w->db->query($query)->fetch(PDO::FETCH_ASSOC);
+	}
 	
 	/**
 	 * Generate the contents of a table row as HTML
@@ -79,7 +122,7 @@ class FormInstance extends DbObject {
 		if (!empty($form_fields)) {
 			foreach($form_fields as $field) {
 				if (!empty($formValueCollated[$field->id])) {
-					$table_row .= "<td>" . $formValueCollated[$field->id]->getMaskedValue() . "</td>";
+					$table_row .= "<td class=form_instance_" . $this->id . ">" . $formValueCollated[$field->id]->getMaskedValue() . "</td>";
 				} else {
 					$table_row .= "<td>&nbsp;</td>";
 				}
@@ -127,6 +170,8 @@ class FormInstance extends DbObject {
 	}
 
 	public function delete($force = false) {
+		$this->w->Form->processEvents($this,'On Deleted',$this->getForm());
+		
 		$values = $this->getSavedValues();
 
 		if (!empty($values)) {
@@ -136,6 +181,8 @@ class FormInstance extends DbObject {
 		}
 
 		parent::delete($force);
+
+
 	}
 	
 	/**

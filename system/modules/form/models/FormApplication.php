@@ -23,6 +23,10 @@ class FormApplication extends DbObject {
 		return $this->getObjectsFromRows('Form', $forms_mapped);
 		// return $this->w->Form->getFormsMappedToObject($this);
 	}
+
+	public function hasForm($form) {
+		return $this->getObject("FormApplicationMapping", ['application_id'=>$this->id,'form_id'=>$form->id,'is_deleted'=>0]) ? 1 : 0;
+	}
 	
 	public function getFormInstances($form) {
 		return $this->w->Form->getFormInstancesForFormAndObject($form, $this);
