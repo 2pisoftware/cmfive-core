@@ -1,4 +1,5 @@
 <script src='/system/templates/vue-components/form/elements/vue-search-select/vue-search-select.min.js'></script>
+<script src='/system/templates/vue-components/html/twopipagination.js'></script>
 <script src='/system/templates/js/natsort.min.js'></script>
 
 <style>
@@ -134,20 +135,7 @@
         </tbody>
     </table>
 
-    <div class='row-fluid text-center' v-if="numberOfPages > 1">
-        <br>
-        <button class="button tiny radius" @click="firstPage">First page</button>
-        <button class="button tiny radius" @click="prev_chunk"><i class="fas fa-angle-double-left"></i></button>
-        <button class="button tiny radius" @click="prevPage"><i class="fas fa-angle-left"></i></button>
-
-        <button :class="{button: true, tiny: true, radius: true, success: currentPage === n}" v-for="n in pages" v-if="n <= numberOfPages" @click="set_current_page(n)">{{n}}</button>
-
-        <button class="button tiny radius" @click="nextPage"><i class="fas fa-angle-right"></i></button>
-        <button class="button tiny radius" @click="next_chunk"><i class="fas fa-angle-double-right"></i></button>
-        <button class="button tiny radius" @click="lastPage">Last page</button>
-        <br>
-        page {{currentPage}} of {{numberOfPages}}
-    </div>
+    <pagination v-if="task_list" v-on:currentpagechanged="onCurrentPageChanged" :data_count="task_list.length"></pagination>
     
     </div>
 </div>
@@ -158,9 +146,11 @@
 	var test = new Vue({ 
 		el: '#vue_task_list',
         components: {
-            "model-list-select": VueSearchSelect.ModelListSelect
+            "model-list-select": VueSearchSelect.ModelListSelect,
+            "pagination": TwoPiPagination
         },
 		data: {
+            paginatedCandidates: [],
                     task_status: "",
                     task_type: "",
                     task_priority: "",
@@ -190,11 +180,7 @@
                 task_group_id: null
             },
             pageSize: 2,
-            currentPage: 1,
             chunk_size: 5,
-            first_page: 1,
-            last_page: 5,
-            pages: [1, 2, 3, 4, 5],
             header: [
                 { name: "id", caption: "ID" },
                 { name: "title", caption: "Title" },
@@ -239,21 +225,12 @@
                 },
 		methods: {
 			getTaskList: function() {
-                /*Vue.http.get('/task-ajax/delete', {params:{id: this.id}}).then(function (response) {
-                    if (response.body.data === "deleted")
-                        window.location.replace("/task/list");
-                },
-                function (error) {
-
-                });*/
-
                 var _this = this;
                 $.ajax('/task-ajax/task_list', {
 
                 }).done(function(response) {
                     var _response = JSON.parse(response);
                     _this.task_list = _response.data;
-                    _this.tableData = _response.data;
                 });
 			},
                         
@@ -287,64 +264,11 @@
                         }
                     },
 
-                    paginate() {
-                        var t = this;
-                        return this.tableData.filter(function(row, index) {
-                            var start = (t.currentPage-1) * t.pageSize;
-                            var end = t.currentPage * t.pageSize;  
-
-                            if (index >= start && index < end) 
+                    onCurrentPageChanged: function(params) {
+                        this.paginatedCandidates = this.tableData.filter(function(row, index) {
+                            if (index >= params.start && index < params.end) 
                                 return true;
                         });
-                    },
-
-                    set_current_page: function(page) { 
-                        if (this.currentPage !== page) this.currentPage = page;
-                    },
-
-                    nextPage: function() {
-                        if ((this.currentPage * this.pageSize) < this.tableData.length) this.currentPage++;
-                    },
-                    prevPage: function() {
-                        if (this.currentPage > 1) this.currentPage--;
-                    },
-
-                    firstPage: function() {
-                        this.first_page = 1;
-                        this.last_page = this.chunk_size;
-                        this.pages = [];
-                        for (var i = this.first_page; i < this.last_page + 1; i++) this.pages.push(i);
-                        if (this.currentPage > 1) this.currentPage = 1;
-                    },
-
-                    lastPage: function() {
-                        this.first_page = this.numberOfPages - this.chunk_size + 1;
-                        this.last_page = this.numberOfPages;
-                        this.pages = [];
-                        for (var i = this.first_page; i < this.last_page + 1; i++) this.pages.push(i);
-                        if (this.currentPage < this.numberOfPages) this.currentPage = this.numberOfPages;
-                    },
-
-                    next_chunk: function() {
-                        if (this.last_page >= this.numberOfPages) return;
-                        
-                        this.first_page += this.chunk_size;
-                        this.last_page += this.chunk_size;
-                        this.currentPage = this.first_page;
-                        
-                        this.pages = [];
-                        for (var i = this.first_page; i < this.last_page + 1; i++) this.pages.push(i);
-                    },
-
-                    prev_chunk: function() {
-                        if (this.first_page === 1) return;
-
-                        this.first_page -= this.chunk_size;
-                        this.last_page -= this.chunk_size;
-                        this.currentPage = this.first_page;
-
-                        this.pages = [];
-                        for (var i = this.first_page; i < this.last_page + 1; i++) this.pages.push(i);
                     },
 
                     show_options: function(event) {
@@ -377,7 +301,11 @@
                     }
 		},
 		created: function() {
-                    this.getTaskList();
+            this.getTaskList();
+            this.paginatedCandidates = this.tableData.filter(function(row, index) {
+                if (index >= 0 && index < 2) 
+                    return true;
+            });
 		},
 
         computed: {
@@ -402,10 +330,6 @@
                     
                     return true;
                 });
-            },
-
-            paginatedCandidates: function() {
-                return this.paginate();
             }
         }
 	});
