@@ -2151,7 +2151,7 @@ class Web {
 
 		// then find the action
 		$paths['action'] = null;
-		if ($this->Auth->user()->redirect_url == $url) {
+		if ($this->Auth->loggedIn() && $this->Auth->user()->redirect_url == $url) {
 			$paths['action'] = 'index';
 		}
 		if (!empty($split)) {
