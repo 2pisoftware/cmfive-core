@@ -135,7 +135,7 @@
         </tbody>
     </table>
 
-    <pagination v-if="task_list" v-on:currentpagechanged="onCurrentPageChanged" :data_count="task_list.length"></pagination>
+    <pagination v-if="task_list" v-on:currentpagechanged="onCurrentPageChanged" :data_count="task_list.length" :rows_per_page="pageSize"></pagination>
     
     </div>
 </div>
@@ -150,7 +150,6 @@
             "pagination": TwoPiPagination
         },
 		data: {
-            paginatedCandidates: [],
                     task_status: "",
                     task_type: "",
                     task_priority: "",
@@ -167,7 +166,9 @@
 				closed: 'is_closed'
 			},
                        
-			task_list: [],
+            task_list: [],
+            start: 0,
+            end: 2,
 		
             currentSort:'id',
             currentSortDir:'asc',
@@ -221,6 +222,11 @@
                     filter_array: {
                         handler: function (val, oldVal) {  },
                         deep: true
+                    },
+
+                    pageSize: function(val) {
+                        this.start = 0;
+                        this.end = this.pageSize;
                     }
                 },
 		methods: {
@@ -265,10 +271,8 @@
                     },
 
                     onCurrentPageChanged: function(params) {
-                        this.paginatedCandidates = this.tableData.filter(function(row, index) {
-                            if (index >= params.start && index < params.end) 
-                                return true;
-                        });
+                        this.start = params.start;
+                        this.end = params.end;
                     },
 
                     show_options: function(event) {
@@ -302,10 +306,6 @@
 		},
 		created: function() {
             this.getTaskList();
-            this.paginatedCandidates = this.tableData.filter(function(row, index) {
-                if (index >= 0 && index < 2) 
-                    return true;
-            });
 		},
 
         computed: {
@@ -322,13 +322,21 @@
                 }).filter(function(row, index) {
                     if (t.filter_array) {
                         for (var key in t.filter_array) {
-                        if (t.filter_array[key] && t.filter_array[key] !== undefined && 
-                        t.filter_array[key] !== "" && row[key].toLowerCase() !== t.filter_array[key].toLowerCase())
-                            return false;
+                            if (t.filter_array[key] && t.filter_array[key] !== undefined && 
+                            t.filter_array[key] !== "" && row[key].toLowerCase() !== t.filter_array[key].toLowerCase())
+                                return false;
                         }
                     }
                     
                     return true;
+                });
+            },
+
+            paginatedCandidates: function() {
+                var t = this;
+                return this.tableData.filter(function(row, index) {
+                    if (index >= t.start && index < t.end) 
+                        return true;
                 });
             }
         }

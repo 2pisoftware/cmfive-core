@@ -24,16 +24,25 @@ var TwoPiPagination = {
     },
 
     methods: {
-        set_current_page: function(page) { 
+        setCurrentPage: function(page) { 
             if (this.current_page !== page) this.current_page = page;
         },
 
         nextPage: function() {
             if ((this.current_page * this.rows_per_page) < this.data_count) this.current_page++;
+            if (this.current_page > this.last_page) {
+                this.first_page += this.chunk_size;
+                this.last_page += this.chunk_size;
+                this.current_page = this.first_page;
+            }
         },
 
         prevPage: function() {
             if (this.current_page > 1) this.current_page--;
+            if (this.current_page < this.first_page) {
+                this.first_page -= this.chunk_size;
+                this.last_page = this.first_page + this.chunk_size - 1;
+            }
         },
 
         firstPage: function() {
@@ -43,7 +52,8 @@ var TwoPiPagination = {
         },
 
         lastPage: function() {
-            this.first_page = this.page_count - this.chunk_size + 1;
+            var chunk_count = Math.floor(this.page_count / this.chunk_size);
+            this.first_page = chunk_count * this.chunk_size + 1;
             this.last_page = this.page_count;
             if (this.current_page < this.page_count) this.current_page = this.page_count;
         },
@@ -57,10 +67,10 @@ var TwoPiPagination = {
         },
 
         prev_chunk: function() {
-            if (this.first_page === 1) return;
+            if (this.current_page === 1) return;
 
             this.first_page -= this.chunk_size;
-            this.last_page -= this.chunk_size;
+            this.last_page = this.first_page + this.chunk_size - 1;
             this.current_page = this.first_page;
         }
     },
@@ -93,16 +103,17 @@ var TwoPiPagination = {
   
     template: `
         <div class='row-fluid text-center' v-if="page_count > 1">
+            <br>
             <button class="button tiny radius" @click="firstPage">First page</button>
             <button class="button tiny radius" @click="prev_chunk"><i class="fas fa-angle-double-left"></i></button>
             <button class="button tiny radius" @click="prevPage"><i class="fas fa-angle-left"></i></button>
 
-            <button :class="{button: true, tiny: true, radius: true, success: current_page === n}" v-for="n in pages" v-if="n <= page_count" @click="set_current_page(n)">{{n}}</button>
+            <button :class="{button: true, tiny: true, radius: true, success: current_page === n}" v-for="n in pages" v-if="n <= page_count" @click="setCurrentPage(n)">{{n}}</button>
 
             <button class="button tiny radius" @click="nextPage"><i class="fas fa-angle-right"></i></button>
             <button class="button tiny radius" @click="next_chunk"><i class="fas fa-angle-double-right"></i></button>
             <button class="button tiny radius" @click="lastPage">Last page</button>
-            <br>
+            <br><br>
             page {{this.current_page}} of {{this.page_count}}
         </div>
     `
