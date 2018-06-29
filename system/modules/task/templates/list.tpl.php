@@ -135,7 +135,7 @@
         </tbody>
     </table>
 
-    <pagination v-if="task_list" v-on:currentpagechanged="onCurrentPageChanged" :data_count="task_list.length" :rows_per_page="pageSize"></pagination>
+    <pagination v-if="tableData" v-on:currentpagechanged="onCurrentPageChanged" :data_count="tableData.length" :rows_per_page="pageSize"></pagination>
     
     </div>
 </div>
@@ -309,10 +309,6 @@
 		},
 
         computed: {
-            numberOfPages: function() { 
-                return Math.ceil(this.tableData.length / this.pageSize);
-            },
-            
             tableData: function() {
                 var t = this;
                 var sorter = natsort({ insensitive: true, desc: t.currentSortDir === 'desc' ? true : false });
