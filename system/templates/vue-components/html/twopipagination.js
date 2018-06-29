@@ -17,9 +17,9 @@ var TwoPiPagination = {
             default: 5
         },
 
-        rows_per_page: {
+        items_per_page: {
             type: Number,
-            default: 2
+            default: 10
         }
     },
 
@@ -29,7 +29,7 @@ var TwoPiPagination = {
         },
 
         nextPage: function() {
-            if ((this.current_page * this.rows_per_page) < this.data_count) this.current_page++;
+            if ((this.current_page * this.items_per_page) < this.data_count) this.current_page++;
             if (this.current_page > this.last_page) {
                 this.first_page += this.chunk_size;
                 this.last_page += this.chunk_size;
@@ -83,7 +83,7 @@ var TwoPiPagination = {
     
     computed: {
         page_count: function() { 
-            return Math.ceil(this.data_count / this.rows_per_page);
+            return Math.ceil(this.data_count / this.items_per_page);
         },
 
         pages: function() {
@@ -93,11 +93,11 @@ var TwoPiPagination = {
         },
 
         start: function() {
-            return (this.current_page - 1) * this.rows_per_page;
+            return (this.current_page - 1) * this.items_per_page;
         },
 
         end: function() {
-            return this.current_page * this.rows_per_page;
+            return this.current_page * this.items_per_page;
         }
     },
   

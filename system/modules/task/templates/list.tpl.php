@@ -38,7 +38,7 @@
 
 <div id='vue_task_list' class="container-fluid" style="position: relative;">
     <div id="options">
-        <a class="tiny button radius" style="background-color: #68C2CD;" href="/task/edit/?gid=task_group_id">Quick View</a>
+        <a class="tiny button radius" style="background-color: #68C2CD;" href="/task/edit/?gid=filter.task_group_id">Quick View</a>
         <a href="/task/list"><button class="tiny button radius" style="background-color: #FF7A13;">View</button></a>
         
         <a data-reveal-ajax="true" data-reveal-id="modal_edit" href="/task/edit/task_id"><button style="background-color: #59BC3B;" class='tiny button radius'>Edit</button></a>
@@ -49,34 +49,34 @@
     <div class='row-fluid'>
         <div class='medium-12 large-4 columns'>
             <label>Assignee</label>
-            <model-list-select style="" ref="assigneeselect" v-model="assignee_id" :list="filter.assignees" placeholder="select assignee" option-value="value" option-text="text"></model-list-select>
-            <!--<model-list-select style="" ref="assigneeselect" v-on:searchchange="assignee_autocomplete" v-model="assignee_id" :list="filter.assignees" placeholder="select assignee" option-value="value" option-text="text"></model-list-select>-->
+            <model-list-select style="" v-model="filter.assignee_id" :list="assignees" placeholder="select assignee" option-value="value" option-text="text"></model-list-select>
+            <!--<model-list-select style="" ref="assigneeselect" v-on:searchchange="assignee_autocomplete" v-model="filter.assignee_id" :list="assignees" placeholder="select assignee" option-value="value" option-text="text"></model-list-select>-->
         </div>
             
         <div class='medium-12 large-4 columns'>
             <label>Creator</label>
-            <model-list-select style="" v-model="creator_id" :list="filter.creators" placeholder="select creator" option-value="value" option-text="text"></model-list-select>
+            <model-list-select style="" v-model="filter.creator_id" :list="creators" placeholder="select creator" option-value="value" option-text="text"></model-list-select>
         </div>
         
         <div class='medium-12 large-4 columns'>
             <label>Task type</label>
-            <model-list-select style="" v-model="task_type" :list="filter.task_types" placeholder="select task type" option-value="value" option-text="text"></model-list-select>
+            <model-list-select style="" v-model="filter.task_type" :list="task_types" placeholder="select task type" option-value="value" option-text="text"></model-list-select>
         </div>
     </div>
     <div class='row-fluid'>
         <div class='medium-12 large-4 columns'>
             <label>Task priority</label>
-            <model-list-select style="" v-model="task_priority" :list="filter.priority_list" placeholder="select priority" option-value="value" option-text="text"></model-list-select>
+            <model-list-select style="" v-model="filter.priority" :list="priority_list" placeholder="select priority" option-value="value" option-text="text"></model-list-select>
         </div>
 
         <div class='medium-12 large-4 columns'>
             <label>Task status</label>
-            <model-list-select style="" v-model="task_status" :list="filter.task_statuslist" placeholder="select status" option-value="value" option-text="text"></model-list-select>
+            <model-list-select style="" v-model="filter.status" :list="statuslist" placeholder="select status" option-value="value" option-text="text"></model-list-select>
         </div>
 
         <div class='medium-12 large-4 columns'>
             <label>Task group</label>
-            <model-list-select style="" v-model="task_group_id" :list="filter.task_groups" placeholder="select task group" option-value="value" option-text="text"></model-list-select>
+            <model-list-select style="" v-model="filter.task_group_id" :list="task_groups" placeholder="select task group" option-value="value" option-text="text"></model-list-select>
         </div>
     </div>
 
@@ -136,43 +136,31 @@
     </table>
 
     <pagination v-if="tableData" v-on:currentpagechanged="onCurrentPageChanged" :data_count="tableData.length" :rows_per_page="pageSize"></pagination>
-    
-    </div>
 </div>
 
 <script>
-    var params = null;
-    
-	var test = new Vue({ 
+	var vue = new Vue({ 
 		el: '#vue_task_list',
         components: {
             "model-list-select": VueSearchSelect.ModelListSelect,
             "pagination": TwoPiPagination
         },
 		data: {
-                    task_status: "",
-                    task_type: "",
-                    task_priority: "",
-                    assignee_id: "",
-                    creator_id: "",
-                    task_group_id: "",
-			filter: {
-				assignees: <?php echo $assignees; ?>,
-				creators: <?php echo $creators; ?>,
-				task_groups: <?php echo $task_groups; ?>,
-				task_types: <?php echo $task_types; ?>,
-                                priority_list: <?php echo $priority_list; ?>,
-                                task_statuslist: <?php echo $task_statuslist; ?>,
-				closed: 'is_closed'
-			},
-                       
+            assignees: <?php echo $assignees; ?>,
+            creators: <?php echo $creators; ?>,
+            task_groups: <?php echo $task_groups; ?>,
+            task_types: <?php echo $task_types; ?>,
+            priority_list: <?php echo $priority_list; ?>,
+            statuslist: <?php echo $statuslist; ?>,
+            closed: 'is_closed',
+    
             task_list: [],
             start: 0,
-            end: 2,
-		
+            end: 10,
             currentSort:'id',
             currentSortDir:'asc',
-            filter_array: {
+            
+            filter: {
                 status: null,
                 task_type: null,
                 priority: null,
@@ -180,7 +168,7 @@
                 creator_id: null,
                 task_group_id: null
             },
-            pageSize: 2,
+            pageSize: 10,
             chunk_size: 5,
             header: [
                 { name: "id", caption: "ID" },
@@ -194,33 +182,10 @@
             ]
 		},
                 watch: {
-                    task_status: function(val) {
-                        this.filter_array.status = val;
-                    },
-                    
-                    task_type: function(val) {
-                        this.filter_array.task_type = val;
-                    },
-                    
-                    task_priority: function(val) {
-                        this.filter_array.priority = val;
-                    },
-                    
-                    assignee_id: function(val) {
-                        this.filter_array.assignee_id = val;
-                        //this.filter.assignees = val === "" ? [] : [ { text: this.assignee_id, value: this.assignee_id } ];
-                    },
-                    
-                    creator_id: function(val) {
-                        this.filter_array.creator_id = val;
-                    },
-                    
-                    task_group_id: function(val) {
-                        this.filter_array.task_group_id = val;
-                    },
-
-                    filter_array: {
-                        handler: function (val, oldVal) {  },
+                    filter: {
+                        handler: function (val, oldVal) {
+                            // this.assignees = val === "" ? [] : [ { text: this.filter.assignee_id, value: this.filter.assignee_id } ];
+                        },
                         deep: true
                     },
 
@@ -249,7 +214,7 @@
                             data: { filter: text }
                         }).done(function(response) {
                             var _response = JSON.parse(response);
-                            _this.filter.assignees = _response.data;
+                            _this.assignees = _response.data;
                         });
                     },
 
@@ -316,11 +281,12 @@
                 return t.task_list.sort( function(a,b) {
                     return sorter(a[t.currentSort], b[t.currentSort]);
                 }).filter(function(row, index) {
-                    if (t.filter_array) {
-                        for (var key in t.filter_array) {
-                            if (t.filter_array[key] && t.filter_array[key] !== undefined && 
-                            t.filter_array[key] !== "" && row[key].toLowerCase() !== t.filter_array[key].toLowerCase())
-                                return false;
+                    if (t.filter) {
+                        for (var key in t.filter) {
+                            if (t.filter[key] && t.filter[key].value && t.filter[key].value !== "") {
+                                if (row[key].toLowerCase() !== t.filter[key].value.toLowerCase())
+                                    return false;
+                            } 
                         }
                     }
                     
