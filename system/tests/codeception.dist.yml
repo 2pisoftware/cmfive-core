@@ -8,7 +8,7 @@ actor_suffix: Tester
 extensions:
     enabled:
         - Codeception\Extension\RunFailed
-        - Codeception\Extension\Chromiuman
+        # - Codeception\Extension\Chromiuman
     config:
         Codeception\Extension\Chromiuman:
           url_base: wd/hub
