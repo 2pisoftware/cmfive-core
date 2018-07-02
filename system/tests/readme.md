@@ -41,7 +41,7 @@ not sure but the root cause of this issue is, but this workaround is good enough
 Add '$scenario->skip();' to the body of the test's function. Useful for incomplete or failing tests that you don't currently want to run.
 ## Pause running a test
 run with --debug
-add $I->pauseExecution(); 
+add $I->pauseExecution();
 
 # Todo:
 tests from other modules
@@ -53,3 +53,32 @@ override click to check for warnings and notices
 get a list of the slowest tests, as seen in https://github.com/johnkary/phpunit-speedtrap
 the WaitRunProcess extension is unaware of skipped tests
 mailcatcher to test emails
+
+# Where I got to with composer and docker:
+
+'''
+version: '3'
+services:
+  codecept:
+    image: codeception/codeception
+    depends_on:
+      - chrome
+      # - web
+    volumes:
+      - ./system/tests:/project
+    ports:
+      - 9515
+  chrome:
+    image: selenium/standalone-chrome-debug:3.12
+    ports:
+      - 4444
+      - 5900
+  web:
+    image: php:7-apache
+  #   depends_on:
+  #     - db
+    ports:
+      - "80:80"
+    volumes:
+      - .:/var/www/html
+'''
