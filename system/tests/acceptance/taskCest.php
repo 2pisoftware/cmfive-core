@@ -1,5 +1,5 @@
 <?php
-class tasksCest
+class taskCest
 {
 
     public function _before()
@@ -10,14 +10,14 @@ class tasksCest
     {
     }
 
-    // auth details
-	var $username='admin';
-	var $password='admin';
-
 	public function testTasks($I, $scenario) {
     $I->wantTo('Verify that the tasks module is functioning correctly');
-		$I->login($this->username,$this->password);
-		$I->createUser('testuser','password','test','user','test@user.com');
+		$I->login('admin','admin');
+    $I->createUser('testuser' ,'password','test','user','test@user.com');
+    $I->clickCmfiveNavbar('Task', 'New Task');
+    // since there are no task groups, we are redirected and asked to create a task group
+    $I->canSeeInCurrentUrl('/task-group/viewtaskgrouptypes#dashboard');
+    $I->see('Please set up a taskgroup before continuing');
 		$I->createTaskGroup('testgroup',[
 			'task_group_type'=>'To Do',
 			'can_assign'=>'GUEST',
@@ -48,8 +48,17 @@ class tasksCest
 			'effort'=>11,
 			'description'=>'a test task',
 		]);
+    $I->click('Duplicate Task');
+    $I->see('Task duplicated');
+    $I->see('test task -Copy');
+    $I->editTask('test task -Copy', ['status' => 'Wip']);
+    $I->see('Wip');
 		$I->updateMemberInTaskGroup('testgroup updated','test user','ALL');
 		$I->removeMemberFromTaskGroup('testgroup updated','test user');
 		$I->deleteTaskGroup('testgroup updated');
 	}
+
+  function testCarsten($I, $scenario) {
+    $I->login('admin', 'admin');
+  }
 }
