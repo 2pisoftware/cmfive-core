@@ -9,9 +9,12 @@ modules:
         url: http://localhost:5001
         browser: chrome
         port: 9515
-     - \Helper\WaitRunProcess:
+extensions:
+  enabled:
+    - \Helper\WaitRunProcess:
         - command to start webserver
-        - command to clean and seed the database
+        - command to wipe database
+
 ```
 replace 'http://localhost:5001' with the url of your site to be tested (including protocol)
 below the -\Helper\WaitRunProcess line add the necessary commands to start your webserver and seed the database.
@@ -36,6 +39,9 @@ Call the jquery autocomplete function manually
 not sure but the root cause of this issue is, but this workaround is good enough
 ## Mark a test as skipped
 Add '$scenario->skip();' to the body of the test's function. Useful for incomplete or failing tests that you don't currently want to run.
+## Pause running a test
+run with --debug
+add $I->pauseExecution(); 
 
 # Todo:
 tests from other modules
@@ -46,3 +52,4 @@ override click to check for warnings and notices
 # Possible expansion:
 get a list of the slowest tests, as seen in https://github.com/johnkary/phpunit-speedtrap
 the WaitRunProcess extension is unaware of skipped tests
+mailcatcher to test emails

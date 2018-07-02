@@ -22,6 +22,7 @@ class CmfiveGuy extends \Codeception\Actor
   		$this->click($category,"section.top-bar-section ul.left");
   		$this->moveMouseOver(['css' => '#topnav_'.strtolower($category)]);
   		$this->waitForText($link);
+      $this->wait(.5);
   		$this->click($link);
   	}
 
@@ -291,6 +292,25 @@ class CmfiveGuy extends \Codeception\Actor
   			'rte:description'=>!empty($data['description']) ?  $data['description'] : '',
   		]);
   		$this->click('Save');
+      $this->waitForElementNotVisible('.loading_overlay');
+  	}
+
+    public function editTask($task,$data) {
+      $this->clickCmfiveNavbar('Task', 'Task List');
+      $this->click('Filter');
+      $this->click($task);
+  		$this->fillForm([
+        // 'select:task_type'=>!empty($data['task_type']) ? $data['task_type'] : '',
+  			// 'title'=>$task,
+  			'select:status'=>!empty($data['status']) ? $data['status'] : '',
+  			// 'select:priority'=>!empty($data['priority']) ? $data['priority'] : '',
+  			// 'date:dt_due'=>!empty($data['priority']) ? $data['dt_due'] : '',
+  			// 'select:assignee_id'=>!empty($data['assignee_id']) ? $data['assignee_id'] : '',
+  			// 'estimate_hours'=>!empty($data['estimate_hours']) ?  $data['estimate_hours'] : '',
+  			// 'effort'=>!empty($data['effort']) ? $data['effort'] : '',
+  			// 'rte:description'=>!empty($data['description']) ?  $data['description'] : '',
+  		]);
+  		$this->click('.savebutton');
       $this->waitForElementNotVisible('.loading_overlay');
   	}
 
