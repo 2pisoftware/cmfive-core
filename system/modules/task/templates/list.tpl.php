@@ -1,6 +1,7 @@
 <script src='/system/templates/vue-components/form/elements/vue-search-select/vue-search-select.min.js'></script>
 <script src='/system/templates/vue-components/html/twopipagination.js'></script>
 <script src='/system/templates/js/natsort.min.js'></script>
+<script src='/system/templates/vue-components/html/filterSort.js'></script>
 
 <style>
     .test > td {
@@ -135,7 +136,7 @@
         </tbody>
     </table>
 
-    <pagination v-if="tableData" v-on:currentpagechanged="onCurrentPageChanged" :data_count="tableData.length" :rows_per_page="pageSize"></pagination>
+    <pagination v-if="tableData" v-on:currentpagechanged="onCurrentPageChanged" :data_count="tableData.length" :items_per_page="pageSize"></pagination>
 </div>
 
 <script>
@@ -158,7 +159,7 @@
             start: 0,
             end: 10,
             currentSort:'id',
-            currentSortDir:'asc',
+            desc: false,
             
             filter: {
                 status: null,
@@ -191,7 +192,7 @@
 
                     pageSize: function(val) {
                         this.start = 0;
-                        this.end = this.pageSize;
+                        this.end = val;
                     }
                 },
 		methods: {
@@ -219,16 +220,15 @@
                     },
 
                     sort: function(s, event) {
-                        //if s == current sort, reverse
                         document.getElementById(this.currentSort).getElementsByTagName("span")[0].innerHTML = '<i class="fas fa-sort"></i>';
                         
                         if (s === this.currentSort) {
-                            this.currentSortDir = this.currentSortDir==='asc'?'desc':'asc';
+                            this.desc = !this.desc;
                         }
                         
                         this.currentSort = s;
                         
-                        if (this.currentSortDir === 'asc') {
+                        if (!this.desc) {
                             event.target.getElementsByTagName("span")[0].innerHTML = '<i class="fas fa-sort-down"></i>';
                         } else {
                             event.target.getElementsByTagName("span")[0].innerHTML = '<i class="fas fa-sort-up"></i>';
@@ -274,33 +274,8 @@
 		},
 
         computed: {
-            tableData: function() {
-                var t = this;
-                var sorter = natsort({ insensitive: true, desc: t.currentSortDir === 'desc' ? true : false });
-                
-                return t.task_list.sort( function(a,b) {
-                    return sorter(a[t.currentSort], b[t.currentSort]);
-                }).filter(function(row, index) {
-                    if (t.filter) {
-                        for (var key in t.filter) {
-                            if (t.filter[key] && t.filter[key].value && t.filter[key].value !== "") {
-                                if (row[key].toLowerCase() !== t.filter[key].value.toLowerCase())
-                                    return false;
-                            } 
-                        }
-                    }
-                    
-                    return true;
-                });
-            },
-
-            paginatedCandidates: function() {
-                var t = this;
-                return this.tableData.filter(function(row, index) {
-                    if (index >= t.start && index < t.end) 
-                        return true;
-                });
-            }
+            tableData: function() { return filterSort(this.desc, this.task_list, this.currentSort, this.filter); },
+            paginatedCandidates: function() { return paginate(this.tableData, this.start, this.end); }
         }
 	});
 </script>
