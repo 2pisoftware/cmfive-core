@@ -8,8 +8,12 @@ function filterSort(descending, data, dataSort, dataFilter) {
 			for (var key in dataFilter) {
 				if (dataFilter[key] && dataFilter[key] !== "") {
 					// if (row[key].toLowerCase() !== dataFilter[key].toString().toLowerCase())
-					if (row[key].toLowerCase().indexOf(dataFilter[key].toString().toLowerCase()) === -1)
+					var condition = "contains";
+
+					if (condition === "contains") {
+						if (row[key].toLowerCase().indexOf(dataFilter[key].toString().toLowerCase()) === -1)
 						return false;
+					}
 				} 
 			}
 		}
