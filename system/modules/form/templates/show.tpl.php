@@ -1,6 +1,7 @@
 <div class="row-fluid panel">
 	<?php echo $form->description; ?>
 </div>
+<?php echo Html::b("/form/export/" . $form->id, "Export", null,null,false,'right'); ?>
 
 <div class="tabs">
 	<div class="tab-head">
@@ -9,6 +10,7 @@
 		<a href="#mapping">Mapping</a>
 		<a href="#row_template">Row Templates</a>
 		<a href="#summary_template">Summary Template</a>
+		<a href="#events">Events</a>
 	</div>
 	<div class="tab-body">
 		<div id="fields">
@@ -113,6 +115,14 @@
 				]
 					], "/form/edit/" . $form->id . "?redirect_url=" . urlencode("/form/show/" . $form->id) . "#summary_template", "POST");
 			?>
+		</div>
+		<div id="events">
+			<?php echo Html::box('/form-event/edit?form_id=' . $form->id,'Add New Event', true); ?>
+			
+			<?php if (isset($event_table)): ?> 
+				<h4>Events</h4>
+			<?php endif; ?>
+			<?php echo isset($event_table) ? $event_table : ''; ?>
 		</div>
 	</div>
 </div>
