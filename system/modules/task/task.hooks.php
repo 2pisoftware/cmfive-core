@@ -72,6 +72,7 @@ function task_core_dbobject_after_insert_Task(Web $w, $object) {
 			"Assigned to"	=> !empty($object->assignee_id) ? $object->getAssignee()->getFullName() : '',
 			"Type"			=> $object->getTypeTitle(),
 			"Title"			=> $object->title,
+			"Taskgroup"		=> $object->getTaskGroup()->title,
 			"Due"			=> !empty($object->dt_due) ? date('d-m-Y', strtotime(str_replace('/', '-', $object->dt_due))) : '',
 			"Status"		=> $object->status,
 			"Priority"		=> $object->isUrgent() ? "<b style='color: orange;'>{$object->priority}</b>" : $object->priority
@@ -129,6 +130,7 @@ function task_core_dbobject_after_update_Task(Web $w, $object) {
 			"Assigned to"	=> !empty($object->assignee_id) ? $object->getAssignee()->getFullName() : '',
 			"Type"			=> $object->getTypeTitle(),
 			"Title"			=> $object->title,
+			"Taskgroup"		=> $object->getTaskGroup()->title,
 			"Due"			=> !empty($object->dt_due) ? date('d-m-Y', strtotime(str_replace('/', '-', $object->dt_due))) : '',
 			"Status"		=> '<b>' . $object->__old['status'] . ' => ' . $object->status . '</b>',
 			"Priority"		=> $object->isUrgent() ? "<b style='color: orange;'>{$object->priority}</b>" : $object->priority
@@ -181,6 +183,7 @@ function task_attachment_attachment_added_task(Web $w, $object) {
 			"Assigned to"	=> !empty($task->assignee_id) ? $task->getAssignee()->getFullName() : '',
 			"Type"			=> $task->getTypeTitle(),
 			"Title"			=> $task->title,
+			"Taskgroup"		=> $task->getTaskGroup()->title,
 			"Due"			=> !empty($task->dt_due) ? date('d-m-Y', !is_numeric($task->dt_due) ? strtotime(str_replace('/', '-', $task->dt_due)) : $task->dt_due) : '',
 			"Status"		=> $task->status,
 			"Priority"		=> $task->isUrgent() ? "<b style='color: orange;'>{$task->priority}</b>" : $task->priority
@@ -273,6 +276,7 @@ function task_comment_send_notification_recipients_task(Web $w, $params) {
 			"Assigned to"	=> !empty($task->assignee_id) ? $task->getAssignee()->getFullName() : '',
 			"Type"			=> $task->getTypeTitle(),
 			"Title"			=> $task->title,
+			"Taskgroup"		=> $task->getTaskGroup()->title,
 			"Due"			=> !empty($task->dt_due) ? date('d-m-Y', !is_numeric($task->dt_due) ? strtotime(str_replace('/', '-', $task->dt_due)) : $task->dt_due) : '',
 			"Status"		=> $task->status,
 			"Priority"		=> $task->isUrgent() ? "<b style='color: orange;'>{$task->priority}</b>" : $task->priority
