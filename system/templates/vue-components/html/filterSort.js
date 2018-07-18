@@ -6,47 +6,8 @@ function filterSort(descending, data, dataSort, dataFilter) {
 	}).filter(function(row, index) {
 		if (dataFilter) { 
 			for (var key in dataFilter) { 
-				if (dataFilter[key] && row[key] && row[key] != "") {
-					var filter_value = null;
-					
-					if (dataFilter[key].hasOwnProperty("value")) {
-						filter_value = dataFilter[key].value;
-					} else {
-						filter_value = dataFilter[key];
-					}
-					
-					if (filter_value && filter_value != "") {
-						var condition = "contains";
-
-						if (dataFilter[key].hasOwnProperty("condition")) {
-							condition = dataFilter[key].condition;
-						}
-
-						if (condition === "contains") {
-							if (row[key].toLowerCase().indexOf(filter_value.toString().toLowerCase()) === -1) {
-								return false;
-							}
-						} else if (condition === "===") {
-							if (row[key].toLowerCase() !== filter_value.toString().toLowerCase()) {
-								return false;
-							}
-						} else if (condition === ">= && <=") {
-							if (Object.prototype.toString.call(filter_value) !== '[object Array]') return;
-							if (filter_value.length < 2) return;
-
-							if (filter_value[0] && filter_value[0] !== "") {
-								if (filter_value[0] > row[key]) {
-									return false;
-								}
-							}
-
-							if (filter_value[1] && filter_value[1] !== "") {
-								if (filter_value[1] < row[key]) {
-									return false;
-								}
-							}
-						}
-					} 
+				if (dataFilter[key]) {
+					return dataFilter[key].condition(row[key]);
 				} 
 			}
 		}
@@ -61,3 +22,8 @@ function paginate(data, start, end) {
             return true;
     });
 }
+
+/*var f = new Function('return ' + condition);
+if (row[key].toLowerCase().indexOf(filter_value.toString().toLowerCase()) === -1) {
+	return false;
+}*/
