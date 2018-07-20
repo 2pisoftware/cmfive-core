@@ -680,8 +680,21 @@ class TaskService extends DbService {
         $task->dt_due = $dt_due;
         $task->first_assignee_id = $first_assignee_id;
         $task->assignee_id = $first_assignee_id;
-        $task->dt_assigned = time();
-        $task->dt_first_assigned = time();
+
+        // set assigned and first assigned date time
+        if ($task->assignee_id > 0) {
+            // set first assigned date time
+            $task->dt_first_assigned = formatDateTime(time());
+            
+            // set assigned date time
+            $task->dt_assigned = formatDateTime(time());
+        }
+            
+        // set completed date time
+        if ($task->status == "Deploy" || $task->status == "Live" || $task->status == "DONE") {
+            $task->dt_completed = formatDateTime(time());
+        }
+
         $task->insert();
         return $task;
     }

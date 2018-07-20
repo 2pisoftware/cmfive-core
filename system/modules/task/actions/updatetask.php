@@ -33,9 +33,21 @@ function updatetask_POST(Web &$w) {
 
 
 		// update the task
-		$_POST['dt_assigned'] = Date('c');
 		$task->fill($_POST);
 
+		// set assigned and first assigned date time
+		if ($task->assignee_id > 0) {
+			// set first assigned date time
+			if (empty($task->__old['dt_first_assigned'])) {
+				$task->dt_first_assigned = formatDateTime(time());
+			}
+	
+			// set assigned date time
+			if ($task->__old['assignee_id'] != $task->assignee_id) {
+				$task->dt_assigned = formatDateTime(time());
+			}
+		}
+		
 		// if task has a 'closed' status, set flag so task no longer appear in dashboard count or task list
 		if ($task->getisTaskClosed()) {
 			$task->is_closed = 1;

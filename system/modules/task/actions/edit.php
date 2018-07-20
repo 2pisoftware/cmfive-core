@@ -189,6 +189,8 @@ function edit_POST($w) {
 
     $task->fill($_POST['edit']);
 
+    $task->assignee_id = intval($_POST['edit']['assignee_id']);
+
     // set assigned and first assigned date time
     if ($task->assignee_id > 0) {
         // set first assigned date time
@@ -207,7 +209,6 @@ function edit_POST($w) {
         $task->dt_completed = formatDateTime(time());
     }
         
-    $task->assignee_id = intval($_POST['edit']['assignee_id']);
     if (empty($task->dt_due)) {
         $task->dt_due = $w->Task->getNextMonth();
     }
