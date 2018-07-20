@@ -186,21 +186,27 @@ function edit_POST($w) {
     if (!empty($p["id"])) {
         $taskdata = $w->Task->getTaskData($p['id']);
     }
-    
+
     $task->fill($_POST['edit']);
 
-    // set first assigned date time
-    if (empty($task->__old['dt_first_assigned']) && $task->assignee_id > 0)
-        $task->dt_first_assigned = formatDateTime(time());
+    // set assigned and first assigned date time
+    if ($task->assignee_id > 0) {
+        // set first assigned date time
+        if (empty($task->__old['dt_first_assigned'])) {
+            $task->dt_first_assigned = formatDateTime(time());
+        }
 
-    // set assigned date time
-	if ($task->propertyHasChanged('assignee_id') && $task->assignee_id > 0) 
-        $task->dt_assigned = formatDateTime(time());
-
+        // set assigned date time
+        if ($task->__old['assignee_id'] != $task->assignee_id) {
+            $task->dt_assigned = formatDateTime(time());
+        }
+    }
+        
     // set completed date time
-    if ($task->status == "Deploy" || $task->status == "Live" || $task->status == "DONE")
+    if ($task->status == "Deploy" || $task->status == "Live" || $task->status == "DONE") {
         $task->dt_completed = formatDateTime(time());
-    
+    }
+        
     $task->assignee_id = intval($_POST['edit']['assignee_id']);
     if (empty($task->dt_due)) {
         $task->dt_due = $w->Task->getNextMonth();
