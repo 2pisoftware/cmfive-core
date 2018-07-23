@@ -89,7 +89,7 @@ class Zend_Mail_Protocol_Imap extends \Zend\Mail\Protocol\Imap {
             ), 0, $error);
         }
 
-        if (!$this->assumedNextLine('* OK')) {
+        if (!$this->_assumedNextLine('* OK')) {
             throw new \Zend\Mail\Exception\RuntimeException('host doesn\'t allow connection');
         }
 
