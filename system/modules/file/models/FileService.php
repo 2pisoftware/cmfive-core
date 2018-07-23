@@ -138,9 +138,10 @@ class FileService extends DbService {
 				$adapter_obj = new InMemoryAdapter(array(basename($path) => $content));
 				break;
 			case "s3":
+				$client = new Aws\S3\S3Client(Config::get('file.adapters.s3'));
 				$config_options = Config::get('file.adapters.s3.options');
 				$config_options = array_replace(is_array($config_options) ? $config_options : [], ["directory" => $path], $options);
-				$client = S3Client::factory(["key" => Config::get('file.adapters.s3.key'), "secret" => Config::get('file.adapters.s3.secret')]);
+				// $client = S3Client::factory(["key" => Config::get('file.adapters.s3.key'), "secret" => Config::get('file.adapters.s3.secret')]);
 				$adapter_obj = new AwsS3($client, Config::get('file.adapters.s3.bucket'), is_array($config_options) ? $config_options : []);
 				break;
 			case "dropbox":

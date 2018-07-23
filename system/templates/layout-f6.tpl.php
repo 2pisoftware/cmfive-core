@@ -42,6 +42,7 @@
 
         
         // Print registered vue component links
+        /** @var Web $w */
         $w->loadVueComponents();
 
         $w->outputStyles();
