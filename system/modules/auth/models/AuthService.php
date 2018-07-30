@@ -11,34 +11,31 @@ class AuthService extends DbService {
         // $password = User::encryptPassword($password);
         // $user_data = $this->_db->get("user")->where("login", $login)->and("password", $password)->and("is_active", "1")->and("is_deleted", "0")->fetch_row();
         $user = $this->getUserForLogin($login);
+        $this->w->session("2fa", "disabled");
+        
         if (empty($user->id) || ($user->encryptPassword($password) !== $user->password) || $user->is_external == 1) {
             return null;
         }
 
         // 2-factor authentication
         if ($user->active_2fa == 1) {
-            /*$current_submit_time = time();
-            $current_get_time = $this->w->session("current_get_time");
-            $diff = $current_submit_time - $current_get_time;
-            if ($diff > 60)
-                return null;*/
+            $this->w->session("2fa", "enabled");
+            $this->w->session('2fa_user_id', $user->id);
+            $this->w->session("user_redirect_url", $user->redirect_url);
+            return null;
+        }
 
-            $g = new \Google\Authenticator\GoogleAuthenticator();
-            $secret = $user->secret_2fa;
-            $code = $this->w->request('two_fa_code');
+        $user->updateLastLogin();
 
-            if (!$g->checkCode($secret, $code)) 
-                return null;
+        if (!$skip_session) {
+            $this->w->session('user_id', $user->id);
+            $this->w->session('timezone', $client_timezone);
         }
         
         // if ($user_data != null) {
         // $user = new User($this->w);
         // $user->fill($user_data);
-        $user->updateLastLogin();
-        if (!$skip_session) {
-            $this->w->session('user_id', $user->id);
-            $this->w->session('timezone', $client_timezone);
-        }
+        
         return $user;
         // } else {
         //     return null;
