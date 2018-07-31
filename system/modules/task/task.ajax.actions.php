@@ -47,8 +47,10 @@ function task_list_GET(Web $w) {
 
 		$task_array['task_url'] = $w->localUrl($task->printSearchUrl());
 		$task_array['task_group_title'] = $task_group->title; // ->toLink();
-		$task_array['task_group_url'] = $w->localUrl($task_group->printSearchUrl());
-		$task_array['assignee_name'] = $task->getAssignee()->getSelectOptionTitle();
+        $task_array['task_group_url'] = $w->localUrl($task_group->printSearchUrl());
+        
+        $assignee = $task->getAssignee();
+		$task_array['assignee_name'] = !empty($assignee->id) ? $assignee->getSelectOptionTitle() : 'Unassigned';
         $task_array['dt_due'] = formatDate($task->dt_due);
         $task_array['creator_id'] = $task->getTaskCreatorId();
 
