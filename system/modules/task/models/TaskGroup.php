@@ -2,6 +2,7 @@
 
 class TaskGroup extends DbObject {
 
+    static $_DEFAULT_AUTOMATIC_SUBSCRIPTION = false;
 	public $title;
 	public $description;
     public $can_assign;  // ALL, GUEST, MEMBER, OWNER
@@ -128,5 +129,21 @@ class TaskGroup extends DbObject {
 
     public function getSelectOptionTitle() {
         return $this->title;
+    }
+    
+    public function getTypeStatus() {
+        return $this->Task->getTaskTypeStatus($this->task_group_type);
+    }
+    
+    // get task group title given task group type
+    function getTypeTitle() {
+        $c = $this->Task->getTaskGroupTypeObject($this->task_group_type);
+        return $c ? $c->getTaskGroupTypeTitle() : null;
+    }
+    
+    // get fullname of default assignee for this task group
+    function getDefaultAssigneeName() {
+        $assign = $this->Auth->getUser($this->default_assignee_id);
+        return $assign ? $assign->getFullName() : "";
     }
 }

@@ -2,7 +2,7 @@
 
 Config::set('task-old', array(
     'version' => '0.8.0',
-    'active' => true,
+    'active' => false,
     'path' => 'system/modules',
     'topmenu' => true,
     'search' => array('Tasks' => "Task"),

@@ -24,6 +24,7 @@ function array_unique_multidimensional($input) {
 //override_function('__', '$key,$context', 'throw new Exception("You must use double underscores in gettext lookups - ".$key."-".$context) ;');
 
 // Implement gettext context
+// Implement gettext context
 if (!function_exists('pgettext')) {
 	function pgettext($context, $msgid, $domain = '') {
 		//echo "pgettext:".$context."|".$msgid."|".$domain;
