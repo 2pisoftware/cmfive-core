@@ -43,14 +43,10 @@
         // Code mirror
         $w->enqueueScript(array("name" => "codemirror.js", "uri" => "/system/templates/js/codemirror-4.4/codemirror-compressed.js", "weight" => 880));
         
-      
+        $w->loadVueComponents();
+
         $w->outputStyles();
         $w->outputScripts();
-
-        // Print registered vue component links 
-        foreach(VueComponentRegister::getComponents() as $vue_component) {
-            echo $vue_component->_include();
-        }
         ?>
         <script type="text/javascript">
             var $ = $ || jQuery;

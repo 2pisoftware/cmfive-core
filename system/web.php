@@ -227,7 +227,7 @@ class Web {
 		$requestURI = explode('/', $uri);
 		$scriptName = explode('/', $_SERVER['SCRIPT_NAME']);
 
-		for ($i = 0; $i < sizeof($scriptName); $i++) {
+		for ($i = 0; $i < sizeof($requestURI) && $i < sizeof($scriptName); $i++) {
 			// Checking is these vars are set makes the logout function not work
 			// So we can just supress the warnings
 			if (@$requestURI[$i] == @$scriptName[$i]) {
