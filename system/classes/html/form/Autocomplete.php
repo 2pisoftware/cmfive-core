@@ -76,13 +76,22 @@ class Autocomplete extends \Html\Form\FormElement {
 	 * @param array $options
 	 * @return \Html\Form\Autocomplete this
 	 */
-	public function setOptions($options = []) {
+	public function setOptions($options = [], $value_callback = null) {
 		if (is_array($options) && count($options) > 0) {
 			
+			// Force $value_callback to be a Closure only
+			if (!is_null($value_callback) && !is_callable($value_callback)) {
+				$value_callback = null;
+			}
+
 			foreach($options as $option) {
 				// Check for option 1
 				if (is_a($option, "DbObject")) {
-					array_push($this->options, ["id" => $option->getSelectOptionValue(), "value" => $option->getSelectOptionTitle()]);
+					$value = $option->getSelectOptionTitle();
+					if (!is_null($value_callback)) {
+						$value = $value_callback($option);
+					}
+					array_push($this->options, ["id" => $option->getSelectOptionValue(), "value" => $value]);
 				} else if (count($option) == 2) {
 					// Check for option 2
 					if (array_key_exists("id", $option) && array_key_exists("value", $option)) {

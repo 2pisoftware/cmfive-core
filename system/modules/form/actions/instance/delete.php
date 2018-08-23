@@ -14,7 +14,7 @@ function delete_GET(Web $w) {
 		$w->error("Form instance not found", $redirect_url . "#".toSlug($form->title));
 		return;
 	}
-	
+	$form = $w->Form->getForm($instance->form_id);
 	$instance->delete();
 	$w->msg("Form instance deleted", $redirect_url . "#".toSlug($form->title));
 }

@@ -76,7 +76,7 @@ function edit_GET(Web &$w) {
     
     // Access checked and OK, add approval to form only if is report_admin or admin
     if ($w->Auth->user()->is_admin == 1 || $w->Auth->user()->hasRole("report_admin")) {
-        $form[0][] = array("Approved", "checkbox", "is_approved", $report->is_approved);
+        $form[] = array("Approved", "checkbox", "is_approved", $report->is_approved);
     }
     
     $w->ctx("report_form", Html::form($form, $w->localUrl("/report/edit/{$report->id}"), "POST", "Save Report"));

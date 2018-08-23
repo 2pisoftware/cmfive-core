@@ -12,7 +12,7 @@ function addmembers_GET(Web &$w) {
 	// strip the dumplicates. dealing with an object so no quick solution
 	$members = array();
 	foreach ($members12 as $member) {
-		if (!in_array($member, $members)) {
+		if (!in_array($member, $members, true)) {
 			$members[] = $member;
 		}
 	}

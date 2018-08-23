@@ -58,7 +58,12 @@ class Comment extends DbObject {
         if ($this->obj_table == 'comment') {
             return $this->w->Comment->getComment($this->obj_id)->getParentObject();
         } else {
-            return $this->w->Comment->getObject($this->obj_table,$this->obj_id);
+            $class = str_replace(' ', '', $this->getHumanReadableAttributeName($this->obj_table));
+            if (class_exists($class)) {
+                return $this->w->Comment->getObject($class, $this->obj_id);
+            } else {
+                return null;
+            }
         }
     }
 

@@ -5,6 +5,10 @@
     border: 1px solid #ddd;
 }
 
+.selectize-input div.item {
+    margin: 8px 3px 8px !important;
+}
+
 .tag_container {
     display: inline-block;
     /*position: relative;*/

@@ -127,7 +127,7 @@ class ChannelService extends DbService {
 	public function getNewMessages($channel_id, $processor_id) {
 		$query = $this->w->db->get("channel_message")->where("channel_message.channel_id", $channel_id)
 								->leftJoin("channel_message_status on channel_message_status.message_id = channel_message.id")
-								->where("channel_message_status.id IS NULL OR channel_message_status.processor_id != ?", $processor_id)
+								->where("channel_message_status.id IS NULL OR (channel_message_status.processor_id != ? AND channel_message_status.is_successful != 1)", $processor_id)
 								->fetch_all();
 					
 		if (!empty($query)) {
@@ -154,6 +154,16 @@ class ChannelService extends DbService {
 		return $this->getObjects("ChannelMessageStatus", $where);
 	}
 	
+	/**
+	 * DEPRECATED: This function doesn't work as intended as it disregards both the
+	 * $channel_id and $processor_id given 
+	 *
+	 * Use the ChannelProcessor::getNewMessages() / getFailedMessages() / getNewOrFailedMessages() instead
+	 * 
+	 * @param  Mixed $channel_id Channel ID
+	 * @param  Mixed $processor_id Processor ID
+	 * @return Array<ChannelMessage>
+	 */
 	public function getNewOrFailedMessages($channel_id, $processor_id) {
         // Get list of failed messages
         $failed_messages = $this->_db->get("channel_message")
@@ -194,6 +204,11 @@ class ChannelService extends DbService {
         }
         
         return (array_merge($new_message_objects, $failed_message_objects));
+    }
+
+    public function markMessagesAsProcessed($channel_id) {
+    	$this->db->update('channel_message', ['is_processed' => 1])->where('channel_id', $channel_id)
+    				->where('is_deleted', 0)->execute();
     }
 
 	/**
