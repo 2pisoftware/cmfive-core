@@ -1,24 +1,34 @@
 <?php
 function viewtaskgrouptypes_ALL(Web $w) {
 	$w->Task->navigation($w, "Manage Task Groups");
-	
+	$show_inactive = $w->request('inactive') ? true : false;
+	$w->ctx('show_inactive',$show_inactive);
+
 	History::add("Manage Task Groups");
-	$task_groups = $w->Task->getTaskGroups();
+	$task_groups = $w->Task->getTaskGroups($show_inactive);
 	if ($task_groups) {
 		usort($task_groups, array("TaskService","sortbyGroup"));
 	}
 	// prepare column headings for display
-	$line = array(array("Title","Type", "Description", "Default Assignee"));
+	$headers = array("Title","Type", "Description", "Default Assignee");
+	if ($show_inactive) {
+		$headers[] = "Is Active";
+	}
+	$line = array($headers);
 
 	// if task group exists, display title, group type, description, default assignee and button for specific task group info
 	if ($task_groups) {
 		foreach ($task_groups as $group) {
-			$line[] = array(
+			$row = array(
 					Html::a(WEBROOT."/task-group/viewmembergroup/".$group->id,$group->title),
 					$group->getTypeTitle(),
 					$group->description,
 					$group->getDefaultAssigneeName(),
 			);
+			if ($show_inactive) {
+				$row[] = $group->is_active ? "Yes" : "No";
+			}
+			$line[] = $row;
 		}
 	}
 	else {

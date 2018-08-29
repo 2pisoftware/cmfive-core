@@ -40,6 +40,7 @@ function listtasks(\Web $w, $params = array()) {
         $is_closed = $w->request("is_closed");
         $dt_from = $w->request('dt_from');
         $dt_to = $w->request('dt_to');
+        $include_inactive = $w->request('include_inactive');
     }
     // Make the query manually
     $query_object = $w->db->get("task")->leftJoin("task_group");
@@ -69,6 +70,9 @@ function listtasks(\Web $w, $params = array()) {
         $query_object->where("task.is_closed", ((is_null($is_closed) || $is_closed == 0) ? 0 : 1));
     } else {
         $query_object->where("task.is_closed", 0);
+    }
+    if (empty($include_inactive)) {
+        $query_object->where("task.is_active", 1);
     }
     // This part is why we want to make our query manually
     if (!empty($dt_from)) {

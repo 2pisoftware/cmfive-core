@@ -27,6 +27,7 @@ class Task extends DbObject {
     public $_modifiable;  // Modifiable Aspect
     public $_searchable;
     public $rate; //rate used for calculating invoice values
+    public $is_active;
     public static $_validation = array(
         "title" => array('required'),
         "task_group_id" => array('required'),
