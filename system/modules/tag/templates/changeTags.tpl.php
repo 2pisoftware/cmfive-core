@@ -81,26 +81,24 @@
 			});
 		},
 		onItemAdd: function (tag_id) {
-			var _this = this;
-			$.ajax({
-				url: '/tag/ajaxAddTag/<?php echo $object_class; ?>/<?php echo $id; ?>?tag_id=' + tag_id,
-				type: 'GET'
-//				success: function (result) {
-//					debugger;
-//					if (result) {
-//						var j_result = JSON.parse(result);
-//						var option = { id: j_result.id, tag: j_result.tag, type: '<?php echo $object_class; ?>' };
-////						callback(option);
-//						_this.addOption(option);
-//						_this.addItem(option.id);
-//					}
-//				}
+			// var _this = this;
+			$.get('/tag/ajaxAddTag/<?php echo $object_class; ?>/<?php echo $id; ?>', {
+				_tag_id: tag_id
 			});
+// 			.done(function(response) {	
+// 				if (response) {
+// 					var j_result = JSON.parse(response);
+// 					var option = { id: j_result.id, tag: j_result.tag, type: '<?php echo $object_class; ?>' };
+// //						callback(option);
+// 					_this.addOption(option);
+// 					_this.addItem(option.id);
+// 				}
+// 			});
 		},
 		onItemRemove: function(tag_id) {
-			var _this = this;
+			// var _this = this;
 			$.ajax({
-				url: '/tag/ajaxRemoveTag/<?php echo $object_class; ?>/<?php echo $id; ?>?tag_id=' + tag_id,
+				url: '/tag/ajaxRemoveTag/<?php echo $object_class; ?>/<?php echo $id; ?>?_tag_id=' + tag_id,
 				type: 'GET'
 //				success: function (result) {
 //					if (result) {
