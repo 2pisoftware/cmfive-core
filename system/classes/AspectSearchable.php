@@ -50,16 +50,25 @@ class AspectSearchable {
 	 * Create index entry for new objects
 	 */
 	function insert($ignoreAdditional = true) {
-		if (!$this->getIndex()) {
-			$io = new ObjectIndex($this->object->w);
-			$io->class_name = get_class($this->object);
-			$io->object_id = $this->object->id;
-			$io->dt_created = time();
-			$io->creator_id = ($io->Auth->loggedIn() ? $io->Auth->user()->id : 0);
-			
-			$io->content = $this->object->getIndexContent($ignoreAdditional);
-			
-			$io->insert();
+		$index = $this->getIndex();
+		if (empty($index)) {
+			//check if object should be added
+			if ($this->object->addToSearch()) {
+				$io = new ObjectIndex($this->object->w);
+				$io->class_name = get_class($this->object);
+				$io->object_id = $this->object->id;
+				$io->dt_created = time();
+				$io->creator_id = ($io->Auth->loggedIn() ? $io->Auth->user()->id : 0);
+				
+				$io->content = $this->object->getIndexContent($ignoreAdditional);
+				
+				$io->insert();
+			}
+		} else {
+			//check if object should be removed from search
+			if (!$this->object->addToSearch()) {
+				$this->delete();
+			}
 		}
 	}
 	
@@ -68,12 +77,19 @@ class AspectSearchable {
 	 */
 	function update($ignoreAdditional = true) {
 		if ($this->getIndex()) {
-			$this->_index->dt_modified = time();
-			$this->_index->modifier_id = ($this->_index->w->Auth->loggedIn() ? $this->_index->w->Auth->user()->id : 0);
+			//check if object should be in index
+			if ($this->object->addToSearch()) {
+				$this->_index->dt_modified = time();
+				$this->_index->modifier_id = ($this->_index->w->Auth->loggedIn() ? $this->_index->w->Auth->user()->id : 0);
+				
+				$this->_index->content = $this->object->getIndexContent($ignoreAdditional);
+						
+				$this->_index->update();
+			} else {
+				//remove object from index
+				$this->delete();
+			}
 			
-			$this->_index->content = $this->object->getIndexContent($ignoreAdditional);
-					
-			$this->_index->update();
 		} else {
 			$this->insert();
 		}
