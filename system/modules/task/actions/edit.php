@@ -62,9 +62,6 @@ function edit_GET($w) {
     $form = array(
         (!empty($p["id"]) ? 'Edit task' : "Create a new task") => array(
             array(
-                array("Active", "checkbox", "is_active", $task->is_active)
-            ),
-            array(
                 (new Autocomplete())
                     ->setLabel("Task Group <small>Required</small>")
                     ->setName(!empty($p["id"]) ? "task_group_id_text" : "task_group_id")
@@ -191,22 +188,7 @@ function edit_POST($w) {
         $taskdata = $w->Task->getTaskData($p['id']);
     }
     
-    $is_active = !empty($p["id"]) ? $task->is_active : true;
-    $new_is_active = isset($_POST['edit']['is_active']) ? $_POST['edit']['is_active'] : false;
-
     $task->fill($_POST['edit']);
-// $w->out()
-    // if attempting to activate task check if taskgroup is active
-    if ($new_is_active != $is_active) {
-        //are we activating or deactivating
-        if ($_POST['edit']['is_active'] == false) {
-            $task->is_active = false;
-        } else {
-            //check if taskgroup is active
-            $taskgroup = $task->getTaskGroup();
-            $task->is_active = $taskgroup->is_active;
-        }
-    }
     
 	if (empty($task->dt_assigned) || $task->assignee_id != intval($_POST['edit']['assignee_id'])) {
 		$task->dt_assigned = formatDateTime(time());

@@ -37,7 +37,7 @@ function viewtaskgroup_GET(Web &$w) {
 			array("Who Can Assign", "select", "can_assign", $group_details->can_assign, $arrassign),
 			array("Who Can View", "select", "can_view", $group_details->can_view, $w->Task->getTaskGroupPermissions()),
 			array("Who Can Create", "select", "can_create", $group_details->can_create, $w->Task->getTaskGroupPermissions()),
-			array("Is Active", "select", "is_active", $isactive, $is_active),
+			//array("Is Active", "select", "is_active", $isactive, $is_active),
 			array("Description", "textarea", "description", $group_details->description, "26", "6"),
 			array("Default Task Type", "select", "default_task_type", $group_details->default_task_type, $tasktypes),
 			array("Default Priority", "select", "default_priority", $group_details->default_priority, $priorities),
@@ -58,7 +58,7 @@ function viewtaskgroup_POST(Web &$w) {
 	// if group exists, update the details
 	if ($group_details) {
         $group_details->fill($_REQUEST);
-        $group_details->is_active = $_POST['is_active'] == "Yes" ? 1 : 0;
+        //$group_details->is_active = $_POST['is_active'] == "Yes" ? 1 : 0;
 		$group_details->is_automatic_subscription = !empty($w->request('is_automatic_subscription'));
 		$response = $group_details->update();
 
