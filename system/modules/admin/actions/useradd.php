@@ -38,6 +38,7 @@ function useradd_POST(Web &$w) {
 	$contact->fill($_REQUEST);
 	$contact->dt_created = time();
 	$contact->private_to_user_id = null;
+	$contact->setTitle($_REQUEST['acp_title']);
 	$contact->insert();
 
 	// now saving the user
