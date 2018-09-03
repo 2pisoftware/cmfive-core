@@ -83,6 +83,7 @@ class Web {
 
 	public $_scripts = array();
 	public $_styles = array();
+        public $sHttps = null;
 
 	/**
 	 * Constructor
@@ -106,11 +107,13 @@ class Web {
 		// if using IIS then value is "off" for non ssl requests
 		$sHttps = array_key_exists('HTTPS', $_SERVER) ? $_SERVER['HTTPS'] : '';
 		$sHttpHost = array_key_exists('HTTP_HOST', $_SERVER) ? $_SERVER['HTTP_HOST'] : '';
+		
 		if (empty($sHttps) || $sHttps == "off") {
 			$this->_webroot = "http://" . $sHttpHost;
 		} else {
 			$this->_webroot = "https://" . $sHttpHost;
 		}
+	
 		$this->_actionMethod = null;
 
 		// The order of the following three lines are important
@@ -124,6 +127,15 @@ class Web {
 			$this->_is_installing = !file_exists(ROOT_PATH . "/config.php") || strpos($_SERVER['REQUEST_URI'], '/install') === 0;
 		}
 		$this->loadConfigurationFiles();
+
+		// If a domain whitelist has been set then implement it and forbid any request that does not match a domain given
+		$domain_whitelist = Config::get('system.domain_whitelist');
+		if (!empty($domain_whitelist)) {
+			if (!in_array($sHttpHost, $domain_whitelist)) {
+				$this->header('HTTP/1.0 403 Forbidden');
+				exit();
+			}
+		}
 
 		if ($this->_is_installing) {
 			$this->install();
@@ -373,15 +385,21 @@ class Web {
 				$language = $lang;
 			}
 		}
-		// $this->Log->info('init locale ' . $language);
+		
+		// Fallback to en_AU if language is not set
+		if (empty($language)) {
+			$language = 'en_AU';
+		}
+		
+		$this->Log->info('init locale ' . $language);
 
 		$all_locale = getAllLocaleValues($language);
 		
 		putenv("LC_ALL={$language}");
 		$results = setlocale(LC_ALL, $all_locale);
 		
-		if (!empty($results)) {
-			// $this->Log->info('setlocale failed: locale function is not available on this platform, or the given locale (' . $language . ') does not exist in this environment');
+		if (empty($results)) {
+			$this->Log->info('setlocale failed: locale function is not available on this platform, or the given locale (' . $language . ') does not exist in this environment');
 		}
 		$langParts = explode(".", $language);
 		$this->currentLocale = $langParts[0];
@@ -598,9 +616,15 @@ class Web {
 		$this->_module = array_shift($hsplit);
 		$this->_submodule = array_shift($hsplit);
 
+		// Check to see if module exists, if it doesn't, send a 403 header
+        if (Config::get("{$this->_module}.active") === null) {
+            header($_SERVER["SERVER_PROTOCOL"] . ' 404 Not Found');
+            exit();
+        }
+
 		// Check to see if the module is active (protect against main disabling)
-		if (null !== Config::get("{$this->_module}.active") && !Config::get("{$this->_module}.active") && $this->_module !== "main") {
-			$this->error("The {$this->_module} module is not active, you can change it's active state in it's config file.", "/");
+		if (!Config::get("{$this->_module}.active") && $this->_module !== "main") {
+            $this->error("The {$this->_module} module is not active", "/");
 		}
 
 		// configure translations lookup for this module
@@ -630,14 +654,16 @@ class Web {
 
 		$this->_requestMethod = array_key_exists('REQUEST_METHOD', $_SERVER) ? $_SERVER['REQUEST_METHOD'] : '';
 
+		$actionmethods[] = $this->_action . '_' . $this->_requestMethod;
+
 		if ($this->_requestMethod === "HEAD") {
 			$this->_is_head_request = true;
-			$this->_requestMethod = "GET";
+			$actionmethods[] = $this->_action . '_GET';
 		}
 
 		$actionmethods[] = $this->_action . '_' . $this->_requestMethod;
 		$actionmethods[] = $this->_action . '_ALL';
-		$actionmethods[] = 'default_ALL';
+		//$actionmethods[] = 'default_ALL';
 
 		// change the submodule and action for installation
 		if ($this->_is_installing) {
