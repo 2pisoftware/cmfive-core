@@ -63,16 +63,24 @@ class CmfiveStyleComponent extends CmfiveComponent {
 				}
 
 				try {
-					$compiled_css = $scss->compile(file_get_contents(WEBROOT . $this->_dirname . '/' . $this->_filename . '.' . $this->_extension));
+					$compiled_css = $scss->compile(file_get_contents(ROOT_PATH . $this->_dirname . '/' . $this->_filename . '.' . $this->_extension));
 				} catch (Exception $e) {
 					// Could not compile SCSS
 					echo $e->getMessage();
 					return;
 				}
-
+				
 				if (!is_dir(ROOT_PATH . '/cache/css/')) {
 					mkdir(ROOT_PATH . '/cache/css/');
+					
 				}
+				// check if exists or make .htaccess with allow from all
+				if (!file_exists(ROOT_PATH . '/cache/css/.htaccess')) {
+					$access_file = fopen(ROOT_PATH . '/cache/css/.htaccess', 'w');
+					fwrite($access_file, "Allow From All");
+					fclose($access_file);
+				}
+
 				file_put_contents(ROOT_PATH . '/cache/css/' . $this->_filename . '.css', $compiled_css);
 				$this->rel = 'stylesheet';
 				$this->href = '/cache/css/' . $this->_filename . '.css';
