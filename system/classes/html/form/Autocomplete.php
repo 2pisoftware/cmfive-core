@@ -244,5 +244,5 @@ class Autocomplete extends \Html\Form\FormElement {
 </script>
 BUFFER;
 	}
-
+	
 }
