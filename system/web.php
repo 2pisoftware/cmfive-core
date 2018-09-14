@@ -106,11 +106,13 @@ class Web {
 		// if using IIS then value is "off" for non ssl requests
 		$sHttps = array_key_exists('HTTPS', $_SERVER) ? $_SERVER['HTTPS'] : '';
 		$sHttpHost = array_key_exists('HTTP_HOST', $_SERVER) ? $_SERVER['HTTP_HOST'] : '';
+		
 		if (empty($sHttps) || $sHttps == "off") {
 			$this->_webroot = "http://" . $sHttpHost;
 		} else {
 			$this->_webroot = "https://" . $sHttpHost;
 		}
+	
 		$this->_actionMethod = null;
 
 		// The order of the following three lines are important
@@ -124,6 +126,15 @@ class Web {
 			$this->_is_installing = !file_exists(ROOT_PATH . "/config.php") || strpos($_SERVER['REQUEST_URI'], '/install') === 0;
 		}
 		$this->loadConfigurationFiles();
+
+		// If a domain whitelist has been set then implement it and forbid any request that does not match a domain given
+		$domain_whitelist = Config::get('system.domain_whitelist');
+		if (!empty($domain_whitelist)) {
+			if (!in_array($sHttpHost, $domain_whitelist)) {
+				$this->header('HTTP/1.0 403 Forbidden');
+				exit();
+			}
+		}
 
 		if ($this->_is_installing) {
 			$this->install();
