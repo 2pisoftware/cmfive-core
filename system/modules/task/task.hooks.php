@@ -260,7 +260,7 @@ function task_comment_get_notification_recipients_task(Web $w, $params) {
 function task_comment_send_notification_recipients_task(Web $w, $params) {
     
     $task = $w->task->getTask($params['object_id']);
-	$subject = (!empty($commentor->id) ? $commentor->getFullName() : 'Someone') . ' has commented on a task that you\'re apart of ('.$task->title . ' [' . $task->id . '])';
+	$subject = (!empty($commentor->id) ? $commentor->getFullName() : 'Someone') . ' has commented on a task that you\'re a part of ('.$task->title . ' [' . $task->id . '])';
 
 	$w->Notification->sendToAllWithCallback($subject, "task", "notification_email", $w->auth->getUser($params['commentor_id']), $params['recipients'], function($user, $existing_template_data) use ($params, $task, $w) {
     	$template_data = $existing_template_data;

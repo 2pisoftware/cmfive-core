@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<link rel="selenium.base" href="http://cosinedev.isaac/auth/login" />
+<link rel="selenium.base" href="http://dev.cmfive" />
 <title>New Test</title>
 </head>
 <body>
@@ -296,6 +296,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>assertConfirmation</td>
+	<td>Are you sure you want to delete this comment?</td>
+	<td></td>
+</tr>
+<tr>
 	<td>click</td>
 	<td>link=Task Details</td>
 	<td></td>
@@ -329,18 +334,8 @@
 <!-- end error checking -->
 <tr>
 	<td>pause</td>
-	<td>2000</td>
+	<td>4000</td>
 	<td></td>
-</tr>
-<tr>
-	<td>waitForTextPresent</td>
-	<td>duplicated</td>
-	<td></td>
-</tr>
-<tr>
-	<td>assertText</td>
-	<td>css=div.alert-box.info</td>
-	<td>Task duplicated ×</td>
 </tr>
 <tr>
 	<td>clickAndWait</td>

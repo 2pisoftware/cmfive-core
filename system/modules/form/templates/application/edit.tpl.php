@@ -6,7 +6,7 @@
 <div id='form-application-<?php echo $application->id; ?>__vue-instance' style='background-color: #efefef; padding-top: 20px;'>
 	<div class='row'>
 		<div class='small-12 columns'>
-			<h3>Editing Application: {{ application.title }} <a class='button tiny secondary right' style='margin-bottom: 0px;' href='/form-application/show/<?php echo $application->id; ?>'>View Application</a></h3>
+			<h3>Editing Application: {{ application.title }} <a class='button tiny secondary right' style='margin-bottom: 0px;' href='/form-application/show/<?php echo $application->id; ?>'>View Application</a><a class='button tiny secondary right' style='margin-bottom: 0px;' href='/form-application/export/<?php echo $application->id; ?>'>Export Application</a></h3>
 		</div>
 	</div>
 	<form style='margin-top: 0px;' v-on:submit='saveApplication()'>
