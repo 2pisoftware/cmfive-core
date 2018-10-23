@@ -11,7 +11,7 @@ function tasklist_ALL(Web $w) {
         // Get filter values
         $assignee_id = $w->sessionOrRequest("task__assignee-id", $w->Auth->user()->id);
         $creator_id = $w->sessionOrRequest("task__creator-id");
-        $show_inactive = $w->sessionOrRequest("task__show-inactive", 0);
+        
         $task_group_id = $w->sessionOrRequest("task__task-group-id");
         $task_type = $w->sessionOrRequest('task__type');
         $task_priority = $w->sessionOrRequest('task__priority');
@@ -78,10 +78,8 @@ function tasklist_ALL(Web $w) {
             $query_object->where("task.dt_due <= ?", $dt_to);
         }
     }
-
-    if (empty($show_inactive) || !$show_inactive) {
-        $query_object->where("task.is_active", 1);
-    }
+    $query_object->where("task.is_active", 1);
+    
     
     
     // Standard wheres
@@ -140,14 +138,7 @@ function tasklist_ALL(Web $w) {
 			["label" => "Yes", "value" => '1'],
 			["label" => "Both", "value" => '']
         ])->setSelectedOption($is_closed), //array("Closed", "checkbox", "task__is-closed", !empty($is_closed) ? $is_closed : null)
-        (new \Html\Form\Select([
-            "label"     => "Show Inacitve",
-            "name"      => "task__show-inactive",
-            "id"        => "task__show-inactive"
-        ]))->setOptions([
-            ["label" => "No", "value" => '0'],
-            ["label" => "Yes", "value" => '1']
-        ])->setSelectedOption(isset($show_inactive) ? $show_inactive : '0')
+        
     );
     
     $w->ctx("filter_data", $filter_data);

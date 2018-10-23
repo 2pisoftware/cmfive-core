@@ -5,7 +5,6 @@
     </div>
     <div class="tab-body">
         <div id="dashboard">
-            <?php echo !$show_inactive ? Html::b('/task-group/viewtaskgrouptypes?inactive=true','Show Inactive taskgroups') : Html::b('/task-group/viewtaskgrouptypes','Hide Inactive taskgroups'); ?>
             <?php echo $dashboard; ?>
         </div>
         <div id="create" class="clearfix">
