@@ -308,7 +308,7 @@ function task_comment_send_notification_recipients_task(Web $w, $params) {
 // if taskgroup has been made inactive, then deactivate all attached tasks
 function task_core_dbobject_after_update_TaskGroup(Web $w, $object) {
 	// check if is_active flag has changed from 1 to 0
-	if ($object->__old && $object->__old["is_active"] !== $object->is_active) {
+	if (isset($object->__old['is_active']) && $object->__old["is_active"] !== $object->is_active) {
 		// get all attached tasks
 		$tasks = $object->getTasks();
 		if (!empty($tasks)) {
