@@ -914,7 +914,7 @@ class DbObject extends DbService {
      * 
      * @return Bool
      */
-    function addToSearch() {
+    function shouldAddToSearch() {
         return true;
     }
 
