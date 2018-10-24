@@ -445,6 +445,10 @@ class Task extends DbObject {
 
                 if ($this->isStatusClosed()) {
                     $this->is_closed = 1;
+                    // check dt_completed and set if empty
+                    if (empty($this->dt_completed)) {
+                        $this->dt_completed = formatDateTime(time());
+                    }
                 } else {
                 	$this->is_closed = 0;
                 }
@@ -457,6 +461,21 @@ class Task extends DbObject {
                 }
 
                 $tg_type->on_before_insert($this);
+            }
+
+            //check if assigned
+            if (!empty($this->assignee_id)) {
+                $user = $this->w->Auth->getUser($this->assignee_id);
+                if (!empty($user->id)) {
+                    // is assigned, check dt fields
+                    if (empty($this->dt_assigned)) {
+                        $this->dt_assigned = formatDateTime(time());
+                    }
+                    if (empty($this->dt_first_assigned)) {
+                        $this->dt_first_assigned = formatDateTime(time());
+                        $this->first_assignee_id = $this->assignee_id;
+                    }
+                }
             }
 
             // 2. Call on_before_insert of the Tasktype
@@ -555,10 +574,29 @@ class Task extends DbObject {
     	// 0. set the is_closed flag to make sure the task can be queried easily
     	
     	if ($this->isStatusClosed()) {
-    		$this->is_closed = 1;
+            $this->is_closed = 1;
+            // check dt_completed and set if empty
+            if (empty($this->dt_completed)) {
+                $this->dt_completed = formatDateTime(time());
+            }
     	} else {
     		$this->is_closed = 0;
-    	}
+        }
+        
+        //check if assigned and update dt fields
+        if (!empty($this->assignee_id)) {
+            $user = $this->w->Auth->getUser($this->assignee_id);
+            if (!empty($user->id)) {
+                // is assigned, check dt fields
+                if (empty($this->dt_assigned) || $this->assignee_id != $this->__old['assignee_id']) {
+                    $this->dt_assigned = formatDateTime(time());
+                }
+                if (empty($this->dt_first_assigned)) {
+                    $this->dt_first_assigned = formatDateTime(time());
+                    $this->first_assignee_id = $this->assignee_id;
+                }
+            }
+        }
     	
         try {
             $this->startTransaction();

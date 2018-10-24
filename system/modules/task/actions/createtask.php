@@ -64,20 +64,6 @@ function createtask_POST(Web &$w) {
 	$task = new Task($w);
 	$task->fill($arr_req);
 
-	// set assigned and first assigned date time
-	if ($task->assignee_id > 0) {
-		// set first assigned date time
-		$task->dt_first_assigned = formatDateTime(time());
-		
-		// set assigned date time
-		$task->dt_assigned = formatDateTime(time());
-	}
-		
-	// set completed date time
-	if ($task->status == "Deploy" || $task->status == "Live" || $task->status == "DONE") {
-		$task->dt_completed = formatDateTime(time());
-	}
-
 	$task->insert();
 
 	// if insert is successful, store additional fields as task data
