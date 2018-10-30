@@ -8,24 +8,26 @@
  */
 class User extends DbObject {
 
-	public $login;
-	public $is_admin;
-	public $password;
-	public $password_salt;
-	public $is_active;
-	public $dt_lastlogin;
-	public $dt_created;
-	public $contact_id;
-	public $is_deleted;
-	public $is_group;
-	public $password_reset_token;
-	public $dt_password_reset_at;
-	public $redirect_url;
-	public $language;
-
-	public $_roles;
-	public $_contact;
-	public $_modifiable;
+    public $login;
+    public $is_admin;
+    public $password;
+    public $password_salt;
+    public $is_active;
+    public $dt_lastlogin;
+    public $dt_created;
+    public $contact_id;
+    public $is_deleted;
+    public $is_group;
+    public $password_reset_token;
+    public $dt_password_reset_at;
+    public $redirect_url;
+    public $is_external;
+    public $_roles;
+    public $_contact;
+    public $_modifiable;
+    public $language;
+	
+    
 
 	public function getLanguage() {
 		return $this->$language;

@@ -9,11 +9,11 @@ defined('SEED_MIGRATION_DIRECTORY') || define('SEED_MIGRATION_DIRECTORY', MIGRAT
 class MigrationService extends DbService {
 	
 	public static $_installed = []; 
-	public static $_NEXT_BATCH;
+	public $_NEXT_BATCH;
 	
 	public function getAvailableMigrations($module_name) {
 		$_this = $this;
-		set_error_handler(function($errno, $errstr) use ($_this) {
+		set_error_handler(function($errno, $errstr, $errfile, $errline, $errcontext) use ($_this) {
 			if (!(error_reporting() & $errno)) {
 				return;
 			}
@@ -213,10 +213,10 @@ MIGRATION;
         
 		// Install migrations
 		if (!empty($availableMigrations)) {
-			$this->w->db->startTransaction();
+			
+			// try {
+				$this->w->db->setMigrationMode(1);
 
-            
-			try {
 				// Use MySQL for now
 				$mysql_adapter = new \Phinx\Db\Adapter\MysqlAdapter([
 					'connection' => $this->w->db,
@@ -242,35 +242,45 @@ MIGRATION;
 							if (class_exists($migration['class_name'])) {
 								$this->w->Log->setLogger("MIGRATION")->info("Running migration: " . $migration['class_name']);
 
-								// Run migration UP
-								$migration_class = (new $migration['class_name'])->setWeb($this->w);
-								$migration_class->setAdapter($mysql_adapter);
-								$migration_class->up();
+								try {
+									$this->w->db->startTransaction();
 
-								// Insert migration record into DB
-								$migration_object = new Migration($this->w);
-								$migration_object->path = $migration_path;
-								$migration_object->classname = $migration['class_name'];
-								$migration_object->module = strtolower($module);
-								$migration_object->batch = $this->getNextBatchNumber();
-								$migration_object->insert();
-								
-								$runMigrations++;
-								$this->w->Log->setLogger("MIGRATION")->info("Migration has run");
+									// Run migration UP
+									$migration_class = (new $migration(1))->setWeb($this->w);
+									$migration_class->setAdapter($mysql_adapter);
+									$migration_class->up();
+
+									// Insert migration record into DB
+									$migration_object = new Migration($this->w);
+									$migration_object->path = $migration_path;
+									$migration_object->classname = $migration;
+									$migration_object->module = strtolower($module);
+									$migration_object->batch = $this->getNextBatchNumber();
+									$migration_object->insert();
+									
+									$runMigrations++;
+
+									$this->w->db->commitTransaction();
+									$this->w->Log->setLogger("MIGRATION")->info("Migration has run");
+								} catch (Exception $e) {
+									$this->w->db->rollbackTransaction();
+									$this->w->out("Error with a migration: " . $e->getMessage() . "<br/>More info: " . var_export($e));
+									$this->w->Log->setLogger("MIGRATION")->error("Error with a migration: " . $e->getMessage());
+
+									// Skip current modules migrations
+									break;
+								}
 							}
 						}
 					}
 				}
 
 				// Finalise transaction
-				$this->w->db->commitTransaction();
                 $this->w->db->setMigrationMode(false);
 				return count($runMigrations) . ' migration' . (count($runMigrations) == 1 ? ' has' : 's have') . ' run'; 
-			} catch (Exception $e) {
-				$this->w->out("Error with a migration: " . $e->getMessage() . "<br/>More info: " . var_export($e));
-				$this->w->Log->setLogger("MIGRATION")->error("Error with a migration: " . $e->getMessage());
-				$this->w->db->rollbackTransaction();
-			}
+			// } catch (Exception $e) {
+				
+			// }
 		} else {
 			$this->w->db->setMigrationMode(false);
 			return "No migrations to run!";

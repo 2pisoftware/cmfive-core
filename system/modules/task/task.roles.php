@@ -21,6 +21,7 @@ function role_task_user_allowed(Web $w, $path) {
         $w->checkUrl($path, "task", null, "deletetime") ||
         $w->checkUrl($path, "task", null, "taskAjaxSelectbyTaskGroup") ||
         $w->checkUrl($path, "task", null, "ical") ||
+		$w->checkUrl($path, "task", "subscriber", "*") ||
 		$w->checkUrl($path, "task", "group", "ajaxAutocompleteTaskgroups");
 }
 

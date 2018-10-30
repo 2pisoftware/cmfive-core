@@ -27,7 +27,8 @@ Config::set('admin', array(
         "twig/twig" => "2.4.*",
         "nesbot/carbon" => "1.22.1",
 		"robmorgan/phinx" => "0.8.*",
-		"sendgrid/sendgrid" => "~5.5"
+		"sendgrid/sendgrid" => "~5.5",
+        "softark/creole" => "~1.2"
     ),
     "bulkemail"=> array(
         "number_per_cron" => 5,

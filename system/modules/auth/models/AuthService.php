@@ -11,7 +11,7 @@ class AuthService extends DbService {
         // $password = User::encryptPassword($password);
         // $user_data = $this->_db->get("user")->where("login", $login)->and("password", $password)->and("is_active", "1")->and("is_deleted", "0")->fetch_row();
         $user = $this->getUserForLogin($login);
-        if (empty($user->id) || ($user->encryptPassword($password) !== $user->password)) {
+        if (empty($user->id) || ($user->encryptPassword($password) !== $user->password) || $user->is_external == 1) {
             return null;
         }
         // if ($user_data != null) {
@@ -61,6 +61,50 @@ class AuthService extends DbService {
 
     function setRestUser($user) {
         $this->_rest_user = $user;
+    }
+
+    /**
+     * There is no way to enforce the creation of a User object when creating a Contact
+     * E.g. for an address book, there is no need to create a User object. However, if you
+     * want to ensure that a Contact will have a User account, call this function before doing
+     * anything else with the Contact.
+     *  
+     * As a security measure, all user accounts created this way are external only.
+     *
+     * @param mixed $contact_id
+     * @return int user_id
+     */
+    function createExernalUserForContact($contact_id) {
+        $contact = $this->getContact($contact_id);
+
+        if (empty($contact->id)) {
+            return false;
+        }
+
+        $user = $contact->getUser();
+        if (!empty($user->id)) {
+            return $user->id;
+        }
+
+        $user = new User($this->w);
+        $user->login = $contact->email;
+        $user->is_external = 1;
+        $user->contact_id = $contact->id;
+        $user->insert();
+
+        return $user->id;
+    }
+
+    function getContacts() {
+        return $this->getObjects('Contact', ['is_deleted' => 0]);
+    }
+
+    function getContact($contact_id) {
+        return $this->getObject("Contact", ['id' => $contact_id]);
+    }
+
+    function getContactByEmail($email) {
+        return $this->getObject("Contact", ['email' => filter_var($email, FILTER_SANITIZE_EMAIL), 'is_deleted' => 0]);
     }
 
     /**
@@ -159,22 +203,28 @@ class AuthService extends DbService {
     }
 
     function getUsersAndGroups($includeDeleted = false) {
-    	$where = array();
-        $where["is_active"] = 1;
+    	$where = [
+            "is_active" => 1,
+            "is_external" => 0
+        ];
+
     	if (!$includeDeleted) {
-    		$where["is_deleted"]=0;
+    		$where["is_deleted"] = 0;
     	}
-        return $this->getObjects("User", $where, true);
+        return $this->getObjects("User", $where);
     }
 
     function getUsers($includeDeleted = false) {
-        $where = array();
-        $where["is_group"]=0;
-        $where['is_active'] = 1;
+        $where = [
+            "is_group" => 0,
+            "is_active" => 1,
+            "is_external" => 0
+        ];
+
     	if (!$includeDeleted) {
     		$where["is_deleted"]=0;
     	}
-    	return $this->getObjects("User", $where, true);
+    	return $this->getObjects("User", $where);
     }
     
     function getUserForContact($cid) {

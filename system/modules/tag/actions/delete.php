@@ -5,12 +5,12 @@ function delete_ALL(Web $w) {
 
     if (!empty($p["id"])){
         $tag = $w->Tag->getTag($p["id"]);
-        if (!empty($tag->tag)) {
-            $w->Tag->deleteTag($tag->tag);
-            $w->msg("Tag deleted", "/tag");
+        if (!empty($tag->id)) {
+            $tag->delete();
+            $w->msg("Tag deleted", "/tag/admin");
         }
     }
     
-    $w->error("Could not find tag", "/tag");
+    $w->error("Could not find tag", "/tag/admin");
 
 }

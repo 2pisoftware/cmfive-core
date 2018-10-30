@@ -36,18 +36,19 @@ function viewtaskgroup_GET(Web &$w) {
 	
 	// build form displaying current attributes from database
 	$f = Html::form(array(
-	array("Task Group Details","section"),
-	array("Task Group Type","static","task_group_type",$group_details->getTypeTitle()),
-	array("Title","text", "title",$group_details->title),
-	array("Who Can Assign","select", "can_assign",$group_details->can_assign,$arrassign),
-	array("Who Can View","select", "can_view",$group_details->can_view,$w->Task->getTaskGroupPermissions()),
-	array("Who Can Create","select","can_create",$group_details->can_create,$w->Task->getTaskGroupPermissions()),
-	array("Is Active","select", "is_active", $group_details->is_active,$is_active),
-	array("Description","textarea", "description",$group_details->description,"26","6"),
-        array("Default Task Type","select","default_task_type",$group_details->default_task_type,$tasktypes),
-        array("Default Priority","select","default_priority",$group_details->default_priority,$priorities),
-	array("Default Assignee","select", "default_assignee_id",$default_assignee,$assignees),
-	),$w->localUrl("/task-group/updatetaskgroup/".$group_details->id),"POST"," Update ");
+			array("Task Group Details", "section"),
+			array("Task Group Type", "static", "task_group_type", $group_details->getTypeTitle()),
+			array("Title", "text", "title", $group_details->title),
+			array("Who Can Assign", "select", "can_assign", $group_details->can_assign, $arrassign),
+			array("Who Can View", "select", "can_view", $group_details->can_view, $w->Task->getTaskGroupPermissions()),
+			array("Who Can Create", "select", "can_create", $group_details->can_create, $w->Task->getTaskGroupPermissions()),
+			array("Is Active", "select", "is_active", $group_details->is_active, $is_active),
+			array("Description", "textarea", "description", $group_details->description, "26", "6"),
+			array("Default Task Type", "select", "default_task_type", $group_details->default_task_type, $tasktypes),
+			array("Default Priority", "select", "default_priority", $group_details->default_priority, $priorities),
+			array("Default Assignee", "select", "default_assignee_id", $default_assignee, $assignees),
+			array('Automatic Subscription', 'checkbox', 'is_automatic_subscription', $group_details->is_automatic_subscription)
+			), $w->localUrl("/task-group/updatetaskgroup/" . $group_details->id), "POST", "Update");
 
 	// display form
 	$w->setLayout(null);
@@ -66,7 +67,8 @@ function createtaskgroup_POST(Web &$w) {
         $w->request('is_active'),
         $w->request('is_deleted'),
         $w->request('default_task_type'),
-        $w->request('default_priority')
+        $w->request('default_priority'),
+		$w->request('is_automatic_subscription')
     );
 
     // return
@@ -81,6 +83,7 @@ function updatetaskgroup_POST(Web &$w) {
 	// if group exists, update the details
 	if ($group_details) {
 		$group_details->fill($_REQUEST);
+		$group_details->is_automatic_subscription = !empty($w->request('is_automatic_subscription'));
 		$response = $group_details->update();
 
                 // Check the validation

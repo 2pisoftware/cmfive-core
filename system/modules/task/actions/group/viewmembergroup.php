@@ -40,47 +40,48 @@ function viewmembergroup_GET(Web $w) {
 	// display list of group members
 	$w->ctx("viewmembers", Html::table($line, null, "tablesorter", true));
 	
+	// DEPRECATED IN FAVOUR OF TASK SUBSCRIBERS
 	// tab:  Notify
-	$notify = $w->Task->getTaskGroupNotify($taskgroup->id);
-
-	if ($notify) {
-		foreach ($notify as $n) {
-			$v[$n->role][$n->type] = $n->value;
-		}
-	} else {
-		$v['guest']['creator'] = 0;
-		$v['member']['creator'] = 0;
-		$v['member']['assignee'] = 0;
-		$v['owner']['creator'] = 0;
-		$v['owner']['assignee'] = 0;
-		$v['owner']['other'] = 0;
-	}
-
-	$notifyForm['Task Group Notifications'] = array(
-		array(array("", "hidden", "task_group_id", $taskgroup->id)),
-		array(
-			array("", "static", ""),
-			array("Creator", "static", "creator"),
-			array("Assignee", "static", "assignee"),
-			array("All Others", "static", "others"),
-		),
-		array(
-			array("Guest", "static", "guest"),
-			array("", "checkbox", "guest_creator", $v['guest']['creator'])
-		),
-		array(
-			array("Member", "static", "member"),
-			array("", "checkbox", "member_creator", $v['member']['creator']),
-			array("", "checkbox", "member_assignee", $v['member']['assignee']),
-		),
-		array(
-			array("Owner", "static", "owner"),
-			array("", "checkbox", "owner_creator", $v['owner']['creator']),
-			array("", "checkbox", "owner_assignee", $v['owner']['assignee']),
-			array("", "checkbox", "owner_other", $v['owner']['other']),
-		),
-	);
+	// $notify = $w->Task->getTaskGroupNotify($taskgroup->id);
+	// 
+	// if ($notify) {
+	// 	foreach ($notify as $n) {
+	// 		$v[$n->role][$n->type] = $n->value;
+	// 	}
+	// } else {
+	// 	$v['guest']['creator'] = 0;
+	// 	$v['member']['creator'] = 0;
+	// 	$v['member']['assignee'] = 0;
+	// 	$v['owner']['creator'] = 0;
+	// 	$v['owner']['assignee'] = 0;
+	// 	$v['owner']['other'] = 0;
+	// }
+	// 
+	// $notifyForm['Task Group Notifications'] = array(
+	// 	array(array("", "hidden", "task_group_id", $taskgroup->id)),
+	// 	array(
+	// 		array("", "static", ""),
+	// 		array("Creator", "static", "creator"),
+	// 		array("Assignee", "static", "assignee"),
+	// 		array("All Others", "static", "others"),
+	// 	),
+	// 	array(
+	// 		array("Guest", "static", "guest"),
+	// 		array("", "checkbox", "guest_creator", $v['guest']['creator'])
+	// 	),
+	// 	array(
+	// 		array("Member", "static", "member"),
+	// 		array("", "checkbox", "member_creator", $v['member']['creator']),
+	// 		array("", "checkbox", "member_assignee", $v['member']['assignee']),
+	// 	),
+	// 	array(
+	// 		array("Owner", "static", "owner"),
+	// 		array("", "checkbox", "owner_creator", $v['owner']['creator']),
+	// 		array("", "checkbox", "owner_assignee", $v['owner']['assignee']),
+	// 		array("", "checkbox", "owner_other", $v['owner']['other']),
+	// 	),
+	// );
 
 	$w->ctx("taskgroup", $taskgroup);
-	$w->ctx("notifymatrix", Html::multiColForm($notifyForm, $w->localUrl("/task-group/updategroupnotify/")));
+	// $w->ctx("notifymatrix", Html::multiColForm($notifyForm, $w->localUrl("/task-group/updategroupnotify/")));
 }

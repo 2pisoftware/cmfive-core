@@ -82,6 +82,7 @@ class Web {
 
 	public $_scripts = array();
 	public $_styles = array();
+        public $sHttps = null;
 
 	/**
 	 * Constructor
@@ -105,15 +106,19 @@ class Web {
 		// if using IIS then value is "off" for non ssl requests
 		$sHttps = array_key_exists('HTTPS', $_SERVER) ? $_SERVER['HTTPS'] : '';
 		$sHttpHost = array_key_exists('HTTP_HOST', $_SERVER) ? $_SERVER['HTTP_HOST'] : '';
+		
 		if (empty($sHttps) || $sHttps == "off") {
 			$this->_webroot = "http://" . $sHttpHost;
 		} else {
 			$this->_webroot = "https://" . $sHttpHost;
 		}
+	
 		$this->_actionMethod = null;
 
 		// The order of the following three lines are important
 		spl_autoload_register(array($this, 'modelLoader'));
+		spl_autoload_register(array($this, 'componentLoader'));
+
 		defined("WEBROOT") || define("WEBROOT", $this->_webroot);
 
 		// conditions to start the installer - must be running from web browser
@@ -121,6 +126,15 @@ class Web {
 			$this->_is_installing = !file_exists(ROOT_PATH . "/config.php") || strpos($_SERVER['REQUEST_URI'], '/install') === 0;
 		}
 		$this->loadConfigurationFiles();
+
+		// If a domain whitelist has been set then implement it and forbid any request that does not match a domain given
+		$domain_whitelist = Config::get('system.domain_whitelist');
+		if (!empty($domain_whitelist)) {
+			if (!in_array($sHttpHost, $domain_whitelist)) {
+				$this->header('HTTP/1.0 403 Forbidden');
+				exit();
+			}
+		}
 
 		if ($this->_is_installing) {
 			$this->install();
@@ -180,8 +194,6 @@ class Web {
 			$class = array_pop($filePath);
 			$file = 'system' . DS . 'classes' . DS . strtolower(implode("/", $filePath)) . DS . $class . ".php";
 
-			// echo $file; var_dump(file_exists($file)); die();
-
 			if (file_exists($file)) {
 				require_once $file;
 				file_put_contents($classdirectory_cache_file, '$this->_classdirectory["' . $className . '"]="' . $file . '";' . "\n", FILE_APPEND);
@@ -189,6 +201,17 @@ class Web {
 			}
 		}
 		// $this->Log->debug("Class " . $file . " not found.");
+		return false;
+	}
+
+	private function componentLoader($name) {
+		$directory = 'system' . DS . 'classes' . DS . 'components';
+
+		if (file_exists($directory . DS . $name . '.php')) {
+			require_once $directory . DS . $name . '.php';
+			return true;
+		}
+
 		return false;
 	}
 
@@ -209,14 +232,8 @@ class Web {
 		$requestURI = explode('/', $uri);
 		$scriptName = explode('/', $_SERVER['SCRIPT_NAME']);
 
-		for ($i = 0; $i < sizeof($scriptName); $i++) {
-			// Checking is these vars are set makes the logout function not work
-			// So we can just supress the warnings
-			if (@$requestURI[$i] == @$scriptName[$i]) {
-				unset($requestURI[$i]);
-			}
-		}
-		return array_values($requestURI);
+		$diff = array_diff($requestURI, $scriptName);
+		return array_values($diff);
 	}
 
 	/**
@@ -294,7 +311,9 @@ class Web {
 
 	function initLocale() {
         if (!$this->_is_installing) {
-    		$user = $this->Auth->user();
+            $user = $this->Auth->user();
+        } else {
+            $user = null;
         }
 		// default language
 		$language = Config::get('system.language');
@@ -305,6 +324,12 @@ class Web {
 				$language = $lang;
 			}
 		}
+		
+		// Fallback to en_AU if language is not set
+		if (empty($language)) {
+			$language = 'en_AU';
+		}
+		
 		$this->Log->info('init locale ' . $language);
 
 		$all_locale = getAllLocaleValues($language);
@@ -312,7 +337,7 @@ class Web {
 		putenv("LC_ALL={$language}");
 		$results = setlocale(LC_ALL, $all_locale);
 		
-		if (!empty($results)) {
+		if (empty($results)) {
 			$this->Log->info('setlocale failed: locale function is not available on this platform, or the given locale (' . $language . ') does not exist in this environment');
 		}
 		$langParts = explode(".", $language);
@@ -517,17 +542,28 @@ class Web {
 		$this->_module = array_shift($hsplit);
 		$this->_submodule = array_shift($hsplit);
 
+		// Check to see if module exists, if it doesn't, send a 403 header
+        if (Config::get("{$this->_module}.active") === null) {
+            header($_SERVER["SERVER_PROTOCOL"] . ' 404 Not Found');
+            exit();
+        }
+
 		// Check to see if the module is active (protect against main disabling)
-		if (null !== Config::get("{$this->_module}.active") && !Config::get("{$this->_module}.active") && $this->_module !== "main") {
-			$this->error("The {$this->_module} module is not active, you can change it's active state in it's config file.", "/");
+		if (!Config::get("{$this->_module}.active") && $this->_module !== "main") {
+            $this->error("The {$this->_module} module is not active", "/");
 		}
 
 		// configure translations lookup for this module
 		$this->initLocale();
-		$this->setTranslationDomain('admin');
-		$this->setTranslationDomain('main');
-		$this->setTranslationDomain($this->currentModule());
-
+		
+		try {
+			$this->setTranslationDomain('admin');
+			$this->setTranslationDomain('main');
+			$this->setTranslationDomain($this->currentModule());
+		} catch (Exception $e) {
+			$this->Log->setLogger('I18N')->error($e->getMessage());
+		}
+		
 		if (!$this->_action) {
 			$this->_action = $this->_defaultAction;
 		}
@@ -544,14 +580,16 @@ class Web {
 
 		$this->_requestMethod = array_key_exists('REQUEST_METHOD', $_SERVER) ? $_SERVER['REQUEST_METHOD'] : '';
 
+		$actionmethods[] = $this->_action . '_' . $this->_requestMethod;
+
 		if ($this->_requestMethod === "HEAD") {
 			$this->_is_head_request = true;
-			$this->_requestMethod = "GET";
+			$actionmethods[] = $this->_action . '_GET';
 		}
 
 		$actionmethods[] = $this->_action . '_' . $this->_requestMethod;
 		$actionmethods[] = $this->_action . '_ALL';
-		$actionmethods[] = 'default_ALL';
+		//$actionmethods[] = 'default_ALL';
 
 		// change the submodule and action for installation
 		if ($this->_is_installing) {
@@ -1373,7 +1411,11 @@ class Web {
 		// set translations to partial module
 		$oldModule = $this->currentModule();
 		if ($oldModule != $module) {
-			$this->setTranslationDomain($module);
+			try {
+				$this->setTranslationDomain($module);
+			} catch (Exception $e) {
+				$this->Log->setLogger('I18N')->error($e->getMessage());
+			}
 		}
 
 		// Check if the module if active or not
@@ -1458,7 +1500,11 @@ class Web {
 
 		// restore translations module
 		if ($oldModule != $module) {
-			$this->setTranslationDomain($oldModule);
+			try {
+				$this->setTranslationDomain($oldModule);
+			} catch (Exception $e) {
+				$this->Log->setLogger('I18N')->error($e->getMessage());
+			}
 		}
 
 		return $currentbuf;
@@ -1480,7 +1526,11 @@ class Web {
 		// set translations to hook module
 		$oldModule = $this->currentModule();
 		if ($oldModule != $module) {
-			$this->setTranslationDomain($module);
+			try {
+				$this->setTranslationDomain($module);
+			} catch (Exception $e) {
+				$this->Log->setLogger('I18N')->error($e->getMessage());
+			}
 		}
 
 		// Build _hook registry if empty
@@ -1539,7 +1589,11 @@ class Web {
 
 		// restore translations module
 		if ($oldModule != $module) {
-			$this->setTranslationDomain($oldModule);
+			try {
+				$this->setTranslationDomain($oldModule);
+			} catch (Exception $e) {
+				$this->Log->setLogger('I18N')->error($e->getMessage());
+			}
 		}
 
 		return $buffer;

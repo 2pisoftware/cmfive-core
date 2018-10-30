@@ -47,21 +47,23 @@ function useredit_POST(Web &$w) {
 	}
 	$user->login = $_REQUEST['login'];
 
-	$user->fill($_REQUEST);
-	if ($_REQUEST['password']) {
-		$user->setPassword($_REQUEST['password']);
-	} else {
-		$user->password = null;
-	}
-	$user->is_admin = isset($_REQUEST['is_admin']) ? 1 : 0;
-	$user->is_active = isset($_REQUEST['is_active']) ? 1 : 0;
-	$user->update();
+    $user->fill($_REQUEST);
+    if ($_REQUEST['password']) {
+        $user->setPassword($_REQUEST['password']);
+    } else {
+        $user->password = null;
+    }
+    $user->is_admin = isset($_REQUEST['is_admin']) ? 1 : 0;
+    $user->is_active = isset($_REQUEST['is_active']) ? 1 : 0;
+    $user->is_external = isset($_REQUEST['is_external']) ? 1 : 0;
+    $user->update();
 
 	$contact = $user->getContact();
 	if ($contact) {
 		$contact->fill($_REQUEST);
 		$contact->private_to_user_id = null;
-		$contact->update();
+		$contact->setTitle($_REQUEST['acp_title']);
+		$contact->update(true); // we want to insert null values
 	}
 	$w->callHook("admin", "account_changed", $user);
 

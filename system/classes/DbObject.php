@@ -78,8 +78,8 @@ class DbObject extends DbService {
 	private static $_columns = array();
     private $_class;
 	public $__use_auditing = true;
-	
-    /**
+
+        /**
      * Constructor
      *
      * @param $w
@@ -572,8 +572,7 @@ class DbObject extends DbService {
 
             $this->id = $this->_db->last_insert_id();
 
-            // calling hooks AFTER inserting the object
-            $this->_callHooks("after", "insert");
+            
 
             // call standard aspect methods
 
@@ -586,6 +585,9 @@ class DbObject extends DbService {
             if (property_exists($this, "_searchable") && (null !== $this->_searchable)) {
                 $this->_searchable->insert(false);
             }
+
+            // calling hooks AFTER inserting the object
+            $this->_callHooks("after", "insert");
 
             // give related objects the chance to update their index
             $this->w->callHook("core_dbobject", "indexChange_".get_class($this), $this);
@@ -630,6 +632,8 @@ class DbObject extends DbService {
                     return $valid_response;
                 }
             }
+            
+            $deletedOnManualUpdate = false;
 
             // calling hooks BEFORE updating the object
             $this->_callHooks("before", "update");
@@ -639,6 +643,16 @@ class DbObject extends DbService {
             // check delete attribute
             if (in_array("is_deleted", $columns) && $this->is_deleted === null) {
                 $this->is_deleted = 0;
+            }
+            
+            // call delete function if property is_deleted has changed to 1
+            else if (in_array("is_deleted", $columns) && $this->is_deleted == 1 && $this->__old["is_deleted"] != 1) {
+                $deletedOnManualUpdate = true;
+                $this->_callHooks("before", "delete");
+            }
+            
+            else {
+                $deletedOnManualUpdate = false;
             }
 
             // set default attributes the old way
@@ -675,7 +689,11 @@ class DbObject extends DbService {
 
             $this->_db->update($t, $data)->where($this->getDbColumnName('id'), $this->id);
             $this->_db->execute();
-
+            
+            if ($deletedOnManualUpdate) {
+                $this->_callHooks("after", "delete");
+            }
+            
             // calling hooks AFTER updating the object
             $this->_callHooks("after", "update");
 
@@ -736,7 +754,7 @@ class DbObject extends DbService {
             } else {
                 $this->_db->delete($t)->where($this->getDbColumnName('id'), $this->id)->execute();
             }
-
+            
             // calling hooks AFTER deleting the object
             $this->_callHooks("after", "delete");
 
@@ -1199,3 +1217,4 @@ class DbObject extends DbService {
     }
 	
 }
+
