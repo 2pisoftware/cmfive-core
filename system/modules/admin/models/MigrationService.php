@@ -65,7 +65,8 @@ class MigrationService extends DbService {
 					if (!is_dir($file) && $file{0} !== '.') {
 						$classname = explode('.', str_replace('-', '.', $file));
 						if (!empty($classname[1])) {
-							$availableMigrations[$module][$migration_path . DS . $file] = ['class_name'=>$classname[1], 'timestamp'=>(int) $classname[0]];
+							
+							$availableMigrations[$module][$migration_path . DS . $file] = ['class_name'=>$classname[1], 'timestamp'=> $classname[0]];
 						} else {
 							$this->w->Log->error("Migration '" . $file . "' does not conform to naming convention");
 						}
@@ -73,6 +74,7 @@ class MigrationService extends DbService {
 				}
 			}
 		}
+		
 		return $availableMigrations;
 	}
 	
