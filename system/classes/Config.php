@@ -74,7 +74,7 @@ class Config {
            return self::$_config_cache[$key];
         }
 		if (self::$_use_sandbox === true && !empty(self::$_shadow_config_cache[$key])) {
-			return self::$shadow_config_cache[$key];
+			return self::$_shadow_config_cache[$key];
 		}
 		
         $exploded_key = explode('.', $key);
