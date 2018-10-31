@@ -84,13 +84,23 @@
 						
 								<?php $additional_details = $w->callHook('task', 'additional_details', $task);
 								if (!is_null($additional_details) && is_array($additional_details)) {
-									$additional_details = array_values(array_filter($additional_details ? : []));
+                                    //$additional_details = array_values(array_filter($additional_details ? : []));
+                                    $additional_details_flattened = [];
+                                    foreach ($additional_details as $module_details) {
+                                        if (!is_array($module_details[0])) {
+                                            $additional_details_flattened[] = $module_details;
+                                        } else {
+                                            foreach($module_details as $details) {
+                                                $additional_details_flattened[] = $details;
+                                            }
+                                        }
+                                    }
 									if (count($additional_details) > 0) : ?>
 										<div class="row-fluid clearfix panel">
 											<table class="small-12 columns">
 												<tbody>
 													<tr><td class="section" colspan="2">Additional Details</td></tr>
-													<?php foreach($additional_details as $additional_detail) : ?>
+													<?php foreach($additional_details_flattened as $additional_detail) : ?>
 														<tr><td><?php echo $additional_detail[0]; ?></td><td><?php echo $additional_detail[1]; ?></td></tr>
 													<?php endforeach; ?>
 												</tbody>
