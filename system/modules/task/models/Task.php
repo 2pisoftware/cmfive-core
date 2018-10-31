@@ -430,6 +430,13 @@ class Task extends DbObject {
     	$tg = $this->getTaskGroup();
     	return $tg->isStatusClosed($this->status);
     }
+
+    function shouldAddToSearch() {
+        if ($this->is_active) {
+            return true;
+        }
+        return false;
+    }
     
     /**
      * (non-PHPdoc)
