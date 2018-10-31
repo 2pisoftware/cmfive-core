@@ -680,8 +680,7 @@ class TaskService extends DbService {
         $task->dt_due = $dt_due;
         $task->first_assignee_id = $first_assignee_id;
         $task->assignee_id = $first_assignee_id;
-        $task->dt_assigned = time();
-        $task->dt_first_assigned = time();
+
         $task->insert();
         return $task;
     }
