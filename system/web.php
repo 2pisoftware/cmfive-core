@@ -532,9 +532,16 @@ class Web {
 
 		$this->_paths = $this->_getCommandPath();
 
-		// based on request domain we can route everything to a frontend module
-		// look into the domain routing and prepend the module
-		// Check for frontend/portal modules first
+		/**
+		 * Based on request domain we can route everything to a frontend module look into the domain routing and prepend the module.
+		 * Check for frontend/portal modules first.
+		 * To enable portal support set portal flag in the module to true.
+		 * For it to work properly a domain name module must also be set.
+		 *
+		 * For exmaple:
+		 * Config::set('{module}.portal', true);
+		 * Config::set('{module}.domain_name', '{domain_url}');
+		 */
 		$domainmodule = null;
 		foreach($this->modules() as $module) {
 			// Module config must be active and either 'portal' or 'frontend' flag set to true
