@@ -197,13 +197,15 @@ MIGRATION;
 		
         
 		// If filename is specified then strip out migrations that shouldnt be run
+		
 		if (strtolower($module) !== "all" && !empty($filename)) {
 			$offset_index = 1;
             $filename_parts = explode('.', $filename);
-            $file_timestamp = (int)  $filename_parts[0];
+			$file_timestamp = (float)  $filename_parts[0];
+			
 			foreach($availableMigrations[$module] as $availableMigrationsPath => $data) {
 				//check module timestamp and remove available migrations with grater timestamp value
-                $availableMigrationTimestamp = $data['timestamp'];
+                $availableMigrationTimestamp = (float) $data['timestamp'];
                 
                 if ($file_timestamp < $availableMigrationTimestamp) {
                     unset($availableMigrations[$module][$availableMigrationsPath]);
@@ -230,7 +232,7 @@ MIGRATION;
 					if (empty($migrations)) {
 						continue;
 					}
-//                    var_dump($migrations); die;
+                  
                     //sort module migrations
                     uasort($migrations, function($a,$b){
                         return $a['timestamp'] > $b['timestamp'];
@@ -248,14 +250,14 @@ MIGRATION;
 									$this->w->db->startTransaction();
 
 									// Run migration UP
-									$migration_class = (new $migration(1))->setWeb($this->w);
+									$migration_class = (new $migration['class_name'])->setWeb($this->w);
 									$migration_class->setAdapter($mysql_adapter);
 									$migration_class->up();
 
 									// Insert migration record into DB
 									$migration_object = new Migration($this->w);
 									$migration_object->path = $migration_path;
-									$migration_object->classname = $migration;
+									$migration_object->classname = $migration['class_name'];
 									$migration_object->module = strtolower($module);
 									$migration_object->batch = $this->getNextBatchNumber();
 									$migration_object->insert();
@@ -279,7 +281,7 @@ MIGRATION;
 
 				// Finalise transaction
                 $this->w->db->setMigrationMode(false);
-				return count($runMigrations) . ' migration' . (count($runMigrations) == 1 ? ' has' : 's have') . ' run'; 
+				return $runMigrations . ' migration' . ($runMigrations == 1 ? ' has' : 's have') . ' run'; 
 			// } catch (Exception $e) {
 				
 			// }
@@ -330,6 +332,7 @@ MIGRATION;
 				$file_migration_id = $installed_module_migration['id'];
 			}
 		}
+		
         if ($file_migration_id == '') {
             return "Could not find migration in database";
         }
@@ -342,7 +345,7 @@ MIGRATION;
         //sort installed migrations by id largest to smallest
         $migrations_to_rollback = $installed_migrations[$module];
         usort($migrations_to_rollback, function($a, $b){
-           return $a['id'] > $b['id']; 
+           return $a['id'] < $b['id']; 
         });
 		
 		// Attempt to rollback all migrations
@@ -359,6 +362,7 @@ MIGRATION;
 				]);
 				
 				foreach($migrations_to_rollback as $migration) {
+					
 					if (file_exists(ROOT_PATH . '/' . $migration['path'])) {
 						include_once ROOT_PATH . '/' . $migration['path'];
 
@@ -383,7 +387,8 @@ MIGRATION;
 
 				// Finalise transaction
 				$this->w->db->commitTransaction();
-                $this->w->db->setMigrationMode(false);
+				$this->w->db->setMigrationMode(false);
+				
 				return count($migrations_to_rollback) . ' migration' . (count($migrations_to_rollback) == 1 ? ' has' : 's have') . ' rolled back'; 
 			} catch (Exception $e) {
 				$this->w->out("Error with a migration: " . $e->getMessage());
