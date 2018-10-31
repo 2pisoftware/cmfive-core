@@ -22,10 +22,16 @@ Config::set('file', [
 		],
 		's3' => [
 			'active' => false,
-			'key' => '',
-			'secret' => '',
+			'region' => 'ap-southeast-2',
+			'version' => '2006-03-01',
+			'credentials' => [
+				'key' => '',
+				'secret' => ''
+			],
 			'bucket' => '',
-			'options' => []
+			'options' => [
+				'create' => true
+			]
 		]
 	]
 ]);

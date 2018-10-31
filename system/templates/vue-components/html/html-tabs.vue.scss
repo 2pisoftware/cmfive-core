@@ -7,13 +7,13 @@ $tab-content-background-colour: #fff;
 
 div.tabs {
 
-	ul {
+	& > ul {
 		display: block;
 		clear: both;
 		height: auto;
 		margin: 0px;
 
-		li {
+		& > li {
 			display: inline-block;
 			// float: left;
 			list-style-type: none;
