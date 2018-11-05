@@ -56,7 +56,7 @@ class CmfiveGuy extends \Codeception\Actor
   				} else if ($fieldNameParts[0]=='autocomplete' && count($fieldNameParts)>1) {
   					$this->fillAutocomplete($fieldNameParts[1],$fieldValue);
   				} else {
-  					$this->fillField('#'.$fieldName ,$fieldValue);
+  					$this->fillField($fieldName ,$fieldValue);
   				}
   			}
   		}
@@ -141,16 +141,36 @@ class CmfiveGuy extends \Codeception\Actor
         	$finalTimeFormatted=date('h:i a',$date);
         	$this->executeJS('return $("#'.$field.'").datepicker("setDate","'.$dateFormatted.'");');
         	$this->seeInField('#'.$field,$finalTimeFormatted);
-        }
+				}
+
+				public function seeElementOnPage($element) {
+					try {
+						$this->grabTextFrom($element);
+						return true;
+					} catch(Exception $e) {
+						return false;
+					}
+				}
 
         public function fillAutocomplete($field,$value) {
-          echo "<pre>"; var_dump('wooah autocomplete'); die;
-        	$this->fillField("#".$field,$value);
-        	$this->waitForElement(".ui-autocomplete a",2);
+					//echo "<pre>"; var_dump('wooah autocomplete'); die;
+					// use the first three characters of value
+					$this->fillField("#".$field, substr($value,0,3));
+					$this->wait(1);
+					//$test = $this->grabTextFrom(".ui-autocomplete a");
+					if ($this->seeElementOnPage(".ui-autocomplete a")) {
+						// down
+						$this->pressKey("#acp_".$field,"\xEE\x80\x95");
+						// select
+						$this->executeJS('$(".ui-autocomplete a").show(); $(".ui-autocomplete a").click();');
+					} else {
+						$this->fillField("#".$field, $value);
+					}
+        	//$this->waitForElement(".ui-autocomplete a",2);
         	// down
-        	$this->pressKey("#acp_".$field,"\xEE\x80\x95");
+        	//$this->pressKey("#acp_".$field,"\xEE\x80\x95");
         	// select
-        	$this->executeJS('$(".ui-autocomplete a").show(); $(".ui-autocomplete a").click();');
+        	//$this->executeJS('$(".ui-autocomplete a").show(); $(".ui-autocomplete a").click();');
         }
 
 
@@ -159,12 +179,12 @@ class CmfiveGuy extends \Codeception\Actor
   		// skip form filling if already logged in
   		if (strpos('/auth/login',$this->grabFromCurrentUrl())!==false) {
         $this->waitForElement('#login');
-  			$this->fillField('login',$username);
-  			$this->fillField('password',$password);
+  			$this->fillField('#login',$username);
+  			$this->fillField('#password',$password);
   			$this->click('Login');
       }
     }
-    public function createUser($username,$password,$firstName,$lastName,$email, array $permissions = []) {
+    public function createUser($username,$password,$firstName,$lastName,$email, array $permissions = [],$title = null) {
       $this->clickCmfiveNavbar('Admin', 'List Users');
   		$this->click('Add New User');
   		$this->waitForElement('#login');
@@ -174,7 +194,8 @@ class CmfiveGuy extends \Codeception\Actor
   		'password2'=>$password,
   		'check:is_active'=>true,
   		'firstname'=>$firstName,
-  		'lastname'=>$lastName,
+			'lastname'=>$lastName,
+			'title'=>$title,
   		'email'=>$email]);
       if (empty($permissions)) {
         $permissions = ['user'];
@@ -276,9 +297,10 @@ class CmfiveGuy extends \Codeception\Actor
 
     public function createTask($taskGroup,$task,$data) {
   		$this->clickCmfiveNavbar('Task', 'New Task');
-  		// workaround below
-  		$this->executeJS("$('#acp_task_group_id').autocomplete('search', 'testgroup')");
-  		$this->click('testgroup updated');
+			// workaround below
+			$this->fillAutocomplete("acp_task_group_id",$taskGroup);
+  		//$this->executeJS("$('#acp_task_group_id').autocomplete('search', '$testgroup')");
+  		//$this->click($taskGroup);
       $this->wait(1);
   		// ends here, more investigation needed to make it a function or figure out the reason can't use fillField.
   		$this->fillForm(['select:task_type'=>!empty($data['task_type']) ? $data['task_type'] : '',
@@ -318,5 +340,43 @@ class CmfiveGuy extends \Codeception\Actor
       $this->amOnUrl($url);
       $this->click('Delete');
       $this->acceptPopup();
-    }
+		}
+		
+		public function editUser($user,$data) {
+			$this->clickCmfiveNavbar('Admin', 'List Users');
+			$rowIndex = $this->findTableRowMatching(1,$user);
+			$this->click('Edit', 'tbody tr:nth-child('.$rowIndex . ')'); 
+			$this->see('Administration - Edit User - ' . $user);
+			$this->fillForm($data);
+			$this->click('.savebutton');
+			$this->wait(1);
+			$this->see('User ' . $user . ' updated.');
+		}
+
+		public function editLookup($lookup,$data) {
+			$this->wait(1);
+			$this->clickCmfiveNavbar('Admin', 'Lookup');
+			$this->wait(1);
+			$rowIndex = $this->findTableRowMatching(3,$lookup);
+			$this->click('Edit', 'tbody tr:nth-child('.$rowIndex . ')'); 
+			$this->wait(1);
+			$this->fillForm($data);
+			$this->wait(1);
+			$this->click("//div[@id='cmfive-modal']//button[contains(text(),'Update')]");
+			$this->wait(1);
+			$this->see('Lookup Item edited');
+		}
+
+		public function createLookup($type, $code, $title) {
+			$this->clickCmfiveNavbar('Admin', 'Lookup');
+			$this->click('New Item');
+			$this->click("//div[@id='tab-2']//label[@class='small-12 columns']//select[@id='type']");
+			$this->click("//label[@class='small-12 columns']//option[@value='title'][contains(text(),'title')]");
+			//$this->selectOption('#type',$type);
+			$this->fillField('#code' ,$code);
+			$this->fillField('#title' ,$title);
+			$this->click(".savebutton");
+			$this->wait(1);
+			$this->see('Lookup Item added');
+		}
 }
