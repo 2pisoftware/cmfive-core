@@ -1,6 +1,7 @@
 # Install
 * Ensure that Google Chrome is installed.
-* Run `composer update` in the tests directory (the same directory as this readme)
+* Ensure 'composer.phar' exists in the tests directory (the same directory as this readme)
+* Run `php composer.phar update` in the tests directory (the same directory as this readme)
 * Create a file called 'acceptance.suite.yml' with the following content:
 ```
 modules:
@@ -16,14 +17,31 @@ extensions:
         - command to wipe database
 
 ```
-replace 'http://localhost:5001' with the url of your site to be tested (including protocol)
-below the -\Helper\WaitRunProcess line add the necessary commands to start your webserver and seed the database.
+1) replace 'http://localhost:5001' with the url of your site to be tested (including protocol)
+2) replace the port with appropriate listener, see 'tests\services':
+      ---------------------------------------------------
+          Follow Installation Instructions 
+          --> https://codeception.com/docs/modules/WebDriver#Selenium
+          --> https://codeception.com/docs/modules/WebDriver#ChromeDriver
+          Enable RunProcess extension to start/stop Selenium automatically (optional).
+
+Check versions in tests/services:
+Launch ChromeDriver = defaults to 9515
+Launch Selenium JAR = defaults to 4444 (Selenium can find/launch ChromeDriver automatically if they are in same folder)
+      ---------------------------------------------------
+3) below the -\Helper\WaitRunProcess line add the necessary commands to start your webserver and seed the database. eg: - \Helper\WaitRunProcess: 
+        - cd C:\cm5\cmfive-boilerplate && php cmfive.php install migrations 
 
 # Writing Tests
 available actions can be found in support/_generated/CmfiveGuyActions.php. This file is regenerated every time codeception runs and includes both global codeception actions and custom actions defined by us.
 
 # Running Tests
-to
+see --> https://codeception.com/docs/reference/Commands
+
+to run acceptance, eg:
+  - WindowsPC -> folders[...]system/tests
+  - GitBash terminal (or Windows terminal, GitBash better for colour display&formatting!)
+  - "vendor/bin/codecept run acceptance --steps"
 to run just failed tests: -g failed
 
 # Configuration
