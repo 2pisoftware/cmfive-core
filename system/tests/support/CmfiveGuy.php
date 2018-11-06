@@ -155,16 +155,16 @@ class CmfiveGuy extends \Codeception\Actor
         public function fillAutocomplete($field,$value) {
 					//echo "<pre>"; var_dump('wooah autocomplete'); die;
 					// use the first three characters of value
-					$this->fillField("#".$field, substr($value,0,3));
+					$this->fillField($field, substr($value,0,3));
 					$this->wait(1);
 					//$test = $this->grabTextFrom(".ui-autocomplete a");
 					if ($this->seeElementOnPage(".ui-autocomplete a")) {
 						// down
-						$this->pressKey("#acp_".$field,"\xEE\x80\x95");
+						$this->pressKey($field,"\xEE\x80\x95");
 						// select
 						$this->executeJS('$(".ui-autocomplete a").show(); $(".ui-autocomplete a").click();');
 					} else {
-						$this->fillField("#".$field, $value);
+						$this->fillField($field, $value);
 					}
         	//$this->waitForElement(".ui-autocomplete a",2);
         	// down
@@ -296,9 +296,10 @@ class CmfiveGuy extends \Codeception\Actor
   	}
 
     public function createTask($taskGroup,$task,$data) {
-  		$this->clickCmfiveNavbar('Task', 'New Task');
+			$this->clickCmfiveNavbar('Task', 'New Task');
+			$this->wait(1);
 			// workaround below
-			$this->fillAutocomplete("acp_task_group_id",$taskGroup);
+			$this->fillAutocomplete("//input[@id='acp_task_group_id']",$taskGroup);
   		//$this->executeJS("$('#acp_task_group_id').autocomplete('search', '$testgroup')");
   		//$this->click($taskGroup);
       $this->wait(1);
@@ -314,7 +315,7 @@ class CmfiveGuy extends \Codeception\Actor
   			'rte:description'=>!empty($data['description']) ?  $data['description'] : '',
   		]);
   		$this->click('Save');
-      $this->waitForElementNotVisible('.loading_overlay');
+      $this->waitForElementNotVisible('.loading_overlay',20);
   	}
 
     public function editTask($task,$data) {
@@ -333,7 +334,7 @@ class CmfiveGuy extends \Codeception\Actor
   			// 'rte:description'=>!empty($data['description']) ?  $data['description'] : '',
   		]);
   		$this->click('.savebutton');
-      $this->waitForElementNotVisible('.loading_overlay');
+      $this->waitForElementNotVisible('.loading_overlay',20);
   	}
 
     public function deleteTask($url) {
