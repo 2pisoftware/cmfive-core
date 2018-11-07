@@ -24,7 +24,7 @@
 							<ul>
 								<?php foreach($not_installed as $module => $_not_installed) :
 									foreach($_not_installed as $file => $classname) : ?>
-										<li><?php echo $module . ' - ' . $classname; ?></li>
+										<li><?php echo $module . ' - ' . $classname['class_name']; ?></li>
 									<?php endforeach;
 								endforeach; ?>
 							</ul>
@@ -77,13 +77,13 @@
 										<tr><th>Name</th><th>Path</th><th>Date run</th><th>Actions</th></tr>
 									</thead>
 									<tbody>
-										<?php foreach($available_in_module as $a_migration_path => $a_migration_class): ?>
-										<tr <?php echo ($w->Migration->isInstalled($a_migration_class)) ? 'style="background-color: #43CD80;"' : ''; ?>>
-											<td><?php echo $a_migration_class; ?></td>
+										<?php foreach($available_in_module as $a_migration_path => $migration_data): ?>
+										<tr <?php echo ($w->Migration->isInstalled($migration_data['class_name'])) ? 'style="background-color: #43CD80;"' : ''; ?>>
+											<td><?php echo $migration_data['class_name']; ?></td>
 											<td><?php echo $a_migration_path; ?></td>
 											<td>
-												<?php if ($w->Migration->isInstalled($a_migration_class)) :
-													$installedMigration = $w->Migration->getMigrationByClassname($a_migration_class); ?>
+												<?php if ($w->Migration->isInstalled($migration_data['class_name'])) :
+													$installedMigration = $w->Migration->getMigrationByClassname($migration_data['class_name']); ?>
 													<span data-tooltip aria-haspopup="true" title="<?php echo @formatDate($installedMigration->dt_created, "d-M-Y \a\\t H:i"); ?>">
 														Run <?php echo Carbon::createFromTimeStamp($installedMigration->dt_created)->diffForHumans(); ?> by <?php echo !empty($installedMigration->creator_id) ? $w->Auth->getUser($installedMigration->creator_id)->getContact()->getFullName() : "System"; ?>
 													</span>
@@ -92,7 +92,7 @@
 											<td>
 											<?php
 												$filename = basename($a_migration_path, ".php");
-												if ($w->Migration->isInstalled($a_migration_class)) {
+												if ($w->Migration->isInstalled($migration_data['class_name'])) {
 													echo Html::b('/admin-migration/rollback/' . $module . '/' . $filename, "Rollback to here", "Are you 110% sure you want to rollback a migration? DATA COULD BE LOST PERMANENTLY!", null, false, "warning expand");
 												} else {
 													echo Html::b('/admin-migration/run/' . $module . '/' . $filename, "Migrate to here", "Are you sure you want to run a migration?", null, false, "info expand");
