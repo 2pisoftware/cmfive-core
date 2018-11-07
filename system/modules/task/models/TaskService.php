@@ -229,8 +229,12 @@ class TaskService extends DbService {
     }
 
     // get all active task groups from the database
-    function getTaskGroups() {
-        return $this->getObjects("TaskGroup", array("is_active" => 1, "is_deleted" => 0));
+    function getTaskGroups($include_inactive = false) {
+        $where = ["is_deleted" => 0];
+        if (!$include_inactive) {
+            $where['is_active'] = 1;
+        }
+        return $this->getObjects("TaskGroup", $where);
     }
 
     // get all task groups from the database of given task group type
