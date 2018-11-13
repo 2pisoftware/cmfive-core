@@ -200,9 +200,4 @@ class TaskGroup extends DbObject {
     public function isOwner(User $user) {
         return null != $this->getObject("TaskGroupMember", array("task_group_id" => $this->id, "is_active" => 1, "user_id" => $user->id, "role" => "OWNER"));
     }
-
-    public function insert($force_validation = false) {
-        $this->is_active = 1;
-        parent::insert($force_validation);
-    }
 }
