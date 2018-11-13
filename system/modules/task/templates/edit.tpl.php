@@ -87,7 +87,7 @@
                                     //$additional_details = array_values(array_filter($additional_details ? : []));
                                     $additional_details_flattened = [];
                                     foreach ($additional_details as $module_details) {
-                                        if (!is_array($module_details[0])) {
+                                        if (isset($module_details[0]) && !is_array($module_details[0])) {
                                             $additional_details_flattened[] = $module_details;
                                         } else {
                                             foreach($module_details as $details) {
