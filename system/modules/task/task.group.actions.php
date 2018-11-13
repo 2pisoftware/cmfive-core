@@ -16,7 +16,7 @@ function createtaskgroup_POST(Web &$w) {
         $w->request('can_assign'),
         $w->request('can_view'),
         $w->request('can_create'),
-        $w->request('is_active'),
+        1,
         $w->request('is_deleted'),
         $w->request('default_task_type'),
         $w->request('default_priority'),

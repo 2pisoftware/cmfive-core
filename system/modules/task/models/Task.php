@@ -486,6 +486,9 @@ class Task extends DbObject {
                 }
             }
 
+            //new task so set is_active to default value
+            $this->is_active = 1;
+
             // 2. Call on_before_insert of the Tasktype
 
             if ($this->task_type) {
