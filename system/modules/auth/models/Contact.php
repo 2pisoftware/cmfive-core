@@ -3,10 +3,10 @@ class Contact extends DbObject {
 
 	// this object will be automatically indexed for fulltext search
 	// public $_searchable;
-	
+
 	// these parameters will be excluded from indexing
 	public $_exclude_index = array("is_deleted","private_to_user_id");
-	
+
 	public $firstname;
 	public $lastname;
 	public $othername;
@@ -23,25 +23,22 @@ class Contact extends DbObject {
 	public $private_to_user_id;
 
 	function getFullName() {
-		$buf = $this->getTitle();
 		if ($this->firstname and $this->lastname) {
-			return $buf . " " . $this->firstname . " " . $this->lastname;
+			return $this->firstname . " " . $this->lastname;
 		} else if ($this->firstname) {
-			return $buf . " " . $this->firstname;
+			return $this->firstname;
 		} else if ($this->lastname) {
-			return $buf . " " . $this->lastname;
+			return $this->lastname;
 		} else if ($this->othername) {
-			return $buf . " " . $this->othername;
+			return $this->othername;
 		}
 	}
-	
-	function getFirstName()
-	{
+
+	function getFirstName() {
 		return $this->firstname;
 	}
 
-	function getSurname()
-	{
+	function getSurname() {
 		return $this->lastname;
 	}
 
@@ -52,12 +49,12 @@ class Contact extends DbObject {
 			return $this->getFullName();
 		}
 	}
-	
+
 	function getTitle() {
 		$title_lookup = $this->w->Admin->getLookupbyId($this->title_lookup_id);
 		return !empty($title_lookup) ? $title_lookup->title : '';
 	}
-	
+
 	function setTitle($title) {
 		if (!empty($title)) {
 			$title_lookup = $this->w->Admin->getLookupByTypeCode('title', $title);
@@ -66,7 +63,7 @@ class Contact extends DbObject {
 				$title_lookup->fill(['type'=>'title', 'code'=>$title, 'title'=>$title]);
 				$title_lookup->insert();
 			}
-			$this->title_lookup_id = $title_lookup->id;	
+			$this->title_lookup_id = $title_lookup->id;
 		} else {
 			$this->title_lookup_id = null;
 		}
