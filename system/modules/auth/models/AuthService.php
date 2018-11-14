@@ -7,12 +7,9 @@ class AuthService extends DbService {
     public $_rest_user = null;
 	private static $_cache = array();
 
-	function login($login, $password, $client_timezone, $skip_session = false) {
+    function login($login, $password, $client_timezone, $skip_session = false) {
 		$credentials['login']=$login;
 		$credentials['password']=$password;
-		
-		//allow pre login hook for alternative authentications.
-		//this hook returns $hook_results[$module]=$user or null.
 		$hook_results = $this->w->callHook("auth", "prelogin", $credentials);
 		foreach($hook_results as $module => $user) {
 			//@TODO: check config for $module.optional or $module.manditory. default to optional for now. if any manditory returns null then return null.
@@ -23,9 +20,6 @@ class AuthService extends DbService {
 				$this->w->Log->info('prelogin hook did not provide authentication: '.$login);
 			}
 		}
-		
-		//if no valid user check if credentials pass against cmfive user table
-		//if so set user else abort.
 		if (empty($user)) {
 			$user = $this->getUserForLogin($login);
 			if (empty($user)) {
@@ -38,10 +32,8 @@ class AuthService extends DbService {
 			}
 		}
 		$this->w->Log->info("User logged in: ".$user->getFullName());
-		
 		//allow post login hook to do whatever
 		$hook_results = $this->w->callHook("auth", "postlogin", $user);
-		
 		$user->updateLastLogin();
 		if (!$skip_session) {
 			$this->w->session('user_id', $user->id);
@@ -49,7 +41,6 @@ class AuthService extends DbService {
 		}
 		return $user;
 	}
-	
     function forceLogin($user_id = null) {
         if (empty($user_id)) {
             return;
@@ -83,6 +74,50 @@ class AuthService extends DbService {
 
     function setRestUser($user) {
         $this->_rest_user = $user;
+    }
+
+    /**
+     * There is no way to enforce the creation of a User object when creating a Contact
+     * E.g. for an address book, there is no need to create a User object. However, if you
+     * want to ensure that a Contact will have a User account, call this function before doing
+     * anything else with the Contact.
+     *  
+     * As a security measure, all user accounts created this way are external only.
+     *
+     * @param mixed $contact_id
+     * @return int user_id
+     */
+    function createExernalUserForContact($contact_id) {
+        $contact = $this->getContact($contact_id);
+
+        if (empty($contact->id)) {
+            return false;
+        }
+
+        $user = $contact->getUser();
+        if (!empty($user->id)) {
+            return $user->id;
+        }
+
+        $user = new User($this->w);
+        $user->login = $contact->email;
+        $user->is_external = 1;
+        $user->contact_id = $contact->id;
+        $user->insert();
+
+        return $user->id;
+    }
+
+    function getContacts() {
+        return $this->getObjects('Contact', ['is_deleted' => 0]);
+    }
+
+    function getContact($contact_id) {
+        return $this->getObject("Contact", ['id' => $contact_id]);
+    }
+
+    function getContactByEmail($email) {
+        return $this->getObject("Contact", ['email' => filter_var($email, FILTER_SANITIZE_EMAIL), 'is_deleted' => 0]);
     }
 
     /**
@@ -203,22 +238,28 @@ class AuthService extends DbService {
     }
 
     function getUsersAndGroups($includeDeleted = false) {
-    	$where = array();
-        $where["is_active"] = 1;
+    	$where = [
+            "is_active" => 1,
+            "is_external" => 0
+        ];
+
     	if (!$includeDeleted) {
-    		$where["is_deleted"]=0;
+    		$where["is_deleted"] = 0;
     	}
-        return $this->getObjects("User", $where, true);
+        return $this->getObjects("User", $where);
     }
 
     function getUsers($includeDeleted = false) {
-        $where = array();
-        $where["is_group"]=0;
-        $where['is_active'] = 1;
+        $where = [
+            "is_group" => 0,
+            "is_active" => 1,
+            "is_external" => 0
+        ];
+
     	if (!$includeDeleted) {
     		$where["is_deleted"]=0;
     	}
-    	return $this->getObjects("User", $where, true);
+    	return $this->getObjects("User", $where);
     }
     
     function getUserForContact($cid) {

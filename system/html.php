@@ -1,4 +1,5 @@
 <?php
+require_once "classes/html/GlobalAttributes.php";
 require_once "classes/html/a.php";
 require_once "classes/html/button.php";
 require_once "classes/html/form.php";
@@ -268,7 +269,7 @@ class Html {
             $next = $i < sizeof($array) - 1 ? $array[$i + 1] : null;
             $buf .= "<li>" . $cur;
             if (is_array($next)) {
-                $buf.= $this->ul($next, null, $subclass);
+                $buf.= self::ul($next, null, $subclass);
             }
             $buf .="</li>\n";
         }
@@ -654,7 +655,7 @@ class Html {
 
                             $default = !empty($field[5]) ? ($field[5] == "null" ? null : $field[5]) : "-- Select --";
                             $sl_class = !empty($field[6]) ? $field[6] : null;
-                            $buffer .= Html::select($name, $items, $value, $sl_class, "width: 100%;", $default, $readonly ? ' disabled="disabled" ' : null, $required);
+                            $buffer .= Html::select($name, $items, $value, $sl_class, "width: 100%;", $default, ($readonly ? ' disabled="disabled" ' : null) . ' ' . $required);
                         break;
                         case "multiSelect":
                             $items = !empty($field[4]) ? $field[4] : null;

@@ -2,6 +2,8 @@
 
 function comment_GET(Web $w){
     $p = $w->pathMatch("comment_id", "tablename", "object_id");
+    $internal_only = intval($w->request('internal_only', 0));
+    $redirect_url = $w->request('redirect_url', $w->localUrl($_SERVER["REQUEST_URI"]));
 
     $comment_id = intval($p["comment_id"]);
     $comment = $comment_id > 0 ? $w->Comment->getComment($comment_id) : new Comment($w);
@@ -58,7 +60,7 @@ EOF;
     
     if (!$p["comment_id"]) {
         //call hook for notification select
-        $get_recipients = $w->callHook('comment', 'get_notification_recipients_' . $top_table_name,['object_id'=>$top_id]);
+        $get_recipients = $w->callHook('comment', 'get_notification_recipients_' . $top_table_name, ['object_id' => $top_id, 'internal_only' => $internal_only === 1 ? true : false]);
         //add checkboxes to the form for each notification recipient 
         if (!empty($get_recipients)) {
             $unique_recipients = [];
@@ -81,17 +83,13 @@ EOF;
             ];
             $parts = array_chunk($unique_recipients, 4, true);
 
-            foreach ($parts as $key=>$row) {
-                $form['Notifications'][$key+1] = [];
+            foreach ($parts as $key => $row) {
+                $form['Notifications'][$key + 1] = [];
+
                 foreach ($row as $user_id => $is_notify) {
                     $user = $w->Auth->getUser($user_id);
                     if (!empty($user)) {
-                        if ($user->id == $w->auth->loggedIn()) {
-                            $form['Notifications'][$key+1][] = array($user->getFullName() . '    ', 'checkbox', 'recipient_' . $user->id, 0);
-                        } else {
-                            $form['Notifications'][$key+1][] = array($user->getFullName() . '    ', 'checkbox', 'recipient_' . $user->id, $is_notify);
-                        }
-
+                        $form['Notifications'][$key + 1][] = array($user->getFullName() . ($user->is_external == 1 ? ' (external)' : ''), 'checkbox', 'recipient_' . $user->id, $is_notify);
                     }
                 }
             }
@@ -101,7 +99,7 @@ EOF;
     // return the comment for display and edit
     $w->setLayout(null);
     
-    $w->out(Html::MultiColForm($form, $w->localUrl("/admin/comment/{$comment_id}/{$p["tablename"]}/{$p["object_id"]}"), "POST", "Save"));
+    $w->out(Html::MultiColForm($form, $w->localUrl("/admin/comment/{$comment_id}/{$p["tablename"]}/{$p["object_id"]}?internal_only=" . $internal_only) . "&redirect_url=" . $redirect_url, "POST", "Save"));
     $w->out('<script>$("form").submit(function(event) {toggleModalLoading();});</script>');
     
     
@@ -110,7 +108,8 @@ EOF;
 function comment_POST(Web $w){
     $p = $w->pathMatch("comment_id", "tablename","object_id");
     $comment_id = intval($p["comment_id"]);
-    
+    $internal_only = intval($w->request('internal_only', 0));
+
     $comment = $w->Comment->getComment($comment_id);
     $is_new = false;
     if ($comment === null){
@@ -121,6 +120,11 @@ function comment_POST(Web $w){
     $comment->obj_table = $p["tablename"];
     $comment->obj_id = $p["object_id"];
     $comment->comment = strip_tags($w->request("comment"));
+    
+    // Only set the internal flag on new comments
+    if ($is_new === true) {
+        $comment->is_internal = $internal_only;
+    }
     $comment->insertOrUpdate();
     
     //handle notifications
@@ -134,7 +138,7 @@ function comment_POST(Web $w){
     if($w->request("is_notifications")) {        
         $recipients = [];        
         foreach($_POST as $key=>$value) {
-            //keys of interest are foramtted 'recipient_{user_id}'
+            //keys of interest are formatted 'recipient_{user_id}'
             $exp_key = explode('_',$key);
             if ($exp_key[0] == 'recipient') {
                 $recipients[] = $exp_key[1];

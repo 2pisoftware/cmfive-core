@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<link rel="selenium.base" href="http://cosinedev.isaac/auth/login" />
+<link rel="selenium.base" href="http://dev.cmfive" />
 <title>create taskgroup</title>
 </head>
 <body>
@@ -46,6 +46,11 @@
 </tr>
 <!-- end error checking -->
 <tr>
+	<td>pause</td>
+	<td>2000</td>
+	<td></td>
+</tr>
+<tr>
 	<td>select</td>
 	<td>id=task_group_type</td>
 	<td>label=Software Development</td>
@@ -84,6 +89,11 @@
 	<td>select</td>
 	<td>id=is_active</td>
 	<td>label=Yes</td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>2000</td>
+	<td></td>
 </tr>
 <tr>
 	<td>select</td>
@@ -156,7 +166,7 @@
 </tr>
 <tr>
 	<td>clickAndWait</td>
-	<td>xpath=(//button[@type='submit'])[2]</td>
+	<td>//button[@type='submit']</td>
 	<td></td>
 </tr>
 <tr>
@@ -211,11 +221,11 @@
 <tr>
 	<td>select</td>
 	<td>id=member</td>
-	<td>label=test user</td>
+	<td>label=The Honerable test user</td>
 </tr>
 <tr>
 	<td>clickAndWait</td>
-	<td>xpath=(//button[@type='submit'])[2]</td>
+	<td>//button[@type='submit']</td>
 	<td></td>
 </tr>
 <tr>
@@ -270,11 +280,11 @@
 <tr>
 	<td>select</td>
 	<td>id=default_assignee_id</td>
-	<td>label=test user</td>
+	<td>label=The Honerable test user</td>
 </tr>
 <tr>
 	<td>clickAndWait</td>
-	<td>xpath=(//button[@type='submit'])[2]</td>
+	<td>//button[@type='submit']</td>
 	<td></td>
 </tr>
 <tr>

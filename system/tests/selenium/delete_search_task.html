@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<link rel="selenium.base" href="http://cosinedev.isaac/auth/login" />
+<link rel="selenium.base" href="http://dev.cmfive" />
 <title>delete_search_task</title>
 </head>
 <body>
@@ -12,8 +12,8 @@
 <tr><td rowspan="1" colspan="3">delete_search_task</td></tr>
 </thead><tbody>
 <tr>
-	<td>open</td>
-	<td>/task/edit/4#details</td>
+	<td>pause</td>
+	<td>2000</td>
 	<td></td>
 </tr>
 <tr>
@@ -27,8 +27,23 @@
 	<td></td>
 </tr>
 <tr>
+	<td>click</td>
+	<td>name=reset</td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>2000</td>
+	<td></td>
+</tr>
+<tr>
 	<td>clickAndWait</td>
 	<td>link=search</td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>2000</td>
 	<td></td>
 </tr>
 <tr>
@@ -44,6 +59,16 @@
 <tr>
 	<td>pause</td>
 	<td>2000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>Task List</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>deleted</td>
 	<td></td>
 </tr>
 <tr>

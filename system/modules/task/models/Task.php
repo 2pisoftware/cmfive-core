@@ -27,6 +27,7 @@ class Task extends DbObject {
     public $_modifiable;  // Modifiable Aspect
     public $_searchable;
     public $rate; //rate used for calculating invoice values
+    public $is_active;
     public static $_validation = array(
         "title" => array('required'),
         "task_group_id" => array('required'),
@@ -34,6 +35,10 @@ class Task extends DbObject {
         "task_type" => array('required')
     );
     public static $_db_table = "task";
+
+    public function getSubscribers() {
+        return $this->getObjects('TaskSubscriber', ['task_id' => $this->id, 'is_deleted' => 0]);
+    }
 
     /**
 	 * Adds task type and task data to the index
@@ -68,7 +73,11 @@ class Task extends DbObject {
 
 	public function isUrgent() {
 		$taskgroup_type_object = $this->w->Task->getTaskGroupTypeObject($this->_taskgroup->task_group_type);
-		return $taskgroup_type_object->isUrgentPriority($this->priority);
+        if (!empty($taskgroup_type_object->id)) {
+    		return $taskgroup_type_object->isUrgentPriority($this->priority);
+        } else {
+            return false;
+        }
 	}
 
     /**
@@ -421,6 +430,13 @@ class Task extends DbObject {
     	$tg = $this->getTaskGroup();
     	return $tg->isStatusClosed($this->status);
     }
+
+    function shouldAddToSearch() {
+        if ($this->is_active) {
+            return true;
+        }
+        return false;
+    }
     
     /**
      * (non-PHPdoc)
@@ -437,6 +453,10 @@ class Task extends DbObject {
 
                 if ($this->isStatusClosed()) {
                     $this->is_closed = 1;
+                    // check dt_completed and set if empty
+                    if (empty($this->dt_completed)) {
+                        $this->dt_completed = formatDateTime(time());
+                    }
                 } else {
                 	$this->is_closed = 0;
                 }
@@ -450,6 +470,24 @@ class Task extends DbObject {
 
                 $tg_type->on_before_insert($this);
             }
+
+            //check if assigned
+            if (!empty($this->assignee_id)) {
+                $user = $this->w->Auth->getUser($this->assignee_id);
+                if (!empty($user->id)) {
+                    // is assigned, check dt fields
+                    if (empty($this->dt_assigned)) {
+                        $this->dt_assigned = formatDateTime(time());
+                    }
+                    if (empty($this->dt_first_assigned)) {
+                        $this->dt_first_assigned = formatDateTime(time());
+                        $this->first_assignee_id = $this->assignee_id;
+                    }
+                }
+            }
+
+            //new task so set is_active to default value
+            $this->is_active = 1;
 
             // 2. Call on_before_insert of the Tasktype
 
@@ -465,6 +503,7 @@ class Task extends DbObject {
             }
 
 			if (empty($this->title)) {
+                $this->Log->debug("Inserting Task: title is empty, calling update");
 				$this->update();
 			}
 			
@@ -474,6 +513,7 @@ class Task extends DbObject {
             $comm->obj_table = $this->getDbTableName();
             $comm->obj_id = $this->id;
 			$comm->is_system = 1;
+            $comm->is_internal = 1;
             $comm->comment = "Task Created";
             $comm->insert();
 
@@ -493,6 +533,42 @@ class Task extends DbObject {
                 $tg_type->on_after_insert($this);
             }
 
+            // Add all taskgroup members as subscribers
+            $taskgroup = $this->getTaskGroup();
+            if (!empty($taskgroup->id)) {
+				// If automatic subscribe is ticked, assign all members as subscribers
+				if ($taskgroup->shouldAutomaticallySubscribe()) {
+					$members = $taskgroup->getMembers();
+					if (!empty($members)) {
+						foreach($members as $member) {
+                            if (!$this->isUserSubscribed($member->user_id)) {
+                                $task_subscriber = new TaskSubscriber($this->w);
+                                $task_subscriber->task_id = $this->id;
+                                $task_subscriber->user_id = $member->user_id;
+                                $task_subscriber->insert();
+                            }
+						}
+					}
+				// Else only assign the assignee and creator
+				} else {
+                    $creator_id = $this->getTaskCreatorId();
+                    if (!empty($creator_id) && !$this->isUserSubscribed($creator_id)) {
+                        //$this->Log->debug("Inserting Task: adding creator as subscriber");
+                        $creator_assigner = new TaskSubscriber($this->w);
+                        $creator_assigner->task_id = $this->id;
+                        $creator_assigner->user_id = $creator_id;
+                        $creator_assigner->insert();
+                    }
+					if (!empty($this->assignee_id) && !$this->isUserSubscribed($this->assignee_id)) {
+                        //$this->Log->debug("Inserting Task: adding assignee as subscriber");
+						$assignee_subscriber = new TaskSubscriber($this->w);
+						$assignee_subscriber->task_id = $this->id;
+						$assignee_subscriber->user_id = $this->assignee_id;
+						$assignee_subscriber->insert();
+					}
+				}
+            }
+
             $this->commitTransaction();
         } catch (Exception $ex) {
             $this->Log->error("Inserting Task: " . $ex->getMessage());
@@ -509,10 +585,29 @@ class Task extends DbObject {
     	// 0. set the is_closed flag to make sure the task can be queried easily
     	
     	if ($this->isStatusClosed()) {
-    		$this->is_closed = 1;
+            $this->is_closed = 1;
+            // check dt_completed and set if empty
+            if (empty($this->dt_completed)) {
+                $this->dt_completed = formatDateTime(time());
+            }
     	} else {
     		$this->is_closed = 0;
-    	}
+        }
+        
+        //check if assigned and update dt fields
+        if (!empty($this->assignee_id)) {
+            $user = $this->w->Auth->getUser($this->assignee_id);
+            if (!empty($user->id)) {
+                // is assigned, check dt fields
+                if (empty($this->dt_assigned) || $this->assignee_id != $this->__old['assignee_id']) {
+                    $this->dt_assigned = formatDateTime(time());
+                }
+                if (empty($this->dt_first_assigned)) {
+                    $this->dt_first_assigned = formatDateTime(time());
+                    $this->first_assignee_id = $this->assignee_id;
+                }
+            }
+        }
     	
         try {
             $this->startTransaction();
@@ -555,6 +650,16 @@ class Task extends DbObject {
                 $tg_type->on_after_update($this);
             }
 
+            //if not 'unassigned' add user to subscribers
+            //check user exists
+            $user = $this->w->auth->getUser($this->assignee_id);
+			if (!empty($user) && !$this->isUserSubscribed($this->assignee_id)) {
+				$assignee_subscriber = new TaskSubscriber($this->w);
+				$assignee_subscriber->task_id = $this->id;
+				$assignee_subscriber->user_id = $this->assignee_id;
+				$assignee_subscriber->insert();
+			}
+			
             $this->commitTransaction();
         } catch (Exception $ex) {
             $this->Log->error("Updating Task(" . $this->id . "): " . $ex->getMessage());
@@ -583,7 +688,7 @@ class Task extends DbObject {
             if ($this->task_type) {
                 $this->getTaskTypeObject()->on_before_delete($this);
             }
-
+            
             // 3. Delete the task
 
             parent::delete($force);
@@ -607,6 +712,11 @@ class Task extends DbObject {
         }
     }
 
+	public function isUserSubscribed($user_id) {
+		$existing_subscription = $this->getObject('TaskSubscriber', ['task_id' => $this->id, 'user_id' => $user_id, 'is_deleted' => 0]);
+		return !empty($existing_subscription->id);
+	}
+	
     function getTaskGroup() {
         return $this->Task->getTaskGroup($this->task_group_id);
     }

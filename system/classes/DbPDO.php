@@ -28,7 +28,7 @@ class DbPDO extends PDO {
         // Set up our PDO class
         $port = !empty($config['port']) ? ";port=".$config['port'] : "";
         $url = "{$config['driver']}:host={$config['hostname']};dbname={$config['database']}{$port}";
-        parent::__construct($url,$config["username"],$config["password"], array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"));
+        parent::__construct($url,$config["username"],$config["password"], array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8mb4'"));
         $this->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         
         // Since you cant bind table names, maybe its a good idea to
@@ -140,7 +140,7 @@ class DbPDO extends PDO {
      */
     public function count(){
         if ($this->query !== null){
-            $result = $this->select("count(*)")->fetch_element("count(*)");
+            $result = $this->select()->select("count(*)")->fetch_element("count(*)");
             return intval($result);
         }
     }
@@ -154,6 +154,19 @@ class DbPDO extends PDO {
     public function leftJoin($leftJoin){
         if ($this->query !== NULL && !empty($leftJoin)){
             $this->query = $this->query->leftJoin($leftJoin);
+        }
+        return $this;
+    }
+	
+	/**
+     * Adds left outer join to the current query
+     *
+     * @param String $leftjoin left join rule to apply
+     * @return DbPDO $this
+     */
+    public function leftOuterJoin($leftOuterJoin){
+        if ($this->query !== NULL && !empty($leftOuterJoin)){
+            $this->query = $this->query->leftOuterJoin($leftOuterJoin);
         }
         return $this;
     }

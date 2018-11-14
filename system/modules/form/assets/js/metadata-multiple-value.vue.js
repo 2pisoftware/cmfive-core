@@ -1,0 +1,1 @@
+metadata-multiple-value.vue.js

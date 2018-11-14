@@ -41,21 +41,27 @@
         // Code mirror
         $w->enqueueScript(array("name" => "codemirror.js", "uri" => "/system/templates/js/codemirror-4.4/codemirror-compressed.js", "weight" => 880));
         
+        $w->enqueueScript(['name' => 'vue.js', 'uri' => '/system/templates/js/vue.js', 'weight' => 2000]);
+
         $w->outputStyles();
         $w->outputScripts();
+
+        // Print registered vue component links 
+        foreach(VueComponentRegister::getComponents() as $vue_component) {
+            echo $vue_component->_include();
+        }
         ?>
         <script type="text/javascript">
             var $ = $ || jQuery;
             $(document).ready(function() {
-				
-				
-				
                 $("table.tablesorter").tablesorter({dateFormat: "uk", widthFixed: true, widgets: ['zebra']});
                 $(".tab-head").children("a").each(function() {
-                    $(this).bind("click", {alink: this}, function(event) {
-                        changeTab(event.data.alink.hash);
-                        return false;
-                    });
+                    if (this.href.indexOf("#") != -1) {
+                        $(this).bind("click", {alink: this}, function(event) {
+                            changeTab(event.data.alink.hash);
+                            return false;
+                        });
+                    }
                 });
 
                 // Change tab if hash exists
@@ -311,7 +317,6 @@
 
         <div id="cmfive-modal" class="reveal-modal xlarge" data-reveal></div>
         <div id="cmfive-help-modal" class="reveal-modal xlarge" data-reveal></div>
-        
         <script type="text/javascript" src="/system/templates/js/foundation-5.5.0/js/foundation.min.js"></script>
         <script type="text/javascript" src="/system/templates/js/foundation-5.5.0/js/foundation/foundation.clearing.js"></script>
         <script>
@@ -331,6 +336,7 @@
             
             // Automatically append the close 'x' to reveal modals
             $(document).on('opened', '[data-reveal]', function () {
+                $(this).css('top', $(document).scrollTop() + 100);
                 $(this).append("<a class=\"close-reveal-modal\">&#215;</a>");
                 modal_history.push();
                 bindModalLinks();

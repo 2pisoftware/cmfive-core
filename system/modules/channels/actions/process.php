@@ -13,6 +13,8 @@ function process_GET(Web $w) {
 				$processor_class = $processor->retrieveProcessor();
 				$processor_class->process($processor);
 			}
+
+			$w->Channel->markMessagesAsProcessed($id);
 		}
 	} else {
 		$w->out("No channel found.");
