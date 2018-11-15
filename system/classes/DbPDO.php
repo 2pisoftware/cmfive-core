@@ -93,7 +93,7 @@ class DbPDO extends PDO {
         if ($this->migration_mode || empty(DbPDO::$table_names)) {
             DbPDO::$table_names = [];
             $query = 'show tables';
-			if ($config['driver'] == 'sqlsrv') {
+			if ($this->config['driver'] == 'sqlsrv') {
 				$query = 'select TABLE_NAME from INFORMATION_SCHEMA.TABLES';
 			}
             foreach($this->query($query)->fetchAll(PDO::FETCH_NUM) as $table) {
