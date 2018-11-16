@@ -33,17 +33,7 @@ function updatetask_POST(Web &$w) {
 
 
 		// update the task
-		$_POST['dt_assigned'] = Date('c');
 		$task->fill($_POST);
-
-		// if task has a 'closed' status, set flag so task no longer appear in dashboard count or task list
-		if ($task->getisTaskClosed()) {
-			$task->is_closed = 1;
-			$task->dt_completed = date("d/m/Y");
-		}
-		else {
-			$task->is_closed = 0;
-		}
 
 		$task->update();
 

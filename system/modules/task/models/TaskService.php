@@ -34,12 +34,12 @@ class TaskService extends DbService {
 	 * @return Array
 	 */
 	public function getAssignableUsers() {
-		
+
 	}
 
 	/**
 	 * Summarises every task type that the user is a part of (via task group membership).
-	 * 
+	 *
 	 * @return Array
 	 */
 	public function getTaskTypeSummaryForUser() {
@@ -62,60 +62,60 @@ class TaskService extends DbService {
 
 	// public function getTaskGroupDetailsForUser() {
  //        $user_id = $this->w->Auth->user()->id;
-		
+
 	// 	// Replacing functionality in favour of speed
 	// 	$member_of_task_groups = $this->_db->get("task_group_member")
  //                ->leftJoin("task_group on task_group.id = task_group_member.task_group_id")->select()->select("DISTINCT task_group.id")
  //                ->where("task_group_member.user_id", $user_id)->and("task_group_member.is_active", 1)
  //                ->and("task_group.is_active", 1)->and("task_group.is_deleted", 0)->fetchAll();
-		
+
 	// 	$member_ids = [];
 	// 	if (!empty($member_of_task_groups)) {
 	// 		foreach ($member_of_task_groups as $member_of_task_group) {
 	// 			$member_ids[]  = $member_of_task_group["id"];
 	// 		}
 	// 	}
-		
-	
+
+
 	// 	$taskgroup_statuses = $this->w->db->get("task")->select()->select("DISTINCT status")
 	// 			->where("task.is_deleted", 0)->order_by("status ASC")->fetchAll();
 	// 	$statuses = [];
-		
+
 	// 	if (!empty($taskgroup_statuses)) {
 	// 		foreach($taskgroup_statuses as $taskgroup_status) {
 	// 			$statuses[] = $taskgroup_status['status'];
 	// 		}
 	// 	}
-		
+
 	// 	$taskgroup_priorities = $this->w->db->get("task")->select()->select("DISTINCT priority")
 	// 			->where("task.is_deleted", 0)->order_by("priority ASC")->fetchAll();
 	// 	$priorities = [];
-		
+
 	// 	if (!empty($taskgroup_priorities)) {
 	// 		foreach($taskgroup_priorities as $taskgroup_priority) {
 	// 			$priorities[] = $taskgroup_priority['priority'];
 	// 		}
 	// 	}
-		
+
 	// 	$taskgroup_tasktypes = $this->w->db->get("task")->select()->select("DISTINCT task_type")
 	// 			->where("task.is_deleted", 0)->order_by("task_type ASC")->fetchAll();
 	// 	$tasktypes = [];
-		
+
 	// 	if (!empty($taskgroup_tasktypes)) {
 	// 		foreach($taskgroup_tasktypes as $taskgroup_tasktype) {
 	// 			$tasktypes[] = $taskgroup_tasktype['task_type'];
 	// 		}
 	// 	}
-		
-	// 	$members = $this->w->db->get("task_group_member")->select()->select("DISTINCT task_group_member.user_id")->fetchAll(); 
-		
+
+	// 	$members = $this->w->db->get("task_group_member")->select()->select("DISTINCT task_group_member.user_id")->fetchAll();
+
 	// 	$flat_members = [];
 	// 	if (!empty($members)) {
 	// 		foreach($members as $member) {
 	// 			$flat_members[] = $member['user_id'];
 	// 		}
 	// 	}
-		
+
 	// 	$taskgroup_members = [];
 	// 	if (!empty($flat_members)) {
 	// 		$taskgroup_members = $this->getObjects("User", ["id" => $flat_members]);
@@ -124,14 +124,14 @@ class TaskService extends DbService {
 	// 			return strcmp($a->getFullName(), $b->getFullName());
 	// 		});
 	// 	}
-		
+
 	// 	return ["statuses" => $statuses, "priorities" => $priorities, "members" => $taskgroup_members, "types" => $tasktypes];
  //    }
-    
+
     /**
      * Task type functions
      */
-    
+
     public function getTaskStatus($taskgroup) {
         if (is_string($taskgroup) && class_exists($taskgroup)) {
             $c = new $taskgroup($this->w);
@@ -184,13 +184,13 @@ class TaskService extends DbService {
         $w->ctx("navigation", $nav);
         return $nav;
     }
-    
+
     // return an array for display of task type for a task group defined in our tasks file.
     function getTaskTypes($taskgroup) {
         if (empty($taskgroup)) {
             return null;
         }
-        
+
         $tasktypes = array();
         $this->_loadTaskFiles();
         foreach (get_declared_classes() as $class) {
@@ -203,7 +203,7 @@ class TaskService extends DbService {
         }
         return $tasktypes;
     }
-    
+
     // returns an array for display of priorities of a task group defined in our tasks file
     function getTaskPriority($taskgroup) {
         $taskprior = array();
@@ -219,7 +219,7 @@ class TaskService extends DbService {
         }
         return $taskprior;
     }
-    
+
     // return an array for display of all members of a task group who can be assigned tasks, given task group ID
     function getMembersBeAssigned($id) {
         $line = array();
@@ -232,18 +232,18 @@ class TaskService extends DbService {
         }
         return $line;
     }
-    
+
     // return a users full name given their user ID
     function getUserById($id) {
         $u = $this->w->Auth->getUser($id);
         return $u ? $u->getFullName() : "";
     }
-    
+
     // prepare to get all task types of type $class as defined in our tasks file
     function getTaskTypeObject($class) {
         return $this->_getTaskObjectGeneric($class, "TaskType_");
     }
-    
+
     // get all task groups or task types of type $class as defined in our task file
     function _getTaskObjectGeneric($class, $type) {
         $this->_loadTaskFiles();
@@ -253,7 +253,7 @@ class TaskService extends DbService {
         }
         return null;
     }
-    
+
     // nicely format a number of seconds as H:m
     function getFormatPeriod($seconds) {
         if (is_numeric($seconds)) {
@@ -263,7 +263,7 @@ class TaskService extends DbService {
             return $hours . ":" . $mins;
         }
     }
-    
+
     // function to sort task group list by task type
     static function sortbyGroup($a, $b) {
         if (strcasecmp($a->task_group_type, $b->task_group_type) == 0) {
@@ -271,17 +271,17 @@ class TaskService extends DbService {
         }
         return (strcasecmp($a->task_group_type, $b->task_group_type) > 0) ? +1 : -1;
     }
-    
+
     // prepare to get all task groups of type $class as defined in our tasks file
     function getTaskGroupTypeObject($class) {
         return $this->_getTaskObjectGeneric($class, "TaskGroupType_");
     }
-    
+
     // static list of group permissions for can_view, can_assign, can_create
     function getTaskGroupPermissions() {
         return array("ALL", "GUEST", "MEMBER", "OWNER");
     }
-    
+
     // get all task group types as defined in our tasks file
     function getAllTaskGroupTypes() {
         $this->_loadTaskFiles();

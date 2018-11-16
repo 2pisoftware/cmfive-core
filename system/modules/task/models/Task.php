@@ -8,7 +8,7 @@ class Task extends DbObject {
 	public $task_type;
     public $title;
     public $description;
-    
+
     public $status;
     public $priority;
 
@@ -22,10 +22,10 @@ class Task extends DbObject {
     public $dt_completed;
     public $is_closed;
     public $dt_due;
-    
+
     public $_modifiable;
     public $_searchable;
-    
+
     public static $_validation = [
         "title" => ['required'],
         "task_group_id" => ['required'],
@@ -39,7 +39,7 @@ class Task extends DbObject {
 
     /**
      * Returns attached task group
-     * 
+     *
      * @return TaskGroup
      */
     public function getTaskGroup() {
@@ -48,7 +48,7 @@ class Task extends DbObject {
 
     /**
      * Returns assigned user
-     * 
+     *
      * @return User
      */
     public function getAssignee() {
@@ -57,7 +57,7 @@ class Task extends DbObject {
 
     /**
      * Returns parent task, if any
-     * 
+     *
      * @return Task
      */
     public function getParentTask() {
@@ -104,12 +104,12 @@ class Task extends DbObject {
     public function getTimeLogEntries() {
         return $this->getObjects("timelog", ["object_class" => "Task", "object_id" => $this->id, "is_deleted" => 0]);
     }
-    
+
     // return the task group title given a task group ID
     public function getTaskGroupTypeTitle() {
         return (!empty($this->_taskgroup->id) ? $this->_taskgroup->title : null);
     }
-    
+
     // if i am assignee, creator or task group owner, i can set notifications for this Task
     public function getCanINotify() {
         if ($this->Auth->user()->is_admin == 1) {
@@ -135,25 +135,25 @@ class Task extends DbObject {
     function getCreatorName() {
         $creator = null;
         $c = $this->Task->getObject("ObjectModification", array("object_id" => $this->id, "table_name" => $this->getDbTableName()));
-        
-        if (!empty($c->creator_id)) 
+
+        if (!empty($c->creator_id))
             $creator = $this->Auth->getUser($c->creator_id);
-        
+
         return $creator ? $creator->getFullName() : "";
     }
-    
+
     // return a task type object given a task type
     public function getTaskTypeObject() {
         if ($this->task_type) {
             return $this->Task->getTaskTypeObject($this->task_type);
         }
     }
-    
+
     // return the task statuses as array for a task group given a task group ID
     function getTaskGroupStatus() {
         return (!empty($this->_taskgroup->id) ? $this->_taskgroup->getTypeStatus() : null);
     }
-    
+
     public function getSubscribers() {
         return $this->w->db->get("task_subscriber")->select()
         ->select("task_subscriber.id, task_subscriber.user_id, concat(contact.firstname, ' ', contact.lastname) as fullname, user.is_external")

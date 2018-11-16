@@ -5,16 +5,16 @@ function edit_GET(Web $w) {
 
     list($task_id) = $w->pathMatch("id");
     if (empty($task_id)) return;
-    
+
     $task = $w->Task->getTask($task_id);
-    
+
     // Register for timelog if not new task
     $w->Timelog->registerTrackingObject($task);
-    
+
     if (!$task->canView($w->Auth->user())) {
         $w->error("You do not have permission to edit this Task", "/task/list");
     }
-	
+
     // Get a list of the taskgroups and filter by what can be used
     $taskgroup_list = $w->Task->getTaskGroups();
     if (empty($taskgroup_list)) {
@@ -28,19 +28,19 @@ function edit_GET(Web $w) {
     $taskgroups = array_filter($taskgroup_list, function($taskgroup){
         return $taskgroup->getCanICreate();
     });
-    
+
     $tasktypes = [];
     $priority = [];
     $members = [];
-    
+
     // Try and prefetch the taskgroup by given id
     $taskgroup = null;
     $taskgroup_id = $w->request("gid");
     $assignee_id = 0;
-    
+
     if (!empty($taskgroup_id) || !empty($task->task_group_id)) {
         $taskgroup = $w->Task->getTaskGroup(!empty($task->task_group_id) ? $task->task_group_id : $taskgroup_id);
-        
+
         if (!empty($taskgroup->id)) {
             $tasktypes = $w->Task->getTaskTypes($taskgroup->task_group_type);
             $priority = $w->Task->getTaskPriority($taskgroup->task_group_type);
@@ -53,9 +53,9 @@ function edit_GET(Web $w) {
 
     // Add history item
     History::add("Task: {$task->title}", null, $task);
-    
+
     $status_list = Config::get("task." . $taskgroup->task_group_type)['statuses'];
-    
+
     $w->ctx("t", (array)$task);
     $w->ctx("task", $task);
     $w->ctx("taskgroup_list", json_encode(array_map(function($task_group) {return ['value' => $task_group->id, 'text' => $task_group->title];}, $taskgroups)));

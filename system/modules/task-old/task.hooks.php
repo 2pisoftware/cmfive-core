@@ -260,7 +260,7 @@ function task_comment_get_notification_recipients_task(Web $w, $params) {
 function task_comment_send_notification_recipients_task(Web $w, $params) {
     
     $task = $w->task->getTask($params['object_id']);
-	$subject = (!empty($commentor->id) ? $commentor->getFullName() : 'Someone') . ' has commented on a task that you\'re apart of ('.$task->title . ' [' . $task->id . '])';
+	$subject = (!empty($commentor->id) ? $commentor->getFullName() : 'Someone') . ' has commented on a task that you\'re a part of ('.$task->title . ' [' . $task->id . '])';
 
 	$w->Notification->sendToAllWithCallback($subject, "task", "notification_email", $w->auth->getUser($params['commentor_id']), $params['recipients'], function($user, $existing_template_data) use ($params, $task, $w) {
     	$template_data = $existing_template_data;
@@ -303,4 +303,19 @@ function task_comment_send_notification_recipients_task(Web $w, $params) {
 		return new NotificationCallback($user, $template_data, $w->File->getAttachmentsFileList($task));
     });
 
+}
+
+// if taskgroup has been made inactive, then deactivate all attached tasks
+function task_core_dbobject_after_update_TaskGroup(Web $w, $object) {
+	// check if is_active flag has changed from 1 to 0
+	if (isset($object->__old['is_active']) && $object->__old["is_active"] !== $object->is_active) {
+		// get all attached tasks
+		$tasks = $object->getTasks();
+		if (!empty($tasks)) {
+			foreach ($tasks as $task) {
+				$task->is_active = $object->is_active;
+				$task->update();
+			}
+		}
+	}
 }

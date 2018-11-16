@@ -36,7 +36,10 @@ function ajaxGetFieldForm_ALL(Web $w) {
 	$display_keys = [];
 	if (!empty($task_type_form)) {
 		foreach($task_type_form as $task_type_row) {
-			$display_keys[] = $task_type_row[2];
+			if (isset($task_type_row[2])) {
+				$display_keys[] = $task_type_row[2];
+			}
+			
 		}
 	}
 	

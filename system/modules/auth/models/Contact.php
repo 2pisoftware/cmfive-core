@@ -10,7 +10,7 @@ class Contact extends DbObject {
 	public $firstname;
 	public $lastname;
 	public $othername;
-	public $title;
+	public $title_lookup_id;
 	public $homephone;
 	public $workphone;
 	public $mobile;
@@ -23,17 +23,18 @@ class Contact extends DbObject {
 	public $private_to_user_id;
 
 	function getFullName() {
-		if ($this->firstname && $this->lastname) {
-			return $this->firstname." ".$this->lastname;
+		$buf = $this->getTitle();
+		if ($this->firstname and $this->lastname) {
+			return $buf . " " . $this->firstname . " " . $this->lastname;
 		} else if ($this->firstname) {
-			return $this->firstname;
+			return $buf . " " . $this->firstname;
 		} else if ($this->lastname) {
-			return $this->lastname;
+			return $buf . " " . $this->lastname;
 		} else if ($this->othername) {
-			return ($this->othername);
+			return $buf . " " . $this->othername;
 		}
 	}
-
+	
 	function getFirstName()
 	{
 		return $this->firstname;
@@ -50,6 +51,26 @@ class Contact extends DbObject {
 		} else {
 			return $this->getFullName();
 		}
+	}
+	
+	function getTitle() {
+		$title_lookup = $this->w->Admin->getLookupbyId($this->title_lookup_id);
+		return !empty($title_lookup) ? $title_lookup->title : '';
+	}
+	
+	function setTitle($title) {
+		if (!empty($title)) {
+			$title_lookup = $this->w->Admin->getLookupByTypeCode('title', $title);
+			if (empty($title_lookup)) {
+				$title_lookup = new Lookup($this->w);
+				$title_lookup->fill(['type'=>'title', 'code'=>$title, 'title'=>$title]);
+				$title_lookup->insert();
+			}
+			$this->title_lookup_id = $title_lookup->id;	
+		} else {
+			$this->title_lookup_id = null;
+		}
+		// make sure to call contact->update(true) after this, if this is not a new contact. Otherwise you will be calling contact->insert() anyway.
 	}
 
 	function getUser() {

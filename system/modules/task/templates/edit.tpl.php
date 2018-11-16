@@ -8,7 +8,7 @@
 <link rel="stylesheet" type="text/css" href="/system/templates/vue-components/quill/quill.snow.css">
 
 <div id="task_edit">
-    
+
     <div id="taskmodal" class="reveal-modal small" data-reveal data-closable>
         Are you sure you want to remove this subscriber?<br><br>
         <button class="button radius tiny success" v-on:click="delete_subscriber">Yes</button>
@@ -25,7 +25,7 @@
         The task was saved successfully<br><br>
         <button class="button tiny radius success" data-close>OK</button>
     </div>
-    
+
     <div class='row-fluid'>
         <div class='small-12 columns'>
             <h3>Edit Task</h3>
@@ -35,7 +35,7 @@
 
     <div class="row-fluid">
         <div class="medium-12 large-8 columns">
-            Task title 
+            Task title
             <input name="title" id="title" required="required" type="text" v-model="title">
         </div>
 
@@ -59,24 +59,24 @@
             <model-list-select v-model="priority" :list="priority_list" placeholder="select item" option-value="value" option-text="text"></model-list-select>
         </div>
     </div>
-    
+
     <div class="row-fluid">
         <div class="medium-12 large-6 columns">
-            Group 
+            Group
             <model-list-select v-model="taskgroup_id" :list="taskgroup_list" placeholder="select item" option-value="value" option-text="text"></model-list-select>
         </div>
         <div class="medium-12 large-6 columns">
-            Type 
+            Type
             <model-list-select v-model="type" :list="type_list" placeholder="select item" option-value="value" option-text="text"></model-list-select>
         </div>
     </div>
-        
+
     <div class="row-fluid columns">
         Description
         <vue-editor v-model="description"></vue-editor>
         <!-- <textarea name="description" id="description"></textarea> -->
     </div>
-        
+
     <div class="row-fluid">
         <div class="medium-12 large-6 columns">
             Estimated hours
@@ -98,12 +98,12 @@
 <script>
     new Vue({
         el: '#task_edit',
-        
+
         components: {
             "model-list-select": VueSearchSelect.ModelListSelect,
             "datepicker": VueFlatpickr
         },
-        
+
         data: {
             taskgroup_id: "<?php echo $t['task_group_id']; ?>",
             type: "<?php echo $t['task_type']; ?>",
@@ -116,7 +116,7 @@
             effort: "<?php echo $task->effort; ?>",
             description: "<?php echo $task->description; ?>",
             can_i_assign: "<?php echo $can_i_assign; ?>",
-            
+
             taskgroup_list: <?php echo $taskgroup_list; ?>,
             type_list: <?php echo $type_list; ?>,
             status_list: <?php echo $status_list; ?>,
@@ -129,7 +129,7 @@
                 altInput: true
             }
         },
-                
+
         methods: {
             delete_task: function() {
                 Vue.http.get('/task-ajax/delete', {params:{id: this.id}}).then(function (response) {
@@ -170,7 +170,7 @@
         },
 
         created: function() {
-            
+
         }
     });
 </script>
