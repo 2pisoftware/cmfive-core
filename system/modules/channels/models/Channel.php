@@ -9,11 +9,10 @@ class Channel extends DbObject {
     public $do_processing; // 0|1 flag
 
     public function getForm() {
-
         return array("Channel" => array(
                 array(
                     array("Name", "text", "name", $this->name),
-                    array("Is Active", "checkbox", "is_active", ($this->is_active === null ? 1 : $this->is_active))
+                    array("Is Active", "checkbox", "is_active", $this->is_active ? 1 : 0)
                 ),
                 array(
                     array("Notify Email", "text", "notify_user_email", $this->notify_user_email),
@@ -26,7 +25,7 @@ class Channel extends DbObject {
         ));
     }
 
-    public function read() {
+    public function read($markAsProcessed = true) {
         $channelImpl = $this->Channel->getChildChannel($this->id);
         if (!empty($channelImpl)) {
             $channelImpl->read();
@@ -39,8 +38,9 @@ class Channel extends DbObject {
                     $processor_class = $processor->retrieveProcessor();
                     $processor_class->process($processor);
                 }
-
-                $this->Channel->markMessagesAsProcessed($this->id);
+                if ($markAsProcessed) {
+                  $this->Channel->markMessagesAsProcessed($this->id);
+                }
             }
         }
     }

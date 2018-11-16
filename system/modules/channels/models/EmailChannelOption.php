@@ -5,8 +5,9 @@ use \Zend\Mail\Message as Zend_Mail_Message;
 //
 // The purpose of this class is to expose protocol
 //
+
 class Zend_Mail_Storage_Imap extends \Zend\Mail\Storage\Imap {
-    public $protocol;
+		public $protocol;
 
     public function __construct($params) {
         if (is_array($params)) {
@@ -38,7 +39,7 @@ class Zend_Mail_Storage_Imap extends \Zend\Mail\Storage\Imap {
         $this->protocol = new Zend_Mail_Protocol_Imap();
         $this->protocol->connect($host, $port, $ssl, $options);
         if (!$this->protocol->login($params->user, $password)) {
-            throw new \Zend\Mail\Exception\RuntimeException('cannot login, user or password wrong');
+            throw new \Zend\Mail\Exception\RuntimeException('Cannot login, check username and password');
         }
         $this->selectFolder(isset($params->folder) ? $params->folder : 'INBOX');
     }
@@ -46,11 +47,10 @@ class Zend_Mail_Storage_Imap extends \Zend\Mail\Storage\Imap {
 
 use Zend\Stdlib\ErrorHandler;
 
-class Zend_Mail_Protocol_Imap extends \Zend\Mail\Protocol\Imap { 
+class Zend_Mail_Protocol_Imap extends \Zend\Mail\Protocol\Imap {
 
     public function connect($host, $port = null, $ssl = false, $options = []) {
         $isTls = false;
-
         if ($ssl) {
             $ssl = strtolower($ssl);
         }
@@ -70,9 +70,8 @@ class Zend_Mail_Protocol_Imap extends \Zend\Mail\Protocol\Imap {
                     $port = 143;
                 }
         }
-
         ErrorHandler::start();
-        
+
         // Use stream_context_create instead of fsockopen as it allows us to specify SSL stream options
         $stream = stream_context_create();
         if ($ssl !== false && !is_null($options) && is_array($options) && array_key_exists('ssl', $options)) {
@@ -88,7 +87,6 @@ class Zend_Mail_Protocol_Imap extends \Zend\Mail\Protocol\Imap {
                 ($error ? sprintf('; error = %s (errno = %d )', $error->getMessage(), $error->getCode()) : '')
             ), 0, $error);
         }
-
         if (!$this->assumedNextLine('* OK')) {
             throw new \Zend\Mail\Exception\RuntimeException('host doesn\'t allow connection');
         }
@@ -126,8 +124,8 @@ class EmailChannelOption extends DbObject {
     static public $_select_read_action = array("Archive", "Move to Folder", "Apply Tag", "Forward to", "Delete");
     public $post_read_parameter; // stores extra data, eg. tag name, folder name, forward email, etc.
 
-	public $verify_peer;
-	public $allow_self_signed;
+  	public $verify_peer;
+  	public $allow_self_signed;
 
     public function __construct(Web $w) {
         parent::__construct($w);
@@ -137,7 +135,6 @@ class EmailChannelOption extends DbObject {
     public function delete($force = false) {
         $channel = $this->getChannel();
         $channel->delete($force);
-
         parent::delete($force);
     }
 
@@ -185,7 +182,7 @@ class EmailChannelOption extends DbObject {
         $this->w->Log->info("Connecting to mail server");
         $mail = $this->connectToMail();
         if (!empty($mail)) {
-            
+
             $this->w->Log->info("Getting messages with filter: " . json_encode($filter_arr));
             $results = $mail->protocol->search($filter_arr);
             if (count($results) > 0) {
@@ -236,7 +233,7 @@ class EmailChannelOption extends DbObject {
                                         // Name is stored under "parameters" in an array
                                         $nameArray = $content_type_header->getParameters();
                                         $name = '';
-                                        
+
                                         if (empty($nameArray) || !is_array($nameArray) || !array_key_exists('name', $nameArray)) {
                                             $content_dispositon = $part->getHeader('Content-Disposition');
 
@@ -256,12 +253,12 @@ class EmailChannelOption extends DbObject {
                                         if (empty($name)) {
                                             $name = "attachment_" . substr(uniqid('', true), -6);
                                         }
-										
+
 										// Try and trim quotes off the name
 										$name = trim($name, '"');
 										$name = trim($name, "'");
-										
-                                        $this->w->File->saveFileContent($channel_message, 
+
+                                        $this->w->File->saveFileContent($channel_message,
                                                 ($transferEncoding == "base64" ? base64_decode(trim($part->__toString())) : trim($part->__toString())), $name, "channel_email_attachment", $contentType);
                                 }
                             } catch (Zend_Mail_Exception $e) {
@@ -278,34 +275,39 @@ class EmailChannelOption extends DbObject {
         }
     }
 
-    private function connectToMail($shouldDecrypt = true) {
-        if ($shouldDecrypt) {
-            $this->decrypt();
-        }
+    public function connectToMail($shouldDecrypt = true) {
+      if ($shouldDecrypt) {
+          $this->decrypt();
+      }
 
-        try {
-            // Open email connection
-			$options = null;
-			if (!is_null($this->verify_peer)) {
-				$options = [
-					'ssl' => ['verify_peer' => $this->verify_peer ? true : false]
-				];
-				
-				if (!is_null($this->allow_self_signed)) {
-					$options['ssl']['allow_self_signed'] = $this->allow_self_signed ? true : false;
-				}
-			}
-			
-			$mail = new Zend_Mail_Storage_Imap(array('host' => $this->server,
-                'user' => $this->s_username,
-                'password' => $this->s_password,
-                'ssl' => ($this->use_auth == 1 ? "SSL" : false), 
-				'options' => $options
-			));
-            return $mail;
-        } catch (Exception $e) {
-            $this->Log->error("Error connecting to mail server: " . $e->getMessage());
-        }
+      try {
+        // Open email connection
+  			$options = null;
+  			if (!is_null($this->verify_peer)) {
+  				$options = [
+  					'ssl' => ['verify_peer' => $this->verify_peer ? true : false]
+  				];
+
+  				if (!is_null($this->allow_self_signed)) {
+  					$options['ssl']['allow_self_signed'] = $this->allow_self_signed ? true : false;
+  				}
+			   }
+
+				$mail = new Zend_Mail_Storage_Imap(
+		        array(
+		          'host' => $this->server,
+		          'user' => $this->s_username,
+							'port' => $this->port,
+		          'password' => $this->s_password,
+		          'ssl' => ($this->use_auth == 1 ? "SSL" : false),
+							'options' => $options
+						)
+				);
+        return $mail;
+      } catch (Exception $e) {
+          $this->Log->error("Error connecting to mail server: " . $e->getMessage());
+					return $e->getMessage();
+      }
     }
 
     public function getFolderList($shouldDecrypt = true) {
