@@ -8,7 +8,7 @@
     <div class='row-fluid'>
         <div class='small-12 columns'>
             <h1 class="<?php echo $task->isOverdue() ? 'task_overdue' : ''; ?>"><?php echo $task->getSelectOptionTitle(); ?></h1>
-            <h4 style="color: #C61213;" class='display-heading'>Assigned <strong><?php echo $task->priority ?> Priority</strong> to <strong><?php echo $task->getAssignee()->getFullName(); ?></strong> and due <strong><?php echo formatDate($task->dt_due); ?></strong></h4>
+            <h4 style="color: #C61213;" class='display-heading'>Assigned <strong><?php echo !empty($task->priority) ? $task->priority . 'Priority' : '' ?> </strong> to <strong><?php echo $task->getAssignee()->getFullName(); ?></strong> and due <strong><?php echo formatDate($task->dt_due); ?></strong></h4>
             <h4 class='display-heading'>Description</h4>
             <div class='display-content' v-html="task_description"></div>
             <br>

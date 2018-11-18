@@ -65,5 +65,6 @@ function edit_GET(Web $w) {
     $w->ctx("assignee_list", json_encode(array_map(function($assignee) {return ['value' => $assignee[1], 'text' => $assignee[0]];}, $members)));
     $w->ctx("assignee_id", $assignee_id);
     $w->ctx("can_i_assign", $taskgroup->getCanIAssign());
+    $w->ctx("title", 'Edit - ' . $task->title);
     //$w->ctx("canDelete", $task->canDelete($w->Auth->user()));
 }

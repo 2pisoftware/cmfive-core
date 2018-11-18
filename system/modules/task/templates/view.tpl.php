@@ -8,22 +8,31 @@
 <link rel="stylesheet" type="text/css" href="/system/templates/vue-components/quill/quill.snow.css">
 
 <style>
-    .div1 {
-        width: 7em; 
-        height: 7em; 
-        border-radius: 50%; 
-        background-color: #DEE5EB; 
-        margin-left: auto; 
+    .status_circle {
+        display: inline-table;
+    }
+
+    .status_circle > div {
+        width: 7em;
+        height: 7em;
+        border-radius: 50%;
+        background-color: #DEE5EB;
+        margin-left: auto;
         margin-right: auto;
     }
 
-    .p1 {
+    .status_circle > div > p {
         line-height: 7em;
     }
 
-    .summary {
-        display: inline-table;
-        margin: 0 0.5em 0 0.5em;
+    .tab {
+        background-color: white;
+    }
+
+    .gravatar {
+        width: 7em;
+        height: 7em;
+        border-radius: 50%;
     }
 </style>
 
@@ -47,40 +56,50 @@
 
     <div id="modal_edit" class="reveal-modal" data-reveal aria-hidden="true" role="dialog">
     </div>
-    
+
     <h4><strong>Task: <span style="color: #D12229;"><?php echo $task->title?></span></strong></h4>
     Created <?php echo $task->getCreatedDate(); ?> by <?php echo $task->getCreatorName(); ?> and is due by <span style="color: #D12229;"><?php echo $task->getDueDate(); ?></span><br>
     <br><br>
-<div class='row-fluid'>
-<div class='small-12 large-8 columns'>
+<div class='row-fluid tab'>
+<div class='small-12 large-8 columns tab'>
 <html-tabs>
     <html-tab title='Task details' icon='' :selected="true">
-        <div class="row">
-            <div class="large-12 columns">
-                <div class="text-center summary">
-                    Assigned to<br>
-                    <img style="width: 7em; height: 7em; border-radius: 50%;" src='https://www.gravatar.com/avatar/<?php echo $gravatar; ?>?d=identicon&s=250' />
-                    <br>{{assignee_name}}
+    <div class="row">
+        <div class="large-12 columns">
+            <div class="status_circle text-center large-1 columns">
+                Assigned to
+                <div v-if=assignee_name>
+                    <img class='gravatar' v-bind:src='gravatar_url'>
+                    {{assignee_name}}
                 </div>
-                <div class="text-center summary">
-                    Status<br>
-                    <div class="div1"><p class="p1">{{status}}</p></div>
-                </div>
-                <div class="text-center summary">
-                    Priority<br>
-                    <div class="div1" style="background-color: #D12229;"><p class="p1" style="color: #ffffff;">{{priority}}</p></div>
-                </div>
-                <div class="text-center summary">
-                    Due Date<br>
-                    <div class="div1"><p class="p1"><?php echo $task->getDueDate(); ?></p></div>
-                </div>
-                <div class="text-center summary">
-                    Est.Hours<br>
-                    <div class="div1"><p class="p1">{{estimate_hours}}</p></div>
+                <div v-else>
+                    <p>Unassigned</p>
                 </div>
             </div>
+            <div class="status_circle text-center large-1 columns">
+                Status
+                <div v-if=status><p>{{status}}</p></div>
+                <div v-else=status><p>No status</p></div>
+            </div>
+            <div class="status_circle text-center large-1 columns">
+                Priority
+                <div v-if=priority><p>{{priority}}</p></div>
+                <div v-else><p>No priority</p></div>
+            </div>
+            <div class="status_circle text-center large-1 columns">
+                Due Date
+                <div><p>Date</p></div>
+            </div>
+            <div class="status_circle text-center large-1 columns">
+                Est.Hours
+                <div v-if=estimate_hours><p>{{estimate_hours}}</p></div>
+                <div v-else><p>No hours</p></div>
+            </div>
+            <div class="large-7 columns">
+            </div>
         </div>
-        
+    </div>
+
         <div class="row">
             <div class="large-12 columns">
             <br>Description<br><br>
@@ -98,7 +117,7 @@
             <a href="/task/list"><button class="tiny button radius" style="background-color: #FF7A13;">Cancel</button></a>
         </div>
     </html-tab>
-    
+
     <html-tab title='Time Log' icon='fa-clock'>
         <?php echo $w->partial("listtimelog", ["object_class" => "Task", "object_id" => $task->id, "redirect" => "task/view/{$task->id}#timelog"], "timelog"); ?>
     </html-tab>
@@ -135,7 +154,7 @@
             </div>
             <a class='button tiny secondary radius' href="/task-subscriber/add/<?php echo $task->id; ?>" data-reveal-ajax="true" data-reveal-id="taskmodal"><i class="fa fa-plus" aria-hidden="true"></i></a>
         </html-segment>
-        
+
         <html-segment title='Tags'>
             <?php echo $w->partial('listTags', ['object' => $task], 'tag'); ?>
         </html-segment>
@@ -146,17 +165,18 @@
 <script>
     new Vue({
         el: '#task_view',
-        
+
         components: {
             "model-list-select": VueSearchSelect.ModelListSelect,
             "datepicker": VueFlatpickr
         },
-        
+
         data: {
             taskgroup_id: "<?php echo $t['task_group_id']; ?>",
             type: "<?php echo $t['task_type']; ?>",
             title: "<?php echo $t['title']; ?>",
             id: "<?php echo $t['id']; ?>",
+            gravatar_url: "<?php echo $gravatar; ?>",
             status: "<?php echo $t['status']; ?>",
             priority: "<?php echo $t['priority']; ?>",
             assignee_name: "<?php echo $assignee_name; ?>",
@@ -165,7 +185,7 @@
             description: "<?php echo $task->description; ?>",
             can_i_assign: "<?php echo $can_i_assign; ?>",
             subscribers: <?php echo $subscribers; ?>,
-            
+
             taskgroup_list: <?php echo $taskgroup_list; ?>,
             type_list: <?php echo $type_list; ?>,
             status_list: <?php echo $status_list; ?>,
@@ -180,7 +200,7 @@
                 altInput: true
             }
         },
-                
+
         methods: {
             delete_task: function() {
                 Vue.http.get('/task-ajax/delete', {params:{id: this.id}}).then(function (response) {
@@ -211,7 +231,7 @@
                     if (response.body.data === "updated"){
                         $('#save-modal').foundation('reveal','open');
                     }
-                        
+
                 },
                 function (error) {
 
@@ -219,12 +239,12 @@
             },
 
             delete_subscriber: function(subscriber) {
-                
+
             }
         },
 
         created: function() {
-            
+
         }
     });
 </script>

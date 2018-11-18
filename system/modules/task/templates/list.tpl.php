@@ -34,14 +34,14 @@
     }
 </style>
 
-<div id="task_modal" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog"> 
+<div id="task_modal" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
 </div>
 
 <div id='vue_task_list' class="container-fluid" style="position: relative;">
     <div id="options">
         <a class="tiny button radius" style="background-color: #68C2CD;" href="/task/edit/?gid=filter.task_group_id">Quick View</a>
         <a href="/task/list"><button class="tiny button radius" style="background-color: #FF7A13;">View</button></a>
-        
+
         <a data-reveal-ajax="true" data-reveal-id="modal_edit" href="/task/edit/task_id"><button style="background-color: #59BC3B;" class='tiny button radius'>Edit</button></a>
         <a class="tiny button radius" style="background-color: #95ACBC;" href="/task/duplicatetask/task_id">Duplicate</a>
         <!-- if can delete -->
@@ -53,12 +53,12 @@
             <model-list-select style="" v-model="filter.assignee_id" :list="assignees" placeholder="select assignee" option-value="value" option-text="text"></model-list-select>
             <!--<model-list-select style="" ref="assigneeselect" v-on:searchchange="assignee_autocomplete" v-model="filter.assignee_id" :list="assignees" placeholder="select assignee" option-value="value" option-text="text"></model-list-select>-->
         </div>
-            
+
         <div class='medium-12 large-4 columns'>
             <label>Creator</label>
             <model-list-select style="" v-model="filter.creator_id" :list="creators" placeholder="select creator" option-value="value" option-text="text"></model-list-select>
         </div>
-        
+
         <div class='medium-12 large-4 columns'>
             <label>Task type</label>
             <model-list-select style="" v-model="filter.task_type" :list="task_types" placeholder="select task type" option-value="value" option-text="text"></model-list-select>
@@ -79,23 +79,6 @@
             <label>Task group</label>
             <model-list-select style="" v-model="filter.task_group_id" :list="task_groups" placeholder="select task group" option-value="value" option-text="text"></model-list-select>
         </div>
-    </div>
-
-    <div class='row-fluid columns' style="height: 2em;"></div>
-
-    <div class='row-fluid'>
-        <div class='small-4 columns' style="min-height:1px;"></div>
-        <div class='small-4 columns'>
-            <label for="selectPerPage">Tasks per page:</label>
-            <select v-model="pageSize" id="selectPerPage">
-                <option value="10">10</option>
-                <option value="20">20</option>
-                <option value="30">30</option>
-                <option value="40">40</option>
-                <option value="50">50</option>
-            </select>
-        </div>
-        <div class='small-4 columns' style="min-height:1px;"></div>
     </div>
 
     <div class='row-fluid columns' style="height: 2em;"></div>
@@ -136,11 +119,27 @@
         </tbody>
     </table>
 
+    <div class='row-fluid columns' style="height: 2em;"></div>
+
+    <div class='row-fluid'>
+        <div class='small-10 columns' style="min-height:1px;"></div>
+        <div class='small-2 columns'>
+            <label for="selectPerPage">Tasks per page:</label>
+            <select v-model="pageSize" id="selectPerPage">
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="30">30</option>
+                <option value="40">40</option>
+                <option value="50">50</option>
+            </select>
+        </div>
+    </div>
+
     <pagination v-if="tableData" v-on:currentpagechanged="onCurrentPageChanged" :data_count="tableData.length" :items_per_page="pageSize"></pagination>
 </div>
 
 <script>
-	var vue = new Vue({ 
+	var vue = new Vue({
 		el: '#vue_task_list',
         components: {
             "model-list-select": VueSearchSelect.ModelListSelect,
@@ -154,13 +153,13 @@
             priority_list: <?php echo $priority_list; ?>,
             statuslist: <?php echo $statuslist; ?>,
             closed: 'is_closed',
-    
+
             task_list: [],
             start: 0,
             end: 10,
             currentSort:'id',
             desc: false,
-            
+
             filter: {
                 status: null,
                 task_type: null,
@@ -205,7 +204,7 @@
                     _this.task_list = _response.data;
                 });
 			},
-                        
+
                     assignee_autocomplete: function(text) {
                         var _this = this;
                         if (text === "") return;
@@ -221,13 +220,13 @@
 
                     sort: function(s, event) {
                         document.getElementById(this.currentSort).getElementsByTagName("span")[0].innerHTML = '<i class="fas fa-sort"></i>';
-                        
+
                         if (s === this.currentSort) {
                             this.desc = !this.desc;
                         }
-                        
+
                         this.currentSort = s;
-                        
+
                         if (!this.desc) {
                             event.target.getElementsByTagName("span")[0].innerHTML = '<i class="fas fa-sort-down"></i>';
                         } else {
@@ -244,7 +243,7 @@
                         /* var coord = event.target.getBoundingClientRect();
 
                         var $divOverlay = $('#options');
-                       
+
                         var bottomWidth = $(event.target).css('width');
                         var bottomHeight = $(event.target).css('height');
                         var rowPos = $(event.target).position();
@@ -257,7 +256,7 @@
                             width: coord.width,
                             height: bottomHeight
                         });
-                        
+
                         $divOverlay.show();
 
                         $divOverlay.mouseleave(function() {
@@ -266,7 +265,7 @@
                     },
 
                     hide_options: function() {
-                        
+
                     }
 		},
 		created: function() {
