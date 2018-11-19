@@ -3,7 +3,7 @@
 // Theres a naming discrepancy where the service name didnt exactly match the module name
 // While it doesnt really matter for general use, the navigation expects the names to match
 class ChannelsService extends DbService {
-    
+
     /**
      * Channels naivgation function
      * @return none
@@ -21,5 +21,5 @@ class ChannelsService extends DbService {
         $w->ctx("navigation", $nav);
         return $nav;
     }
-    
+
 }
