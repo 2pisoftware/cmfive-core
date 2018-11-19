@@ -1,11 +1,9 @@
 <?php
 
 class ChannelMessage extends DbObject {
-
+    public $dt_created;
     public $channel_id;
     public $message_type;
-
-    public $dt_created;
 
     public $__use_auditing = false;
 

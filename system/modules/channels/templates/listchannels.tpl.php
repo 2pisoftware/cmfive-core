@@ -4,7 +4,7 @@
 <?php if (!empty($channels)) : ?>
     <table class="tablesorter">
         <thead>
-            <tr><th>ID</th><th>Type</th><th>Name</th><th>Status</th><th>Notify Email</th><th>Notify User</th><th>Actions</th></tr>
+            <tr><th>ID</th><th>Type</th><th>Name</th><th>Active</th><th>Notify Email</th><th>Notify User</th><th>Actions</th></tr>
         </thead>
         <tbody>
             <?php foreach ($channels as $c) : ?>
@@ -32,7 +32,3 @@
         </tbody>
     </table>
 <?php endif; ?>
-
-<script language="javascript">
-getElementById('').addEventListener("click", toggleModalLoading());
-</script>

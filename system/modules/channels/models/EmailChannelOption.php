@@ -5,7 +5,6 @@ use \Zend\Mail\Message as Zend_Mail_Message;
 //
 // The purpose of this class is to expose protocol
 //
-
 class Zend_Mail_Storage_Imap extends \Zend\Mail\Storage\Imap {
 		public $protocol;
 
@@ -39,7 +38,7 @@ class Zend_Mail_Storage_Imap extends \Zend\Mail\Storage\Imap {
         $this->protocol = new Zend_Mail_Protocol_Imap();
         $this->protocol->connect($host, $port, $ssl, $options);
         if (!$this->protocol->login($params->user, $password)) {
-            throw new \Zend\Mail\Exception\RuntimeException('Cannot login, check username and password');
+            throw new \Zend\Mail\Exception\RuntimeException('cannot login, user or password wrong');
         }
         $this->selectFolder(isset($params->folder) ? $params->folder : 'INBOX');
     }
@@ -51,6 +50,7 @@ class Zend_Mail_Protocol_Imap extends \Zend\Mail\Protocol\Imap {
 
     public function connect($host, $port = null, $ssl = false, $options = []) {
         $isTls = false;
+
         if ($ssl) {
             $ssl = strtolower($ssl);
         }
@@ -70,6 +70,7 @@ class Zend_Mail_Protocol_Imap extends \Zend\Mail\Protocol\Imap {
                     $port = 143;
                 }
         }
+
         ErrorHandler::start();
 
         // Use stream_context_create instead of fsockopen as it allows us to specify SSL stream options
@@ -87,6 +88,7 @@ class Zend_Mail_Protocol_Imap extends \Zend\Mail\Protocol\Imap {
                 ($error ? sprintf('; error = %s (errno = %d )', $error->getMessage(), $error->getCode()) : '')
             ), 0, $error);
         }
+
         if (!$this->assumedNextLine('* OK')) {
             throw new \Zend\Mail\Exception\RuntimeException('host doesn\'t allow connection');
         }
@@ -135,6 +137,7 @@ class EmailChannelOption extends DbObject {
     public function delete($force = false) {
         $channel = $this->getChannel();
         $channel->delete($force);
+
         parent::delete($force);
     }
 

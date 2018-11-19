@@ -9,6 +9,7 @@ class Channel extends DbObject {
     public $do_processing; // 0|1 flag
 
     public function getForm() {
+
         return array("Channel" => array(
                 array(
                     array("Name", "text", "name", $this->name),

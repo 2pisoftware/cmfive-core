@@ -28,7 +28,7 @@ function edit_GET(Web $w) {
             array("Password", "password", "s_password", $email_channel->s_password)
         ),
         array(
-            array("Port", "text", "port", $email_channel->port),
+            array("Port <small>Only required for non-standard port configuarations</small>", "text", "port", $email_channel->port),
             array("Use Auth?", "checkbox", "use_auth", $email_channel->use_auth)
         ),
 		array(
@@ -61,26 +61,28 @@ function edit_GET(Web $w) {
         )
     );
 
-    $w->ctx("form", Html::multiColForm($form, "/channels-email/edit/{$channel_id}", "POST", "Save", "channelform"));
+    $w->ctx("form", Html::multiColForm($form, "/channels-email/edit/{$channel_id}", "POST", "Save", "channelform", null, null, '_self', true, ['name' => ['required'], 'protocol' => ['required'], 'server' =>['required'], 's_username' => ['required'], 's_password' => ['required']]));
 }
 
 function edit_POST(Web $w) {
-  $p = $w->pathMatch("id");
-  $channel_id = $p["id"];
-  $channel_object = $channel_id ? $w->Channel->getChannel($channel_id) : new Channel($w);
-  $channel_object->fill($_POST);
-  $channel_object->is_active = isset($_POST['is_active']) ? 1 : 0;
-  $channel_object->notify_user_id = !empty($_POST["notify_user_id"]) ? intval($_POST["notify_user_id"]) : NULL;
-  $channel_object->insertOrUpdate();
+    $p = $w->pathMatch("id");
+    $channel_id = $p["id"];
+    $channel_object = $channel_id ? $w->Channel->getChannel($channel_id) : new Channel($w);
+    $channel_object->fill($_POST);
+    $channel_object->is_active = isset($_POST['is_active']) ? 1 : 0;
+    $channel_object->notify_user_id = isset($_POST["notify_user_id"]) ? intval($_POST["notify_user_id"]) : null;
+    $channel_object->do_processing = isset($_POST['do_processing']) ? 1 : 0;
+    $channel_object->insertOrUpdate();
 
-  // @var $email_channel EmailChannelOption
-  $email_channel = $channel_id ? $w->Channel->getEmailChannel($channel_id) : new EmailChannelOption($w);
-  $email_channel->fill($_POST);
-  $email_channel->verify_peer = !empty($_POST['verify_peer']) ? 1 : 0;
-  $email_channel->allow_self_signed = !empty($_POST['allow_self_signed']) ? 1 : 0;
-  $email_channel->port = (!empty($_POST['port']) ? intval($_POST['port']) : null);
-  $email_channel->channel_id = $channel_object->id;
-  $email_channel->insertOrUpdate();
+    // @var $email_channel EmailChannelOption
+    $email_channel = $channel_id ? $w->Channel->getEmailChannel($channel_id) : new EmailChannelOption($w);
+    $email_channel->fill($_POST);
+    $email_channel->use_auth = isset($_POST['use_auth']) ? 1 : 0;
+    $email_channel->verify_peer = !empty($_POST['verify_peer']) ? 1 : 0;
+    $email_channel->allow_self_signed = !empty($_POST['allow_self_signed']) ? 1 : 0;
+    $email_channel->port = isset($_POST['port']) ? intval($_POST['port']) : null;
+    $email_channel->channel_id = $channel_object->id;
+    $email_channel->insertOrUpdate();
 
-  $w->msg("Email Channel " . ($channel_id ? "updated" : "created"), "/channels/listchannels");
+    $w->msg("Email Channel " . ($channel_id ? "updated" : "created"), "/channels/listchannels");
 }
