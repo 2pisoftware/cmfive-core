@@ -1,7 +1,7 @@
 <?php
 
 function read_GET(Web $w) {
-
+	
 	$w->setLayout(null);
 	$p = $w->pathMatch("id");
 	$id = $p["id"];

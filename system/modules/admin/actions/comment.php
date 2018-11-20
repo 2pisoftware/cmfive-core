@@ -10,29 +10,29 @@ function comment_GET(Web $w){
     if ($comment === null){
         $comment = new Comment($w);
     }
-
+    
     $help =<<<EOF
 //italics//
 **bold**
-
+    		
 * bullet list
 * second item
 ** subitem
-
+    
 # numbered list
 # second item
 ## sub item
-
+    
 [[URL|linkname]]
-
+    
 == Large Heading
 === Medium Heading
 ==== Small Heading
-
+    
 Horizontal Line:
 ---
 EOF;
-
+    
     //setup for comment notifications
     $top_table_name = $p['tablename'];
     $top_id = $p['object_id'];
@@ -41,7 +41,7 @@ EOF;
         $top_table_name = $topObject->getDbTableName();
         $top_id = $topObject->id;
     }
-
+    
     $form = [
         'Comment'=> [
             [
@@ -57,11 +57,11 @@ EOF;
             ]
         ]
     ];
-
+    
     if (!$p["comment_id"]) {
         //call hook for notification select
         $get_recipients = $w->callHook('comment', 'get_notification_recipients_' . $top_table_name, ['object_id' => $top_id, 'internal_only' => $internal_only === 1 ? true : false]);
-        //add checkboxes to the form for each notification recipient
+        //add checkboxes to the form for each notification recipient 
         if (!empty($get_recipients)) {
             $unique_recipients = [];
             foreach($get_recipients as $recipients) {
@@ -95,14 +95,14 @@ EOF;
             }
         }
     }
-
+    
     // return the comment for display and edit
     $w->setLayout(null);
-
+    
     $w->out(Html::MultiColForm($form, $w->localUrl("/admin/comment/{$comment_id}/{$p["tablename"]}/{$p["object_id"]}?internal_only=" . $internal_only) . "&redirect_url=" . $redirect_url, "POST", "Save"));
     $w->out('<script>$("form").submit(function(event) {toggleModalLoading();});</script>');
-
-
+    
+    
 }
 
 function comment_POST(Web $w){
@@ -116,17 +116,17 @@ function comment_POST(Web $w){
         $comment = new Comment($w);
         $is_new = true;
     }
-
+    
     $comment->obj_table = $p["tablename"];
     $comment->obj_id = $p["object_id"];
     $comment->comment = strip_tags($w->request("comment"));
-
+    
     // Only set the internal flag on new comments
     if ($is_new === true) {
         $comment->is_internal = $internal_only;
     }
     $comment->insertOrUpdate();
-
+    
     //handle notifications
     $top_table_name = $p['tablename'];
     $top_id = $p['object_id'];
@@ -135,20 +135,20 @@ function comment_POST(Web $w){
         $top_table_name = $topObject->getDbTableName();
         $top_id = $topObject->id;
     }
-    if($w->request("is_notifications")) {
-        $recipients = [];
+    if($w->request("is_notifications")) {        
+        $recipients = [];        
         foreach($_POST as $key=>$value) {
             //keys of interest are formatted 'recipient_{user_id}'
             $exp_key = explode('_',$key);
             if ($exp_key[0] == 'recipient') {
                 $recipients[] = $exp_key[1];
-            }
-        }
+            }            
+        }        
         $results = $w->callHook('comment', 'send_notification_recipients_' . $top_table_name,['object_id'=>$top_id, 'recipients'=>$recipients, 'commentor_id'=>$w->auth->loggedIn(),'comment'=>$comment, 'is_new'=>$is_new]);
-
-
+    
+        
     }
-
+    
     $redirectUrl = $w->request("redirect_url");
 
     if (!empty($redirectUrl)){

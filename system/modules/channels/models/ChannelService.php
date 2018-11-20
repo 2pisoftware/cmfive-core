@@ -64,7 +64,7 @@ class ChannelService extends DbService {
             if (!isset($child_channel)) {
                 $child_channel = $this->getWebChannel($id);
             }
-
+            
             return $child_channel;
 	}
 
@@ -83,7 +83,7 @@ class ChannelService extends DbService {
         public function getAllProcessors() {
             return $this->getObjects("ChannelProcessor", array("is_deleted" => 0));
         }
-
+        
 	/**
 	 * Returns a non-deleted processor object
 	 * @return Object processor
@@ -123,13 +123,13 @@ class ChannelService extends DbService {
 
 		return $this->getObjects("ChannelMessage", $where, false, true, "dt_created desc");
 	}
-
+	
 	public function getNewMessages($channel_id, $processor_id) {
 		$query = $this->w->db->get("channel_message")->where("channel_message.channel_id", $channel_id)
 								->leftJoin("channel_message_status on channel_message_status.message_id = channel_message.id")
 								->where("channel_message_status.id IS NULL OR (channel_message_status.processor_id != ? AND channel_message_status.is_successful != 1)", $processor_id)
 								->fetch_all();
-
+					
 		if (!empty($query)) {
 			return $this->getObjectsFromRows("ChannelMessage", $query);
 		}
@@ -153,13 +153,13 @@ class ChannelService extends DbService {
 		$where = array("message_id" => $message_id);
 		return $this->getObjects("ChannelMessageStatus", $where);
 	}
-
+	
 	/**
 	 * DEPRECATED: This function doesn't work as intended as it disregards both the
-	 * $channel_id and $processor_id given
+	 * $channel_id and $processor_id given 
 	 *
 	 * Use the ChannelProcessor::getNewMessages() / getFailedMessages() / getNewOrFailedMessages() instead
-	 *
+	 * 
 	 * @param  Mixed $channel_id Channel ID
 	 * @param  Mixed $processor_id Processor ID
 	 * @return Array<ChannelMessage>
@@ -174,7 +174,7 @@ class ChannelService extends DbService {
                 $failed_ids[] = $fm['id'];
             }
         }
-
+        
         // Get the message statuses
         if (!empty($failed_ids)) {
             $message_statuses = $this->_db->get("channel_message_status")->where("message_id", $failed_ids)->fetch_all();
@@ -195,14 +195,14 @@ class ChannelService extends DbService {
                 }
             }
         }
-
+        
         // Get new messages
         $new_messages = $this->_db->sql("select channel_message.* from channel_message left join channel_message_status on channel_message.id = channel_message_status.message_id where channel_message_status.id IS NULL")->fetch_all();
         $new_message_objects = array();
         if (!empty($new_messages)) {
             $new_message_objects = $this->fillObjects("ChannelMessage", $new_messages);
         }
-
+        
         return (array_merge($new_message_objects, $failed_message_objects));
     }
 

@@ -1,4 +1,5 @@
 <?php
+
 function delete_GET(Web $w) {
 	$p = $w->pathMatch("id");
 	$id = $p["id"];
