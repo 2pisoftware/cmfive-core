@@ -77,6 +77,12 @@ function task_core_dbobject_after_insert_Task(Web $w, $object) {
 			"Priority"		=> $object->isUrgent() ? "<b style='color: orange;'>{$object->priority}</b>" : $object->priority
 		];
 
+		if ($user->is_external) {
+			$template_data['fields']['Due'] = '';
+			$template_data['fields']['Priority'] = '';
+			$template_data['fields']['Status'] = '';
+		}
+
 		$template_data['can_view_task'] = $user->is_external == 0;
 
 		// Get additional details
@@ -119,6 +125,10 @@ function task_core_dbobject_after_update_Task(Web $w, $object) {
 	}
 
     $w->Notification->sendToAllWithCallback($subject, "task", "notification_email", $w->Auth->user(), $users_to_notify, function($user, $existing_template_data) use ($object, $w) {
+		if ($user->is_external) {
+			return false;
+		}
+
     	$template_data = $existing_template_data;
 		$template_data['status']		= "[{$object->id}] Status change";
 		$template_data['footer']		= $object->description;
@@ -171,6 +181,7 @@ function task_attachment_attachment_added_task(Web $w, $object) {
     $subject = "Task - " . $task->title . ' [' . $task->id . ']: ' . $object->getHumanReadableAttributeName(TASK_NOTIFICATION_TASK_DOCUMENTS);
 
     $w->Notification->sendToAllWithCallback($subject, "task", "notification_email", $w->Auth->user(), $users_to_notify, function($user, $existing_template_data) use ($task, $w) {
+
     	$template_data = $existing_template_data;
 		$template_data['status']		= "[{$task->id}] New attachment";
 		$template_data['footer']		= $task->description;
@@ -185,6 +196,12 @@ function task_attachment_attachment_added_task(Web $w, $object) {
 			"Status"		=> $task->status,
 			"Priority"		=> $task->isUrgent() ? "<b style='color: orange;'>{$task->priority}</b>" : $task->priority
 		];
+
+		if ($user->is_external) {
+			$template_data['fields']['Due'] = '';
+			$template_data['fields']['Priority'] = '';
+			$template_data['fields']['Status'] = '';
+		}
 
 		$template_data['can_view_task'] = $user->is_external == 0;
 
@@ -277,6 +294,12 @@ function task_comment_send_notification_recipients_task(Web $w, $params) {
 			"Status"		=> $task->status,
 			"Priority"		=> $task->isUrgent() ? "<b style='color: orange;'>{$task->priority}</b>" : $task->priority
 		];
+
+		if ($user->is_external) {
+			$template_data['fields']['Due'] = '';
+			$template_data['fields']['Priority'] = '';
+			$template_data['fields']['Status'] = '';
+		}
 
 		$template_data['can_view_task'] = $user->is_external ? false : true;
 
