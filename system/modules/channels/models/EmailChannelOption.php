@@ -201,7 +201,8 @@ class EmailChannelOption extends DbObject {
 
                     $email = new EmailStructure();
                     $email->to = $message->to;
-					
+					//@todo implement sending emails with custom headers
+					// $email->message_id = $message->getHeader('Message-ID', 'array');
 					// get the from address, only expecting one
 					foreach ($zend_message->getFrom() as $address)
 						$email->from = $address->getName();
@@ -277,7 +278,6 @@ class EmailChannelOption extends DbObject {
             } else {
                 $this->w->Log->info("No new messages found");
             }
-        }
     }
 
     public function connectToMail($shouldDecrypt = true) {
