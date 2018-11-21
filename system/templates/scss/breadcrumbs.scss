@@ -1,7 +1,7 @@
 // Breadcrumbs
 
 .breadcrumb-container {
-	
+
 	ul.cmfive_breadcrumbs {
 		background-color: $secondary-colour;
 		border: none;
@@ -41,18 +41,10 @@
 		background-color: $secondary-colour;
 		position: absolute;
 		right: 0px;
-		padding: 2px 5px;
 
 		a {
-			padding: 20px 10px;
+			padding: 0px 10px;
 			color: white;
-		}
-	}
-
-	@include phone() {
-		span.icon-container {
-			display: block;
-			position: relative;
 		}
 	}
 }

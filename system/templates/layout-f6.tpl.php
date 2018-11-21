@@ -11,7 +11,7 @@
         <?php
 
         CmfiveScriptComponentRegister::registerComponent('moment', new CmfiveScriptComponent('/system/templates/js/moment.min.js'));
-        CmfiveScriptComponentRegister::registerComponent('axios', new CmfiveScriptComponent('/system/templates/js/axios.min.js'));     
+        CmfiveScriptComponentRegister::registerComponent('axios', new CmfiveScriptComponent('/system/templates/js/axios.min.js'));
 
 		CmfiveStyleComponentRegister::registerComponent('foundation-5', new CmfiveStyleComponent(
 			"/system/templates/js/foundation-5.5.0/css/foundation.min.css"
@@ -22,13 +22,13 @@
 
         // New styles
         CmfiveStyleComponentRegister::registerComponent('app', new CmfiveStyleComponent("/system/templates/scss/app.scss", ['/system/templates/scss/']));
-        
+
         $w->enqueueScript(array("name" => "modernizr", "uri" => "/system/templates/js/foundation-5.5.0/js/vendor/modernizr.js", "weight" => 1001));
         $w->enqueueScript(array("name" => "jquery", "uri" => "/system/templates/js/foundation-5.5.0/js/vendor/jquery.js", "weight" => 1000));
-      
+
         $w->enqueueScript(array("name" => "foundation", "uri" => "/system/templates/js/foundation-5.5.0/js/foundation.min.js", "weight" => 998));
         $w->enqueueScript(array("name" => "jquery.tablesorter.js", "uri" => "/system/templates/js/tablesorter/jquery.tablesorter.js", "weight" => 990));
-        
+
         CmfiveScriptComponentRegister::registerComponent('vue', new CmfiveScriptComponent('/system/templates/js/vue.js'));
         CmfiveScriptComponentRegister::registerComponent('main', new CmfiveScriptComponent("/system/templates/js/main.js"));
         $fontawesome_js = new CmfiveScriptComponent("/system/templates/js/fontawesome-all.min.js");
@@ -37,8 +37,8 @@
         CmfiveScriptComponentRegister::registerComponent('fontawesome5', $fontawesome_js);
 
         CmfiveScriptComponentRegister::registerComponent('slideout', new CmfiveScriptComponent("/system/templates/js/slideout-1.0.1/dist/slideout.min.js"));
-        
-        
+
+
         // Print registered vue component links
         $w->loadVueComponents();
 
@@ -66,10 +66,10 @@
                 } else {
                     $(".tab-head > a:first").trigger("click");
                 }
-                
+
                 // Set up CodeMirror instances if any
                 bindCodeMirror();
-                
+
                 // Adjust the breadcrumbs div if it's content is longer than the viewport
                 var breadcrumbs = $('.cmfive_breadcrumbs');
                 if (breadcrumbs.length) {
@@ -94,9 +94,10 @@
 					e.preventDefault();
 					return false;
 				});
-                // Search function shortcut listener
+                //Search function shortcut listener
                 $(document).on('keydown', function ( e ) {
-                    if ((e.ctrlKey || e.metaKey) && e.which === 70) {
+                    console.log(e.key);
+                    if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key == 'F') {
                         $('#cmfive_search_button').click();
                         return false;
                     }
@@ -104,7 +105,7 @@
 				if(jQuery('.enable_drop_attachments').length !== 0) {
 					globalFileUpload.init();
 				}
-				
+
 				// Look for cmfive__count-* classes and count the instances of *
 				$("span[class^='cmfive__count-'], span[class*=' cmfive__count-']").each(function(index, element) {
 					var classList = this.className.split(/\s+/);
@@ -120,17 +121,17 @@
             $("input[type=submit]").click(function() {
                 $(this).hide();
             });
-			
+
             $(document).bind('cbox_complete', function() {
                 $("input[type=submit]").click(function() {
                     $(this).hide();
                 });
             });
-			
+
 			// Focus first form element when the modal opens
 			$(document).ready(function() {
 				$('.body form:first :input:visible:enabled:first').not('.no-focus').focus();
-				
+
 				$(document).on('opened.fndtn.reveal', '[data-reveal]', function () {
 					$('form:visible:first :input:visible:enabled:first', $(this)).not('.no-focus').focus();
 				});
@@ -153,7 +154,7 @@
                                     <a href='#side_menu_panel-<?php echo $module; ?>'><?php echo is_bool(Config::get("{$module}.topmenu")) ? ucfirst($module) : Config::get("{$module}.topmenu"); ?><?php // echo $menu_link; ?></a>
                                 <?php // Try and get a badge count for the menu item
                                     $module_navigation = $w->service($module)->navigation($w);
-                                    
+
                                     // Invoke hook to inject extra navigation
                                     $hook_navigation_items = $w->callHook($module, "extra_navigation_items", $module_navigation);
                                     if (!empty($hook_navigation_items)) {
@@ -198,7 +199,7 @@
     				<h4 class="subheader">Uploading (0%)</h4>
     			</div>
     		</div>
-    		
+
     		<?php if (Config::get('system.test_mode') === true) : ?>
     			<div class="row-fluid">
     				<div class="small-12">
@@ -208,7 +209,7 @@
     				</div>
     			</div>
     		<?php endif; ?>
-            
+
             <nav class="top-bar cmfive-nav" data-topbar role="navigation">
                 <section class="top-bar-section">
 
@@ -229,7 +230,7 @@
                         <li>
                             <a href='#' class='side-menu-toggle-button'><span class='fas fa-bars fa-2x'></span></a>
                         </li>
-                        
+
                         <li>
                             <a href='<?php echo $w->Main->getUserRedirectURL(); ?>'>
                                 <?php if (!empty(Config::get('main.application_logo'))) : ?>
@@ -249,7 +250,7 @@
                                     $w->menuBox("auth/profile/box", $w->Auth->user()->getShortName()),
                                     $w->menuLink("auth/logout", "Logout")
                                 ), null, "dropdown");
-                            ?>    
+                            ?>
                         </li>
                     </ul>
                 </section>
@@ -260,12 +261,12 @@
                 <?php echo Html::breadcrumbs(array(), $w); ?>
                 <span class='icon-container'>
                     <?php if ($w->Auth->allowed('help/view')) {
-                            echo Html::box(WEBROOT . "/help/view/" . $w->_module . ($w->_submodule ? "-" . $w->_submodule : "") . "/" . $w->_action, "<span class='fas fa-info show-for-medium-up'></span><span class='show-for-small-only'>Help</span>", false, true, 750, 500, "isbox", null, null, null, 'cmfive-help-modal');
+                            echo Html::box(WEBROOT . "/help/view/" . $w->_module . ($w->_submodule ? "-" . $w->_submodule : "") . "/" . $w->_action, "<span class='fas fa-info'></span><span class='show-for-medium-up'> Help</span>", false, true, 750, 500, "isbox", null, null, null, 'cmfive-help-modal');
                         }
-                        echo Html::box("/search", "<span class='fas fa-search show-for-medium-up'></span><span class='show-for-small-only'>Search</span>", false, false, null, null, null, "cmfive_search_button"); ?>
+                            echo Html::box("/search", "<span class='fas fa-search'></span><span class='show-for-medium-up'> Search</span>", false, false, null, null, null, "cmfive_search_button"); ?>
                 </span>
             </div>
-            
+
             <!-- Action content -->
             <div class="row-fluid body">
                 <div class='small-12 columns'>
@@ -310,7 +311,7 @@
         <!-- Modals -->
         <div id="cmfive-modal" class="reveal-modal xlarge" data-reveal></div>
         <div id="cmfive-help-modal" class="reveal-modal xlarge" data-reveal></div>
-        
+
         <script>
             var slideout = new Slideout({
                 'panel': document.getElementById('cmfive-main-content'),
@@ -339,21 +340,21 @@
 					multi_expand: <?php echo defaultVal(Config::get('core_template.foundation.accordion.multi_expand'), 'true'); ?>,
 				}
 			});
-            
+
             var modal_history = [];
             var modal_history_pop = false;
-            
+
             // Automatically append the close 'x' to reveal modals
-            $(document).on('opened', '[data-reveal]', function () { 
+            $(document).on('opened', '[data-reveal]', function () {
                 $(this).css('top', $(document).scrollTop() + 100);
-                $(this).append("<a class=\"close-reveal-modal\">&#215;</a>"); 
+                $(this).append("<a class=\"close-reveal-modal\">&#215;</a>");
                 modal_history.push();
                 bindModalLinks();
             });
-            
+
             function bindModalLinks() {
                 // Stop a links and follow them inside the reveal modal
-                $("#cmfive-modal a:not(#modal-back)").click(function(event) {                    
+                $("#cmfive-modal a:not(#modal-back)").click(function(event) {
                     if ($(this).hasClass("close-reveal-modal")) {
                         $("#cmfive-modal").foundation("reveal", "close");
                     } else {
@@ -363,8 +364,8 @@
                     }
                     return false;
                 });
-                
-				$("#cmfive-help-modal a:not(#modal-back)").click(function(event) {                    
+
+				$("#cmfive-help-modal a:not(#modal-back)").click(function(event) {
                     if ($(this).hasClass("close-reveal-modal")) {
                         $("#cmfive-modal").foundation("reveal", "close");
                     } else {
@@ -381,7 +382,7 @@
                     }
                     return false;
                 });
-                
+
                 // Bind back traversal to modal window
                 $("#cmfive-modal #modal-back, #cmfive-help-modal #modal-back").click(function(event) {
                     // event.preventDefault();
@@ -397,11 +398,11 @@
                         if (modal_history.length > 0) {
                             changeModalWindow($(this).closest('.reveal-modal'), modal_history.pop());
                         }
-                    } 
+                    }
                     return false;
                 });
             }
-            
+
             // Updates the modal window by content from ajax request to uri
             function changeModalWindow(object, uri) {
                 $.get(uri, function(data) {
