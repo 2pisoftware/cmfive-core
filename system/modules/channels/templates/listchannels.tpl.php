@@ -20,7 +20,7 @@
                             <?php echo Html::b("/channels-{$c->_channeltype}/delete/{$base_channel->id}", "Delete", "Are you sure you want to delete " . (!empty($base_channel->name) ? 'the ' . addslashes($base_channel->name) . ' channel' : "this channel") . "?"); ?>
                             <?php echo Html::box("/channels/listmessages/{$base_channel->id}", "Messages", true); ?>
                             <?php if ($c->_channeltype == 'email') {
-                              echo Html::box("/channels-email/test/{$base_channel->id}", 'Test', true);
+                              echo Html::box("/channels-email/test/{$base_channel->id}", 'Test Connection', true);
                             } ?>
                         </td>
                     </tr>

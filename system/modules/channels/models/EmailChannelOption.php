@@ -191,28 +191,30 @@ class EmailChannelOption extends DbObject {
             if (count($results) > 0) {
                 $this->w->Log->info("Found " . count($results) . " messages, looping through");
                 foreach ($results as $messagenum) {
-                    $rawmessage = "";
                     $message = $mail->getMessage($messagenum);
+
+					//create a regular zend_mail_message to use toString()
                     $zend_message = new Zend_Mail_Message();
                     $zend_message->setHeaders($message->getHeaders());
                     $zend_message->setBody($message->getContent());
+					$rawmessage = $zend_message->toString();
 
                     $email = new EmailStructure();
                     $email->to = $message->to;
-                    $email->from = $message->from;
-                    if (isset($message->cc)) {
-                        $email->cc = $message->cc;
-                    }
-                    $email->subject = $message->subject;
-                    //$email->body["html"] = $message->getContent();
+					
+					// get the from address, only expecting one
+					foreach ($zend_message->getFrom() as $address)
+						$email->from = $address->getName();
+						$email->from_email_address = $address->getEmail();
+						break;
+					}
+                    $email->cc = $zend_message->getCc();
+                    $email->subject = $zend_message->getSubject();
 
-                    $rawmessage .= $zend_message->toString();
-
-                    // Create messages
+                    // Create  ChannelMessages
                     $channel_message = new ChannelMessage($this->w);
                     $channel_message->channel_id = $this->channel_id;
                     $channel_message->message_type = "email";
-                    // $channel_message->attachment_id = $attachment_id;
                     $channel_message->is_processed = 0;
                     $channel_message->insert();
 
