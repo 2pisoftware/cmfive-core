@@ -5,7 +5,7 @@ function test_GET(Web $w ) {
 
 	if ($id) {
 		$channel = $w->Channel->getEmailChannel($id);
-		echo $channel->connectToMail() ? 'Connected' : 'Failed';
+		echo $channel->connectToMail(true, true);
 	} else {
 		$w->error("Could not find channel");
 	}

@@ -280,7 +280,7 @@ class EmailChannelOption extends DbObject {
             }
     }
 
-    public function connectToMail($shouldDecrypt = true) {
+    public function connectToMail($shouldDecrypt = true, $test=false) {
       if ($shouldDecrypt) {
           $this->decrypt();
       }
@@ -299,19 +299,22 @@ class EmailChannelOption extends DbObject {
 			   }
 
 				$mail = new Zend_Mail_Storage_Imap(
-		        array(
-		          'host' => $this->server,
-		          'user' => $this->s_username,
-							'port' => $this->port,
-		          'password' => $this->s_password,
-		          'ssl' => ($this->use_auth == 1 ? "SSL" : false),
-							'options' => $options
-						)
+					array(
+						'host' => $this->server,
+						'user' => $this->s_username,
+						'port' => $this->port,
+						'password' => $this->s_password,
+						'ssl' => ($this->use_auth == 1 ? "SSL" : false),
+						'options' => $options
+					)
 				);
+		if ($test) {
+			return 'Connected';
+		}
         return $mail;
       } catch (Exception $e) {
-          $this->Log->error("Error connecting to mail server: " . $e->getMessage());
-					return $e->getMessage();
+            $this->Log->error("Error connecting to mail server: " . $e->getMessage());
+				return $e->getMessage();
       }
     }
 
