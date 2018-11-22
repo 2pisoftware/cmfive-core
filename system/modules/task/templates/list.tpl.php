@@ -4,23 +4,8 @@
 <script src='/system/templates/vue-components/html/filterSort.js'></script>
 
 <style>
-    .test > td {
-        color: #CC3647;
-    }
 
-    .test > td > a {
-        color: #CC3647;
-    }
-
-    .test:nth-child(odd) {
-        background-color: #F9E1E1;
-    }
-
-    .test:nth-child(even) {
-        background-color: #FDF4F5;
-    }
-
-    #pi-table > thead > tr > th {
+    #task_list > thead > tr > th {
         cursor: pointer;
     }
 
@@ -33,6 +18,8 @@
         opacity: 0.5;
     }
 </style>
+
+<h1>Task List</h1>
 
 <div id="task_modal" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
 </div>
@@ -60,30 +47,30 @@
         </div>
 
         <div class='medium-12 large-4 columns'>
-            <label>Task type</label>
+            <label>Type</label>
             <model-list-select style="" v-model="filter.task_type" :list="task_types" placeholder="select task type" option-value="value" option-text="text"></model-list-select>
         </div>
     </div>
     <div class='row-fluid'>
         <div class='medium-12 large-4 columns'>
-            <label>Task priority</label>
+            <label>Priority</label>
             <model-list-select style="" v-model="filter.priority" :list="priority_list" placeholder="select priority" option-value="value" option-text="text"></model-list-select>
         </div>
 
         <div class='medium-12 large-4 columns'>
-            <label>Task status</label>
+            <label>Status</label>
             <model-list-select style="" v-model="filter.status" :list="statuslist" placeholder="select status" option-value="value" option-text="text"></model-list-select>
         </div>
 
         <div class='medium-12 large-4 columns'>
-            <label>Task group</label>
+            <label>Task Group</label>
             <model-list-select style="" v-model="filter.task_group_id" :list="task_groups" placeholder="select task group" option-value="value" option-text="text"></model-list-select>
         </div>
     </div>
 
     <div class='row-fluid columns' style="height: 2em;"></div>
 
-    <table style="width:100%" v-if="task_list" id="pi-table">
+    <table style="width:100%" v-if="task_list" id="task_list">
         <thead>
             <tr>
                 <th v-for="field in header" @click="sort(field.name, $event)" :id="field.name">{{field.caption}} <span><i class="fas fa-sort"></i></span></th>
@@ -173,8 +160,8 @@
             header: [
                 { name: "id", caption: "ID" },
                 { name: "title", caption: "Title" },
-                { name: "task_group_title", caption: "Task group" },
-                { name: "assignee_name", caption: "Assigned to" },
+                { name: "task_group_title", caption: "Task Group" },
+                { name: "assignee_name", caption: "Assignee" },
                 { name: "task_type", caption: "Type" },
                 { name: "priority", caption: "Priority" },
                 { name: "status", caption: "Status" },
