@@ -22,7 +22,7 @@ Config::set('main', array(
 	],
 	'vue_components' => [
 		'html-tabs' => [
-			'/system/templates/vue-components/html/html-tabs.vue.js', 
+			'/system/templates/vue-components/html/html-tabs.vue.js',
 			'/system/templates/vue-components/html/html-tabs.vue.scss'
 		],
 		'html-tab' => [

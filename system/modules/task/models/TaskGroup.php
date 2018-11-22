@@ -9,14 +9,14 @@ class TaskGroup extends DbObject {
     public $can_view;
     public $can_create;
     public $is_active;
-    
+
     public $default_assignee_id;
     public $default_task_type;
     public $default_priority;
     public $task_group_type;
 	public $is_automatic_subscription;
     public $_modifiable;
-    
+
     public $_validation = [
         'title' => ['required'],
 		'can_assign' => ['required'],
@@ -33,7 +33,7 @@ class TaskGroup extends DbObject {
         if ($this->Auth->user()->is_admin == 1) {
             return true;
         }
-        
+
         $me = $this->Task->getMemberGroupById($this->id, $this->Auth->user()->id);
         if (empty($me)) {
             return false;
@@ -46,7 +46,7 @@ class TaskGroup extends DbObject {
         if ($this->Auth->user()->is_admin == 1) {
             return true;
         }
-        
+
         $me = $this->Task->getMemberGroupById($this->id, $this->w->Auth->user()->id);
         if (empty($me)) {
             return false;
@@ -59,7 +59,7 @@ class TaskGroup extends DbObject {
         if ($this->Auth->user()->is_admin == 1) {
             return true;
         }
-        
+
         $me = $this->Task->getMemberGroupById($this->id, $this->w->Auth->user()->id);
         if (empty($me)) {
             return false;
@@ -78,7 +78,7 @@ class TaskGroup extends DbObject {
         if ($this->Auth->user()->is_admin == 1) {
             return true;
         }
-        
+
         return true;
         // $me = $this->Task->getMemberGroupById($this->id, $this->Auth->user()->id);
         // if (empty($me)) {
@@ -86,32 +86,32 @@ class TaskGroup extends DbObject {
         // }
         // return ($this->can_view == "ALL") ? true : $this->Task->getMyPerms($me->role, $this->can_view);
     }
-    
+
     public function canView(\User $user) {
         return $this->canList($user);
     }
-    
+
     // Only owner of taskgroup or admin can edit
     public function canEdit(\User $user) {
         if ($this->Auth->user()->is_admin == 1) {
             return true;
         }
-        
+
         return $this->isOwner($user);
     }
-	
+
     // Only owner of taskgroup or admin can delete
     public function canDelete(\User $user) {
         if ($this->Auth->user()->is_admin == 1) {
             return true;
         }
-        
+
         return $this->isOwner($user);
     }
 
     /**
      * Return true if the user is a member of the taskgroup with a role of "OWNER"
-     * 
+     *
      * @param User $user
      * @return boolean
      */
@@ -130,17 +130,17 @@ class TaskGroup extends DbObject {
     public function getSelectOptionTitle() {
         return $this->title;
     }
-    
+
     public function getTypeStatus() {
         return $this->Task->getTaskTypeStatus($this->task_group_type);
     }
-    
+
     // get task group title given task group type
     function getTypeTitle() {
         $c = $this->Task->getTaskGroupTypeObject($this->task_group_type);
         return $c ? $c->getTaskGroupTypeTitle() : null;
     }
-    
+
     // get fullname of default assignee for this task group
     function getDefaultAssigneeName() {
         $assign = $this->Auth->getUser($this->default_assignee_id);

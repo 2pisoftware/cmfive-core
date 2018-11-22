@@ -1,13 +1,12 @@
 <?php
-
 function edit_GET(Web $w) {
     $w->setLayout('layout-f6');
+    $p = $w->pathMatch("id");
+    $task = (!empty($p["id"]) ? $w->Task->getTask($p["id"]) : new Task($w));
 
-    list($task_id) = $w->pathMatch("id");
-    if (empty($task_id)) return;
-
-    $task = $w->Task->getTask($task_id);
-
+    if (empty($task)) {
+        $w->error('Task not found', '/task/list');
+    }
     // Register for timelog if not new task
     $w->Timelog->registerTrackingObject($task);
 
@@ -16,12 +15,12 @@ function edit_GET(Web $w) {
     }
 
     // Get a list of the taskgroups and filter by what can be used
-    $taskgroup_list = $w->Task->getTaskGroups();
-    if (empty($taskgroup_list)) {
+    $taskgroups = $w->Task->getTaskGroups();
+    if (empty($taskgroups)) {
         if ((new Taskgroup($w))->canEdit($w->Auth->user())) {
-            $w->msg('Please set up a taskgroup before continuing', '/task-group/viewtaskgrouptypes');
+            $w->msg('A taskgroup is required to create tasks', '/task-group/list');
         } else {
-            $w->error('There are no Tasks currently set up, please notify an Administrator', '/task');
+            $w->error('There are currently no taskgroups to add tasks to please contact an Administrator', '/task/list');
         }
     }
 

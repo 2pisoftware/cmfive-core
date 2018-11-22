@@ -2,7 +2,7 @@
 function viewtaskgrouptypes_ALL(Web $w) {
 	$w->Task->navigation($w, "Manage Task Groups");
 	
-	
+
 
 	History::add("Manage Task Groups");
 	$task_groups = $w->Task->getTaskGroups();
@@ -11,7 +11,7 @@ function viewtaskgrouptypes_ALL(Web $w) {
 	}
 	// prepare column headings for display
 	$headers = array("Title","Type", "Description", "Default Assignee");
-	
+
 	$line = array($headers);
 
 	// if task group exists, display title, group type, description, default assignee and button for specific task group info
@@ -23,7 +23,7 @@ function viewtaskgrouptypes_ALL(Web $w) {
 					$group->description,
 					$group->getDefaultAssigneeName(),
 			);
-			
+
 			$line[] = $row;
 		}
 	}
@@ -41,11 +41,11 @@ function viewtaskgrouptypes_ALL(Web $w) {
 	// unset 'ALL' given all can never assign a task
 	unset($arrassign[0]);
 
-	
+
 
 	$grouptypes = $w->Task->getAllTaskGroupTypes();
         $assignees = $w->Auth->getUsers();
-        array_unshift($assignees,array("Unassigned","unassigned"));        
+        array_unshift($assignees,array("Unassigned","unassigned"));
 
 	// build form to create a new task group within the target group type
 	$f = Html::form(array(
@@ -55,7 +55,7 @@ function viewtaskgrouptypes_ALL(Web $w) {
 			array("Who Can Assign","select","can_assign",null,$arrassign),
 			array("Who Can View","select","can_view",null,$w->Task->getTaskGroupPermissions()),
 			array("Who Can Create","select","can_create",null,$w->Task->getTaskGroupPermissions()),
-			
+
 			array("","hidden","is_deleted","0"),
 			array("Description","textarea","description",null,"26","6"),
 			array("Default Task Type","select","default_task_type",null,null),

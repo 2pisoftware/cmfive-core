@@ -179,7 +179,7 @@ class TaskService extends DbService {
         if ($w->Auth->loggedIn()) {
             $w->menuLink("task/index", "Task Dashboard", $nav);
             $w->menuLink("task/list", "Task List", $nav);
-            $w->menuLink("task-group/viewtaskgrouptypes", "Task Groups", $nav);
+            $w->menuLink("task-group/list", "Task Group List", $nav);
         }
         $w->ctx("navigation", $nav);
         return $nav;
