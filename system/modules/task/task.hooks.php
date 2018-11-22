@@ -9,7 +9,7 @@ define('TASK_NOTIFICATION_TASK_DOCUMENTS', 'task_documents');
 
 /**
  * Add custom time type object to timelogs
- * 
+ *
  * @param Web $w
  * @param Task $object
  */
@@ -17,14 +17,14 @@ function task_timelog_type_options_for_Task(Web $w, $object) {
 	if (!empty($object)) {
 		$task_type = $w->Task->getTaskTypeObject($object->task_type);
 		$time_types = $task_type->getTimeTypes();
-		
+
 		$required = null;
 		if (!empty(Timelog::$_validation["time_type"])) {
 			if (in_array("required", Timelog::$_validation["time_type"])) {
 				$required = "required";
-			} 
+			}
 		}
-		
+
 		if (!empty($time_types)) {
 			return [(new \Html\Form\Select([
 				"name" => "time_type",
@@ -39,7 +39,7 @@ function task_timelog_type_options_for_Task(Web $w, $object) {
 
 /**
  * Hook to notify relevant people when a task has been created
- * 
+ *
  * Task template email parameters:
  * message
  *		status = "A new task has been created"
@@ -48,14 +48,14 @@ function task_timelog_type_options_for_Task(Web $w, $object) {
  * fields[]
  *		key
  *		value
- *	
- * 
+ *
+ *
  * @param Web $w
  * @param Task $object
  */
 function task_core_dbobject_after_insert_Task(Web $w, $object) {
     $w->Log->setLogger("TASK")->debug("task_core_dbobject_after_insert_Task");
-    
+
     $subject = $object->getHumanReadableAttributeName(TASK_NOTIFICATION_TASK_CREATION) . "[" . $object->id . "]: " . $object->title;
     $users_to_notify = $w->Task->getNotifyUsersForTask($object, TASK_NOTIFICATION_TASK_CREATION);
 
@@ -77,8 +77,14 @@ function task_core_dbobject_after_insert_Task(Web $w, $object) {
 			"Priority"		=> $object->isUrgent() ? "<b style='color: orange;'>{$object->priority}</b>" : $object->priority
 		];
 
+		if ($user->is_external) {
+			$template_data['fields']['Due'] = '';
+			$template_data['fields']['Priority'] = '';
+			$template_data['fields']['Status'] = '';
+		}
+
 		$template_data['can_view_task'] = $user->is_external == 0;
-		
+
 		// Get additional details
 		if ($user->is_external == 0) {
 			$additional_details = $w->Task->getNotificationAdditionalDetails($object);
@@ -103,22 +109,26 @@ function task_core_dbobject_after_insert_Task(Web $w, $object) {
 
 /**
  * Hook to notify relevant people when a task has been update
- * 
+ *
  * @param Web $w
  * @param Task $object
  */
 function task_core_dbobject_after_update_Task(Web $w, $object) {
     $w->Log->setLogger("TASK")->debug("task_core_dbobject_after_update_Task");
-    
+
     $subject = "Task " . $object->title . " [" . $object->id . "][" . $object->status . "] - " . $object->getHumanReadableAttributeName(TASK_NOTIFICATION_TASK_DETAILS);
     $users_to_notify = $w->Task->getNotifyUsersForTask($object, TASK_NOTIFICATION_TASK_DETAILS);
-    
+
 	// Only send emails where the status has changed
 	if ($object->status == $object->__old['status']) {
 		return;
 	}
 
     $w->Notification->sendToAllWithCallback($subject, "task", "notification_email", $w->Auth->user(), $users_to_notify, function($user, $existing_template_data) use ($object, $w) {
+		if ($user->is_external) {
+			return false;
+		}
+
     	$template_data = $existing_template_data;
 		$template_data['status']		= "[{$object->id}] Status change";
 		$template_data['footer']		= $object->description;
@@ -135,7 +145,7 @@ function task_core_dbobject_after_update_Task(Web $w, $object) {
 		];
 
 		$template_data['can_view_task'] = $user->is_external == 0;
-		
+
 		// Get additional details
 		if ($user->is_external == 0) {
 			$additional_details = $w->Task->getNotificationAdditionalDetails($object);
@@ -160,9 +170,9 @@ function task_core_dbobject_after_update_Task(Web $w, $object) {
 
 function task_attachment_attachment_added_task(Web $w, $object) {
     $w->Log->setLogger("TASK")->debug("task_attachment_attachment_added_task");
-    
+
     $task = $w->Task->getTask($object->parent_id);
-    
+
     if (empty($task->id)) {
         return;
     }
@@ -171,6 +181,7 @@ function task_attachment_attachment_added_task(Web $w, $object) {
     $subject = "Task - " . $task->title . ' [' . $task->id . ']: ' . $object->getHumanReadableAttributeName(TASK_NOTIFICATION_TASK_DOCUMENTS);
 
     $w->Notification->sendToAllWithCallback($subject, "task", "notification_email", $w->Auth->user(), $users_to_notify, function($user, $existing_template_data) use ($task, $w) {
+
     	$template_data = $existing_template_data;
 		$template_data['status']		= "[{$task->id}] New attachment";
 		$template_data['footer']		= $task->description;
@@ -186,8 +197,14 @@ function task_attachment_attachment_added_task(Web $w, $object) {
 			"Priority"		=> $task->isUrgent() ? "<b style='color: orange;'>{$task->priority}</b>" : $task->priority
 		];
 
+		if ($user->is_external) {
+			$template_data['fields']['Due'] = '';
+			$template_data['fields']['Priority'] = '';
+			$template_data['fields']['Status'] = '';
+		}
+
 		$template_data['can_view_task'] = $user->is_external == 0;
-		
+
 		// Get additional details
 		if ($user->is_external == 0) {
 			$additional_details = $w->Task->getNotificationAdditionalDetails($task);
@@ -258,7 +275,7 @@ function task_comment_get_notification_recipients_task(Web $w, $params) {
  * )
  */
 function task_comment_send_notification_recipients_task(Web $w, $params) {
-    
+
     $task = $w->task->getTask($params['object_id']);
 	$subject = (!empty($commentor->id) ? $commentor->getFullName() : 'Someone') . ' has commented on a task that you\'re a part of ('.$task->title . ' [' . $task->id . '])';
 
@@ -278,8 +295,14 @@ function task_comment_send_notification_recipients_task(Web $w, $params) {
 			"Priority"		=> $task->isUrgent() ? "<b style='color: orange;'>{$task->priority}</b>" : $task->priority
 		];
 
-		$template_data['can_view_task'] = $user->is_external == 0;
-		
+		if ($user->is_external) {
+			$template_data['fields']['Due'] = '';
+			$template_data['fields']['Priority'] = '';
+			$template_data['fields']['Status'] = '';
+		}
+
+		$template_data['can_view_task'] = $user->is_external ? false : true;
+
 		$template_data['footer'] .= $w->partial("displaycomment", array("object" => $params['comment'], "displayOnly" => true, 'redirect' => '/inbox'), "admin");
 
 		// Get additional details
