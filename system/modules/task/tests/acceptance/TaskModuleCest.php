@@ -11,16 +11,16 @@ class TaskModuleCest
     {
     }
 
-	public function testTaskModule(\Step\Acceptance\CmfiveTaskModule $I) {
+	public function testTaskModule($I) {
          
     $I->wantTo('Verify that the tasks module is functioning correctly');
-		$I->login('admin','admin');
-    $I->createUser('testTasks_testuser' ,'password','testTasks_test','user','test@user.com');
-    $I->clickCmfiveNavbar('Task', 'New Task');
+		$I->login($I,'admin','admin');
+    $I->createUser($I,'testTasks_testuser' ,'password','testTasks_test','user','test@user.com');
+    $I->clickCmfiveNavbar($I,'Task', 'New Task');
     // since there are no task groups, we are redirected and asked to create a task group
     $I->canSeeInCurrentUrl('/task-group/viewtaskgrouptypes#dashboard');
     $I->see('Please set up a taskgroup before continuing');
-		$I->createTaskGroup('testTasks_testgroup',[
+		$I->createTaskGroup($I,'testTasks_testgroup',[
 			'task_group_type'=>'To Do',
 			'can_assign'=>'GUEST',
 			'can_view'=>'GUEST',
@@ -28,8 +28,8 @@ class TaskModuleCest
 			'is_active'=>'Yes',
 			'description'=>'A test group',
 		]);
-    $I->addMemberToTaskGroup('testTasks_testgroup','testTasks_test user','MEMBER');
-		$I->updateTaskGroup('testTasks_testgroup',[
+    $I->addMemberToTaskGroup($I,'testTasks_testgroup','testTasks_test user','MEMBER');
+		$I->updateTaskGroup($I,'testTasks_testgroup',[
 			'title'=>'testTasks_testgroup updated',
 			'can_assign'=>'MEMBER',
 			'can_view'=>'MEMBER',
@@ -39,7 +39,7 @@ class TaskModuleCest
 			'default_assignee_id'=>'testTasks_test user'
 		]);
 
-		$I->createTask('testTasks_testgroup updated','testTasks_test task',[
+		$I->createTask($I,'testTasks_testgroup updated','testTasks_test task',[
 			'task_type'=>'To Do',
 			'title'=>'testTasks_test task',
 			'status'=>'New',
@@ -53,11 +53,11 @@ class TaskModuleCest
     $I->click('Duplicate Task');
     $I->see('Task duplicated');
     $I->see('testTasks_test task -Copy');
-    $I->editTask('testTasks_test task -Copy', ['status' => 'Wip']);
+    $I->editTask($I,'testTasks_test task -Copy', ['status' => 'Wip']);
     $I->see('Wip');
-		$I->updateMemberInTaskGroup('testTasks_testgroup updated','testTasks_test user','ALL');
-		$I->removeMemberFromTaskGroup('testTasks_testgroup updated','testTasks_test user');
-		$I->deleteTaskGroup('testTasks_testgroup updated');
+		$I->updateMemberInTaskGroup($I,'testTasks_testgroup updated','testTasks_test user','ALL');
+		$I->removeMemberFromTaskGroup($I,'testTasks_testgroup updated','testTasks_test user');
+		$I->deleteTaskGroup($I,'testTasks_testgroup updated');
 	}
 
 }
