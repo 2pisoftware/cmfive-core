@@ -75,6 +75,7 @@ class AdminService extends DbService {
 		
         $nav = $prenav ? $prenav : array();
         if ($w->Auth->loggedIn()) {
+            $w->menuLink("admin/index", "Admin Dashboard", $nav);
             $w->menuLink("admin/users", "List Users", $nav);
             $w->menuLink("admin/groups", "List Groups", $nav);
             $w->menuLink("admin/lookup", "Lookup", $nav);
