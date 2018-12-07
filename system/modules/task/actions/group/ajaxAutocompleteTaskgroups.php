@@ -4,7 +4,7 @@ function ajaxAutocompleteTaskgroups_GET(Web $w) {
 	$w->setLayout(null);
 	$term = $w->request("term");
 	
-	$taskgroups = $w->Task->getObjects("TaskGroup", ["title LIKE ?" => "%{$term}%"]);
+	$taskgroups = $w->Task->getObjects("TaskGroup", ["title LIKE ?" => "%{$term}%", "is_deleted" => 0, "is_active" => 1]);
 	$return_data = [];
 	if (!empty($taskgroups)) {
 		$taskgroups = array_filter($taskgroups, function($taskgroup) use ($w) {

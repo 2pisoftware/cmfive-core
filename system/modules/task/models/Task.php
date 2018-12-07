@@ -27,6 +27,7 @@ class Task extends DbObject {
     public $_modifiable;  // Modifiable Aspect
     public $_searchable;
     public $rate; //rate used for calculating invoice values
+    public $is_active;
     public static $_validation = array(
         "title" => array('required'),
         "task_group_id" => array('required'),
@@ -429,6 +430,13 @@ class Task extends DbObject {
     	$tg = $this->getTaskGroup();
     	return $tg->isStatusClosed($this->status);
     }
+
+    function shouldAddToSearch() {
+        if ($this->is_active) {
+            return true;
+        }
+        return false;
+    }
     
     /**
      * (non-PHPdoc)
@@ -477,6 +485,9 @@ class Task extends DbObject {
                     }
                 }
             }
+
+            //new task so set is_active to default value
+            $this->is_active = 1;
 
             // 2. Call on_before_insert of the Tasktype
 

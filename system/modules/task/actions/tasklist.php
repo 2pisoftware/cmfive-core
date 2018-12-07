@@ -11,7 +11,7 @@ function tasklist_ALL(Web $w) {
         // Get filter values
         $assignee_id = $w->sessionOrRequest("task__assignee-id", $w->Auth->user()->id);
         $creator_id = $w->sessionOrRequest("task__creator-id");
-
+        
         $task_group_id = $w->sessionOrRequest("task__task-group-id");
         $task_type = $w->sessionOrRequest('task__type');
         $task_priority = $w->sessionOrRequest('task__priority');
@@ -78,6 +78,9 @@ function tasklist_ALL(Web $w) {
             $query_object->where("task.dt_due <= ?", $dt_to);
         }
     }
+    $query_object->where("task.is_active", 1);
+    
+    
     
     // Standard wheres
     $query_object->where("task.is_deleted", array(0, null)); //->where("task_group.is_active", 1)->where("task_group.is_deleted", 0);
@@ -134,7 +137,8 @@ function tasklist_ALL(Web $w) {
 			["label" => "No", "value" => '0'],
 			["label" => "Yes", "value" => '1'],
 			["label" => "Both", "value" => '']
-		])->setSelectedOption($is_closed) //array("Closed", "checkbox", "task__is-closed", !empty($is_closed) ? $is_closed : null)
+        ])->setSelectedOption($is_closed), //array("Closed", "checkbox", "task__is-closed", !empty($is_closed) ? $is_closed : null)
+        
     );
     
     $w->ctx("filter_data", $filter_data);
