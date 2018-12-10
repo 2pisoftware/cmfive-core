@@ -27,4 +27,8 @@ foreach ($roles as $r) {
 	$form['User Roles'][] = $row;
 }
 
-print Html::multiColForm($form, $w->localUrl("/admin/useradd"), "POST", "Save");
+$validation = ['login' => ['required'],
+			   'password' => ['required'],
+			   'password2' => ['required']];
+
+print Html::multiColForm($form, $w->localUrl("/admin/useradd"), "POST", "Save", null, null, null, "_self", true, $validation);
