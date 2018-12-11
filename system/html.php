@@ -1369,8 +1369,8 @@ class Html {
             // Try and make breadcrumbs from the history class
             if (class_exists("History")) {
                 $breadcrumbs = History::get();
-                $buffer = "<ul class='cmfive_breadcrumbs '>";
-                $buffer .= "<li><i class='fi-clock'></i></li>";
+                $buffer = "<ul class='cmfive_breadcrumbs'>";
+                // $buffer .= "<li><i class='fi-clock'></i></li>";
                 if (!empty($breadcrumbs)) {
                     $isFirst = true && ($_SERVER['REQUEST_URI'] === key($breadcrumbs));
                     foreach ($breadcrumbs as $path => $value) {

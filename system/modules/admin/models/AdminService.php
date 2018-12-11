@@ -75,6 +75,7 @@ class AdminService extends DbService {
 		
         $nav = $prenav ? $prenav : array();
         if ($w->Auth->loggedIn()) {
+            $w->menuLink("admin/index", "Admin Dashboard", $nav);
             $w->menuLink("admin/users", "List Users", $nav);
             $w->menuLink("admin/groups", "List Groups", $nav);
             $w->menuLink("admin/lookup", "Lookup", $nav);
@@ -86,7 +87,6 @@ class AdminService extends DbService {
             $w->menuLink("admin/composer", "Update composer.json", $nav, null, "_blank");
             $w->menuLink("admin/email", "Email", $nav);
             $w->menuLink("admin-migration", "Migrations", $nav);
-			$w->menuLink("admin-file", "File transfer", $nav);
         }
 		
         $w->ctx("navigation", $nav);

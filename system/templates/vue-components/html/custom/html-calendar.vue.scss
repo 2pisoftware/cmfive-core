@@ -1,0 +1,105 @@
+$primary_colour: #2a2869;
+$secondary_colour: #159cd4;
+$tertiary_colour: #426AB2;
+$accent_colour: #dee5eb;
+
+$border_colour: #d4dbe1;
+$primary_text_colour: #222222;
+$text_accent_colour: #a3d0ea;
+
+$dark-border-colour: #d3d7dc;
+$dark-background-colour: #bbc9d4;
+
+$light-border-colour: #e5eaf0;
+$light-background-colour: #f8f9fb;
+
+.cmfive-calendar {
+
+	color: white;
+	
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+	.cmfive-calendar-controls {
+		display: block;
+		clear: both;
+
+		div {
+			float: left;
+			width: 33.3%;
+			text-align: center;
+			color: white;
+			padding: 10px;
+
+			&:not(.month) {
+				font-size: 30px;
+				line-height: 24px;
+				background-color: $secondary_colour;
+
+				&:hover {
+					background-color: lighten($secondary_colour, 5%);
+					cursor: pointer;
+				}
+
+				&.disabled {
+					background-color: darken($light-background-colour, 10%);
+					cursor: not-allowed;
+				}
+			}
+
+			&.month {
+				background-color: $primary_colour;
+			}
+		}
+
+	}
+
+	.cmfive-calendar-grid {
+
+		.days-of-the-week {
+			display: table;
+			table-layout: fixed;
+			width: 100%;
+
+			.week-days {
+				display: table-cell;
+				background-color: lighten($primary_colour, 10%);
+				text-align: center;
+				border: 1px solid $accent_colour;
+			}
+		}
+
+		.days {
+
+			.day {
+				display: inline-block;
+				width: 14.27%;
+				text-align: center;
+				padding: 10px;
+				background-color: $light-background-colour;
+				color: black;
+
+				&:hover {
+					background-color: darken($light-background-colour, 10%);
+					cursor: pointer;
+				}
+
+				&.disabled {
+					background-color: $light-border-colour;
+					cursor: not-allowed;
+				}
+
+				&.today {
+					background-color: darken($light-border-colour, 10%);
+				}
+
+				&.selected {
+					background-color: lighten($primary_colour, 5%);
+				}
+			}
+		}
+	}
+
+}

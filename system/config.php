@@ -51,5 +51,7 @@ Config::set('email.transports', array(
 
 Config::set('system.gc_maxlifetime', 21600);
 
+Config::set('system.environment', 'development');
+
 // For SendGrid API integration (also used for Mandrill integration)
 // Config::append('email.api.credentials.key', '<your key>');

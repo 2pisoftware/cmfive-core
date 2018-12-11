@@ -216,7 +216,7 @@ class Attachment extends DbObject {
 	/**
 	 * Moves the content from one adapter to another
 	 */
-	public function moveToAdapter($adapter = "local") {
+	public function moveToAdapter($adapter = "local", $delete_after_move = false) {
 		// Get content of file
 		$content = $this->getContent();
 		$current_file = $this->getFile();
@@ -228,10 +228,12 @@ class Attachment extends DbObject {
 
 		$file->setContent($content);
 
-		try {
-			$current_file->delete();
-		} catch (RuntimeException $ex) {
-			$this->w->Log->setLogger("FILE")->error("Cannot delete file: " . $ex->getMessage());
+		if ($delete_after_move === true) {
+			try {
+				$current_file->delete();
+			} catch (RuntimeException $ex) {
+				$this->w->Log->setLogger("FILE")->error("Cannot delete file: " . $ex->getMessage());
+			}
 		}
 
 		// Update the adapter location
