@@ -164,9 +164,10 @@ class TimelogService extends DbService {
 
         $nav = $nav ? : array();
 
-		$trackingObject = $w->Timelog->getTrackingObject();
-		
+        $trackingObject = $w->Timelog->getTrackingObject();
+
         if ($w->Auth->loggedIn()) {
+            $w->menuLink("timelog/index", "Timelog Dashboard", $nav);
             $w->menuBox("timelog/edit" . (!empty($trackingObject) && !empty($trackingObject->id) ? "?class=" . get_class($trackingObject) . "&id=" . $trackingObject->id : ''), "Add Timelog", $nav);
         }
 
