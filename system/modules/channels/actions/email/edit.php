@@ -60,8 +60,8 @@ function edit_GET(Web $w) {
             array("Post Read Data", "text", "post_read_parameter", $email_channel->post_read_parameter)
         )
     );
-
-    $w->ctx("form", Html::multiColForm($form, "/channels-email/edit/{$channel_id}", "POST", "Save", "channelform", null, null, '_self', true, ['name' => ['required'], 'protocol' => ['required'], 'server' =>['required'], 's_username' => ['required'], 's_password' => ['required']]));
+	$validation = ['name' => ['required'], 'protocol' => ['required'], 'server' =>['required'], 's_username' => ['required'], 's_password' => ['required']];
+    $w->ctx("form", Html::multiColForm($form, "/channels-email/edit/{$channel_id}", "POST", "Save", "channelform", null, null, '_self', true, $validation));
 }
 
 function edit_POST(Web $w) {
