@@ -13,8 +13,7 @@ function create_GET(Web $w) {
 		]
 	];
 
-	$validation = ['name' => ['required']];
-	$w->out(Html::multiColForm($form, "/admin-migration/create/" . $p['module'], "POST", "Save", null, null, null, "_self", true, $validation));
+	$w->out(Html::multiColForm($form, "/admin-migration/create/" . $p['module'], "POST", "Save", null, null, null, "_self", true, Migration::$_validation));
 }
 
 function create_POST(Web $w) {

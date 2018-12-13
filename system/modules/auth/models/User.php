@@ -25,9 +25,17 @@ class User extends DbObject {
     public $_roles;
     public $_contact;
     public $_modifiable;
-    public $language;
-	
-    
+	public $language;
+
+    /**
+     * A static array of string arrays to be used for validaiton when creating forms with a User in it.
+     *
+     * @var array[array[string]]
+     */
+	public static $_validation = [
+		'login' => ['required'],
+		'password' => ['required'],
+		'password2' => ['required']];
 
 	public function getLanguage() {
 		return $this->$language;
