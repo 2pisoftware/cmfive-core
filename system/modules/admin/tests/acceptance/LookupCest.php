@@ -12,12 +12,12 @@ class AdminModelsLookupCest
     }
     public function testAdminModelsLookup($I) {
         $I->wantTo('Verify that cmfive admin handles lookups');
-        $I->login($I,'admin','admin');
+        $I->login($I, 'admin','admin');
         $I->createUser($I,'testLookup_testuser' ,'password','testLookup_test','user','test@user.com');
         $I->editUser($I,'testLookup_testuser',['autocomplete:title'=>'Prime Minister']);
         $I->clickCmfiveNavbar($I,'Admin', 'Lookup');
         $I->see('Prime Minister');
-        $I->editLookup($I,'Prime Minister', ["//div[@id='cmfive-modal']//input[@id='title']"=>'President',"//div[@id='cmfive-modal']//input[@id='code']"=>'President']);
+        $I->editLookup($I,'Prime Minister', ["cmfive-modal #title"=>'President']);
         $I->clickCmfiveNavbar($I,'Admin', 'List Users');
         $I->see('President');
         $I->clickCmfiveNavbar($I,'Admin', 'Lookup');
