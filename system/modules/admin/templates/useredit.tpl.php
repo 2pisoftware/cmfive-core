@@ -33,9 +33,7 @@ if ($groupUsers) {
 }
 $form['User Groups'][] = array(array("Group Title", "static", "groupName", implode("<br/>", $groups)));
 
-$validation = ['login' => ['required']];
-
-print Html::multiColForm($form, $w->localUrl("/admin/useredit/" . $w->ctx("id")), "POST", "Save", null, null, null, "_self", true, $validation);
+print Html::multiColForm($form, $w->localUrl("/admin/useredit/" . $w->ctx("id")), "POST", "Save", null, null, null, "_self", true, User::$_validation);
 ?>
 
 <?php else: ?>

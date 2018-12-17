@@ -33,9 +33,7 @@ class User extends DbObject {
      * @var array[array[string]]
      */
 	public static $_validation = [
-		'login' => ['required'],
-		'password' => ['required'],
-		'password2' => ['required']];
+		'login' => ['required']];
 
 	public function getLanguage() {
 		return $this->$language;
