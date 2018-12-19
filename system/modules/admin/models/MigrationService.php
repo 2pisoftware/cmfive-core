@@ -250,7 +250,7 @@ MIGRATION;
 									$this->w->db->startTransaction();
 
 									// Run migration UP
-									$migration_class = (new $migration['class_name'])->setWeb($this->w);
+									$migration_class = (new $migration['class_name'](1))->setWeb($this->w);
 									$migration_class->setAdapter($mysql_adapter);
 									$migration_class->up();
 
