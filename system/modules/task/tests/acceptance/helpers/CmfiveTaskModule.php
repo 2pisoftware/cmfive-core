@@ -3,11 +3,11 @@ namespace Helper;
 
 class CmfiveTaskModule extends \Codeception\Module
 {
- 
 
-  public function createTaskGroup($I,$taskGroup,$data) {
+
+  	public function createTaskGroup($I,$taskGroup,$data) {
         $I->clickCmfiveNavbar($I,'Task', 'Task Groups');
-    $I->click('New Task Group');
+    	$I->click('New Task Group');
         $fields=[];
         $fields['select:task_group_type']=$data['task_group_type'];
         $fields['title']=$taskGroup;
@@ -22,8 +22,8 @@ class CmfiveTaskModule extends \Codeception\Module
         $I->see('Task Group '.$taskGroup.' added');
     }
 
-  public function updateTaskGroup($I,$taskGroup,$data) {
-    $I->clickCmfiveNavbar($I,'Task', 'Task Groups');
+    public function updateTaskGroup($I,$taskGroup,$data) {
+        $I->clickCmfiveNavbar($I,'Task', 'Task Groups');
         $I->see($taskGroup);
         $I->click($taskGroup, '.tablesorter');
         $I->click('Edit Task Group');
@@ -96,9 +96,9 @@ class CmfiveTaskModule extends \Codeception\Module
   public function createTask($I,$taskGroup,$task,$data) {
         $I->clickCmfiveNavbar($I,'Task', 'New Task');
         // workaround below
-        $I->executeJS("$('#acp_task_group_id').autocomplete('search', 'testgroup')");
-        $I->click('testTasks_testgroup updated');
-    $I->wait(1);
+        $I->executeJS("$('#acp_task_group_id').autocomplete('search', '{$taskGroup}')");
+        $I->click($taskGroup);
+    	$I->wait(1);
         // ends here, more investigation needed to make it a function or figure out the reason can't use fillField.
         $I->fillForm(['select:task_type'=>!empty($data['task_type']) ? $data['task_type'] : '',
             'title'=>$task,
