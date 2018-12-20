@@ -13,10 +13,10 @@ class Channel extends DbObject {
         return array("Channel" => array(
                 array(
                     array("Name", "text", "name", $this->name),
-                    array("Is Active", "checkbox", "is_active", $this->is_active ? 1 : 0)
+                    array("Is Active", "checkbox", "is_active", empty($this->name) ? 1 : $this->is_active)
                 ),
                 array(
-                    array("Run processors?", "checkbox", "do_processing", $this->do_processing)
+                    array("Run processors?", "checkbox", "do_processing", empty($this->name) ? 1 : $this->do_processing)
                 )
         ));
     }
