@@ -260,7 +260,6 @@ class ExternalFormXMLProcessor extends ProcessorType {
 				}
 			}
    		}
-   		//adding this here now to get this out. will fix on my return...
    		//run 'on created' or 'on modified' processors here
 		if ($is_existing_instance) {
 			//run 'on modified processor'
