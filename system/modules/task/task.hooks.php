@@ -103,7 +103,7 @@ function task_core_dbobject_after_insert_Task(Web $w, $object) {
 			$template_data['fields']["Assigned to"] = "No one";
 		}
 
-		return new NotificationCallback($user, $template_data, $w->File->getAttachmentsFileList($object));
+		return new NotificationCallback($user, $template_data, $object->getAttachmentsFileList());
     });
 }
 
@@ -163,8 +163,7 @@ function task_core_dbobject_after_update_Task(Web $w, $object) {
 		} else {
 			$template_data['fields']["Assigned to"] = "No one";
 		}
-
-		return new NotificationCallback($user, $template_data, $w->File->getAttachmentsFileList($object));
+		return new NotificationCallback($user, $template_data, $object->getAttachmentsFileList());
     });
 }
 
@@ -222,8 +221,7 @@ function task_attachment_attachment_added_task(Web $w, $object) {
 		} else {
 			$template_data['fields']["Assigned to"] = "No one";
 		}
-
-		return new NotificationCallback($user, $template_data, $w->File->getAttachmentsFileList($task));
+		return new NotificationCallback($user, $template_data, $object->getAttachmentsFileList());
     });
 }
 
@@ -322,8 +320,7 @@ function task_comment_send_notification_recipients_task(Web $w, $params) {
 		} else {
 			$template_data['fields']["Assigned to"] = "No one";
 		}
-
-		return new NotificationCallback($user, $template_data, $w->File->getAttachmentsFileList($task));
+		return new NotificationCallback($user, $template_data, $object->getAttachmentsFileList());
     });
 
 }

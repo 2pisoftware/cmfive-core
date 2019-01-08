@@ -219,8 +219,6 @@ class EmailChannelOption extends DbObject {
                     $channel_message->is_processed = 0;
                     $channel_message->insert();
 
-                    // Save raw email
-                    $attachment_id = $this->w->File->saveFileContent($channel_message, $rawmessage, "rawemail.txt", "channel_email_raw", "text/plain");
                     if ($message->isMultipart()) {
                         foreach (new RecursiveIteratorIterator($message) as $part) {
                             try {
@@ -271,9 +269,12 @@ class EmailChannelOption extends DbObject {
                                 // Ignore
                             }
                         }
-                    }
-
-                    $attachment_id = $this->w->File->saveFileContent($channel_message, serialize($email), "email.txt", "channel_email_raw", "text/plain");
+                    } else {
+						// assume its a plain text only email
+						$email->body["plain"] = $message->getContent();
+					}
+                    $this->w->File->saveFileContent($channel_message, serialize($email), "email.txt", "channel_email_raw", "text/plain", 'serialized EmailStructure object | NOT SENT TO CLIENT');
+                	$this->w->File->saveFileContent($channel_message, $rawmessage, "rawemail.txt", "channel_email_raw", "text/plain", "raw email message | NOT SENT TO CLIENT");
                 }
             } else {
                 $this->w->Log->info("No new messages found");
