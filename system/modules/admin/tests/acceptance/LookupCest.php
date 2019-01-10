@@ -14,7 +14,7 @@ class AdminModelsLookupCest
         $I->wantTo('Verify that cmfive admin handles lookups');
         $I->login($I, 'admin','admin');
         $I->createUser($I,'testLookup_testuser' ,'password','testLookup_test','user','test@user.com');
-        $I->editUser($I,'testLookup_testuser',['autocomplete:title'=>'Prime Minister']);
+        $I->editUser($I,'testLookup_testuser',['acp_title'=>'Prime Minister']);
         $I->clickCmfiveNavbar($I,'Admin', 'Lookup');
         $I->see('Prime Minister');
         $I->editLookup($I,'Prime Minister', ["cmfive-modal #title"=>'President']);

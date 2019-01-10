@@ -22,9 +22,9 @@ class CmfiveAdminModule extends \Codeception\Module
             $permissions = ['user'];
         }
         foreach ($permissions as $permission) {
-            $I->click('#check_'.$permission);
-        }
-        $I->click('Save');
+            $I->click('#check_'.$permission); 
+        } 
+        $I->click('Save');  
             $I->see('User '.$username.' added');
         }
 
@@ -59,6 +59,20 @@ class CmfiveAdminModule extends \Codeception\Module
 		$I->click("//div[@id='tab-2']//label[@class='small-12 columns']//select[@id='type']");
 		$I->click("//label[@class='small-12 columns']//option[@value='title'][contains(text(),'title')]");
 		//$I->selectOption('#type',$type);
+		$I->fillField('#code' ,$code);
+		$I->fillField('#title' ,$title);
+		$I->click(".savebutton");
+		$I->wait(1);
+		$I->see('Lookup Item added');
+    }
+
+    public function createLookupType($I,$type, $code, $title) {
+		$I->clickCmfiveNavbar($I,'Admin', 'Lookup');
+		$I->click('New Item');
+		//$I->click("//div[@id='tab-2']//label[@class='small-12 columns']//select[@id='type']");
+		//$I->click("//label[@class='small-12 columns']//option[@value='title'][contains(text(),'title')]");
+        //$I->selectOption('#type',$type);
+        $I->fillField('#ntype' ,$type);
 		$I->fillField('#code' ,$code);
 		$I->fillField('#title' ,$title);
 		$I->click(".savebutton");

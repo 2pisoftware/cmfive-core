@@ -10,8 +10,9 @@ class TemplateCest
     {
     }
 
-	public function testTemplate () {
-		$I->expectTo('Create a template');
+	public function testTemplate ($I) {
+		$I->wantTo('Create a template');
+		$I->login($I,'admin','admin');
 		$I->clickCmfiveNavbar($I, 'Admin', 'Templates');
 		$I->click("Add Template");
 		$I->fillField('#title', 'Test Template');
@@ -23,5 +24,6 @@ class TemplateCest
 		$I->see('Template Saved');
 		$I->click('Back to Templates List');
 		$I->see('Test Template');
+		// delete also & log out!
 	}
 }

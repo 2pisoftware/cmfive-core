@@ -13,7 +13,7 @@ class TaskModuleCest
 
 	public function testTaskModule($I) {
 
-    $I->wantTo('Verify that the tasks module is functioning correctly');
+    $I->wantTo('Verify that the tasks module supports creation and members');
 	$I->login($I,'admin','admin');
     $I->createUser($I,'testTasks_testuser' ,'password','testTasks_test','user','test@user.com');
     $I->clickCmfiveNavbar($I,'Task', 'New Task');
