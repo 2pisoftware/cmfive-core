@@ -74,8 +74,17 @@ class EmailNotificationEventProcessor extends EventProcessorType {
                 foreach ($data['fields'] as $key=>$value) {
                     //handle attachments
                     if ($key == 'attachments') {
+                        
                         foreach($value as $field_name=>$att) {
+                            $attachment_names = [];
+                            $message .= "<b>" . $field_name . ":</b> "; // . $value . "<br/>";
+                            foreach($att as $attachment) {
+                                $attachment_names[] = basename($attachment);
+                            }
                             $attachments = array_merge($attachments,$att);
+                            
+                            $message .= implode(', ', $attachment_names);
+                            $message .= "</br>";
                         }
                     }
                     //need to add functionality for sub forms
