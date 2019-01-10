@@ -320,7 +320,7 @@ function task_comment_send_notification_recipients_task(Web $w, $params) {
 		} else {
 			$template_data['fields']["Assigned to"] = "No one";
 		}
-		return new NotificationCallback($user, $template_data, $object->getAttachmentsFileList());
+		return new NotificationCallback($user, $template_data, $task->getAttachmentsFileList());
     });
 
 }
