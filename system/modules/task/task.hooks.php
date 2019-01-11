@@ -221,7 +221,7 @@ function task_attachment_attachment_added_task(Web $w, $object) {
 		} else {
 			$template_data['fields']["Assigned to"] = "No one";
 		}
-		return new NotificationCallback($user, $template_data, $object->getAttachmentsFileList());
+		return new NotificationCallback($user, $template_data, $task->getAttachmentsFileList());
     });
 }
 
