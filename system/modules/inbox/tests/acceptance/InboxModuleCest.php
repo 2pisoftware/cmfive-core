@@ -1,12 +1,14 @@
 <?php
 class InboxModuleCest
 {
-    // auth details
-	var $username='admin';
-	var $password='admin';
 
 	public function testInbox($I) {
-		$I->login($I,$this->username,$this->password);
+
+		
+		$I->loginAsAdmin($I);
+		$myFirstName = $I->getAdminFirstName();
+		$myLastName = $I->getAdminLastName();
+		$myFullName = $myFirstName." ".$myLastName;
 
 		// test validation for missing to address
         $I->clickCmfiveNavbar($I,'Inbox','Inbox');
@@ -24,11 +26,11 @@ class InboxModuleCest
 		$I->dontSee('#createmessagebutton');
 
 		$I->logout($I);
-        $I->login($I, 'admin', 'admin');
+        $I->loginAsAdmin($I);
 
 		// send myself some messages
-		$I->inboxCreateMessage($I,'Administrator','test message','content of test message');
-		$I->inboxCreateMessage($I,'Administrator','another test message','content of another test message');
+		$I->inboxCreateMessage($I,$myFullName,'test message','content of test message');
+		$I->inboxCreateMessage($I,$myFullName,'another test message','content of another test message');
 
 		$row=$I->findMessage($I,'another test message');
 		$context='.tablesorter tbody tr:nth-child('.$row.')';
@@ -63,10 +65,10 @@ class InboxModuleCest
 		$I->findMessage($I,'An account has changed','Inbox');
 		$I->logout($I);
 		$I->login($I,'fred','password');
-		$I->inboxCreateMessage($I,'Administrator','test message from fred','content of test message');
+		$I->inboxCreateMessage($I,$myFullName,'test message from fred','content of test message');
 
 		$I->logout($I);
-		$I->login($I, 'admin', 'admin');
+		$I->loginAsAdmin($I);
 		// does admin see the message
 		$row= $I->findMessage($I,'test message from fred');
 		// view message and replytest message from fred
@@ -88,14 +90,14 @@ class InboxModuleCest
 		$I->findMessage($I,'Re:test message from fred','Inbox');
 
 		$I->logout($I);
-		$I->login($I, 'admin', 'admin');
+		$I->loginAsAdmin($I);
 		// now test multiple archive delete pathway
-		$I->inboxCreateMessage($I,'Administrator','tm1','tm1');
-		$I->inboxCreateMessage($I,'Administrator','tm2','tm2');
-		$I->inboxCreateMessage($I,'Administrator','tm3','tm3');
-		$I->inboxCreateMessage($I,'Administrator','tm4','tm4');
-		$I->inboxCreateMessage($I,'Administrator','tm5','tm5');
-		$I->inboxCreateMessage($I,'Administrator','tm6','tm6');
+		$I->inboxCreateMessage($I,$myFullName,'tm1','tm1');
+		$I->inboxCreateMessage($I,$myFullName,'tm2','tm2');
+		$I->inboxCreateMessage($I,$myFullName,'tm3','tm3');
+		$I->inboxCreateMessage($I,$myFullName,'tm4','tm4');
+		$I->inboxCreateMessage($I,$myFullName,'tm5','tm5');
+		$I->inboxCreateMessage($I,$myFullName,'tm6','tm6');
 
 		// multi archive
 		$tm1=$I->findMessage($I,'tm1','Inbox');
@@ -117,8 +119,7 @@ class InboxModuleCest
 
 		// mark all read
 		$I->clickCmfiveNavbar($I,'Inbox','Inbox');
-		// disable dialog
-		$I->executeJS('window.confirm = function(){return true;}');
+		$I->skipConfirmation($I);
 		$I->click('#markallreadbutton');
 		//$I->acceptPopup();
 		$I->findMessage($I,'tm5','Read Messages');

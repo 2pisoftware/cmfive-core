@@ -10,7 +10,7 @@ class CmfiveInboxModule extends \Codeception\Module
     public function inboxCreateMessage($I, $to, $subject, $message) {
     	$I->clickCmfiveNavbar($I,'Inbox','Inbox');
     	$I->click('#createmessagebutton');
-        $I->see('Send a message');
+		$I->see('Send a message');
 		$I->fillForm([
 			'autocomplete:receiver_id'=>$to,
 			'subject'=>$subject,

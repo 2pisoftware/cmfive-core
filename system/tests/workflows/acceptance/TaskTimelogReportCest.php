@@ -12,7 +12,7 @@ class TaskTimelogReportCest
     var $lastname = 'Lastname';
 
 	public function testTaskTimelogReport($I) {
-		$I->login($I, 'admin', 'admin');
+		$I->loginAsAdmin($I);
 		$I->createUser($I, $this->username, 'password', $this->firstname, $this->lastname, 'Firstname@lastname.com', ['comment', 'favorites_user', 'file_upload', 'help_view', 'help_contact', 'inbox_reader', 'inbox_sender', 'user', 'report_user', 'tag_user', 'task_admin', 'task_user', 'task_group', 'timelog_user']);
         $I->createTaskGroup($I, 'Test Taskgroup',[
     		'task_group_type'=>'To Do',
