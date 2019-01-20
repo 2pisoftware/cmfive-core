@@ -107,13 +107,13 @@ class Web {
 		// if using IIS then value is "off" for non ssl requests
 		$sHttps = array_key_exists('HTTPS', $_SERVER) ? $_SERVER['HTTPS'] : '';
 		$sHttpHost = array_key_exists('HTTP_HOST', $_SERVER) ? $_SERVER['HTTP_HOST'] : '';
-		
+
 		if (empty($sHttps) || $sHttps == "off") {
 			$this->_webroot = "http://" . $sHttpHost;
 		} else {
 			$this->_webroot = "https://" . $sHttpHost;
 		}
-	
+
 		$this->_actionMethod = null;
 
 		// The order of the following three lines are important
@@ -273,7 +273,7 @@ class Web {
 				$components = array_merge($components, Config::get($module . '.vue_components'));
 			}
 		}
-		
+
 		if (!empty($components)) {
 			foreach($components as $component => $paths) {
 				CmfiveScriptComponentRegister::registerComponent($component, new CmfiveScriptComponent($paths[0], ['weight' => 100]));
@@ -379,19 +379,19 @@ class Web {
 				$language = $lang;
 			}
 		}
-		
+
 		// Fallback to en_AU if language is not set
 		if (empty($language)) {
 			$language = 'en_AU';
 		}
-		
+
 		$this->Log->info('init locale ' . $language);
 
 		$all_locale = getAllLocaleValues($language);
-		
+
 		putenv("LC_ALL={$language}");
 		$results = setlocale(LC_ALL, $all_locale);
-		
+
 		if (empty($results)) {
 			$this->Log->info('setlocale failed: locale function is not available on this platform, or the given locale (' . $language . ') does not exist in this environment');
 		}
@@ -424,7 +424,7 @@ class Web {
 		$path = ROOT_PATH . DS . $this->getModuleDir($domain) . "translations";
 		$translationFile = $path . DS . $this->currentLocale . DS . "LC_MESSAGES" . DS . $domain . ".mo";
 		$translationFileOverride = ROOT_PATH . DS . 'translations' . DS . $domain . DS . $this->currentLocale . DS . 'LC_MESSAGES' . DS . $domain . '.mo';
-		
+
 		if (file_exists($translationFileOverride) && !empty(bindtextdomain($domain, ROOT_PATH . DS . 'translations' . DS . $domain))) {
 			// Project language override has been loaded
 		} else if (file_exists($translationFile)) {
@@ -630,7 +630,7 @@ class Web {
 
 		// configure translations lookup for this module
 		$this->initLocale();
-		
+
 		try {
 			$this->setTranslationDomain('admin');
 			$this->setTranslationDomain('main');
@@ -638,7 +638,7 @@ class Web {
 		} catch (Exception $e) {
 			$this->Log->setLogger('I18N')->error($e->getMessage());
 		}
-		
+
 		if (!$this->_action) {
 			$this->_action = $this->_defaultAction;
 		}
@@ -937,12 +937,12 @@ class Web {
 							if (!$this->_is_installing) {
                                 include(ROOT_PATH . '/config.php');
                             }
-                            
+
 							if (Config::get("{$item}.active") === true) {
 								// Need to reset sandbox content to remove inclusion of project config
 								Config::clearSandbox();
 								include($searchingDir . '/config.php');
-								
+
 								// If we are loading with dependencies, register config in the dependency loader
 								// (located in Config.php) instead of putting into base config setup
 								if ($loadWithDependencies === true) {
@@ -954,14 +954,14 @@ class Web {
                                     Config::enableSandbox();
 								}
 							}
-							
+
 							// Always disable the sandbox to ensure other uses of Config do not get omitted
 							Config::clearSandbox();
 							Config::disableSandbox();
                         }
                     }
                 }
-				
+
 				// Load with dependencies if required
 				if ($loadWithDependencies === true) {
 					try {
@@ -1716,6 +1716,8 @@ class Web {
 		$paths[] = $this->_templatePath;
 		// Add system fallback
 		$paths[] = SYSTEM_PATH . "/" . $this->_templatePath;
+		// Allow specifying the full path
+		$paths[] = ROOT_PATH;
 
 		$names = array();
 		if ($name) {

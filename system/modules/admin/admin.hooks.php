@@ -2,13 +2,13 @@
 
 /**
  * Store audit entries for any deleting DbObjects
- * 
+ *
  * @param unknown $w
  * @param unknown $object
  */
 function admin_core_dbobject_after_delete(Web $w, DbObject $object) {
 	if (!empty($object->id) && $object->__use_auditing === true) {
-		$w->Audit->addDbAuditLogEntry("delete", get_class($object), $object->id);		
+		$w->Audit->addDbAuditLogEntry("delete", get_class($object), $object->id);
 	}
 }
 
@@ -38,7 +38,7 @@ function admin_core_dbobject_after_insert(Web $w, DbObject $object) {
 
 /**
  * Log all web access
- * 
+ *
  * @param Web $w
  */
 function admin_core_web_before(Web $w) {
