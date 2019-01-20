@@ -15,6 +15,7 @@ if (file_exists(ROOT_PATH . '/' . $migration_path)) {
     include_once ROOT_PATH . '/' . $migration_path;
 
     $migration_class = explode('-', $migration_filename)[1];
+    $w->ctx("migration_class", $migration_class);
     if (class_exists($migration_class)) {
         $migration = (new $migration_class(1))->setWeb($w);
         $migration_preText = $migration->preText;

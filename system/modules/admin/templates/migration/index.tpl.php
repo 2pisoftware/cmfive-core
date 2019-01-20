@@ -39,7 +39,7 @@
 							<div id="batch_<?php echo $batch_no; ?>" class="content">
 								<table style width="100%">
 									<?php
-										$header = ["Name", "Pre text", "Post Text"];
+										$header = ["Name", "Pre Text", "Post Text"];
 										$data = [];
 										foreach($batched_migrations as $batched_migration)	
 										{
