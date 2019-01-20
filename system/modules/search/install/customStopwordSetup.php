@@ -1,8 +1,5 @@
 <?php
 //To be run by a super admin
-
-	public function setStopwordTable()
-	{
-		$sql = "SET GLOBAL innodb_ft_server_stopword_table = 'cmfive/search_stopwords';";
-		$this->_db->sql ( $sql )->execute ();
-	}
+	$sql = "SET GLOBAL innodb_ft_server_stopword_table = 'cmfive/search_stopwords';";
+	$this->_db->sql ( $sql )->execute ();
+	
