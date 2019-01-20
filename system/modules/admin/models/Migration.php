@@ -7,6 +7,8 @@ class Migration extends DbObject {
     public $module;
     public $dt_created;
     public $batch;
+    public $pretext;
+    public $posttext;
 
     /**
      * A static array of string arrays to be used for validaiton when creating forms with a Migration in it.

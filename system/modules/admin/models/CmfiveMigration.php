@@ -8,6 +8,8 @@ use Phinx\Db\Table\Column as Column;
 class CmfiveMigration extends Phinx\Migration\AbstractMigration {
 	
 	public $w;
+	public $preText;
+	public $postText;
 	
 	public function setWeb($w) {
 		$this->w = $w;
