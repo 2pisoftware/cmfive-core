@@ -24,14 +24,4 @@ class SearchMySQLStopwords extends CmfiveMigration {
 		$this->hasTable('search_stopwords') ? $this->dropTable('search_stopwords') : null;
 	}
 
-	public function preMigrationTextOutput()
-	{
-		
-	}
-
-	public function postMigrationTextOutput()
-	{
-		
-	}
-
 }
