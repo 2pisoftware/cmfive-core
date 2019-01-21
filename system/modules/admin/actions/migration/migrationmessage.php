@@ -1,7 +1,7 @@
 <?php
 function migrationmessage_GET(Web $w) {
 
-$w->setLayout(null);
+$w->setLayout("layout-pretext");
 
 $migration_module = $w->request('module');
 $w->ctx("migration_module", $migration_module);

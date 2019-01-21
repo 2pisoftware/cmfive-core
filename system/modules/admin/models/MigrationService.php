@@ -220,6 +220,8 @@ MIGRATION;
 
 		// Install migrations
 		$buffer = "";
+		$installedBuffer = "";
+		$uninstalledBuffer = "";
 		if (!empty($availableMigrations)) {
 			
 			// try {
@@ -263,7 +265,45 @@ MIGRATION;
 										{
 											$pathData = pathinfo($migration_path);
 											$messageurl = "/admin-migration/migrationmessage?module=".$module."&filename=".$pathData['filename']."&messagetype=pre&path=".$migration_path;
-											$this->w->redirect($messageurl);
+
+											$batchedMigrations = array();
+											foreach	($availableMigrations as $avmigration)
+											{
+												// If the avmigration array has elements in it that means it's part of the current batch
+												if (count($avmigration) > 0)
+												{
+													//Add it to the batched migration variable
+													$batchedMigrations[] = $avmigration;
+												}
+											}
+											foreach ($batchedMigrations as $bmigrations)
+											{
+												foreach ($bmigrations as $bmigration)
+												{
+													$classname = $bmigration['class_name'];
+
+													if ($this->isInstalled($classname))
+													{
+														// If the migration has been installed at it to the buffer to display this information on the event of the migrations being interupted by a pre text message
+														$installedBuffer .= $classname . "<br>";
+													} else {
+														// These are the migrations that were halted due to the pre text message and weren't installed
+														$uninstalledBuffer .= $classname . "<br>";
+													}
+												}
+											}
+												if ($runMigrations > 0)
+												{
+													$msg = "<table style width='100%'><tr><td><center>" . $runMigrations . ' migration' . ($runMigrations == 1 ? ' has' : 's have') . ' run. <br>';
+													
+													$msg .= ($buffer != "" ? "<h5><strong>Post Migration Output:</strong></h5>" . $buffer . "</center></td>": "<center>There was no post migration outputs</center>");
+
+													$msg .= ($installedBuffer != "" ? " <td><strong>Migrations that were run and installed:</strong> <br>" . $installedBuffer . "<br>" : "");
+
+													$msg .= ($uninstalledBuffer != "" ? "<strong>Migrations yet to run:</strong> <br>" . $uninstalledBuffer . "<br></td></tr></table>" : "");
+												}
+												$this->w->msg($msg, $messageurl);
+											
 										}
 									}
 										
