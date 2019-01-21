@@ -1,0 +1,7 @@
+
+////// To be run by a super admin ///////
+// Bellow is the query to be run in MySQL logged in as the root user // 
+
+SET GLOBAL innodb_ft_server_stopword_table = 'cmfive/search_stopwords';
+
+// This will set the mysql stopwords table to an empty table, thus disabling the defaults // 
