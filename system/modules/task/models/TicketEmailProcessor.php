@@ -23,23 +23,23 @@ class TicketEmailProcessor extends ProcessorType {
 
     /**
      * create HelpdeskTicket from an email
-     *
+     * 
      * @see ProcessorType::process()
      */
     public function process($processor) {
         if (empty($processor->id)) {
             return;
         }
-
+        
         $settings = null;
         if (!empty($processor->settings)) {
             $settings = json_decode($processor->settings);
         }
-
+        
         if (!empty($settings->authenticate_as)) {
             $processor->w->Auth->forceLogin($settings->authenticate_as);
         }
-
+        
         $processor->w->Log->debug("Running ticket processor");
 
         $messages = $processor->w->Channel->getNewMessages($processor->channel_id, $processor->id);
@@ -74,7 +74,7 @@ class TicketEmailProcessor extends ProcessorType {
 				// $to = $email->to;
 				// $cc = $email->cc;
 
-				// When adding default message for email without real body,
+				// When adding default message for email without real body, 
 				// it was decided to swap from using the html to the plain
 				// version of the email body.
 				$body = $email->body['plain'];
@@ -191,7 +191,7 @@ class TicketEmailProcessor extends ProcessorType {
 						if (!empty($from_email_address)) {
 							// Send accepted ticket email
 							$processor->w->Log->debug("Emailing sender");
-							$processor->w->Mail->sendMail($from_email_address, !empty($settings->support_email_address) ? $settings->support_email_address : "support@2pisoftware.com", "[{$task->id}] {$subject}", $template_body);
+							$processor->w->Mail->sendMail($from_email_address, !empty($settings->support_email_address) ? $settings->support_email_address : "support@2pisoftware.com", "Accepted Ticket [{$task->id}] {$subject}", $template_body);
 
 							// Send notification email
 							if (!empty($email_address_notify)) {
@@ -208,10 +208,10 @@ class TicketEmailProcessor extends ProcessorType {
 
 										$attachments_to_email[] = $processor->w->File->getFilePath($a->fullpath);
 									}
-								}
+								}   
 								$processor->w->Log->debug(json_encode($attachments_to_email));
 
-								$processor->w->Mail->sendMail($email_address_notify, $email_address_notify, "Ticket Accepted <br> Ticket: $from_email_address - $subject",
+								$processor->w->Mail->sendMail($email_address_notify, $email_address_notify, "Ticket: $from_email_address - $subject", 
 										"Ticket [{$task->id}]: {$subject}<br/><br/>Email:<br/>{$body}<br/><a href='" . $processor->w->localUrl("/task/edit/" . $task->id) . "'>View the Task</a>", null, null, $attachments_to_email);
 							}
 						} else {
@@ -244,7 +244,7 @@ class TicketEmailProcessor extends ProcessorType {
 							echo "Found existing subscriber<br/>";
 						}
 					} else {
-						echo "Could not find user object for contact {$contact->id}<br/>";
+						echo "Could not find user object for contact {$contact->id}<br/>";						
 					}
 				} else {
 					echo "Both contact and user could not be found<br/>";
