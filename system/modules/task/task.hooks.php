@@ -103,7 +103,7 @@ function task_core_dbobject_after_insert_Task(Web $w, $object) {
 			$template_data['fields']["Assigned to"] = "No one";
 		}
 
-		return new NotificationCallback($user, $template_data, $object->getAttachmentsFileList());
+		return new NotificationCallback($user, $template_data, $w->file->getAttachmentsFileList($object, null, ['channel_email_raw']));
     });
 }
 
@@ -163,7 +163,7 @@ function task_core_dbobject_after_update_Task(Web $w, $object) {
 		} else {
 			$template_data['fields']["Assigned to"] = "No one";
 		}
-		return new NotificationCallback($user, $template_data, $object->getAttachmentsFileList());
+		return new NotificationCallback($user, $template_data, $w->file->getAttachmentsFileList($object, null, ['channel_email_raw']));
     });
 }
 
@@ -221,7 +221,7 @@ function task_attachment_attachment_added_task(Web $w, $object) {
 		} else {
 			$template_data['fields']["Assigned to"] = "No one";
 		}
-		return new NotificationCallback($user, $template_data, $task->getAttachmentsFileList());
+		return new NotificationCallback($user, $template_data, $w->file->getAttachmentsFileList($task, null, ['channel_email_raw']));
     });
 }
 
@@ -320,7 +320,7 @@ function task_comment_send_notification_recipients_task(Web $w, $params) {
 		} else {
 			$template_data['fields']["Assigned to"] = "No one";
 		}
-		return new NotificationCallback($user, $template_data, $task->getAttachmentsFileList());
+		return new NotificationCallback($user, $template_data, $w->file->getAttachmentsFileList($task, null, ['channel_email_raw']));
     });
 
 }

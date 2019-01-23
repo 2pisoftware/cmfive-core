@@ -290,13 +290,21 @@ class FileService extends DbService {
 	 *
 	 * @param Mixed $objectOrTable
 	 * @param Mixed $id
-	 * @return string
+	 * @param array $type_code_blacklist a list of type codes to exclude
+	 * @return array of the paths of the attached files
 	 */
-	function getAttachmentsFileList($objectOrTable, $id = null) {
+	function getAttachmentsFileList($objectOrTable, $id = null, $type_code_blacklist = []) {
 		$attachments = $this->getAttachments($objectOrTable, $id);
-
 		if (!empty($attachments)) {
 			$pluck = array();
+			if (!empty($type_code_blacklist)) {
+				$attachments = array_filter($attachments, function($attachment) use ($type_code_blacklist) {
+					if (in_array($attachment->type_code, $type_code_blacklist)) {
+						return false;
+					}
+					return true;
+				});
+			}
 			foreach ($attachments as $attachment) {
 				$file_path = $attachment->getFilePath();
 
