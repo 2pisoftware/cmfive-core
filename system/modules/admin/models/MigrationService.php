@@ -156,9 +156,6 @@ class MigrationService extends DbService {
 
 class {$classname} extends CmfiveMigration {
 
-	public \$preText = "";
-	public \$postText = "";
-
 	public function up() {
 		// UP
 		\$column = parent::Column();
