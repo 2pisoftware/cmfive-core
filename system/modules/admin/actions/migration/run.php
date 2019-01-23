@@ -1,24 +1,17 @@
 <?php
 
 function run_GET(Web $w) {
-	
-	$p = $w->pathMatch("module", "file");
 
-	// Check if the migration run call has been flagged to ignore any pre text messages
-	$ignoreMessages = $w->request('ignoremessages');
-	if ($ignoreMessages == "false")
-	{
-		$ignoreMessages = false;
-	} else {
-		$ignoreMessages = true;
-	}
+	$prevpageurlextension = $w->request('prevpage');
+
+	$p = $w->pathMatch("module", "file");
 
 	if (empty($p['module'])) {
 		$w->error("Missing module parameter required to run migration", "/admin-migration");
 	}
-	
-	$response = $w->Migration->runMigrations($p['module'], $p['file'], $ignoreMessages);
 
-	$w->msg($response, "/admin-migration");
+	$response = $w->Migration->runMigrations($p['module'], $p['file'], ($w->request('ignoremessages') != "false"), ($w->request('continuingrunall') == "true"));
+
+	$w->msg($response, "/admin-migration#" . $prevpageurlextension);
 	
 }

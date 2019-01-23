@@ -3,6 +3,17 @@ function migrationmessage_GET(Web $w) {
 
 $w->setLayout("layout-pretext");
 
+$prevpage = $w->request('prevpage');
+$w->ctx("prevpage", $prevpage);
+
+// 'Migrate to hear' File
+$_migration_module = $w->request('migmodule');
+$w->ctx("_migration_module", $_migration_module);
+
+$_migration_filename = $w->request('migfilename');
+$w->ctx("_migration_filename", $_migration_filename);
+
+// Pretext Page File
 $migration_module = $w->request('module');
 $w->ctx("migration_module", $migration_module);
 
@@ -18,7 +29,7 @@ if (file_exists(ROOT_PATH . '/' . $migration_path)) {
     $w->ctx("migration_class", $migration_class);
     if (class_exists($migration_class)) {
         $migration = (new $migration_class(1))->setWeb($w);
-        $migration_preText = $migration->preText;
+        $migration_preText = $migration->preText();
         $w->ctx("migration_preText", $migration_preText);
     } else {
         $w->error("Migration Class not found for message", "/admin-migrations#batch");

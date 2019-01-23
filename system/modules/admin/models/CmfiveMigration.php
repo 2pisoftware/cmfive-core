@@ -8,9 +8,22 @@ use Phinx\Db\Table\Column as Column;
 class CmfiveMigration extends Phinx\Migration\AbstractMigration {
 	
 	public $w;
-	public $preText;
-	public $postText;
 	
+	public function preText()
+	{
+		return null;
+	}
+
+	public function postText()
+	{
+		return null;
+	}
+
+	public function description()
+	{
+		return null;
+	}
+
 	public function setWeb($w) {
 		$this->w = $w;
 		return $this;
