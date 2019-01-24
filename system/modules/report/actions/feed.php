@@ -47,6 +47,7 @@ function feed_ALL(Web &$w) {
 					}
 					// if confused, display a web page in the usual manner
 					else {
+						$results = "";
 						foreach ($tbl as $t) {
 							$crumbs = array_shift($t);
 							$title = array_shift($t);
