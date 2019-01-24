@@ -1,5 +1,5 @@
 <?php
 function reindexall_GET(Web $w) {
 	$w->Search->reindexAll();
-	$w->out("Done");
+	$w->msg("Objects have been reindexed", "/search/reindexpage");
 }

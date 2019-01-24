@@ -14,5 +14,4 @@ ft_stopword_file = ""
 -> Restart MySQL server
 -> Repair Search Table by querying the following 
 
-//CREATE FULLTEXT INDEX content ON object_index(content); ??? (I dunno if u need this step)
 REPAIR TABLE object_index QUICK;
