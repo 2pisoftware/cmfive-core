@@ -17,7 +17,7 @@ ft_stopword_file = ""
 
 ALTER TABLE object_index ENGINE = MyISAM;
 
--> Repair Search Table by querying the following 
+-> After your table is confirmed to be using the MyISAM engine, repair Search Table by querying the following 
 
 REPAIR TABLE object_index QUICK;
 
