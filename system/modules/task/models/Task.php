@@ -35,6 +35,7 @@ class Task extends DbObject {
         "task_type" => array('required')
     );
     public static $_db_table = "task";
+    public $_skip_creation_notification;
 
     public function getSubscribers() {
         return $this->getObjects('TaskSubscriber', ['task_id' => $this->id, 'is_deleted' => 0]);
