@@ -4,7 +4,7 @@ class SearchMySQLStopwords extends CmfiveMigration {
 
 	public function up() {
 		// UP
-		$w->Search->reindexAll();
+		$this->w->Search->reindexAll();
 	}
 
 	public function down() {
