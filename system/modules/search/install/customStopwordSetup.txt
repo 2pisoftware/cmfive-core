@@ -1,0 +1,13 @@
+
+// Disabling MySQL Default Stopwords //
+// To be run by a super admin //
+
+
+In the mysql config file, under the [mysqld] heading add the following line
+
+ft_stopword_file = ""
+
+this will disable all mysql default stopwords. To re-enable the default stopwords comment the line out by adding a hash
+
+# ft_stopword_file ""
+

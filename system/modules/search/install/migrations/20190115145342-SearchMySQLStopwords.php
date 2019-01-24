@@ -4,24 +4,20 @@ class SearchMySQLStopwords extends CmfiveMigration {
 
 	public function up() {
 		// UP
-		$column = parent::Column();
-		$column->setName('id')
-				->setType('biginteger')
-				->setIdentity(true);
-
-		if (!$this->hasTable('search_stopwords')) {
-			$this->table('search_stopwords', [
-						'id' => false,
-						//'primary_key' => 'id'
-					])//->addColumn($column)
-					->addStringColumn('value')
-					->create();
-		}
 	}
 
 	public function down() {
 		// DOWN
-		$this->hasTable('search_stopwords') ? $this->dropTable('search_stopwords') : null;
+	}
+
+	public function postText()
+	{
+		return "<div style='color:red;'>REQUIRED: </div> Go to \modules\search\install\customStopwordSetup.txt for instructions on how to disable the default MySQL stopwords.";
+	}
+
+	public function description()
+	{
+		return "Blank Migration that gives instructions on how disable MySQL default stopwords.";
 	}
 
 }
