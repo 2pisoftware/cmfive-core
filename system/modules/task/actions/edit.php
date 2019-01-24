@@ -180,19 +180,18 @@ function edit_GET($w) {
 }
 
 function edit_POST($w) {
+    
     $p = $w->pathMatch("id");
     $task = (!empty($p["id"]) ? $w->Task->getTask($p["id"]) : new Task($w));
     $taskdata = null;
     if (!empty($p["id"])) {
         $taskdata = $w->Task->getTaskData($p['id']);
     }
-    
+
     $task->fill($_POST['edit']);
-	if (empty($task->dt_assigned) || $task->assignee_id != intval($_POST['edit']['assignee_id'])) {
-		$task->dt_assigned = formatDateTime(time());
-	}
-	
+
     $task->assignee_id = intval($_POST['edit']['assignee_id']);
+        
     if (empty($task->dt_due)) {
         $task->dt_due = $w->Task->getNextMonth();
     }

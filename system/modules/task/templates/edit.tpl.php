@@ -17,8 +17,8 @@
             <a href="#attachments">Attachments <span class='label secondary round cmfive__tab-label cmfive__count-attachment'></span></a>
 
             <?php if ($task->getCanINotify()):?><a href="#notification">Notifications</a><?php endif;?>
-			<?php 
-				$tab_headers = $w->callHook('core_template', 'tab_headers', $task); 
+			<?php
+				$tab_headers = $w->callHook('core_template', 'tab_headers', $task);
 				if (!empty($tab_headers)) {
 					echo implode('', $tab_headers);
 				}
@@ -29,24 +29,24 @@
         <div id="details" class="clearfix">
             <div class="row-fluid clearfix">
                 <div class="row-fluid columns">
-                    <?php 
+                    <?php
 						if (!empty($task->id)) {
 							echo $w->Favorite->getFavoriteButton($task);
 							// Note the extra buttons only show when the task_type object
 							$tasktypeobject = $task->getTaskTypeObject();
-							echo !empty($tasktypeobject) ? $tasktypeobject->displayExtraButtons($task) : null; 
+							echo !empty($tasktypeobject) ? $tasktypeobject->displayExtraButtons($task) : null;
 							//echo $w->Tag->getTagButton($task->id,"Task")."&nbsp;";
-							echo $task->canDelete($w->Auth->user()) ? Html::b($task->w->localUrl('/task/delete/' . $task->id), "Delete", "Are you sure you want to delete this task?", null, false, 'warning') : ''; 
+							echo $task->canDelete($w->Auth->user()) ? Html::b($task->w->localUrl('/task/delete/' . $task->id), "Delete", "Are you sure you want to delete this task?", null, false, 'warning') : '';
 							echo Html::b($task->w->localURL('task/duplicatetask/' . $task->id), "Duplicate Task");
 							echo Html::b($task->w->localURL('/task/edit/?gid=' . $task->task_group_id), "New Task");
 							echo Html::box("/task-group/moveTaskgroup/" . $task->id, "Move to Taskgroup", true, false, null, null, null, null, 'secondary');
-							
+
 							// Extra buttons for task
 							$buttons = $w->callHook("task", "extra_buttons", $task);
 							if (!empty($buttons) && is_array($buttons)) {
 								echo implode('', $buttons);
 							}
-							
+
 							echo $w->partial('listTags', ['object' => $task], 'tag');
 						}
 					?>
@@ -80,17 +80,27 @@
                                         </tbody>
                                     </table>
                                 </div>
-                                
-						
+
+
 								<?php $additional_details = $w->callHook('task', 'additional_details', $task);
 								if (!is_null($additional_details) && is_array($additional_details)) {
-									$additional_details = array_values(array_filter($additional_details ? : []));
-									if (count($additional_details) > 0) : ?>
+                                    //$additional_details = array_values(array_filter($additional_details ? : []));
+                                    $additional_details_flattened = [];
+                                    foreach ($additional_details as $module_details) {
+                                        if (isset($module_details[0]) && !is_array($module_details[0])) {
+                                            $additional_details_flattened[] = $module_details;
+                                        } else {
+                                            foreach($module_details as $details) {
+                                                $additional_details_flattened[] = $details;
+                                            }
+                                        }
+                                    }
+									if (!empty($additional_details_flattened)) : ?>
 										<div class="row-fluid clearfix panel">
 											<table class="small-12 columns">
 												<tbody>
 													<tr><td class="section" colspan="2">Additional Details</td></tr>
-													<?php foreach($additional_details as $additional_detail) : ?>
+													<?php foreach($additional_details_flattened as $additional_detail) : ?>
 														<tr><td><?php echo $additional_detail[0]; ?></td><td><?php echo $additional_detail[1]; ?></td></tr>
 													<?php endforeach; ?>
 												</tbody>
@@ -130,7 +140,7 @@
             </div>
             <?php endif;?>
 			<?php
-				$tab_content = $w->callHook('core_template', 'tab_content', ['object' => $task, 'redirect_url' => '/task/edit/' . $task->id]); 
+				$tab_content = $w->callHook('core_template', 'tab_content', ['object' => $task, 'redirect_url' => '/task/edit/' . $task->id]);
 				if (!empty($tab_content)) {
 					echo implode('', $tab_content);
 				}
@@ -150,16 +160,16 @@
         getTaskGroupData(<?php echo !empty($task->task_group_id) ? $task->task_group_id : $w->request('gid'); ?>);
         $("#task_type").trigger("change");
     });
-    
+
     function selectAutocompleteCallback(event, ui) {
     	if (event.target.id == "acp_task_group_id") {
             $("#formfields").hide().html("");
         	$("#tasktext").hide().html("");
-        
+
 	        getTaskGroupData(ui.item.id);
     	}
     }
-    
+
     function getTaskGroupData(taskgroup_id) {
         $.getJSON("/task/taskAjaxSelectbyTaskGroup/" + taskgroup_id + "/<?php echo !empty($task->id) ? $task->id : null; ?>",
             function(result) {
@@ -173,17 +183,17 @@
                 $('#tasktext').html(result[3]);
                 $("#tasktext").fadeIn();
 
-                bindTypeChangeEvent();  
+                bindTypeChangeEvent();
             }
         );
     }
-    
+
     function bindTypeChangeEvent() {
         $("#task_type").on("change", function(event) {
             // Reset custom fields
             $("#formfields").fadeOut();
             $("#formfields").html("");
-            
+
             // Get/check for extra form fields
             $.getJSON("/task/ajaxGetFieldForm/" + $("#task_type").val() + "/" + $("#task_group_id").val() + "/<?php echo !empty($task->id) ? $task->id : ''; ?>",
                 function(result) {
@@ -207,13 +217,13 @@
             <?php endif; ?>
         });
     }
-    
-    // Submit both forms 
+
+    // Submit both forms
     $("#edit_form, #form_fields_form").submit(function() {
         for(var instanceName in CKEDITOR.instances) {
             CKEDITOR.instances[instanceName].updateElement();
         }
-        
+
         toggleModalLoading();
         var edit_form = {};
         var extras_form = {};
@@ -223,14 +233,14 @@
         $.each($('#form_fields_form').serializeArray(), function(){
             extras_form[this.name] = this.value;
         });
-        
+
         var action = $(this).attr('action');
         $.ajax({
             url  : action,
             type : 'POST',
             data : {
-                '<?php echo \CSRF::getTokenId(); ?>': '<?php echo \CSRF::getTokenValue(); ?>', 
-                'edit': edit_form, 
+                '<?php echo \CSRF::getTokenId(); ?>': '<?php echo \CSRF::getTokenValue(); ?>',
+                'edit': edit_form,
                 'extra': extras_form
             },
             complete: function(response) {
@@ -244,5 +254,5 @@
         });
         return false;
     });
-    
+
 </script>

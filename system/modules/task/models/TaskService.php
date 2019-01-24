@@ -229,8 +229,12 @@ class TaskService extends DbService {
     }
 
     // get all active task groups from the database
-    function getTaskGroups() {
-        return $this->getObjects("TaskGroup", array("is_active" => 1, "is_deleted" => 0));
+    function getTaskGroups($include_inactive = false) {
+        $where = ["is_deleted" => 0];
+        if (!$include_inactive) {
+            $where['is_active'] = 1;
+        }
+        return $this->getObjects("TaskGroup", $where);
     }
 
     // get all task groups from the database of given task group type
@@ -680,8 +684,7 @@ class TaskService extends DbService {
         $task->dt_due = $dt_due;
         $task->first_assignee_id = $first_assignee_id;
         $task->assignee_id = $first_assignee_id;
-        $task->dt_assigned = time();
-        $task->dt_first_assigned = time();
+
         $task->insert();
         return $task;
     }
@@ -901,6 +904,7 @@ class TaskService extends DbService {
         $nav = $nav ? $nav : array();
 
         if ($w->Auth->loggedIn()) {
+            $w->menuLink("task/index", "Task Dashboard", $nav);
             $w->menuLink("task/edit", "New Task", $nav);
 //          $w->menuLink("task/index", "Task Dashboard", $nav);
             $w->menuLink("task/tasklist", "Task List", $nav);

@@ -1,8 +1,7 @@
 <?php
 
 Config::set('file', [
-	'version' => '0.8.0',
-    'active' => true,
+	'active' => true,
     'path' => 'system/modules',
     'fileroot' => dirname(__FILE__) . '/../uploads',
     'topmenu' => false,
@@ -23,14 +22,16 @@ Config::set('file', [
 		],
 		's3' => [
 			'active' => false,
-			'key' => '',
-			'secret' => '',
+			'region' => 'ap-southeast-2',
+			'version' => '2006-03-01',
+			'credentials' => [
+				'key' => '',
+				'secret' => ''
+			],
 			'bucket' => '',
-			'options' => []
-		],
-		'dropbox' => [
-			'active' => false,
-			'app_id' => ''
+			'options' => [
+				'create' => true
+			]
 		]
 	]
 ]);

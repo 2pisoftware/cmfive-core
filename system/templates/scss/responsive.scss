@@ -1,0 +1,83 @@
+$tablet-width: 40.063em;
+$desktop-width: 1024px;
+
+@mixin phone {
+	@media (max-width: #{$tablet-width - 1px}) {
+		@content;
+	}
+}
+
+@mixin tablet-down {
+	@media (max-width: #{$desktop-width - 1px}) {
+		@content;
+	}
+}
+
+@mixin tablet {
+	@media (min-width: #{$tablet-width}) and (max-width: #{$desktop-width - 1px}) {
+		@content;
+	}
+}
+
+@mixin tablet-up {
+	@media (min-width: #{$tablet-width}) {
+		@content;
+	}
+}
+
+@mixin desktop {
+	@media (min-width: #{$desktop-width}) {
+		@content;
+	}
+}
+
+@mixin phone-or-desktop {
+	@media (max-width: #{$tablet-width - 1px}), (min-width: #{$desktop-width}) {
+		@content;
+	}
+}
+
+// A site point article {https://www.sitepoint.com/sass-mixin-media-merging/} gave me the code below
+// But it has caused recursion issues somehow, might still be useful
+
+$breakpoints: (
+  'small': (max-width: #{$tablet-width - 1px}),
+  'medium-down': (max-width: $desktop-width),
+  'medium': (min-width: $tablet-width, max-width: $desktop-width),
+  'medium-up': (min-width: $tablet-width),
+  'large': (min-width: $desktop-width),
+);
+
+/// Media query merger
+/// Create a single media condition out of a map of queries
+/// @param {Map} $queries - Map of media queries
+@mixin media($queries) {
+	@if length($queries) == 0 {
+		@content;
+	} @else {
+		$first-key: nth(map-keys($queries), 1);
+
+		@media ($first-key: map-get($queries, $first-key)) {
+			$queries: map-remove($queries, $first-key);
+
+			@include media($queries) {
+				@content;
+			}
+		}
+	}
+}
+
+@mixin respond-to($breakpoint) {
+	// Get the query map for $breakpoints map
+	$queries: map-get($breakpoints, $breakpoint);
+
+	// If there is no query called $breakpoint in map, throw an error
+	@if not $queries {
+		@error "No value could be retrieved from `#{$breakpoint}`. Please make sure it is defined in `$breakpoints` map.";
+	}
+
+	// Include the media mixin with $queries
+	@include media($queries) {
+		@content;
+	}
+}

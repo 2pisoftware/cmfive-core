@@ -1,0 +1,68 @@
+
+$primary-button-colour: #159cd4;
+$success-button-colour: #59bc3b;
+$secondary-button-colour: #95acbc;
+$info-button-colour: #68c2cd;
+$alert-button-colour: #d12229;
+$warning-button-colour: #ff7a13;
+
+$button-text-colour: #fffefa;
+
+div.button-bar {
+	padding: 20px 0px 0px;
+
+	button.button {
+		color: $button-text-colour;
+		background-color: $primary-button-colour;
+
+		&:hover {
+			color: $button-text-colour;
+			background-color: darken($primary-button-colour, 20%);
+		}
+
+		// Success buttons
+		&.success {
+			background-color: $success-button-colour;
+
+			&:hover {
+				background-color: darken($success-button-colour, 20%);
+			}
+		}
+
+		// Secondary buttons
+		&.secondary {
+			background-color: $secondary-button-colour;
+
+			&:hover {
+				background-color: darken($secondary-button-colour, 20%);
+			}
+		}
+
+		// Info buttons
+		&.info {
+			background-color: $info-button-colour;
+
+			&:hover {
+				background-color: darken($info-button-colour, 20%);
+			}
+		}
+
+		// Alert buttons
+		&.alert {
+			background-color: $alert-button-colour;
+
+			&:hover {
+				background-color: darken($alert-button-colour, 20%);
+			}
+		}
+
+		// Warning buttons
+		&.warning {
+			background-color: $warning-button-colour;
+
+			&:hover {
+				background-color: darken($warning-button-colour, 20%);
+			}
+		}
+	}
+}
