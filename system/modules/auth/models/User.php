@@ -35,6 +35,14 @@ class User extends DbObject {
     	return $this->password == $this->encryptPassword($password);
     }
 
+    /**
+     * A static array of string arrays to be used for validaiton when creating forms with a User in it.
+     *
+     * @var array[array[string]]
+     */
+	public static $_validation = [
+		'login' => ['required']];
+
 	public function getLanguage() {
 		return $this->$language;
 	}
