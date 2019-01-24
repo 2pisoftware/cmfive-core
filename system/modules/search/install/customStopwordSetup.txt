@@ -10,8 +10,10 @@ ft_stopword_file = ""
 
 # ft_stopword_file = ""
 
-
+-> Save the file
 -> Restart MySQL server
 -> Repair Search Table by querying the following 
 
 REPAIR TABLE object_index QUICK;
+
+-> There are now no default stopwords!
