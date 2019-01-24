@@ -9,3 +9,4 @@ ft_stopword_file = ""
 
 # ft_stopword_file = ""
 
+-> Then restart MySQL and voila
