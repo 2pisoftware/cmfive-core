@@ -120,7 +120,7 @@ class ReportService extends DbService {
 
     // return a feed given its key
     function getFeedInfobyKey($key) {
-        return $this->getObject("ReportFeed", array("key" => $key, "is_deleted" => 0));
+        return $this->getObject("ReportFeed", array("report_key" => $key, "is_deleted" => 0));
     }
 
     // return list of APPROVED and NOT DELETED report IDs for a given a user ID and a where clause
