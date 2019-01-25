@@ -35,6 +35,11 @@ class Task extends DbObject {
         "task_type" => array('required')
     );
     public static $_db_table = "task";
+
+	/**
+	 * Used by the task_core_dbobject_after_insert_task hook to skip sending notifications if true
+	 * @var boolean
+	 */
     public $_skip_creation_notification;
 
     public function getSubscribers() {
