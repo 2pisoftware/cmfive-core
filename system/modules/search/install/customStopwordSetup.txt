@@ -3,23 +3,13 @@
 
 -> In the mysql config file, under the [mysqld] heading add the following lines
 
-ft_min_word_len=1
-ft_stopword_file = ""
-
-// this will disable all mysql default stopwords. To re-enable the default stopwords comment the lines out by adding a hash as seen below. 
-
-# ft_stopword_file = ""
-# ft_min_word_len=1
+innodb_ft_enable_stopword = cmfive/my_stopwords
+innodb_ft_server_stopword_table = 'cmfive/my_stopwords'
 
 -> Save the file
 -> Restart MySQL server
--> Then check your table engine under the operations tab after selecting the object_index table
--> If your table engine is InnoDB you will have to change it to MyISAM by querying the following
 
-ALTER TABLE object_index ENGINE = MyISAM;
+-> Then run the following Quereys
+ALTER TABLE object_index DROP INDEX content; CREATE FULLTEXT INDEX content ON object_index(content);
 
--> After your table is confirmed to be using the MyISAM engine, repair Search Table by querying the following 
-
-REPAIR TABLE object_index QUICK;
-
--> There are now no default stopwords!
+-> There default stopword table has now been overidden!
