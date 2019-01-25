@@ -12,4 +12,4 @@ innodb_ft_server_stopword_table = 'cmfive/my_stopwords'
 -> Then run the following Quereys
 ALTER TABLE object_index DROP INDEX content; CREATE FULLTEXT INDEX content ON object_index(content);
 
--> There default stopword table has now been overidden!
+-> The default stopword table has now been overidden!
