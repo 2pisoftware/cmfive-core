@@ -14,7 +14,7 @@ class CmfiveTaskModule extends \Codeception\Module
         if (!empty($data['can_assign'])) $fields['select:can_assign']=$data['can_assign'];
         if (!empty($data['can_view'])) $fields['select:can_view']=$data['can_view'];
         if (!empty($data['can_create'])) $fields['select:can_create']=$data['can_create'];
-        if (!empty($data['is_active'])) $fields['select:is_active']=$data['is_active'];
+        //if (!empty($data['is_active'])) $fields['select:is_active']=$data['is_active'];
         if (!empty($data['description'])) $fields['rte:description']=$data['description'];
         if (!empty($data['default_assignee_id'])) $fields['select:default_assignee_id']=$data['default_assignee_id'];
         $I->fillForm($fields);
@@ -33,7 +33,7 @@ class CmfiveTaskModule extends \Codeception\Module
         if (!empty($data['can_assign'])) $fields['select:can_assign']=$data['can_assign'];
         if (!empty($data['can_view'])) $fields['select:can_view']=$data['can_view'];
         if (!empty($data['can_create'])) $fields['select:can_create']=$data['can_create'];
-        if (!empty($data['is_active'])) $fields['select:is_active']=$data['is_active'];
+        //if (!empty($data['is_active'])) $fields['select:is_active']=$data['is_active'];
         if (!empty($data['description'])) $fields['rte:description']=$data['description'];
         if (!empty($data['default_assignee_id'])) $fields['select:default_assignee_id']=$data['default_assignee_id'];
         $I->fillForm($fields);

@@ -26,6 +26,31 @@ class CmfiveReportModule extends \Codeception\Module
 		$I->click("//div[@id='code']/form/div/button"); 
 	}
 
+	public function attachTemplate($I, $name, $template) { 
+		$I->clickCmfiveNavbar($I, 'Report', 'Report Dashboard');
+		$I->wait(2);
+		$rowIndex = $I->findTableRowMatching(1,$name);
+		$I->click('Edit', 'tbody tr:nth-child('.$rowIndex . ')');
+		$I->wait(2);
+		$I->click("//a[@href='#templates' and text()='Templates']");
+		$I->wait(1);
+		$I->click('Add Template');
+		$I->wait(1);
+		$I->selectOption("#template_id",$template);  
+		$I->selectOption("#type",'HTML'); 
+		 $I->click('Save'); 
+	}
+
+	public function runReportTemplate($I, $name, $template) { 
+		$I->clickCmfiveNavbar($I, 'Report', 'Report Dashboard');
+		$I->wait(2);
+		$rowIndex = $I->findTableRowMatching(1,$name);
+		$I->click($name, 'tbody tr:nth-child('.$rowIndex . ')');
+		$I->wait(2); 
+		$I->selectOption("#template",$template);  
+		 $I->click('Display Report'); 
+	}
+
 	public function requestReport($I, $name) {
 		$I->clickCmfiveNavbar($I, 'Report', 'Report Dashboard');
 		$I->wait(1);
@@ -60,6 +85,20 @@ class CmfiveReportModule extends \Codeception\Module
 		$I->click('Test Connection');
 		$I->wait(2);
 		$I->see("Connected to DB");
+		$I->click("//a[@class='close-reveal-modal']");
+	}
+
+	public function linkReportConnection($I,$report) {
+		$I->clickCmfiveNavbar($I, 'Report', 'Report Dashboard');
+		$I->wait(2);
+		$rowIndex = $I->findTableRowMatching(1,$report);
+		$I->click('Edit', 'tbody tr:nth-child('.$rowIndex . ')');
+		$I->wait(2);
+		$dbs=$I->getDB_Settings(); 
+		$I->selectOption("#report_connection_id","mysql:"
+					.$dbs['DB_Database']."@".$dbs['DB_Hostname']);   
+		 $I->click('Save'); 
+
 	}
 
 	public function getFeedURL($I,  $feed) {

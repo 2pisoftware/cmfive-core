@@ -124,4 +124,31 @@ class CmfiveAdminModule extends \Codeception\Module
         }
         $I->click('Save');
     }
+
+    public function createTemplate ($I,$title,$module,$category,$code) { 
+		$I->clickCmfiveNavbar($I, 'Admin', 'Templates');
+		$I->click("Add Template");
+		$I->fillField('#title', $title);
+		$I->click('#is_active');
+		$I->fillField('#module', $module);
+        $I->fillField('#category', $category);
+        $I->click('Save');
+        $I->click('Template');
+        $I->wait(2);
+        $I->fillField('#template_title', $title);
+        $I->executeJS("$('.CodeMirror')[0].CodeMirror.setValue(\"".$code."\")");
+        $I->wait(2);
+		$I->click("//div[@id='template']//button[@type='submit']");
+    }
+    
+    public function demoTemplate($I,$title) { 
+        
+        $I->clickCmfiveNavbar($I, 'Admin', 'Templates');
+        $I->wait(1);
+		$rowIndex = $I->findTableRowMatching(1,$title);
+        $I->click('Edit', 'tbody tr:nth-child('.$rowIndex . ')');
+        $I->wait(1);
+        $I->click("Test Output");
+    }
+
 }
