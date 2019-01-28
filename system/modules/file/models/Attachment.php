@@ -24,6 +24,7 @@ class Attachment extends DbObject {
 	public $is_deleted; // tinyint 0/1
 	public $type_code; // this is a type of attachment, eg. Receipt of Deposit, PO Variation, Sitephoto, etc.
 	public $adapter;
+	public $_searchable;
 
 	/**
 	 * DbObject::insert() override to set the mimetype, path and to call the
@@ -31,6 +32,34 @@ class Attachment extends DbObject {
 	 * 
 	 * @param <bool> $force_validation
 	 */
+	function shouldAddToSearch() {
+		//TO ADD: If task this is attached to is active return true
+		return true;
+	}
+	
+	function printSearchTitle() {
+		if (!empty($this->title))
+		{
+			$buf = $this->title;
+		} else {
+			$buf = "No Title For Attachment";
+		}
+        return $buf;
+	}
+
+	function printSearchListing() {
+        $pt = $this->parent_table->name;
+		$pid = $this->parent_id;
+		$buf = $pt;
+		$buf .= $pid;
+
+        return $buf;
+    }
+	
+	function printSearchUrl() {
+        return "file/edit/" . $this->id;
+    }
+
 	function insert($force_validation = false) {
 		// Get mimetype
 		if (empty($this->mimetype)) {
