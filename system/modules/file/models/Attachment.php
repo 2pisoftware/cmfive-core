@@ -47,18 +47,18 @@ class Attachment extends DbObject {
         return $buf;
 	}
 
-	function printSearchListing() {
-        $pt = $this->parent_table->name;
-		$pid = $this->parent_id;
-		$buf = $pt;
-		$buf .= $pid;
+	// function printSearchListing() {
+    //     $pt = $this->parent_table->name;
+	// 	$pid = $this->parent_id;
+	// 	$buf = $pt;
+	// 	$buf .= $pid;
 
-        return $buf;
-    }
+    //     return $buf;
+    // }
 	
-	function printSearchUrl() {
-        return "file/edit/" . $this->id;
-    }
+	// function printSearchUrl() {
+    //     return "file/edit/" . $this->id;
+    // }
 
 	function insert($force_validation = false) {
 		// Get mimetype
