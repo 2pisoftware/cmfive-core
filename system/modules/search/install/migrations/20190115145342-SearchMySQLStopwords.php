@@ -5,13 +5,13 @@ class SearchMySQLStopwords extends CmfiveMigration {
 	public function up() {
 		// UP
 
-		if (!$this->hasTable('my_stopwords')) {
-			$this->table('my_stopwords', [
+		if (!$this->hasTable('custom_stopwords_override')) {
+			$this->table('custom_stopwords_override', [
 						'id' => false,
 					])
 					->addColumn('value', 'string')
 					->create();
-				$query = "INSERT INTO my_stopwords(value) VALUE ('dgiwdgwidwdiv2');";
+				$query = "INSERT INTO custom_stopwords_override(value) VALUE ('dgiwdgwidwdiv2');";
 				$this->w->db->query($query)->execute();
 		}
 
@@ -20,7 +20,7 @@ class SearchMySQLStopwords extends CmfiveMigration {
 
 	public function down() {
 		// DOWN
-		$this->hasTable('my_stopwords') ? $this->dropTable('my_stopwords') : null;
+		$this->hasTable('custom_stopwords_override') ? $this->dropTable('custom_stopwords_override') : null;
 	}
 
 	public function postText()
