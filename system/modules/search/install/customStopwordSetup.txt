@@ -4,7 +4,6 @@
 -> In the mysql config file, under the [mysqld] heading add the following lines, replacing db_name with your database name. Custom stopwords overide is the name of the table created from the migration.
 
 innodb_ft_enable_stopword = db_name/custom_stopwords_override
-innodb_ft_server_stopword_table = db_name/custom_stopwords_override
 
 -> Save the file
 -> Restart MySQL server
