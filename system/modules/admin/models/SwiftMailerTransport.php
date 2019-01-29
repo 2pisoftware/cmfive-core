@@ -2,23 +2,23 @@
 
 /**
  * Transport implementation for the swiftmailer library
- * 
+ *
  * @author Adam Buckley <adam@2pisoftware.com>
  */
 class SwiftMailerTransport implements GenericTransport {
 	private $w;
 	private $transport;
-	
+
 	public function __construct($w, $layer) {
 		$this->w = &$w;
 		$this->transport = $this->getTransport($layer);
 	}
-	
+
 	public function getTransport($layer) {
 		if (!empty($this->transport)) {
 			return $this->transport;
 		}
-		
+
 		switch(strtolower($layer)) {
 			case "smtp":
 			case "swiftmailer":
@@ -49,24 +49,24 @@ class SwiftMailerTransport implements GenericTransport {
 				}
 			break;
 			default:
-				
+
 		}
 	}
 
-	public function send($to, $replyto, $subject, $body, $cc = null, $bcc = null, $attachments = array()) {
+	public function send($to, $replyto, $subject, $body, $cc = null, $bcc = null, $attachments = array(), $headers = []) {
 		if (!empty($to) && strlen($to) > 0) {
 			try {
 				if ($this->transport === NULL) {
 					$this->w->Log->error("Could not send mail to {$to} from {$replyto} about {$subject} no email transport defined!");
 					return;
 				}
-				
+
 				// if (filter_var($to, FILTER_VALIDATE_EMAIL) === false) {
 				// 	$this->w->Log->error("Email address: {$to} is invalid");
 				// 	return;
 				// }
-				
-				
+
+
 				$mailer = null;
 				if (method_exists('Swift_Mailer', 'newInstance')) {
 					$mailer = Swift_Mailer::newInstance($this->transport);
@@ -78,7 +78,7 @@ class SwiftMailerTransport implements GenericTransport {
 				if (strpos($to, ",") !== FALSE) {
 					$to = array_map("trim", explode(',', $to));
 				}
-				
+
 				// Create message
 				$message = null;
 				if (method_exists('Swift_Message', 'newInstance')) {
@@ -86,11 +86,11 @@ class SwiftMailerTransport implements GenericTransport {
 				} else {
 					$message = new Swift_Message($subject);
 				}
-				
+
 				$message->setFrom($replyto)
 						->setTo($to)->setBody($body)
 						->addPart($body, 'text/html');
-				
+
 				if (is_array($replyto)) {
 					$message->setReplyTo($replyto);
 				} else {
@@ -118,6 +118,13 @@ class SwiftMailerTransport implements GenericTransport {
 					}
 				}
 
+				// Set any extra headers
+				if (!empty($headers)) {
+					foreach ($headers as $header => $value) {
+						$this->w->Log->setLogger(MailService::$logger)->info("Added header {$header} {$value}");
+						$message->getHeaders()->addTextHeader($header, $value);
+					}
+				}
 				$this->w->Log->setLogger(MailService::$logger)->info("Sending email to {$to} from {$replyto} with {$subject} (" . count($attachments) . " attachments)");
 				$mailer_status = $mailer->send($message, $failures);
 				if (!empty($failures)) {

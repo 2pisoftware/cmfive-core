@@ -22,8 +22,8 @@ function edit_GET(Web $w) {
 			array("Processor Class", "select", "processor_class", $processor->module.'.'.$processor->class, $processor_list)
 		)
 	));
-
-	$w->out(Html::multiColForm($form, "/channels-processor/edit/{$processor_id}", "POST", "Save",  null, null, null, '_self', true, ['name' => ['required'], 'channel_id' => ['required'], 'processor_class' => ['required']]));
+	$validation = ['name' => ['required'], 'channel_id' => ['required'], 'processor_class' => ['required']];
+	$w->out(Html::multiColForm($form, "/channels-processor/edit/{$processor_id}", "POST", "Save",  null, null, null, '_self', true, $validation));
 }
 
 function edit_POST(Web $w) {

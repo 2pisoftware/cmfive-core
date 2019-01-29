@@ -51,139 +51,40 @@ function task_timelog_type_options_for_Task(Web $w, $object) {
  *
  *
  * @param Web $w
- * @param Task $object
+ * @param Task $task
  */
-function task_core_dbobject_after_insert_Task(Web $w, $object) {
+function task_core_dbobject_after_insert_Task(Web $w, $task) {
     $w->Log->setLogger("TASK")->debug("task_core_dbobject_after_insert_Task");
-
-    $subject = $object->getHumanReadableAttributeName(TASK_NOTIFICATION_TASK_CREATION) . "[" . $object->id . "]: " . $object->title;
-    $users_to_notify = $w->Task->getNotifyUsersForTask($object, TASK_NOTIFICATION_TASK_CREATION);
-
-    $w->Notification->sendToAllWithCallback($subject, "task", "notification_email", $w->Auth->user(), $users_to_notify, function($user, $existing_template_data) use ($object, $w) {
-    	$template_data = $existing_template_data;
-		$template_data['status']		= "[{$object->id}] New task created";
-		$template_data['footer']		= $object->description;
-		$template_data['action_url']	= $w->localUrl('/task/edit/' . $object->id);
-		$template_data['logo_url']		= Config::get('main.application_logo');
-
-		$w->Log->debug("Logo: " . $template_data['logo_url']);
-
-		$template_data['fields'] = [
-			"Assigned to"	=> !empty($object->assignee_id) ? $object->getAssignee()->getFullName() : '',
-			"Type"			=> $object->getTypeTitle(),
-			"Title"			=> $object->title,
-			"Due"			=> !empty($object->dt_due) ? date('d-m-Y', strtotime(str_replace('/', '-', $object->dt_due))) : '',
-			"Status"		=> $object->status,
-			"Priority"		=> $object->isUrgent() ? "<b style='color: orange;'>{$object->priority}</b>" : $object->priority
-		];
-
-		if ($user->is_external) {
-			$template_data['fields']['Due'] = '';
-			$template_data['fields']['Priority'] = '';
-			$template_data['fields']['Status'] = '';
-		}
-
-		$template_data['can_view_task'] = $user->is_external == 0;
-
-		// Get additional details
-		if ($user->is_external == 0) {
-			$additional_details = $w->Task->getNotificationAdditionalDetails($object);
-			if (!empty($additional_details)) {
-				$template_data['footer'] .= $additional_details;
-			}
-		}
-
-		if (!empty($object->assignee_id)) {
-			if ($user->id == $object->assignee_id) {
-				$template_data['fields']["Assigned to"] = "You (" . $object->getAssignee()->getFullName() . ")";
-			} else {
-				$template_data['fields']["Assigned to"] = !empty($object->assignee_id) ? $object->getAssignee()->getFullName() : '';
-			}
-		} else {
-			$template_data['fields']["Assigned to"] = "No one";
-		}
-
-		return new NotificationCallback($user, $template_data, $w->File->getAttachmentsFileList($object));
-    });
+	if (!$task->_skip_creation_notification) {
+		$w->Task->sendCreationNotificationForTask($task);
+	} else {
+		$w->Log->setLogger("TASK")->debug("Task creation notification skipped because _skip_creation_notification was set on the task object");
+	}
 }
 
 /**
- * Hook to notify relevant people when a task has been update
+ * Hook to notify relevant people when a task has been updated
  *
  * @param Web $w
- * @param Task $object
+ * @param Task $task
  */
-function task_core_dbobject_after_update_Task(Web $w, $object) {
+function task_core_dbobject_after_update_Task(Web $w, $task) {
     $w->Log->setLogger("TASK")->debug("task_core_dbobject_after_update_Task");
-
-    $subject = "Task " . $object->title . " [" . $object->id . "][" . $object->status . "] - " . $object->getHumanReadableAttributeName(TASK_NOTIFICATION_TASK_DETAILS);
-    $users_to_notify = $w->Task->getNotifyUsersForTask($object, TASK_NOTIFICATION_TASK_DETAILS);
+    $subject = "Task " . $task->title . " [" . $task->id . "][" . $task->status . "] - " . $task->getHumanReadableAttributeName(TASK_NOTIFICATION_TASK_DETAILS);
+    $users_to_notify = $w->Task->getNotifyUsersForTask($task, TASK_NOTIFICATION_TASK_DETAILS);
 
 	// Only send emails where the status has changed
-	if ($object->status == $object->__old['status']) {
+	if ($task->status == $task->__old['status']) {
 		return;
 	}
 
-    $w->Notification->sendToAllWithCallback($subject, "task", "notification_email", $w->Auth->user(), $users_to_notify, function($user, $existing_template_data) use ($object, $w) {
+    $w->Notification->sendToAllWithCallback($subject, "task", "notification_email", $w->Auth->user(), $users_to_notify, function($user, $existing_template_data) use ($task, $w) {
 		if ($user->is_external) {
 			return false;
 		}
 
     	$template_data = $existing_template_data;
-		$template_data['status']		= "[{$object->id}] Status change";
-		$template_data['footer']		= $object->description;
-		$template_data['action_url']	= $w->localUrl('/task/edit/' . $object->id);
-		$template_data['logo_url']		= defaultVal(Config::get('main.application_logo'), '');
-
-		$template_data['fields'] = [
-			"Assigned to"	=> !empty($object->assignee_id) ? $object->getAssignee()->getFullName() : '',
-			"Type"			=> $object->getTypeTitle(),
-			"Title"			=> $object->title,
-			"Due"			=> !empty($object->dt_due) ? date('d-m-Y', strtotime(str_replace('/', '-', $object->dt_due))) : '',
-			"Status"		=> '<b>' . $object->__old['status'] . ' => ' . $object->status . '</b>',
-			"Priority"		=> $object->isUrgent() ? "<b style='color: orange;'>{$object->priority}</b>" : $object->priority
-		];
-
-		$template_data['can_view_task'] = $user->is_external == 0;
-
-		// Get additional details
-		if ($user->is_external == 0) {
-			$additional_details = $w->Task->getNotificationAdditionalDetails($object);
-			if (!empty($additional_details)) {
-				$template_data['footer'] .= $additional_details;
-			}
-		}
-
-		if (!empty($object->assignee_id)) {
-			if ($user->id == $object->assignee_id) {
-				$template_data['fields']["Assigned to"] = "You (" . $object->getAssignee()->getFullName() . ")";
-			} else {
-				$template_data['fields']["Assigned to"] = !empty($object->assignee_id) ? $object->getAssignee()->getFullName() : '';
-			}
-		} else {
-			$template_data['fields']["Assigned to"] = "No one";
-		}
-
-		return new NotificationCallback($user, $template_data, $w->File->getAttachmentsFileList($object));
-    });
-}
-
-function task_attachment_attachment_added_task(Web $w, $object) {
-    $w->Log->setLogger("TASK")->debug("task_attachment_attachment_added_task");
-
-    $task = $w->Task->getTask($object->parent_id);
-
-    if (empty($task->id)) {
-        return;
-    }
-
-    $users_to_notify = $w->Task->getNotifyUsersForTask($task, TASK_NOTIFICATION_TASK_DOCUMENTS);
-    $subject = "Task - " . $task->title . ' [' . $task->id . ']: ' . $object->getHumanReadableAttributeName(TASK_NOTIFICATION_TASK_DOCUMENTS);
-
-    $w->Notification->sendToAllWithCallback($subject, "task", "notification_email", $w->Auth->user(), $users_to_notify, function($user, $existing_template_data) use ($task, $w) {
-
-    	$template_data = $existing_template_data;
-		$template_data['status']		= "[{$task->id}] New attachment";
+		$template_data['status']		= "[{$task->id}] Status change";
 		$template_data['footer']		= $task->description;
 		$template_data['action_url']	= $w->localUrl('/task/edit/' . $task->id);
 		$template_data['logo_url']		= defaultVal(Config::get('main.application_logo'), '');
@@ -192,16 +93,10 @@ function task_attachment_attachment_added_task(Web $w, $object) {
 			"Assigned to"	=> !empty($task->assignee_id) ? $task->getAssignee()->getFullName() : '',
 			"Type"			=> $task->getTypeTitle(),
 			"Title"			=> $task->title,
-			"Due"			=> !empty($task->dt_due) ? date('d-m-Y', !is_numeric($task->dt_due) ? strtotime(str_replace('/', '-', $task->dt_due)) : $task->dt_due) : '',
-			"Status"		=> $task->status,
+			"Due"			=> !empty($task->dt_due) ? date('d-m-Y', strtotime(str_replace('/', '-', $task->dt_due))) : '',
+			"Status"		=> '<b>' . $task->__old['status'] . ' => ' . $task->status . '</b>',
 			"Priority"		=> $task->isUrgent() ? "<b style='color: orange;'>{$task->priority}</b>" : $task->priority
 		];
-
-		if ($user->is_external) {
-			$template_data['fields']['Due'] = '';
-			$template_data['fields']['Priority'] = '';
-			$template_data['fields']['Status'] = '';
-		}
 
 		$template_data['can_view_task'] = $user->is_external == 0;
 
@@ -222,9 +117,69 @@ function task_attachment_attachment_added_task(Web $w, $object) {
 		} else {
 			$template_data['fields']["Assigned to"] = "No one";
 		}
-
-		return new NotificationCallback($user, $template_data, $w->File->getAttachmentsFileList($task));
+		return new NotificationCallback($user, $template_data, $w->file->getAttachmentsFileList($task, null, ['channel_email_raw']));
     });
+}
+
+function task_attachment_attachment_added_task(Web $w, $attachment) {
+    $w->Log->setLogger("TASK")->debug("task_attachment_attachment_added_task");
+	if (!$attachment->_skip_added_notification) {
+		$task = $w->Task->getTask($attachment->parent_id);
+
+		if (empty($task->id)) {
+		    return;
+		}
+
+		$users_to_notify = $w->Task->getNotifyUsersForTask($task, TASK_NOTIFICATION_TASK_DOCUMENTS);
+		$subject = "Task - " . $task->title . ' [' . $task->id . ']: ' . $attachment->getHumanReadableAttributeName(TASK_NOTIFICATION_TASK_DOCUMENTS);
+
+		$w->Notification->sendToAllWithCallback($subject, "task", "notification_email", $w->Auth->user(), $users_to_notify, function($user, $existing_template_data) use ($task, $w) {
+
+			$template_data = $existing_template_data;
+			$template_data['status']		= "[{$task->id}] New attachment";
+			$template_data['footer']		= $task->description;
+			$template_data['action_url']	= $w->localUrl('/task/edit/' . $task->id);
+			$template_data['logo_url']		= defaultVal(Config::get('main.application_logo'), '');
+
+			$template_data['fields'] = [
+				"Assigned to"	=> !empty($task->assignee_id) ? $task->getAssignee()->getFullName() : '',
+				"Type"			=> $task->getTypeTitle(),
+				"Title"			=> $task->title,
+				"Due"			=> !empty($task->dt_due) ? date('d-m-Y', !is_numeric($task->dt_due) ? strtotime(str_replace('/', '-', $task->dt_due)) : $task->dt_due) : '',
+				"Status"		=> $task->status,
+				"Priority"		=> $task->isUrgent() ? "<b style='color: orange;'>{$task->priority}</b>" : $task->priority
+			];
+
+			if ($user->is_external) {
+				$template_data['fields']['Due'] = '';
+				$template_data['fields']['Priority'] = '';
+				$template_data['fields']['Status'] = '';
+			}
+
+			$template_data['can_view_task'] = $user->is_external == 0;
+
+			// Get additional details
+			if ($user->is_external == 0) {
+				$additional_details = $w->Task->getNotificationAdditionalDetails($task);
+				if (!empty($additional_details)) {
+					$template_data['footer'] .= $additional_details;
+				}
+			}
+
+			if (!empty($task->assignee_id)) {
+				if ($user->id == $task->assignee_id) {
+					$template_data['fields']["Assigned to"] = "You (" . $task->getAssignee()->getFullName() . ")";
+				} else {
+					$template_data['fields']["Assigned to"] = !empty($task->assignee_id) ? $task->getAssignee()->getFullName() : '';
+				}
+			} else {
+				$template_data['fields']["Assigned to"] = "No one";
+			}
+			return new NotificationCallback($user, $template_data, $w->file->getAttachmentsFileList($task, null, ['channel_email_raw']));
+		});
+	} else {
+		$w->Log->setLogger("TASK")->debug("Task Attachment added notification skipped because _skip_added_notification was set on the attachment object");
+	}
 }
 
 // Admin user remove hook
@@ -322,8 +277,7 @@ function task_comment_send_notification_recipients_task(Web $w, $params) {
 		} else {
 			$template_data['fields']["Assigned to"] = "No one";
 		}
-
-		return new NotificationCallback($user, $template_data, $w->File->getAttachmentsFileList($task));
+		return new NotificationCallback($user, $template_data, $w->file->getAttachmentsFileList($task, null, ['channel_email_raw']));
     });
 
 }
