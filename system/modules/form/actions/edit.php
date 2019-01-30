@@ -11,8 +11,10 @@ function edit_GET(Web $w) {
 			[["Description", "text", "description", $_form_object->description]],
 		]
 	];
+
+	$validation = ['title' => ['required']];
 	
-	$w->out(Html::multiColForm($form, '/form/edit/' . $_form_object->id));
+	$w->out(Html::multiColForm($form, '/form/edit/' . $_form_object->id, "POST", "Save", null, null, null, "_self", true, $validation));
 }
 
 function edit_POST(Web $w) {

@@ -1,0 +1,67 @@
+// Breadcrumbs
+@import "responsive";
+
+.breadcrumb-container {
+	position: relative;
+
+	@include phone() {
+		display: none !important;
+	}
+
+	ul.cmfive_breadcrumbs {
+		background-color: $secondary-colour;
+		border: none;
+		height: 25px;
+		margin-bottom: 0px;
+
+		li {
+			color: darken(white, 5%);
+			margin-top: -4px;
+
+			&.current {
+				border-bottom: 2px solid $primary_colour;
+				color: white;
+				margin-left: 10px;
+
+				span {
+					margin-left: -15px;
+				}
+			}
+
+			&:last-child {
+				padding-right: 80px;
+			}
+
+			@include phone() {
+				&:last-child {
+					padding-right: 10px;
+				}
+			}
+
+			a {
+				color: white;
+				padding: 0px;
+			}
+		}
+	}
+
+	span.icon-container {
+		background-color: $secondary-colour;
+		position: absolute;
+		top: 0px;
+		right: 0px;
+		padding: 2px 5px;
+
+		a {
+			padding: 20px 10px;
+			color: white;
+		}
+	}
+
+	@include phone() {
+		span.icon-container {
+			display: block;
+			position: relative;
+		}
+	}
+}

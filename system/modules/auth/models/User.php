@@ -27,7 +27,21 @@ class User extends DbObject {
     public $_modifiable;
     public $language;
 	
-    
+    public function checkPassword($password) {
+    	if (empty($this->password) || empty($this->password_salt) || empty($password)) {
+    		return false;
+    	}
+    	
+    	return $this->password == $this->encryptPassword($password);
+    }
+
+    /**
+     * A static array of string arrays to be used for validaiton when creating forms with a User in it.
+     *
+     * @var array[array[string]]
+     */
+	public static $_validation = [
+		'login' => ['required']];
 
 	public function getLanguage() {
 		return $this->$language;
@@ -310,9 +324,9 @@ class User extends DbObject {
 	}
 
 	/**
-	 * encrypt the password using sha1 and a global salt.
+	 * Encrypt the password using sha1 and a user unique salt.
 	 *
-	 * @param unknown $password
+	 * @param string $password
 	 * @return string
 	 */
 	public function encryptPassword($password) {

@@ -9,6 +9,21 @@ class CmfiveMigration extends Phinx\Migration\AbstractMigration {
 	
 	public $w;
 	
+	public function preText()
+	{
+		return null;
+	}
+
+	public function postText()
+	{
+		return null;
+	}
+
+	public function description()
+	{
+		return null;
+	}
+
 	public function setWeb($w) {
 		$this->w = $w;
 		return $this;

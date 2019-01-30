@@ -41,6 +41,21 @@ class AuthService extends DbService {
 		}
 		return $user;
 	}
+    function externalLogin($login, $password, $skip_session = false) {
+        
+        $user = $this->getUserForLogin($login);
+        if (empty($user->id) || ($user->encryptPassword($password) !== $user->password) || $user->is_external == 0) {
+            return null;
+        }
+        
+
+        $user->updateLastLogin();
+        if (!$skip_session) {
+            $this->w->session('user_id', $user->id);
+        }
+        return $user;
+    }
+
     function forceLogin($user_id = null) {
         if (empty($user_id)) {
             return;
@@ -133,6 +148,7 @@ class AuthService extends DbService {
         if ($this->_rest_user) {
             return $this->_rest_user;
         }
+        
         // normal session based authentication
         if ($this->loggedIn()) {
             return $this->getObject("User", $this->w->session('user_id'));
