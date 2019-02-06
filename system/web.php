@@ -526,14 +526,30 @@ class Web {
 		// start the session
 		// $sess = new SessionManager($this);
 		try {
-            session_name(SESSION_NAME);
-            session_start();
-            // Store the sessions locally to avoid permission errors between OS's
+			if ($this->_isPortal === true) {
+				session_name(!empty($domainmodule) ? $domainmodule . '_SID' : 'PORTAL_SID');
+			} else {
+				session_name(SESSION_NAME);
+			}
+			session_start();
+			// Store the sessions locally to avoid permission errors between OS's
             // I.e. on Windows by default tries to save to C:\Temp
             session_save_path(STORAGE_PATH . DIRECTORY_SEPARATOR . "session");
-        } catch (Exception  $e) {
-            $this->Log->info("Error starting session ".$e->getMessage());
-        }
+		} catch (Exception $e) {
+			$this->Log->info("Error starting session " . $e->getMessage());
+		}
+
+		// // start the session
+		// // $sess = new SessionManager($this);
+		// try {
+        //     session_name(SESSION_NAME);
+        //     session_start();
+        //     // Store the sessions locally to avoid permission errors between OS's
+        //     // I.e. on Windows by default tries to save to C:\Temp
+        //     session_save_path(STORAGE_PATH . DIRECTORY_SEPARATOR . "session");
+        // } catch (Exception  $e) {
+        //     $this->Log->info("Error starting session ".$e->getMessage());
+        // }
 		// Initialise the logger (needs to log "info" to include the request data, see LogService __call function)
 		$this->Log->info("info");
 
@@ -599,18 +615,7 @@ class Web {
 			}
 		}
 
-		// start the session
-		// $sess = new SessionManager($this);
-		try {
-			if ($this->_isPortal === true) {
-				session_name(!empty($domainmodule) ? $domainmodule . '_SID' : 'PORTAL_SID');
-			} else {
-				session_name(SESSION_NAME);
-			}
-			session_start();
-		} catch (Exception $e) {
-			$this->Log->info("Error starting session " . $e->getMessage());
-		}
+		
 
 		// Initialise the logger (needs to log "info" to include the request data, see LogService __call function)
 		$this->Log->info("info");

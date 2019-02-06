@@ -4,9 +4,9 @@ class AdminAddMigrationMessageTextColumns extends CmfiveMigration {
 
 	public function up()
 	{
-		$this->addColumnToTable('migration', 'pretext', 'string');
-		$this->addColumnToTable('migration', 'posttext', 'string');
-		$this->addColumnToTable('migration', 'description', 'string');
+		$this->addColumnToTable('migration', 'pretext', 'string', ['null'=>true, 'default'=>null]);
+		$this->addColumnToTable('migration', 'posttext', 'string', ['null'=>true, 'default'=>null]);
+		$this->addColumnToTable('migration', 'description', 'string', ['null'=>true, 'default'=>null]);
 	}
 	public function down() {
 		// DOWN

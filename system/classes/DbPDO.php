@@ -9,7 +9,8 @@
  * @author Adam Buckley <adam@2pisoftware.com>
  */
 class DbPDO extends PDO {
-    private static $table_names = array();
+    // private static $table_names = array();
+    private $table_names = array();
 	
     private static $_QUERY_CLASSNAME = array("InsertQuery", "SelectQuery", "UpdateQuery"); //"PDOStatement", 
 
@@ -46,18 +47,20 @@ class DbPDO extends PDO {
         parent::__construct($url,$config["username"],$config["password"], array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8mb4'"));
         $this->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         
-        // Since you cant bind table names, maybe its a good idea to
-        // load an array of table names to check against? But this is probably
-        // unecessary to do on every call so maybe move it to get()
-        // Setting this to static however should make this array share the memory
-        // heap for this var across all instances
-		$this->getAvailableTables();
+       
 		
         // Instantiate a FluentPDO class and init vars
         $this->fpdo = new FluentPDO($this);
         
         $this->sql = 'getSql'; //$this->getSql();
         $this->config = $config;
+
+         // Since you cant bind table names, maybe its a good idea to
+        // load an array of table names to check against? But this is probably
+        // unecessary to do on every call so maybe move it to get()
+        // Setting this to static however should make this array share the memory
+        // heap for this var across all instances
+		$this->getAvailableTables();
     } 
 
     public function getDatabase() {
@@ -90,17 +93,17 @@ class DbPDO extends PDO {
      * @return Array DbPDO::$table_names all table names
      */
 	public function getAvailableTables() {
-        if ($this->migration_mode || empty(DbPDO::$table_names)) {
-            DbPDO::$table_names = [];
+        if ($this->migration_mode || empty($this->table_names)) {
+            $this->table_names = [];
             $query = 'show tables';
 			if ($this->config['driver'] == 'sqlsrv') {
 				$query = 'select TABLE_NAME from INFORMATION_SCHEMA.TABLES';
 			}
             foreach($this->query($query)->fetchAll(PDO::FETCH_NUM) as $table) {
-                DbPDO::$table_names[] = $table[0];
+                $this->table_names[] = $table[0];
             }
         }
-        return DbPDO::$table_names;
+        return $this->table_names;
 	}
 	
     /**

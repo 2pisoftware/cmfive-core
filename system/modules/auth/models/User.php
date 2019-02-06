@@ -192,7 +192,7 @@ class User extends DbObject {
 					}
 				}
 			}
-			$rows = $this->getObjects("UserRole", array("user_id" => $this->id), true);
+			$rows = $this->getObjects("UserRole", array("user_id" => $this->id));
 
 			if ($rows) {
 				foreach ($rows as $row) {
@@ -226,7 +226,7 @@ class User extends DbObject {
 		if ($this->is_admin) {
 			return true;
 		}
-		if ($this->getRoles()) {
+		if ($this->getRoles(true)) {
 			return in_array($role, $this->_roles);
 		} else {
 			return false;
