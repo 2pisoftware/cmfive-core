@@ -225,16 +225,22 @@ class EmailChannelOption extends DbObject {
                         foreach (new RecursiveIteratorIterator($message) as $part) {
                             try {
                                 $contentType = strtok($part->contentType, ';');
+                                $transferEncoding = $part->getHeader("Content-Transfer-Encoding")->getFieldValue("transferEncoding");
                                 switch ($contentType) {
                                     case "text/plain":
                                         $email->body["plain"] = trim($part->__toString());
+                                        if ($transferEncoding == "base64") {
+                                            $email->body['plain'] = base64_decode($email->body['plain']);
+                                        }
                                         break;
                                     case "text/html":
                                         $email->body["html"] = trim($part->__toString());
+                                        if ($transferEncoding == "base64") {
+                                            $email->body['html'] = base64_decode($email->body['html']);
+                                        }
                                         break;
                                     default:
                                         // Is probably an attachment so just save it
-                                        $transferEncoding = $part->getHeader("Content-Transfer-Encoding")->getFieldValue("transferEncoding");
                                         $content_type_header = $part->getHeader("Content-Type");
                                         // Name is stored under "parameters" in an array
                                         $nameArray = $content_type_header->getParameters();
