@@ -22,7 +22,7 @@
 						<div id="batch_available" class="content active">
 							<center>
 							<?php
-								echo Html::b("/admin-migration/run/all?ignoremessages=false&prevpage=batch", "Install migrations", "Are you sure you want to install migrations?", null, false, "center");
+								echo Html::b("/admin-migration/run/all?ignoremessages=false&prevpage=batch", "Install migrations", "Are you sure you want to install migrations?", null, false, "right");
 							?>
 							</center>
 								<?php 
