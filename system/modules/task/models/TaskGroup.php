@@ -39,6 +39,32 @@ class TaskGroup extends DbObject {
     
     public static $_db_table = "task_group";
 
+    /**
+     * To ensure task_group_notify objects are also copied, set $saveToDb to true
+     * 
+     * @param boolean $saveToDb default false
+     * @return TaskGroup
+     */
+    public function copy($saveToDb = false) {
+        $new_taskgroup = parent::copy($saveToDb);
+
+        if (!!$saveToDb) {
+            foreach($this->getTaskGroupNotify() ? : [] as $notify) {
+                $new_notify = $notify->copy(false);
+                $new_notify->task_group_id = $new_taskgroup->id;
+                $new_notify->insert();
+            }
+        } else {
+            $htis->w->Log->setLogger('TASK')->warn('$saveToDb is false, skipping copy of task group notify objects');
+        }
+
+        return $new_taskgroup;
+    }
+
+    public function getTaskGroupNotify() {
+        return $this->getObjects('TaskGroupNotify', ['task_group_id' => $this->id]);
+    }
+
     public function getMembers() {
         return $this->getObjects("TaskGroupMember", ['task_group_id' => $this->id]);
     }

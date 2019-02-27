@@ -71,9 +71,9 @@ class MigrationService extends DbService {
 								$availableMigrations[$module][$migration_path . DS . $file] = ['class_name'=>$classname[1], 'timestamp'=> $classname[0], 'description'=>$mig->description, 'pretext' => $mig->pretext, 'posttext'  => $mig->posttext];
 							} else {
 								//Create instance of class
-								$migpath = $migration_path . "\\" . $file;
-								if (file_exists(ROOT_PATH . '/' . $migpath)) {
-									include_once ROOT_PATH . '/' . $migpath;
+								$migpath = $migration_path . DS . $file;
+								if (file_exists(ROOT_PATH . DS . $migpath)) {
+									include_once ROOT_PATH . DS . $migpath;
 								
 									$migration_class = explode('-', $file)[1];
 									$migration_class = preg_replace('/.php$/', '', $migration_class);
@@ -285,8 +285,8 @@ MIGRATION;
 					foreach($migrations as $migration_path => $migration) {
 						// var_dump($migration_path);
 						// die;
-						if (file_exists(ROOT_PATH . '/' . $migration_path)) {
-							include_once ROOT_PATH . '/' . $migration_path;
+						if (file_exists(ROOT_PATH . DS . $migration_path)) {
+							include_once ROOT_PATH . DS . $migration_path;
 
 							// Class name must match filename after timestamp and hyphen 
 							if (class_exists($migration['class_name'])) {
@@ -479,8 +479,8 @@ MIGRATION;
 				
 				foreach($migrations_to_rollback as $migration) {
 					
-					if (file_exists(ROOT_PATH . '/' . $migration['path'])) {
-						include_once ROOT_PATH . '/' . $migration['path'];
+					if (file_exists(ROOT_PATH . DS . $migration['path'])) {
+						include_once ROOT_PATH . DS . $migration['path'];
 
 						// Class name must match filename after timestamp and hyphen 
 						if (class_exists($migration['classname'])) {
