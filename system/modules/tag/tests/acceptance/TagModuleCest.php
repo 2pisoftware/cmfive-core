@@ -10,7 +10,12 @@ class TagModuleCest
 
 		$I->wantTo('Verify that tags can be created, edited, attached and removed');
 		$I->loginAsAdmin($I); 
-		$I->createUser($I, $this->username, 'password', $this->firstname, $this->lastname, 'Firstname@lastname.com', ['comment', 'favorites_user', 'file_upload', 'help_view', 'help_contact', 'inbox_reader', 'inbox_sender', 'user', 'report_user', 'tag_user', 'task_admin', 'task_user', 'task_group', 'timelog_user']);
+		$I->createUser($I, $this->username, 'password', $this->firstname, $this->lastname, 'Firstname@lastname.com'
+			, [
+						// 'comment', 'favorites_user', 'file_upload', 'help_view', 'help_contact', 'inbox_reader', 'inbox_sender',
+						'user', 'report_user', 'tag_user'
+						//, 'task_admin', 'task_user', 'task_group', 'timelog_user'
+						]);
         $I->createTaskGroup($I, 'Test Taskgroup',[
     		'task_group_type'=>'To Do',
     		'can_assign'=>'MEMBER',
