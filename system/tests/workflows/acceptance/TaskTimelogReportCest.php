@@ -12,17 +12,8 @@ class TaskTimelogReportCest
     var $lastname = 'Lastname';
 
 	public function testTaskTimelogReport($I) {
-
-		$I->assertEquals($I->canUseCmfiveModule('task'),true);
-		$I->assertEquals($I->canUseCmfiveModule('timelog'),true);
-		$I->assertEquals($I->canUseCmfiveModule('report'),true);
-		$I->assertEquals($I->canUseCmfiveModule('friedJellySandwich'),false);
-
 		$I->loginAsAdmin($I);
-		$I->createUser($I, $this->username, 'password', $this->firstname, $this->lastname, 'Firstname@lastname.com'
-		, [
-			//'comment', 'favorites_user', 'file_upload', 'help_view', 'help_contact', 'inbox_reader', 'inbox_sender', 
-			'user', 'report_user', 'tag_user', 'task_admin', 'task_user', 'task_group', 'timelog_user']);
+		$I->createUser($I, $this->username, 'password', $this->firstname, $this->lastname, 'Firstname@lastname.com', ['comment', 'favorites_user', 'file_upload', 'help_view', 'help_contact', 'inbox_reader', 'inbox_sender', 'user', 'report_user', 'tag_user', 'task_admin', 'task_user', 'task_group', 'timelog_user']);
         $I->createTaskGroup($I, 'Test Taskgroup',[
     		'task_group_type'=>'To Do',
     		'can_assign'=>'MEMBER',
