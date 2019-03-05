@@ -329,11 +329,13 @@ class User extends DbObject {
 	 * @param string $password
 	 * @return string
 	 */
-	public function encryptPassword($password) {
+	public function encryptPassword($password, $update_salt = true) {
 		if (empty($this->password_salt)) {
 			// Salt hash is generated per user
-			$this->password_salt = md5(uniqid(rand(), TRUE));
-			$this->update();
+			$this->password_salt = self::generateSalt();
+			if ($update_salt) {
+				$this->update();
+			}
 		}
 		return sha1($this->password_salt . $password);
 	}
@@ -343,8 +345,8 @@ class User extends DbObject {
 	 *
 	 * @param string $password
 	 */
-	public function setPassword($password) {
-		$this->password = $this->encryptPassword($password);
+	public function setPassword($password, $update_salt = true) {
+		$this->password = $this->encryptPassword($password, $update_salt);
 		$this->w->callHook('auth', 'setpassword', [$password, $this]);
 	}
 
