@@ -51,14 +51,8 @@ function useradd_POST(Web &$w) {
     $user->is_external = isset($_REQUEST['is_external']) ? 1 : 0;
 	$user->dt_created = time();
 	$user->contact_id = $contact->id;
-
-	// This is a temporary fix for MYSQL 57. Insert on the user has to be called so the setPassword function can work.
-	// But the user table does not allow passwords to be null.
-	$user->password = "";
-
+	$user->setPassword($_REQUEST['password'], false);
 	$user->insert();
-	$user->setPassword($_REQUEST['password']);
-	$user->update();
 	$w->ctx("user", $user);
 
 	// now saving the roles
