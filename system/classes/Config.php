@@ -333,7 +333,7 @@ class ConfigDependencyLoader {
 		}
 		
 		// Load module and flag
-        include($node->include_path);
+        include_once($node->include_path);
 //		Config::enableSandbox();
 //		Config::setSandbox($node->config);
 //		Config::mergeSandbox();
