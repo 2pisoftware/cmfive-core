@@ -21,16 +21,18 @@ class RestService extends SearchableDbObject {
 	
 	// only require API key if user is not already logged in
 	function getTokenJson($api='',$username='', $password='') {
-		$user=$this->w->Auth->_user;
-		if (intval($user->id) > 0) {
-			// OK
-		} else {
+		$user=$this->w->Auth->user();
+		
+		
+		if(!isset($user)) {
 			if ($api && trim($api) == trim(Config::get('system.rest_api_key'))) {
 				$user = $this->w->Auth->login($username,$password,null,true);
-			} else {
+				
+			} else { 
 				return $this->errorJson("wrong API key");
 			}
 		}
+		
 		// allow for logged in user
 		if ($user) {
 			$session = new RestSession($this->w);
