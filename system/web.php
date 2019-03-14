@@ -542,17 +542,6 @@ class Web {
 			$this->Log->info("Error starting session " . $e->getMessage());
 		}
 
-		// // start the session
-		// // $sess = new SessionManager($this);
-		// try {
-        //     session_name(SESSION_NAME);
-        //     session_start();
-        //     // Store the sessions locally to avoid permission errors between OS's
-        //     // I.e. on Windows by default tries to save to C:\Temp
-        //     session_save_path(STORAGE_PATH . DIRECTORY_SEPARATOR . "session");
-        // } catch (Exception  $e) {
-        //     $this->Log->info("Error starting session ".$e->getMessage());
-        // }
 		// Initialise the logger (needs to log "info" to include the request data, see LogService __call function)
 		$this->Log->info("info");
 
@@ -1540,7 +1529,7 @@ class Web {
 		$partial_action_file = implode("/", array($moduleDir, $this->_partialsdir, "actions", $name . ".php"));
 
 		if (file_exists($partial_action_file)) {
-			$this->Log->info("PARTIAL: requiring file for partial action file: " . $partial_action_file);
+			//$this->Log->info("PARTIAL: requiring file for partial action file: " . $partial_action_file);
 			require_once $partial_action_file;
 
 			// Execute the action, accounting for the use of namespaces
@@ -1584,9 +1573,9 @@ class Web {
 		if (empty($currentbuf)) {
 			// try to find the partial template and execute if found
 			$partial_template_file = implode("/", array($moduleDir, $this->_partialsdir, "templates", $name . $this->_templateExtension));
-			$this->Log->info("PARTIAL: looking for partial template file at: " . $partial_template_file);
+			//$this->Log->info("PARTIAL: looking for partial template file at: " . $partial_template_file);
 			if (file_exists($partial_template_file)) {
-				$this->Log->info("PARTIAL: partial template file found at: " . $partial_template_file);
+				//$this->Log->info("PARTIAL: partial template file found at: " . $partial_template_file);
 				$tpl = new WebTemplate();
 				$this->ctx("w", $this);
 				$tpl->set_vars($this->_context);
@@ -1619,6 +1608,7 @@ class Web {
 	 * @return an array of return values from all functions that answer to this hool
 	 */
 	public function callHook($module, $function, $data = null) {
+		
 		if (empty($module) || empty($function)) {
 			return null;
 		}
@@ -1680,16 +1670,20 @@ class Web {
 					}
 
 					// Include and check if function exists
-					$this->Log->setLogger('Hooks')->info("including hook file for function: " . $hook_function_name . " in module " . $toInvoke);
+					//$this->Log->setLogger('Hooks')->info("including hook file for function: " . $hook_function_name . " in module " . $toInvoke);
 					include_once $this->getModuleDir($toInvoke) . $toInvoke . ".hooks.php";
 					// add module to loaded hooks array
 					$this->_module_loaded_hooks[] = $toInvoke;
 
 					if (function_exists($hook_function_name)) {
 						// Call function
-						$this->Log->setLogger('Hooks')->info("after including hook file for function: " . $hook_function_name . " in module " . $toInvoke);
+						//$this->Log->setLogger('Hooks')->info("after including hook file for function: " . $hook_function_name . " in module " . $toInvoke);
 						$buffer[] = $hook_function_name($this, $data);
 					}
+				}
+			} else {
+				if (function_exists($hook_function_name)) {
+					$buffer[] = $hook_function_name($this, $data);
 				}
 			}
 			

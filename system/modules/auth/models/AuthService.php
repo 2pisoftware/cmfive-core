@@ -29,7 +29,11 @@ class AuthService extends DbService {
 			if ($user->encryptPassword($password) !== $user->password) {
 				$this->w->Log->info('cmfive pasword mismatch for username: '.$login);
 				return null;
-			}
+            }
+            if ($user->is_external == 1) {
+                $this->w->Log->info('cmfive user is external: '.$login);
+				return null;
+            }
 		}
 		$this->w->Log->info("User logged in: ".$user->getFullName());
 		//allow post login hook to do whatever

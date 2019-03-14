@@ -38,7 +38,8 @@ class DbPDO extends PDO {
 				$port = isset($config['port']) && !empty($config['port']) ? ",".$config['port'] : "";
 				$url = "{$config['driver']}:host={$config['hostname']}{$port};dbname={$config['database']}";
 				break;			
-				//mysql
+                //mysql
+            case 'mysql':
 			default:
 				$port = isset($config['port']) && !empty($config['port']) ? ";port=".$config['port'] : "";
 				$url = "{$config['driver']}:host={$config['hostname']};dbname={$config['database']}{$port}";
