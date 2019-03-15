@@ -27,6 +27,7 @@ class HttpRequest {
 				curl_setopt($this->curl_handle, CURLOPT_URL, $url . (!empty($data) && is_array($data) ? '?' . http_build_query($data) : ''));
 		}
 		curl_setopt($this->curl_handle, CURLOPT_RETURNTRANSFER, true);
+
 		return $this;
 	}
 
@@ -42,11 +43,41 @@ class HttpRequest {
 		return $this;
 	}
 
-	public function run(&$output, &$error) {
+	/**
+	 * Adds Basic Authenication to the request.
+	 *
+	 * @param string $username
+	 * @param string $password
+	 * @return void
+	 */
+	public function setBasicAuth($username = "", $password = "") {
+		curl_setopt($this->curl_handle, CURLOPT_USERPWD, $username . ":" . $password);
+	}
+
+	/**
+	 * Executes the request with an optional error parameter.
+	 *
+	 * @param string $error
+	 * @return string
+	 */
+	public function execute(string &$error = "") {
 		$output = curl_exec($this->curl_handle);
 		$error = curl_error($this->curl_handle);
 
 		return $output;
 	}
 
+	/**
+	 * Runs the request.
+	 *
+	 * @deprecated 2.14.5 - Use simplified function execute instead.
+	 *
+	 * @param string $output
+	 * @param string $error
+	 * @return string
+	 */
+	public function run(&$output, &$error) {
+		$output = $this->execute($error);
+		return $output;
+	}
 }
