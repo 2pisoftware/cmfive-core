@@ -31,7 +31,7 @@ function show_GET(Web $w) {
 			$row[] = !empty($event->form_application_id) ? $w->Form->getFormApplication($event->form_application_id)->title : 'None';
 			$row[] = $event->module . '.' . $event->class;
 			// add settings
-			$row[] = $event->settings;
+			$row[] = str_replace(',',',<br>',$event->settings);
 			$actions = [];
 			$actions[] = Html::box('/form-event/edit/' . $event->id . '?form_id=' . $_form_object->id, 'Edit', true);
 			$actions[] = Html::b('/form-event/delete/' . $event->id, 'Delete', 'Are you sure you want to delete this event?', null, false, "alert");
