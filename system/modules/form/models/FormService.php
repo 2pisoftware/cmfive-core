@@ -493,7 +493,7 @@ class FormService extends DbService {
 	}
 
 	public function processEvents($form_instance,$event_type,$form) {
-		$events = $form->getFormEvents($event_type,true);
+		$events = $form->getFormEvents($event_type,1);
 		if (!empty($events)) {
 			foreach ($events as $event) {
 				//check if event has application set or matching
