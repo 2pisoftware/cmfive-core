@@ -24,11 +24,16 @@ class Attachment extends DbObject {
 	public $is_deleted; // tinyint 0/1
 	public $type_code; // this is a type of attachment, eg. Receipt of Deposit, PO Variation, Sitephoto, etc.
 	public $adapter;
+	/**
+	 * Used by the task_attachment_attachment_added_task hook to skip the Attachement added notification if true
+	 * @var boolean
+	 */
+	public $_skip_added_notification;
 
 	/**
 	 * DbObject::insert() override to set the mimetype, path and to call the
 	 * attachment hook
-	 * 
+	 *
 	 * @param <bool> $force_validation
 	 */
 	function insert($force_validation = false) {
@@ -63,7 +68,7 @@ class Attachment extends DbObject {
 	/**
 	 * will return true if this attachment
 	 * is an image
-	 * 
+	 *
 	 * @return <bool> is_image
 	 */
 	function isImage() {
@@ -75,21 +80,21 @@ class Attachment extends DbObject {
 	 * Returns a HTML <img> tag for this attachment
 	 * only if this attachment is an image,
 	 * else
-	 * 
+	 *
 	 * @return <String> image_string
 	 */
 	function getImg() {
 		if ($this->isImage()) {
 			return $this->File->getImg($this->fullpath);
 		} else {
-			
+
 		}
 	}
 
 	/**
 	 * if image, create image thumbnail
 	 * if any other file send an icon for this mimetype
-	 * 
+	 *
 	 * @return <String> url
 	 */
 	function getThumbnailUrl() {
@@ -100,7 +105,7 @@ class Attachment extends DbObject {
 	}
 
 	/**
-	 * 	
+	 *
 	 * Returns html code for a thumbnail link to download this attachment
 	 */
 	function getThumb() {
@@ -130,7 +135,7 @@ class Attachment extends DbObject {
 
 	/**
 	 * Returns whether or not this attachment has a document mimetype
-	 * 
+	 *
 	 * @return bool
 	 */
 	public function isDocument() {
@@ -147,7 +152,7 @@ class Attachment extends DbObject {
 	 * Returns an assembled file path based on the adapter
 	 * The local adapter for e.g. needs an absolute reference, this absolute
 	 * prefix isn't needed when using S3 buckets
-	 * 
+	 *
 	 * @return <String> filepath
 	 */
 	public function getFilePath() {
@@ -173,7 +178,7 @@ class Attachment extends DbObject {
 
 	/**
 	 * Returns Gaufrette Filsystem instance for fetching files
-	 * 
+	 *
 	 * @return \Gaufrette\Filesystem
 	 */
 	public function getFilesystem() {
@@ -275,8 +280,8 @@ class Attachment extends DbObject {
 
         $replace_empty = array("..", "'", '"', ",", "\\", "/");
 		$replace_underscore = array(" ", "&", "+", "$", "?", "|", "%", "@", "#", "(", ")", "{", "}", "[", "]", ",", ";", ":");
-		
-        
+
+
 		if (!empty($_POST[$requestkey]) && empty($_FILES[$requestkey])) {
 			$filename = str_replace($replace_underscore, "_", str_replace($replace_empty, "", $_POST[$requestkey]));
 		} else {
@@ -315,7 +320,7 @@ class Attachment extends DbObject {
 					$mime_type = $this->w->getMimetypeFromString($content);
 			}
 		}
-		
+
 
 		$this->mimetype = $mime_type;
 		$this->update();
