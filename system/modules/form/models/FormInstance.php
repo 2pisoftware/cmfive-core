@@ -44,6 +44,7 @@ class FormInstance extends DbObject {
             foreach ($form_values as $value) {
                 //functionality for sub forms
                 $form_field = $value->getFormField();
+                //check for specific field types
                 if ($form_field->type == "subform") {
                     $field_metadata = $form_field->findMetadataByKey('associated_form');
                     if (!empty($field_metadata)) {
@@ -60,6 +61,11 @@ class FormInstance extends DbObject {
                             $fields[$value->getFieldName()] = $sub_form_data;
                         }
                     }
+                } elseif($form_field->type == "attachment") {
+                	if (!isset($fields['attachments'])) {
+                		$fields['attachments'] = [];
+                	}
+                	$fields['attachments'][$value->getFieldName()] = $this->w->File->getAttachmentsFileList($value);
                 } else {
                     $fields[$value->getFieldName()] = $value->value;
                 }
