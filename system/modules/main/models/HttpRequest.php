@@ -22,6 +22,12 @@ class HttpRequest {
 				curl_setopt($this->curl_handle, CURLOPT_POSTFIELDS, $this->data);
 				break;
 			};
+			case 'DELETE':
+					curl_setopt_array($this->curl_handle, [
+						CURLOPT_URL => $url,
+						CURLOPT_CUSTOMREQUEST => "DELETE"
+					]);
+				break;
 			case 'GET':
 			default:
 				curl_setopt($this->curl_handle, CURLOPT_URL, $url . (!empty($data) && is_array($data) ? '?' . http_build_query($data) : ''));
@@ -55,16 +61,16 @@ class HttpRequest {
 	}
 
 	/**
-	 * Executes the request with an optional error parameter.
+	 * Executes the request and returns the response data, status code & error message.
 	 *
-	 * @param string $error
-	 * @return string
+	 * @return arrar[string]
 	 */
-	public function execute(string &$error = "") {
-		$output = curl_exec($this->curl_handle);
-		$error = curl_error($this->curl_handle);
+	public function execute() {
+		$data = curl_exec($this->curl_handle);
+		$status_code = curl_getinfo($this->curl_handle, CURLINFO_HTTP_CODE);
+		$error_message = curl_error($this->curl_handle);
 
-		return $output;
+		return ["status_code" => $status_code, "data" => $data, "error" => $error_message];
 	}
 
 	/**
@@ -77,7 +83,9 @@ class HttpRequest {
 	 * @return string
 	 */
 	public function run(&$output, &$error) {
-		$output = $this->execute($error);
+		$response = $this->execute();
+		$output = $response["data"];
+		$error = $response["error_message"];
 		return $output;
 	}
 }
