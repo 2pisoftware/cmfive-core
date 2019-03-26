@@ -61,6 +61,22 @@ class Attachment extends DbObject {
 		parent::delete($force);
 	}
 
+	public function canList(User $user) {
+		return parent::canList($user);
+	}
+
+	public function canView(User $user) {
+		return parent::canView($user);
+	}
+
+	public function canEdit(User $user) {
+		return parent::canEdit($user);
+	}
+
+	public function canDelete(User $user) {
+		return parent::canDelete($user);
+	}
+
 	function getParent() {
 		return $this->getObject($this->parent_table, $this->parent_id);
 	}

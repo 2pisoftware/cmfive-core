@@ -77,7 +77,9 @@ class DbObject extends DbService {
     private static $_object_vars = array();
 	private static $_columns = array();
     private $_class;
-	public $__use_auditing = true;
+    public $__use_auditing = true;
+
+    public $_restrictable = false;
 
         /**
      * Constructor
@@ -227,10 +229,24 @@ class DbObject extends DbService {
      * used by the search display function to check whether the user has
      * permission to see this result item.
      *
-     * @param <type> $user
-     * @return <type>
+     * @param User $user
+     * @return boolean
      */
     function canList(User $user) {
+        if ($this->_restrictable) {
+            $owner = $this->getObject("RestrictedObjectUserLink", ["id" => $this->id, "user_id" => $user->id, "type" => "owner"]);
+            if (!empty($owner)) {
+                return true;
+            }
+
+            $viewer = $this->getObject("RestrictedObjectUserLink", ["id" => $this->id, "user_id" => $user->id, "type" => "viewer"]);
+            if (!empty($viewer)) {
+                return true;
+            }
+
+            return false;
+        }
+
         return true;
     }
 
@@ -239,8 +255,23 @@ class DbObject extends DbService {
      * permission to view further details about this item.
      *
      * @param User $user
+     * @return boolean
      */
     function canView(User $user) {
+        if ($this->_restrictable) {
+            $owner = $this->getObject("RestrictedObjectUserLink", ["id" => $this->id, "user_id" => $user->id, "type" => "owner"]);
+            if (!empty($owner)) {
+                return true;
+            }
+
+            $viewer = $this->getObject("RestrictedObjectUserLink", ["id" => $this->id, "user_id" => $user->id, "type" => "viewer"]);
+            if (!empty($viewer)) {
+                return true;
+            }
+
+            return false;
+        }
+
         return true;
     }
 
@@ -249,8 +280,23 @@ class DbObject extends DbService {
      * permissions to edit this item.
      *
      * @param User $user
+     * @return boolean
      */
     function canEdit(User $user) {
+        if ($this->_restrictable) {
+            $owner = $this->getObject("RestrictedObjectUserLink", ["id" => $this->id, "user_id" => $user->id, "type" => "owner"]);
+            if (!empty($owner)) {
+                return true;
+            }
+
+            $viewer = $this->getObject("RestrictedObjectUserLink", ["id" => $this->id, "user_id" => $user->id, "type" => "viewer"]);
+            if (!empty($viewer)) {
+                return true;
+            }
+
+            return false;
+        }
+
         return true;
     }
 
@@ -259,8 +305,23 @@ class DbObject extends DbService {
      * permissions to delete this item.
      *
      * @param User $user
+     * @return boolean
      */
     function canDelete(User $user) {
+        if ($this->_restrictable) {
+            $owner = $this->getObject("RestrictedObjectUserLink", ["id" => $this->id, "user_id" => $user->id, "type" => "owner"]);
+            if (!empty($owner)) {
+                return true;
+            }
+
+            $viewer = $this->getObject("RestrictedObjectUserLink", ["id" => $this->id, "user_id" => $user->id, "type" => "viewer"]);
+            if (!empty($viewer)) {
+                return true;
+            }
+
+            return false;
+        }
+
         return true;
     }
 
