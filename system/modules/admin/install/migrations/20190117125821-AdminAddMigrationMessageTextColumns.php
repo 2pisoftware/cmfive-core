@@ -13,4 +13,16 @@ class AdminAddMigrationMessageTextColumns extends CmfiveMigration {
 		$this->removeColumnFromTable('migration', 'posttext');
 		$this->removeColumnFromTable('migration', 'description');
 	}
+
+	public function preText() {
+		return "";
+	}
+
+	public function postText() {
+		return "";
+	}
+
+	public function description() {
+		return "";
+	}
 }
