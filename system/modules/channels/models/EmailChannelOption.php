@@ -242,14 +242,15 @@ class EmailChannelOption extends DbObject {
                                     default:
                                         // Is probably an attachment so just save it
                                         $content_type_header = $part->getHeader("Content-Type");
+
                                         // Name is stored under "parameters" in an array
                                         $nameArray = $content_type_header->getParameters();
                                         $name = '';
-
                                         if (empty($nameArray) || !is_array($nameArray) || !array_key_exists('name', $nameArray)) {
                                             $content_dispositon = $part->getHeader('Content-Disposition');
 
                                             $content_dispositon_array = explode(';', $content_dispositon->getFieldValue('filename'));
+
                                             if (!empty($content_dispositon_array)) {
                                                 foreach($content_dispositon_array as $cda) {
                                                     $arr = explode('=', $cda);
@@ -257,6 +258,12 @@ class EmailChannelOption extends DbObject {
                                                         $name = trim($arr[1]);
                                                     }
                                                 }
+                                            }
+                                            // adding check for long file names which are cut from content_disposition
+                                            if (empty($name)) {
+                                                $top_lines = trim($part->getTopLines());
+
+                                                $name = $top_lines;
                                             }
                                         } else {
                                             $name = $nameArray['name'];
