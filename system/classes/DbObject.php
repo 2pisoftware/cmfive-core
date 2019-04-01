@@ -79,7 +79,7 @@ class DbObject extends DbService {
     private $_class;
     public $__use_auditing = true;
 
-    public $_restrictable = false;
+    public static $_restrictable = false;
 
         /**
      * Constructor
@@ -1287,6 +1287,103 @@ class DbObject extends DbService {
             }
         }
     }
-	
+
+    public function setOwner($user_id) {
+        if (!DbObject::$_restrictable || $this->w->Auth->user()->id !== $user_id) {
+            return false;
+        }
+
+        $link = $this->w->Main->getObject("RestrictedObjectUserLink", ["id" => $this->id, "user_id" => $user_id, "type" => "owner"]);
+        if (empty($link)) {
+            $link = new RestrictedObjectUserLink($this->w);
+        }
+
+        $link->object_class = self::class;
+        $link->id = $this->id;
+        $link->user_id = $user_id;
+        $link->type = "owner";
+
+        if ($link->insertOrUpdate()) {
+            return true;
+        }
+        return false;
+    }
+
+    public function addViewer($user_id) {
+        if (!DbObject::$_restrictable) {
+            return false;
+        }
+
+        $logged_in_user = $this->w->Auth->user();
+        $owner_link = $this->w->Main->getObject("RestrictedObjectUserLink", ["id" => $this->id, "user_id" => $logged_in_user, "type" => "owner"]);
+
+        if ($logged_in_user->id !== $owner_link->user_id) {
+            return false;
+        }
+
+        $link = new RestrictedObjectUserLink($this->w);
+        $link->object_class = self::class;
+        $link->id = $this->id;
+        $link->user_id = $user_id;
+        $link->type = "viewer";
+
+        if ($link->insert()) {
+            return true;
+        }
+        return false;
+    }
+
+    public function removeViewer($user_id) {
+        if (!DbObject::$_restrictable) {
+            return false;
+        }
+
+        $logged_in_user = $this->w->Auth->user();
+        $owner_link = $this->w->Main->getObject("RestrictedObjectUserLink", ["id" => $this->id, "user_id" => $logged_in_user, "type" => "owner"]);
+
+        if ($logged_in_user->id !== $owner_link->user_id) {
+            return false;
+        }
+
+        $link = $this->w->Main->getObject("RestrictedObjectUserLink", ["id" => $this->id, "user_id" => $user_id, "type" => "viewer"]);
+        if (!empty($link) && $link->delete()) {
+            return true;
+        }
+        return false;
+    }
+
+    public function getOwner() {
+        if (!DbObject::$_restrictable) {
+            return null;
+        }
+
+        $link = $this->w->Main->getObject("RestrictedObjectUserLink", ["id" => $this->id, "type" => "owner"]);
+        if (empty($link)) {
+            return null;
+        }
+
+        return $this->w->Auth->getObject("User", $link->user_id);
+    }
+
+    public function getViewers() {
+        if (!DbObject::$_restrictable) {
+            return null;
+        }
+
+        $links = $this->w->Main->getObjects("RestrictedObjectUserLink", ["id" => $this->id, "type" => "viewer"]);
+        if (empty($links)) {
+            return null;
+        }
+
+        $viewers = [];
+        foreach ($links as $link) {
+            $viewer = $this->w->Auth->getUser($link->user_id);
+            if (!empty($viewer)) {
+                $viewers[] = $viewer;
+            }
+        }
+
+        return $viewers;
+    }
 }
 
