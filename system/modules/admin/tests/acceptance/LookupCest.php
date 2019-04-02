@@ -19,7 +19,7 @@ class AdminModelsLookupCest
         $I->see('Prime Minister');
         $I->editLookup($I,'Prime Minister', ["cmfive-modal #title"=>'President']);
         $I->clickCmfiveNavbar($I,'Admin', 'List Users');
-        $I->dontSee('President');
+        $I->see('President');
         $I->clickCmfiveNavbar($I,'Admin', 'Lookup');
         $rowIndex = $I->findTableRowMatching(3,'President');
         $I->click('Delete', 'tbody tr:nth-child('.$rowIndex . ')');

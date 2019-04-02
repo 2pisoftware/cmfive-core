@@ -260,6 +260,14 @@ class ExternalFormXMLProcessor extends ProcessorType {
 				}
 			}
    		}
+   		//run 'on created' or 'on modified' processors here
+		if ($is_existing_instance) {
+			//run 'on modified processor'
+			$form->w->Form->processEvents($instance,'On Modified',$form);
+		} else {
+			//run 'on created processor'
+			$form->w->Form->processEvents($instance,'On Created',$form);
+		}
    	}
 
     private function createFormValue($w, $is_existing_instance, $instance, $field, $value) {
