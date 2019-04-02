@@ -1529,7 +1529,6 @@ class Web {
 		$partial_action_file = implode("/", array($moduleDir, $this->_partialsdir, "actions", $name . ".php"));
 
 		if (file_exists($partial_action_file)) {
-			//$this->Log->info("PARTIAL: requiring file for partial action file: " . $partial_action_file);
 			require_once $partial_action_file;
 
 			// Execute the action, accounting for the use of namespaces
@@ -1573,9 +1572,9 @@ class Web {
 		if (empty($currentbuf)) {
 			// try to find the partial template and execute if found
 			$partial_template_file = implode("/", array($moduleDir, $this->_partialsdir, "templates", $name . $this->_templateExtension));
-			//$this->Log->info("PARTIAL: looking for partial template file at: " . $partial_template_file);
+			
 			if (file_exists($partial_template_file)) {
-				//$this->Log->info("PARTIAL: partial template file found at: " . $partial_template_file);
+				
 				$tpl = new WebTemplate();
 				$this->ctx("w", $this);
 				$tpl->set_vars($this->_context);
@@ -1670,14 +1669,14 @@ class Web {
 					}
 
 					// Include and check if function exists
-					//$this->Log->setLogger('Hooks')->info("including hook file for function: " . $hook_function_name . " in module " . $toInvoke);
+					
 					include_once $this->getModuleDir($toInvoke) . $toInvoke . ".hooks.php";
 					// add module to loaded hooks array
 					$this->_module_loaded_hooks[] = $toInvoke;
 
 					if (function_exists($hook_function_name)) {
 						// Call function
-						//$this->Log->setLogger('Hooks')->info("after including hook file for function: " . $hook_function_name . " in module " . $toInvoke);
+						
 						$buffer[] = $hook_function_name($this, $data);
 					}
 				}
