@@ -106,6 +106,8 @@ class Web {
 		$this->_submodule = null;
 		$this->_hooks = array();
 
+		$this->checkStorageDirectory();
+
 		// if using IIS then value is "off" for non ssl requests
 		$sHttps = array_key_exists('HTTPS', $_SERVER) ? $_SERVER['HTTPS'] : '';
 		$sHttpHost = array_key_exists('HTTP_HOST', $_SERVER) ? $_SERVER['HTTP_HOST'] : '';
@@ -144,6 +146,15 @@ class Web {
 		}
 
 		clearstatcache();
+	}
+
+	private function checkStorageDirectory() {
+		if (!is_dir(STORAGE_PATH) ) {
+			mkdir(STORAGE_PATH);
+		}
+		if (!is_dir(STORAGE_PATH .'/session')) {
+			mkdir(STORAGE_PATH . "/session");
+		}
 	}
 
 	private function modelLoader($className) {
