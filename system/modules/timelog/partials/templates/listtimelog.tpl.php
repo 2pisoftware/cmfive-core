@@ -21,7 +21,8 @@
 							echo Html::box('/timelog/edit/' . $timelog->id . (!empty($redirect) ? "?redirect=$redirect" : ''), 'Edit', true);
 						} 
 						if ($timelog->canDelete($w->Auth->user())) {
-							echo Html::b('/timelog/delete/' . $timelog->id . (!empty($redirect) ? "?redirect=$redirect" : ''), 'Delete', 'Are you sure you want to delete this timelog?');
+							$confirmation_message = implode("", $w->callHook("timelog", "before_display_timelog", $timelog));
+							echo Html::b('/timelog/delete/' . $timelog->id . (!empty($redirect) ? "?redirect=$redirect" : ''), 'Delete', empty($confirmation_message) ? 'Are you sure you want to delete this timelog?' : $confirmation_message, null, false, "warning");
 						}
 						?>
 					</td>

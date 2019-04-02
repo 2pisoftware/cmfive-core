@@ -22,10 +22,11 @@ function index_GET(Web $w) {
             if (empty($time_entry_objects[$entry_date])) {
                 $time_entry_objects[$entry_date] = array('entries' => array(), "total" => 0);
             }
-            
+
             $time_entry_objects[$entry_date]['total'] += $time_entry->getDuration();
             $time_entry_objects[$entry_date]['entries'][] = $time_entry; 
         }
     }
+
     $w->ctx('time_entries', $time_entry_objects);
 }
