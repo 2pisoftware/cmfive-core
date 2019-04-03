@@ -39,22 +39,37 @@ function edit_GET(Web $w) {
 	}
 
 	$owner = $attachment->getOwner();
+	$object = $attachment->getParent();
+	$users = $w->Auth->getUsers();
+	$viewers = [];
 
-	$viewers = $w->db->get("user")
-		->select()
-		->select("user.id, contact.firstname, contact.lastname, restricted_object_user_link.id 'link_id'")
-		->leftJoin("contact ON contact.id = user.contact_id")
-		->leftJoin("restricted_object_user_link ON restricted_object_user_link.user_id = user.id AND restricted_object_user_link.is_deleted = 0 AND restricted_object_user_link.type = 'viewer'")
-		->where("user.is_deleted", 0)
-		->where("user.id != ?", $w->Auth->user()->id)
-		->fetchAll();
+	if (!empty($object)) {
+		foreach ($users as $user) {
+			if ($user->id === $w->Auth->user()->id) {
+				continue;
+			}
 
+			if ($object->canView($user)) {
+				$contact = $user->getContact();
+				$link = $w->Main->getObject("RestrictedObjectUserLink", ["object_id" => $attachment->id, "user_id" => $user->id, "type" => "viewer"]);
+
+				$viewers[] = [
+					"id" => $user->id,
+					"firstname" => empty($contact) ? null : $contact->firstname,
+					"lastname" => empty($contact) ? null : $contact->lastname,
+					"can_view" => empty($link) ? false : true
+				];
+			}
+		}
+	}
+
+	$w->ctx("id", $attachment->id);
 	$w->ctx("title", $attachment->title);
 	$w->ctx("description", $attachment->description);
 	$w->ctx("file_name", $attachment->filename);
 	$w->ctx("file_directory", WEBROOT . "/file/atfile/" . $attachment->id . "/" . $attachment->filename);
 	$w->ctx("redirect_url", WEBROOT . "/" . $redirect_url);
-	$w->ctx("is_restricted", empty($owner) ? false : true);
+	$w->ctx("is_restricted", json_encode(empty($owner) ? false : true));
 	$w->ctx("viewers", json_encode($viewers));
 	$w->ctx("can_restrict", $w->Auth->user()->hasRole("restrict") ? "true" : "false");
 }

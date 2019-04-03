@@ -18,7 +18,7 @@
 					<label class="container">Restricted
 						<input type="checkbox" v-model="is_restricted">
 						<span class="checkmark"></span>
-					</label>
+					</label> 
 					<div v-show="is_restricted"><strong>Select the viewers that can view this attachment</strong>
 						<div v-for="viewer in viewers" class="small-12 medium-6 large-4">
 							<label class="container">{{ viewer.firstname + " " + viewer.lastname }}
@@ -39,6 +39,7 @@
 		el: "#app",
 		data: function() {
 			return {
+				id: "<?php echo $id; ?>",
 				can_restrict: "<?php echo $can_restrict; ?>",
 				viewers: <?php echo $viewers; ?>,
 				title: "<?php echo $title; ?>",
@@ -46,7 +47,7 @@
 				file_name: "<?php echo $file_name; ?>",
 				file_directory: "<?php echo $file_directory; ?>",
 				file: null,
-				is_restricted: "<?php echo $is_restricted; ?>",
+				is_restricted: ("<?php echo $is_restricted; ?>" == "true"),
 				max_upload_size: "<?php echo @$w->File->getMaxFileUploadSize() ? : (2 * 1024 * 1024); ?>",
 				redirect_url: "<?php echo $redirect_url; ?>",
 				is_loading: false
@@ -57,12 +58,7 @@
 				this.file = this.$refs.file.files[0];
 			},
 			uploadFile: function() {
-				if (this.file === null) {
-					new Toast("No file selected").show();
-					return;
-				}
-
-				if (this.file.size > this.max_upload_size) {
+				if (this.file != null && this.file.size > this.max_upload_size) {
 					new Toast("File size is too large").show();
 					return;
 				}
@@ -70,10 +66,10 @@
 				this.is_loading = true;
 
 				var file_data = {
+					id: this.id,
 					title: this.title,
 					description: this.description,
-					class: this.class,
-					class_id: this.class_id,
+					is_restricted: this.is_restricted,
 					viewers: this.viewers.filter(function(viewer) {
 						return viewer.can_view;
 					})
@@ -83,7 +79,7 @@
 				formData.append("file", this.file);
 				formData.append("file_data", JSON.stringify(file_data));
 
-				axios.post("/file-attachment/ajaxAddAttachment",
+				axios.post("/file-attachment/ajaxEditAttachment",
 					formData, {
 						headers: {
 							"Content-Type": "multipart/form-data"

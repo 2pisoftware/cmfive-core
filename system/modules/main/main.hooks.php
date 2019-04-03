@@ -24,3 +24,17 @@ function main_core_dbobject_after_delete(Web $w, $object) {
 		}
 	}
 }
+
+function main_core_dbobject_after_delete_attachment(Web $w, Attachment $attachment) {
+	$links = $w->File->getObjects("RestrictedObjectUserLink", ["object_id" => $attachment->id, "object_class" => "Attachment"]);
+	foreach (empty($links) ? [] : $links as $link) {
+		$link->delete();
+	}
+}
+
+function main_core_dbobject_after_delete_comment(Web $w, Comment $comment) {
+	$links = $w->File->getObjects("RestrictedObjectUserLink", ["object_id" => $comment->id, "object_class" => "Comment"]);
+	foreach (empty($links) ? [] : $links as $link) {
+		$link->delete();
+	}
+}

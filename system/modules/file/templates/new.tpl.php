@@ -17,7 +17,7 @@
 					<label class="container">Restricted
 						<input type="checkbox" v-model="is_restricted">
 						<span class="checkmark"></span>
-					</label>
+					</label> 
 					<div v-show="is_restricted"><strong>Select the viewers that can view this attachment</strong>
 						<div v-for="viewer in viewers" class="small-12 medium-6 large-4">
 							<label class="container">{{ viewer.firstname + " " + viewer.lastname }}
@@ -73,6 +73,7 @@
 					description: this.description,
 					class: this.class,
 					class_id: this.class_id,
+					is_restricted: this.is_restricted,
 					viewers: this.viewers.filter(function(viewer) {
 						return viewer.can_view;
 					})
