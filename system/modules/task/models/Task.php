@@ -195,8 +195,26 @@ class Task extends DbObject {
      * Used by the search interface
      * @see DbObject::canView()
      */
-    function canView(User $user) {
-        return $this->getCanIView();
+    function canView(User $user = null) {
+        if (empty($user)) {
+            return $this->getCanIView();
+        }
+
+        if ($user->is_admin ||
+            $user->hasRole("task_admin") ||
+            $user->id == $this->assignee_id ||
+            $user->id == $this->getTaskCreatorId()) {
+            return true;
+        }
+
+        $user_group_member = $this->Task->getMemberGroupById($this->task_group_id, $user->id);
+        if (empty($user_group_member)) {
+            return false;
+        }
+
+        $task_group = $this->Task->getTaskGroup($this->task_group_id);
+
+        return $this->Task->getMyPerms($user_group_member->role, $task_group->can_view);
     }
 
     /**

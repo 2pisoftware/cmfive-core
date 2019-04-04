@@ -234,12 +234,12 @@ class DbObject extends DbService {
      */
     function canList(User $user) {
         if (static::$_restrictable) {
-            $owner = $this->getObject("RestrictedObjectUserLink", ["id" => $this->id, "user_id" => $user->id, "type" => "owner"]);
+            $owner = $this->getObject("RestrictedObjectUserLink", ["object_id" => $this->id, "user_id" => $user->id, "type" => "owner"]);
             if (!empty($owner)) {
                 return true;
             }
 
-            $viewer = $this->getObject("RestrictedObjectUserLink", ["id" => $this->id, "user_id" => $user->id, "type" => "viewer"]);
+            $viewer = $this->getObject("RestrictedObjectUserLink", ["object_id" => $this->id, "user_id" => $user->id, "type" => "viewer"]);
             if (!empty($viewer)) {
                 return true;
             }
@@ -259,12 +259,12 @@ class DbObject extends DbService {
      */
     function canView(User $user) {
         if (static::$_restrictable) {
-            $owner = $this->getObject("RestrictedObjectUserLink", ["id" => $this->id, "user_id" => $user->id, "type" => "owner"]);
+            $owner = $this->getObject("RestrictedObjectUserLink", ["object_id" => $this->id, "user_id" => $user->id, "type" => "owner"]);
             if (!empty($owner)) {
                 return true;
             }
 
-            $viewer = $this->getObject("RestrictedObjectUserLink", ["id" => $this->id, "user_id" => $user->id, "type" => "viewer"]);
+            $viewer = $this->getObject("RestrictedObjectUserLink", ["object_id" => $this->id, "user_id" => $user->id, "type" => "viewer"]);
             if (!empty($viewer)) {
                 return true;
             }
@@ -284,12 +284,12 @@ class DbObject extends DbService {
      */
     function canEdit(User $user) {
         if (static::$_restrictable) {
-            $owner = $this->getObject("RestrictedObjectUserLink", ["id" => $this->id, "user_id" => $user->id, "type" => "owner"]);
+            $owner = $this->getObject("RestrictedObjectUserLink", ["object_id" => $this->id, "user_id" => $user->id, "type" => "owner"]);
             if (!empty($owner)) {
                 return true;
             }
 
-            $viewer = $this->getObject("RestrictedObjectUserLink", ["id" => $this->id, "user_id" => $user->id, "type" => "viewer"]);
+            $viewer = $this->getObject("RestrictedObjectUserLink", ["object_id" => $this->id, "user_id" => $user->id, "type" => "viewer"]);
             if (!empty($viewer)) {
                 return true;
             }
@@ -309,12 +309,12 @@ class DbObject extends DbService {
      */
     function canDelete(User $user) {
         if (static::$_restrictable) {
-            $owner = $this->getObject("RestrictedObjectUserLink", ["id" => $this->id, "user_id" => $user->id, "type" => "owner"]);
+            $owner = $this->getObject("RestrictedObjectUserLink", ["object_id" => $this->id, "user_id" => $user->id, "type" => "owner"]);
             if (!empty($owner)) {
                 return true;
             }
 
-            $viewer = $this->getObject("RestrictedObjectUserLink", ["id" => $this->id, "user_id" => $user->id, "type" => "viewer"]);
+            $viewer = $this->getObject("RestrictedObjectUserLink", ["object_id" => $this->id, "user_id" => $user->id, "type" => "viewer"]);
             if (!empty($viewer)) {
                 return true;
             }
