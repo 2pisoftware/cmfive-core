@@ -16,18 +16,15 @@ function new_GET(Web $w) {
 	$viewers = [];
 
 	if (!empty($object)) {
-		foreach ($users as $user) {
+		foreach (empty($users) ? [] : $users as $user) {
 			if ($user->id === $w->Auth->user()->id) {
 				continue;
 			}
 
 			if ($object->canView($user)) {
-				$contact = $user->getContact();
-
 				$viewers[] = [
 					"id" => $user->id,
-					"firstname" => empty($contact) ? null : $contact->firstname,
-					"lastname" => empty($contact) ? null : $contact->lastname,
+					"name" => $user->getFullName(),
 					"can_view" => false
 				];
 			}

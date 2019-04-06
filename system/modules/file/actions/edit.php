@@ -3,7 +3,7 @@
 function edit_GET(Web $w) {
 	$redirect_url = $w->request("redirect_url");
 	$redirect_url = defaultVal($redirect_url, defaultVal($_SERVER["REQUEST_URI"], "/"));
-	
+
 	list($attachment_id) = $w->pathMatch("id");
 	if (empty($attachment_id)) {
 		$w->error("Missing attachment ID", $redirect_url);
@@ -20,19 +20,17 @@ function edit_GET(Web $w) {
 	$viewers = [];
 
 	if (!empty($object)) {
-		foreach ($users as $user) {
+		foreach (empty($users) ? [] : $users as $user) {
 			if ($user->id === $w->Auth->user()->id) {
 				continue;
 			}
 
 			if ($object->canView($user)) {
-				$contact = $user->getContact();
 				$link = $w->Main->getObject("RestrictedObjectUserLink", ["object_id" => $attachment->id, "user_id" => $user->id, "type" => "viewer"]);
 
 				$viewers[] = [
 					"id" => $user->id,
-					"firstname" => empty($contact) ? null : $contact->firstname,
-					"lastname" => empty($contact) ? null : $contact->lastname,
+					"name" => $user->getFullName(),
 					"can_view" => empty($link) ? false : true
 				];
 			}

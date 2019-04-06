@@ -1,4 +1,5 @@
 <?php
+use function GuzzleHttp\json_encode;
 
 // if (!empty($form)) {
 // 	echo $form;
@@ -11,17 +12,32 @@
 <div v-cloak id="app">
 	<div class="overlay" v-if="is_loading"></div>
 	<div class="panel">
-		<h3>New Comment</h3>
+		<h3>{{ is_new_comment == "true" ? "New Comment" : "Edit Comment" }}</h3>
 		<form id="comment_form" method="POST" @submit.prevent="">
-			<div class="small-12 medium-12 large-12">
-				<textarea placeholder="Add comment here..." @input="textareaAutoResize" ref="textarea" v-model="comment"></textarea>
+			<div>
+				<textarea placeholder="Add comment here..." @input="textareaAutoResize" ref="textarea" v-model="comment"></textarea><br>
+				<div v-if="notify_recipients.length !== 0">
+					<strong>Select the users that will be notified by this comment</strong>
+				</div>
+				<div v-for="notify_recipient in notify_recipients">
+					<label class="cmfive__checkbox-container">{{ notify_recipient.name }}
+						<input type="checkbox" v-model="notify_recipient.is_notify">
+						<span class="cmfive__checkbox-checkmark"></span>
+					</label>
+				</div>
 			</div><br>
 			<div v-if="can_restrict">
 				<label class="cmfive__checkbox-container">Restricted
 					<input type="checkbox" v-model="is_restricted">
 					<span class="cmfive__checkbox-checkmark"></span>
 				</label>
-				<div v-show="is_restricted"><strong>Select the viewers that can view this attachment</strong>
+				<div v-show="is_restricted"><strong>Select the users that can view this comment</strong>
+					<div v-for="viewer in viewers" class="small-12 medium-6 large-4">
+						<label class="cmfive__checkbox-container">{{ viewer.name }}
+							<input type="checkbox" v-model="viewer.can_view">
+							<span class="cmfive__checkbox-checkmark" ></span>
+						</label>
+					</div>
 				</div>
 			</div><br>
 			<button class="small" style="margin-bottom: 0rem;" @click="saveComment()">Save</button>
@@ -34,6 +50,9 @@
 		data: function() {
 			return {
 				comment: null,
+				is_new_comment: "<?php echo $is_new_comment; ?>",
+				notify_recipients: <?php echo empty($notify_recipients) ? json_encode([]) : $notify_recipients; ?>,
+				viewers: <?php echo empty($viewers) ? json_encode([]) : $viewers; ?>,
 				can_restrict: "<?php echo $can_restrict; ?>",
 				is_restricted: false,
 				is_loading: false
@@ -45,7 +64,26 @@
     			this.$refs.textarea.style.cssText = 'height:' + (this.$refs.textarea.scrollHeight + 2) + 'px';
 			},
 			saveComment: function() {
+				if (this.comment === null || this.comment.trim() === "") {
+					new Toast("Comment cannot be blank").show();
+					return;
+				}
 
+				this.is_loading = true;
+
+				axios.post("/admin/ajaxSaveComment", {
+					comment: app.comment,
+					notify_recipients: app.notify_recipients,
+					viewer: app.viewers,
+					is_restricted: app.is_restricted
+				}).then(function(response) {
+					window.history.go();
+				}).catch(function(error) {
+					new Toast("Failed to save comment").show();
+					console.log(error);
+				}).finally(function() {
+					app.is_loading = false;
+				})
 			}
 		},
 		mounted: function() {

@@ -19,9 +19,9 @@
 						<input type="checkbox" v-model="is_restricted">
 						<span class="cmfive__checkbox-checkmark"></span>
 					</label>
-					<div v-show="is_restricted"><strong>Select the viewers that can view this attachment</strong>
+					<div v-show="is_restricted"><strong>Select the users that can view this attachment</strong>
 						<div v-for="viewer in viewers" class="small-12 medium-6 large-4">
-							<label class="cmfive__checkbox-container">{{ viewer.firstname + " " + viewer.lastname }}
+							<label class="cmfive__checkbox-container">{{ viewer.name }}
 								<input type="checkbox" v-model="viewer.can_view">
 								<span class="cmfive__checkbox-checkmark" ></span>
 							</label>
@@ -40,7 +40,7 @@
 			return {
 				id: "<?php echo $id; ?>",
 				can_restrict: "<?php echo $can_restrict; ?>",
-				viewers: <?php echo $viewers; ?>,
+				viewers: <?php echo empty($viewers) ? json_encode([]) : $viewers; ?>,
 				title: "<?php echo $title; ?>",
 				description: "<?php echo $description; ?>",
 				file_name: "<?php echo $file_name; ?>",

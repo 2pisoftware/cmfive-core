@@ -3,13 +3,13 @@
 function comment_GET(Web $w){
     $p = $w->pathMatch("comment_id", "tablename", "object_id");
     $internal_only = intval($w->request('internal_only', 0));
-    $redirect_url = $w->request('redirect_url', $w->localUrl($_SERVER["REQUEST_URI"]));
+    // $redirect_url = $w->request('redirect_url', $w->localUrl($_SERVER["REQUEST_URI"]));
 
     $comment_id = intval($p["comment_id"]);
-    $comment = $comment_id > 0 ? $w->Comment->getComment($comment_id) : new Comment($w);
-    if ($comment === null){
-        $comment = new Comment($w);
-    }
+    // $comment = $comment_id > 0 ? $w->Comment->getComment($comment_id) : new Comment($w);
+    // if ($comment === null){
+    //     $comment = new Comment($w);
+    // }
 
 //     $help =<<<EOF
 // //italics//
@@ -33,65 +33,95 @@ function comment_GET(Web $w){
 // ---
 // EOF;
 
-    //setup for comment notifications
+    // Setup for comment notifications.
     $top_table_name = $p['tablename'];
     $top_id = $p['object_id'];
+
     if ($top_table_name == 'comment') {
         $topObject = $w->Comment->getComment($p['object_id'])->getParentObject();
         $top_table_name = $topObject->getDbTableName();
         $top_id = $topObject->id;
     }
 
-    $form = [
-        'Comment'=> [
-            [
-                array("", "textarea", "comment", $comment->comment, 100, 15, false)
-            ]
-        ],
-        'Help'=> [
-            [
-                array("", "textarea", "-help",$help, 100, 5, false)
-            ],
-            [
-                array("", "hidden", "redirect_url", $w->request("redirect_url"))
-            ]
-        ]
-    ];
+    // $form = [
+    //     'Comment'=> [
+    //         [
+    //             array("", "textarea", "comment", $comment->comment, 100, 15, false)
+    //         ]
+    //     ],
+    //     'Help'=> [
+    //         [
+    //             array("", "textarea", "-help",$help, 100, 5, false)
+    //         ],
+    //         [
+    //             array("", "hidden", "redirect_url", $w->request("redirect_url"))
+    //         ]
+    //     ]
+    // ];
 
     if (!$p["comment_id"]) {
-        //call hook for notification select
+        // Call hook for notification select.
         $get_recipients = $w->callHook('comment', 'get_notification_recipients_' . $top_table_name, ['object_id' => $top_id, 'internal_only' => $internal_only === 1 ? true : false]);
-        //add checkboxes to the form for each notification recipient
+
+        // Add checkboxes to the form for each notification recipient.
         if (!empty($get_recipients)) {
             $unique_recipients = [];
             foreach($get_recipients as $recipients) {
                 foreach ($recipients as $user_id => $is_notify) {
-                    if(!array_key_exists($user_id, $unique_recipients)){
-                        $unique_recipients[$user_id] = $is_notify;
+                    if ($user_id == $w->Auth->user()->id) {
+                        continue;
+                    }
+
+                    if(!array_key_exists($user_id, $unique_recipients)) {
+                        $recipient = $w->Auth->getUser($user_id);
+                        $unique_recipients[$user_id] = ["is_notify" => $is_notify, "name" => empty($recipient) ? "" : $recipient->getFullName()];
                     } else {
                         if ($is_notify != $unique_recipients[$user_id]) {
-                            $unique_recipients[$user_id] = 1;
+                            $recipient = $w->Auth->getUser($user_id);
+                            $unique_recipients[$user_id] = ["is_notify" => true, "name" => empty($recipient) ? "" : $recipient->getFullName()];
                         }
                     }
                 }
             }
 
-            $form["Notifications"] = [
-                [
-                    array("", "hidden", "is_notifications", 1)
-                ]
-            ];
-            $parts = array_chunk($unique_recipients, 4, true);
+            $w->ctx("notify_recipients", json_encode($unique_recipients));
 
-            foreach ($parts as $key => $row) {
-                $form['Notifications'][$key + 1] = [];
+            // $form["Notifications"] = [
+            //     [
+            //         array("", "hidden", "is_notifications", 1)
+            //     ]
+            // ];
+            // $parts = array_chunk($unique_recipients, 4, true);
 
-                foreach ($row as $user_id => $is_notify) {
-                    $user = $w->Auth->getUser($user_id);
-                    if (!empty($user)) {
-                        $form['Notifications'][$key + 1][] = array($user->getFullName() . ($user->is_external == 1 ? ' (external)' : ''), 'checkbox', 'recipient_' . $user->id, $is_notify);
-                    }
-                }
+            // foreach ($parts as $key => $row) {
+            //     $form['Notifications'][$key + 1] = [];
+
+            //     foreach ($row as $user_id => $is_notify) {
+            //         $user = $w->Auth->getUser($user_id);
+            //         if (!empty($user)) {
+            //             $form['Notifications'][$key + 1][] = array($user->getFullName() . ($user->is_external == 1 ? ' (external)' : ''), 'checkbox', 'recipient_' . $user->id, $is_notify);
+            //         }
+            //     }
+            // }
+        }
+    }
+
+    $top_object = $w->Admin->getObject($top_table_name, $top_id);
+    $users = $w->Auth->getUsers();
+    $viewers = [];
+
+    if (!empty($top_object)) {
+        foreach (empty($users) ? [] : $users as $user) {
+            if ($user->id === $w->Auth->user()->id) {
+                continue;
+            }
+
+            if ($top_object->canView($user)) {
+                $viewers[] = [
+                    "id" => $user->id,
+                    "name" => $user->getFullName(),
+                    "can_view" => false
+                ];
             }
         }
     }
@@ -99,6 +129,8 @@ function comment_GET(Web $w){
     //$form = Html::MultiColForm($form, $w->localUrl("/admin/comment/{$comment_id}/{$p["tablename"]}/{$p["object_id"]}?internal_only=" . $internal_only) . "&redirect_url=" . $redirect_url, "POST", "Save");
     //$w->ctx("form", $form);
 
+    $w->ctx("is_new_comment", empty($p["comment_id"]) || $p["comment_id"] == 0 ? "true" : "false");
+    $w->ctx("viewers", json_encode($viewers));
     $w->ctx("can_restrict", Comment::$_restrictable && $w->Auth->user()->hasRole("restrict") ? "true" : "false");
 }
 
