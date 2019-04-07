@@ -1,8 +1,6 @@
 <?php
 
 function new_GET(Web $w) {
-	//VueComponentRegister::registerComponent("RestrictForm", new \VueComponent("RestrictForm", "/system/templates/vue-components/restrict-form.js"));
-
 	$redirect_url = $w->request("redirect_url");
 	$redirect_url = defaultVal($redirect_url, defaultVal($_SERVER["REQUEST_URI"], "/"));
 
