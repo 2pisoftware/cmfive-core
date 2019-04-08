@@ -26,6 +26,11 @@ function ajaxAddComment_POST(Web $w) {
 		$comment = new Comment($w);
 		$comment->is_internal = $request_data->is_internal_only;
 		$is_new = true;
+	} else {
+		$current_viewers = $comment->getViewerLinks();
+		foreach (empty($current_viewers) ? [] : $current_viewers as $current_viewer) {
+			$current_viewer->delete();
+		}
 	}
 
 	$top_object_table_name = $request_data->top_object_table_name;

@@ -5,11 +5,11 @@ function comment_GET(Web $w){
     $is_internal_only = intval($w->request('internal_only', 0));
     // $redirect_url = $w->request('redirect_url', $w->localUrl($_SERVER["REQUEST_URI"]));
 
-    //$comment_id = intval($p["comment_id"]);
-    // $comment = $comment_id > 0 ? $w->Comment->getComment($comment_id) : new Comment($w);
-    // if ($comment === null){
-    //     $comment = new Comment($w);
-    // }
+    $comment_id = intval($p["comment_id"]);
+    $comment = $comment_id > 0 ? $w->Comment->getComment($comment_id) : new Comment($w);
+    if ($comment === null){
+        $comment = new Comment($w);
+    }
 
 //     $help =<<<EOF
 // //italics//
@@ -116,11 +116,13 @@ function comment_GET(Web $w){
                 continue;
             }
 
+            $link = $w->Main->getObject("RestrictedObjectUserLink", ["object_id" => $comment->id, "user_id" => $user->id, "type" => "viewer"]);
+
             if ($top_object->canView($user)) {
                 $viewers[] = [
                     "id" => $user->id,
                     "name" => $user->getFullName(),
-                    "can_view" => false
+                    "can_view" => empty($link) ? false : true
                 ];
             }
         }
@@ -129,12 +131,14 @@ function comment_GET(Web $w){
     //$form = Html::MultiColForm($form, $w->localUrl("/admin/comment/{$comment_id}/{$p["tablename"]}/{$p["object_id"]}?internal_only=" . $internal_only) . "&redirect_url=" . $redirect_url, "POST", "Save");
     //$w->ctx("form", $form);
 
+    $w->ctx("comment", $comment->comment);
     $w->ctx("comment_id", $p["comment_id"]);
     $w->ctx("viewers", json_encode($viewers));
     $w->ctx("top_object_table_name", $top_object_table_name);
     $w->ctx("top_object_id", $top_object_id);
     $w->ctx("is_new_comment", empty($p["comment_id"]) || $p["comment_id"] == 0 ? "true" : "false");
     $w->ctx("is_internal_only", $is_internal_only);
+    $w->ctx("is_restricted", !empty($comment->id) ? $comment->isRestricted() : false);
     $w->ctx("can_restrict", Comment::$_restrictable && $w->Auth->user()->hasRole("restrict") ? "true" : "false");
 }
 

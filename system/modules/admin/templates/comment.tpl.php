@@ -48,7 +48,7 @@
 		el: "#app",
 		data: function() {
 			return {
-				comment: null,
+				comment: "<?php echo $comment; ?>",
 				comment_id: "<?php echo $comment_id; ?>",
 				notify_recipients: <?php echo empty($notify_recipients) ? json_encode([]) : $notify_recipients; ?>,
 				viewers: <?php echo empty($viewers) ? json_encode([]) : $viewers; ?>,
@@ -57,7 +57,7 @@
 				can_restrict: "<?php echo $can_restrict; ?>",
 				is_new_comment: "<?php echo $is_new_comment; ?>",
 				is_internal_only: "<?php echo $is_internal_only; ?>",
-				is_restricted: false,
+				is_restricted: "<?php echo $is_restricted; ?>",
 				is_loading: false
 			}
 		},
