@@ -1,5 +1,4 @@
 <?php
-use function GuzzleHttp\json_encode;
 
 // if (!empty($form)) {
 // 	echo $form;
@@ -50,10 +49,14 @@ use function GuzzleHttp\json_encode;
 		data: function() {
 			return {
 				comment: null,
-				is_new_comment: "<?php echo $is_new_comment; ?>",
+				comment_id: "<?php echo $comment_id; ?>",
 				notify_recipients: <?php echo empty($notify_recipients) ? json_encode([]) : $notify_recipients; ?>,
 				viewers: <?php echo empty($viewers) ? json_encode([]) : $viewers; ?>,
+				top_object_table_name: "<?php echo $top_object_table_name; ?>",
+				top_object_id: "<?php echo $top_object_id; ?>",
 				can_restrict: "<?php echo $can_restrict; ?>",
+				is_new_comment: "<?php echo $is_new_comment; ?>",
+				is_internal_only: "<?php echo $is_internal_only; ?>",
 				is_restricted: false,
 				is_loading: false
 			}
@@ -71,10 +74,16 @@ use function GuzzleHttp\json_encode;
 
 				this.is_loading = true;
 
-				axios.post("/admin/ajaxSaveComment", {
+				axios.post("/admin/ajaxAddComment", {
 					comment: app.comment,
+					comment_id: app.comment_id,
 					notify_recipients: app.notify_recipients,
-					viewer: app.viewers,
+					viewers: app.viewers.filter(function(viewer) {
+						return viewer.can_view;
+					}),
+					top_object_table_name: app.top_object_table_name,
+					top_object_id: app.top_object_id,
+					is_internal_only: app.is_internal_only,
 					is_restricted: app.is_restricted
 				}).then(function(response) {
 					window.history.go();

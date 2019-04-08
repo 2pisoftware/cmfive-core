@@ -2,10 +2,10 @@
 
 function comment_GET(Web $w){
     $p = $w->pathMatch("comment_id", "tablename", "object_id");
-    $internal_only = intval($w->request('internal_only', 0));
+    $is_internal_only = intval($w->request('internal_only', 0));
     // $redirect_url = $w->request('redirect_url', $w->localUrl($_SERVER["REQUEST_URI"]));
 
-    $comment_id = intval($p["comment_id"]);
+    //$comment_id = intval($p["comment_id"]);
     // $comment = $comment_id > 0 ? $w->Comment->getComment($comment_id) : new Comment($w);
     // if ($comment === null){
     //     $comment = new Comment($w);
@@ -34,13 +34,13 @@ function comment_GET(Web $w){
 // EOF;
 
     // Setup for comment notifications.
-    $top_table_name = $p['tablename'];
-    $top_id = $p['object_id'];
+    $top_object_table_name = $p['tablename'];
+    $top_object_id = $p['object_id'];
 
-    if ($top_table_name == 'comment') {
-        $topObject = $w->Comment->getComment($p['object_id'])->getParentObject();
-        $top_table_name = $topObject->getDbTableName();
-        $top_id = $topObject->id;
+    if ($top_object_table_name == 'comment') {
+        $top_object = $w->Comment->getComment($p['object_id'])->getParentObject();
+        $top_object_table_name = $top_object->getDbTableName();
+        $top_object_id = $top_object->id;
     }
 
     // $form = [
@@ -61,7 +61,7 @@ function comment_GET(Web $w){
 
     if (!$p["comment_id"]) {
         // Call hook for notification select.
-        $get_recipients = $w->callHook('comment', 'get_notification_recipients_' . $top_table_name, ['object_id' => $top_id, 'internal_only' => $internal_only === 1 ? true : false]);
+        $get_recipients = $w->callHook('comment', 'get_notification_recipients_' . $top_object_table_name, ['object_id' => $top_object_id, 'internal_only' => $is_internal_only === 1 ? true : false]);
 
         // Add checkboxes to the form for each notification recipient.
         if (!empty($get_recipients)) {
@@ -106,7 +106,7 @@ function comment_GET(Web $w){
         }
     }
 
-    $top_object = $w->Admin->getObject($top_table_name, $top_id);
+    $top_object = $w->Admin->getObject($top_object_table_name, $top_object_id);
     $users = $w->Auth->getUsers();
     $viewers = [];
 
@@ -129,60 +129,64 @@ function comment_GET(Web $w){
     //$form = Html::MultiColForm($form, $w->localUrl("/admin/comment/{$comment_id}/{$p["tablename"]}/{$p["object_id"]}?internal_only=" . $internal_only) . "&redirect_url=" . $redirect_url, "POST", "Save");
     //$w->ctx("form", $form);
 
-    $w->ctx("is_new_comment", empty($p["comment_id"]) || $p["comment_id"] == 0 ? "true" : "false");
+    $w->ctx("comment_id", $p["comment_id"]);
     $w->ctx("viewers", json_encode($viewers));
+    $w->ctx("top_object_table_name", $top_object_table_name);
+    $w->ctx("top_object_id", $top_object_id);
+    $w->ctx("is_new_comment", empty($p["comment_id"]) || $p["comment_id"] == 0 ? "true" : "false");
+    $w->ctx("is_internal_only", $is_internal_only);
     $w->ctx("can_restrict", Comment::$_restrictable && $w->Auth->user()->hasRole("restrict") ? "true" : "false");
 }
 
-function comment_POST(Web $w){
-    $p = $w->pathMatch("comment_id", "tablename","object_id");
-    $comment_id = intval($p["comment_id"]);
-    $internal_only = intval($w->request('internal_only', 0));
+// function comment_POST(Web $w){
+//     $p = $w->pathMatch("comment_id", "tablename","object_id");
+//     $comment_id = intval($p["comment_id"]);
+//     $internal_only = intval($w->request('internal_only', 0));
 
-    $comment = $w->Comment->getComment($comment_id);
-    $is_new = false;
-    if ($comment === null){
-        $comment = new Comment($w);
-        $is_new = true;
-    }
+//     $comment = $w->Comment->getComment($comment_id);
+//     $is_new = false;
+//     if ($comment === null){
+//         $comment = new Comment($w);
+//         $is_new = true;
+//     }
 
-    $comment->obj_table = $p["tablename"];
-    $comment->obj_id = $p["object_id"];
-    $comment->comment = strip_tags($w->request("comment"));
+//     $comment->obj_table = $p["tablename"];
+//     $comment->obj_id = $p["object_id"];
+//     $comment->comment = strip_tags($w->request("comment"));
 
-    // Only set the internal flag on new comments
-    if ($is_new === true) {
-        $comment->is_internal = $internal_only;
-    }
-    $comment->insertOrUpdate();
+//     // Only set the internal flag on new comments
+//     if ($is_new === true) {
+//         $comment->is_internal = $internal_only;
+//     }
+//     $comment->insertOrUpdate();
 
-    //handle notifications
-    $top_table_name = $p['tablename'];
-    $top_id = $p['object_id'];
-    if ($top_table_name == 'comment') {
-        $topObject = $w->Comment->getComment($p['object_id'])->getParentObject();
-        $top_table_name = $topObject->getDbTableName();
-        $top_id = $topObject->id;
-    }
-    if($w->request("is_notifications")) {
-        $recipients = [];
-        foreach($_POST as $key=>$value) {
-            //keys of interest are formatted 'recipient_{user_id}'
-            $exp_key = explode('_',$key);
-            if ($exp_key[0] == 'recipient') {
-                $recipients[] = $exp_key[1];
-            }
-        }
-        $results = $w->callHook('comment', 'send_notification_recipients_' . $top_table_name,['object_id'=>$top_id, 'recipients'=>$recipients, 'commentor_id'=>$w->auth->loggedIn(),'comment'=>$comment, 'is_new'=>$is_new]);
+//     //handle notifications
+//     $top_table_name = $p['tablename'];
+//     $top_id = $p['object_id'];
+//     if ($top_table_name == 'comment') {
+//         $topObject = $w->Comment->getComment($p['object_id'])->getParentObject();
+//         $top_table_name = $topObject->getDbTableName();
+//         $top_id = $topObject->id;
+//     }
+//     if($w->request("is_notifications")) {
+//         $recipients = [];
+//         foreach($_POST as $key=>$value) {
+//             //keys of interest are formatted 'recipient_{user_id}'
+//             $exp_key = explode('_',$key);
+//             if ($exp_key[0] == 'recipient') {
+//                 $recipients[] = $exp_key[1];
+//             }
+//         }
+//         $results = $w->callHook('comment', 'send_notification_recipients_' . $top_table_name,['object_id'=>$top_id, 'recipients'=>$recipients, 'commentor_id'=>$w->auth->loggedIn(),'comment'=>$comment, 'is_new'=>$is_new]);
 
 
-    }
+//     }
 
-    $redirectUrl = $w->request("redirect_url");
+//     $redirectUrl = $w->request("redirect_url");
 
-    if (!empty($redirectUrl)){
-        $w->msg("Comment saved", urldecode($redirectUrl));
-    } else {
-        $w->msg("Comment saved", $w->localUrl($_SERVER["REQUEST_URI"]));
-    }
-}
+//     if (!empty($redirectUrl)){
+//         $w->msg("Comment saved", urldecode($redirectUrl));
+//     } else {
+//         $w->msg("Comment saved", $w->localUrl($_SERVER["REQUEST_URI"]));
+//     }
+// }

@@ -1,5 +1,5 @@
 <style>
-	
+
 	div.image-container {
 		width: auto;
 		height: 220px;
@@ -25,15 +25,15 @@
 		display: none;
 		padding: 10px;
 	}
-	
+
 	div.image-container-overlay > .row-fluid {
 		height: 75px;
 	}
- 	
+
 	div.image-container-overlay:hover {
 		display: block;
-	} 
-	 
+	}
+
 	img.image-cropped {
 		position: absolute;
 		margin: auto;
@@ -42,7 +42,7 @@
 		right: 0;
 		bottom: 0;
 	}
-	
+
 </style>
 <div class="enable_drop_attachments" data-object="<?php echo get_class($object); ?>" data-id="<?php echo $object->id; ?>" style="display:none;"></div>
 
@@ -50,7 +50,7 @@
 	if ($w->Auth->user()->hasRole("file_upload")) {
 		echo Html::box("/file/new/" . get_class($object) . "/{$object->id}?redirect_url=" . urlencode($redirect), "Attach a File", true);
 	}
-	
+
     $notImages = array();
     if (!empty($attachments)) : ?>
         <br/><br/>
@@ -72,14 +72,14 @@
 							<div class="row-fluid">
 								<?php
 									if (empty($owner) || $owner->id === $w->Auth->user()->id) {
-										echo $owner->id === $w->Auth->user()->id ? Html::box("/file/edit/" . $attachment->id . "?redirect_url=" . urlencode($redirect), "Edit", true, null, null, null, null, null, "button expand secondary") : "";
+										echo Html::box("/file/edit/" . $attachment->id . "?redirect_url=" . urlencode($redirect), "Edit", true, null, null, null, null, null, "button expand secondary");
 									}
 								?>
 						</div>
 							<div class="row-fluid">
 								<?php
 									if (empty($owner) || $owner->id === $w->Auth->user()->id) {
-										echo $owner->id === $w->Auth->user()->id ? Html::b("/file/delete/" . $attachment->id . "?redirect_url=" . urlencode($redirect), "Delete", "Are you sure you want to delete this attachment?", null, false, "expand alert ") : "";
+										echo  Html::b("/file/delete/" . $attachment->id . "?redirect_url=" . urlencode($redirect), "Delete", "Are you sure you want to delete this attachment?", null, false, "expand alert ");
 									}
 								?>
 							</div>
@@ -90,7 +90,7 @@
 							<i class="fi-page-<?php echo $attachment->mimetype == 'application/pdf' ? "pdf" : "doc"; ?>" style="font-size: 90pt;"></i>
 						<?php endif; ?>
 					</div>
-					
+
 					<a href="#" data-reveal-id="attachment_modal_<?php echo $attachment->id; ?>">
 						<div class="row-fluid clearfix text-center">
 							<?php echo "<b>Title:</b> " . $attachment->title; ?>
@@ -115,10 +115,10 @@
 								<img src="/file/atfile/<?php echo $attachment->id; ?>" alt="<?php echo $attachment->title; ?>" />
 							<?php endif; ?>
 						</div>
-						
+
 						<h2 id="firstModalTitle" style="font-weight: lighter; text-align: center; border-bottom: 1px solid #777;"><?php echo $attachment->title; ?></h2>
 						<p style="text-align: center;"><?php echo $attachment->description; ?></p>
-						
+
 						<div class='row-fluid'>
 							<div class='small-6 columns'>
 								<a href="/file/atfile/<?php echo $attachment->id; ?>" target="_blank" class="button expand" onclick="$('#attachment_modal_<?php echo $attachment->id; ?>').foundation('reveal', 'close');">Open in new tab/window</a>
@@ -127,7 +127,7 @@
 								<a class="button expand secondary" onclick="$('#attachment_modal_<?php echo $attachment->id; ?>').foundation('reveal', 'close');" aria-label="Close">Close</a>
 							</div>
 						</div>
-						
+
 						<a class="close-reveal-modal" aria-label="Close">&#215;</a>
 					</div>
 				</li>
@@ -184,7 +184,7 @@
     <?php endif; ?>
 
 	<script>
-		
+
 		$(document).ready(function() {
 			$(".image-container-overlay button").removeClass("tiny");
 			$(".image-container").hover(function() {
