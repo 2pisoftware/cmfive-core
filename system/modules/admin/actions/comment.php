@@ -2,7 +2,7 @@
 
 function comment_GET(Web $w){
     $p = $w->pathMatch("comment_id", "tablename", "object_id");
-    $is_internal_only = intval($w->request('internal_only', 0));
+    $is_internal_only = intval($w->request("internal_only", 0));
     // $redirect_url = $w->request('redirect_url', $w->localUrl($_SERVER["REQUEST_URI"]));
 
     $comment_id = intval($p["comment_id"]);
@@ -34,11 +34,11 @@ function comment_GET(Web $w){
 // EOF;
 
     // Setup for comment notifications.
-    $top_object_table_name = $p['tablename'];
-    $top_object_id = $p['object_id'];
+    $top_object_table_name = $p["tablename"];
+    $top_object_id = $p["object_id"];
 
-    if ($top_object_table_name == 'comment') {
-        $top_object = $w->Comment->getComment($p['object_id'])->getParentObject();
+    if ($top_object_table_name == "comment") {
+        $top_object = $w->Comment->getComment($p["object_id"])->getParentObject();
         $top_object_table_name = $top_object->getDbTableName();
         $top_object_id = $top_object->id;
     }
@@ -59,32 +59,34 @@ function comment_GET(Web $w){
     //     ]
     // ];
 
+    $notify_recipients = [];
+
     if (!$p["comment_id"]) {
         // Call hook for notification select.
-        $get_recipients = $w->callHook('comment', 'get_notification_recipients_' . $top_object_table_name, ['object_id' => $top_object_id, 'internal_only' => $is_internal_only === 1 ? true : false]);
+        $get_recipients = $w->callHook("comment", "get_notification_recipients_" . $top_object_table_name, ["object_id" => $top_object_id, "internal_only" => $is_internal_only === 1 ? true : false]);
 
         // Add checkboxes to the form for each notification recipient.
         if (!empty($get_recipients)) {
-            $unique_recipients = [];
             foreach($get_recipients as $recipients) {
                 foreach ($recipients as $user_id => $is_notify) {
+
                     if ($user_id == $w->Auth->user()->id) {
                         continue;
                     }
 
-                    if(!array_key_exists($user_id, $unique_recipients)) {
+                    if(!array_key_exists($user_id, $notify_recipients)) {
                         $recipient = $w->Auth->getUser($user_id);
-                        $unique_recipients[$user_id] = ["is_notify" => $is_notify, "name" => empty($recipient) ? "" : $recipient->getFullName()];
+                        $notify_recipients[$user_id] = ["is_notify" => $is_notify];
                     } else {
-                        if ($is_notify != $unique_recipients[$user_id]) {
+                        if ($is_notify != $notify_recipients[$user_id]) {
                             $recipient = $w->Auth->getUser($user_id);
-                            $unique_recipients[$user_id] = ["is_notify" => true, "name" => empty($recipient) ? "" : $recipient->getFullName()];
+                            $notify_recipients[$user_id] = ["is_notify" => true];
                         }
                     }
                 }
             }
 
-            $w->ctx("notify_recipients", json_encode($unique_recipients));
+            // $w->ctx("notify_recipients", json_encode($notify_recipients));
 
             // $form["Notifications"] = [
             //     [
@@ -119,10 +121,20 @@ function comment_GET(Web $w){
             $link = $w->Main->getObject("RestrictedObjectUserLink", ["object_id" => $comment->id, "user_id" => $user->id, "type" => "viewer"]);
 
             if ($top_object->canView($user)) {
+                $is_notify = false;
+
+                foreach ($notify_recipients as $notify_recipient_id => $notify_recipient) {
+                    if ($notify_recipient_id == $user->id) {
+                        $is_notify = true;
+                    }
+                }
+
                 $viewers[] = [
                     "id" => $user->id,
                     "name" => $user->getFullName(),
-                    "can_view" => empty($link) ? false : true
+                    "can_view" => empty($link) ? false : true,
+                    "is_notify" => $is_notify,
+                    "is_original_notify" => $is_notify
                 ];
             }
         }
@@ -138,7 +150,7 @@ function comment_GET(Web $w){
     $w->ctx("top_object_id", $top_object_id);
     $w->ctx("is_new_comment", empty($p["comment_id"]) || $p["comment_id"] == 0 ? "true" : "false");
     $w->ctx("is_internal_only", $is_internal_only);
-    $w->ctx("is_restricted", !empty($comment->id) ? $comment->isRestricted() : false);
+    $w->ctx("is_restricted", json_encode(!empty($comment->id) ? $comment->isRestricted() ? true : false : false));
     $w->ctx("can_restrict", Comment::$_restrictable && $w->Auth->user()->hasRole("restrict") ? "true" : "false");
 }
 

@@ -1,13 +1,3 @@
-<?php
-
-// if (!empty($form)) {
-// 	echo $form;
-// }
-
-// ?>
-
-<!-- <script>$("form").submit(function(event) {toggleModalLoading();});</script> -->
-
 <div v-cloak id="app">
 	<div class="overlay" v-if="is_loading"></div>
 	<div class="panel">
@@ -15,25 +5,25 @@
 		<form id="comment_form" method="POST" @submit.prevent="">
 			<div>
 				<textarea placeholder="Add comment here..." @input="textareaAutoResize" ref="textarea" v-model="comment"></textarea><br>
-				<div v-if="notify_recipients.length !== 0">
+				<div v-if="viewers.length !== 0">
 					<strong>Select the users that will be notified by this comment</strong>
 				</div>
-				<div v-for="notify_recipient in notify_recipients">
-					<label class="cmfive__checkbox-container">{{ notify_recipient.name }}
-						<input type="checkbox" v-model="notify_recipient.is_notify">
+				<div v-for="viewer in viewers">
+					<label class="cmfive__checkbox-container">{{ viewer.name }}
+						<input type="checkbox" v-model="viewer.is_notify" @click="toggleIsNotify(viewer)">
 						<span class="cmfive__checkbox-checkmark"></span>
 					</label>
 				</div>
 			</div><br>
 			<div v-if="can_restrict">
 				<label class="cmfive__checkbox-container">Restricted
-					<input type="checkbox" v-model="is_restricted">
+					<input type="checkbox" v-model="is_restricted" @click="toggleIsRestricted()">
 					<span class="cmfive__checkbox-checkmark"></span>
 				</label>
 				<div v-show="is_restricted"><strong>Select the users that can view this comment</strong>
 					<div v-for="viewer in viewers" class="small-12 medium-6 large-4">
 						<label class="cmfive__checkbox-container">{{ viewer.name }}
-							<input type="checkbox" v-model="viewer.can_view">
+							<input type="checkbox" v-model="viewer.can_view" @click="toggleCanView(viewer)">
 							<span class="cmfive__checkbox-checkmark" ></span>
 						</label>
 					</div>
@@ -50,18 +40,55 @@
 			return {
 				comment: "<?php echo $comment; ?>",
 				comment_id: "<?php echo $comment_id; ?>",
-				notify_recipients: <?php echo empty($notify_recipients) ? json_encode([]) : $notify_recipients; ?>,
 				viewers: <?php echo empty($viewers) ? json_encode([]) : $viewers; ?>,
 				top_object_table_name: "<?php echo $top_object_table_name; ?>",
 				top_object_id: "<?php echo $top_object_id; ?>",
 				can_restrict: "<?php echo $can_restrict; ?>",
 				is_new_comment: "<?php echo $is_new_comment; ?>",
 				is_internal_only: "<?php echo $is_internal_only; ?>",
-				is_restricted: "<?php echo $is_restricted; ?>",
+				is_restricted: <?php echo $is_restricted; ?>,
 				is_loading: false
 			}
 		},
   		methods: {
+			toggleIsRestricted: function() {
+				this.is_restricted = !this.is_restricted;
+
+				if (this.is_restricted) {
+					this.viewers.forEach(function(viewer, index) {
+						if (!viewer.can_view) {
+							app.viewers[index].is_notify = false;
+						}
+					});
+					return;
+				}
+
+				this.viewers.forEach(function(viewer, index) {
+					app.viewers[index].is_notify = viewer.is_original_notify;
+				});
+			},
+			toggleCanView: function(viewer) {
+				viewer.can_view = !viewer.can_view;
+
+				if (viewer.can_view && viewer.is_original_notify) {
+					viewer.is_notify = true;
+				}
+
+				if (!viewer.can_view) {
+					viewer.is_notify = false;
+				}
+			},
+			toggleIsNotify: function(viewer) {
+				viewer.is_notify = !viewer.is_notify;
+
+				if (viewer.is_notify && this.is_restricted) {
+					viewer.can_view = true;
+				}
+
+				if (!viewer.is_notify && this.is_restricted) {
+					viewer.can_view = false;
+				}
+			},
 			textareaAutoResize: function() {
 				this.$refs.textarea.style.cssText = 'min-height: 5rem; resize: none;';
     			this.$refs.textarea.style.cssText = 'height:' + (this.$refs.textarea.scrollHeight + 2) + 'px';
@@ -77,10 +104,7 @@
 				axios.post("/admin/ajaxAddComment", {
 					comment: app.comment,
 					comment_id: app.comment_id,
-					notify_recipients: app.notify_recipients,
-					viewers: app.viewers.filter(function(viewer) {
-						return viewer.can_view;
-					}),
+					viewers: app.viewers,
 					top_object_table_name: app.top_object_table_name,
 					top_object_id: app.top_object_id,
 					is_internal_only: app.is_internal_only,

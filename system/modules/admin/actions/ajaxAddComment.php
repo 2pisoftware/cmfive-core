@@ -48,27 +48,28 @@ function ajaxAddComment_POST(Web $w) {
 		$top_object_id = $top_object->id;
 	}
 
-	if (!empty($request_data->notify_recipients)) {
-		$recipient_ids = [];
-
-		foreach ($request_data->notify_recipients as $notify_recipient_id => $notify_recipient) {
-			$notify_recipient_ids[] = $notify_recipient_id;
+	$notify_recipient_ids = [];
+	foreach ($request_data->viewers as $viewer) {
+		if ($viewer->is_notify && $viewer->can_view) {
+			$notify_recipient_ids[] = $viewer->id;
 		}
-
-		$notify_results = $w->callHook("comment", "send_notification_recipients_" . $top_object_table_name, [
-			"object_id" => $top_object_id,
-			"recipients" => $notify_recipient_ids,
-			"commentor_id" => $user->id,
-			"comment" => $comment,
-			"is_new" => $is_new
-		]);
 	}
+
+	$notify_results = $w->callHook("comment", "send_notification_recipients_" . $top_object_table_name, [
+		"object_id" => $top_object_id,
+		"recipients" => $notify_recipient_ids,
+		"commentor_id" => $user->id,
+		"comment" => $request_data->is_restricted ? "This comment contains restricted inforation, please click to veiew it within Cmfive" : $comment->comment,
+		"is_new" => $is_new
+	]);
 
 	if ($request_data->is_restricted) {
 		$comment->setOwner($user->id);
 
 		foreach (!empty($request_data->viewers) ? $request_data->viewers : [] as $viewer) {
-			$comment->addViewer($viewer->id);
+			if ($viewer->can_view) {
+				$comment->addViewer($viewer->id);
+			}
 		}
 	}
 
