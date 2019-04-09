@@ -16,7 +16,7 @@ class AdminmoveLogsToStorageDirectory extends CmfiveMigration {
 				foreach ($dirListing as $item) {
 					if (!is_dir($log_path . '/' .$item)) {
 						// check if file is logfile
-						if (strpos($item,'cmfive') === false) {
+						if (strpos($item,'.log') === false) {
 							unlink($log_path . '/' . $item);
 							continue;
 						}
@@ -25,7 +25,7 @@ class AdminmoveLogsToStorageDirectory extends CmfiveMigration {
 							//merge files together
 							$file_one = file_get_contents($log_path . '/' . $item);
 							$file_two = file_get_contents($storage_log_path . '/' . $item);
-							file_put_contents($storage_log_path . '/' . $item,$file_one . '\n' . $file_two);
+							file_put_contents($storage_log_path . '/' . $item,$file_one . "\n" . $file_two);
 							unlink($log_path . '/' . $item);
 						} else {
 							rename($log_path . '/' . $item, $storage_log_path . '/' . $item);
@@ -40,6 +40,10 @@ class AdminmoveLogsToStorageDirectory extends CmfiveMigration {
 
 	public function down() {
 		// DOWN
+		// move any logs from boiler-plate/logs to boilerplate/storage/logs
+		$log_path = ROOT_PATH . '/log';
+		$storage_log_path = STORAGE_PATH .'/log';
+		rename($storage_log_path, $log_path);
 	}
 
 	public function preText()
