@@ -14,7 +14,8 @@
                     </span>
                 <?php endif; ?>
                 <?php if (empty($displayOnly) && $external_only === false) : ?>
-                    <a class="comment_reply">Reply</a><?php endif; ?>
+                    <!--<a class="comment_reply">Reply</a>-->
+                    <?php echo Html::box("/admin/comment/{0}/{$c->getDbTablename()}/{$c->id}?redirect_url=" . $redirect, "Reply", false); endif; ?>
                 <?php if ($c->w->Auth->user()->id == $c->creator_id && empty($displayOnly)) : ?>
                     <span style='float: right;'>
                         <?php echo Html::box("/admin/comment/{$c->id}/{$c->obj_table}/{$c->obj_id}?redirect_url=" . $redirect, "Edit", false); ?>

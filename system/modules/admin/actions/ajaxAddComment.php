@@ -41,28 +41,6 @@ function ajaxAddComment_POST(Web $w) {
 	$comment->comment = strip_tags($request_data->comment);
 	$comment->insertOrUpdate();
 
-
-	if ($top_object_table_name === "comment") {
-		$top_object = $w->Comment->getComment($top_object_id)->getParentObject();
-		$top_object_table_name = $top_object->getDbTableName();
-		$top_object_id = $top_object->id;
-	}
-
-	$notify_recipient_ids = [];
-	foreach ($request_data->viewers as $viewer) {
-		if ($viewer->is_notify && $viewer->can_view) {
-			$notify_recipient_ids[] = $viewer->id;
-		}
-	}
-
-	$notify_results = $w->callHook("comment", "send_notification_recipients_" . $top_object_table_name, [
-		"object_id" => $top_object_id,
-		"recipients" => $notify_recipient_ids,
-		"commentor_id" => $user->id,
-		"comment" => $comment,
-		"is_new" => $is_new
-	]);
-
 	if ($request_data->is_restricted) {
 		$comment->setOwner($user->id);
 
@@ -72,6 +50,34 @@ function ajaxAddComment_POST(Web $w) {
 			}
 		}
 	}
+
+	if ($top_object_table_name === "comment") {
+		$top_object = $w->Comment->getComment($top_object_id)->getParentObject();
+		$top_object_table_name = $top_object->getDbTableName();
+		$top_object_id = $top_object->id;
+	}
+
+	$notify_recipient_ids = [];
+	foreach ($request_data->viewers as $viewer) {
+		if ($request_data->is_restricted) {
+			if ($viewer->is_notify && $viewer->can_view) {
+				$notify_recipient_ids[] = $viewer->id;
+			}
+			continue;
+		}
+
+		if ($viewer->is_notify) {
+			$notify_recipient_ids[] = $viewer->id;
+		}
+	}
+
+	$w->callHook("comment", "send_notification_recipients_" . $top_object_table_name, [
+		"object_id" => $top_object_id,
+		"recipients" => $notify_recipient_ids,
+		"commentor_id" => $user->id,
+		"comment" => $comment,
+		"is_new" => $is_new
+	]);
 
 	$w->out((new AxiosResponse())->setSuccessfulResponse("OK", []));
 }

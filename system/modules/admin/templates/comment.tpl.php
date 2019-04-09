@@ -115,7 +115,7 @@
 					new Toast("Failed to save comment").show();
 					console.log(error);
 				}).finally(function() {
-					app.is_loading = false;
+
 				})
 			}
 		},
