@@ -31,7 +31,7 @@ function ajaxEditAttachment_POST(Web $w) {
 	$attachment->title = $request_data->title;
 	$attachment->description = $request_data->description;
 	$attachment->update();
-	
+
 	if ($request_data->is_restricted) {
 		$attachment->setOwner($user->id);
 
@@ -42,6 +42,16 @@ function ajaxEditAttachment_POST(Web $w) {
 
 		foreach (!empty($request_data->viewers) ? $request_data->viewers : [] as $viewer) {
 			$attachment->addViewer($viewer->id);
+		}
+	} else {
+		$owner = $attachment->getOwnerLink();
+		if (!empty($owner)) {
+			$owner->delete();
+		}
+
+		$viewers = $attachment->getViewerLinks();
+		foreach (empty($viewers) ? [] : $viewers as $viewer) {
+			$viewer->delete();
 		}
 	}
 

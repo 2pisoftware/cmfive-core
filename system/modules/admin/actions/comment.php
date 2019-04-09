@@ -52,10 +52,6 @@ function comment_GET(Web $w){
         foreach($get_recipients as $recipients) {
             foreach ($recipients as $user_id => $is_notify) {
 
-                if ($user_id == $w->Auth->user()->id) {
-                    continue;
-                }
-
                 if(!array_key_exists($user_id, $notify_recipients)) {
                     $recipient = $w->Auth->getUser($user_id);
                     $notify_recipients[$user_id] = ["is_notify" => $is_notify];
