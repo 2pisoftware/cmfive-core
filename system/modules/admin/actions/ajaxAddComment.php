@@ -59,7 +59,7 @@ function ajaxAddComment_POST(Web $w) {
 		"object_id" => $top_object_id,
 		"recipients" => $notify_recipient_ids,
 		"commentor_id" => $user->id,
-		"comment" => $request_data->is_restricted ? "This comment contains restricted inforation, please click to veiew it within Cmfive" : $comment->comment,
+		"comment" => $comment,
 		"is_new" => $is_new
 	]);
 

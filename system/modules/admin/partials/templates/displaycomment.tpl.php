@@ -6,7 +6,7 @@
         </div>
         <div class='medium-11 columns comment_right_column'>
             <p><b><?php echo !empty($c->creator_id) ?@$c->w->Auth->getUser($c->creator_id)->getFullName() : ""; ?></b></p>
-            <?php echo $w->Comment->renderComment($c->comment); ?>
+            <?php echo $c->isRestricted() && $is_outgoing ? "Restricted comment, please view in Cmfive" : $w->Comment->renderComment($c->comment); ?>
             <div class="comment_meta">
                 <?php if (!empty($c->dt_created)) : ?>
                     <span data-tooltip aria-haspopup="true" title="<?php echo @formatDate($c->dt_created, "d-M-Y \a\\t H:i"); ?>">
@@ -23,8 +23,8 @@
                     </span>
                 <?php endif; ?>
             </div>
-        </div>    
+        </div>
     </div>
-    <?php echo empty($displayOnly) ? $w->partial("loopcomments", array("object" => $w->Comment->getCommentsForTable($c->getDbTableName(), $c->id), 
+    <?php echo empty($displayOnly) ? $w->partial("loopcomments", array("object" => $w->Comment->getCommentsForTable($c->getDbTableName(), $c->id),
                                                  "redirect" => $redirect, 'internal_only' => $internal_only), "admin") : ""; ?>
 </div>
