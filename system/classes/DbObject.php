@@ -1410,7 +1410,7 @@ class DbObject extends DbService {
             return null;
         }
 
-        return $this->w->Main->getObjects("RestrictedObjectUserLink", ["object_id" => $this->id, "object_class" => static::class, "type" => "owner"]);
+        return $this->w->Main->getObject("RestrictedObjectUserLink", ["object_id" => $this->id, "object_class" => static::class, "type" => "owner"]);
     }
 
     public function getViewerLinks() {

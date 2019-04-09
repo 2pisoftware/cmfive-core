@@ -6,13 +6,13 @@ function listattachments(\Web $w, $params) {
 
 	$attachments = $w->File->getAttachments($object, !empty($object->id) ? $object->id : null);
 	if (!empty($attachments)) {
-		foreach ($attachments as $attachment) {
+		foreach ($attachments as $key => $attachment) {
 			if (!$attachment->canView($w->Auth->user())) {
-				unset($attachment);
+				unset($attachments[$key]);
 			}
 		}
 	}
-	
+
 	$w->ctx("attachments", $attachments);
 	$w->ctx("redirect",$redirect);
 	$w->ctx("object",$object);

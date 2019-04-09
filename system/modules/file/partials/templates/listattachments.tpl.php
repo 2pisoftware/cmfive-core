@@ -136,7 +136,7 @@
             endif;
         endforeach; ?>
         </ul>
-    <?php endif;
+	<?php endif;
 
     if (!empty($notImages)) : ?>
         <table class="tablesorter">
@@ -151,9 +151,6 @@
             </thead>
             <tbody>
 				<?php foreach ($notImages as $att):
-					if (!$att->canView($w->Auth->user())) {
-						continue;
-					}
 				?>
                     <tr class="attachment">
                         <td>
