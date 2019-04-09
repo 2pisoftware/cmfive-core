@@ -29,8 +29,9 @@ class FormModuleCest
 		$I->addFormField($I,"Test Form","Name","nm1","Text");
 		$I->addFormField($I,"Test Form","Clocked","clk1","Time");
 		$I->addFormField($I,"Test Form","Truthed","trt1","Yes/No");
+		$I->wait(2);
 		$I->clickCmfiveNavbar($I, 'Form', 'Applications');
-		$I->wait(1);
+		$I->wait(2);
 		$I->click("Test Application");
 		$I->click("Add new Test Form");
 		$I->wait(2);
