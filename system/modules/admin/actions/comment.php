@@ -70,17 +70,17 @@ function comment_GET(Web $w){
 
     if (!empty($root_object)) {
         foreach (empty($users) ? [] : $users as $user) {
-            if ($user->id === $w->Auth->user()->id) {
-                continue;
-            }
+            // if ($user->id === $w->Auth->user()->id) {
+            //     continue;
+            // }
 
             $link = $w->Main->getObject("RestrictedObjectUserLink", ["object_id" => $comment->id, "user_id" => $user->id, "type" => "viewer"]);
 
             if ($root_object->canView($user)) {
                 $is_notify = false;
 
-                foreach ($notify_recipients as $notify_recipient_id => $notify_recipient) {
-                    if ($notify_recipient_id == $user->id) {
+                foreach ($notify_recipients as $key => $notify_recipient) {
+                    if ($key == $user->id) {
                         $is_notify = true;
                     }
                 }
@@ -88,7 +88,7 @@ function comment_GET(Web $w){
                 $viewers[] = [
                     "id" => $user->id,
                     "name" => $user->getFullName(),
-                    "can_view" => empty($link) ? false : true,
+                    "can_view" => !empty($link) || $user->id === $w->Auth->user()->id ? true : false,
                     "is_notify" => $is_notify,
                     "is_original_notify" => $is_notify
                 ];

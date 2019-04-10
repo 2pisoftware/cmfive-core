@@ -22,7 +22,7 @@
 				</label>
 				<div v-show="is_restricted"><strong>Select the users that can view this comment</strong>
 					<div v-for="viewer in viewers" class="small-12 medium-6 large-4">
-						<label class="cmfive__checkbox-container">{{ viewer.name }}
+						<label class="cmfive__checkbox-container" v-if="viewer.id != <?php echo $w->Auth->user()->id; ?>">{{ viewer.name }}
 							<input type="checkbox" v-model="viewer.can_view" @click="toggleCanView(viewer)">
 							<span class="cmfive__checkbox-checkmark" ></span>
 						</label>
@@ -83,10 +83,6 @@
 
 				if (viewer.is_notify && this.is_restricted) {
 					viewer.can_view = true;
-				}
-
-				if (!viewer.is_notify && this.is_restricted) {
-					viewer.can_view = false;
 				}
 			},
 			textareaAutoResize: function() {

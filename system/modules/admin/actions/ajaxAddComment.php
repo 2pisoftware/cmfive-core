@@ -45,6 +45,10 @@ function ajaxAddComment_POST(Web $w) {
 		$comment->setOwner($user->id);
 
 		foreach (!empty($request_data->viewers) ? $request_data->viewers : [] as $viewer) {
+			if ($viewer->id == $w->Auth->user()->id) {
+				continue;
+			}
+
 			if ($viewer->can_view) {
 				$comment->addViewer($viewer->id);
 			}

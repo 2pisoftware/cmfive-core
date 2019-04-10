@@ -45,5 +45,6 @@ function edit_GET(Web $w) {
 	$w->ctx("redirect_url", WEBROOT . "/" . $redirect_url);
 	$w->ctx("is_restricted", json_encode(empty($owner) ? false : true));
 	$w->ctx("viewers", json_encode($viewers));
+	$w->ctx("owner", json_encode(["id" => $owner->id, "name" => $owner->getFullName()]));
 	$w->ctx("can_restrict", $w->Auth->user()->hasRole("restrict") ? "true" : "false");
 }

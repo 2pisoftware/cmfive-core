@@ -41,6 +41,7 @@
 				id: "<?php echo $id; ?>",
 				can_restrict: "<?php echo $can_restrict; ?>",
 				viewers: <?php echo empty($viewers) ? json_encode([]) : $viewers; ?>,
+				new_owner: <?php echo $owner; ?>,
 				title: "<?php echo $title; ?>",
 				description: "<?php echo $description; ?>",
 				file_name: "<?php echo $file_name; ?>",
@@ -91,6 +92,13 @@
 					console.log(error);
 				}).finally(function() {
 
+				});
+			}
+		},
+		computed: {
+			canViewViewers: function() {
+				return this.viewers.filter(function(viewer) {
+					return viewer.can_view;
 				});
 			}
 		}
