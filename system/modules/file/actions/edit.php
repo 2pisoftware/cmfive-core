@@ -21,12 +21,8 @@ function edit_GET(Web $w) {
 
 	if (!empty($object)) {
 		foreach (empty($users) ? [] : $users as $user) {
-			if ($user->id === $w->Auth->user()->id) {
-				continue;
-			}
-
 			if ($object->canView($user)) {
-				$link = $w->Main->getObject("RestrictedObjectUserLink", ["object_id" => $attachment->id, "user_id" => $user->id, "type" => "viewer"]);
+				$link = $w->Main->getObject("RestrictedObjectUserLink", ["object_id" => $attachment->id, "user_id" => $user->id]);
 
 				$viewers[] = [
 					"id" => $user->id,
@@ -37,11 +33,17 @@ function edit_GET(Web $w) {
 		}
 	}
 
+	$new_owner = [
+		"id" => $owner->id,
+		"name" => $owner->getFullName()
+	];
+
 	$w->ctx("id", $attachment->id);
 	$w->ctx("title", $attachment->title);
 	$w->ctx("description", $attachment->description);
 	$w->ctx("file_name", $attachment->filename);
 	$w->ctx("file_directory", WEBROOT . "/file/atfile/" . $attachment->id . "/" . $attachment->filename);
+    $w->ctx("new_owner", json_encode($new_owner));
 	$w->ctx("redirect_url", WEBROOT . "/" . $redirect_url);
 	$w->ctx("is_restricted", json_encode(empty($owner) ? false : true));
 	$w->ctx("viewers", json_encode($viewers));

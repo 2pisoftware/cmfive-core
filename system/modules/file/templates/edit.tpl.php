@@ -1,5 +1,4 @@
 <div v-cloak id="app">
-	<div class="overlay" v-if="is_loading"></div>
 	<div class="panel">
 		<h3>Edit Attachment</h3>
 		<form method="POST" @submit.prevent="">
@@ -21,11 +20,17 @@
 					</label>
 					<div v-show="is_restricted"><strong>Select the users that can view this attachment</strong>
 						<div v-for="viewer in viewers" class="small-12 medium-6 large-4">
-							<label class="cmfive__checkbox-container">{{ viewer.name }}
+							<label class="cmfive__checkbox-container" v-if="viewer.id != <?php echo $w->Auth->user()->id; ?>">{{ viewer.name }}
 								<input type="checkbox" v-model="viewer.can_view">
 								<span class="cmfive__checkbox-checkmark" ></span>
 							</label>
 						</div>
+						<strong>Attachment Owner</strong>
+						<select @change="updateOwner">
+							<option v-for="viewer in canViewViewers" :value="JSON.stringify(viewer)">
+								{{ viewer.name }}
+							</option>
+						</select>
 					</div>
 				</div>
 			</div><br>
@@ -41,7 +46,7 @@
 				id: "<?php echo $id; ?>",
 				can_restrict: "<?php echo $can_restrict; ?>",
 				viewers: <?php echo empty($viewers) ? json_encode([]) : $viewers; ?>,
-				new_owner: <?php echo $owner; ?>,
+				new_owner: <?php echo empty($new_owner) ? json_decode([]) : $new_owner; ?>,
 				title: "<?php echo $title; ?>",
 				description: "<?php echo $description; ?>",
 				file_name: "<?php echo $file_name; ?>",
@@ -50,12 +55,14 @@
 				is_restricted: ("<?php echo $is_restricted; ?>" == "true"),
 				max_upload_size: "<?php echo @$w->File->getMaxFileUploadSize() ? : (2 * 1024 * 1024); ?>",
 				redirect_url: "<?php echo $redirect_url; ?>",
-				is_loading: false
 			}
 		},
 		methods: {
 			prepareFile: function() {
 				this.file = this.$refs.file.files[0];
+			},
+			updateOwner: function(event) {
+				this.new_owner = JSON.parse(event.target.value);
 			},
 			uploadFile: function() {
 				if (this.file != null && this.file.size > this.max_upload_size) {
@@ -63,13 +70,14 @@
 					return;
 				}
 
-				this.is_loading = true;
+				toggleModalLoading();
 
 				var file_data = {
 					id: this.id,
 					title: this.title,
 					description: this.description,
 					is_restricted: this.is_restricted,
+					new_owner: this.new_owner,
 					viewers: this.viewers.filter(function(viewer) {
 						return viewer.can_view;
 					})

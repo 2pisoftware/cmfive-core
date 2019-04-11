@@ -39,10 +39,11 @@ function ajaxAddComment_POST(Web $w) {
 	$comment->obj_table = $top_object_table_name;
 	$comment->obj_id = $request_data->top_object_id;
 	$comment->comment = strip_tags($request_data->comment);
+	$comment->creator_id = $request_data->new_owner->id;
 	$comment->insertOrUpdate();
 
 	if ($request_data->is_restricted) {
-		$comment->setOwner($user->id);
+		$comment->setOwner($request_data->new_owner->id);
 
 		foreach (!empty($request_data->viewers) ? $request_data->viewers : [] as $viewer) {
 			if ($viewer->id == $w->Auth->user()->id) {

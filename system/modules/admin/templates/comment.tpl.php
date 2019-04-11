@@ -1,5 +1,4 @@
 <div v-cloak id="app">
-	<div class="overlay" v-if="is_loading"></div>
 	<div class="panel">
 		<h3>{{ is_new_comment == "true" ? "New Comment" : "Edit Comment" }}</h3>
 		<form id="comment_form" method="POST" @submit.prevent="">
@@ -17,7 +16,7 @@
 			</div><br>
 			<div v-if="can_restrict">
 				<label class="cmfive__checkbox-container">Restricted
-					<input type="checkbox" v-model="is_restricted" @click="toggleIsRestricted()">
+					<input type="checkbox" v-model="is_restricted" @click="toggleIsRestricted()" :disabled="is_parent_restricted">
 					<span class="cmfive__checkbox-checkmark"></span>
 				</label>
 				<div v-show="is_restricted"><strong>Select the users that can view this comment</strong>
@@ -27,6 +26,12 @@
 							<span class="cmfive__checkbox-checkmark" ></span>
 						</label>
 					</div>
+					<strong v-if="comment_id != 0">Comment Owner</strong>
+					<select v-if="comment_id != 0" @change="updateOwner">
+						<option v-for="viewer in canViewViewers" :value="JSON.stringify(viewer)">
+							{{ viewer.name }}
+						</option>
+					</select>
 				</div>
 			</div><br>
 			<button class="small" style="margin-bottom: 0rem;" @click="saveComment()">Save</button>
@@ -43,11 +48,12 @@
 				viewers: <?php echo empty($viewers) ? json_encode([]) : $viewers; ?>,
 				top_object_table_name: "<?php echo $top_object_table_name; ?>",
 				top_object_id: "<?php echo $top_object_id; ?>",
+				new_owner: <?php echo empty($new_owner) ? json_decode([]) : $new_owner; ?>,
 				can_restrict: "<?php echo $can_restrict; ?>",
 				is_new_comment: "<?php echo $is_new_comment; ?>",
 				is_internal_only: "<?php echo $is_internal_only; ?>",
 				is_restricted: <?php echo $is_restricted; ?>,
-				is_loading: false
+				is_parent_restricted: <?php echo $is_parent_restricted; ?>,
 			}
 		},
   		methods: {
@@ -89,18 +95,22 @@
 				this.$refs.textarea.style.cssText = 'min-height: 5rem; resize: none;';
     			this.$refs.textarea.style.cssText = 'height:' + (this.$refs.textarea.scrollHeight + 2) + 'px';
 			},
+			updateOwner: function(event) {
+				this.new_owner = JSON.parse(event.target.value);
+			},
 			saveComment: function() {
 				if (this.comment === null || this.comment.trim() === "") {
 					new Toast("Comment cannot be blank").show();
 					return;
 				}
 
-				this.is_loading = true;
+				toggleModalLoading();
 
 				axios.post("/admin/ajaxAddComment", {
 					comment: app.comment,
 					comment_id: app.comment_id,
 					viewers: app.viewers,
+					new_owner: app.new_owner,
 					top_object_table_name: app.top_object_table_name,
 					top_object_id: app.top_object_id,
 					is_internal_only: app.is_internal_only,
@@ -117,6 +127,13 @@
 		},
 		mounted: function() {
 			this.$refs.textarea.style.cssText = 'min-height: 5rem; resize: none;';
+		},
+		computed: {
+			canViewViewers: function() {
+				return this.viewers.filter(function(viewer) {
+					return viewer.can_view;
+				});
+			}
 		}
 	});
 </script>

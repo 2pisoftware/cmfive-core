@@ -30,10 +30,14 @@ function ajaxEditAttachment_POST(Web $w) {
 	$attachment->updateAttachment("file");
 	$attachment->title = $request_data->title;
 	$attachment->description = $request_data->description;
+	$attachment->creator_id = $request_data->new_owner->id;
 	$attachment->update();
 
 	if ($request_data->is_restricted) {
-		$attachment->setOwner($user->id);
+		$owner_link = $attachment->getOwnerLink();
+		$owner_link->delete();
+
+		$attachment->setOwner($request_data->new_owner->id);
 
 		$current_viewers = $attachment->getViewerLinks();
 		foreach (empty($current_viewers) ? [] : $current_viewers as $current_viewer) {

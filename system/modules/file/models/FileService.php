@@ -296,6 +296,13 @@ class FileService extends DbService {
 	function getAttachmentsFileList($objectOrTable, $id = null, $type_code_blacklist = []) {
 		$attachments = $this->getAttachments($objectOrTable, $id);
 		if (!empty($attachments)) {
+
+			foreach ($attachments as $key => $attachment) {
+				if ($attachment->isRestricted()) {
+					unset($attachments[$key]);
+				}
+			}
+
 			$pluck = array();
 			if (!empty($type_code_blacklist)) {
 				$attachments = array_filter($attachments, function($attachment) use ($type_code_blacklist) {

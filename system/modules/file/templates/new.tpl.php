@@ -1,5 +1,4 @@
 <div v-cloak id="app">
-	<div class="overlay" v-if="is_loading"></div>
 	<div class="panel">
 		<h3>New Attachment</h3>
 		<form method="POST" @submit.prevent="">
@@ -47,7 +46,6 @@
 				class: "<?php echo $class; ?>",
 				class_id: "<?php echo $class_id; ?>",
 				redirect_url: "<?php echo $redirect_url; ?>",
-				is_loading: false
 			}
 		},
 		methods: {
@@ -65,7 +63,7 @@
 					return;
 				}
 
-				this.is_loading = true;
+				toggleModalLoading();
 
 				var file_data = {
 					title: this.title,

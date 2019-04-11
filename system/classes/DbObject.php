@@ -1308,11 +1308,11 @@ class DbObject extends DbService {
     }
 
     public function setOwner($user_id) {
-        if (!static::$_restrictable || $this->w->Auth->user()->id !== $user_id) {
+        if (!static::$_restrictable) {
             return false;
         }
 
-        $link = $this->w->Main->getObject("RestrictedObjectUserLink", ["object_id" => $this->id, "object_class" => static::class, "user_id" => $user_id, "type" => "owner"]);
+        $link = $this->w->Main->getObject("RestrictedObjectUserLink", ["object_id" => $this->id, "object_class" => static::class, "type" => "owner"]);
         if (empty($link)) {
             $link = new RestrictedObjectUserLink($this->w);
         }
