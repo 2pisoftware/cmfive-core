@@ -47,9 +47,9 @@ class LogService extends \DbService {
         $this->loggers[$name] = new Logger($name);
         
         if ($logToSystemFile === true) {
-            $filename = ROOT_PATH . "/log/" . LogService::$system_logger . ".log";
+            $filename = STORAGE_PATH . "/log/" . LogService::$system_logger . ".log";
         } else {
-            $filename = ROOT_PATH . "/log/{$name}.log";
+            $filename = STORAGE_PATH . "/log/{$name}.log";
         }
         $handler = new RotatingFileHandler($filename);
         $handler->setFormatter($this->formatter);

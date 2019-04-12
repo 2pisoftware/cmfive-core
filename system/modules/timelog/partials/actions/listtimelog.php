@@ -7,10 +7,6 @@ function listtimelog(\Web $w, $params) {
 	
 	$timelogs = $w->Timelog->getTimelogsForObjectByClassAndId($params['object_class'], $params['object_id']);
 	if (!empty($timelogs)) {
-//		uasort($timelogs, function($a, $b) {
-//			return $a->dt_start - $b->dt_start;
-//		});
-	
 		$total = array_reduce($timelogs, function($carry, $timelog) {
 			return $carry += $timelog->getDuration();
 		});
