@@ -1,13 +1,6 @@
 // Instructions to disable MySQL Default Stopwords //
 // To be run using root access //
 
--> In the mysql config file, under the [mysqld] heading add the following lines, replacing db_name with your database name. Custom stopwords overide is the name of the table created from the migration.
+-> Change the table engine to InnoDB by running the following query
 
-innodb_ft_enable_stopword = db_name/custom_stopwords_override
-
--> Save the file
--> Restart MySQL server
-
--> Then under the Admin Module, navigate to the SearchAdmin Submodule. There you will find a button that will reindex all the objects in the object_index table. Click it and make sure it confirms the objects have been reindexed. 
-
--> The default stopword table has now been overidden!
+ALTER TABLE object_index ENGINE = InnoDB;

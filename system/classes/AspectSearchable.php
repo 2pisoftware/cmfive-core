@@ -42,6 +42,8 @@ class AspectSearchable {
 			$this->_index = $this->object->getObject("ObjectIndex", 
 					array("class_name"=>get_class($this->object), 
 							"object_id"=>$this->object->id));
+			$array = array("class_name"=>get_class($this->object), 
+			"object_id"=>$this->object->id);
 		}
 		return $this->_index;
 	}
@@ -52,6 +54,7 @@ class AspectSearchable {
 	function insert($ignoreAdditional = true) {
 		if ($this->object->shouldAddToSearch()) {
 			//adding to search
+			//$this->object->w->db->query("SET SESSION innodb_ft_user_stopword_table = 'cmfive/custom_stopwords_override';")->execute();
 			$index = $this->getIndex();
 			if (empty($index)) {
 				$io = new ObjectIndex($this->object->w);

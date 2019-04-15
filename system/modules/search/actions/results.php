@@ -1,5 +1,7 @@
 <?php
 function results_GET(Web $w) {
+    //$w->db->sql("SET SESSION innodb_ft_user_stopword_table = 'cmfive/custom_stopwords_override';")->execute();
+
 	$response = array("success" => true, "data" => "");
         $w->setLayout(null);
 	$q = $w->request('q'); // query
@@ -8,7 +10,7 @@ function results_GET(Web $w) {
 	$ps = $w->request('ps'); // pageSize	
 	$tr = $w->request('tr'); // total results
 	$tags = $w->request('tags'); // Tags
-	
+
 	if ( ($q && strlen($q) >= 3) || (!empty($tags)) ) {
 			if(!empty($tags)) {
 				if(is_array($tags)) {
