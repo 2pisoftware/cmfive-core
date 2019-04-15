@@ -14,7 +14,7 @@ class FormInitialMigration extends CmfiveMigration {
 				'id' => false,
 				'primary_key' => 'id'
 			])->addColumn($column)
-					->addColumn("title", "string", ["limit" => 256])
+					->addColumn("title", "string", ["limit" => 255])
 					->addColumn("description", "string", ["limit" => 1024,'null' => true])
 					->addCmfiveParameters()
 					->create();
@@ -26,10 +26,10 @@ class FormInitialMigration extends CmfiveMigration {
 				'primary_key' => 'id'
 			])->addColumn($column)
 					->addColumn("form_id", "biginteger")
-					->addColumn("name", "string", ["limit" => 256])
-					->addColumn("technical_name", "string", ["limit" => 256,'null' => true])
-					->addColumn("interface_class", "string", ["limit" => 256, "null" => true])
-					->addColumn("type", "string", ["limit" => 256])
+					->addColumn("name", "string", ["limit" => 255])
+					->addColumn("technical_name", "string", ["limit" => 255,'null' => true])
+					->addColumn("interface_class", "string", ["limit" => 255, "null" => true])
+					->addColumn("type", "string", ["limit" => 255])
 					->addColumn("mask", "string", ["limit" => 1024, "null" => true])
 					->addCmfiveParameters()
 					->create();
@@ -43,7 +43,7 @@ class FormInitialMigration extends CmfiveMigration {
 					->addColumn("form_instance_id", "biginteger")
 					->addColumn("form_field_id", "biginteger")
 					->addColumn("value", "string", ["limit" => 1024, "null" => true])
-					->addColumn("field_type", "string", ["limit" => 256])
+					->addColumn("field_type", "string", ["limit" => 255])
 					->addColumn("mask", "string", ["limit" => 1024, "null" => true])
 					->addCmfiveParameters()
 					->create();
@@ -55,8 +55,8 @@ class FormInitialMigration extends CmfiveMigration {
 				'primary_key' => 'id'
 			])->addColumn($column)
 					->addColumn("form_field_id", "biginteger")
-					->addColumn("meta_key", "string", ["limit" => 256])
-					->addColumn("meta_value", "string", ["limit" => 256, "null" => true])
+					->addColumn("meta_key", "string", ["limit" => 255])
+					->addColumn("meta_value", "string", ["limit" => 255, "null" => true])
 					->addCmfiveParameters()
 					->create();
 		}
@@ -67,7 +67,7 @@ class FormInitialMigration extends CmfiveMigration {
 				'primary_key' => 'id'
 			])->addColumn($column)
 					->addColumn("form_id", "biginteger")
-					->addColumn("object_class", "string", ["limit" => 256])
+					->addColumn("object_class", "string", ["limit" => 255])
 					->addColumn("object_id", "biginteger")
 					->addCmfiveParameters()
 					->create();
@@ -79,7 +79,7 @@ class FormInitialMigration extends CmfiveMigration {
 				'primary_key' => 'id'
 			])->addColumn($column)
 					->addColumn("form_id", "biginteger")
-					->addColumn("object", "string", ["limit" => 256])
+					->addColumn("object", "string", ["limit" => 255])
 					->addCmfiveParameters()
 					->create();
 		}

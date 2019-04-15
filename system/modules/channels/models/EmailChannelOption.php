@@ -105,7 +105,6 @@ class Zend_Mail_Protocol_Imap extends \Zend\Mail\Protocol\Imap {
 }
 
 class EmailChannelOption extends DbObject {
-
     static $_db_table = "channel_email_option";
     public $_channeltype = "email";
     public $channel_id;
@@ -182,18 +181,21 @@ class EmailChannelOption extends DbObject {
         $filter_arr[] = "UNSEEN";
 
         // Connect and fetch emails
-        $this->w->Log->info("Connecting to mail server");
+        $this->w->Log->setLogger('EmailChannel')->info("Connecting to mail server");
         $mail = $this->connectToMail();
         if (!empty($mail)) {
-
-            $this->w->Log->info("Getting messages with filter: " . json_encode($filter_arr));
+            $this->w->Log->setLogger('EmailChannel')->info("Getting messages with filter: " . json_encode($filter_arr));
             $results = $mail->protocol->search($filter_arr);
-            if (count($results) > 0) {
-                $this->w->Log->info("Found " . count($results) . " messages, looping through");
-                foreach ($results as $messagenum) {
+            if (!empty($results)) {
+                $this->w->Log->setLogger('EmailChannel')->info("Found " . count($results) . " messages, looping through");
+                foreach ($results as $index => $messagenum ) {
+					$i = $index + 1;
+					$this->w->Log->setLogger('EmailChannel')->debug("Reading message {$i}");
                     $message = $mail->getMessage($messagenum);
 
-					//create a regular zend_mail_message to use toString()
+					/**create a regular zend_mail_message to use toString()
+					* this is required because the storage mail class doesn't support this method
+					*/
                     $zend_message = new Zend_Mail_Message();
                     $zend_message->setHeaders($message->getHeaders());
                     $zend_message->setBody($message->getContent());
@@ -201,10 +203,10 @@ class EmailChannelOption extends DbObject {
 
                     $email = new EmailStructure();
                     $email->to = $message->to;
-					//@todo implement sending emails with custom headers
-					// $email->message_id = $message->getHeader('Message-ID', 'array');
+
+					$email->message_id = $message->getHeader('Message-Id')->getFieldValue();
 					// get the from address, only expecting one
-					foreach ($zend_message->getFrom() as $address)
+					foreach ($zend_message->getFrom() as $address) {
 						$email->from = $address->getName();
 						$email->from_email_address = $address->getEmail();
 						break;
@@ -219,31 +221,36 @@ class EmailChannelOption extends DbObject {
                     $channel_message->is_processed = 0;
                     $channel_message->insert();
 
-                    // Save raw email
-                    $attachment_id = $this->w->File->saveFileContent($channel_message, $rawmessage, "rawemail.txt", "channel_email_raw", "text/plain");
                     if ($message->isMultipart()) {
                         foreach (new RecursiveIteratorIterator($message) as $part) {
                             try {
                                 $contentType = strtok($part->contentType, ';');
+                                $transferEncoding = $part->getHeader("Content-Transfer-Encoding")->getFieldValue("transferEncoding");
                                 switch ($contentType) {
                                     case "text/plain":
                                         $email->body["plain"] = trim($part->__toString());
+                                        if ($transferEncoding == "base64") {
+                                            $email->body['plain'] = base64_decode($email->body['plain']);
+                                        }
                                         break;
                                     case "text/html":
                                         $email->body["html"] = trim($part->__toString());
+                                        if ($transferEncoding == "base64") {
+                                            $email->body['html'] = base64_decode($email->body['html']);
+                                        }
                                         break;
                                     default:
                                         // Is probably an attachment so just save it
-                                        $transferEncoding = $part->getHeader("Content-Transfer-Encoding")->getFieldValue("transferEncoding");
                                         $content_type_header = $part->getHeader("Content-Type");
+
                                         // Name is stored under "parameters" in an array
                                         $nameArray = $content_type_header->getParameters();
                                         $name = '';
-
                                         if (empty($nameArray) || !is_array($nameArray) || !array_key_exists('name', $nameArray)) {
                                             $content_dispositon = $part->getHeader('Content-Disposition');
 
                                             $content_dispositon_array = explode(';', $content_dispositon->getFieldValue('filename'));
+
                                             if (!empty($content_dispositon_array)) {
                                                 foreach($content_dispositon_array as $cda) {
                                                     $arr = explode('=', $cda);
@@ -251,6 +258,12 @@ class EmailChannelOption extends DbObject {
                                                         $name = trim($arr[1]);
                                                     }
                                                 }
+                                            }
+                                            // adding check for long file names which are cut from content_disposition
+                                            if (empty($name)) {
+                                                $top_lines = trim($part->getTopLines());
+
+                                                $name = $top_lines;
                                             }
                                         } else {
                                             $name = $nameArray['name'];
@@ -268,16 +281,20 @@ class EmailChannelOption extends DbObject {
                                                 ($transferEncoding == "base64" ? base64_decode(trim($part->__toString())) : trim($part->__toString())), $name, "channel_email_attachment", $contentType);
                                 }
                             } catch (Zend_Mail_Exception $e) {
-                                // Ignore
+                                $this->w->Log->setLogger('EmailChannel')->error("Zend_Mail_Exception {$e}");
                             }
                         }
-                    }
-
-                    $attachment_id = $this->w->File->saveFileContent($channel_message, serialize($email), "email.txt", "channel_email_raw", "text/plain");
+                    } else {
+						// assume its a plain text only email
+						$email->body["plain"] = $message->getContent();
+					}
+                    $this->w->File->saveFileContent($channel_message, serialize($email), "email.txt", "channel_email_raw", "text/plain", 'serialized EmailStructure object | NOT SENT TO CLIENT');
+                	$this->w->File->saveFileContent($channel_message, $rawmessage, "rawemail.txt", "channel_email_raw", "text/plain", "raw email message | NOT SENT TO CLIENT");
                 }
-            } else {
-                $this->w->Log->info("No new messages found");
-            }
+			} else {
+				$this->w->Log->setLogger('EmailChannel')->info("No new messages found");
+			}
+        }
     }
 
     public function connectToMail($shouldDecrypt = true, $test=false) {
@@ -313,8 +330,8 @@ class EmailChannelOption extends DbObject {
 		}
         return $mail;
       } catch (Exception $e) {
-            $this->Log->error("Error connecting to mail server: " . $e->getMessage());
-				return $e->getMessage();
+            $this->Log->setLogger('EmailChannel')->error("Error connecting to mail server: " . $e->getMessage());
+			return $e->getMessage();
       }
     }
 

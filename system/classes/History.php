@@ -31,6 +31,8 @@ class History {
         if (!empty($_SESSION[self::$cookie_key])) {
             // Get history form session and sort ($register is by reference)
             uasort($_SESSION[self::$cookie_key], array('History', 'sort'));
+        } else {
+            $_SESSION[self::$cookie_key] = [];
         }
 
         // Prepend module name to current name
