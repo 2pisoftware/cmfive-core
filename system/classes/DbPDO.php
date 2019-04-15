@@ -25,7 +25,7 @@ class DbPDO extends PDO {
 
     private $migration_mode = 0;
     
-    public function __construct($config = array()) {
+    public function __construct($config = array(), $override = "") {
         // Set up our PDO class
         //GC: sqlsrv requires a different dsn to mysql.
         switch ($config['driver']) {
@@ -61,17 +61,20 @@ class DbPDO extends PDO {
         // unecessary to do on every call so maybe move it to get()
         // Setting this to static however should make this array share the memory
         // heap for this var across all instances
-		$this->getAvailableTables();
+        $this->getAvailableTables();
 
-        if ($this->getDatabase() == "cmfive")
+        if ($override == true)
         {
             $this->disableStopwords();
-        } 
+        }
+
     } 
 
     public function disableStopwords()
     {
-        $this->sql("SET SESSION innodb_ft_user_stopword_table = 'cmfive/custom_stopwords_override'; ALTER TABLE object_index DROP INDEX content; CREATE FULLTEXT INDEX content ON object_index(content);")->execute();
+        $this->sql("ALTER TABLE object_index DROP INDEX content;");
+        $this->sql("SET SESSION innodb_ft_user_stopword_table = 'cmfive/custom_stopwords_override';");
+        $this->sql("CREATE FULLTEXT INDEX content ON object_index(content);");
     }
 
     public function getDatabase() {

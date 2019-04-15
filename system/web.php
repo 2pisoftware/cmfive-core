@@ -873,7 +873,7 @@ class Web {
 	 */
 	public function initDB() {
 		try {
-			$this->db = new DbPDO(Config::get("database"));
+			$this->db = new DbPDO(Config::get("database"), Config::get("search.stopword_override"));
 		} catch (Exception $ex) {
 			echo "Error: Can't connect to database.";
 			die();
