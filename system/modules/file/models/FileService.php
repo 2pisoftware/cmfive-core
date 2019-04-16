@@ -419,12 +419,12 @@ class FileService extends DbService {
 	 */
 	function uploadAttachment($requestkey, $parentObject, $title = null, $description = null, $type_code = null) {
 
-                if (empty($_POST[$requestkey]) && (empty($_FILES[$requestkey]) || $_FILES[$requestkey]['size'] <= 0)) {
-                    return false;
-                }
+		if (empty($_POST[$requestkey]) && (empty($_FILES[$requestkey]) || $_FILES[$requestkey]['size'] <= 0)) {
+			return false;
+		}
 
 
-                if (!is_a($parentObject, "DbObject")) {
+        if (!is_a($parentObject, "DbObject")) {
 			$this->w->error("Parent not found.");
 		}
 
