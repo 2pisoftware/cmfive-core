@@ -62,12 +62,14 @@ class DbPDO extends PDO {
         // Setting this to static however should make this array share the memory
         // heap for this var across all instances
         $this->getAvailableTables();
-
-        if ($override == true)
+       
+        if (in_array("custom_stopwords_override", $this->table_names))
         {
-            $this->disableStopwords();
+            if ($override == true)
+            {
+                $this->disableStopwords();
+            }
         }
-
     } 
 
     public function disableStopwords()
