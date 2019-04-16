@@ -1,6 +1,0 @@
-// Instructions to disable MySQL Default Stopwords //
-// To be run using root access //
-
--> Change the table engine to InnoDB by running the following query
-
-ALTER TABLE object_index ENGINE = InnoDB;

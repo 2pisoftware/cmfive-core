@@ -1,7 +1,5 @@
 <?php
 function results_GET(Web $w) {
-    //$w->db->sql("SET SESSION innodb_ft_user_stopword_table = 'cmfive/custom_stopwords_override';")->execute();
-
 	$response = array("success" => true, "data" => "");
         $w->setLayout(null);
 	$q = $w->request('q'); // query
