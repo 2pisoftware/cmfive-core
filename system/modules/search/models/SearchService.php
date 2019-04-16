@@ -154,8 +154,6 @@ class SearchService extends DbService {
 			}
 			$select = implode(" UNION ", $s2);
 		}
-		
-		
 		$this->w->Log->debug($select);
 		
 		$results = $this->_db->sql($select)->fetch_all();
