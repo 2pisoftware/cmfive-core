@@ -40,5 +40,10 @@ function main_core_dbobject_after_delete_comment(Web $w, Comment $comment) {
 }
 
 function main_admin_remove_user(Web $w, User $user) {
-	return $w->partial("removeUser", ["user" => $user, "redirect" => "/admin-user/remove/" . $user->id], "main");
+	$owner_links = $w->Main->getObjects("RestrictedObjectUserLink", ["user_id" => $user->id, "type" => "owner"]);
+	if (empty($owner_links)) {
+		return;
+	}
+
+	return $w->partial("removeUser", ["user" => $user, "redirect" => "/admin-user/remove/" . $user->id, "owner_links" => $owner_links], "main");
 }

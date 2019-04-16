@@ -1336,7 +1336,7 @@ class DbObject extends DbService {
         $logged_in_user_id = $this->w->Auth->user()->id;
         $owner_link = $this->w->Main->getObject("RestrictedObjectUserLink", ["object_id" => $this->id, "object_class" => static::class, "user_id" => $logged_in_user_id, "type" => "owner"]);
 
-        if ($logged_in_user_id !== $owner_link->user_id) {
+        if (empty($owner_link) || $logged_in_user_id !== $owner_link->user_id) {
             return false;
         }
 

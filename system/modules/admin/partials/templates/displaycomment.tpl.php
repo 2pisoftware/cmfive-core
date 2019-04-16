@@ -5,7 +5,7 @@
             <img class='comment_avatar' src='https://www.gravatar.com/avatar/<?php echo md5(strtolower(trim(@$c->w->Auth->getUser($c->creator_id)->getContact()->email))); ?>?d=identicon' />
         </div>
         <div class='medium-11 columns comment_right_column'>
-            <p><b><?php echo (!empty($c->creator_id) ?@$c->w->Auth->getUser($c->creator_id)->getFullName() : "") . ($c->isRestricted() ? " \u{1F512}" : ""); ?></b></p>
+            <p><b><?php echo (!empty($c->creator_id) ?@$c->w->Auth->getUser($c->creator_id)->getFullName() : "") . ($c->isRestricted() ? ' <span class="fi-lock"></span>' : ""); ?></b></p>
             <?php echo $c->isRestricted() && $is_outgoing ? "[Restricted comment, please view in Cmfive]" : $w->Comment->renderComment($c->comment); ?>
             <div class="comment_meta">
                 <?php if (!empty($c->dt_created)) : ?>

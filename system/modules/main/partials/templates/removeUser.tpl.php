@@ -1,7 +1,12 @@
 <div v-cloak id="app">
 	<div v-show="!new_owner_set && owner_links.length > 0">
 		<h3>Main</h3>
-		<p>This user has ownership of {{ owner_links.length }} object(s). Select a new user to take over ownership.</p>
+		<p>This user has ownership of the following restricted object(s). Select a new user to take over ownership. <strong>If a new User is not selected these restricted objects will be unretrievable</strong></p>
+		<ul>
+			<li v-for="restricted_object_class in restricted_object_classes">
+				{{ restricted_object_class.count + " " + restricted_object_class.name + (restricted_object_class.count > 1 ? "s" : "") }}
+			</li>
+		</ul>
 		<form method="POST" @submit.prevent="">
 			<select @change="updateSelectedOwner">
 				<option v-for="user in users" :value="JSON.stringify(user)">
@@ -20,6 +25,7 @@
 				deleting_user_id: "<?php echo $deleting_user_id; ?>",
 				users: <?php echo empty($users) ? json_encode([]) : $users; ?>,
 				owner_links: <?php echo empty($owner_links) ? json_encode([]) : $owner_links; ?>,
+				restricted_object_classes: <?php echo empty($restricted_object_classes) ? json_encode([]) : $restricted_object_classes; ?>,
 				new_owner: null,
 				new_owner_set: false,
 			}
@@ -29,7 +35,7 @@
 				this.new_owner = JSON.parse(event.target.value);
 			},
 			setNewOwner: function() {
-				if (!confirm("Are you sure you want to set this user as the new owner of these object(s)?")) {
+				if (!confirm("Are you sure you want to set this user as the new owner of these restricted object(s)?")) {
 					return;
 				}
 
@@ -46,7 +52,7 @@
 					new Toast("Failed to set new owner").show();
 					console.log(error);
 				}).finally(function() {
-					toggleModalLoading();
+					window.location.href = "<?php echo WEBROOT; ?>" + "/admin-user/remove/" + app.deleting_user_id;
 				});
 			}
 		},

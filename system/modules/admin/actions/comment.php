@@ -71,7 +71,7 @@ function comment_GET(Web $w){
                 $is_notify = false;
 
                 foreach ($notify_recipients as $key => $notify_recipient) {
-                    if ($key == $user->id && !$is_restricted) {
+                    if ($key == $user->id && !$is_restricted && $w->Auth->user()->id != $user->id) {
                         $is_notify = true;
                     }
                 }

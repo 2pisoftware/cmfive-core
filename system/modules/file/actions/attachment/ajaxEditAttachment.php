@@ -34,9 +34,6 @@ function ajaxEditAttachment_POST(Web $w) {
 	$attachment->update();
 
 	if ($request_data->is_restricted) {
-		$owner_link = $attachment->getOwnerLink();
-		$owner_link->delete();
-
 		$attachment->setOwner($request_data->new_owner->id);
 
 		$current_viewers = $attachment->getViewerLinks();
