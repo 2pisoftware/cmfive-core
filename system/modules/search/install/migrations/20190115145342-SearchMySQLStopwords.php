@@ -12,10 +12,11 @@ class SearchMySQLStopwords extends CmfiveMigration {
 					->addColumn('value', 'string')
 					->create();
 				$query = "INSERT INTO custom_stopwords_override(value) VALUE ('dgiwdgwidwdiv2');";
-				$this->w->db->query($query)->execute();
+				$this->w->db->sql($query);
 		}
-
 		$this->w->Search->reindexAll();
+		$query = "ALTER TABLE object_index ENGINE = InnoDB;";
+		$this->w->db->sql($query);
 	}
 
 	public function down() {
@@ -25,12 +26,12 @@ class SearchMySQLStopwords extends CmfiveMigration {
 
 	public function postText()
 	{
-		return "<div style='color:red;'>REQUIRED: </div> Go to \modules\search\install\customStopwordSetup.txt for instructions on how to disable the default MySQL stopwords.";
+		return "";
 	}
 
 	public function description()
 	{
-		return "Migration that creates the stopwords table to overide the mysql default stopword table. Also reindexes objects in the object_index table to account for the change in the stopwords list.";
+		return "Migration that creates the stopwords table to overide the mysql default stopword table. Also reindexes objects in the object_index table to account for the change in the stopwords list as well as converting object_index table to InnoDB engine.";
 	}
 
 }

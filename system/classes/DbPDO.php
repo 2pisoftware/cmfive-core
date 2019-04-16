@@ -73,8 +73,8 @@ class DbPDO extends PDO {
     public function disableStopwords()
     {
         $this->sql("SET SESSION innodb_ft_user_stopword_table = 'cmfive/custom_stopwords_override';");
-        $this->sql("ALTER TABLE object_index DROP INDEX content;");
-        $this->sql("CREATE FULLTEXT INDEX content ON object_index(content);");
+        $this->sql("ALTER TABLE object_index DROP INDEX object_index_content;");
+        $this->sql("CREATE FULLTEXT INDEX object_index_content ON object_index(content);");
     }
 
     public function getDatabase() {
