@@ -1,6 +1,6 @@
 <?php
 
-require "CmfiveTable.php";
+require_once "CmfiveTable.php";
 
 use \Cmfive\Table as Table;
 use Phinx\Db\Table\Column as Column;

@@ -1,16 +1,19 @@
 <?php
 
 function form_core_template_tab_headers(Web $w, $object) {
+	
 	if (empty($object)) {
 		return;
 	}
 	
 	// Check and see if there are any forms mapped to the object
+	
 	if ($w->Form->areFormsMappedToObject($object)) {
 		$tabHeaders = [];
 		$forms = $w->Form->getFormsMappedToObject($object);
 		foreach ($forms as $form) {
 			if ($form->is_deleted == 0) {
+				
 				$tabHeaders[] = "<a href='#".toSlug($form->title)."'>$form->title <span class='secondary round label cmfive__tab-label'>" . $form->countFormInstancesForObject($object) . "</span></a>";
 			}
 		}
