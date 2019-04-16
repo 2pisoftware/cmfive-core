@@ -31,6 +31,13 @@ class Attachment extends DbObject {
 	public $_skip_added_notification;
 	public $_searchable;
 
+	/**
+	 * DbObject::insert() override to set the mimetype, path and to call the
+	 * attachment hook
+	 *
+	 * @param <bool> $force_validation
+	 */
+
 	function insert($force_validation = false) {
 		// Get mimetype
 		if (empty($this->mimetype)) {
