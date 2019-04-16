@@ -3,15 +3,15 @@
 function ajaxEditAttachment_POST(Web $w) {
 	$w->setLayout(null);
 
-	$user = $w->Auth->user();
-	if (!$user->hasRole("restrict")) {
-		$w->out((new AxiosResponse())->setErrorResponse(null, ["error_message" => "User not authorised to restrict objects"]));
-		return;
-	}
-
 	$request_data = json_decode($_POST["file_data"]);
 	if (empty($request_data)) {
 		$w->out((new AxiosResponse())->setErrorResponse(null, ["error_message" => "Missing attachment data"]));
+		return;
+	}
+
+	$user = $w->Auth->user();
+	if (isset($request_data->is_restricted) && $request_data->is_restricted && !$user->hasRole("restrict")) {
+		$w->out((new AxiosResponse())->setErrorResponse(null, ["error_message" => "User not authorised to restrict objects"]));
 		return;
 	}
 
@@ -28,12 +28,12 @@ function ajaxEditAttachment_POST(Web $w) {
 	}
 
 	$attachment->updateAttachment("file");
-	$attachment->title = $request_data->title;
-	$attachment->description = $request_data->description;
-	$attachment->creator_id = $request_data->new_owner->id;
+	$attachment->title = isset($request_data->title) ? $request_data->title :  null;
+	$attachment->description = isset($request_data->description) ? $request_data->description : null;
+	$attachment->creator_id = isset($request_data->new_owner->id) ? $request_data->new_owner->id : $attachment->creator_id;
 	$attachment->update();
 
-	if ($request_data->is_restricted) {
+	if (isset($request_data->is_restricted) && $request_data->is_restricted) {
 		$attachment->setOwner($request_data->new_owner->id);
 
 		$current_viewers = $attachment->getViewerLinks();

@@ -3,15 +3,15 @@
 function ajaxAddAttachment_POST(Web $w) {
 	$w->setLayout(null);
 
-	$user = $w->Auth->user();
-	if (!$user->hasRole("restrict")) {
-		$w->out((new AxiosResponse())->setErrorResponse(null, ["error_message" => "User not authorised to restrict objects"]));
-		return;
-	}
-
 	$request_data = json_decode($_POST["file_data"]);
 	if (empty($request_data)) {
 		$w->out((new AxiosResponse())->setErrorResponse(null, ["error_message" => "Missing attachment data"]));
+		return;
+	}
+
+	$user = $w->Auth->user();
+	if (isset($request_data->is_restricted) && $request_data->is_restricted && !$user->hasRole("restrict")) {
+		$w->out((new AxiosResponse())->setErrorResponse(null, ["error_message" => "User not authorised to restrict objects"]));
 		return;
 	}
 
@@ -21,13 +21,13 @@ function ajaxAddAttachment_POST(Web $w) {
 		return;
 	}
 
-	$attachment_id = $w->File->uploadAttachment("file", $object, $request_data->title, $request_data->description, null);
+	$attachment_id = $w->File->uploadAttachment("file", $object, isset($request_data->title) ? $request_data->title : null, isset($request_data->description) ? $request_data->description : null);
 	if (empty($attachment_id)) {
 		$w->out((new AxiosResponse())->setErrorResponse(null, ["error_message" => "Failed to add attachment"]));
 		return;
 	}
 
-	if ($request_data->is_restricted) {
+	if (isset($request_data->is_restricted) && $request_data->is_restricted) {
 		$attachment = $w->File->getAttachment($attachment_id);
 		$attachment->setOwner($user->id);
 

@@ -76,12 +76,12 @@
 					})
 				};
 
-				var formData = new FormData();
-				formData.append("file", this.file);
-				formData.append("file_data", JSON.stringify(file_data));
+				var form_data = new FormData();
+				form_data.append("file", this.file);
+				form_data.append("file_data", JSON.stringify(file_data));
 
 				axios.post("/file-attachment/ajaxAddAttachment",
-					formData, {
+					form_data, {
 						headers: {
 							"Content-Type": "multipart/form-data"
 						}
