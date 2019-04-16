@@ -1,5 +1,6 @@
 <?php
 class SearchService extends DbService {
+
 	/**
 	 * Returns an array of search indeces that the currently logged in user
 	 * has access to. This uses the global module configuration and auth system
@@ -64,7 +65,7 @@ class SearchService extends DbService {
 	 * @return array
 	 */
 	public function getResults($query, $index = null, $page = null, $pageSize = null) {
-		//$this->_db->sql("SET SESSION innodb_ft_user_stopword_table = 'cmfive/custom_stopwords_override';")->execute();
+		
 		// sanity check
 		if (empty($query) || strlen($query) < 3) {
 			return null;
@@ -153,6 +154,7 @@ class SearchService extends DbService {
 			}
 			$select = implode(" UNION ", $s2);
 		}
+		
 		
 		$this->w->Log->debug($select);
 		
