@@ -25,7 +25,7 @@ class DbPDO extends PDO {
 
     private $migration_mode = 0;
     
-    public function __construct($config = array(), $override = "") {
+    public function __construct($config = array(), $override = false) {
         // Set up our PDO class
         //GC: sqlsrv requires a different dsn to mysql.
         switch ($config['driver']) {
@@ -72,8 +72,8 @@ class DbPDO extends PDO {
 
     public function disableStopwords()
     {
-        $this->sql("ALTER TABLE object_index DROP INDEX content;");
         $this->sql("SET SESSION innodb_ft_user_stopword_table = 'cmfive/custom_stopwords_override';");
+        $this->sql("ALTER TABLE object_index DROP INDEX content;");
         $this->sql("CREATE FULLTEXT INDEX content ON object_index(content);");
     }
 
