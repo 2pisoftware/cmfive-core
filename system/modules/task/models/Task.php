@@ -398,15 +398,15 @@ class Task extends DbObject {
         $tg = $this->Task->getTaskGroup($this->task_group_id);
         $assignee = $this->getAssignee();
         $buf = $tg->title;
-        if (!empty($assignee)) {
+        if ($assignee) {
             $buf .= ', Assigned: ' . $assignee->getFullName();
         }
 
-        if (!empty($this->dt_first_assigned)) {
+        if ($this->dt_first_assigned) {
             $buf .= ', First Assigned: ' . $this->getDate('dt_first_assigned');
         }
 
-        if (!empty($this->dt_due)) {
+        if ($this->dt_due) {
             $buf .= ', Due: ' . $this->getDate('dt_due');
         }
         return $buf;
