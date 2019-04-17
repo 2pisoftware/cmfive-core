@@ -4,6 +4,7 @@ class SearchMySQLStopwords extends CmfiveMigration {
 
 	public function up() {
 		// UP
+		ini_set('max_execution_time', 0);
 
 		if (!$this->hasTable('custom_stopwords_override')) {
 			$this->table('custom_stopwords_override', [
