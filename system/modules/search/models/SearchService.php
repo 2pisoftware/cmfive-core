@@ -49,6 +49,10 @@ class SearchService extends DbService {
 			}
 		}
 	}
+	public function reindexAllFulltextIndex() {
+		$this->_db->sql("ALTER TABLE object_index DROP INDEX object_index_content;");
+        $this->_db->sql("CREATE FULLTEXT INDEX object_index_content ON object_index(content);");
+	}
 	
 	/**
 	 * Returns the  results for a given query.

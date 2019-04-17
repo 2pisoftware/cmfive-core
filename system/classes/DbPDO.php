@@ -63,20 +63,15 @@ class DbPDO extends PDO {
         // heap for this var across all instances
         $this->getAvailableTables();
        
-        if (in_array("custom_stopwords_override", $this->table_names))
+        if (in_array("custom_stopwords_override", $this->table_names) && $override == true && $config['driver'] == 'mysql')
         {
-            if ($override == true)
-            {
-                $this->disableStopwords();
-            }
+            $this->disableStopwords();
         }
     } 
 
-    public function disableStopwords()
-    {
-        $this->sql("SET SESSION innodb_ft_user_stopword_table = 'cmfive/custom_stopwords_override';");
-        $this->sql("ALTER TABLE object_index DROP INDEX object_index_content;");
-        $this->sql("CREATE FULLTEXT INDEX object_index_content ON object_index(content);");
+    public function disableStopwords() {
+        $database_name = $this->config['database'];
+        $this->sql("SET SESSION innodb_ft_user_stopword_table = '$database_name/custom_stopwords_override';");
     }
 
     public function getDatabase() {
