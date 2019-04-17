@@ -36,6 +36,7 @@ class Attachment extends DbObject {
 	 *
 	 * @param <bool> $force_validation
 	 */
+
 	function insert($force_validation = false) {
 		// Get mimetype
 		if (empty($this->mimetype)) {
