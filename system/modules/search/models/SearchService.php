@@ -44,7 +44,9 @@ class SearchService extends DbService {
 			$objects = $this->getObjects ( $index, array ("is_deleted" => 0 ) );
 			if (! empty ( $objects )) {
 				foreach ( $objects as $object ) {
-					$object->_searchable->insert ();
+					if (property_exists($object, "_searchable")) {
+						$object->_searchable->insert ();
+					}
 				}
 			}
 		}

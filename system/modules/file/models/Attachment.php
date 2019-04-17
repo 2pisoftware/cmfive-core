@@ -29,7 +29,6 @@ class Attachment extends DbObject {
 	 * @var boolean
 	 */
 	public $_skip_added_notification;
-	public $_searchable;
 
 	/**
 	 * DbObject::insert() override to set the mimetype, path and to call the
