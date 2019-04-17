@@ -6,7 +6,10 @@ Config::set('admin', array(
     'path' => 'system/modules',
     'topmenu' => true,
     'audit_ignore' => array("index"),
-    'hooks' => array('core_dbobject','core_web'),
+    'hooks' => array(
+        'core_dbobject',
+        'core_web'
+    ),
     'printing' => array(
         'command' => array(
             'unix' => 'lpr -P $printername $filename',
