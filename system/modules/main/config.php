@@ -14,6 +14,7 @@ Config::set('main', array(
 	],
 	'hooks' => [
 		'core_dbobject',
+		'admin'
 	],
 	'available_languages' => [
 		'en_AU' => 'English',
@@ -22,7 +23,7 @@ Config::set('main', array(
 	],
 	'vue_components' => [
 		'html-tabs' => [
-			'/system/templates/vue-components/html/html-tabs.vue.js', 
+			'/system/templates/vue-components/html/html-tabs.vue.js',
 			'/system/templates/vue-components/html/html-tabs.vue.scss'
 		],
 		'html-tab' => [

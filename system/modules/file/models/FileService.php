@@ -296,6 +296,13 @@ class FileService extends DbService {
 	function getAttachmentsFileList($objectOrTable, $id = null, $type_code_blacklist = []) {
 		$attachments = $this->getAttachments($objectOrTable, $id);
 		if (!empty($attachments)) {
+
+			foreach ($attachments as $key => $attachment) {
+				if ($attachment->isRestricted()) {
+					unset($attachments[$key]);
+				}
+			}
+
 			$pluck = array();
 			if (!empty($type_code_blacklist)) {
 				$attachments = array_filter($attachments, function($attachment) use ($type_code_blacklist) {
@@ -412,12 +419,12 @@ class FileService extends DbService {
 	 */
 	function uploadAttachment($requestkey, $parentObject, $title = null, $description = null, $type_code = null) {
 
-                if (empty($_POST[$requestkey]) && (empty($_FILES[$requestkey]) || $_FILES[$requestkey]['size'] <= 0)) {
-                    return false;
-                }
+		if (empty($_POST[$requestkey]) && (empty($_FILES[$requestkey]) || $_FILES[$requestkey]['size'] <= 0)) {
+			return false;
+		}
 
 
-                if (!is_a($parentObject, "DbObject")) {
+        if (!is_a($parentObject, "DbObject")) {
 			$this->w->error("Parent not found.");
 		}
 

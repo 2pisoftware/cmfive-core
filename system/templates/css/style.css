@@ -1,12 +1,12 @@
 *, *:before, *:after {box-sizing:  border-box;}
 
 /* Override Foundation padding for inputs */
-input[type="text"], input[type="password"], 
-input[type="date"], input[type="datetime"], 
-input[type="datetime-local"], input[type="month"], 
-input[type="week"], input[type="email"], 
-input[type="number"], input[type="search"], 
-input[type="tel"], input[type="time"], 
+input[type="text"], input[type="password"],
+input[type="date"], input[type="datetime"],
+input[type="datetime-local"], input[type="month"],
+input[type="week"], input[type="email"],
+input[type="number"], input[type="search"],
+input[type="tel"], input[type="time"],
 input[type="url"], textarea, select {
     margin-bottom: 0px;
 }
@@ -168,8 +168,8 @@ button {
     border-bottom: 1px solid #cacaca;
 }
 
-.boxes > ul { 
-    list-style-type: none; 
+.boxes > ul {
+    list-style-type: none;
     margin: 0px;
 }
 
@@ -532,7 +532,7 @@ ul.cmfive_breadcrumbs > li {
 
 .cmfive_breadcrumbs li.current {
     color: rgb(200, 200, 200);
-    /*padding-left: 10px;*/   
+    /*padding-left: 10px;*/
 }
 
 .cmfive_breadcrumbs li > a {
@@ -745,4 +745,78 @@ input[type='checkbox'] {
 
 .close-reveal-modal {
     padding-top: 8px;
+}
+
+/* Customize the label (the container) */
+.cmfive__checkbox-container {
+    display: block;
+    position: relative;
+    padding-left: 35px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    font-size: 18px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/* Hide the browser's default checkbox */
+.cmfive__checkbox-container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+/* Create a custom checkbox */
+.cmfive__checkbox-checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 25px;
+    width: 25px;
+    background-color: #ffffff;
+    border: 1px solid #a9a9a9;
+}
+
+/* On mouse-over, add a grey background color */
+.cmfive__checkbox-container:hover input ~ .cmfive__checkbox-checkmark {
+    background-color: #6FA9C7;
+}
+
+/* When the checkbox is checked, add a blue background */
+.cmfive__checkbox-container input:checked ~ .cmfive__checkbox-checkmark {
+    background-color: #008CBA;
+}
+
+/* On mouse-over when the checkbox is checked, add a darker blue background */
+.cmfive__checkbox-container:hover input:checked ~ .cmfive__checkbox-checkmark {
+    background-color: #007095;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.cmfive__checkbox-checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+/* Show the checkmark when checked */
+.cmfive__checkbox-container input:checked ~ .cmfive__checkbox-checkmark:after {
+    display: block;
+}
+
+/* Style the checkmark/indicator */
+.cmfive__checkbox-container .cmfive__checkbox-checkmark:after {
+    left: 9px;
+    top: 5px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
 }
