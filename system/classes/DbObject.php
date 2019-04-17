@@ -79,8 +79,6 @@ class DbObject extends DbService {
     private $_class;
     public $__use_auditing = true;
 
-    public static $_restrictable = false;
-
         /**
      * Constructor
      *
@@ -233,9 +231,7 @@ class DbObject extends DbService {
      * @return boolean
      */
     function canList(User $user) {
-        if (static::$_restrictable && $this->isRestricted()) {
-
-
+        if (property_exists(static::class, "_restrictable") && $this->isRestricted()) {
             $owner = $this->getObject("RestrictedObjectUserLink", ["object_id" => $this->id, "user_id" => $user->id, "type" => "owner"]);
             if (!empty($owner)) {
                 return true;
@@ -260,7 +256,7 @@ class DbObject extends DbService {
      * @return boolean
      */
     function canView(User $user) {
-        if (static::$_restrictable && $this->isRestricted()) {
+        if (property_exists(static::class, "_restrictable") && $this->isRestricted()) {
             $owner = $this->getObject("RestrictedObjectUserLink", ["object_id" => $this->id, "user_id" => $user->id, "type" => "owner"]);
             if (!empty($owner)) {
                 return true;
@@ -285,7 +281,7 @@ class DbObject extends DbService {
      * @return boolean
      */
     function canEdit(User $user) {
-        if (static::$_restrictable && $this->isRestricted()) {
+        if (property_exists(static::class, "_restrictable") && $this->isRestricted()) {
             $owner = $this->getObject("RestrictedObjectUserLink", ["object_id" => $this->id, "user_id" => $user->id, "type" => "owner"]);
             if (!empty($owner)) {
                 return true;
@@ -310,7 +306,7 @@ class DbObject extends DbService {
      * @return boolean
      */
     function canDelete(User $user) {
-        if (static::$_restrictable && $this->isRestricted()) {
+        if (property_exists(static::class, "_restrictable") && $this->isRestricted()) {
             $owner = $this->getObject("RestrictedObjectUserLink", ["object_id" => $this->id, "user_id" => $user->id, "type" => "owner"]);
             if (!empty($owner)) {
                 return true;
@@ -1305,120 +1301,6 @@ class DbObject extends DbService {
                 }
             }
         }
-    }
-
-    public function setOwner($user_id) {
-        if (!static::$_restrictable) {
-            return false;
-        }
-
-        $link = $this->w->Main->getObject("RestrictedObjectUserLink", ["object_id" => $this->id, "object_class" => static::class, "type" => "owner"]);
-        if (empty($link)) {
-            $link = new RestrictedObjectUserLink($this->w);
-        }
-
-        $link->object_class = static::class;
-        $link->object_id = $this->id;
-        $link->user_id = $user_id;
-        $link->type = "owner";
-
-        if ($link->insertOrUpdate()) {
-            return true;
-        }
-        return false;
-    }
-
-    public function addViewer($user_id) {
-        if (!static::$_restrictable) {
-            return false;
-        }
-
-        $logged_in_user_id = $this->w->Auth->user()->id;
-        $owner_link = $this->w->Main->getObject("RestrictedObjectUserLink", ["object_id" => $this->id, "object_class" => static::class, "user_id" => $logged_in_user_id, "type" => "owner"]);
-
-        if (empty($owner_link) || $logged_in_user_id !== $owner_link->user_id) {
-            return false;
-        }
-
-        $link = new RestrictedObjectUserLink($this->w);
-        $link->object_class = static::class;
-        $link->object_id = $this->id;
-        $link->user_id = $user_id;
-        $link->type = "viewer";
-
-        if ($link->insert()) {
-            return true;
-        }
-        return false;
-    }
-
-    public function removeViewer($user_id) {
-        if (!static::$_restrictable) {
-            return false;
-        }
-
-        $logged_in_user_id = $this->w->Auth->user()->id;
-        $owner_link = $this->w->Main->getObject("RestrictedObjectUserLink", ["object_id" => $this->id, "object_class" => static::class, "user_id" => $logged_in_user_id, "type" => "owner"]);
-
-        if ($logged_in_user_id !== $owner_link->user_id) {
-            return false;
-        }
-
-        $link = $this->w->Main->getObject("RestrictedObjectUserLink", ["object_id" => $this->id, "object_class" => static::class, "user_id" => $user_id, "type" => "viewer"]);
-        if (!empty($link) && $link->delete()) {
-            return true;
-        }
-        return false;
-    }
-
-    public function getOwner() {
-        if (!static::$_restrictable) {
-            return null;
-        }
-
-        $link = $this->w->Main->getObject("RestrictedObjectUserLink", ["object_id" => $this->id, "object_class" => static::class, "type" => "owner"]);
-        if (empty($link)) {
-            return null;
-        }
-
-        return $this->w->Auth->getObject("User", $link->user_id);
-    }
-
-    public function getViewers() {
-        if (!static::$_restrictable) {
-            return null;
-        }
-
-        $links = $this->w->Main->getObjects("RestrictedObjectUserLink", ["object_id" => $this->id, "object_class" => static::class, "type" => "viewer"]);
-        if (empty($links)) {
-            return null;
-        }
-
-        $viewers = [];
-        foreach ($links as $link) {
-            $viewer = $this->w->Auth->getUser($link->user_id);
-            if (!empty($viewer)) {
-                $viewers[] = $viewer;
-            }
-        }
-
-        return $viewers;
-    }
-
-    public function getOwnerLink() {
-        if (!static::$_restrictable) {
-            return null;
-        }
-
-        return $this->w->Main->getObject("RestrictedObjectUserLink", ["object_id" => $this->id, "object_class" => static::class, "type" => "owner"]);
-    }
-
-    public function getViewerLinks() {
-        if (!static::$_restrictable) {
-            return null;
-        }
-
-        return $this->w->Main->getObjects("RestrictedObjectUserLink", ["object_id" => $this->id, "object_class" => static::class, "type" => "viewer"]);
     }
 }
 

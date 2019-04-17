@@ -29,7 +29,7 @@ function comment_GET(Web $w){
         $root_object = $w->Comment->getObject($parent_object_table_name, $parent_object_id);
     }
 
-    if ($is_parent_restricted || !empty($comment->id) && $comment->isRestricted()) {
+    if ($is_parent_restricted || (!empty($comment->id) && $comment->isRestricted())) {
         $is_restricted = true;
     }
 
@@ -103,5 +103,5 @@ function comment_GET(Web $w){
     $w->ctx("is_internal_only", $is_internal_only);
     $w->ctx("is_restricted", json_encode($is_restricted));
     $w->ctx("is_parent_restricted", json_encode($is_parent_restricted));
-    $w->ctx("can_restrict", Comment::$_restrictable && $w->Auth->user()->hasRole("restrict") ? "true" : "false");
+    $w->ctx("can_restrict", property_exists($comment, '_restrictable') && $w->Auth->user()->hasRole("restrict") ? "true" : "false");
 }

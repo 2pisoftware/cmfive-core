@@ -24,7 +24,7 @@ class Attachment extends DbObject {
 	public $is_deleted; // tinyint 0/1
 	public $type_code; // this is a type of attachment, eg. Receipt of Deposit, PO Variation, Sitephoto, etc.
 	public $adapter;
-	public static $_restrictable = true;
+	public $_restrictable;
 
 	/**
 	 * Used by the task_attachment_attachment_added_task hook to skip the Attachement added notification if true
@@ -61,22 +61,6 @@ class Attachment extends DbObject {
 		}
 
 		parent::delete($force);
-	}
-
-	public function canList(User $user) {
-		return parent::canList($user);
-	}
-
-	public function canView(User $user) {
-		return parent::canView($user);
-	}
-
-	public function canEdit(User $user) {
-		return parent::canEdit($user);
-	}
-
-	public function canDelete(User $user) {
-		return parent::canDelete($user);
 	}
 
 	function getParent() {

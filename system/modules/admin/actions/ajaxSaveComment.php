@@ -9,7 +9,6 @@ function ajaxSaveComment_POST(Web $w) {
     $comment->obj_id = $p['parent_id'];
     $comment->comment = strip_tags($w->request('comment'));
     $comment->is_internal = $internal_only;
-    return;
     $comment->insert();
 
     //handle comment notifications

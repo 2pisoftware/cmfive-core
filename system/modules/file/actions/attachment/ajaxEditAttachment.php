@@ -21,36 +21,36 @@ function ajaxEditAttachment_POST(Web $w) {
 		return;
 	}
 
-	$owner = $attachment->getOwner();
+	$owner = $w->Restrict->getOwner($attachment);
 	if (empty($owner) || $owner->id !== $user->id) {
 		$w->out((new AxiosResponse())->setErrorResponse(null, ["error_message" => "User not authorised to restrict objects"]));
 		return;
 	}
 
 	$attachment->updateAttachment("file");
-	$attachment->title = isset($request_data->title) ? $request_data->title :  null;
-	$attachment->description = isset($request_data->description) ? $request_data->description : null;
-	$attachment->creator_id = isset($request_data->new_owner->id) ? $request_data->new_owner->id : $attachment->creator_id;
+	$attachment->title = property_exists($request_data, "title") ? $request_data->title : null;
+	$attachment->description = property_exists($request_data, "description") ? $request_data->description : null;
+	$attachment->creator_id = property_exists($request_data, "new_owner") ? $request_data->new_owner->id : null;
 	$attachment->update();
 
-	if (isset($request_data->is_restricted) && $request_data->is_restricted) {
-		$attachment->setOwner($request_data->new_owner->id);
+	if (property_exists($request_data, "is_restricted") && $request_data->is_restricted) {
+		$w->Restrict->setOwner($attachment, $request_data->new_owner->id);
 
-		$current_viewers = $attachment->getViewerLinks();
+		$current_viewers = $w->Restrict->getViewerLinks($attachment);
 		foreach (empty($current_viewers) ? [] : $current_viewers as $current_viewer) {
 			$current_viewer->delete();
 		}
 
 		foreach (!empty($request_data->viewers) ? $request_data->viewers : [] as $viewer) {
-			$attachment->addViewer($viewer->id);
+			$w->Restrict->addViewer($attachment, $viewer->id);
 		}
 	} else {
-		$owner = $attachment->getOwnerLink();
+		$owner = $w->Restrict->getOwnerLink($attachment);
 		if (!empty($owner)) {
 			$owner->delete();
 		}
 
-		$viewers = $attachment->getViewerLinks();
+		$viewers = $w->Restrict->getViewerLinks($attachment);
 		foreach (empty($viewers) ? [] : $viewers as $viewer) {
 			$viewer->delete();
 		}

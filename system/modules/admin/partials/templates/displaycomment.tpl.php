@@ -6,7 +6,7 @@
         </div>
         <div class='medium-11 columns comment_right_column'>
             <p><b><?php echo (!empty($c->creator_id) ?@$c->w->Auth->getUser($c->creator_id)->getFullName() : "") . ($c->isRestricted() ? ' <span class="fi-lock"></span>' : ""); ?></b></p>
-            <?php echo $c->isRestricted() && $is_outgoing ? "[Restricted comment, please view in Cmfive]" : $w->Comment->renderComment($c->comment); ?>
+            <?php echo $c->isRestricted() && $is_outgoing ? "[Restricted comment, please view in " . Config::get("main.application_name", "Cmfive") . "]" : $w->Comment->renderComment($c->comment); ?>
             <div class="comment_meta">
                 <?php if (!empty($c->dt_created)) : ?>
                     <span data-tooltip aria-haspopup="true" title="<?php echo @formatDate($c->dt_created, "d-M-Y \a\\t H:i"); ?>">

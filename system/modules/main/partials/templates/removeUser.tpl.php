@@ -52,7 +52,7 @@
 					new Toast("Failed to set new owner").show();
 					console.log(error);
 				}).finally(function() {
-					window.location.href = "<?php echo WEBROOT; ?>" + "/admin-user/remove/" + app.deleting_user_id;
+					window.history.go();
 				});
 			}
 		},

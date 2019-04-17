@@ -27,7 +27,7 @@ function ajaxAddComment_POST(Web $w) {
 		$comment->is_internal = $request_data->is_internal_only;
 		$is_new = true;
 	} else {
-		$current_viewers = $comment->getViewerLinks();
+		$current_viewers = $w->Restrict->getViewerLinks($comment);
 		foreach (empty($current_viewers) ? [] : $current_viewers as $current_viewer) {
 			$current_viewer->delete();
 		}
@@ -43,7 +43,7 @@ function ajaxAddComment_POST(Web $w) {
 	$comment->insertOrUpdate();
 
 	if ($request_data->is_restricted) {
-		$comment->setOwner($request_data->new_owner->id);
+		$w->Restrict->setOwner($comment, $request_data->new_owner->id);
 
 		foreach (!empty($request_data->viewers) ? $request_data->viewers : [] as $viewer) {
 			if ($viewer->id == $w->Auth->user()->id) {
@@ -51,7 +51,7 @@ function ajaxAddComment_POST(Web $w) {
 			}
 
 			if ($viewer->can_view) {
-				$comment->addViewer($viewer->id);
+				$w->Restrict->addViewer($comment, $viewer->id);
 			}
 		}
 	}

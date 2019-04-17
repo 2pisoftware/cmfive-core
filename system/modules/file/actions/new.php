@@ -1,4 +1,5 @@
 <?php
+use SendGrid\Attachment;
 
 function new_GET(Web $w) {
 	$redirect_url = $w->request("redirect_url");
@@ -33,5 +34,5 @@ function new_GET(Web $w) {
 	$w->ctx("class", $p["class"]);
 	$w->ctx("class_id", $p["class_id"]);
 	$w->ctx("viewers", json_encode($viewers));
-	$w->ctx("can_restrict", Attachment::$_restrictable && $w->Auth->user()->hasRole("restrict") ? "true" : "false");
+	$w->ctx("can_restrict", property_exists(Attachment::class, "_restrictable") && $w->Auth->user()->hasRole("restrict") ? "true" : "false");
 }

@@ -33,7 +33,7 @@ class Comment extends DbObject {
     public $is_deleted;
 
     public static $_db_table = "comment";
-    public static $_restrictable = true;
+    public $_restrictable;
 
     /*
      * Output Example:

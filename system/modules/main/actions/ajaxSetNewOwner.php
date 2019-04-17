@@ -20,7 +20,7 @@ function ajaxSetNewOwner_POST(Web $w) {
 	}
 
 	foreach ($owned_object as $owned_object) {
-		$owned_object->setOwner($request_data->new_owner_id);
+		$w->Restrict->setOwner($owned_object, $request_data->new_owner_id);
 	}
 
 	$w->out((new AxiosResponse())->setSuccessfulResponse("OK", []));

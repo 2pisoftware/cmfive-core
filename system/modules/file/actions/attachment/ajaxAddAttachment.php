@@ -21,7 +21,10 @@ function ajaxAddAttachment_POST(Web $w) {
 		return;
 	}
 
-	$attachment_id = $w->File->uploadAttachment("file", $object, isset($request_data->title) ? $request_data->title : null, isset($request_data->description) ? $request_data->description : null);
+	$title = property_exists($request_data, "title") ? $request_data->title : null;
+	$description = property_exists($request_data, "description") ? $request_data->description : null;
+
+	$attachment_id = $w->File->uploadAttachment("file", $object, $title, $description);
 	if (empty($attachment_id)) {
 		$w->out((new AxiosResponse())->setErrorResponse(null, ["error_message" => "Failed to add attachment"]));
 		return;
@@ -29,10 +32,10 @@ function ajaxAddAttachment_POST(Web $w) {
 
 	if (isset($request_data->is_restricted) && $request_data->is_restricted) {
 		$attachment = $w->File->getAttachment($attachment_id);
-		$attachment->setOwner($user->id);
+		$w->Restrict->setOwner($attachment, $user->id);
 
 		foreach (!empty($request_data->viewers) ? $request_data->viewers : [] as $viewer) {
-			$attachment->addViewer($viewer->id);
+			$w->Restrict->addViewer($attachment, $viewer->id);
 		}
 	}
 
