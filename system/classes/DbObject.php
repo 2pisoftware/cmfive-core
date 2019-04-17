@@ -231,7 +231,7 @@ class DbObject extends DbService {
      * @return boolean
      */
     function canList(User $user) {
-        if (property_exists(static::class, "_restrictable") && $this->isRestricted()) {
+        if (property_exists($this, "_restrictable") && $this->isRestricted()) {
             $owner = $this->getObject("RestrictedObjectUserLink", ["object_id" => $this->id, "user_id" => $user->id, "type" => "owner"]);
             if (!empty($owner)) {
                 return true;
@@ -256,7 +256,7 @@ class DbObject extends DbService {
      * @return boolean
      */
     function canView(User $user) {
-        if (property_exists(static::class, "_restrictable") && $this->isRestricted()) {
+        if (property_exists($this, "_restrictable") && $this->isRestricted()) {
             $owner = $this->getObject("RestrictedObjectUserLink", ["object_id" => $this->id, "user_id" => $user->id, "type" => "owner"]);
             if (!empty($owner)) {
                 return true;
@@ -281,7 +281,7 @@ class DbObject extends DbService {
      * @return boolean
      */
     function canEdit(User $user) {
-        if (property_exists(static::class, "_restrictable") && $this->isRestricted()) {
+        if (property_exists($this, "_restrictable") && $this->isRestricted()) {
             $owner = $this->getObject("RestrictedObjectUserLink", ["object_id" => $this->id, "user_id" => $user->id, "type" => "owner"]);
             if (!empty($owner)) {
                 return true;
@@ -306,7 +306,7 @@ class DbObject extends DbService {
      * @return boolean
      */
     function canDelete(User $user) {
-        if (property_exists(static::class, "_restrictable") && $this->isRestricted()) {
+        if (property_exists($this, "_restrictable") && $this->isRestricted()) {
             $owner = $this->getObject("RestrictedObjectUserLink", ["object_id" => $this->id, "user_id" => $user->id, "type" => "owner"]);
             if (!empty($owner)) {
                 return true;

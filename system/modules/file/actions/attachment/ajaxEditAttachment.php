@@ -21,7 +21,7 @@ function ajaxEditAttachment_POST(Web $w) {
 		return;
 	}
 
-	$owner = $w->Restrict->getOwner($attachment);
+	$owner = $w->Restrictable->getOwner($attachment);
 	if (empty($owner) || $owner->id !== $user->id) {
 		$w->out((new AxiosResponse())->setErrorResponse(null, ["error_message" => "User not authorised to restrict objects"]));
 		return;
@@ -34,23 +34,23 @@ function ajaxEditAttachment_POST(Web $w) {
 	$attachment->update();
 
 	if (property_exists($request_data, "is_restricted") && $request_data->is_restricted) {
-		$w->Restrict->setOwner($attachment, $request_data->new_owner->id);
+		$w->Restrictable->setOwner($attachment, $request_data->new_owner->id);
 
-		$current_viewers = $w->Restrict->getViewerLinks($attachment);
+		$current_viewers = $w->Restrictable->getViewerLinks($attachment);
 		foreach (empty($current_viewers) ? [] : $current_viewers as $current_viewer) {
 			$current_viewer->delete();
 		}
 
 		foreach (!empty($request_data->viewers) ? $request_data->viewers : [] as $viewer) {
-			$w->Restrict->addViewer($attachment, $viewer->id);
+			$w->Restrictable->addViewer($attachment, $viewer->id);
 		}
 	} else {
-		$owner = $w->Restrict->getOwnerLink($attachment);
+		$owner = $w->Restrictable->getOwnerLink($attachment);
 		if (!empty($owner)) {
 			$owner->delete();
 		}
 
-		$viewers = $w->Restrict->getViewerLinks($attachment);
+		$viewers = $w->Restrictable->getViewerLinks($attachment);
 		foreach (empty($viewers) ? [] : $viewers as $viewer) {
 			$viewer->delete();
 		}

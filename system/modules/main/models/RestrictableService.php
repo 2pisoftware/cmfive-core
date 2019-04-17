@@ -1,6 +1,6 @@
 <?php
 
-class RestrictService extends DbService {
+class RestrictableService extends DbService {
 
 	public function setOwner($object, $user_id) {
 		if (!property_exists($object, "_restrictable")) {

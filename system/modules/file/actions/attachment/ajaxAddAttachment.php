@@ -32,10 +32,10 @@ function ajaxAddAttachment_POST(Web $w) {
 
 	if (isset($request_data->is_restricted) && $request_data->is_restricted) {
 		$attachment = $w->File->getAttachment($attachment_id);
-		$w->Restrict->setOwner($attachment, $user->id);
+		$w->Restrictable->setOwner($attachment, $user->id);
 
 		foreach (!empty($request_data->viewers) ? $request_data->viewers : [] as $viewer) {
-			$w->Restrict->addViewer($attachment, $viewer->id);
+			$w->Restrictable->addViewer($attachment, $viewer->id);
 		}
 	}
 

@@ -14,7 +14,7 @@ function edit_GET(Web $w) {
 		$w->error("Attachment not found", $redirect_url);
 	}
 
-	$owner = $w->Restrict->getOwner($attachment);
+	$owner = $w->Restrictable->getOwner($attachment);
 	$object = $attachment->getParent();
 	$users = $w->Auth->getUsers();
 	$viewers = [];

@@ -61,7 +61,7 @@
 					continue;
 				}
 
-				$owner = $w->Restrict->getOwner($attachment);
+				$owner = $w->Restrictable->getOwner($attachment);
 			?>
 				<li>
 					<div class="image-container attachment text-center">
@@ -159,7 +159,7 @@
                         <td><?php echo $att->title; ?></td>
 						<td><?php echo $att->description; ?></td>
 						<td><?php
-								$owner = $w->Restrict->getOwner($att);
+								$owner = $w->Restrictable->getOwner($att);
 								if (!empty($owner)) {
 									$contact = $owner->getContact();
 									echo empty($contact) ? "" : $contact->getFullname();
