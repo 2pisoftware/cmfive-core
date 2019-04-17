@@ -63,8 +63,7 @@ class DbPDO extends PDO {
         // heap for this var across all instances
         $this->getAvailableTables();
        
-        if (in_array("custom_stopwords_override", $this->table_names) && $override == true && $config['driver'] == 'mysql')
-        {
+        if (in_array("custom_stopwords_override", $this->table_names) && $override == true && $config['driver'] == 'mysql') {
             $this->disableStopwords();
         }
     } 
