@@ -11,7 +11,9 @@
     <div class="tab-head">
         <a href="#details">Task Details</a>
 		<?php if (!empty($task->id)) : ?>
-            <a href="#timelog">Time Log <span class='label secondary round cmfive__tab-label cmfive__count-timelog'></span></a>
+            <?php if ($w->Auth->user()->hasRole('timelog_user')) : ?>
+                <a href="#timelog">Time Log <span class='label secondary round cmfive__tab-label cmfive__count-timelog'></span></a>
+            <?php endif; ?>
             <a href="#internal_comments">Internal Comments <span class='label secondary round cmfive__tab-label cmfive__count-internal_comment_section'></span></a>
             <a href="#external_comments">External Comments <span class='label secondary round cmfive__tab-label cmfive__count-external_comment_section'></span></a>
             <a href="#attachments">Attachments <span class='label secondary round cmfive__tab-label cmfive__count-attachment'></span></a>
@@ -118,9 +120,11 @@
             </div>
         </div>
         <?php if (!empty($task->id)) : ?>
-            <div id="timelog">
-				<?php echo $w->partial("listtimelog", ["object_class" => "Task", "object_id" => $task->id, "redirect" => "task/edit/{$task->id}#timelog"], "timelog"); ?>
-            </div>
+            <?php if ($w->Auth->user()->hasRole('timelog_user')) : ?>                
+                <div id="timelog">
+                    <?php echo $w->partial("listtimelog", ["object_class" => "Task", "object_id" => $task->id, "redirect" => "task/edit/{$task->id}#timelog"], "timelog"); ?>
+                </div>
+            <?php endif; ?>                
             <div id="internal_comments">
                 <?php echo $w->partial("listcomments",array("object" => $task, "internal_only" => true, "redirect" => "task/edit/{$task->id}#internal_comments"), "admin"); ?>
             </div>
