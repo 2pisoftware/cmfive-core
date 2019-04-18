@@ -3,15 +3,15 @@
 function ajaxAddComment_POST(Web $w) {
 	$w->setLayout(null);
 
-	$user = $w->Auth->user();
-	if (!$user->hasRole("restrict")) {
-		$w->out((new AxiosResponse())->setErrorResponse(null, ["error_message" => "User not authorised to restrict objects"]));
-		return;
-	}
-
 	$request_data = json_decode(file_get_contents("php://input"));
 	if (empty($request_data)) {
 		$w->out((new AxiosResponse())->setErrorResponse(null, ["error_message" => "Missing comment data"]));
+		return;
+	}
+
+	$user = $w->Auth->user();
+	if ($request_data->is_restricted && !$user->hasRole("restrict")) {
+		$w->out((new AxiosResponse())->setErrorResponse(null, ["error_message" => "User not authorised to restrict objects"]));
 		return;
 	}
 

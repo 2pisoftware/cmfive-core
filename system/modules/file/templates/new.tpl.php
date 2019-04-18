@@ -12,7 +12,7 @@
 				<label style="font-size: 18px;">Description
 					<input type="text" id="description" v-model="description"/>
 				</label><br>
-				<div v-if="can_restrict">
+				<div v-if="can_restrict == 'true'">
 					<label class="cmfive__checkbox-container">Restricted
 						<input type="checkbox" v-model="is_restricted">
 						<span class="cmfive__checkbox-checkmark"></span>
