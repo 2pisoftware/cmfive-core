@@ -14,7 +14,7 @@
 					</label>
 				</div>
 			</div><br>
-			<div v-if="can_restrict">
+			<div v-if="can_restrict == 'true'">
 				<label class="cmfive__checkbox-container">Restricted
 					<input type="checkbox" v-model="is_restricted" @click="toggleIsRestricted()" :disabled="is_parent_restricted">
 					<span class="cmfive__checkbox-checkmark"></span>
