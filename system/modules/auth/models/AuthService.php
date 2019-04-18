@@ -11,15 +11,17 @@ class AuthService extends DbService {
 		$credentials['login']=$login;
 		$credentials['password']=$password;
 		$hook_results = $this->w->callHook("auth", "prelogin", $credentials);
-		foreach($hook_results as $module => $user) {
-			//@TODO: check config for $module.optional or $module.manditory. default to optional for now. if any manditory returns null then return null.
-			if (!empty($user)) {
-				$this->w->Log->info($user->getFullName()." authenticated via ".$module." prelogin hook");
-				break;
-			} else {
-				$this->w->Log->info('prelogin hook did not provide authentication: '.$login);
-			}
-		}
+        if (!empty($hook_results)) {
+            foreach($hook_results as $module => $user) {
+                //@TODO: check config for $module.optional or $module.manditory. default to optional for now. if any manditory returns null then return null.
+                if (!empty($user)) {
+                    $this->w->Log->info($user->getFullName()." authenticated via ".$module." prelogin hook");
+                    break;
+                } else {
+                    $this->w->Log->info('prelogin hook did not provide authentication: '.$login);
+                }
+            }
+        }
 		if (empty($user)) {
 			$user = $this->getUserForLogin($login);
 			if (empty($user)) {
@@ -46,12 +48,12 @@ class AuthService extends DbService {
 		return $user;
 	}
     function externalLogin($login, $password, $skip_session = false) {
-        
+
         $user = $this->getUserForLogin($login);
         if (empty($user->id) || ($user->encryptPassword($password) !== $user->password) || $user->is_external == 0) {
             return null;
         }
-        
+
 
         $user->updateLastLogin();
         if (!$skip_session) {
@@ -64,7 +66,7 @@ class AuthService extends DbService {
         if (empty($user_id)) {
             return;
         }
-        
+
         $user = $this->getUser($user_id);
         if (empty($user->id)) {
             return null;
@@ -100,7 +102,7 @@ class AuthService extends DbService {
      * E.g. for an address book, there is no need to create a User object. However, if you
      * want to ensure that a Contact will have a User account, call this function before doing
      * anything else with the Contact.
-     *  
+     *
      * As a security measure, all user accounts created this way are external only.
      *
      * @param mixed $contact_id
@@ -141,10 +143,10 @@ class AuthService extends DbService {
 
     /**
      * Return the logged in user based on the session variable user_id.
-     * 
+     *
      * If a user has been set from a REST service, then that user will
      * be returned.
-     * 
+     *
      * @return User|NULL
      */
     function user() {
@@ -152,7 +154,7 @@ class AuthService extends DbService {
         if ($this->_rest_user) {
             return $this->_rest_user;
         }
-        
+
         // normal session based authentication
         if ($this->loggedIn()) {
             return $this->getObject("User", $this->w->session('user_id'));
@@ -161,7 +163,7 @@ class AuthService extends DbService {
     }
 
     /**
-     * 
+     *
      * checks if the CURRENT user has this role
      */
     function hasRole($role) {
@@ -169,7 +171,7 @@ class AuthService extends DbService {
     }
 
 	/**
-     * 
+     *
      * Check if the current user can access the specified path
      * @ return false if the login user is not allowed access to this path
      *  OR return string url if it is provided as a parameter
@@ -186,22 +188,22 @@ class AuthService extends DbService {
             return false;
         }
 
-        if ((function_exists("anonymous_allowed") && anonymous_allowed($this->w, $path)) || 
+        if ((function_exists("anonymous_allowed") && anonymous_allowed($this->w, $path)) ||
         	($this->user() && $this->user()->allowed($path))) {
 			self::$_cache[$key] = $url ? $url : true;
         	return self::$_cache[$key];
         }
-        
+
         if (empty($this->user()) && (Config::get('system.use_passthrough_authentication') === TRUE) && !empty($_SERVER['AUTH_USER'])) {
         	// Get the username
         	$username = explode('\\', $_SERVER["AUTH_USER"]);
         	$username = end($username);
         	$this->w->Log->debug("Passthrough Username: " . $username);
-        	
+
         	//this hook returns $hook_results[$module][0]=$user or null.
         	$hook_results = $this->w->callHook("auth", "get_user_for_passthrough", $username);
         	foreach($hook_results as $module => $user) {
-        		
+
         		if (!empty($user) && $user instanceof User) {
         			$this->forceLogin($user->id);
         			if ($user->allowed($path)) {
@@ -212,7 +214,7 @@ class AuthService extends DbService {
         		}
         	}
         }
-        
+
         self::$_cache[$key] = false;
         return false;
     }
@@ -281,7 +283,7 @@ class AuthService extends DbService {
     	}
     	return $this->getObjects("User", $where);
     }
-    
+
     function getUserForContact($cid) {
         return $this->getObject("User", array("contact_id" => $cid));
     }

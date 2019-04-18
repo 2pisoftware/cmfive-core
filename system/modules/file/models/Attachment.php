@@ -24,6 +24,8 @@ class Attachment extends DbObject {
 	public $is_deleted; // tinyint 0/1
 	public $type_code; // this is a type of attachment, eg. Receipt of Deposit, PO Variation, Sitephoto, etc.
 	public $adapter;
+	public $_restrictable;
+
 	/**
 	 * Used by the task_attachment_attachment_added_task hook to skip the Attachement added notification if true
 	 * @var boolean
