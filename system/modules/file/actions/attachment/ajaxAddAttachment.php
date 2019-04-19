@@ -23,15 +23,17 @@ function ajaxAddAttachment_POST(Web $w) {
 
 	$title = property_exists($request_data, "title") ? $request_data->title : null;
 	$description = property_exists($request_data, "description") ? $request_data->description : null;
+	$type_code = property_exists($request_data, "type_code") ? $request_data->type_code : null;
 
-	$attachment_id = $w->File->uploadAttachment("file", $object, $title, $description);
+	$attachment_id = $w->File->uploadAttachment("file", $object, $title, $description, $type_code);
 	if (empty($attachment_id)) {
 		$w->out((new AxiosResponse())->setErrorResponse(null, ["error_message" => "Failed to add attachment"]));
 		return;
 	}
 
+	$attachment = $w->File->getAttachment($attachment_id);
+
 	if (isset($request_data->is_restricted) && $request_data->is_restricted) {
-		$attachment = $w->File->getAttachment($attachment_id);
 		$w->Restrictable->setOwner($attachment, $user->id);
 
 		foreach (!empty($request_data->viewers) ? $request_data->viewers : [] as $viewer) {
@@ -39,5 +41,7 @@ function ajaxAddAttachment_POST(Web $w) {
 		}
 	}
 
-	$w->out((new AxiosResponse())->setSuccessfulResponse("OK", []));
+	$w->out((new AxiosResponse())->setSuccessfulResponse("OK", ["attachment_id" => $attachment_id,
+		"attachment_name" => $attachment->title,
+		"attachment_url" => $w->File->isImage($attachment->fullpath) ? WEBROOT . '/file/atfile/' . $attachment->id : WEBROOT . '/file/atfile/' . $attachment->id . "/" . $attachment->filename]));
 }
