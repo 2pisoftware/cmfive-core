@@ -144,31 +144,34 @@ class Task extends DbObject {
     }
 
     // get my membership object and compare my role with that required to view tasks given a task group ID
-    function getCanIView() {
-        $loggedin_user = $this->w->Auth->user();
-        if (empty($loggedin_user->id)) {
+    function getCanIView(User $user = null) {
+        if (empty($user)) {
+            $user = $this->w->Auth->user();
+        }
+
+        if (empty($user->id)) {
             return false;
         }
 
-        if ($loggedin_user->is_admin == 1) {
+        if ($user->is_admin == 1) {
             return true;
         }
 
-		if ($loggedin_user->hasRole("task_admin")) {
+		if ($user->hasRole("task_admin")) {
 			return true;
 		}
 
-        $me = $this->Task->getMemberGroupById($this->task_group_id, $loggedin_user->id);
+        $me = $this->Task->getMemberGroupById($this->task_group_id, $user->id);
 
         if (empty($me)) {
             return false;
         }
 
-        if ($loggedin_user->id == $this->assignee_id) {
+        if ($user->id == $this->assignee_id) {
             return true;
         }
 
-        if ($loggedin_user->id == $this->getTaskCreatorId()) {
+        if ($user->id == $this->getTaskCreatorId()) {
             return true;
         }
 
@@ -196,7 +199,7 @@ class Task extends DbObject {
      * @see DbObject::canView()
      */
     function canView(User $user) {
-        return $this->getCanIView();
+        return $this->getCanIView($user);
     }
 
     /**
@@ -792,5 +795,5 @@ END:VCALENDAR";
         }
         return array();
     }
-    
+
 }

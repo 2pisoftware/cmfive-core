@@ -44,10 +44,16 @@ class SearchService extends DbService {
 			$objects = $this->getObjects ( $index, array ("is_deleted" => 0 ) );
 			if (! empty ( $objects )) {
 				foreach ( $objects as $object ) {
-					$object->_searchable->insert ();
+					if (property_exists($object, "_searchable")) {
+						$object->_searchable->insert ();
+					}
 				}
 			}
 		}
+	}
+	public function reindexAllFulltextIndex() {
+		$this->_db->sql("ALTER TABLE object_index DROP INDEX object_index_content;");
+        $this->_db->sql("CREATE FULLTEXT INDEX object_index_content ON object_index(content);");
 	}
 	
 	/**
@@ -154,7 +160,7 @@ class SearchService extends DbService {
 			}
 			$select = implode(" UNION ", $s2);
 		}
-				
+		
 		$this->w->Log->debug($select);
 		
 		$results = $this->_db->sql($select)->fetch_all();
