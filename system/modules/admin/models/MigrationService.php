@@ -113,7 +113,21 @@ class MigrationService extends DbService {
 		
 		if (!empty($migrations)) {
 			foreach($migrations as $migration) {
-				$migrationsInstalled[$migration['module']][] = $migration;
+				$to_add = true;
+				//var_dump($migration);
+				if (array_key_exists($migration['module'], $migrationsInstalled)) {
+					foreach($migrationsInstalled[$migration['module']] as $processed_migration) {
+						if ($migration['classname'] == $processed_migration['classname']) {
+							$to_add = false;
+						}
+					}
+					if ($to_add) {
+						$migrationsInstalled[$migration['module']][] = $migration;
+					}
+				} else {
+					$migrationsInstalled[$migration['module']][] = $migration;
+				}
+				
 			}
 		}
 		
