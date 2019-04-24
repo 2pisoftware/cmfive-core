@@ -67,9 +67,7 @@ function comment_GET(Web $w){
                 if (!empty($parent_comment) && !$parent_comment->canView($user)) {
                     continue;
                 }
-
                 $is_notify = false;
-
 
                 foreach ($notify_recipients as $key => $notify_recipient) {
                     if ($key == $user->id && !$is_restricted && $w->Auth->user()->id != $user->id) {
