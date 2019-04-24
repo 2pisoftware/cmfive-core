@@ -145,7 +145,7 @@
 			},
 			canNotifyViewers: function() {
 				return this.viewers.filter(function(viewer) {
-					return !this.is_restricted && viewer.is_original_notify || this.is_restricted && viewer.can_view;
+					return (!this.is_restricted && viewer.is_original_notify || !this.is_restricted && viewer.id == <?php echo $w->Auth->user()->id; ?>) || this.is_restricted && viewer.can_view;
 				});
 			},
 		}
