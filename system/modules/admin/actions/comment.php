@@ -55,10 +55,10 @@ function comment_GET(Web $w){
         }
     }
 
-    $users = $w->Auth->getUsers();
+    $users = $w->Auth->getObjects("User", ["is_deleted" => false]);
     $viewers = [];
 
-    if (!empty($root_object)) {
+    if (!empty($root_object) && $is_internal_only) {
         foreach (empty($users) ? [] : $users as $user) {
 
             $link = $w->Main->getObject("RestrictedObjectUserLink", ["object_id" => $comment->id, "user_id" => $user->id, "type" => "viewer"]);
@@ -85,6 +85,28 @@ function comment_GET(Web $w){
                 ];
             }
         }
+    } else {
+        foreach (empty($users) ? [] : $users as $user) {
+            $is_notify = false;
+
+            foreach ($notify_recipients as $key => $notify_recipient) {
+                if ($key == $user->id && !$is_restricted && $w->Auth->user()->id != $user->id) {
+                    $is_notify = true;
+                }
+            }
+
+            if (!$is_notify) {
+                continue;
+            }
+
+            $viewers[] = [
+                "id" => $user->id,
+                "name" => $user->getFullName(),
+                "can_view" => true,
+                "is_notify" => $is_notify,
+                "is_original_notify" => $is_notify
+            ];
+        }
     }
 
     $user = $w->Auth->user();
@@ -103,5 +125,5 @@ function comment_GET(Web $w){
     $w->ctx("is_internal_only", $is_internal_only);
     $w->ctx("is_restricted", json_encode($is_restricted));
     $w->ctx("is_parent_restricted", json_encode($is_parent_restricted));
-    $w->ctx("can_restrict", property_exists($comment, '_restrictable') && $w->Auth->user()->hasRole("restrict") ? "true" : "false");
+    $w->ctx("can_restrict", property_exists($comment, '_restrictable') && $is_internal_only && $w->Auth->user()->hasRole("restrict") ? "true" : "false");
 }
