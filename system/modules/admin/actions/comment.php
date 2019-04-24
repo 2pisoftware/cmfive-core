@@ -55,12 +55,12 @@ function comment_GET(Web $w){
         }
     }
 
-    $users = $w->Auth->getObjects("User", ["is_deleted" => false]);
     $viewers = [];
 
     if (!empty($root_object) && $is_internal_only) {
-        foreach (empty($users) ? [] : $users as $user) {
+        $users = $w->Admin->getObjects("User");
 
+        foreach (empty($users) ? [] : $users as $user) {
             $link = $w->Main->getObject("RestrictedObjectUserLink", ["object_id" => $comment->id, "user_id" => $user->id, "type" => "viewer"]);
 
             if ($root_object->canView($user)) {
@@ -85,6 +85,7 @@ function comment_GET(Web $w){
             }
         }
     } else {
+        $users = $w->Auth->getUsers();
         $notify_recipients[$w->Auth->user()->id] = false;
 
         foreach (empty($users) ? [] : $users as $user) {

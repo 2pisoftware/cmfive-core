@@ -8,8 +8,8 @@
 					<strong>Select the users that will be notified by this comment</strong>
 				</div>
 				<ul class="small-block-grid-1 medium-block-grid-2 large-block-grid-3">
-					<li v-for="viewer in viewers" style="padding-bottom: 0;">
-						<label class="cmfive__checkbox-container" v-if="!is_restricted && viewer.is_original_notify||is_restricted &&viewer.can_view">{{ viewer.name }}
+					<li v-for="viewer in canNotifyViewers" style="padding-bottom: 0;">
+						<label class="cmfive__checkbox-container">{{ viewer.name }}
 							<input type="checkbox" v-model="viewer.is_notify" @click="toggleIsNotify(viewer)">
 							<span class="cmfive__checkbox-checkmark"></span>
 						</label>
@@ -22,9 +22,9 @@
 					<span class="cmfive__checkbox-checkmark"></span>
 				</label>
 				<div v-show="is_restricted"><strong>Select the users that can view this comment</strong>
-					<ul class="small-block-grid-1 medium-block-grid-3 large-block-grid-3">
-						<li v-for="viewer in viewers" style="padding-bottom: 0;">
-							<label class="cmfive__checkbox-container" v-if="viewer.id != <?php echo $w->Auth->user()->id; ?>">{{ viewer.name }}
+					<ul class="small-block-grid-1 medium-block-grid-2 large-block-grid-3">
+						<li v-for="viewer in canRestrictViewers" style="padding-bottom: 0;">
+							<label class="cmfive__checkbox-container">{{ viewer.name }}
 								<input type="checkbox" v-model="viewer.can_view" @click="toggleCanView(viewer)">
 								<span class="cmfive__checkbox-checkmark" ></span>
 							</label>
@@ -137,7 +137,17 @@
 				return this.viewers.filter(function(viewer) {
 					return viewer.can_view;
 				});
-			}
+			},
+			canRestrictViewers: function() {
+				return this.viewers.filter(function(viewer) {
+					return viewer.id != <?php echo $w->Auth->user()->id; ?>;
+				});
+			},
+			canNotifyViewers: function() {
+				return this.viewers.filter(function(viewer) {
+					return !this.is_restricted && viewer.is_original_notify || this.is_restricted && viewer.can_view;
+				});
+			},
 		}
 	});
 </script>
