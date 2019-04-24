@@ -7,12 +7,14 @@
 				<div v-if="viewers.length !== 0">
 					<strong>Select the users that will be notified by this comment</strong>
 				</div>
-				<div v-for="viewer in viewers">
-					<label class="cmfive__checkbox-container">{{ viewer.name }}
-						<input type="checkbox" v-model="viewer.is_notify" @click="toggleIsNotify(viewer)">
-						<span class="cmfive__checkbox-checkmark"></span>
-					</label>
-				</div>
+				<ul class="small-block-grid-1 medium-block-grid-2 large-block-grid-3">
+					<li v-for="viewer in canNotifyViewers" style="padding-bottom: 0;">
+						<label class="cmfive__checkbox-container">{{ viewer.name }}
+							<input type="checkbox" v-model="viewer.is_notify" @click="toggleIsNotify(viewer)">
+							<span class="cmfive__checkbox-checkmark"></span>
+						</label>
+					</li>
+				</ul>
 			</div><br>
 			<div v-if="can_restrict == 'true'">
 				<label class="cmfive__checkbox-container">Restricted
@@ -20,12 +22,14 @@
 					<span class="cmfive__checkbox-checkmark"></span>
 				</label>
 				<div v-show="is_restricted"><strong>Select the users that can view this comment</strong>
-					<div v-for="viewer in viewers" class="small-12 medium-6 large-4">
-						<label class="cmfive__checkbox-container" v-if="viewer.id != <?php echo $w->Auth->user()->id; ?>">{{ viewer.name }}
-							<input type="checkbox" v-model="viewer.can_view" @click="toggleCanView(viewer)">
-							<span class="cmfive__checkbox-checkmark" ></span>
-						</label>
-					</div>
+					<ul class="small-block-grid-1 medium-block-grid-2 large-block-grid-3">
+						<li v-for="viewer in canRestrictViewers" style="padding-bottom: 0;">
+							<label class="cmfive__checkbox-container">{{ viewer.name }}
+								<input type="checkbox" v-model="viewer.can_view" @click="toggleCanView(viewer)">
+								<span class="cmfive__checkbox-checkmark" ></span>
+							</label>
+						</li>
+					</ul>
 					<strong v-if="comment_id != 0">Comment Owner</strong>
 					<select v-if="comment_id != 0" @change="updateOwner">
 						<option v-for="viewer in canViewViewers" :value="JSON.stringify(viewer)">
@@ -133,7 +137,17 @@
 				return this.viewers.filter(function(viewer) {
 					return viewer.can_view;
 				});
-			}
+			},
+			canRestrictViewers: function() {
+				return this.viewers.filter(function(viewer) {
+					return viewer.id != <?php echo $w->Auth->user()->id; ?>;
+				});
+			},
+			canNotifyViewers: function() {
+				return this.viewers.filter(function(viewer) {
+					return (!this.is_restricted && viewer.is_original_notify || !this.is_restricted && viewer.id == <?php echo $w->Auth->user()->id; ?>) || this.is_restricted && viewer.can_view;
+				});
+			},
 		}
 	});
 </script>
