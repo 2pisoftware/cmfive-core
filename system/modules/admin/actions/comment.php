@@ -70,6 +70,7 @@ function comment_GET(Web $w){
 
                 $is_notify = false;
 
+
                 foreach ($notify_recipients as $key => $notify_recipient) {
                     if ($key == $user->id && !$is_restricted && $w->Auth->user()->id != $user->id) {
                         $is_notify = true;
@@ -79,35 +80,33 @@ function comment_GET(Web $w){
                 $viewers[] = [
                     "id" => $user->id,
                     "name" => $user->getFullName(),
-                    "can_view" => !empty($link) || $user->id === $w->Auth->user()->id ? true : false,
+                    "can_view" => (!empty($link) || $user->id === $w->Auth->user()->id) ? true : false,
                     "is_notify" => $is_notify,
                     "is_original_notify" => $is_notify
                 ];
             }
         }
     } else {
-        foreach (empty($users) ? [] : $users as $user) {
-            $is_notify = false;
+        $notify_recipients[$w->Auth->user()->id] = false;
 
+        foreach (empty($users) ? [] : $users as $user) {
             foreach ($notify_recipients as $key => $notify_recipient) {
-                if ($key == $user->id && !$is_restricted && $w->Auth->user()->id != $user->id) {
-                    $is_notify = true;
+                if ($key == $user->id && !$is_restricted) {
+                    $viewers[] = [
+                        "id" => $user->id,
+                        "name" => $user->getFullName() . ($user->is_external ? " (EXTERNAL)" : ""),
+                        "can_view" => true,
+                        "is_notify" => $w->Auth->user()->id != $user->id ? true : false,
+                        "is_original_notify" => $is_notify
+                    ];
                 }
             }
-
-            if (!$is_notify) {
-                continue;
-            }
-
-            $viewers[] = [
-                "id" => $user->id,
-                "name" => $user->getFullName(),
-                "can_view" => true,
-                "is_notify" => $is_notify,
-                "is_original_notify" => $is_notify
-            ];
         }
     }
+
+    usort($viewers, function($a, $b) {
+        return strcmp($a["name"], $b["name"]);
+    });
 
     $user = $w->Auth->user();
     $new_owner = [
