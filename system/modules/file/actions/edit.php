@@ -33,9 +33,13 @@ function edit_GET(Web $w) {
 		}
 	}
 
+	usort($viewers, function($a, $b) {
+		return strcmp($a["name"], $b["name"]);
+	});
+
 	$new_owner = [
-		"id" => $owner->id,
-		"name" => $owner->getFullName()
+		"id" => empty($owner) ? null : $owner->id,
+		"name" => empty($owner) ? null : $owner->getFullName()
 	];
 
 	$w->ctx("id", $attachment->id);
@@ -43,10 +47,10 @@ function edit_GET(Web $w) {
 	$w->ctx("description", $attachment->description);
 	$w->ctx("file_name", $attachment->filename);
 	$w->ctx("file_directory", WEBROOT . "/file/atfile/" . $attachment->id . "/" . $attachment->filename);
-    $w->ctx("new_owner", json_encode($new_owner));
+	$w->ctx("new_owner", json_encode($new_owner));
 	$w->ctx("redirect_url", WEBROOT . "/" . $redirect_url);
 	$w->ctx("is_restricted", json_encode(empty($owner) ? false : true));
 	$w->ctx("viewers", json_encode($viewers));
-	$w->ctx("owner", json_encode(["id" => $owner->id, "name" => $owner->getFullName()]));
+	$w->ctx("owner", json_encode(["id" => empty($owner) ? null : $owner->id, "name" => empty($owner) ? null : $owner->getFullName()]));
 	$w->ctx("can_restrict", $w->Auth->user()->hasRole("restrict") ? "true" : "false");
 }
