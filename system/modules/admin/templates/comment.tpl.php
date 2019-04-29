@@ -144,12 +144,13 @@
 				});
 			},
 			canNotifyViewers: function() {
-				return app.viewers.filter(function(viewer) {
-					if (!app.is_restricted && (viewer.is_original_notify || viewer.is_notify)) {
+				var _this = this;
+				return _this.viewers.filter(function(viewer) {
+					if (!_this.is_restricted && (viewer.is_original_notify || viewer.is_notify)) {
 						return true;
-					} else if (!app.is_restricted && viewer.id == <?php echo $w->Auth->user()->id; ?>) {
+					} else if (!_this.is_restricted && viewer.id == <?php echo $w->Auth->user()->id; ?>) {
 						return true;
-					} else if (app.is_restricted && viewer.can_view) {
+					} else if (_this.is_restricted && viewer.can_view) {
 						return true;
 					}
 				});
