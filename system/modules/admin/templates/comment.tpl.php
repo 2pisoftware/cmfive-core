@@ -144,8 +144,14 @@
 				});
 			},
 			canNotifyViewers: function() {
-				return this.viewers.filter(function(viewer) {
-					return (!this.is_restricted && viewer.is_original_notify || !this.is_restricted && viewer.id == <?php echo $w->Auth->user()->id; ?>) || this.is_restricted && viewer.can_view;
+				return app.viewers.filter(function(viewer) {
+					if (!app.is_restricted && (viewer.is_original_notify || viewer.is_notify)) {
+						return true;
+					} else if (!app.is_restricted && viewer.id == <?php echo $w->Auth->user()->id; ?>) {
+						return true;
+					} else if (app.is_restricted && viewer.can_view) {
+						return true;
+					}
 				});
 			},
 		}
