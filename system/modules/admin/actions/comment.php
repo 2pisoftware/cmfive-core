@@ -1,7 +1,7 @@
 <?php
 
 function comment_GET(Web $w){
-    $p = $w->pathMatch("comment_id", "tablename", "object_id");
+    $p = $w->pathMatch("comment_id", "object_class", "object_id");
     $is_internal_only = intval($w->request("internal_only", 0));
 
     $comment_id = intval($p["comment_id"]);
@@ -11,12 +11,12 @@ function comment_GET(Web $w){
     $is_parent_restricted = false;
 
     // Setup for comment notifications.
-    $parent_object_table_name = $p["tablename"];
+    $parent_object_class_name = $p["object_class"];
     $parent_object_id = $p["object_id"];
     $root_object = null;
     $parent_comment = null;
 
-    if ($parent_object_table_name == "comment") {
+    if (strtolower($parent_object_class_name) == "comment") {
         $parent_comment = $w->Comment->getComment($p["object_id"]);
         if (!empty($parent_comment)) {
             $root_object = $parent_comment->getParentObject();
@@ -26,7 +26,7 @@ function comment_GET(Web $w){
             $is_parent_restricted = true;
         }
     } else {
-        $root_object = $w->Comment->getObject($parent_object_table_name, $parent_object_id);
+        $root_object = $w->Comment->getObject($parent_object_class_name, $parent_object_id);
     }
 
     if ($is_parent_restricted || (!empty($comment->id) && $comment->isRestricted())) {
@@ -43,11 +43,9 @@ function comment_GET(Web $w){
             foreach ($recipients as $user_id => $is_notify) {
 
                 if(!array_key_exists($user_id, $notify_recipients)) {
-                    $recipient = $w->Auth->getUser($user_id);
                     $notify_recipients[$user_id] = ["is_notify" => $is_notify];
                 } else {
                     if ($is_notify != $notify_recipients[$user_id]) {
-                        $recipient = $w->Auth->getUser($user_id);
                         $notify_recipients[$user_id] = ["is_notify" => true];
                     }
                 }
@@ -116,7 +114,7 @@ function comment_GET(Web $w){
     $w->ctx("comment", $comment->comment);
     $w->ctx("comment_id", $p["comment_id"] == "{0}" ? "0" : $p["comment_id"]);
     $w->ctx("viewers", json_encode($viewers));
-    $w->ctx("top_object_table_name", $parent_object_table_name);
+    $w->ctx("top_object_class_name", $parent_object_class_name);
     $w->ctx("top_object_id", $parent_object_id);
     $w->ctx("new_owner", json_encode($new_owner));
     $w->ctx("is_new_comment", empty($p["comment_id"]) || $p["comment_id"] == 0 ? "true" : "false");
