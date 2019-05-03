@@ -52,7 +52,7 @@ function task_list_GET(Web $w) {
         $assignee = $task->getAssignee();
 		$task_array['assignee_name'] = !empty($assignee->id) ? $assignee->getSelectOptionTitle() : 'Unassigned';
         $task_array['dt_due'] = formatDate($task->dt_due);
-        $task_array['creator_id'] = $task->getTaskCreatorId();
+        $task_array['creator_id'] = $task->getCreatorId();
 
 		return $task_array;
 	}, $tasks ? : []);

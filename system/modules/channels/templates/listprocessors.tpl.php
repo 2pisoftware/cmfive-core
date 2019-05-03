@@ -16,16 +16,16 @@
                     <td><?php echo $p->module; ?></td>
                     <td><?php echo!empty($channel->name) ? $channel->name : ""; ?></td>
                     <td>
-                        <?php echo Html::box("/channels-processor/edit/{$p->id}", "Edit"); ?>
-                        <?php echo Html::a("/channels-processor/delete/{$p->id}", "Delete", null, null, "Are you sure you want to delete " . (!empty($p->name) ? $p->name : "this processor") . "?"); ?>
-                        <?php 
+                        <?php echo Html::box("/channels-processor/edit/{$p->id}", "Edit", true); ?>
+                        <?php echo Html::box("/channels-processor/delete/{$p->id}", "Delete", true, null, "Are you sure you want to delete " . (!empty($p->name) ? $p->name : "this processor") . "?"); ?>
+                        <?php
                             // Only show edit settings form if it returns something
 							if (class_exists($p->class)) {
 								$class = new $p->class($w);
 								if (method_exists($class, "getSettingsForm")) {
 									$form = $class->getSettingsForm($p->settings);
 									if (!empty($form)) {
-										echo Html::box("/channels-processor/editsettings/{$p->id}", "Edit Settings"); 
+										echo Html::box("/channels-processor/editsettings/{$p->id}", "Settings", true);
 									}
 								}
 							} else {
@@ -33,7 +33,7 @@
 							}
                         ?>
                     </td>
-                </tr>	
+                </tr>
             <?php endforeach; ?>
         </tbody>
     </table>

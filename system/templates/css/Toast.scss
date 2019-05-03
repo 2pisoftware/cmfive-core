@@ -1,5 +1,7 @@
 // Toast message stylesheet
 
+@import "responsive.scss";
+
 .cmfive-toast-message {
 
 	visibility: hidden;
@@ -8,7 +10,6 @@
 	color: white;
 	text-align: center;
 	padding: 16px;
-	position: fixed;
 	z-index: 1000000;
 	left: 50%;
 	bottom: 0px;
@@ -17,10 +18,25 @@
 
 	transition: 0.4s;
 
+	position: absolute;
+
+	@include tablet-down() {
+		position: fixed;
+		width: 100%;
+		left: 0px;
+		right: 0px;
+		margin: 0px;
+		bottom: -80px;
+	}
+
 	&.cmfive-toast-message-appear {
 		bottom: 20px;
 		opacity: 1;
 		visibility: visible;
+
+		@include tablet-down() {
+			bottom: 0px;
+		}
 	}
 	
 }

@@ -10,6 +10,9 @@ Config::set('tag', array(
     'path' => 'system/modules',
     'topmenu' => true,
     'hooks' => array(
-		'core_dbobject',
-	),
+		  'core_dbobject',
+    ),
+    "dependencies" => array(
+      "grimmlink/selectize" => "0.12.*"
+    ),
 ));

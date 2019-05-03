@@ -7,13 +7,13 @@ $tab-content-background-colour: #fff;
 
 div.tabs {
 
-	> ul {
+	& > ul {
 		display: block;
 		clear: both;
 		height: auto;
 		margin: 0px;
 
-		> li {
+		& > li {
 			display: inline-block;
 			// float: left;
 			list-style-type: none;
@@ -37,6 +37,8 @@ div.tabs {
 			&.active_tab {
 				background-color: white;
 				padding: 10px 20px 5px;
+				border-bottom: 1px solid white;
+				margin-bottom: -1px;
 			}
 		}
 	}
@@ -46,8 +48,6 @@ div.tabs {
 		// margin-top: 0px;
 		background-color: $tab-content-background-colour;
 		display: block;
-		border-left: 1px solid $tab-content-border-colour;
-		border-right: 1px solid $tab-content-border-colour;
-		border-bottom: 1px solid $tab-content-border-colour;
+		border: 1px solid $tab-content-border-colour;
 	}
 }

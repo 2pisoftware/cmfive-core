@@ -35,6 +35,14 @@ class User extends DbObject {
     	return $this->password == $this->encryptPassword($password);
     }
 
+    /**
+     * A static array of string arrays to be used for validaiton when creating forms with a User in it.
+     *
+     * @var array[array[string]]
+     */
+	public static $_validation = [
+		'login' => ['required']];
+
 	public function getLanguage() {
 		return $this->$language;
 	}
@@ -184,7 +192,7 @@ class User extends DbObject {
 					}
 				}
 			}
-			$rows = $this->getObjects("UserRole", array("user_id" => $this->id), true);
+			$rows = $this->getObjects("UserRole", array("user_id" => $this->id));
 
 			if ($rows) {
 				foreach ($rows as $row) {
@@ -218,7 +226,7 @@ class User extends DbObject {
 		if ($this->is_admin) {
 			return true;
 		}
-		if ($this->getRoles()) {
+		if ($this->getRoles(true)) {
 			return in_array($role, $this->_roles);
 		} else {
 			return false;
@@ -321,11 +329,13 @@ class User extends DbObject {
 	 * @param string $password
 	 * @return string
 	 */
-	public function encryptPassword($password) {
+	public function encryptPassword($password, $update_salt = true) {
 		if (empty($this->password_salt)) {
 			// Salt hash is generated per user
-			$this->password_salt = md5(uniqid(rand(), TRUE));
-			$this->update();
+			$this->password_salt = self::generateSalt();
+			if ($update_salt) {
+				$this->update();
+			}
 		}
 		return sha1($this->password_salt . $password);
 	}
@@ -335,8 +345,8 @@ class User extends DbObject {
 	 *
 	 * @param string $password
 	 */
-	public function setPassword($password) {
-		$this->password = $this->encryptPassword($password);
+	public function setPassword($password, $update_salt = true) {
+		$this->password = $this->encryptPassword($password, $update_salt);
 		$this->w->callHook('auth', 'setpassword', [$password, $this]);
 	}
 

@@ -26,7 +26,7 @@ Vue.component('html-calendar', {
 		}
 	},
 	methods: {
-		changeMonth(amount) {
+		changeMonth: function(amount) {
 			if (amount < 0) {
 				if (this.preventPast == false || this.current_month.isBefore(this.month)) {
 					this.month = moment(this.month).add(amount, 'month')
@@ -39,8 +39,8 @@ Vue.component('html-calendar', {
 
 			this.getDays()
 		},
-		getDays() {
-			let start_date = moment(this.month).startOf("month")
+		getDays: function() {
+			var start_date = moment(this.month).startOf("month")
 			this.days = []
 			
 			for(i = 1; i < start_date.isoWeekday(); i++) {
@@ -48,26 +48,26 @@ Vue.component('html-calendar', {
 			} 
 			
 			for(i = 0; i < this.month.daysInMonth(); i++) {
-				let today = (moment().startOf('day').isSame(start_date))
-				let disabled = (start_date.isSameOrBefore(moment().startOf('day')))
+				var today = (moment().startOf('day').isSame(start_date))
+				var disabled = (this.preventPast === true && start_date.isSameOrBefore(moment().startOf('day')))
 				
-				let selected_date = this.selectedDate ? moment(this.selectedDate).startOf('day').isSame(start_date) : false;
+				var selected_date = this.selectedDate ? moment(this.selectedDate).startOf('day').isSame(start_date) : false;
 
 				this.days.push({day: start_date.date(), classes: 'day' + (today ? ' today' : '') + (disabled ? ' disabled' : '') + (selected_date ? ' selected' : ''), obj: start_date.clone()})
 				start_date = start_date.add(1, 'day')
 			}
 		},
-		emitClick(event) {
+		emitClick: function(event) {
 			this.$emit('click', event);
 		}
 	},
 	computed: {
 		can_go_back: function() {
-			if (this.preventPast && this.month.isSame(this.current_month)) {
+			if (this.preventPast === true && this.month.isSame(this.current_month)) {
 				return 'disabled'
 			}
 		},
-		days_of_week: () => {
+		days_of_week: function() {
 			return ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 		}
 	},

@@ -6,7 +6,10 @@ Config::set('admin', array(
     'path' => 'system/modules',
     'topmenu' => true,
     'audit_ignore' => array("index"),
-    'hooks' => array('core_dbobject','core_web'),
+    'hooks' => array(
+        'core_dbobject',
+        'core_web'
+    ),
     'printing' => array(
         'command' => array(
             'unix' => 'lpr -P $printername $filename',
@@ -17,7 +20,7 @@ Config::set('admin', array(
         'output' => 'sql',
         'command' => array(
             'unix' => 'mysqldump -u $username -p\'$password\' $dbname | gzip > $filename.gz',
-            // 'windows' => 'J:\\xampp\\mysql\\bin\\mysqldump.exe -u $username -p$password $dbname > $filename'
+            'windows' => 'C:\\Ampps\\mysql\\bin\\mysqldump.exe -u $username -p$password $dbname > $filename'
         )
 		// Example to back up off site (only dropbox support currently)
 		// 'backuplocations' => ['dropbox' => ['key' => '<KEY>', 'secret' => '<SECRET>']]

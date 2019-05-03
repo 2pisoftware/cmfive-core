@@ -1,61 +1,7 @@
-$primary_colour: #2a2869;
-$secondary_colour: #159cd4;
-$tertiary_colour: #426AB2;
-$accent_colour: #dee5eb;
+@import "_settings.scss";
 
-$border_colour: #d4dbe1;
-$primary_text_colour: #222222;
-$text_accent_colour: #a3d0ea;
-
-$dark-border-colour: #d3d7dc;
-$dark-background-colour: #bbc9d4;
-
-$light-border-colour: #e5eaf0;
-$light-background-colour: #f8f9fb;
-
-html,
-body {
-	background-color: $accent_colour !important;
-    height:auto;
-
-	.body {
-		padding: 0px 40px 60px ;
-           
-		header {
-			font-size: 2em;
-			font-weight: bold;
-			margin-bottom: 0px;
-		}
-	}
-
-    .footer {
-        position: absolute;
-        left: 0px;
-        right: 0px;
-        bottom: 16px;
-    }
-}
-
-$tablet-width: 40.063em;
-$desktop-width: 1024px;
-
-@mixin phone {
-	@media (max-width: #{$tablet-width - 1px}) {
-		@content;
-	}
-}
-
-@mixin tablet {
-	@media (min-width: #{$tablet-width}) and (max-width: #{$desktop-width - 1px}) {
-		@content;
-	}
-}
-
-@mixin desktop {
-	@media (min-width: #{$desktop-width}) {
-		@content;
-	}
-}
+// Responsive mixins
+@import "responsive.scss";
 
 // Top navigation
 @import "top-nav.scss";
@@ -68,6 +14,26 @@ $desktop-width: 1024px;
 
 // Tabs
 @import "tabs.scss";
+
+html,
+body {
+	font-family: 'Hind Vadodara', sans-serif;
+	background-color: $accent_colour !important;
+    height:auto;
+
+	.body {
+		padding: 0px 40px 40px ;
+        @include phone() {
+        	padding: 0px 15px 15px;
+        }
+
+		header {
+			font-size: 2em;
+			font-weight: bold;
+			margin-bottom: 0px;
+		}
+	}
+}
 
 table {
 	margin-bottom: 0px;
@@ -100,4 +66,21 @@ table {
 .display-content {
 	padding: 10px;
 	background-color: $light-background-colour;
+}
+
+.row, .row-fluid {
+	&.cmfive__no-margin {
+		.column, .columns {
+			// margin: 0px -15px !important;
+			padding: 0px;
+		}
+	}
+
+	&.cmfive__no-margin-phone {
+		@include phone() {
+			.column, .columns {
+				padding: 0px;
+			}
+		}
+	}
 }

@@ -9,7 +9,7 @@
         <title><?php echo ucfirst($w->currentModule()); ?><?php echo!empty($title) ? ' - ' . $title : ''; ?></title>
 
         <?php
-
+         CmfiveScriptComponentRegister::registerComponent('polyfill', new CmfiveScriptComponent('https://cdn.polyfill.io/v2/polyfill.min.js?features=es6'));
         CmfiveScriptComponentRegister::registerComponent('moment', new CmfiveScriptComponent('/system/templates/js/moment.min.js'));
         CmfiveScriptComponentRegister::registerComponent('axios', new CmfiveScriptComponent('/system/templates/js/axios.min.js'));
 
@@ -21,15 +21,15 @@
         CmfiveStyleComponentRegister::registerComponent('style', new CmfiveStyleComponent("/system/templates/css/style.css"));
 
         // New styles
+        CmfiveStyleComponentRegister::registerComponent('hind_vadodara', new CmfiveStyleComponent("https://fonts.googleapis.com/css?family=Hind+Vadodara:300,400,700", [], true));
         CmfiveStyleComponentRegister::registerComponent('app', new CmfiveStyleComponent("/system/templates/scss/app.scss", ['/system/templates/scss/']));
-
-        $w->enqueueScript(array("name" => "modernizr", "uri" => "/system/templates/js/foundation-5.5.0/js/vendor/modernizr.js", "weight" => 1001));
-        $w->enqueueScript(array("name" => "jquery", "uri" => "/system/templates/js/foundation-5.5.0/js/vendor/jquery.js", "weight" => 1000));
-
-        $w->enqueueScript(array("name" => "foundation", "uri" => "/system/templates/js/foundation-5.5.0/js/foundation.min.js", "weight" => 998));
-        $w->enqueueScript(array("name" => "jquery.tablesorter.js", "uri" => "/system/templates/js/tablesorter/jquery.tablesorter.js", "weight" => 990));
-
-        CmfiveScriptComponentRegister::registerComponent('vue', new CmfiveScriptComponent('/system/templates/js/vue.js'));
+        
+        CmfiveScriptComponentRegister::registerComponent('modernizr', new CmfiveScriptComponent('/system/templates/js/foundation-5.5.0/js/vendor/modernizr.js', ['weight' => 1010]));
+        CmfiveScriptComponentRegister::registerComponent('jquery', new CmfiveScriptComponent('/system/templates/js/foundation-5.5.0/js/vendor/jquery.js', ['weight' => 1009]));
+        CmfiveScriptComponentRegister::registerComponent('foundation', new CmfiveScriptComponent('/system/templates/js/foundation-5.5.0/js/foundation.min.js', ['weight' => 1008]));
+        CmfiveScriptComponentRegister::registerComponent('jquery-tablesorter', new CmfiveScriptComponent('/system/templates/js/tablesorter/jquery.tablesorter.js', ['weight' => 990]));
+        
+        CmfiveScriptComponentRegister::registerComponent('vue', new CmfiveScriptComponent('/system/templates/js/vue.js', ['weight' => 1010]));
         CmfiveScriptComponentRegister::registerComponent('main', new CmfiveScriptComponent("/system/templates/js/main.js"));
         $fontawesome_js = new CmfiveScriptComponent("/system/templates/js/fontawesome-all.min.js");
         $fontawesome_js->defer = null;
@@ -37,9 +37,12 @@
         CmfiveScriptComponentRegister::registerComponent('fontawesome5', $fontawesome_js);
 
         CmfiveScriptComponentRegister::registerComponent('slideout', new CmfiveScriptComponent("/system/templates/js/slideout-1.0.1/dist/slideout.min.js"));
+        CmfiveScriptComponentRegister::registerComponent('toast', new CmfiveScriptComponent("/system/templates/js/Toast.js"));
+        CmfiveStyleComponentRegister::registerComponent('toast', new CmfiveStyleComponent("/system/templates/css/Toast.scss", ['/system/templates/scss/']));
 
-
+        
         // Print registered vue component links
+        /** @var Web $w */
         $w->loadVueComponents();
 
         $w->outputStyles();
@@ -141,45 +144,56 @@
     <body>
         <!-- Side (slideout) menu -->
         <nav id='cmfive-side-menu' class='cmfive-nav menu slideout-menu slideout-menu-left'>
-            <ul class="accordion side-nav" data-accordion>
-                <?php foreach ($w->modules() as $module) :
-                    // Check if config is set to display on topmenu
-                    if (Config::get("{$module}.topmenu") && Config::get("{$module}.active")) :
-                        // Check for navigation
-                        $service_module = ucfirst($module);
-                        $menu_link = method_exists($w->$service_module, "menuLink") ? $w->$service_module->menuLink() : $w->menuLink($module, is_bool(Config::get("{$module}.topmenu")) ? ucfirst($module) : Config::get("{$module}.topmenu"));
-                        if ($menu_link !== false) :
-                            if (method_exists($module . "Service", "navigation")) : ?>
-                                <li class="accordion-navigation <?php echo $w->_module == $module ? 'active' : ''; ?>" id="topnav_<?php echo $module; ?>">
-                                    <a href='#side_menu_panel-<?php echo $module; ?>'><?php echo is_bool(Config::get("{$module}.topmenu")) ? ucfirst($module) : Config::get("{$module}.topmenu"); ?><?php // echo $menu_link; ?></a>
-                                <?php // Try and get a badge count for the menu item
-                                    $module_navigation = $w->service($module)->navigation($w);
-
-                                    // Invoke hook to inject extra navigation
-                                    $hook_navigation_items = $w->callHook($module, "extra_navigation_items", $module_navigation);
-                                    if (!empty($hook_navigation_items)) {
-                                        foreach($hook_navigation_items as $hook_navigation_item) {
-                                            if (is_array($hook_navigation_item)) {
-                                                $module_navigation = array_merge($module_navigation, $hook_navigation_item);
-                                            } else {
-                                                $module_navigation[] = $hook_navigation_item;
+            <div>
+                <ul class="accordion side-nav" data-accordion>
+                    <?php foreach ($w->modules() as $module) :
+                        // Check if config is set to display on topmenu
+                        if (Config::get("{$module}.topmenu") && Config::get("{$module}.active")) :
+                            // Check for navigation
+                            $service_module = ucfirst($module);
+                            $menu_link = method_exists($w->$service_module, "menuLink") ? $w->$service_module->menuLink() : $w->menuLink($module, is_bool(Config::get("{$module}.topmenu")) ? ucfirst($module) : Config::get("{$module}.topmenu"));
+                            if ($menu_link !== false) :
+                                if (method_exists($module . "Service", "navigation")) : ?>
+                                    <li class="accordion-navigation <?php echo $w->_module == $module ? 'active' : ''; ?>" id="topnav_<?php echo $module; ?>">
+                                        <a href='#side_menu_panel-<?php echo $module; ?>'><?php echo is_bool(Config::get("{$module}.topmenu")) ? ucfirst($module) : Config::get("{$module}.topmenu"); ?><?php // echo $menu_link; ?></a>
+                                    <?php // Try and get a badge count for the menu item
+                                        $module_navigation = $w->service($module)->navigation($w);
+                                        
+                                        // Invoke hook to inject extra navigation
+                                        $hook_navigation_items = $w->callHook($module, "extra_navigation_items", $module_navigation);
+                                        if (!empty($hook_navigation_items)) {
+                                            foreach($hook_navigation_items as $hook_navigation_item) {
+                                                if (is_array($hook_navigation_item)) {
+                                                    $module_navigation = array_merge($module_navigation, $hook_navigation_item);
+                                                } else {
+                                                    $module_navigation[] = $hook_navigation_item;
+                                                }
                                             }
                                         }
-                                    }
 
-                                    if (!empty($module_navigation)) : ?>
-                                        <div id='side_menu_panel-<?php echo $module; ?>' class="content">
-                                            <?php echo Html::ul($module_navigation, null, "side-nav"); ?>
-                                        </div>
-                                    <?php endif; ?>
-                                </li>
-                            <?php else: ?>
-                                <li class='accordion-navigation <?php echo $w->_module == $module ? 'active' : ''; ?>'><?php echo $menu_link; ?></li>
-                            <?php endif; ?>
-                        <?php endif;
-                    endif;
-                endforeach; ?>
-            </ul>
+                                        if (!empty($module_navigation)) : ?>
+                                            <div id='side_menu_panel-<?php echo $module; ?>' class="content">
+                                                <?php echo Html::ul($module_navigation, null, "side-nav"); ?>
+                                            </div>
+                                        <?php endif; ?>
+                                    </li>
+                                <?php else: ?>
+                                    <li class='accordion-navigation <?php echo $w->_module == $module ? 'active' : ''; ?>'><?php echo $menu_link; ?></li>
+                                <?php endif; ?>
+                            <?php endif;
+                        endif;
+                    endforeach; ?>
+                </ul>
+                
+                <!-- Footer -->
+                <div class="row-fluid align-center footer clearfix">
+                    <div class="columns small-12">
+                        <div class='text-center'>
+                            Copyright &#169; <?php echo date('Y'); ?>&nbsp;&nbsp;&nbsp;<a href="<?php echo $w->moduleConf('main', 'company_url'); ?>"><?php echo $w->moduleConf('main', 'company_name'); ?></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </nav>
         <main id='cmfive-main-content' class='slideout-panel slideout-panel-left'>
             <div class="loading_overlay" <?php echo $w->request('show_overlay') == null ? 'style="display:none;"' : ''; ?>>
@@ -223,6 +237,7 @@
                                 <?php endforeach;
                             endif;
                         ?>
+                        <li><span><?php echo Config::get('main.company_name'); ?></span>    </li>
                     </ul>
 
                     <!-- Left Nav Section -->
@@ -256,9 +271,14 @@
                 </section>
             </nav>
 
+            <nav class="cmfive-phone-nav" data-topbar role="navigation">
+                <div class='left'><a href='#' class='side-menu-toggle-button'><span class='fas fa-bars fa-2x'></span></a></div>
+                <div class='text-right cmfive__company-name'><span><?php echo Config::get('main.company_name'); ?></span></div>
+            </nav>
+
             <!-- Breadcrumbs -->
             <div class="row-fluid breadcrumb-container">
-                <?php echo Html::breadcrumbs(array(), $w); ?>
+                <?php echo Html::breadcrumbs([], $w); ?>
                 <span class='icon-container'>
                     <?php if ($w->Auth->allowed('help/view')) {
                             echo Html::box(WEBROOT . "/help/view/" . $w->_module . ($w->_submodule ? "-" . $w->_submodule : "") . "/" . $w->_action, "<span class='fas fa-info'></span><span class='show-for-medium-up'> Help</span>", false, true, 750, 500, "isbox", null, null, null, 'cmfive-help-modal');
@@ -268,7 +288,7 @@
             </div>
 
             <!-- Action content -->
-            <div class="row-fluid body">
+            <div class="row-fluid body cmfive__no-margin-phone">
                 <div class='small-12 columns'>
                     <!-- Title and messages -->
                     <?php if (empty($hideTitle) && !empty ($title)):?>
@@ -295,15 +315,6 @@
                 </div>
             </div>
 
-            <!-- Footer -->
-            <div class="row-fluid align-center footer clearfix">
-                <div class="columns small-12">
-                    <div class='text-center'>
-                        Copyright &#169; <?php echo date('Y'); ?>&nbsp;&nbsp;&nbsp;<a href="<?php echo $w->moduleConf('main', 'company_url'); ?>"><?php echo $w->moduleConf('main', 'company_name'); ?></a>
-                    </div>
-                </div>
-            </div>
-
             <!-- Slider overlay -->
             <div id='slider_overlay'></div>
         </main>
@@ -317,17 +328,25 @@
                 'panel': document.getElementById('cmfive-main-content'),
                 'menu': document.getElementById('cmfive-side-menu'),
                 'padding': 256,
-                'tolerance': 70
+                'tolerance': 140
             });
 
-            document.querySelector('.side-menu-toggle-button').addEventListener('click', function() {
-                slideout.open();
+            slideout.on('beforeopen', function() {
                 $("#slider_overlay").fadeIn(100);
+            }).on('beforeclose', function() {
+                $("#slider_overlay").fadeOut(100);
+            });
+
+            document.querySelectorAll('.side-menu-toggle-button').forEach(function(toggle_button) {
+                toggle_button.addEventListener('click', function() {
+                    slideout.open();
+                    // $("#slider_overlay").fadeIn(100);
+                });
             });
 
             $("#slider_overlay").click(function(){
                 slideout.close();
-                $("#slider_overlay").fadeOut(100);
+                // $("#slider_overlay").fadeOut(100);
             })
 
             $(document).foundation({

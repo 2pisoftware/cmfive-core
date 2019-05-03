@@ -431,6 +431,10 @@ function formatTime($date, $format = "H:i") {
 	return formatDate($date, $format);
 }
 
+function formatNumber($number) {
+	return sprintf('%.2f',$number);
+}
+
 /**
  * A replacement function for the money_format PHP function that is only
  * available on most Linux based systems with the strfmon C function.

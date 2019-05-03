@@ -3,42 +3,25 @@
 <script src='/system/templates/js/natsort.min.js'></script>
 <script src='/system/templates/vue-components/html/filterSort.js'></script>
 
-<style>
-
-    #task_list > thead > tr > th {
-        cursor: pointer;
-    }
-
-     #options {
-        display: none;
-        background-color: Silver;
-        text-align: right;
-        position: absolute;
-        z-index: 10000;
-        opacity: 0.5;
-    }
-</style>
-
 <h1>Task List</h1>
 
 <div id="task_modal" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
 </div>
 
 <div id='vue_task_list' class="container-fluid" style="position: relative;">
-    <div id="options">
+    <!-- <div id="options">
         <a class="tiny button radius" style="background-color: #68C2CD;" href="/task/edit/?gid=filter.task_group_id">Quick View</a>
         <a href="/task/list"><button class="tiny button radius" style="background-color: #FF7A13;">View</button></a>
 
         <a data-reveal-ajax="true" data-reveal-id="modal_edit" href="/task/edit/task_id"><button style="background-color: #59BC3B;" class='tiny button radius'>Edit</button></a>
         <a class="tiny button radius" style="background-color: #95ACBC;" href="/task/duplicatetask/task_id">Duplicate</a>
-        <!-- if can delete -->
+        
         <button class="tiny button radius" style="background-color: #D12229;" data-reveal-id="delete-modal">Delete</button>
-    </div>
+    </div> -->
     <div class='row-fluid'>
         <div class='medium-12 large-4 columns'>
             <label>Assignee</label>
             <model-list-select style="" v-model="filter.assignee_id" :list="assignees" placeholder="select assignee" option-value="value" option-text="text"></model-list-select>
-            <!--<model-list-select style="" ref="assigneeselect" v-on:searchchange="assignee_autocomplete" v-model="filter.assignee_id" :list="assignees" placeholder="select assignee" option-value="value" option-text="text"></model-list-select>-->
         </div>
 
         <div class='medium-12 large-4 columns'>
@@ -78,35 +61,17 @@
         </thead>
         <tbody>
             <tr @mouseenter="show_options($event)" @mouseleave="hide_options" v-for="task in paginatedCandidates" :class="{ test: task.status === 'Overdue' || task.priority === 'Urgent' }">
-                <td>
-                    {{task.id}}
-                </td>
-                <td>
-                    <a data-reveal-ajax="true" data-reveal-id="task_modal" :href="task.task_url">{{task.title}}</a>
-                </td>
-                <td>
-                    <a :href="task.task_group_url">{{task.task_group_title}}</a>
-                </td>
-                <td>
-                    {{task.assignee_name}}
-                </td>
-                <td>
-                    {{task.task_type}}
-                </td>
-                <td>
-                    {{task.priority}}
-                </td>
-                <td>
-                    {{task.status}}
-                </td>
-                <td>
-                    {{task.dt_due}}
-                </td>
+                <td v-html="task.id"></td>
+                <td><a data-reveal-ajax="true" data-reveal-id="task_modal" :href="task.task_url" v-html="task.title"></a></td>
+                <td><a :href="task.task_group_url" v-html="task.task_group_title"></a></td>
+                <td v-html="task.assignee_name"></td>
+                <td v-html="task.task_type"></td>
+                <td v-html="task.priority"></td>
+                <td v-html="task.status"></td>
+                <td v-html="task.dt_due"></td>
             </tr>
         </tbody>
     </table>
-
-    <div class='row-fluid columns' style="height: 2em;"></div>
 
     <div class='row-fluid'>
         <div class='small-10 columns' style="min-height:1px;"></div>
@@ -133,12 +98,12 @@
             "pagination": TwoPiPagination
         },
 		data: {
-            assignees: <?php echo $assignees; ?>,
-            creators: <?php echo $creators; ?>,
-            task_groups: <?php echo $task_groups; ?>,
-            task_types: <?php echo $task_types; ?>,
-            priority_list: <?php echo $priority_list; ?>,
-            statuslist: <?php echo $statuslist; ?>,
+            assignees: <?php echo json_encode(array_map(function($user) {return ['value' => $user['assignee_id'], 'text' => $user['fullname']];}, $assignees)); ?>,
+            creators: <?php echo json_encode(array_map(function($user) {return ['value' => $user["creator_id"], 'text' => $user['fullname']];}, $creators)); ?>,
+            task_groups: <?php echo json_encode(array_map(function($task_group) {return ['value' => $task_group->id, 'text' => $task_group->title];}, $task_groups)); ?>,
+            task_types: <?php echo json_encode(array_map(function($task_type) {return ['value' => strtolower($task_type['task_type']), 'text' => $task_type['task_type']];}, $task_types)); ?>,
+            priority_list: <?php echo json_encode(array_map(function($priority) {return ['value' => strtolower($priority['priority']), 'text' => $priority['priority']];}, $priority_list)); ?>,
+            statuslist: <?php echo json_encode(array_map(function($task_status) {return ['value' => strtolower($task_status['status']), 'text' => $task_status['status']];}, $status_list)); ?>,
             closed: 'is_closed',
 
             task_list: [],

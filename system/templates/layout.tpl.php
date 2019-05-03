@@ -37,20 +37,19 @@
         $w->enqueueScript(array("name" => "boxover.js", "uri" => "/system/templates/js/boxover.js", "weight" => 910));
         $w->enqueueScript(array("name" => "ckeditor.js", "uri" => "/system/templates/js/ckeditor/ckeditor.js", "weight" => 900));
         $w->enqueueScript(array("name" => "Chart.js", "uri" => "/system/templates/js/chart-js/dist/Chart.min.js", "weight" => 890));
-
         $w->enqueueScript(array("name" => "moment.js", "uri" => "/system/templates/js/moment.min.js", "weight" => 880));
 
         // Code mirror
         $w->enqueueScript(array("name" => "codemirror.js", "uri" => "/system/templates/js/codemirror-4.4/codemirror-compressed.js", "weight" => 880));
 
+        CmfiveScriptComponentRegister::registerComponent('AxiosJS', new CmfiveScriptComponent('/system/templates/js/axios.min.js'));
+        CmfiveScriptComponentRegister::registerComponent('ToastJS', new CmfiveScriptComponent("/system/templates/js/Toast.js"));
+        CmfiveStyleComponentRegister::registerComponent('ToastSCSS', new CmfiveStyleComponent("/system/templates/css/Toast.scss", ['/system/templates/scss/']));
+
+        $w->loadVueComponents();
 
         $w->outputStyles();
         $w->outputScripts();
-
-        // Print registered vue component links
-        foreach(VueComponentRegister::getComponents() as $vue_component) {
-            echo $vue_component->_include();
-        }
         ?>
         <script type="text/javascript">
             var $ = $ || jQuery;

@@ -11,7 +11,13 @@ class CmfiveStyleComponent extends CmfiveComponent {
 	public $_external = false;
 	public static $_allowed_extensions = ['css', 'scss'];
 
-	public function __construct($path, $include_paths = [], $is_external = false) {
+	public function __construct($path, $include_paths = [], $is_external = false, $props = []) {
+		if (!empty($props)) {
+		    foreach($props as $key => $value) {
+				$this->$key = $value;
+			}
+		}
+
 		$this->_external = $is_external;
 		if (!$this->_external) {
 			$style_path = pathinfo($path);
@@ -27,6 +33,16 @@ class CmfiveStyleComponent extends CmfiveComponent {
 		} else {
 			$this->href = $path;
 		}
+	}
+
+	public function setProps(Array $props) {
+		if (!empty($props)) {
+		    foreach($props as $key => $value) {
+				$this->$key = $value;
+			}
+		}
+
+		return $this;
 	}
 
 	public function _include() {
@@ -53,10 +69,18 @@ class CmfiveStyleComponent extends CmfiveComponent {
 					echo $e->getMessage();
 					return;
 				}
-
+				
 				if (!is_dir(ROOT_PATH . '/cache/css/')) {
 					mkdir(ROOT_PATH . '/cache/css/');
+					
 				}
+				// check if exists or make .htaccess with allow from all
+				if (!file_exists(ROOT_PATH . '/cache/css/.htaccess')) {
+					$access_file = fopen(ROOT_PATH . '/cache/css/.htaccess', 'w');
+					fwrite($access_file, "Allow From All");
+					fclose($access_file);
+				}
+
 				file_put_contents(ROOT_PATH . '/cache/css/' . $this->_filename . '.css', $compiled_css);
 				$this->rel = 'stylesheet';
 				$this->href = '/cache/css/' . $this->_filename . '.css';

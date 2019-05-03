@@ -14,6 +14,7 @@ Config::set('main', array(
 	],
 	'hooks' => [
 		'core_dbobject',
+		'admin'
 	],
 	'available_languages' => [
 		'en_AU' => 'English',
@@ -32,6 +33,9 @@ Config::set('main', array(
 		'html-table' => [
 			'/system/templates/vue-components/html/html-table.vue.js',
 			'/system/templates/vue-components/html/html-table.vue.scss'
+		],
+		'html-pagination' => [
+			'/system/templates/vue-components/html/html-pagination.vue.js'
 		],
 		'user-card' => [
 			'/system/templates/vue-components/html/custom/user-card.vue.js',

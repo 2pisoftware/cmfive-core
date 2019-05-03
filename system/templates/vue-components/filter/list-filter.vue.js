@@ -5,7 +5,6 @@
 Vue.component('list-filter', {
 	methods: {
 		child_elements: function() {
-			console.log(this.$root);
 			return this.$root.$children.length;
 		}
 	},
