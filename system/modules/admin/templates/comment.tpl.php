@@ -50,7 +50,7 @@
 				comment: "<?php echo $comment; ?>",
 				comment_id: "<?php echo $comment_id; ?>",
 				viewers: <?php echo empty($viewers) ? json_encode([]) : $viewers; ?>,
-				top_object_table_name: "<?php echo $top_object_table_name; ?>",
+				top_object_class_name: "<?php echo $top_object_class_name; ?>",
 				top_object_id: "<?php echo $top_object_id; ?>",
 				new_owner: <?php echo empty($new_owner) ? json_decode([]) : $new_owner; ?>,
 				can_restrict: "<?php echo $can_restrict; ?>",
@@ -115,7 +115,7 @@
 					comment_id: app.comment_id,
 					viewers: app.viewers,
 					new_owner: app.new_owner,
-					top_object_table_name: app.top_object_table_name,
+					top_object_class_name: app.top_object_class_name,
 					top_object_id: app.top_object_id,
 					is_internal_only: app.is_internal_only,
 					is_restricted: app.is_restricted
@@ -144,8 +144,15 @@
 				});
 			},
 			canNotifyViewers: function() {
-				return this.viewers.filter(function(viewer) {
-					return (!this.is_restricted && viewer.is_original_notify || !this.is_restricted && viewer.id == <?php echo $w->Auth->user()->id; ?>) || this.is_restricted && viewer.can_view;
+				var _this = this;
+				return _this.viewers.filter(function(viewer) {
+					if (!_this.is_restricted && (viewer.is_original_notify || viewer.is_notify)) {
+						return true;
+					} else if (!_this.is_restricted && viewer.id == <?php echo $w->Auth->user()->id; ?>) {
+						return true;
+					} else if (_this.is_restricted && viewer.can_view) {
+						return true;
+					}
 				});
 			},
 		}
