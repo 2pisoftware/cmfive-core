@@ -43,5 +43,6 @@ function ajaxAddAttachment_POST(Web $w) {
 
 	$w->out((new AxiosResponse())->setSuccessfulResponse("OK", ["attachment_id" => $attachment_id,
 		"attachment_name" => $attachment->title,
+		"attachment_description" => $attachment->description,
 		"attachment_url" => $w->File->isImage($attachment->fullpath) ? WEBROOT . '/file/atfile/' . $attachment->id : WEBROOT . '/file/atfile/' . $attachment->id . "/" . $attachment->filename]));
 }
