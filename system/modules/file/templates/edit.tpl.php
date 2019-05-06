@@ -19,12 +19,14 @@
 						<span class="cmfive__checkbox-checkmark"></span>
 					</label>
 					<div v-show="is_restricted"><strong>Select the users that can view this attachment</strong>
-						<div v-for="viewer in viewers" class="small-12 medium-6 large-4">
-							<label class="cmfive__checkbox-container" v-if="viewer.id != <?php echo $w->Auth->user()->id; ?>">{{ viewer.name }}
-								<input type="checkbox" v-model="viewer.can_view">
-								<span class="cmfive__checkbox-checkmark" ></span>
-							</label>
-						</div>
+						<ul class="small-block-grid-1 medium-block-grid-3 large-block-grid-3">
+							<li v-for="viewer in viewers" style="padding-bottom: 0;">
+								<label class="cmfive__checkbox-container" v-if="viewer.id != <?php echo $w->Auth->user()->id; ?>">{{ viewer.name }}
+									<input type="checkbox" v-model="viewer.can_view">
+									<span class="cmfive__checkbox-checkmark" ></span>
+								</label>
+							</li>
+						</ul>
 						<strong>Attachment Owner</strong>
 						<select @change="updateOwner">
 							<option v-for="viewer in canViewViewers" :value="JSON.stringify(viewer)">

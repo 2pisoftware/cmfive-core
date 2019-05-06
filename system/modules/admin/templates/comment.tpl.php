@@ -7,12 +7,14 @@
 				<div v-if="viewers.length !== 0">
 					<strong>Select the users that will be notified by this comment</strong>
 				</div>
-				<div v-for="viewer in viewers">
-					<label class="cmfive__checkbox-container">{{ viewer.name }}
-						<input type="checkbox" v-model="viewer.is_notify" @click="toggleIsNotify(viewer)">
-						<span class="cmfive__checkbox-checkmark"></span>
-					</label>
-				</div>
+				<ul class="small-block-grid-1 medium-block-grid-2 large-block-grid-3">
+					<li v-for="viewer in canNotifyViewers" style="padding-bottom: 0;">
+						<label class="cmfive__checkbox-container">{{ viewer.name }}
+							<input type="checkbox" v-model="viewer.is_notify" @click="toggleIsNotify(viewer)">
+							<span class="cmfive__checkbox-checkmark"></span>
+						</label>
+					</li>
+				</ul>
 			</div><br>
 			<div v-if="can_restrict == 'true'">
 				<label class="cmfive__checkbox-container">Restricted
@@ -20,12 +22,14 @@
 					<span class="cmfive__checkbox-checkmark"></span>
 				</label>
 				<div v-show="is_restricted"><strong>Select the users that can view this comment</strong>
-					<div v-for="viewer in viewers" class="small-12 medium-6 large-4">
-						<label class="cmfive__checkbox-container" v-if="viewer.id != <?php echo $w->Auth->user()->id; ?>">{{ viewer.name }}
-							<input type="checkbox" v-model="viewer.can_view" @click="toggleCanView(viewer)">
-							<span class="cmfive__checkbox-checkmark" ></span>
-						</label>
-					</div>
+					<ul class="small-block-grid-1 medium-block-grid-2 large-block-grid-3">
+						<li v-for="viewer in canRestrictViewers" style="padding-bottom: 0;">
+							<label class="cmfive__checkbox-container">{{ viewer.name }}
+								<input type="checkbox" v-model="viewer.can_view" @click="toggleCanView(viewer)">
+								<span class="cmfive__checkbox-checkmark" ></span>
+							</label>
+						</li>
+					</ul>
 					<strong v-if="comment_id != 0">Comment Owner</strong>
 					<select v-if="comment_id != 0" @change="updateOwner">
 						<option v-for="viewer in canViewViewers" :value="JSON.stringify(viewer)">
@@ -46,7 +50,7 @@
 				comment: "<?php echo $comment; ?>",
 				comment_id: "<?php echo $comment_id; ?>",
 				viewers: <?php echo empty($viewers) ? json_encode([]) : $viewers; ?>,
-				top_object_table_name: "<?php echo $top_object_table_name; ?>",
+				top_object_class_name: "<?php echo $top_object_class_name; ?>",
 				top_object_id: "<?php echo $top_object_id; ?>",
 				new_owner: <?php echo empty($new_owner) ? json_decode([]) : $new_owner; ?>,
 				can_restrict: "<?php echo $can_restrict; ?>",
@@ -111,7 +115,7 @@
 					comment_id: app.comment_id,
 					viewers: app.viewers,
 					new_owner: app.new_owner,
-					top_object_table_name: app.top_object_table_name,
+					top_object_class_name: app.top_object_class_name,
 					top_object_id: app.top_object_id,
 					is_internal_only: app.is_internal_only,
 					is_restricted: app.is_restricted
@@ -133,7 +137,24 @@
 				return this.viewers.filter(function(viewer) {
 					return viewer.can_view;
 				});
-			}
+			},
+			canRestrictViewers: function() {
+				return this.viewers.filter(function(viewer) {
+					return viewer.id != <?php echo $w->Auth->user()->id; ?>;
+				});
+			},
+			canNotifyViewers: function() {
+				var _this = this;
+				return _this.viewers.filter(function(viewer) {
+					if (!_this.is_restricted && (viewer.is_original_notify || viewer.is_notify)) {
+						return true;
+					} else if (!_this.is_restricted && viewer.id == <?php echo $w->Auth->user()->id; ?>) {
+						return true;
+					} else if (_this.is_restricted && viewer.can_view) {
+						return true;
+					}
+				});
+			},
 		}
 	});
 </script>

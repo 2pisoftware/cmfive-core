@@ -29,6 +29,10 @@ function new_GET(Web $w) {
 		}
 	}
 
+	usort($viewers, function($a, $b) {
+		return strcmp($a["name"], $b["name"]);
+	});
+
 	$w->ctx("redirect_url", WEBROOT . "/" . $redirect_url);
 	$w->ctx("class", $p["class"]);
 	$w->ctx("class_id", $p["class_id"]);
