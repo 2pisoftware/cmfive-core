@@ -18,7 +18,7 @@
                     <?php echo Html::box("/admin/comment/{0}/{$c->getDbTablename()}/{$c->id}?redirect_url=" . $redirect, "Reply", false); endif; ?>
                 <?php if ($c->w->Auth->user()->id == $c->creator_id && empty($displayOnly)) : ?>
                     <span style='float: right;'>
-                        <?php echo Html::box("/admin/comment/{$c->id}/" . get_class($c) . "/{$c->obj_id}?redirect_url=" . $redirect, "Edit", false); ?>
+                        <?php echo Html::box("/admin/comment/{$c->id}/" . $c->obj_table . "/{$c->obj_id}?redirect_url=" . $redirect, "Edit", false); ?>
                         or
                         <?php echo Html::a("/admin/deletecomment/{$c->id}?redirect_url=" . $redirect, "Delete", null, null, "Are you sure you want to delete this comment?"); ?>
                     </span>
