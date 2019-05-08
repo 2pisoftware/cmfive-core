@@ -26,7 +26,7 @@ function comment_GET(Web $w){
             $is_parent_restricted = true;
         }
     } else {
-        $root_object = $w->Comment->getObject($parent_object_class_name, $parent_object_id);
+        $root_object = $w->Comment->getObject(str_replace(" ", "", ucwords(str_replace("_", " ", $parent_object_class_name))), $parent_object_id);
     }
 
     if ($is_parent_restricted || (!empty($comment->id) && $comment->isRestricted())) {
@@ -94,7 +94,7 @@ function comment_GET(Web $w){
                         "name" => $user->getFullName() . ($user->is_external ? " (EXTERNAL)" : ""),
                         "can_view" => true,
                         "is_notify" => $w->Auth->user()->id != $user->id ? true : false,
-                        "is_original_notify" => $is_notify
+                        "is_original_notify" => empty($is_notify) ? null : $is_notify,
                     ];
                 }
             }
@@ -114,7 +114,7 @@ function comment_GET(Web $w){
     $w->ctx("comment", $comment->comment);
     $w->ctx("comment_id", $p["comment_id"] == "{0}" ? "0" : $p["comment_id"]);
     $w->ctx("viewers", json_encode($viewers));
-    $w->ctx("top_object_class_name", $parent_object_class_name);
+    $w->ctx("top_object_class_name", strtolower(preg_replace('/(?<=\\w)(?=[A-Z])/', "_$1", $parent_object_class_name)));
     $w->ctx("top_object_id", $parent_object_id);
     $w->ctx("new_owner", json_encode($new_owner));
     $w->ctx("is_new_comment", empty($p["comment_id"]) || $p["comment_id"] == 0 ? "true" : "false");
