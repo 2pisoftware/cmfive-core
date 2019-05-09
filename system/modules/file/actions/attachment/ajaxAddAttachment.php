@@ -24,8 +24,9 @@ function ajaxAddAttachment_POST(Web $w) {
 	$title = property_exists($request_data, "title") ? $request_data->title : null;
 	$description = property_exists($request_data, "description") ? $request_data->description : null;
 	$type_code = property_exists($request_data, "type_code") ? $request_data->type_code : null;
+	$is_public = property_exists($request_data, "is_public") ? $request_data->is_public : false;
 
-	$attachment_id = $w->File->uploadAttachment("file", $object, $title, $description, $type_code);
+	$attachment_id = $w->File->uploadAttachment("file", $object, $title, $description, $type_code, $is_public);
 	if (empty($attachment_id)) {
 		$w->out((new AxiosResponse())->setErrorResponse(null, ["error_message" => "Failed to add attachment"]));
 		return;
