@@ -1,6 +1,6 @@
 <form action='/timelog/edit/<?php echo !empty($timelog->id) ? $timelog->id : ''; ?><?php echo $redirect ? '?redirect=' . $redirect : ''; ?>' method='POST' name='timelog_edit_form' target='_self' id='timelog_edit_form' class=' small-12 columns'  >
 	<div class="row-fluid clearfix small-12 multicolform">
-		
+
 		<div class="panel clearfix">
 			<div class="small-12 columns section-header">
 				<h4><?php echo (!empty($timelog->id)) ? "Update" : "Create"; ?> timelog</h4>
@@ -35,7 +35,7 @@
 				</li>
 				<li>
 					<label class="small-12 columns">Search
-						<?php 
+						<?php
 						$usable_class = !empty($timelog->object_class) ? $timelog->object_class : (!empty($tracking_class) ? $tracking_class : (key(reset($select_indexes))));
 						$where_clause = [];
 						if (!empty($usable_class)) {
@@ -155,7 +155,7 @@
 							"id|name"		=> "description",
 							"value"			=> !empty($timelog->id) ? $timelog->getComment()->comment : null,
 							"rows"			=> 8
-						])); ?>	
+						])); ?>
 					</label>
 				</li>
 			</ul>
@@ -190,28 +190,28 @@
 		$("input[type=radio][name=select_end_method]").change(function() {
 			$("#timelog__end-time-error").hide();
 			$("#timelog__end-time-error").parent().removeClass('error');
-			
+
 			if (this.value === "time") {
 				$("#time_end").removeAttr("disabled");
-				
+
 				$("#hours_worked").attr("disabled", "disabled");
 				$("#minutes_worked").attr("disabled", "disabled");
-				
+
 				$("#hours_worked").val("");
 				$("#minutes_worked").val("");
-				
+
 				$("#time_end").focus();
 			} else if (this.value === "hours") {
 				$("#hours_worked").removeAttr("disabled");
 				$("#minutes_worked").removeAttr("disabled");
-				
+
 				$("#time_end").attr("disabled", "disabled");
 				$("#time_end").val("");
-				
+
 				$("#hours_worked").focus();
 			}
 		});
-		
+
 		// If there is no task group selected, we disable submit
 		if ($("#object_id").val() == '') {
 			$(".savebutton").prop("disabled", true);
@@ -233,7 +233,7 @@
 			}
 		});
 
-		// If there is already a value in #object_class, that is, we are 
+		// If there is already a value in #object_class, that is, we are
 		// editing, then set the searchURL
 		var searchUrl = '';
 		if ($("#object_class").val !== '') {
@@ -263,7 +263,7 @@
 					}
 				});
 			},
-			// When the have selected a search value then do the ajax call  
+			// When the have selected a search value then do the ajax call
 			select: function (event, ui) {
 				$("#object_id").val(ui.item.id);
 				// Task is chosen, allow submit
@@ -285,24 +285,24 @@
 			$("#timelog__end-time-error").hide();
 			$("#timelog__end-time-error").parent().removeClass('error');
 		});
-		
+
 		$("#hours_worked").on('keyup', function() {
 			$("#timelog__hours-mins-error").hide();
 			$("#timelog__hours-mins-error").parent().removeClass('error');
 		});
-		
+
 		$("#minutes_worked").on('keyup', function() {
 			$("#timelog__hours-mins-error").hide();
 			$("#timelog__hours-mins-error").parent().removeClass('error');
 		});
-				
+
 		$("#timelog_edit_form").on('submit', function() {
 			// Validate start/finish times
 			<?php if (!$timelog->isRunning()) : ?>
 				if ($("input[name='select_end_method']:checked").val() === 'time') {
 					var startDate = parseTime($("#time_start").val());
 					var endDate = parseTime($("#time_end").val());
-				
+
 					if (endDate <= startDate) {
 						$("#timelog__end-time-error").show();
 						$("#timelog__end-time-error").parent().addClass('error');
@@ -311,7 +311,7 @@
 				} else {
 					var hours_worked = $("#hours_worked").val();
 					var minutes_worked = $("#minutes_worked").val();
-					
+
 					if ((!hours_worked && !minutes_worked) || (hours_worked <= 0 && minutes_worked <= 0)) {
 						$("#timelog__hours-mins-error").show();
 						$("#timelog__hours-mins-error").parent().addClass('error');
@@ -319,7 +319,7 @@
 					}
 				}
 			<?php else : ?>
-				if ($("#date_start").val() != "" && $("#time_start").val() != '') {                
+				if ($("#date_start").val() != "" && $("#time_start").val() != '') {
 	                var moment_start = moment($("#date_start").val() + ' ' + $("#time_start").val(), ['DD/MM/YYYY HH:mm ', 'DD/MM/YYYY hh:mm a']);
 	                if (!moment_start.isValid()) {
 	                	alert('An invalid time format was provided');

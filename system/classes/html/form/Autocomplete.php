@@ -196,11 +196,10 @@ class Autocomplete extends \Html\Form\FormElement {
 				$attribute_buffer .= $field . '=\'' . $this->{$field} . '\' ';
 			}
 		}
-
 		$prefix = static::$_prefix;
 
 		$displayValue = !empty($this->title) ? $this->title : $this->value;
-
+		// echo "<pre>"; var_dump($displayValue);
 		return <<<BUFFER
 <input type="text" style="display: none;" id="{$this->id}"  name="{$this->name}" value="{$this->value}" {$attribute_buffer} />
 <div class='acp_container'>
@@ -244,5 +243,5 @@ class Autocomplete extends \Html\Form\FormElement {
 </script>
 BUFFER;
 	}
-	
+
 }
