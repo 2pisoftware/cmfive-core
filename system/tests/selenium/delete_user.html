@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<link rel="selenium.base" href="http://cosinedev.isaac/auth/login" />
+<link rel="selenium.base" href="http://dev.cmfive" />
 <title>delete user</title>
 </head>
 <body>
@@ -42,6 +42,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>waitForTextPresent</td>
+	<td>deleted</td>
+	<td></td>
+</tr>
+<tr>
 	<td>assertText</td>
 	<td>//div/div[2]</td>
 	<td>User testUser deleted. ×</td>
@@ -49,6 +54,11 @@
 <tr>
 	<td>clickAndWait</td>
 	<td>link=Logout</td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>2000</td>
 	<td></td>
 </tr>
 <tr>
@@ -64,6 +74,16 @@
 <tr>
 	<td>clickAndWait</td>
 	<td>//button[@type='submit']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>2000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>incorrect</td>
 	<td></td>
 </tr>
 <tr>

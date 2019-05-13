@@ -8,31 +8,65 @@ class AuthService extends DbService {
 	private static $_cache = array();
 
     function login($login, $password, $client_timezone, $skip_session = false) {
-        // $password = User::encryptPassword($password);
-        // $user_data = $this->_db->get("user")->where("login", $login)->and("password", $password)->and("is_active", "1")->and("is_deleted", "0")->fetch_row();
+		$credentials['login']=$login;
+		$credentials['password']=$password;
+		$hook_results = $this->w->callHook("auth", "prelogin", $credentials);
+        if (!empty($hook_results)) {
+            foreach($hook_results as $module => $user) {
+                //@TODO: check config for $module.optional or $module.manditory. default to optional for now. if any manditory returns null then return null.
+                if (!empty($user)) {
+                    $this->w->Log->info($user->getFullName()." authenticated via ".$module." prelogin hook");
+                    break;
+                } else {
+                    $this->w->Log->info('prelogin hook did not provide authentication: '.$login);
+                }
+            }
+        }
+		if (empty($user)) {
+			$user = $this->getUserForLogin($login);
+			if (empty($user)) {
+				$this->w->Log->info('cmfive user does not exist: '.$login);
+				return null;
+			}
+			if ($user->encryptPassword($password) !== $user->password) {
+				$this->w->Log->info('cmfive pasword mismatch for username: '.$login);
+				return null;
+            }
+            if ($user->is_external == 1) {
+                $this->w->Log->info('cmfive user is external: '.$login);
+				return null;
+            }
+		}
+		$this->w->Log->info("User logged in: ".$user->getFullName());
+		//allow post login hook to do whatever
+		$hook_results = $this->w->callHook("auth", "postlogin", $user);
+		$user->updateLastLogin();
+		if (!$skip_session) {
+			$this->w->session('user_id', $user->id);
+			$this->w->session('timezone', $client_timezone);
+		}
+		return $user;
+	}
+    function externalLogin($login, $password, $skip_session = false) {
+
         $user = $this->getUserForLogin($login);
-        if (empty($user->id) || ($user->encryptPassword($password) !== $user->password)) {
+        if (empty($user->id) || ($user->encryptPassword($password) !== $user->password) || $user->is_external == 0) {
             return null;
         }
-        // if ($user_data != null) {
-        // $user = new User($this->w);
-        // $user->fill($user_data);
+
+
         $user->updateLastLogin();
         if (!$skip_session) {
             $this->w->session('user_id', $user->id);
-            $this->w->session('timezone', $client_timezone);
         }
         return $user;
-        // } else {
-        //     return null;
-        // }
     }
 
     function forceLogin($user_id = null) {
         if (empty($user_id)) {
             return;
         }
-        
+
         $user = $this->getUser($user_id);
         if (empty($user->id)) {
             return null;
@@ -64,11 +98,55 @@ class AuthService extends DbService {
     }
 
     /**
+     * There is no way to enforce the creation of a User object when creating a Contact
+     * E.g. for an address book, there is no need to create a User object. However, if you
+     * want to ensure that a Contact will have a User account, call this function before doing
+     * anything else with the Contact.
+     *
+     * As a security measure, all user accounts created this way are external only.
+     *
+     * @param mixed $contact_id
+     * @return int user_id
+     */
+    function createExernalUserForContact($contact_id) {
+        $contact = $this->getContact($contact_id);
+
+        if (empty($contact->id)) {
+            return false;
+        }
+
+        $user = $contact->getUser();
+        if (!empty($user->id)) {
+            return $user->id;
+        }
+
+        $user = new User($this->w);
+        $user->login = $contact->email;
+        $user->is_external = 1;
+        $user->contact_id = $contact->id;
+        $user->insert();
+
+        return $user->id;
+    }
+
+    function getContacts() {
+        return $this->getObjects('Contact', ['is_deleted' => 0]);
+    }
+
+    function getContact($contact_id) {
+        return $this->getObject("Contact", ['id' => $contact_id]);
+    }
+
+    function getContactByEmail($email) {
+        return $this->getObject("Contact", ['email' => filter_var($email, FILTER_SANITIZE_EMAIL), 'is_deleted' => 0]);
+    }
+
+    /**
      * Return the logged in user based on the session variable user_id.
-     * 
+     *
      * If a user has been set from a REST service, then that user will
      * be returned.
-     * 
+     *
      * @return User|NULL
      */
     function user() {
@@ -76,6 +154,7 @@ class AuthService extends DbService {
         if ($this->_rest_user) {
             return $this->_rest_user;
         }
+
         // normal session based authentication
         if ($this->loggedIn()) {
             return $this->getObject("User", $this->w->session('user_id'));
@@ -84,7 +163,7 @@ class AuthService extends DbService {
     }
 
     /**
-     * 
+     *
      * checks if the CURRENT user has this role
      */
     function hasRole($role) {
@@ -92,7 +171,7 @@ class AuthService extends DbService {
     }
 
 	/**
-     * 
+     *
      * Check if the current user can access the specified path
      * @ return false if the login user is not allowed access to this path
      *  OR return string url if it is provided as a parameter
@@ -109,11 +188,33 @@ class AuthService extends DbService {
             return false;
         }
 
-        if ((function_exists("anonymous_allowed") && anonymous_allowed($this->w, $path)) || 
+        if ((function_exists("anonymous_allowed") && anonymous_allowed($this->w, $path)) ||
         	($this->user() && $this->user()->allowed($path))) {
 			self::$_cache[$key] = $url ? $url : true;
         	return self::$_cache[$key];
         }
+
+        if (empty($this->user()) && (Config::get('system.use_passthrough_authentication') === TRUE) && !empty($_SERVER['AUTH_USER'])) {
+        	// Get the username
+        	$username = explode('\\', $_SERVER["AUTH_USER"]);
+        	$username = end($username);
+        	$this->w->Log->debug("Passthrough Username: " . $username);
+
+        	//this hook returns $hook_results[$module][0]=$user or null.
+        	$hook_results = $this->w->callHook("auth", "get_user_for_passthrough", $username);
+        	foreach($hook_results as $module => $user) {
+
+        		if (!empty($user) && $user instanceof User) {
+        			$this->forceLogin($user->id);
+        			if ($user->allowed($path)) {
+        				self::$_cache[$key] = $url ? $url : true;
+        			}
+        		} else {
+        			$this->Log->info($module.' did not provide passthrough user for:'.$username);
+        		}
+        	}
+        }
+
         self::$_cache[$key] = false;
         return false;
     }
@@ -159,24 +260,30 @@ class AuthService extends DbService {
     }
 
     function getUsersAndGroups($includeDeleted = false) {
-    	$where = array();
-        $where["is_active"] = 1;
+    	$where = [
+            "is_active" => 1,
+            "is_external" => 0
+        ];
+
     	if (!$includeDeleted) {
-    		$where["is_deleted"]=0;
+    		$where["is_deleted"] = 0;
     	}
-        return $this->getObjects("User", $where, true);
+        return $this->getObjects("User", $where);
     }
 
     function getUsers($includeDeleted = false) {
-        $where = array();
-        $where["is_group"]=0;
-        $where['is_active'] = 1;
+        $where = [
+            "is_group" => 0,
+            "is_active" => 1,
+            "is_external" => 0
+        ];
+
     	if (!$includeDeleted) {
     		$where["is_deleted"]=0;
     	}
-    	return $this->getObjects("User", $where, true);
+    	return $this->getObjects("User", $where);
     }
-    
+
     function getUserForContact($cid) {
         return $this->getObject("User", array("contact_id" => $cid));
     }

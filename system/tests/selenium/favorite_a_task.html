@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<link rel="selenium.base" href="http://cosinedev.isaac/auth/login" />
+<link rel="selenium.base" href="http://dev.cmfive" />
 <title>favorite_a_task</title>
 </head>
 <body>
@@ -14,6 +14,16 @@
 <tr>
 	<td>clickAndWait</td>
 	<td>link=Task List</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>name=reset</td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>2000</td>
 	<td></td>
 </tr>
 <tr>
@@ -38,7 +48,7 @@
 </tr>
 <tr>
 	<td>pause</td>
-	<td>2000</td>
+	<td>4000</td>
 	<td></td>
 </tr>
 <tr>
@@ -82,6 +92,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>pause</td>
+	<td>2000</td>
+	<td></td>
+</tr>
+<tr>
 	<td>verifyElementPresent</td>
 	<td>css=i.fi-star.favorite_flag</td>
 	<td></td>
@@ -106,7 +121,6 @@
 	<td>link=×</td>
 	<td></td>
 </tr>
-
 </tbody></table>
 </body>
 </html>

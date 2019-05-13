@@ -53,7 +53,7 @@ function lookup_ALL(Web &$w) {
 	array("or Add New Type","text","ntype"),
 	array("Code","text","code"),
 	array("Title","text","title"),
-	),$w->localUrl("/admin/newlookup/"),"POST"," Save ");
+	),$w->localUrl("/admin/newlookup/"),"POST"," Save");
 	 
 	$w->ctx("newitem",$f);
 }

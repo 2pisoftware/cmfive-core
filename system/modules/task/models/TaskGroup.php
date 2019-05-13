@@ -11,6 +11,8 @@
  */
 class TaskGroup extends DbObject {
 
+	static $_DEFAULT_AUTOMATIC_SUBSCRIPTION = false;
+	
     public $title;   // not null
     public $can_assign;  // ALL, GUEST, MEMBER, OWNER
     public $can_view;   // ALL, GUEST, MEMBER, OWNER
@@ -22,6 +24,7 @@ class TaskGroup extends DbObject {
     public $default_task_type;   // can be null
     public $default_priority;    // can be null
     public $task_group_type; // php class name of concrete TaskGroupType implementation
+	public $is_automatic_subscription;
     public $_modifiable;
     
     
@@ -35,6 +38,44 @@ class TaskGroup extends DbObject {
     );
     
     public static $_db_table = "task_group";
+
+    /**
+     * To ensure task_group_notify objects are also copied, set $saveToDb to true
+     * 
+     * @param boolean $saveToDb default false
+     * @return TaskGroup
+     */
+    public function copy($saveToDb = false) {
+        $new_taskgroup = parent::copy($saveToDb);
+
+        if (!!$saveToDb) {
+            foreach($this->getTaskGroupNotify() ? : [] as $notify) {
+                $new_notify = $notify->copy(false);
+                $new_notify->task_group_id = $new_taskgroup->id;
+                $new_notify->insert();
+            }
+        } else {
+            $htis->w->Log->setLogger('TASK')->warn('$saveToDb is false, skipping copy of task group notify objects');
+        }
+
+        return $new_taskgroup;
+    }
+
+    public function getTaskGroupNotify() {
+        return $this->getObjects('TaskGroupNotify', ['task_group_id' => $this->id]);
+    }
+
+    public function getMembers() {
+        return $this->getObjects("TaskGroupMember", ['task_group_id' => $this->id]);
+    }
+
+	public function shouldAutomaticallySubscribe() {
+		return !!$this->is_automatic_subscription;
+	}
+	
+    public function getTasks() {
+        return $this->getObjects("Task", ['task_group_id' => $this->id, 'is_deleted' => 0]);
+    }
 
     public function canList(\User $user) {
         return $this->getCanIView();
@@ -129,13 +170,7 @@ class TaskGroup extends DbObject {
         $assign = $this->Auth->getUser($this->default_assignee_id);
         return $assign ? $assign->getFullName() : "";
     }
-
-    function getTasks($where = array()) {
-		$where["task_group_id"] = $this->id;
-		$where["is_deleted"] = 0;
-        return $this->getObjects("Task", $where);
-    }
-
+    
     public function getSelectOptionTitle() {
         return $this->title;
     }

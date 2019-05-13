@@ -26,8 +26,10 @@ function groupmember_GET(Web $w)
 	if ($w->Auth->user()->is_admin) {
 		$template['New Member'][0][] = array("Owner","checkbox","is_owner");
 	}
+
+	$validation = ['member_id' => ['required']];
 		
-	$w->out(Html::multiColForm($template,"/admin/groupmember/".$option['group_id'],"POST","Save"));
+	$w->out(Html::multiColForm($template,"/admin/groupmember/".$option['group_id'],"POST","Save", null, null, null, "_self", true, $validation));
 
 	$w->setLayout(null);
 }

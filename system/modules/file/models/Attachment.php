@@ -24,13 +24,21 @@ class Attachment extends DbObject {
 	public $is_deleted; // tinyint 0/1
 	public $type_code; // this is a type of attachment, eg. Receipt of Deposit, PO Variation, Sitephoto, etc.
 	public $adapter;
+	public $_restrictable;
+
+	/**
+	 * Used by the task_attachment_attachment_added_task hook to skip the Attachement added notification if true
+	 * @var boolean
+	 */
+	public $_skip_added_notification;
 
 	/**
 	 * DbObject::insert() override to set the mimetype, path and to call the
 	 * attachment hook
-	 * 
+	 *
 	 * @param <bool> $force_validation
 	 */
+
 	function insert($force_validation = false) {
 		// Get mimetype
 		if (empty($this->mimetype)) {
@@ -60,7 +68,7 @@ class Attachment extends DbObject {
 	/**
 	 * will return true if this attachment
 	 * is an image
-	 * 
+	 *
 	 * @return <bool> is_image
 	 */
 	function isImage() {
@@ -72,21 +80,21 @@ class Attachment extends DbObject {
 	 * Returns a HTML <img> tag for this attachment
 	 * only if this attachment is an image,
 	 * else
-	 * 
+	 *
 	 * @return <String> image_string
 	 */
 	function getImg() {
 		if ($this->isImage()) {
 			return $this->File->getImg($this->fullpath);
 		} else {
-			
+
 		}
 	}
 
 	/**
 	 * if image, create image thumbnail
 	 * if any other file send an icon for this mimetype
-	 * 
+	 *
 	 * @return <String> url
 	 */
 	function getThumbnailUrl() {
@@ -97,7 +105,7 @@ class Attachment extends DbObject {
 	}
 
 	/**
-	 * 	
+	 *
 	 * Returns html code for a thumbnail link to download this attachment
 	 */
 	function getThumb() {
@@ -131,7 +139,7 @@ class Attachment extends DbObject {
 
 	/**
 	 * Returns whether or not this attachment has a document mimetype
-	 * 
+	 *
 	 * @return bool
 	 */
 	public function isDocument() {
@@ -148,7 +156,7 @@ class Attachment extends DbObject {
 	 * Returns an assembled file path based on the adapter
 	 * The local adapter for e.g. needs an absolute reference, this absolute
 	 * prefix isn't needed when using S3 buckets
-	 * 
+	 *
 	 * @return <String> filepath
 	 */
 	public function getFilePath() {
@@ -174,7 +182,7 @@ class Attachment extends DbObject {
 
 	/**
 	 * Returns Gaufrette Filsystem instance for fetching files
-	 * 
+	 *
 	 * @return \Gaufrette\Filesystem
 	 */
 	public function getFilesystem() {
@@ -217,7 +225,7 @@ class Attachment extends DbObject {
 	/**
 	 * Moves the content from one adapter to another
 	 */
-	public function moveToAdapter($adapter = "local") {
+	public function moveToAdapter($adapter = "local", $delete_after_move = false) {
 		// Get content of file
 		$content = $this->getContent();
 		$current_file = $this->getFile();
@@ -229,10 +237,12 @@ class Attachment extends DbObject {
 
 		$file->setContent($content);
 
-		try {
-			$current_file->delete();
-		} catch (RuntimeException $ex) {
-			$this->w->Log->setLogger("FILE")->error("Cannot delete file: " . $ex->getMessage());
+		if ($delete_after_move === true) {
+			try {
+				$current_file->delete();
+			} catch (RuntimeException $ex) {
+				$this->w->Log->setLogger("FILE")->error("Cannot delete file: " . $ex->getMessage());
+			}
 		}
 
 		// Update the adapter location
@@ -274,8 +284,8 @@ class Attachment extends DbObject {
 
         $replace_empty = array("..", "'", '"', ",", "\\", "/");
 		$replace_underscore = array(" ", "&", "+", "$", "?", "|", "%", "@", "#", "(", ")", "{", "}", "[", "]", ",", ";", ":");
-		
-        
+
+
 		if (!empty($_POST[$requestkey]) && empty($_FILES[$requestkey])) {
 			$filename = str_replace($replace_underscore, "_", str_replace($replace_empty, "", $_POST[$requestkey]));
 		} else {
@@ -314,7 +324,7 @@ class Attachment extends DbObject {
 					$mime_type = $this->w->getMimetypeFromString($content);
 			}
 		}
-		
+
 
 		$this->mimetype = $mime_type;
 		$this->update();
@@ -324,6 +334,25 @@ class Attachment extends DbObject {
             require_once 'phpthumb/ThumbLib.inc.php';
             $width = $this->w->request("w", FileService::$_thumb_width);
             $height = $this->w->request("h", FileService::$_thumb_height);
+            $thumb = PhpThumbFactory::create($this->getContent(), [], true);
+            $thumb->adaptiveResize($width, $height);
+
+            // Create cached folder
+            if (!is_dir(dirname($this->getThumbnailCachePath()))) {
+                mkdir(dirname($this->getThumbnailCachePath()), 0755, true);
+            }
+
+            // Write thumbnail to cache
+            file_put_contents($this->getThumbnailCachePath(), $thumb->getImageAsString());
+        }
+	}
+
+	function createCachedThumbnail($width = null, $height = null) {
+		if ($this->isImage()) {
+            // Generate thumbnail and cache
+            require_once 'phpthumb/ThumbLib.inc.php';
+            $width = (!empty($width) && is_int($width) ? $width : FileService::$_thumb_width);
+            $height = (!empty($height) && is_int($height) ? $height : FileService::$_thumb_height);
             $thumb = PhpThumbFactory::create($this->getContent(), [], true);
             $thumb->adaptiveResize($width, $height);
 

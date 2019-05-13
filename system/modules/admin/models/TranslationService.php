@@ -23,7 +23,7 @@ class TranslationService extends DbService {
 			if (strlen(trim($lang)) > 0 && file_exists($path . "translations." . $lang . ".php")) {
 				$filename = "translations." . $lang . ".php";
 			}
-			include $path . $filename;
+			include_once $path . $filename;
 		}
 
 		// lookup/transform value

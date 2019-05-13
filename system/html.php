@@ -1,4 +1,5 @@
 <?php
+require_once "classes/html/GlobalAttributes.php";
 require_once "classes/html/a.php";
 require_once "classes/html/button.php";
 require_once "classes/html/form.php";
@@ -40,10 +41,10 @@ class Html {
                         $buffer .= "<th>{$h}</th>";
                     }
                     array_shift($data);
-                } 
+                }
                 $buffer .= "</tr></thead>";
             }
-            
+
             $buffer .= "<tbody>";
             foreach($data as $key => $row) {
 				// add a data-id attribute to each table row
@@ -57,7 +58,7 @@ class Html {
                     }
                 }
                 $buffer .= "</tr>";
-            } 
+            }
         $buffer .= "</tbody></table>";
         return $buffer;
     }
@@ -66,32 +67,32 @@ class Html {
         if (empty($data)) {
             return '';
         }
-        
+
         $row_count = 0;
         $buffer = '<dl class="accordion" data-accordion>';
         foreach($data as $row) {
             $buffer .= '<dd class="accordion-navigation">';
             $buffer .= '<a href="#panel' . (++$row_count) . '">' . $row[0] . '</a>';
             $buffer .= '<div id="panel' . $row_count . '" class="content">';
-            
+
             // Content here
             foreach($row[1] as $entry) {
                 $buffer .= '<div class="row-fluid">' . $entry . '</div>';
             }
-            
+
             // End content
-            
+
             $buffer .= '</div></dd>';
         }
         $buffer .= "</dl>";
-        
+
         return $buffer;
     }
-    
+
     /**
      * Html function to draw a chart, see: http://www.chartjs.org/docs/ for how
      * the data structure and options should be put together for each
-     * 
+     *
      * @param string $id
      * @param string $type
      * @param array $data
@@ -168,7 +169,7 @@ class Html {
 		$classParam=' button tiny ';
 		if (strlen($class)>0) {
 			$classParam.=$class;
-		} 
+		}
 		$classParam=" class='".$classParam."' ";
 		$idParam='';
 		if (strlen($id)>0)  {
@@ -178,18 +179,18 @@ class Html {
 		if (strlen($confirm)>0)  {
 			$confirmParam=" onclick=\"return confirm('".$confirm."')\" ";
 		}
-		
+
         return '<a href="'.$href.'" '.$classParam.' '.$idParam.' '.$confirmParam.'>'.$title.'</a>';
     }
-    
+
     /**
      * Create an a link styled as a button that pops up a reveal dialog
      * */
-    public static function abox($href, $title, $class = null, $id = null,$confirm = null) {	
+    public static function abox($href, $title, $class = null, $id = null,$confirm = null) {
 		$classParam=' button tiny ';
 		if (strlen($class)>0) {
 			$classParam.=$class;
-		} 
+		}
 		$classParam=" class='".$classParam."' ";
 		$idParam='';
 		if (strlen($id)>0)  {
@@ -199,10 +200,10 @@ class Html {
 		if (strlen($confirm)>0)  {
 			$confirmParam=" onclick='return(\"".$confirm."\");' ";
 		}
-		
+
         return '<a href="'.$href.'" data-reveal-id="cmfive-modal" data-reveal-ajax="true" '.$classParam.' '.$idParam.' '.$confirmParam.'>'.$title.'</a>';
     }
-    
+
 
     /**
      * Creates a link (or button) which will pop up a colorbox
@@ -210,7 +211,7 @@ class Html {
      *
      * @param <type> $href   (M) the url to display in the colorbox
      * @param <type> $title  (M) the link title
-     * @param <type> $button (O) if true create a buttin instead of a link
+     * @param <type> $button (O) if true create a button instead of a link
      * @param <type> $iframe (O) whether to use an iframe to display the html contents (default: false)
      */
     public static function box($href, $title, $button = false, $iframe = false, $width = null, $height = null, $param = "isbox", $id = null, $class = null, $confirm = null, $modal_window_id = 'cmfive-modal') {
@@ -248,7 +249,7 @@ class Html {
         	$tag_start = "";
         	$tag_end = "";
         }
-        
+
 		return $tag_start."{$confirm_str}modal_history.push(&quot;{$href}&quot;); \$(&quot;#{$modal_window_id}&quot;).foundation(&quot;reveal&quot;, &quot;open&quot;, &quot;{$href}&quot;);return false;" . ($confirm ? "}" : "").$tag_end;
     }
 
@@ -268,7 +269,7 @@ class Html {
             $next = $i < sizeof($array) - 1 ? $array[$i + 1] : null;
             $buf .= "<li>" . $cur;
             if (is_array($next)) {
-                $buf.= $this->ul($next, null, $subclass);
+                $buf.= self::ul($next, null, $subclass);
             }
             $buf .="</li>\n";
         }
@@ -294,16 +295,16 @@ class Html {
      * valid field types are:
      *  text, password, autocomplete, static, date, textarea, section,
      *  select, multiselect, checkbox, hidden
-     *  
+     *
      * Field type auto uses ui hints from a DbObject.
      *
      * when prefixing a fieldname with a minus sign '-' this field will be read-only
      */
     public static function form($data, $action = null, $method = "POST", $submitTitle = "Save", $id = null, $class = null, $target = "_self", $enctype = null) {
         if (empty($data)) return;
-        
+
         $buffer = "";
-        
+
         if (null !== $action) {
             $form = new \Html\form();
 
@@ -322,7 +323,7 @@ class Html {
 
         foreach ($data as $field) {
             $buffer .= "<div class='row-fluid'><div class='small-12'>";
-            
+
             $title = !empty($field[0]) ? $field[0] : null;
             $type = !empty($field[1]) ? $field[1] : null;
             $name = !empty($field[2]) ? $field[2] : null;
@@ -338,11 +339,11 @@ class Html {
                 $buffer .= "<h4>{$title}</h4></div></div>";
                 continue;
             }
-            
+
             if (!empty($title) && "static" !== $type && "hidden" !== $type) {
                 $buffer .= "<label class='small-12 columns'>$title";
             }
-            
+
             switch($type) {
                 case "text":
                 case "password":
@@ -426,7 +427,7 @@ class Html {
         }
         $buffer .= "</div>";
         $buffer .= "<script>$(function(){try{\$('textarea.ckeditor').each(function(){CKEDITOR.replace(this)})}catch(err){}});</script>";
-  
+
         if (null !== $action) {
             $buffer .= $form->close($submitTitle);
         }
@@ -457,13 +458,13 @@ class Html {
     /**
      * This function invokes multiColForm with default parameters
      * to remove unnecessary html when displaying data
-     * 
+     *
      * @param Array $data
      * @return String html
      */
     public static function multiColTable($data) {
         if (empty($data)) return;
-        
+
         $buffer = "";
 
         // Set up shell layout
@@ -472,7 +473,7 @@ class Html {
         foreach ($data as $section => $rows) {
             $buffer .= "<div class='item ".toSlug($section)."'><div class='panel'><h4>{$section}</h4><table>";
             foreach($rows as $row) {
-                
+
                 foreach($row as $field) {
                     $title = !empty($field[0]) ? $field[0] : null;
                     $type = !empty($field[1]) ? $field[1] : null;
@@ -506,14 +507,14 @@ class Html {
             $buffer .= "</table></div></div>";
         }
         $buffer .= "</div></div>";
-        
+
         return $buffer;
     }
 
     /**
      * Creates a complex form where each section can have
      * a different number of columns.
-     * 
+     *
      * extrabuttons = array("id"=>"title", ..)
      *
      * valid field types are:
@@ -533,45 +534,45 @@ class Html {
      */
     public static function multiColForm($data, $action = null, $method = "POST", $submitTitle = "Save", $id = null, $class = null, $extrabuttons = null, $target = "_self", $includeFormTag = true, $validation = null) {
         if (empty($data)) return;
-        
+
         $buffer = "";
         $form = new \Html\form();
-        
+
         // If form tag is needed print it
         if ($includeFormTag) {
             $class .= " small-12 columns";
             $form->id($id)->name($id)->setClass($class)->method($method)->action($action)->target($target);
-        
+
             if (in_multiarray("file", $data) || objectPropertyHasValueInMultiArray("\Html\Form\InputField", "type", "file", $data)) {
                 $form->enctype("multipart/form-data");
             }
-            
+
             $buffer .= $form->open();
         }
-        
+
         // Set up shell layout
         $buffer .= "<div class='row-fluid clearfix small-12 multicolform'>";
-        
+
         // Print internals
         foreach ($data as $section => $rows) {
-            
+
             // Print section header
             $buffer .= "<div class='panel clearfix'>";
             $buffer .= "<div class='row-fluid clearfix section-header'><h4>{$section}<span style='display: none;' class='changed_status right alert radius label'>changed</span></h4></div>";
-            
+
             // Loop through each row
             foreach ($rows as $row) {
-                
+
                 // Print each field
                 $fieldCount = count($row);
                 $buffer .= "<ul class='small-block-grid-1 medium-block-grid-{$fieldCount} section-body'>";
-                
+
 				if (empty($row)) {
 					continue;
 				}
-				
+
                 foreach($row as $field) {
-                   
+
 					// Check if the row is an object like an InputField
 					if (!is_array($field) && is_object($field)) {
 						if ((property_exists($field, "type") && $field->type !== "hidden") || !property_exists($field, "type")) {
@@ -581,31 +582,31 @@ class Html {
 						}
 						continue;
 					}
-				
+
                     $title = !empty($field[0]) ? $field[0] : null;
                     $type = !empty($field[1]) ? $field[1] : null;
                     $name = !empty($field[2]) ? $field[2] : null;
                     $value = !empty($field[3]) ? $field[3] : null;
-               
+
                     // Exploit HTML5s inbuilt form validation
                     $required = null;
                     if (!empty($validation[$name])) {
                         if (in_array("required", $validation[$name])) {
                             $required = "required";
                             $title .= ' <small>Required</small>';
-                        } 
+                        }
                     }
 
                     $readonly = "";
-                    
+
                     $buffer .= ($type !== "hidden" ? "<li>" : "");
-                    
+
                     // Add title field
                     if (!empty($title) && $type !== "hidden") {
                         $buffer .= "<label class='small-12 columns'>$title";
                     }
                     $buffer .= ($type !== "hidden" ? "<div>" : "");
-                    
+
                     // handle disabled fields
                     if ($name[0] == '-') {
                         $name = substr($name, 1);
@@ -654,7 +655,7 @@ class Html {
 
                             $default = !empty($field[5]) ? ($field[5] == "null" ? null : $field[5]) : "-- Select --";
                             $sl_class = !empty($field[6]) ? $field[6] : null;
-                            $buffer .= Html::select($name, $items, $value, $sl_class, "width: 100%;", $default, $readonly ? ' disabled="disabled" ' : null, $required);
+                            $buffer .= Html::select($name, $items, $value, $sl_class, "width: 100%;", $default, ($readonly ? ' disabled="disabled" ' : null) . ' ' . $required);
                         break;
                         case "multiSelect":
                             $items = !empty($field[4]) ? $field[4] : null;
@@ -694,7 +695,7 @@ class Html {
         }
         $buffer .= "<script>$(function(){try{\$('.ckeditor').each(function(){CKEDITOR.replace(this)})}catch(err){}});</script>";
         $buffer .= "<script>$(function(){try{\$('.codemirror').each(function(){var editor = CodeMirror.fromTextArea($(this), {lineNumbers: true, mode: 'text/html', matchBrackets: true, viewportMargin: Infinity}); editor.refresh()})}catch(err){}});</script>";
-		
+
 		// Expermiental
 		if (strpos($class, "prompt") !== FALSE) {
 			$buffer .= "<script>"
@@ -717,20 +718,20 @@ class Html {
 					. "		$('form.prompt :input').unbind('input');"
 					. "		$('form.prompt :input').on('input', function() {"
 					. "			window.onbeforeunload = confirmOnPageExit;"
-					. "			$(this).closest('form').find('.section-header h4 > .changed_status').show();"	
+					. "			$(this).closest('form').find('.section-header h4 > .changed_status').show();"
 					. "		});"
 					. "});"
 					. "</script>";
 		}
-		
+
         // Finish shell div tag
         $buffer .= "</div>";
-        
+
         // Close form tag if needed
         if ($includeFormTag) {
             $buffer .= $form->close($submitTitle, $extrabuttons);
         }
-        
+
         return $buffer;
     }
 
@@ -831,7 +832,7 @@ class Html {
 
     /**
      * Create a multi select field using jQuery
-     * 
+     *
      * @param <type> $name
      * @param <type> $items
      * @param <type> $values
@@ -857,7 +858,7 @@ class Html {
             }
         }
         $buf.='</select>';
-        
+
         $buf .= "<script>
                 jQuery(\"#{$name}\").asmSelect({addItemTarget: 'bottom', removeLabel: '<img src=\"'" . WEBROOT . "'/img/bin_closed.png\" border=\"0\"/>'});
                 jQuery(\"#{$name}\").change(function(e, data) { $.fn.colorbox.resize(); });
@@ -912,12 +913,12 @@ class Html {
         $buf.="<script type='text/javascript'>";
         $buf.='$(function(){
                     $("#acp_' . $name . '").keyup(function(e){
-                    	if (e.which != 13) { 	
+                    	if (e.which != 13) {
                             $("#' . $name . '").val("");
                         }
                     });
                     $("#acp_' . $name . '").autocomplete({
-                        minLength:' . $minLength . ', 
+                        minLength:' . $minLength . ',
                         source: ' . $source . ',
                         select: function(event,ui){
                             $("#' . $name . '").val(ui.item.id); //acp_' . $name . '(event,ui);
@@ -975,7 +976,7 @@ class Html {
             // Check that we're within range
             if ($currentpage > 0 && $currentpage <= $numpages && $numpages > 1) {
 				$buf = "<ul class='pagination'>";
-                
+
 				// Build pagination links
                 for ($page = 1; $page <= $numpages; $page++) {
                     // Check if the current page
@@ -984,31 +985,31 @@ class Html {
                     } else {
 						$buf .= "<li>";
 					}
-					
+
 					$url_parsed = parse_url($baseurl);
-					
+
 					$url_string = $url_parsed['path'];
 					$url_string .= (empty($url_parsed['query']) ? '?' : '?' . $url_parsed['query'] . '&') . $pageparam . '=' . $page . '&' . $pagesizeparam . '=' . $pagesize . '&' . $totalresultsparam . '=' . $totalresults;
 					$url_string .= (!empty($url_parsed['fragment']) ? '#' . $url_parsed['fragment'] : '');
-					
+
 					$buf .= '<a href=\'' . $url_string . '\'>' . $page . '</a></li>';
                 }
-				
+
 				$buf .= "</ul>";
             }
         }
-        
+
         return $buf;
     }
-	
+
 	/**
-	 * This function creates a DataTables table, ID to identify the table, 
+	 * This function creates a DataTables table, ID to identify the table,
 	 * an array of headers and the source data url are required
-	 * 
+	 *
 	 * If a table column is to be sortable, you must provide each header element
 	 * in the following format:
 	 *		[0 => "<sort column>", 1 => "<title>"]
-	 * 
+	 *
 	 * @param Array $header
 	 * @param Array $data
 	 * @param int $page
@@ -1022,12 +1023,12 @@ class Html {
 	 * @param string|optional $total_results_query_param
 	 * @param string|optional $sort_query_param
 	 */
-	public static function paginatedTable($header, $data, $page, $page_size, $total_results, $base_url, 
-			$sort = null, $sort_direction = 'asc', $page_query_param = "page", $pagesize_query_param = "page_size", 
+	public static function paginatedTable($header, $data, $page, $page_size, $total_results, $base_url,
+			$sort = null, $sort_direction = 'asc', $page_query_param = "page", $pagesize_query_param = "page_size",
 			$total_results_query_param = "total_results", $sort_query_param = "sort", $sort_direction_param = "sort_direction") {
-		
+
 		// Build URL for pagination
-		$url_parsed = parse_url($base_url);			
+		$url_parsed = parse_url($base_url);
 		$url_string = $url_parsed['path'];
 		$url_string .= (empty($url_parsed['query']) ? "?" : '?' . $url_parsed['query'] . '&') . $sort_query_param . '=' . $sort . '&' . $sort_direction_param . '=' . $sort_direction; // . $page_query_param . '=' . $page . '&' . $pagesize_query_param . '=' . $page_size . '&' . $total_results_query_param . '=' . $total_results . '&'
 		$url_string .= (!empty($url_parsed['fragment']) ? '#' . $url_parsed['fragment'] : '');
@@ -1037,11 +1038,11 @@ class Html {
 		if ($page_size > 0) {
 			$num_results = ceil($total_results / $page_size);
 		}
-		
+
 		if ($total_results == 0) {
 			return '<div class="row-fluid clearfix"><div class="small-12 medium-6 small-text-center medium-text-left columns" style="margin: 5px 0px;">No results found</div></div>';
 		}
-		
+
 		$count_items = count($data);
 		$starting_item = (($page - 1) * $page_size) + 1;
 		$buffer = '<div class="row-fluid clearfix">'
@@ -1052,7 +1053,7 @@ class Html {
 			// Build URL for dropdown pagination
 			$dropdown_url_string = $url_parsed['path'];
 			$dropdown_url_string .= (empty($url_parsed['query']) ? "?" : '?' . $url_parsed['query'] . '&') . $sort_query_param . '=' . $sort . '&' . $sort_direction_param . '=' . $sort_direction; // . $page_query_param . '=' . $page . '&' . $pagesize_query_param . '=' . $page_size . '&' . $total_results_query_param . '=' . $total_results . '&'
-			
+
 			for($i = 1; $i <= $num_results; $i++) {
 				$buffer .= '<option' . ($i == $page ? ' selected="selected"' : '') . ' value="' . $dropdown_url_string . '&' . $page_query_param . '=' . $i . (!empty($url_parsed['fragment']) ? '#' . $url_parsed['fragment'] : '') . '">' . $i . '</option>';
 			}
@@ -1063,7 +1064,7 @@ class Html {
 				. "<div class='row-fluid clearfix table-responsive'>"
 					. "<table class='small-12'>";
 		if (!empty($header) && is_array($header)) {
-			
+
 			// Print table header
 			$buffer .= "<thead><tr>";
 			foreach($header as $title) {
@@ -1084,14 +1085,14 @@ class Html {
 						. '</div></th>' : '');
 			}
 			$buffer .= "</tr></thead>";
-			
+
 //			$buffer .= "<tfoot><tr>";
 //			foreach($header as $title) {
 //				$buffer .= '<th>' . (is_array($title) ? $title[1] : $title) . '</th>';
 //			}
 //			$buffer .= "</tr></tfoot>";
 		}
-		
+
 		// Print table body
 		if (!empty($data) && is_array($data)) {
 			$buffer .= "<tbody>";
@@ -1117,7 +1118,7 @@ class Html {
      *  Filter function returns formatted form for declaring filters. Data is the same
      *  as how Html::form is used. Filter parameters can be retrieved with $w->request
      *  and it may be a good idea to prefix input names with 'filter_' to avoid naming
-     *  collisions in requests 
+     *  collisions in requests
      *
      *  @param String $legend
      *  @param Array $data
@@ -1138,21 +1139,21 @@ class Html {
         $form = new \Html\form();
         // If form tag is needed print it
         $form->id($id)->setClass($class)->method($method)->action($action);
-                
+
         $buffer = "";
         $buffer .= $form->open();
-        
+
         // Set up vars
         $hidden = "";
         $buffer .= "<fieldset style=\"padding: 0; padding-top: 10px; padding-left: 10px;\">\n";
         $buffer .= "<legend>" . $legend . "</legend>\n";
         $buffer .= "<ul id='filter-grid' class='small-block-grid-1 medium-block-grid-3 large-block-grid-4'>";
-        
+
         $should_autosubmit = false;
         if (count($data) === 1 && is_array($data[0]) && $data[0][1] === "select") {
             $should_autosubmit = true;
         }
-        
+
         // Loop through data
         foreach ($data as $row) {
 			// Check if the row is an object like an InputField
@@ -1164,15 +1165,15 @@ class Html {
 				}
 				continue;
 			}
-			
+
             $buffer .= "<li>";
-            
+
             // Get row parameters
             $title = !empty($row[0]) ? $row[0] : null;
             $type = !empty($row[1]) ? $row[1] : null;
             $name = !empty($row[2]) ? $row[2] : null;
             $value = !empty($row[3]) ? $row[3] : null;
-            
+
             $readonly = "";
 
             $required = null;
@@ -1194,7 +1195,7 @@ class Html {
                 if ($type == "checkbox") {
                     $mediumCols = 6;
                 }
-                $buffer .= "<div class='small-12 columns'><label>{$title}"; 
+                $buffer .= "<div class='small-12 columns'><label>{$title}";
             } else {
                 $buffer .= "<div class='small-12'>";
             }
@@ -1271,7 +1272,7 @@ class Html {
 
             $buffer .= "</label></div></li>"; // </div>
         }
-        
+
         // This is only true when the filter has one element and its a select field
         if ($should_autosubmit) {
             $buffer .= "<script>$('form" . ($id ? "#" . $id : "") . ' select\').change(function(){this.form.submit()});</script>';
@@ -1300,16 +1301,16 @@ class Html {
         if (!is_array($data)) {
             return;
         }
-        
+
         $buffer = "";
         $mediumPerRow = ($perRow > 1 ? $perRow - 1 : 1);
         $buffer .= "<ul class='listGrid small-block-grid-1 medium-block-grid-$mediumPerRow large-block-grid-$perRow'>";
-        
+
         // List data items
         foreach($data as $id => $d) {
             $buffer .= "<li class='grid-list-panel'>";
             $buffer .= "<div class='panel clearfix'><div class='small-12'>";
-            
+
             if (!empty($d)) {
                 // Loop through each line
                 foreach($d as $line) {
@@ -1330,14 +1331,14 @@ class Html {
                 }
             }
             $buffer .= "</div></div>";
-            
+
             // Add buttons
             if (!empty($buttons[$id])) {
                 $buffer .= "<div class='row'>";
                 $button_width = floor(12/count($buttons[$id]));
                 $last_increment = 12 - (count($buttons[$id]) * $button_width);
                 $button_counter = 0;
-                
+
                 // The code just above and below will perfectly fit any amount of buttons (up to 12) in a row
                 // I.e. if there are 7 buttons, the first two will be one column wide but the last 5 will be 2 columns (cool huh?)
                 foreach($buttons[$id] as $b) {
@@ -1347,15 +1348,15 @@ class Html {
                 }
                 $buffer .= "</div>";
             }
-            
+
             $buffer .= "</li>";
         }
-        
+
         $buffer .= "</ul>";
-        
+
         return $buffer;
     }
-    
+
     public static function breadcrumbs($data = array(), $w = null) {
         if (!empty($data)) {
             $buffer = "<ul class='breadcrumbs'>";
@@ -1368,8 +1369,8 @@ class Html {
             // Try and make breadcrumbs from the history class
             if (class_exists("History")) {
                 $breadcrumbs = History::get();
-                $buffer = "<ul class='cmfive_breadcrumbs '>";
-                $buffer .= "<li><i class='fi-clock'></i></li>";
+                $buffer = "<ul class='cmfive_breadcrumbs'>";
+                // $buffer .= "<li><i class='fi-clock'></i></li>";
                 if (!empty($breadcrumbs)) {
                     $isFirst = true && ($_SERVER['REQUEST_URI'] === key($breadcrumbs));
                     foreach ($breadcrumbs as $path => $value) {
@@ -1384,18 +1385,18 @@ class Html {
                 } else {
                     $buffer .= "<li>Your history will appear here</li>";
                 }
-                
+
                 $buffer .= "</ul>";
                 return $buffer;
             }
         }
     }
-    
+
     /**
      * Creates a view for uploading multiple files at the same time
-     * Uses the $name parameter to distinguish between multiple 
+     * Uses the $name parameter to distinguish between multiple
      * instances on one page.
-     * 
+     *
      * @param <String> $name
      * @return <String> buffer
      */
@@ -1431,10 +1432,10 @@ class Html {
 UPLOAD;
         return $buffer;
     }
-    
+
 	/**
 	 * Returns embed iframe for displaying pdfs and other documents in the browser
-	 * 
+	 *
 	 * @param string $link
 	 * @param string $width
 	 * @param string $height

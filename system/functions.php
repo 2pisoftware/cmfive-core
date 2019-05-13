@@ -105,6 +105,25 @@ function _en($key1, $key2, $n, $context = '', $domain = '') {
 	echo _n($key1, $key2, $n, $domain, $context);
 }
 
+/**
+ * Conver
+ * @param String $base_locale
+ * @return Array
+ */
+function getAllLocaleValues($base_locale) {
+	static $language_lookup = [
+		'de_DE' => ['de_DE', 'de_DE@euro', 'deu', 'deu_deu', 'german'],
+		'fr_FR' => ['fr_FR', 'fr_FR@euro', 'french'],
+		'en_AU' => ['en_AU.utf8', 'en_AU', 'australian']
+	];
+	
+	if (array_key_exists($base_locale, $language_lookup)) {
+		return $language_lookup[$base_locale];
+	}
+	
+	return false;
+}
+
 function humanReadableBytes($input, $rounding = 2, $bytesValue = true) {
 	$ext = array("B", "KB", "MB", "GB", "TB");
 	$barrier = 1024;
@@ -407,6 +426,14 @@ function formatDateTime($date, $format = "d/m/Y h:i a", $usetimezone = true) {
 	return formatDate($date, $format);
 }
 
+function formatTime($date, $format = "H:i") {
+	return formatDate($date, $format);
+}
+
+function formatNumber($number) {
+	return sprintf('%.2f',$number);
+}
+
 /**
  * A replacement function for the money_format PHP function that is only
  * available on most Linux based systems with the strfmon C function.
@@ -606,6 +633,33 @@ function in_multiarray($value, $array) {
 		}
 	}
 	return false;
+}
+
+/**
+ * Returns a value in a multidimension array
+ * NOTE: This function uses strict type comparison, with one exception where
+ * a string $value will match it's integer equivalent (i.e. '1' == 1, but '1s' != 1)
+ *
+ * Similar to above except it will return the value
+ * 
+ * @param <Mixed> $value
+ * @param <Mixed> $array
+ * @return <boolean> $in_multiarray
+ */
+function getValueFromMultiarray($key, $array) {
+	if (is_array($array)) {
+		if (array_key_exists($key, $array)) {
+			return $array[$key];
+		} else {
+			foreach ($array as $_key => $arr_key) {
+				$value = getValueFromMultiarray($key, $arr_key);
+				if ($value !== null) {
+					return $value;
+				}
+			}
+		}
+	}
+	return null;
 }
 
 /**
@@ -820,4 +874,36 @@ function delete_all_between($beginning, $end, $string, $remove_every_instance = 
 
 		return $string;
 	}
+}
+
+/**
+ * Returns all months between two dates in the specified format
+ *
+ * Thanks to this SO answer: https://stackoverflow.com/a/18743012
+ *
+ * @param String from date in the format d-m-Y
+ * @param String to date in the format d-m-Y
+ * @param String optional format of returned values
+ * @return Array<String> month list
+ */
+function get_list_of_months_between_dates($from, $to, $format = 'M Y') {
+	if (is_numeric($from)) {
+		$from = date('d-m-Y', $from);
+	}
+
+	if (is_numeric($to)) {
+		$to = date('d-m-Y', $to);
+	}	
+
+	$start    = (new DateTime($from))->modify('first day of this month');
+	$end      = (new DateTime($to))->modify('first day of next month');
+	$interval = DateInterval::createFromDateString('1 month');
+	$period   = new DatePeriod($start, $interval, $end);
+
+	$month_list = [];
+	foreach ($period as $dt) {
+	    $month_list[] = $dt->format($format);
+	}
+
+	return $month_list;
 }

@@ -1,0 +1,54 @@
+// Side navigation
+
+.slideout-menu {
+	border-right: 1px solid white;
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	width: 256px;
+	min-height: 100vh;
+	overflow-y: auto;
+	-webkit-overflow-scrolling: touch;
+	z-index: 0;
+	display: none;
+}
+
+.slideout-menu-left {
+	left: 0;
+}
+
+.slideout-menu-right {
+	right: 0;
+}
+
+.slideout-panel {
+	position: relative;
+	z-index: 1;
+	will-change: transform;
+	background-color: inherit; /* A background-color is required */
+	min-height: 100vh;
+}
+
+.slideout-open,
+.slideout-open body,
+.slideout-open .slideout-panel {
+	overflow-x: hidden;
+}
+
+.slideout-open .slideout-menu {
+	display: block;
+}
+
+#slider_overlay {
+	display: none;
+	position: absolute;
+	height: 100%;
+	width: 100%;
+	top: 0px;
+	bottom: 0px;
+	left: 0px;
+	right: 0px;
+	background-color: #333;
+	background-color: rgba(50, 50, 50, 0.5);
+	z-index: 10000;
+}
