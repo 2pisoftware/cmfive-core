@@ -240,7 +240,7 @@ class EmailChannelOption extends DbObject {
                                         if ($transferEncoding == "base64") {
                                             $email->body['html'] = base64_decode($email->body['html']);
                                         } elseif ($transferEncoding == "quoted-printable") {
-											$email->body['plain'] = quoted_printable_decode($email->body['plain']);
+											$email->body['html'] = quoted_printable_decode($email->body['html']);
 										}
                                         break;
                                     default:
