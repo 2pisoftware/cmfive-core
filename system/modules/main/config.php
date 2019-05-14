@@ -21,6 +21,7 @@ Config::set('main', array(
 		'de_DE' => 'Deutsch',
 		'fr_FR' => 'Français',
 	],
+	'datepicker_first_day' => 0, /* Set the first day of the week for datepickers, integer between 0 and  6, where 0 is sunday, 1 is monday, etc.*/
 	'vue_components' => [
 		'html-tabs' => [
 			'/system/templates/vue-components/html/html-tabs.vue.js',
