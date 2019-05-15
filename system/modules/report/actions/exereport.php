@@ -4,6 +4,7 @@
 function exereport_ALL(Web &$w) {
     $w->Report->navigation($w, "Generate Report");
     $p = $w->pathMatch("id");
+    $params = $_REQUEST;
 
     $arrreq = array();
     // prepare export buttons for display if format = html
@@ -35,7 +36,7 @@ function exereport_ALL(Web &$w) {
         if (!empty($rep)) {
             $w->Report->navigation($w, $rep->title);
             // prepare and execute the report
-            $tbl = $rep->getReportData();
+            $tbl = $rep->getReportData($params);
 
             // if we have an empty return, say as much
             if (!$tbl) {
