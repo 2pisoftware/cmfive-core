@@ -435,17 +435,16 @@ class Html {
     }
 
     public static function datePicker($name, $value = null, $size = null, $required = null) {
-//        $buf = "<input type='text' name='{$name}' value='{$value}' id='{$name}' readonly {$required} />";
-//        $buf .= "<script>$('#{$name}').pickadate()</script>";
-//        Old style
+        $firstDay = Config::get('main.datepicker_first_day');
         $buf = '<input class="date_picker" type="text" name="' . $name . '" value="' . $value . '" size="' . $size . '" id="' . $name . '" ' . $required . ' />';
-        $buf.= "<script>$('#$name').datepicker({dateFormat: 'dd/mm/yy', changeMonth: true, changeYear: true});$('#$name').keyup( function(event) { $(this).val('');}); </script>";
+        $buf.= "<script>$('#$name').datepicker({dateFormat: 'dd/mm/yy', changeMonth: true, changeYear: true, firstDay: $firstDay});$('#$name').keyup( function(event) { $(this).val('');}); </script>";
         return $buf;
     }
 
     public static function datetimePicker($name, $value = null, $size = null, $required = null) {
+        $firstDay = Config::get('main.datepicker_first_day');
         $buf = '<input class="date_picker" type="text" name="' . $name . '" value="' . $value . '" size="' . $size . '" id="' . $name . '" ' . $required . ' />';
-        $buf.= "<script>$('#$name').datetimepicker({ampm: true, dateFormat: 'dd/mm/yy', changeMonth: true, changeYear: true});$('#$name').keyup( function(event) { $(this).val('');}); </script>";
+        $buf.= "<script>$('#$name').datetimepicker({ampm: true, dateFormat: 'dd/mm/yy', changeMonth: true, changeYear: true, firstDay: $firstDay});$('#$name').keyup( function(event) { $(this).val('');}); </script>";
         return $buf;
     }
 
