@@ -225,7 +225,11 @@ class EmailChannelOption extends DbObject {
                         foreach (new RecursiveIteratorIterator($message) as $part) {
                             try {
                                 $contentType = strtok($part->contentType, ';');
-                                $transferEncoding = $part->getHeader("Content-Transfer-Encoding")->getFieldValue("transferEncoding");
+								if ($part->getHeaders()->has('ContentTransferEncoding')) {
+									$transferEncoding = $part->getHeader("Content-Transfer-Encoding")->getFieldValue("transferEncoding");
+								} else {
+									$transferEncoding = '';
+								}
                                 switch ($contentType) {
                                     case "text/plain":
                                         $email->body["plain"] = trim($part->__toString());
