@@ -28,7 +28,7 @@ class ChannelProcessor extends DbObject {
 
     /**
      * Gets new messages that have not been processed at all
-     * @return [type] [description]
+     * @return array new message objects
      */
     public function getNewMessages() {
         $messages = $this->getUnprocessedMessages();
