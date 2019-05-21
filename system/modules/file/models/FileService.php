@@ -464,7 +464,7 @@ class FileService extends DbService {
 		if(!empty($_POST[$requestkey])) {
 			preg_match('%data:(.*);base%', substr($_POST[$requestkey], 0, 25), $mime);
 			$data = substr($_POST[$requestkey], strpos($_POST[$requestkey], ",") + 1);
-//			$mime_type = $mime[1];
+			$mime_type = $mime[1];
 			$content = base64_decode($data);
             $file->setContent($content, ['contentType' => $mime_type]);
 		} else {
