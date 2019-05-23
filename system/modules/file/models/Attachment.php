@@ -63,7 +63,13 @@ class Attachment extends DbObject {
 	}
 
 	function getParent() {
-		return $this->getObject($this->parent_table, $this->parent_id);
+		if (class_exists($this->parent_table)) {
+			return $this->getObject($this->parent_table, $this->parent_id);
+		} else {
+			$className = str_replace(' ','',ucwords(str_replace('_',' ',$this->parent_table)));
+			return $this->getObject($className, $this->parent_id);
+		}
+		
 	}
 
 	/**
