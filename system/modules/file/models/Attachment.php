@@ -40,12 +40,13 @@ class Attachment extends DbObject {
 	 */
 
 	function insert($force_validation = false) {
+		$this->fullpath = str_replace(FILE_ROOT, "", $this->getFilePath());
 		// Get mimetype
 		if (empty($this->mimetype)) {
-			$this->mimetype = $this->w->getMimetype(FILE_ROOT . $this->fullpath);
+			$this->mimetype = $this->w->getMimetype($this->getFilePath());
 		}
 	
-		$this->fullpath = str_replace(FILE_ROOT, "", $this->fullpath);
+		
 		$this->is_deleted = 0;
 		parent::insert($force_validation);
 
