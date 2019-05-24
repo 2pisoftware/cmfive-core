@@ -189,6 +189,20 @@
 			}, function() {
 				$(".image-container-overlay", this).stop().fadeOut("fast");
 			});
+
+			$.ajax({url: "/file/ajaxSetAttachmentsPrivate", 
+                type: "POST",
+                dataType: 'html',
+                data: {
+                    private_attachment_ids: <?php echo json_encode($private_attachment_ids); ?>,
+                },           
+                success: function(data) {
+                    console.log(data);
+                },
+                error: function(e) {
+                    alert("Couldn't set attachments to private" + e);
+                }
+            });
 		});
 
 	</script>
