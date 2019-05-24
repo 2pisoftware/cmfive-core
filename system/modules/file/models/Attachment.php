@@ -135,14 +135,18 @@ class Attachment extends DbObject {
 	}
 
 	public function getDocumentEmbedHtml($width = '1024', $height = '724') {
+		$view_url = $this->getViewUrl();
 		if ($this->isDocument() && $this->adapter == 'local') {
 			if (stripos($this->filename, '.docx') || stripos($this->filename, '.doc')) {
-                return Html::embedDocument($this->w->localUrl() . 'uploads/attachments/' . $this->parent_table . '/' . date('Y/m/d',$this->dt_created) . '/' . $this->parent_id . '/' . $this->filename, $width, $height);
+				//return Html::embedDocument($this->w->localUrl() . 'uploads/attachments/' . $this->parent_table . '/' . date('Y/m/d',$this->dt_created) . '/' . $this->parent_id . '/' . $this->filename, $width, $height);
+				$view_url = substr($view_url, 0, 1) == '/' ? substr($view_url, 1) : $view_url;
+				return Html::embedDocument($this->w->localUrl() . $view_url, $width, $height,'page-width', true);
             } else {
-                return Html::embedDocument($this->getViewUrl(), $width, $height);
-            }
+                return Html::embedDocument($view_url, $width, $height);
+			}
 		}
-		return Html::a($this->getViewUrl(), $this->title);
+		
+		return Html::a($view_url, $this->title);
 	}
 
 	/**
