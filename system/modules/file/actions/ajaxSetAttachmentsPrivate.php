@@ -1,10 +1,10 @@
 <?php
 
 function ajaxSetAttachmentsPrivate_POST(Web $w) {
-    $attachment_ids = json_decode($_REQUEST);
+    $attachment_ids = ($_REQUEST['private_attachment_ids']);
     foreach ($attachment_ids as $id) {
-        $attachment = $w->File->getAttchamnet($id);
-        $attachment->is_private = 0;
+        $attachment = $w->File->getAttachment($id);
+        $attachment->is_public = 0;
         $attachment->update();
     }
 }
