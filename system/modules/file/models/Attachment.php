@@ -26,6 +26,7 @@ class Attachment extends DbObject {
 	public $adapter;
 	public $is_public;
 	public $_restrictable;
+	public $dt_viewing_window; // dt of access to list attachments. checked against config file.docx_viewing_window_duration to bypass authentication.
 
 	/**
 	 * Used by the task_attachment_attachment_added_task hook to skip the Attachement added notification if true
@@ -384,6 +385,18 @@ class Attachment extends DbObject {
 
 	function getSelectOptionValue() {
 		return $this->filename;
+	}
+
+	function checkViewingWindow() {
+		if (stripos($this->filename, '.docx') || stripos($this->filename, '.doc') && !empty($this->dt_viewing_window)) {
+			$viewing_duration = Config::get("file.docx_viewing_window_duration");
+			$time = time();
+			$dt_viewing_window = $this->dt_viewing_window;
+			if ($this->dt_viewing_window >= time() - $viewing_duration && time() <= $this->dt_viewing_window + $viewing_duration) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }
