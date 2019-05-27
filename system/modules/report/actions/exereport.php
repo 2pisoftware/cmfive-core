@@ -4,11 +4,10 @@
 function exereport_ALL(Web &$w) {
     $w->Report->navigation($w, "Generate Report");
     $p = $w->pathMatch("id");
-    $params = $_REQUEST;
 
     $arrreq = array();
     // prepare export buttons for display if format = html
-    foreach ($_POST as $name => $value) {
+    foreach (array_merge($_REQUEST, $_POST) as $name => $value) {
         $arrreq[] = $name . "=" . urlencode($value);
     }
 
@@ -36,7 +35,7 @@ function exereport_ALL(Web &$w) {
         if (!empty($rep)) {
             $w->Report->navigation($w, $rep->title);
             // prepare and execute the report
-            $tbl = $rep->getReportData($params);
+            $tbl = $rep->getReportData();
 
             // if we have an empty return, say as much
             if (!$tbl) {
