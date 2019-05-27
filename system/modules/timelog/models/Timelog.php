@@ -158,6 +158,12 @@ class Timelog extends DbObject {
 	}
 	
 	public function canDelete(User $user) {
+		$hook_results = $this->w->callHook('timelog','can_delete_timelog',$this);
+		foreach ($hook_results as $result) {
+			if (!$result) {
+				return false;
+			}
+		}
         // user is admin
         if ($user->is_admin) {
 			return True;
