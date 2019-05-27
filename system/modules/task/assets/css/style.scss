@@ -1,3 +1,4 @@
+@import '_settings.scss';
 
 .task_overdue {
 	color: #d3232e;
@@ -20,4 +21,21 @@
 	position: absolute;
 	z-index: 10000;
 	opacity: 0.5;
+}
+
+[class*="block-grid-"].cmfive__filter {
+	padding: 20px;
+	background-color: white;
+	display: block;
+	margin: 0px;
+
+	label {
+		font-size: 1em;
+		color: darken($border_colour, 20%);
+	}
+
+	select {
+		background-color: $dark-background-colour;
+		font-size: 1em;
+	}
 }

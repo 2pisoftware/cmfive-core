@@ -67,7 +67,21 @@ class TaskService extends DbService {
 
 
 
+	public function navigation(Web $w, $title = null, $nav = null) {
+        if ($title) {
+            $w->ctx("title", $title);
+        }
 
+        $nav = $nav ? $nav : array();
+
+        if ($w->Auth->loggedIn()) {
+            $w->menuLink("task/index", "Task Dashboard", $nav);
+            $w->menuLink("task/list", "Task List", $nav);
+            $w->menuLink("task-group/list", "Task Group List", $nav);
+        }
+        $w->ctx("navigation", $nav);
+        return $nav;
+    }
 
 
 //     // Old task service
@@ -457,21 +471,6 @@ class TaskService extends DbService {
 //     }
 
 
-// 	public function navigation(Web $w, $title = null, $nav = null) {
-//         if ($title) {
-//             $w->ctx("title", $title);
-//         }
-
-//         $nav = $nav ? $nav : array();
-
-//         if ($w->Auth->loggedIn()) {
-//             $w->menuLink("task/index", "Task Dashboard", $nav);
-//             $w->menuLink("task/list", "Task List", $nav);
-//             $w->menuLink("task-group/list", "Task Group List", $nav);
-//         }
-//         $w->ctx("navigation", $nav);
-//         return $nav;
-//     }
 
 //     // return an array for display of task type for a task group defined in our tasks file.
 //     function getTaskTypes($taskgroup) {

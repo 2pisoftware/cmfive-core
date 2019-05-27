@@ -196,24 +196,6 @@
             </div>
         </nav>
         <main id='cmfive-main-content' class='slideout-panel slideout-panel-left'>
-            <div class="loading_overlay" <?php echo $w->request('show_overlay') == null ? 'style="display:none;"' : ''; ?>>
-                <div class="circle"></div>
-    			<img class="center_image" width="100px" height="100px" src="/system/templates/img/cmfive_V_logo.png" />
-                <h4 class="subheader">Please wait</h4>
-            </div>
-    		<div class="global_file_drop_area" style="display:none;" id="global_file_drop_area">
-    			<div class="global_file_drop_overlay_init">
-    				<h4 class="subheader">Drop files here...</h4>
-    			</div>
-    		</div>
-    		<div class="global_file_drop_overlay" id="global_file_drop_overlay" style="display:none;">
-    			<div class="global_file_drop_overlay_loading">
-    				<div class="circle"></div>
-    				<img class="center_image" width="100px" height="100px" src="/system/templates/img/cmfive_V_logo.png" />
-    				<h4 class="subheader">Uploading (0%)</h4>
-    			</div>
-    		</div>
-
     		<?php if (Config::get('system.test_mode') === true) : ?>
     			<div class="row-fluid">
     				<div class="small-12">
@@ -237,7 +219,7 @@
                                 <?php endforeach;
                             endif;
                         ?>
-                        <li><span><?php echo Config::get('main.company_name'); ?></span>    </li>
+                        <li><span><?php echo Config::get('main.company_name'); ?></span></li>
                     </ul>
 
                     <!-- Left Nav Section -->
@@ -291,9 +273,10 @@
             <div class="row-fluid body cmfive__no-margin-phone">
                 <div class='small-12 columns'>
                     <!-- Title and messages -->
-                    <?php if (empty($hideTitle) && !empty ($title)):?>
-                        <header><?php echo $title; ?></header>
+                    <?php if (empty($hideTitle) && !empty($title)): ?>
+                        <header><h1><?php echo $title; ?></h1></header>
                     <?php endif; ?>
+
                     <?php if (!empty($error)) : ?>
                         <div class='callout alert' data-closable>
                             <?php echo $error; ?>
@@ -340,14 +323,12 @@
             document.querySelectorAll('.side-menu-toggle-button').forEach(function(toggle_button) {
                 toggle_button.addEventListener('click', function() {
                     slideout.open();
-                    // $("#slider_overlay").fadeIn(100);
                 });
             });
 
             $("#slider_overlay").click(function(){
                 slideout.close();
-                // $("#slider_overlay").fadeOut(100);
-            })
+            });
 
             $(document).foundation({
                 reveal : {
