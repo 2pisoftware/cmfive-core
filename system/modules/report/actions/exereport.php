@@ -7,7 +7,7 @@ function exereport_ALL(Web &$w) {
 
     $arrreq = array();
     // prepare export buttons for display if format = html
-    foreach (array_merge($_REQUEST, $_POST) as $name => $value) {
+    foreach (array_merge($_GET, $_POST) as $name => $value) {
         $arrreq[] = $name . "=" . urlencode($value);
     }
 
