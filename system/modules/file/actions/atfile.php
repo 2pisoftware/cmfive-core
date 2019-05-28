@@ -5,8 +5,8 @@ function atfile_GET(Web &$w) {
 	
 	$attachment = $w->File->getAttachment($id);
 	if (!empty($attachment) && $attachment->exists()) {
-            //check if no user logged in, is attachment public
-            if (!$w->auth->loggedIn() && (!$attachment->is_public || !$attachment->checkViewingWindow())) {
+			//check if no user logged in, is attachment public
+            if (!$w->auth->loggedIn() && !($attachment->is_public || $attachment->checkViewingWindow())) {
                 return;
             }
             $attachment->displayContent();
