@@ -1440,7 +1440,13 @@ UPLOAD;
 	 * @param string $height
 	 * @return string
 	 */
-	public static function embedDocument($link, $width = '1024', $height = '724', $zoom = 'page-width') {
+	public static function embedDocument($link, $width = '1024', $height = '724', $zoom = 'page-width', $is_docx = false) {
+        //if .docx use google's doc viewer
+		// if (stripos($link, '.docx') || stripos($link, '.doc')) {
+        if ($is_docx) {
+            return '<iframe src="https://docs.google.com/gview?url=' . $link . '&embedded=true"  width=' . $width . ' height=' . $height . ' allowfullscreen webkitallowfullscreen></iframe>';
+        }
+        
 		return "<iframe src='/system/templates/js/viewerjs-0.5.8/ViewerJS/index.html?zoom={$zoom}#../../../../..{$link}' width='{$width}' height='{$height}' allowfullscreen webkitallowfullscreen></iframe>";
 	}
 }
