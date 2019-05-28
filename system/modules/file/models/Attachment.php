@@ -391,8 +391,7 @@ class Attachment extends DbObject {
 		if (stripos($this->filename, '.docx') || stripos($this->filename, '.doc') && !empty($this->dt_viewing_window)) {
 			$viewing_duration = Config::get("file.docx_viewing_window_duration");
 			$time = time();
-			$dt_viewing_window = $this->dt_viewing_window;
-			if ($this->dt_viewing_window >= time() - $viewing_duration && time() <= $this->dt_viewing_window + $viewing_duration) {
+			if ($this->dt_viewing_window >= $time - $viewing_duration && $time <= $this->dt_viewing_window + $viewing_duration) {
 				return true;
 			}
 		}
