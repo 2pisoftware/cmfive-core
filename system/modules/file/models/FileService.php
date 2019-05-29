@@ -448,7 +448,7 @@ class FileService extends DbService {
 		$att->type_code = $type_code;
 		$att->is_public = $is_public;
 		$att->insert();
-
+		
 		$filesystemPath = "attachments/" . $parentObject->getDbTableName() . '/' . date('Y/m/d') . '/' . $parentObject->id . '/';
 		$filesystem = $this->getFilesystem($this->getFilePath($filesystemPath));
 		if (empty($filesystem)) {
