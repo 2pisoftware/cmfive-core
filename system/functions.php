@@ -719,18 +719,39 @@ function in_modified_multiarray($value, $array, $levels = 3) {
 	return false;
 }
 
-function AESencrypt($text, $password) {
+function AESencrypt($text,$password) {
 	require_once "phpAES/AES.class.php";
 	$aes = new AES($password);
 	return base64_encode($aes->encrypt($text));
 }
 
-function AESdecrypt($text, $password) {
-	require_once "phpAES/AES.class.php";
-	$aes = new AES($password);
-	return $aes->decrypt(base64_decode($text));
+function SystemAESencrypt($text) {
+	return AESencrypt($text,Config::get('system.password_salt'));
 }
 
+function SystemSSLencrypt($text) {
+	$encryption_key = Config::get('system.encryption.key');
+	$encryption_iv = Config::get('system.encryption.iv');
+
+	return openssl_encrypt($text, "AES-256-CBC", $encryption_key, 0, $encryption_iv);
+	}
+
+function AESdecrypt($text,$password) {
+		require_once "phpAES/AES.class.php";
+		$aes = new AES($password);
+		return $aes->decrypt(base64_decode($text));
+	}
+
+function SystemAESdecrypt($text) {
+	return AESdecrypt($text,Config::get('system.password_salt'));
+}
+
+function SystemSSLdecrypt($text) {
+	$encryption_key = Config::get('system.encryption.key');
+	$encryption_iv = Config::get('system.encryption.iv');
+
+	return openssl_decrypt($text, "AES-256-CBC", $encryption_key, 0, $encryption_iv);
+	}
 /**
  * Gets content between two different strings
  * (Source: http://tonyspiro.com/using-php-to-get-a-string-between-two-strings/)
