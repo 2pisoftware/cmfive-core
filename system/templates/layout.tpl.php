@@ -42,6 +42,7 @@
         // Code mirror
         $w->enqueueScript(array("name" => "codemirror.js", "uri" => "/system/templates/js/codemirror-4.4/codemirror-compressed.js", "weight" => 880));
 
+        CmfiveScriptComponentRegister::registerComponent('ES6Promise', new CmfiveScriptComponent('/system/templates/js/es6-promise.auto.js'));
         CmfiveScriptComponentRegister::registerComponent('AxiosJS', new CmfiveScriptComponent('/system/templates/js/axios.min.js'));
         CmfiveScriptComponentRegister::registerComponent('ToastJS', new CmfiveScriptComponent("/system/templates/js/Toast.js"));
         CmfiveStyleComponentRegister::registerComponent('ToastSCSS', new CmfiveStyleComponent("/system/templates/css/Toast.scss", ['/system/templates/scss/']));

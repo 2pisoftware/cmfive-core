@@ -419,7 +419,7 @@ class FileService extends DbService {
 	 * @param <type> $description
 	 * @return Mixed the id of the attachment object or null
 	 */
-	function uploadAttachment($requestkey, $parentObject, $title = null, $description = null, $type_code = null) {
+	function uploadAttachment($requestkey, $parentObject, $title = null, $description = null, $type_code = null, $is_public = false) {
 
 		if (empty($_POST[$requestkey]) && (empty($_FILES[$requestkey]) || $_FILES[$requestkey]['size'] <= 0)) {
 			return false;
@@ -448,8 +448,9 @@ class FileService extends DbService {
 		$att->title = (!empty($title) ? $title : $filename);
 		$att->description = $description;
 		$att->type_code = $type_code;
+		$att->is_public = $is_public;
 		$att->insert();
-
+		
 		$filesystemPath = "attachments/" . $parentObject->getDbTableName() . '/' . date('Y/m/d') . '/' . $parentObject->id . '/';
 		$filesystem = $this->getFilesystem($this->getFilePath($filesystemPath));
 		if (empty($filesystem)) {

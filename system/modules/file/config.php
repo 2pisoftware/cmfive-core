@@ -32,5 +32,6 @@ Config::set('file', [
 				'create' => true
 			]
 		]
-	]
+	],
+	'docx_viewing_window_duration' => 0,
 ]);

@@ -24,7 +24,9 @@ class Attachment extends DbObject {
 	public $is_deleted; // tinyint 0/1
 	public $type_code; // this is a type of attachment, eg. Receipt of Deposit, PO Variation, Sitephoto, etc.
 	public $adapter;
+	public $is_public;
 	public $_restrictable;
+	public $dt_viewing_window; // dt of access to list attachments. checked against config file.docx_viewing_window_duration to bypass authentication.
 
 	/**
 	 * Used by the task_attachment_attachment_added_task hook to skip the Attachement added notification if true
@@ -40,15 +42,13 @@ class Attachment extends DbObject {
 	 */
 
 	function insert($force_validation = false) {
+		$this->fullpath = str_replace(FILE_ROOT, "", $this->getFilePath());
 		// Get mimetype
 		if (empty($this->mimetype)) {
-			$this->mimetype = $this->w->getMimetype(FILE_ROOT . "/" . $this->fullpath);
+			$this->mimetype = $this->w->getMimetype($this->getFilePath());
 		}
-		// $this->modifier_user_id = $this->w->Auth->user()->id; <-- why?
-		$this->fullpath = str_replace(FILE_ROOT, "", $this->fullpath);
-
-		// $this->filename = ($this->filename . getFileExtension($this->mimetype));
-
+	
+		
 		$this->is_deleted = 0;
 		parent::insert($force_validation);
 
@@ -65,7 +65,13 @@ class Attachment extends DbObject {
 	}
 
 	function getParent() {
-		return $this->getObject($this->parent_table, $this->parent_id);
+		if (class_exists($this->parent_table)) {
+			return $this->getObject($this->parent_table, $this->parent_id);
+		} else {
+			$className = str_replace(' ','',ucwords(str_replace('_',' ',$this->parent_table)));
+			return $this->getObject($className, $this->parent_id);
+		}
+		
 	}
 
 	/**
@@ -130,10 +136,18 @@ class Attachment extends DbObject {
 	}
 
 	public function getDocumentEmbedHtml($width = '1024', $height = '724') {
+		$view_url = $this->getViewUrl();
 		if ($this->isDocument() && $this->adapter == 'local') {
-			return Html::embedDocument($this->getViewUrl(), $width, $height);
+			if (stripos($this->filename, '.docx') || stripos($this->filename, '.doc')) {
+				//return Html::embedDocument($this->w->localUrl() . 'uploads/attachments/' . $this->parent_table . '/' . date('Y/m/d',$this->dt_created) . '/' . $this->parent_id . '/' . $this->filename, $width, $height);
+				$view_url = substr($view_url, 0, 1) == '/' ? substr($view_url, 1) : $view_url;
+				return Html::embedDocument($this->w->localUrl() . $view_url, $width, $height,'page-width', true);
+            } else {
+                return Html::embedDocument($view_url, $width, $height);
+			}
 		}
-		return Html::a($this->getViewUrl(), $this->title);
+		
+		return Html::a($view_url, $this->title);
 	}
 
 	/**
@@ -143,7 +157,7 @@ class Attachment extends DbObject {
 	 */
 	public function isDocument() {
 		$document_mimetypes = ['application/pdf', 'application/msword', 'application/msword', 'application/rtf', 'application/vnd.ms-excel', 'application/vnd.ms-excel',
-			'application/vnd.ms-powerpoint', 'application/vnd.ms-powerpoint', 'application/vnd.oasis.opendocument.text', 'application/vnd.oasis.opendocument.spreadsheet'];
+			'application/vnd.ms-powerpoint', 'application/vnd.ms-powerpoint', 'application/vnd.oasis.opendocument.text', 'application/vnd.oasis.opendocument.spreadsheet','application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
 		return in_array($this->mimetype, $document_mimetypes);
 	}
 
@@ -371,6 +385,17 @@ class Attachment extends DbObject {
 
 	function getSelectOptionValue() {
 		return $this->filename;
+	}
+
+	function checkViewingWindow() {
+		if (stripos($this->filename, '.docx') || stripos($this->filename, '.doc') && !empty($this->dt_viewing_window)) {
+			$viewing_duration = Config::get("file.docx_viewing_window_duration");
+			$time = time();
+			if ($this->dt_viewing_window >= $time - $viewing_duration && $time <= $this->dt_viewing_window + $viewing_duration) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

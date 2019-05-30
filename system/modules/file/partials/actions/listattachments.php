@@ -9,7 +9,14 @@ function listattachments(\Web $w, $params) {
 		foreach ($attachments as $key => $attachment) {
 			if (!$attachment->canView($w->Auth->user())) {
 				unset($attachments[$key]);
+			} else {
+				if (stripos($attachment->filename, '.docx') || stripos($attachment->filename, '.doc') && !$attachment->is_public) {
+					$attachment->dt_viewing_window = time();
+					$attachment->update();
+				}
+				
 			}
+
 		}
 	}
 
