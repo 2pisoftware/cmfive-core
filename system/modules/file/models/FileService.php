@@ -140,7 +140,9 @@ class FileService extends DbService {
 			case "s3":
 				$client = new Aws\S3\S3Client(Config::get('file.adapters.s3'));
 				$config_options = Config::get('file.adapters.s3.options');
-				$config_options = array_replace(is_array($config_options) ? $config_options : [], ["directory" => $path], $options);
+				$s3path = (substr($path,-1)=="/")?substr($path,0,-1):$path; // because trailing presence varies with call/object history
+				$config_options = array_replace(is_array($config_options) ? $config_options : [], ["directory" => $s3path], $options);
+				// $config_options = array_replace(is_array($config_options) ? $config_options : [], ["directory" => $path], $options);
 				// $client = S3Client::factory(["key" => Config::get('file.adapters.s3.key'), "secret" => Config::get('file.adapters.s3.secret')]);
 				$adapter_obj = new AwsS3($client, Config::get('file.adapters.s3.bucket'), is_array($config_options) ? $config_options : []);
 				break;
@@ -448,7 +450,7 @@ class FileService extends DbService {
 		$att->type_code = $type_code;
 		$att->is_public = $is_public;
 		$att->insert();
-
+		
 		$filesystemPath = "attachments/" . $parentObject->getDbTableName() . '/' . date('Y/m/d') . '/' . $parentObject->id . '/';
 		$filesystem = $this->getFilesystem($this->getFilePath($filesystemPath));
 		if (empty($filesystem)) {

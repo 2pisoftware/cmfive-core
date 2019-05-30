@@ -13,9 +13,9 @@
                             <td><pre class="break-pre" style="font-family: sans-serif;"><?php echo $time_entry->getComment()->comment; ?></pre></td>
                             <td>
                                 <?php echo $time_entry->object_class == "Task" ? Html::b('/task/edit/' . $time_entry->object_id . "#timelog", "View Time Log") : ""; ?>
-                                <?php echo Html::box('/timelog/edit/' . $time_entry->id, 'Edit', true); ?>
+                                <?php echo $time_entry->canEdit($w->Auth->user()) ? Html::box('/timelog/edit/' . $time_entry->id, 'Edit', true) : ''; ?>
                                 <?php $confirmation_message = implode("", $w->callHook("timelog", "before_display_timelog", $time_entry)); ?>
-								<?php echo Html::b('/timelog/delete/' . $time_entry->id, 'Delete', empty($confirmation_message) ? 'Are you sure you want to delete this timelog?' : $confirmation_message); ?>
+								<?php echo $time_entry->canDelete($w->Auth->user()) ? Html::b('/timelog/delete/' . $time_entry->id, 'Delete', empty($confirmation_message) ? 'Are you sure you want to delete this timelog?' : $confirmation_message) : ''; ?>
                             </td>
                         </tr>
                     <?php endforeach; ?>
