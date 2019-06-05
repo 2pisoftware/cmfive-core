@@ -211,7 +211,7 @@ class EmailChannelOption extends DbObject {
 						$email->from_email_address = $address->getEmail();
 						break;
 					}
-                    $email->cc = $zend_message->getCc();
+                    // $email->cc = $zend_message->getCc();
                     $email->subject = $zend_message->getSubject();
 
                     // Create  ChannelMessages
