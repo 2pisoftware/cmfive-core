@@ -1,21 +1,27 @@
 <?php
 
+use Aws\CloudWatchLogs\CloudWatchLogsClient;
+use Maxbanton\Cwh\Handler\CloudWatch;
 use Monolog\Logger as Logger;
 use Monolog\Formatter\LineFormatter as LineFormatter;
 use Monolog\Handler\RotatingFileHandler as RotatingFileHandler;
 use Monolog\Processor\WebProcessor as WebProcessor;
-use Monolog\Processor\IntrospectionProcessor as IntrospectionProcessor;
-use Monolog\Formatter\JsonFormatter as JsonFormatter;
+
+defined("LOG_SERVICE_DEFAULT_RETENTION_PERIOD") or define("LOG_SERVICE_DEFAULT_RETENTION_PERIOD", 30);
 
 class LogService extends \DbService {
     private $loggers = array();
     private $logger;
     private static $system_logger = 'cmfive';
     private $formatter = null;
+
+    private $retention_period = LOG_SERVICE_DEFAULT_RETENTION_PERIOD;
     
     public function __construct(\Web $w) {
         parent::__construct($w);
         
+        $this->retention_period = Config::get('admin.logging.retention_period', LOG_SERVICE_DEFAULT_RETENTION_PERIOD);
+
         $this->addLogger(LogService::$system_logger);
     }
     
@@ -46,15 +52,29 @@ class LogService extends \DbService {
         $this->setFormatter();
         $this->loggers[$name] = new Logger($name);
         
-        if ($logToSystemFile === true) {
-            $filename = STORAGE_PATH . "/log/" . LogService::$system_logger . ".log";
-        } else {
-            $filename = STORAGE_PATH . "/log/{$name}.log";
+        switch (Config::get('admin.logging.target', 'file')) {
+            case 'aws': {
+                $instanceId = file_get_contents("http://169.254.169.254/latest/meta-data/instance-id");
+                $cwClient = new CloudWatchLogsClient($awsCredentials);
+                // Log group name, will be created if none
+                $cwGroupName = 'php-app-logs';
+                // Instance ID as log stream name
+                $cwStreamNameApp = "TestAuthenticationApp";
+                $cwHandlerAppNotice = new CloudWatch($cwClient, $cwGroupName, $cwStreamNameApp, $this->retention_period, 10000, [ 'application' => 'php-testapp01' ],Logger::NOTICE);
+                break;
+            }
+            case 'file':
+            default: {
+                if ($logToSystemFile === true) {
+                    $filename = STORAGE_PATH . "/log/" . LogService::$system_logger . ".log";
+                } else {
+                    $filename = STORAGE_PATH . "/log/{$name}.log";
+                }
+                $handler = new RotatingFileHandler($filename, $this->retention_period);
+                $handler->setFormatter($this->formatter);
+                $this->loggers[$name]->pushHandler($handler);
+            }
         }
-        $handler = new RotatingFileHandler($filename);
-        $handler->setFormatter($this->formatter);
-        // $handler->setFormatter(new JsonFormatter());
-        $this->loggers[$name]->pushHandler($handler);
     }
     
     public function setLogger($name) {
