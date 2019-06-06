@@ -60,7 +60,8 @@ class LogService extends \DbService {
             $response = (new HttpRequest("http://169.254.169.254/latest/meta-data/instance-id"))->execute();
 
             if (!empty($response['error'])) {
-                $this->w->Log->error("Could not authenticate instance ID with AWS, falling back to local filesystem");
+                // $this->w->Log->error("Could not authenticate instance ID with AWS, falling back to local filesystem");
+                syslog(LOG_ERR, "LogService: Could not authenticate instance ID with AWS, falling back to local filesystem");
                 Config::set('admin.logging.target', 'file');
                 $log_destination = 'file';
             } else {
@@ -70,17 +71,22 @@ class LogService extends \DbService {
 
         switch (Config::get('admin.logging.target', 'file')) {
             case 'aws': {
-                $cw_client = new CloudWatchLogsClient(Config::get('admin.logging.cloudwatch'));
-               
-                // Log group name, will be created if none
-                $cw_group_name = 'php-app-logs';
+                try {
+                    $cw_client = new CloudWatchLogsClient(Config::get('admin.logging.cloudwatch'));
                 
-                // Instance ID as log stream name
-                $cw_stream_name_app = "TestAuthenticationApp";
-                $cw_handler = new CloudWatch($cw_client, $cw_group_name, $cw_stream_name_app, $this->retention_period, 10000, [ 'application' => 'php-testapp01' ],Logger::NOTICE);
-                
-                $this->loggers[$name]->pushHandler($cw_handler);
-                break;
+                    // Log group name, will be created if none
+                    $cw_group_name = Config::get('admin.logging.cloudwatch.group_name', 'php-app-logs');
+                    
+                    // Instance ID as log stream name
+                    $cw_stream_name_app = Config::get('admin.logging.cloudwatch.stream_name_app', "CmfiveApp");
+                    $cw_handler = new CloudWatch($cw_client, $cw_group_name, $cw_stream_name_app, $this->retention_period, 10000, [ 'application' => 'php-testapp01' ],Logger::NOTICE);
+                    
+                    $this->loggers[$name]->pushHandler($cw_handler);
+                    break;
+                } catch (Exception $e) {
+                    // If an exception is caught, we should fall back to file (hence why "break" is in the try block)
+                    syslog(LOG_ERR, "LogService: exception caught when using Cloudwatch: " . $e->getMessage());
+                }
             }
             case 'file':
             default: {

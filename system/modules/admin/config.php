@@ -43,7 +43,9 @@ Config::set('admin', array(
         'target' => 'file',         // Can be 'file' or 'aws' (cloudwatch)
         'retention_period' => 30,   // In number of days
         'cloudwatch' => [
-            'region'    => 'au-southeast-1',
+            'group_name' => 'cmfive-app-logs',
+            'stream_name_app' => 'CmfiveApp',
+            'region'    => 'ap-southeast-2',
             'version'   => 'latest',
             // 'credentials' => [
             //     'key'       => '<your aws key>',
