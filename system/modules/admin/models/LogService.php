@@ -75,12 +75,13 @@ class LogService extends \DbService {
                     $cw_client = new CloudWatchLogsClient(Config::get('admin.logging.cloudwatch'));
                 
                     // Log group name, will be created if none
-                    $cw_group_name = Config::get('admin.logging.cloudwatch.group_name', 'php-app-logs');
+                    $cw_group_name = Config::get('admin.logging.cloudwatch.group_name', 'cmfive-app-logs');
                     
                     // Instance ID as log stream name
                     $cw_stream_name_app = Config::get('admin.logging.cloudwatch.stream_name_app', "CmfiveApp");
-                    $cw_handler = new CloudWatch($cw_client, $cw_group_name, $cw_stream_name_app, $this->retention_period, 10000, [ 'application' => 'php-testapp01' ],Logger::NOTICE);
+                    $cw_handler = new CloudWatch($cw_client, $cw_group_name, $cw_stream_name_app, $this->retention_period, 10000);
                     
+                    $cw_handler->setFormatter($this->formatter);
                     $this->loggers[$name]->pushHandler($cw_handler);
                     break;
                 } catch (Exception $e) {
