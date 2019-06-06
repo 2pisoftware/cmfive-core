@@ -52,15 +52,34 @@ class LogService extends \DbService {
         $this->setFormatter();
         $this->loggers[$name] = new Logger($name);
         
+        // Work out if we can reach aws (if it's our preferred destination) and fallback to file if we can't
+        $log_destination = Config::get('admin.logging.target', 'file');
+        $instance_id = '';
+        if ($log_destination == 'aws') {
+            // I doubt this URL will change but it may be worth putting this in the config
+            $response = (new HttpRequest("http://169.254.169.254/latest/meta-data/instance-id"))->execute();
+
+            if (!empty($response['error'])) {
+                $this->w->Log->error("Could not authenticate instance ID with AWS, falling back to local filesystem");
+                Config::set('admin.logging.target', 'file');
+                $log_destination = 'file';
+            } else {
+                $instance_id = $response['data'];
+            }
+        }
+
         switch (Config::get('admin.logging.target', 'file')) {
             case 'aws': {
-                $instanceId = file_get_contents("http://169.254.169.254/latest/meta-data/instance-id");
-                $cwClient = new CloudWatchLogsClient($awsCredentials);
+                $cw_client = new CloudWatchLogsClient(Config::get('admin.logging.cloudwatch'));
+               
                 // Log group name, will be created if none
-                $cwGroupName = 'php-app-logs';
+                $cw_group_name = 'php-app-logs';
+                
                 // Instance ID as log stream name
-                $cwStreamNameApp = "TestAuthenticationApp";
-                $cwHandlerAppNotice = new CloudWatch($cwClient, $cwGroupName, $cwStreamNameApp, $this->retention_period, 10000, [ 'application' => 'php-testapp01' ],Logger::NOTICE);
+                $cw_stream_name_app = "TestAuthenticationApp";
+                $cw_handler = new CloudWatch($cw_client, $cw_group_name, $cw_stream_name_app, $this->retention_period, 10000, [ 'application' => 'php-testapp01' ],Logger::NOTICE);
+                
+                $this->loggers[$name]->pushHandler($cw_handler);
                 break;
             }
             case 'file':

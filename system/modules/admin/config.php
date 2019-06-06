@@ -42,6 +42,14 @@ Config::set('admin', array(
     'logging' => [
         'target' => 'file',         // Can be 'file' or 'aws' (cloudwatch)
         'retention_period' => 30,   // In number of days
-        
+        'cloudwatch' => [
+            'region'    => 'au-southeast-1',
+            'version'   => 'latest',
+            // 'credentials' => [
+            //     'key'       => '<your aws key>',
+            //     'secret'    => '<your aws secret>',
+            //     'token'     => ''    // Token is optional
+            //]
+        ]
     ]
 ));
