@@ -333,6 +333,7 @@ class DbObject extends DbService {
         $links = $this->w->db->get("restricted_object_user_link")
             ->select()
             ->select("id")
+            ->where("object_class", get_class($this))
             ->where("object_id", $this->id)
             ->where("is_deleted", 0)
             ->fetchAll();
@@ -1057,7 +1058,7 @@ class DbObject extends DbService {
 
         // remove stop words
          $temparr = array_diff($temparr, explode(" ", Config::get("search.stopwords")));
-        
+
         $str = implode(" ", $temparr);
 
         return $str;
