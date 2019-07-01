@@ -63,7 +63,7 @@ class HttpRequest {
 	/**
 	 * Executes the request and returns the response data, status code & error message.
 	 *
-	 * @return arrar[string]
+	 * @return array[string]
 	 */
 	public function execute() {
 		$data = curl_exec($this->curl_handle);

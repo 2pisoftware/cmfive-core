@@ -1,21 +1,27 @@
 <?php
 
+use Aws\CloudWatchLogs\CloudWatchLogsClient;
+use Maxbanton\Cwh\Handler\CloudWatch;
 use Monolog\Logger as Logger;
 use Monolog\Formatter\LineFormatter as LineFormatter;
 use Monolog\Handler\RotatingFileHandler as RotatingFileHandler;
 use Monolog\Processor\WebProcessor as WebProcessor;
-use Monolog\Processor\IntrospectionProcessor as IntrospectionProcessor;
-use Monolog\Formatter\JsonFormatter as JsonFormatter;
+
+defined("LOG_SERVICE_DEFAULT_RETENTION_PERIOD") or define("LOG_SERVICE_DEFAULT_RETENTION_PERIOD", 30);
 
 class LogService extends \DbService {
     private $loggers = array();
     private $logger;
     private static $system_logger = 'cmfive';
     private $formatter = null;
+
+    private $retention_period = LOG_SERVICE_DEFAULT_RETENTION_PERIOD;
     
     public function __construct(\Web $w) {
         parent::__construct($w);
         
+        $this->retention_period = Config::get('admin.logging.retention_period', LOG_SERVICE_DEFAULT_RETENTION_PERIOD);
+
         $this->addLogger(LogService::$system_logger);
     }
     
@@ -46,15 +52,52 @@ class LogService extends \DbService {
         $this->setFormatter();
         $this->loggers[$name] = new Logger($name);
         
-        if ($logToSystemFile === true) {
-            $filename = STORAGE_PATH . "/log/" . LogService::$system_logger . ".log";
-        } else {
-            $filename = STORAGE_PATH . "/log/{$name}.log";
+        // Work out if we can reach aws (if it's our preferred destination) and fallback to file if we can't
+        $log_destination = Config::get('admin.logging.target', 'file');
+        if ($log_destination == 'aws') {
+            // I doubt this URL will change but it may be worth putting this in the config
+            $response = (new HttpRequest("http://169.254.169.254/latest/meta-data/instance-id"))->execute();
+
+            if (!empty($response['error'])) {
+                // $this->w->Log->error("Could not authenticate instance ID with AWS, falling back to local filesystem");
+                syslog(LOG_ERR, "LogService: Could not authenticate instance ID with AWS, falling back to local filesystem");
+                Config::set('admin.logging.target', 'file');
+                $log_destination = 'file';
+            }
         }
-        $handler = new RotatingFileHandler($filename);
-        $handler->setFormatter($this->formatter);
-        // $handler->setFormatter(new JsonFormatter());
-        $this->loggers[$name]->pushHandler($handler);
+
+        switch (Config::get('admin.logging.target', 'file')) {
+            case 'aws': {
+                try {
+                    $cw_client = new CloudWatchLogsClient(Config::get('admin.logging.cloudwatch'));
+                
+                    // Log group name, will be created if none
+                    $cw_group_name = Config::get('admin.logging.cloudwatch.group_name', 'cmfive-app-logs');
+                    
+                    // Instance ID as log stream name
+                    $cw_stream_name_app = Config::get('admin.logging.cloudwatch.stream_name_app', "CmfiveApp");
+                    $cw_handler = new CloudWatch($cw_client, $cw_group_name, $cw_stream_name_app, $this->retention_period, 10000);
+                    
+                    $cw_handler->setFormatter($this->formatter);
+                    $this->loggers[$name]->pushHandler($cw_handler);
+                    break;
+                } catch (Exception $e) {
+                    // If an exception is caught, we should fall back to file (hence why "break" is in the try block)
+                    syslog(LOG_ERR, "LogService: exception caught when using Cloudwatch: " . $e->getMessage());
+                }
+            }
+            case 'file':
+            default: {
+                if ($logToSystemFile === true) {
+                    $filename = STORAGE_PATH . "/log/" . LogService::$system_logger . ".log";
+                } else {
+                    $filename = STORAGE_PATH . "/log/{$name}.log";
+                }
+                $handler = new RotatingFileHandler($filename, $this->retention_period);
+                $handler->setFormatter($this->formatter);
+                $this->loggers[$name]->pushHandler($handler);
+            }
+        }
     }
     
     public function setLogger($name) {
