@@ -6,7 +6,7 @@ class TaskTaskCompletionDateFix extends CmfiveMigration {
 		// UP
 		$query = "UPDATE task t 
         INNER JOIN object_modification om 
-             ON (t.task_group_id = om.object_id AND om.table_name = 'task')
+             ON (t.id = om.object_id AND om.table_name = 'task')
 
 		SET t.dt_completed = om.dt_modified
 
