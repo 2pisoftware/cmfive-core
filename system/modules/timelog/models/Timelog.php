@@ -142,9 +142,7 @@ class Timelog extends DbObject {
     
 	public function insert($force_validation = true) {
 		// If user is admin try and set the user_id to the given one from the timelog form
-		if ($this->w->Auth->user()->is_admin) {
-			$this->user_id = !empty($_POST['user_id']) ? intval($_POST['user_id']) : $this->w->Auth->user()->id;
-		} else if (empty($this->user_id)) {
+		if (empty($this->user_id)) {
 			$this->user_id = $this->w->Auth->user()->id;
 		}
 		
@@ -152,9 +150,7 @@ class Timelog extends DbObject {
 	}
 	
 	public function update($force_null_values = false, $force_validation = true) {
-		if ($this->w->Auth->user()->is_admin) {
-			$this->user_id = !empty($_POST['user_id']) ? intval($_POST['user_id']) : $this->w->Auth->user()->id;
-		} else if (empty($this->user_id)) {
+		if (empty($this->user_id)) {
 			$this->user_id = $this->w->Auth->user()->id;
 		}
 		
@@ -162,6 +158,12 @@ class Timelog extends DbObject {
 	}
 	
 	public function canDelete(User $user) {
+		$hook_results = $this->w->callHook('timelog','can_delete_timelog',$this);
+		foreach ($hook_results as $result) {
+			if (!$result) {
+				return false;
+			}
+		}
         // user is admin
         if ($user->is_admin) {
 			return True;

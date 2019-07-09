@@ -5,7 +5,12 @@ function test_GET(Web $w ) {
 
 	if ($id) {
 		$channel = $w->Channel->getEmailChannel($id);
-		echo $channel->connectToMail(true, true);
+		$result = $channel->connectToMail(true)[1];
+		if (gettype($result) == 'string') {
+			echo $result;
+		} else {
+			echo 'Connected!';
+		}
 	} else {
 		$w->error("Could not find channel");
 	}

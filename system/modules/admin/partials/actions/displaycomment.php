@@ -12,4 +12,5 @@ function displaycomment(\Web $w, $params) {
     $w->ctx("external_only", array_key_exists('external_only', $params) ? $params['external_only'] : false);
 
     $w->ctx("c", $params['object']);
+    $w->ctx("is_outgoing", $params["is_outgoing"]);
 }

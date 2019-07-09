@@ -258,7 +258,7 @@ function task_comment_send_notification_recipients_task(Web $w, $params) {
 
 		$template_data['can_view_task'] = $user->is_external ? false : true;
 
-		$template_data['footer'] .= $w->partial("displaycomment", array("object" => $params['comment'], "displayOnly" => true, 'redirect' => '/inbox'), "admin");
+		$template_data['footer'] .= $w->partial("displaycomment", array("object" => $params['comment'], "displayOnly" => true, 'redirect' => '/inbox', "is_outgoing" => true), "admin");
 
 		// Get additional details
 		if ($user->is_external == 0) {

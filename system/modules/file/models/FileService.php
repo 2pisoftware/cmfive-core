@@ -140,7 +140,9 @@ class FileService extends DbService {
 			case "s3":
 				$client = new Aws\S3\S3Client(Config::get('file.adapters.s3'));
 				$config_options = Config::get('file.adapters.s3.options');
-				$config_options = array_replace(is_array($config_options) ? $config_options : [], ["directory" => $path], $options);
+				$s3path = (substr($path,-1)=="/")?substr($path,0,-1):$path; // because trailing presence varies with call/object history
+				$config_options = array_replace(is_array($config_options) ? $config_options : [], ["directory" => $s3path], $options);
+				// $config_options = array_replace(is_array($config_options) ? $config_options : [], ["directory" => $path], $options);
 				// $client = S3Client::factory(["key" => Config::get('file.adapters.s3.key'), "secret" => Config::get('file.adapters.s3.secret')]);
 				$adapter_obj = new AwsS3($client, Config::get('file.adapters.s3.bucket'), is_array($config_options) ? $config_options : []);
 				break;
@@ -296,6 +298,13 @@ class FileService extends DbService {
 	function getAttachmentsFileList($objectOrTable, $id = null, $type_code_blacklist = []) {
 		$attachments = $this->getAttachments($objectOrTable, $id);
 		if (!empty($attachments)) {
+
+			foreach ($attachments as $key => $attachment) {
+				if ($attachment->isRestricted()) {
+					unset($attachments[$key]);
+				}
+			}
+
 			$pluck = array();
 			if (!empty($type_code_blacklist)) {
 				$attachments = array_filter($attachments, function($attachment) use ($type_code_blacklist) {
@@ -410,14 +419,14 @@ class FileService extends DbService {
 	 * @param <type> $description
 	 * @return Mixed the id of the attachment object or null
 	 */
-	function uploadAttachment($requestkey, $parentObject, $title = null, $description = null, $type_code = null) {
+	function uploadAttachment($requestkey, $parentObject, $title = null, $description = null, $type_code = null, $is_public = false) {
 
-                if (empty($_POST[$requestkey]) && (empty($_FILES[$requestkey]) || $_FILES[$requestkey]['size'] <= 0)) {
-                    return false;
-                }
+		if (empty($_POST[$requestkey]) && (empty($_FILES[$requestkey]) || $_FILES[$requestkey]['size'] <= 0)) {
+			return false;
+		}
 
 
-                if (!is_a($parentObject, "DbObject")) {
+        if (!is_a($parentObject, "DbObject")) {
 			$this->w->error("Parent not found.");
 		}
 
@@ -439,8 +448,9 @@ class FileService extends DbService {
 		$att->title = (!empty($title) ? $title : $filename);
 		$att->description = $description;
 		$att->type_code = $type_code;
+		$att->is_public = $is_public;
 		$att->insert();
-
+		
 		$filesystemPath = "attachments/" . $parentObject->getDbTableName() . '/' . date('Y/m/d') . '/' . $parentObject->id . '/';
 		$filesystem = $this->getFilesystem($this->getFilePath($filesystemPath));
 		if (empty($filesystem)) {

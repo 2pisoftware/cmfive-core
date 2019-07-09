@@ -149,6 +149,8 @@ class CmfiveAdminModule extends \Codeception\Module
         $I->click('Edit', 'tbody tr:nth-child('.$rowIndex . ')');
         $I->wait(1);
         $I->click("Test Output");
+        $I->amOnPage("/admin-templates/rendertemplate/1");
+        $I->wait(3);
     }
 
 }
