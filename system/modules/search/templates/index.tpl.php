@@ -1,5 +1,4 @@
 <h3 class="subheading" style="border-bottom: 1px solid grey;">Search</h3>
-
 <div class="row-fluid">
 <!--    <form action="<?php // echo $webroot; ?>/search/results" method="GET">-->
     <form id="search_form" class="clearfix">
@@ -59,4 +58,13 @@
         
         return false;
     });
+    
 </script>
+<br>
+<div>
+    <p style="font-size: 12px;">
+        <strong>Note:</strong> All search terms must meet the minimum character threshold of 3 characters.
+        <br>
+        <strong>Tip:</strong> To search for an object by its ID, type the characters 'id' followed by the object you are searching for's ID. Eg. id450 will return all searchable objects with an id of 450
+    </p>
+</div>
