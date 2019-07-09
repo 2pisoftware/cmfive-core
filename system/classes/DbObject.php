@@ -1010,7 +1010,7 @@ class DbObject extends DbService {
 
         // -------------- concatenate all object fields ---------------------
         $str = "";
-        $exclude = array("dt_created", "dt_modified", "id", "w");
+        $exclude = array("dt_created", "dt_modified", "w");
 
         foreach (get_object_vars($this) as $k => $v) {
             if ($k{0} != "_" // ignore volatile vars
