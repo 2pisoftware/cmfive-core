@@ -9,20 +9,22 @@ Config::set('main', array(
 	'company_name' => 'cmfive',
 	'company_url' => 'http://github.com/careck/cmfive',
 	"dependencies" => [
-		"monolog/monolog" => "1.22.*@dev",
+		// "monolog/monolog" => "1.22.*@dev",
 		"leafo/scssphp" => "0.7.4"
 	],
 	'hooks' => [
 		'core_dbobject',
+		'admin'
 	],
 	'available_languages' => [
 		'en_AU' => 'English',
 		'de_DE' => 'Deutsch',
 		'fr_FR' => 'Français',
 	],
+	'datepicker_first_day' => 0, /* Set the first day of the week for datepickers, integer between 0 and  6, where 0 is sunday, 1 is monday, etc.*/
 	'vue_components' => [
 		'html-tabs' => [
-			'/system/templates/vue-components/html/html-tabs.vue.js', 
+			'/system/templates/vue-components/html/html-tabs.vue.js',
 			'/system/templates/vue-components/html/html-tabs.vue.scss'
 		],
 		'html-tab' => [

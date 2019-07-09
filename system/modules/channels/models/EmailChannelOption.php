@@ -182,8 +182,8 @@ class EmailChannelOption extends DbObject {
 
         // Connect and fetch emails
         $this->w->Log->setLogger('EmailChannel')->info("Connecting to mail server");
-        $mail = $this->connectToMail();
-        if (!empty($mail)) {
+        list($connected, $mail) = $this->connectToMail();
+        if ($connected) {
             $this->w->Log->setLogger('EmailChannel')->info("Getting messages with filter: " . json_encode($filter_arr));
             $results = $mail->protocol->search($filter_arr);
             if (!empty($results)) {
@@ -211,7 +211,7 @@ class EmailChannelOption extends DbObject {
 						$email->from_email_address = $address->getEmail();
 						break;
 					}
-                    $email->cc = $zend_message->getCc();
+                    // $email->cc = $zend_message->getCc();
                     $email->subject = $zend_message->getSubject();
 
                     // Create  ChannelMessages
@@ -225,19 +225,27 @@ class EmailChannelOption extends DbObject {
                         foreach (new RecursiveIteratorIterator($message) as $part) {
                             try {
                                 $contentType = strtok($part->contentType, ';');
-                                $transferEncoding = $part->getHeader("Content-Transfer-Encoding")->getFieldValue("transferEncoding");
+								if ($part->getHeaders()->has('ContentTransferEncoding')) {
+									$transferEncoding = $part->getHeader("Content-Transfer-Encoding")->getFieldValue("transferEncoding");
+								} else {
+									$transferEncoding = '';
+								}
                                 switch ($contentType) {
                                     case "text/plain":
                                         $email->body["plain"] = trim($part->__toString());
                                         if ($transferEncoding == "base64") {
                                             $email->body['plain'] = base64_decode($email->body['plain']);
-                                        }
+                                        } elseif ($transferEncoding == "quoted-printable") {
+											$email->body['plain'] = quoted_printable_decode($email->body['plain']);
+										}
                                         break;
                                     case "text/html":
                                         $email->body["html"] = trim($part->__toString());
                                         if ($transferEncoding == "base64") {
                                             $email->body['html'] = base64_decode($email->body['html']);
-                                        }
+                                        } elseif ($transferEncoding == "quoted-printable") {
+											$email->body['html'] = quoted_printable_decode($email->body['html']);
+										}
                                         break;
                                     default:
                                         // Is probably an attachment so just save it
@@ -297,7 +305,7 @@ class EmailChannelOption extends DbObject {
         }
     }
 
-    public function connectToMail($shouldDecrypt = true, $test=false) {
+    public function connectToMail($shouldDecrypt = true) {
       if ($shouldDecrypt) {
           $this->decrypt();
       }
@@ -325,13 +333,10 @@ class EmailChannelOption extends DbObject {
 						'options' => $options
 					)
 				);
-		if ($test) {
-			return 'Connected';
-		}
-        return $mail;
+        return [true, $mail];
       } catch (Exception $e) {
             $this->Log->setLogger('EmailChannel')->error("Error connecting to mail server: " . $e->getMessage());
-			return $e->getMessage();
+			return [false,$e->getMessage()];
       }
     }
 

@@ -56,7 +56,9 @@ class ReportModuleCest
 			$I->See('2pi');
 			$I->See('Pedigree'); 
 		  $I->requestReportConnection($I);
+		  $I->wait(3);
 		  $I->linkReportConnection($I,$this->reportTitle);
+		  $I->wait(3); 
 		  $I->runReportTemplate($I,$this->reportTitle,'Test Template');
 		  $I->See('2pi');
 			$I->See('Pedigree'); 
