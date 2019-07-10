@@ -1,3 +1,26 @@
+<style>
+.idTooltip {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+.idTooltip .idTooltiptext {
+  visibility: hidden;
+  background-color: #6FA9C7;
+  color: #fff;
+  text-align: center;
+  display: block;
+  padding: 5px 0;
+  border-radius: 6px;
+ position: absolute;
+  z-index: 1;
+}
+
+.idTooltip:hover .idTooltiptext {
+  visibility: visible;
+}
+</style>
 <h3 class="subheading" style="border-bottom: 1px solid grey;">Search</h3>
 <div class="row-fluid">
 <!--    <form action="<?php // echo $webroot; ?>/search/results" method="GET">-->
@@ -18,6 +41,8 @@
             </div>
         </div>
     </form>
+
+    
 </div>
         
 <div id="search_message" class="row hide">
@@ -61,10 +86,11 @@
     
 </script>
 <br>
-<div>
+<div class="idTooltip">(i)
+    <span class="idTooltiptext">
     <p style="font-size: 12px;">
-        <strong>Note:</strong> All search terms must meet the minimum character threshold of 3 characters.
-        <br>
-        <strong>Tip:</strong> To search for an object by its ID, type the characters 'id' followed by the object you are searching for's ID. Eg. id450 will return all searchable objects with an id of 450
+    <strong>Note:</strong> All search terms must meet the minimum character threshold of 3 characters.
+    <strong>Tip:</strong> To search for an object by its ID, type the characters 'id' followed by the object you are searching for's ID. Eg. id450 will return all searchable objects with an id of 450
     </p>
+    </span>
 </div>
