@@ -207,7 +207,9 @@ class ExternalFormXMLProcessor extends ProcessorType {
 						$metadata = $field->getMetadata();
 						if (empty($metadata)) {
 							// Handle issue with missing metadata
-							continue;
+							// NOTE: is equiv to "continue;" as the switch&for blocks are immediately nested
+							// with closing '} ... }'
+							break; 
 						}
 
 						$subform = null;
@@ -219,7 +221,9 @@ class ExternalFormXMLProcessor extends ProcessorType {
 
 						if (empty($subform)) {
 							// Handle issue with missing form
-							continue;
+							// NOTE: is equiv to "continue;" as the switch&for blocks are immediately nested
+							// with closing '} ... }'
+							break; 
 						}
 
 						// Clear any entries if existing instance

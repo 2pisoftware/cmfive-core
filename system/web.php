@@ -158,6 +158,13 @@ class Web {
 	}
 
 	private function modelLoader($className) {
+
+		$callinfo = debug_backtrace();
+		$cause = "";
+		foreach($callinfo as $detailed) {
+		$cause .= ":".$detailed['function'];
+		} //var_dump($cause);
+
 		// 1. check if class directory has to be loaded from cache
 		$classdirectory_cache_file = ROOT_PATH . "/cache/classdirectory.cache";
 
@@ -187,7 +194,8 @@ class Web {
 				if (file_exists($file)) {
 					require_once $file;
 					// add this class file to the cache file
-					file_put_contents($classdirectory_cache_file, '$this->_classdirectory["' . $className . '"]="' . $file . '";' . "\n", FILE_APPEND);
+					file_put_contents($classdirectory_cache_file, '$this->_classdirectory["' . $className . '"]="' . $file . '"; //' . $cause . "\n", FILE_APPEND);
+					$this->_classdirectory[$className]=$file;
 					return true;
 				} else {
 					// Try a lower case version
@@ -195,7 +203,8 @@ class Web {
 					if (file_exists($file)) {
 						require_once $file;
 						// add this class file to the cache file
-						file_put_contents($classdirectory_cache_file, '$this->_classdirectory["' . $className . '"]="' . $file . '";' . "\n", FILE_APPEND);
+						file_put_contents($classdirectory_cache_file, '$this->_classdirectory["' . $className . '"]="' . $file . '"; //' . $cause . "\n", FILE_APPEND);
+						$this->_classdirectory[$className]=$file;
 						return true;
 					}
 				}
@@ -210,11 +219,39 @@ class Web {
 
 			if (file_exists($file)) {
 				require_once $file;
-				file_put_contents($classdirectory_cache_file, '$this->_classdirectory["' . $className . '"]="' . $file . '";' . "\n", FILE_APPEND);
+				file_put_contents($classdirectory_cache_file, '$this->_classdirectory["' . $className . '"]="' . $file . '"; //' . $cause . "\n", FILE_APPEND);
+				$this->_classdirectory[$className]=$file;
 				return true;
 			}
 		}
-		// $this->Log->debug("Class " . $file . " not found.");
+
+		// Last try, recurse in "/lib"
+		$toplibpath = 'system' . DS . 'lib';
+		$namespaceparts = explode('\\', $className); 
+		$classfile = array_pop($namespaceparts).'.php';
+		$libmatch = false;
+
+			$topdirectory = new \RecursiveDirectoryIterator($toplibpath, \FilesystemIterator::FOLLOW_SYMLINKS|\FilesystemIterator::SKIP_DOTS);
+			$classfilter = new \RecursiveCallbackFilterIterator($topdirectory, function ($current, $key, $iterator) {
+								 if (!$current->isDir()) { // Only respond to possible class match files.
+								 	return  $current->getExtension() === "php";
+								 } else return true;
+								});
+			$iterator = new \RecursiveIteratorIterator($classfilter);
+
+			foreach ($iterator as $info) {				
+				if($info->getFilename()==$classfile) {
+					$matchfile = $info->getPathname();
+					require_once $matchfile;
+					file_put_contents($classdirectory_cache_file, '$this->_classdirectory["' . $className . '"]="' . $matchfile . '"; //' . implode("\\",$namespaceparts) . " " . $cause . "\n", FILE_APPEND);
+					$this->_classdirectory[$className]=$matchfile;
+					$libmatch = true;
+						}
+				}
+			if($libmatch) {
+					return true;
+							}
+						
 		return false;
 	}
 
@@ -785,7 +822,7 @@ class Web {
 
 			$body = null;
 			// evaluate template only when buffer is empty
-			if (sizeof($this->_buffer) == 0) {
+			if (empty($this->_buffer)) { //(sizeof($this->_buffer) == 0) {
 				$body = $this->fetchTemplate();
 			} else {
 				$body = $this->_buffer;

@@ -53,12 +53,12 @@ function databasebackup_ALL(Web $w) {
                         // Dropbox requires the OAuth extension
                         if (!class_exists("OAuth")) {
                             $w->out("You need the OAuth extension installed to backup to dropbox");
-                            continue;
-                        }
-                            
+                        } else {                            
                         $dropboxapi = new Dropbox_API(new Dropbox_OAuth_PHP($data['key'], $data['secret']));
                         $dropboxadapter = new Gaufrette\Adapter\Dropbox($dropboxapi);
                         $adapter = new \Gaufrette\Adapter($dropboxadapter);
+                        }
+
                         break;
                 }
                 

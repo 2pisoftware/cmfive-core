@@ -51,7 +51,7 @@ class DbPDO extends PDO {
        
 		
         // Instantiate a FluentPDO class and init vars
-        $this->fpdo = new FluentPDO($this);
+        $this->fpdo = new \Envms\FluentPDO\Query($this); //FluentPDO($this);
         
         $this->sql = 'getSql'; //$this->getSql();
         $this->config = $config;
