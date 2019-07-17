@@ -730,10 +730,13 @@ function SystemAESencrypt($text) {
 }
 
 function SystemSSLencrypt($text) {
+	$ssl_method = "AES-256-CBC";
 	$encryption_key = Config::get('system.encryption.key');
-	$encryption_iv = Config::get('system.encryption.iv');
-
-	return openssl_encrypt($text, "AES-256-CBC", $encryption_key, 0, $encryption_iv);
+	//$encryption_iv = Config::get('system.encryption.iv');	
+	$encryption_iv = random_bytes(openssl_cipher_iv_length($ssl_method));	
+    $encryption_iv = bin2hex($key_iv);
+	$ssl = openssl_encrypt($text, $ssl_method, $encryption_key, 0, $encryption_iv);
+	return base64_encode($ssl . "::" . $encryption_iv);
 	}
 
 function AESdecrypt($text,$password) {
@@ -747,10 +750,13 @@ function SystemAESdecrypt($text) {
 }
 
 function SystemSSLdecrypt($text) {
+	$ssl_method = "AES-256-CBC";
 	$encryption_key = Config::get('system.encryption.key');
-	$encryption_iv = Config::get('system.encryption.iv');
-
-	return openssl_decrypt($text, "AES-256-CBC", $encryption_key, 0, $encryption_iv);
+	//$encryption_iv = Config::get('system.encryption.iv');
+	$text = explode("::",base64_decode($text));
+	$encryption_iv = hex2bin(pop($text));
+	$text = pop($text);
+	return openssl_decrypt($text, $ssl_method, $encryption_key, 0, $encryption_iv);
 	}
 /**
  * Gets content between two different strings

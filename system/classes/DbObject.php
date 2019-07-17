@@ -79,10 +79,10 @@ class DbObject extends DbService {
     private $_class;
     public $__use_auditing = true;
 
-    private $_SystemEncrypt = null;
-    private $_SystemDecrypt = null;
+    private $_systemEncrypt = null;
+    private $_systemDecrypt = null;
 
-        /**
+     /**
      * Constructor
      *
      * @param $w
@@ -130,8 +130,8 @@ class DbObject extends DbService {
 
     private function establishEncryptionModel() {
         
-        $this->_SystemEncrypt = 'SystemAESencrypt'; 
-        $this->_SystemDecrypt = 'SystemAESdecrypt'; 
+        $this->_systemEncrypt = 'SystemAESencrypt'; 
+        $this->_systemDecrypt = 'SystemAESdecrypt'; 
 
         $result = $this->w->db->query(
             "select id from migration 
@@ -145,8 +145,8 @@ class DbObject extends DbService {
                 if (empty($encryption_key) || empty($encryption_iv)) {
                     throw new Exception('Encryption key/iv is not set');
                 }
-            $this->_SystemEncrypt =  'SystemSSLencrypt'; 
-            $this->_SystemDecrypt =  'SystemSSLdecrypt'; 
+            $this->_systemEncrypt =  'SystemSSLencrypt'; 
+            $this->_systemDecrypt =  'SystemSSLdecrypt'; 
             }
     }
     
@@ -175,7 +175,7 @@ class DbObject extends DbService {
         foreach (get_object_vars($this) as $k => $v) {
             if (strpos($k, "s_") === 0) {
                 if ($v) {
-                    $this->$k = ($this->_SystemDecrypt)($v); //AESdecrypt($v, Config::get('system.password_salt'));
+                    $this->$k = ($this->_systemDecrypt)($v); //AESdecrypt($v, Config::get('system.password_salt'));
                 }
             }
         }
@@ -665,7 +665,7 @@ class DbObject extends DbService {
                         }
                     } else if (strpos($k, "s_") === 0) {
                         if ($v) {
-                            $v = ($this->_SystemEncrypt)($v);//AESencrypt($v, Config::get('system.password_salt'));
+                            $v = ($this->_systemEncrypt)($v);//AESencrypt($v, Config::get('system.password_salt'));
                             $data [$dbk] = $v;
                         }
                     } else {
@@ -1314,7 +1314,7 @@ class DbObject extends DbService {
                 return null;
         } else if (strpos($k, "s_") === 0) {
             if (!empty($v)) {
-                return ($this->_SystemEncrypt)($v);//AESencrypt($v, Config::get('system.password_salt'));
+                return ($this->_systemEncrypt)($v);//AESencrypt($v, Config::get('system.password_salt'));
             }
         }
         return $v;
