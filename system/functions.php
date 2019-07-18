@@ -733,7 +733,7 @@ function SystemSSLencrypt($text) {
 	$ssl_method = "AES-256-CBC";
 	$encryption_key = Config::get('system.encryption.key');
 	//$encryption_iv = Config::get('system.encryption.iv');	
-	$encryption_iv = random_bytes(openssl_cipher_iv_length($ssl_method));	
+	$encryption_iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length($ssl_method)); //random_bytes(openssl_cipher_iv_length($ssl_method));	
 	$ssl = openssl_encrypt($text, $ssl_method, $encryption_key, 0, $encryption_iv);	
     $encryption_iv = bin2hex($encryption_iv);
 	return base64_encode($ssl . "::" . $encryption_iv);
