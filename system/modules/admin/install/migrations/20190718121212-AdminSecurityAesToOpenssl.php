@@ -75,9 +75,9 @@ class AdminSecurityAesToOpenssl extends CmfiveMigration {
                     
                     if ($up) {
                         $decrypted = AESdecrypt($r[$columnName], $passwordSalt);
-                        $encrypted = SystemSSLencrypt($decrypted); //openssl_encrypt($decrypted, "AES-256-CBC", $encryption_key, 0, $encryption_iv);
+                        $encrypted = SystemSSLencrypt($decrypted); 
                     } else {
-                        $decrypted = SystemSSLdecrypt($r[$columnName]); //openssl_decrypt($r[$columnName], "AES-256-CBC", $encryption_key, 0, $encryption_iv);
+                        $decrypted = SystemSSLdecrypt($r[$columnName]); 
                         $encrypted = AESencrypt($decrypted, $passwordSalt);
                     }
                     
