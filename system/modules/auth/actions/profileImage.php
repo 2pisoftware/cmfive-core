@@ -12,6 +12,8 @@ function profileImage_GET(Web $w)
         if (!empty($user)) {
             $contact = $user->getContact();
         }
+    } else {
+        $contact = $w->Auth->user()->getContact();
     }
     if (empty($contact)) {
         return;
