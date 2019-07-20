@@ -1,5 +1,6 @@
 <?php if ($user): ?>
 <?php if (!empty($box)): ?><h1>Edit User</h1><?php endif;?>
+<p><img src="/auth/profileImage/<?php echo $user->login; ?>" alt="Profile Image"></p>
 <?php
     $contact = $user->getContact();
     $form['User Details'][]=array(
@@ -19,6 +20,8 @@ $form['Contact Details'][] = array(
 $form['Contact Details'][] = array(
 	array("Title", "autocomplete", "title", $contact->getTitle(), $w->Lookup->getLookupByType("title")),
 	array("Email", "text", "email", $contact ? $contact->email : ""));
+$form['Contact Details'][] = array(
+	array("Profile Image", "file", "profile_img"));
 
 $groupUsers = $user->isInGroups();
 

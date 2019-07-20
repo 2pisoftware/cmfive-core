@@ -21,6 +21,7 @@ class Contact extends DbObject {
 	public $dt_created; // this is automatically excluded from indexing
 	public $dt_modified;  // this is automatically excluded from indexing
 	public $private_to_user_id;
+	public $profile_img;
 
 	function getFullName() {
 		if ($this->firstname and $this->lastname) {

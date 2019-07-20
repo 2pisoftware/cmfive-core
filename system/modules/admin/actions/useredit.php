@@ -61,6 +61,14 @@ function useredit_POST(Web &$w) {
 	$contact = $user->getContact();
 	if ($contact) {
 		$contact->fill($_REQUEST);
+		//Handle profile image (if set)
+		if(!empty($_FILES['profile_img']) && $_FILES['profile_img']['type'] == 'image/jpeg' && $_FILES['profile_img']['size'] > 0) {
+			require_once 'phpthumb/ThumbLib.inc.php';
+
+			$thumb = PhpThumbFactory::create(file_get_contents($_FILES['profile_img']['tmp_name']), [], true);
+			$thumb->adaptiveResize(200, 200);
+			$contact->profile_img = base64_encode($thumb->getImageAsString());
+		}
 		$contact->private_to_user_id = null;
 		$contact->setTitle($_REQUEST['acp_title']);
 		$contact->update(true); // we want to insert null values

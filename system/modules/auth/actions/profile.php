@@ -17,6 +17,7 @@ function profile_GET(Web &$w) {
 	$lines[] = array("Contact Details","section");
 	$lines[] = array("First Name","text","firstname",$contact ? $contact->firstname : "");
 	$lines[] = array("Last Name","text","lastname",$contact ? $contact->lastname : "");
+	$lines[] = array("Profile Image","file","profile_img");
 	$lines[] = array("Communication","section");
 	$lines[] = array("Home Phone","text","homephone",$contact ? $contact->homephone : "");
 	$lines[] = array("Work Phone","text","workphone",$contact ? $contact->workphone : "");
@@ -27,6 +28,7 @@ function profile_GET(Web &$w) {
 	$lines[] = array("Redirect URL", "text", "redirect_url", $user->redirect_url);
 
 	$f = Html::form($lines,$w->localUrl("/auth/profile"),"POST","Update");
+	$f = '<p><img src="/auth/profileImage/'.$user->login.'" alt="Profile Image"></p>'.$f;
 	if ($p['box']) {
 		$w->setLayout(null);
 		$f = "<h2>Edit Profile</h2>".$f;
@@ -79,6 +81,14 @@ function profile_POST(Web &$w) {
 	$contact = $user->getContact();
 	if ($contact) {
 		$contact->fill($_REQUEST);
+		//Handle profile image (if set)
+		if(!empty($_FILES['profile_img']) && $_FILES['profile_img']['type'] == 'image/jpeg' && $_FILES['profile_img']['size'] > 0) {
+			require_once 'phpthumb/ThumbLib.inc.php';
+
+			$thumb = PhpThumbFactory::create(file_get_contents($_FILES['profile_img']['tmp_name']), [], true);
+			$thumb->adaptiveResize(200, 200);
+			$contact->profile_img = base64_encode($thumb->getImageAsString());
+		}
 		$contact->private_to_user_id= null;
 		$contact->update();
 	}
