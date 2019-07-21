@@ -158,8 +158,8 @@ class AdminSecurityAesToOpenssl extends CmfiveMigration {
     }
 
     private function checkSSLKeys() {
-                $encryption_key = Config::get('system.encryption.key');
-                $encryption_iv = Config::get('system.encryption.iv');
+                $encryption_key = Config::get('system.encryption.key',null);
+                $encryption_iv = Config::get('system.encryption.iv',null);
 
                 $checked = [ 
                     'pass' => false ,

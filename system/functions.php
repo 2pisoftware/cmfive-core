@@ -733,9 +733,14 @@ function SystemSSLencrypt($text) {
 	$ssl_method = "AES-256-CBC";
 	$encryption_key = Config::get('system.encryption.key');
 	$encryption_iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length($ssl_method));
-	$ssl = openssl_encrypt($text, $ssl_method, $encryption_key, 0, $encryption_iv);	
-    $encryption_iv = bin2hex($encryption_iv);
-	return  $ssl . "::" . $encryption_iv;
+	if (empty($encryption_key) || empty($encryption_iv)) {
+		// raise exception
+		throw new Exception('Cannot encrypt/decrypt without system key.');
+	} else {
+		$ssl = openssl_encrypt($text, $ssl_method, $encryption_key, 0, $encryption_iv);	
+		$encryption_iv = bin2hex($encryption_iv);
+		return  $ssl . "::" . $encryption_iv;
+		}
 	}
 
 function AESdecrypt($text,$password) {
@@ -753,9 +758,15 @@ function SystemSSLdecrypt($text) {
 	$encryption_key = Config::get('system.encryption.key');
 	$text = explode("::",$text);  //var_dump($text);
 	$encryption_iv = hex2bin(array_pop($text));
-	$text = array_pop($text);
-	return openssl_decrypt($text, $ssl_method, $encryption_key, 0, $encryption_iv);
+	if (empty($encryption_key) || empty($encryption_iv)) {
+		// raise exception
+		throw new Exception('Cannot encrypt/decrypt without system key.');
+		} else {
+		$text = array_pop($text);
+		return openssl_decrypt($text, $ssl_method, $encryption_key, 0, $encryption_iv);
+		}
 	}
+
 /**
  * Gets content between two different strings
  * (Source: http://tonyspiro.com/using-php-to-get-a-string-between-two-strings/)
