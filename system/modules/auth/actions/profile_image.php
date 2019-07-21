@@ -1,19 +1,19 @@
 <?php
 
-function profileImage_GET(Web $w)
+function profile_image_GET(Web $w)
 {
     $w->setLayout(null);
-    $p = $w->pathMatch('login');
+    $p = $w->pathMatch('id');
 
-    $contactLogin = $p['login'];
+    $userId = $p['id'];
     
-    if (!empty($contactLogin)) {
-        $user = $w->Auth->getUserForLogin($contactLogin);
-        if (!empty($user)) {
-            $contact = $user->getContact();
-        }
+    if (!empty($userId)) {
+        $user = $w->Auth->getUser($userId);
     } else {
-        $contact = $w->Auth->user()->getContact();
+        $user = $w->Auth->user();
+    }
+    if (!empty($user)) {
+        $contact = $user->getContact();
     }
     if (empty($contact)) {
         return;

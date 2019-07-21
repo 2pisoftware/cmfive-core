@@ -1,6 +1,6 @@
 <?php if ($user): ?>
 <?php if (!empty($box)): ?><h1>Edit User</h1><?php endif;?>
-<p><img src="/auth/profileImage/<?php echo $user->login; ?>" alt="Profile Image"></p>
+<p><img src="/auth/profile_image/<?php echo $user->id; ?>" alt="Profile Image"></p>
 <?php
     $contact = $user->getContact();
     $form['User Details'][]=array(
