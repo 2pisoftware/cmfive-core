@@ -139,8 +139,8 @@ class DbObject extends DbService {
                                 )->fetchAll();
         
         if (!empty($result)) { 
-                $encryption_key = Config::get('system.encryption.key');
-                $encryption_iv = Config::get('system.encryption.iv');
+                $encryption_key = Config::get('system.encryption.key',null);
+                $encryption_iv = Config::get('system.encryption.iv',null);
 
                 if (empty($encryption_key) || empty($encryption_iv)) {
                     throw new Exception('Encryption key/iv is not set');

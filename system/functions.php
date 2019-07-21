@@ -731,7 +731,7 @@ function SystemAESencrypt($text) {
 
 function SystemSSLencrypt($text) {
 	$ssl_method = "AES-256-CBC";
-	$encryption_key = Config::get('system.encryption.key');
+	$encryption_key = Config::get('system.encryption.key',null);
 	$encryption_iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length($ssl_method));
 	if (empty($encryption_key) || empty($encryption_iv)) {
 		// raise exception
@@ -755,7 +755,7 @@ function SystemAESdecrypt($text) {
 
 function SystemSSLdecrypt($text) {
 	$ssl_method = "AES-256-CBC";
-	$encryption_key = Config::get('system.encryption.key');
+	$encryption_key = Config::get('system.encryption.key',null);
 	$text = explode("::",$text);  //var_dump($text);
 	$encryption_iv = hex2bin(array_pop($text));
 	if (empty($encryption_key) || empty($encryption_iv)) {
