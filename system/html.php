@@ -322,7 +322,7 @@ class Html {
         $buffer .= "<div class='row-fluid small-12'>";
 
         foreach ($data as $field) {
-            $buffer .= "<div class='row-fluid'><div class='small-12'>";
+            $buffer .= "<div class='row-fluid clearfix'><div class='small-12'>";
 
             $title = !empty($field[0]) ? $field[0] : null;
             $type = !empty($field[1]) ? $field[1] : null;

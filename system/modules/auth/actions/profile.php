@@ -17,6 +17,7 @@ function profile_GET(Web &$w) {
 	$lines[] = array("Contact Details","section");
 	$lines[] = array("First Name","text","firstname",$contact ? $contact->firstname : "");
 	$lines[] = array("Last Name","text","lastname",$contact ? $contact->lastname : "");
+	$lines[] = array('Current Profile Image', 'static', '_profile_img', '<p><img height="100" width="100" src="/auth/profile_image/'.$user->id.'" alt="Profile Image"></p>');
 	$lines[] = array("Profile Image","file","profile_img");
 	$lines[] = array("Communication","section");
 	$lines[] = array("Home Phone","text","homephone",$contact ? $contact->homephone : "");
@@ -28,7 +29,7 @@ function profile_GET(Web &$w) {
 	$lines[] = array("Redirect URL", "text", "redirect_url", $user->redirect_url);
 
 	$f = Html::form($lines,$w->localUrl("/auth/profile"),"POST","Update");
-	$f = '<p><img src="/auth/profile_image/'.$user->id.'" alt="Profile Image"></p>'.$f;
+
 	if ($p['box']) {
 		$w->setLayout(null);
 		$f = "<h2>Edit Profile</h2>".$f;

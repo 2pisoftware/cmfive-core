@@ -1,6 +1,5 @@
 <?php if ($user): ?>
 <?php if (!empty($box)): ?><h1>Edit User</h1><?php endif;?>
-<p><img src="/auth/profile_image/<?php echo $user->id; ?>" alt="Profile Image"></p>
 <?php
     $contact = $user->getContact();
     $form['User Details'][]=array(
@@ -21,7 +20,15 @@ $form['Contact Details'][] = array(
 	array("Title", "autocomplete", "title", $contact->getTitle(), $w->Lookup->getLookupByType("title")),
 	array("Email", "text", "email", $contact ? $contact->email : ""));
 $form['Contact Details'][] = array(
-	array("Profile Image", "file", "profile_img"));
+	array("Current Profile Image", "static", "profile_img_display", "<p><img height='100' width='100' src='/auth/profile_image/" . $user->id . "' alt='Profile Image'></p>"),
+	array("Upload new Profile Image", "file", "profile_img"),
+	// (new \Html\Form\InputField\File([
+	// 	"id|name" => "profile_img",
+	// 	"label" => "Upload new Profile Image",
+	// 	"accept" => ".jpg,.jpeg",
+	// 	"size" => ''
+	// ]))
+);
 
 $groupUsers = $user->isInGroups();
 
@@ -45,4 +52,8 @@ print Html::multiColForm($form, $w->localUrl("/admin/useredit/" . $w->ctx("id"))
 
 <script type="text/javascript">
 	$(".form-section").attr("width","");
+
+	$(document).ready(function() {
+		$("#profile_img").attr('accept', '.jpg,.jpeg');
+	})
 </script>
