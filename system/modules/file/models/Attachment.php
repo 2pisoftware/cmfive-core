@@ -42,10 +42,10 @@ class Attachment extends DbObject {
 	 */
 
 	function insert($force_validation = false) {
-		$this->fullpath = str_replace(FILE_ROOT, "", $this->getFilePath());
+		$this->fullpath = str_replace(FILE_ROOT, "", $this->fullpath);
 		// Get mimetype
 		if (empty($this->mimetype)) {
-			$this->mimetype = $this->w->getMimetype($this->getFilePath());
+			$this->mimetype = $this->w->getMimetype($this->fullpath);
 		}
 	
 		

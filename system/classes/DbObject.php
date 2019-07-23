@@ -365,6 +365,7 @@ class DbObject extends DbService {
         $links = $this->w->db->get("restricted_object_user_link")
             ->select()
             ->select("id")
+            ->where("object_class", get_class($this))
             ->where("object_id", $this->id)
             ->where("is_deleted", 0)
             ->fetchAll();
@@ -1042,14 +1043,19 @@ class DbObject extends DbService {
 
         // -------------- concatenate all object fields ---------------------
         $str = "";
-        $exclude = array("dt_created", "dt_modified", "id", "w");
+        $exclude = array("dt_created", "dt_modified", "w");
 
         foreach (get_object_vars($this) as $k => $v) {
             if ($k{0} != "_" // ignore volatile vars
                     && (!property_exists($this, "_exclude_index") // ignore properties that should be excluded
                     || !in_array($k, $this->_exclude_index)) && stripos($k, "_id") === false && !in_array($k, $exclude)
             ) {
-                $str .= $v . " ";
+                if ($k == "id")
+                {
+                    $str .= "id" . $v . " ";
+                } else {
+                    $str .= $v . " ";
+                }
             }
         }
 
@@ -1090,7 +1096,7 @@ class DbObject extends DbService {
 
         // remove stop words
          $temparr = array_diff($temparr, explode(" ", Config::get("search.stopwords")));
-        
+
         $str = implode(" ", $temparr);
 
         return $str;
