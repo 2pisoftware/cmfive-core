@@ -1,6 +1,6 @@
 <?php
 // ========= Session ========================
-ini_set('session.gc_maxlifetime', 21600);
+//
 
 //========== Constants =====================================
 defined("DS") || define("DS", DIRECTORY_SEPARATOR);

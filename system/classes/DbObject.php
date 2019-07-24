@@ -79,7 +79,10 @@ class DbObject extends DbService {
     private $_class;
     public $__use_auditing = true;
 
-        /**
+    private $_systemEncrypt = null;
+    private $_systemDecrypt = null;
+
+     /**
      * Constructor
      *
      * @param $w
@@ -98,11 +101,14 @@ class DbObject extends DbService {
             $this->_searchable = new AspectSearchable($this);
         }
         $this->_class = get_class($this);
+
+        $this->establishEncryptionModel();
+
     }
 
     // public function __clone(){
     // }
-
+    
     public function __get($name) {
         // cater for modifiable aspect!
         if (isset($this->_modifiable)) {
@@ -122,6 +128,22 @@ class DbObject extends DbService {
         }
     }
 
+    private function establishEncryptionModel() {
+        
+        $this->_systemEncrypt = 'SSLencrypt'; 
+        $this->_systemDecrypt = 'SSLdecrypt'; 
+
+                $encryption_key = Config::get('system.encryption.key',null);
+                //$encryption_iv = Config::get('system.encryption.iv',null);
+
+                if (empty($encryption_key)) { // || empty($encryption_iv)) {
+                    $err = 'Encryption key is not set';
+                    $this->w->Log->error($err);
+                    throw new Exception($err);
+                }
+    }
+    
+
     /**
      * Set a cryptography password for
      * automatic encryption, decryption
@@ -129,6 +151,8 @@ class DbObject extends DbService {
      * for 128bit AES choose 16 characters
      * for 192bit AES choose 24 characters
      * for 256bit AES choose 32 characters
+     * 
+     * Will be ignored if SSL key/IV in use > 7.0
      */
     function setPassword($password) {
         if ($password) {
@@ -144,7 +168,8 @@ class DbObject extends DbService {
         foreach (get_object_vars($this) as $k => $v) {
             if (strpos($k, "s_") === 0) {
                 if ($v) {
-                    $this->$k = AESdecrypt($v, Config::get('system.password_salt'));
+                    $call_decrypt = $this->_systemDecrypt;
+                    $this->$k = $call_decrypt($v); //AESdecrypt($v, Config::get('system.password_salt'));
                 }
             }
         }
@@ -333,7 +358,6 @@ class DbObject extends DbService {
         $links = $this->w->db->get("restricted_object_user_link")
             ->select()
             ->select("id")
-            ->where("object_class", get_class($this))
             ->where("object_id", $this->id)
             ->where("is_deleted", 0)
             ->fetchAll();
@@ -635,7 +659,8 @@ class DbObject extends DbService {
                         }
                     } else if (strpos($k, "s_") === 0) {
                         if ($v) {
-                            $v = AESencrypt($v, Config::get('system.password_salt'));
+                            $call_encrypt = $this->_systemEncrypt;
+                            $v = $call_encrypt($v);//AESencrypt($v, Config::get('system.password_salt'));
                             $data [$dbk] = $v;
                         }
                     } else {
@@ -1058,7 +1083,7 @@ class DbObject extends DbService {
 
         // remove stop words
          $temparr = array_diff($temparr, explode(" ", Config::get("search.stopwords")));
-
+        
         $str = implode(" ", $temparr);
 
         return $str;
@@ -1284,7 +1309,8 @@ class DbObject extends DbService {
                 return null;
         } else if (strpos($k, "s_") === 0) {
             if (!empty($v)) {
-                return AESencrypt($v, Config::get('system.password_salt'));
+                $call_encrypt = $this->_systemEncrypt;
+                return $call_encrypt($v);//AESencrypt($v, Config::get('system.password_salt'));
             }
         }
         return $v;
