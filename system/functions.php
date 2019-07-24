@@ -726,7 +726,7 @@ function AESencrypt($text, $password) {
 	$err = 'AES and override password are deprecated, attempting compatibility through SSL.';
 			$this->w->Log->info($err);
 	
-	return SystemSSLencrypt($text);
+	return SSLencrypt($text);
 }
 
 function AESdecrypt($text, $password) {
@@ -736,10 +736,10 @@ function AESdecrypt($text, $password) {
 	$err = 'AES and override password are deprecated, attempting compatibility through SSL.';
 			$this->w->Log->info($err);
 	
-	return SystemSSLdecrypt($text);
+	return SSLdecrypt($text);
 }
 
-function SystemSSLencrypt($text) {
+function SSLencrypt($text) {
 	$ssl_method = "AES-256-CBC";
 	$encryption_key = Config::get('system.encryption.key',null);
 	$encryption_iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length($ssl_method));
@@ -756,7 +756,7 @@ function SystemSSLencrypt($text) {
 	}
 	
 
-	function SystemSSLdecrypt($text) {
+	function SSLdecrypt($text) {
 		$ssl_method = "AES-256-CBC";
 		$encryption_key = Config::get('system.encryption.key',null);
 		$text = explode("::",$text);  //var_dump($text);
