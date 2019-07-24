@@ -759,7 +759,7 @@ function SystemSSLdecrypt($text) {
 	$ssl_method = "AES-256-CBC";
 	$encryption_key = Config::get('system.encryption.key',null);
 	$text = explode("::",$text);  //var_dump($text);
-	$encryption_iv = hex2bin(array_pop($text));
+	$encryption_iv = array_pop($text);
 	if (empty($encryption_key) || empty($encryption_iv)) {
 		// raise exception
 		$err = 'Cannot decrypt without system key and IV.';
@@ -767,7 +767,7 @@ function SystemSSLdecrypt($text) {
 		throw new Exception($err);
 		} else {
 		$text = array_pop($text);
-		return openssl_decrypt($text, $ssl_method, $encryption_key, 0, $encryption_iv);
+		return openssl_decrypt($text, $ssl_method, $encryption_key, 0, hex2bin($encryption_iv));
 		}
 	}
 
