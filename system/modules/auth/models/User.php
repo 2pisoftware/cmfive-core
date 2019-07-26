@@ -370,24 +370,15 @@ class User extends DbObject
      * @param string $password
      * @return string
      */
-    public function encryptPassword($password/*, $update_salt = true*/)
+    public function encryptPassword($password, $update_salt = true)
     {
         // If the User's password salt is empty encrypt the password using password_hash.
         if (empty($this->password_salt)) {
-            return password_hash($this->password, PASSWORD_BCRYPT, ["cost" => 10]);
+            return password_hash($password, PASSWORD_BCRYPT);
         }
 
         // Otherwise use the depricated way.
         return sha1($this->password_salt . $password);
-
-        // if (empty($this->password_salt)) {
-        //     // Salt hash is generated per user
-        //     $this->password_salt = self::generateSalt();
-        //     if ($update_salt) {
-        //         $this->update();
-        //     }
-        // }
-        // return sha1($this->password_salt . $password);
     }
 
     /**
@@ -396,9 +387,9 @@ class User extends DbObject
      *
      * @param string $password
      */
-    public function setPassword($password/*, $update_salt = true*/)
+    public function setPassword($password, $update_salt = true)
     {
-        $this->password = $this->encryptPassword($password/*, $update_salt*/);
+        $this->password = $this->encryptPassword($password);
         $this->w->callHook('auth', 'setpassword', [$password, $this]);
     }
 

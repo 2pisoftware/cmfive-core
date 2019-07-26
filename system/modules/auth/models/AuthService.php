@@ -31,28 +31,18 @@ class AuthService extends DbService
                 return null;
             }
 
-            if ($user->encryptPassword($password) !== $user->password) {
-                $this->w->Log->info('cmfive pasword mismatch for username: ' . $login);
-                return null;
+            // If the User's password salt is empty use password_verify becayse the salt is built into the password, otherwise use the depreicated way.
+            if (empty($user->password_salt)) {
+                if (!password_verify($password, $user->password)) {
+                    $this->w->Log->info('cmfive pasword mismatch for username: ' . $login);
+                    return null;
+                }
+            } else {
+                if ($user->encryptPassword($password) !== $user->password) {
+                    $this->w->Log->info('cmfive pasword mismatch for username: ' . $login);
+                    return null;
+                }
             }
-
-            // // If the User's password salt is empty use password_verify becayse the salt is built into the password, otherwise use the depreicated way.
-            // if (empty($user->password_salt)) {
-            //     if (!password_verify($password, $user->password)) {
-            //         $this->w->Log->info('cmfive pasword mismatch for username: ' . $login);
-            //         return null;
-            //     }
-            // } else {
-            //     if ($user->encryptPassword($password) !== $user->password) {
-            //         $this->w->Log->info('cmfive pasword mismatch for username: ' . $login);
-            //         return null;
-            //     }
-            // }
-
-            // if ($user->encryptPassword($password) !== $user->password) {
-            //     $this->w->Log->info('cmfive pasword mismatch for username: ' . $login);
-            //     return null;
-            // }
 
             if ($user->is_external == 1) {
                 $this->w->Log->info('cmfive user is external: ' . $login);
