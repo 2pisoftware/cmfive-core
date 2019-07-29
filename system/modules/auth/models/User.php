@@ -374,28 +374,50 @@ class User extends DbObject
      */
     public function encryptPassword($password, $update_salt = true)
     {
-        // If User's password salt is not buld into the password hash use SHA1.
+        // If User's password salt is not built into the password hash use SHA1.
         if (!empty($this->password_salt)) {
             return sha1($this->password_salt . $password);
         }
 
-        $hash = false;
 
-        // If the User's password starts with '$2y$' use BCRYPT.
+        // // If the User's password starts with '$2y$' use BCRYPT.
+        // if (startsWith($this->password, "$2y$")) {
+            //     $hash = password_hash($password, PASSWORD_BCRYPT);
+
+            //     return $hash === false ? "" : $hash;
+            // }
+
+        $hash = false;
+        $algorithm = PASSWORD_DEFAULT;
+        $options = [];
+
         if (startsWith($this->password, "$2y$")) {
-            $hash = password_hash($password, PASSWORD_BCRYPT);
+            $algorithm = PASSWORD_BCRYPT;
         }
 
-        // If the PHP Version is at least 7.3.0 use the default, ARGON2.
         if (version_compare(PHP_VERSION, "7.3.0", ">=")) {
-            $hash = password_hash($password, PASSWORD_DEFAULT, [
+            $options = [
                 "memory_cost" => PASSWORD_ARGON2_DEFAULT_MEMORY_COST, // Max 1024 bytes.
                 "time_cost" => PASSWORD_ARGON2_DEFAULT_TIME_COST, // Max 2 seconds.
-                "threads" => PASSWORD_ARGON2_DEFAULT_THREADS]); // Max 2 threads.
+                "threads" => PASSWORD_ARGON2_DEFAULT_THREADS]; // Max 2 threads.
         }
 
-        // Check if the hash succeeded, return an empty string if it didn't for consistancy accross all hash methods.
+        $hash = password_hash($password, $algorithm, $options);
+
         return $hash === false ? "" : $hash;
+
+        // // If the PHP Version is at least 7.3.0 use the default, ARGON2.
+        // if (version_compare(PHP_VERSION, "7.3.0", ">=")) {
+        //     $hash = password_hash($password, PASSWORD_DEFAULT, [
+        //         "memory_cost" => PASSWORD_ARGON2_DEFAULT_MEMORY_COST, // Max 1024 bytes.
+        //         "time_cost" => PASSWORD_ARGON2_DEFAULT_TIME_COST, // Max 2 seconds.
+        //         "threads" => PASSWORD_ARGON2_DEFAULT_THREADS]); // Max 2 threads.
+
+        //     return $hash === false ? "" : $hash;
+        // }
+
+        // // Check if the hash succeeded, return an empty string if it didn't for consistancy accross all hash methods.
+        // return $hash === false ? "" : $hash;
     }
 
     /**
