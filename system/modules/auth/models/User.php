@@ -365,20 +365,37 @@ class User extends DbObject
     }
 
     /**
-     * Encrypt the password using sha1 or password_hash depending on whether the user has a salt or not.
+     * Encrypt the password using sha1 or password_hash depending on whether the User's salt is build into the
+     * password hash and the PHP Version.
      *
      * @param string $password
+     * @param boolean $update_salt - DEPRICATED
      * @return string
      */
     public function encryptPassword($password, $update_salt = true)
     {
-        // If the User's password salt is empty encrypt the password using password_hash.
-        if (empty($this->password_salt)) {
-            return password_hash($password, PASSWORD_BCRYPT);
+        // If User's password salt is not buld into the password hash use SHA1.
+        if (!empty($this->password_salt)) {
+            return sha1($this->password_salt . $password);
         }
 
-        // Otherwise use the depricated way.
-        return sha1($this->password_salt . $password);
+        $hash = false;
+
+        // If the User's password starts with '$2y$' use BCRYPT.
+        if (startsWith($this->password, "$2y$")) {
+            $hash = password_hash($password, PASSWORD_BCRYPT);
+        }
+
+        // If the PHP Version is at least 7.3.0 use the default, ARGON2.
+        if (version_compare(PHP_VERSION, "7.3.0", ">=")) {
+            $hash = password_hash($password, PASSWORD_DEFAULT, [
+                "memory_cost" => PASSWORD_ARGON2_DEFAULT_MEMORY_COST, // Max 1024 bytes.
+                "time_cost" => PASSWORD_ARGON2_DEFAULT_TIME_COST, // Max 2 seconds.
+                "threads" => PASSWORD_ARGON2_DEFAULT_THREADS]); // Max 2 threads.
+        }
+
+        // Check if the hash succeeded, return an empty string if it didn't for consistancy accross all hash methods.
+        return $hash === false ? "" : $hash;
     }
 
     /**
@@ -386,11 +403,40 @@ class User extends DbObject
      * not.
      *
      * @param string $password
+     * @param boolean $update_salt - DEPRICATED
      */
     public function setPassword($password, $update_salt = true)
     {
         $this->password = $this->encryptPassword($password);
         $this->w->callHook('auth', 'setpassword', [$password, $this]);
+    }
+
+    /**
+     * If the User's password hash is depricated and the $password paramter matches the User's password,
+     * update the User's password to use the latest Hash.
+     *
+     * @param string $password
+     * @return boolean
+     */
+    public function updatePasswordHash($password)
+    {
+        $wasPasswordHashUpdated = false;
+
+        if (!empty($this->password_salt) && $this->password === $this->encryptPassword($password)) {
+            $this->password_salt = null;
+            $wasPasswordHashUpdated = true;
+        }
+
+        if (version_compare(PHP_VERSION, "7.3.0", ">=") && startsWith($this->password, "$2y$") && password_verify($password, $this->password)) {
+            $this->setPassword($password);
+            $wasPasswordHashUpdated = true;
+        }
+
+        if ($wasPasswordHashUpdated) {
+            return $this->update(true);
+        }
+
+        return false;
     }
 
     public static function generateSalt()

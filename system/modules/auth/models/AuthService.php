@@ -31,7 +31,7 @@ class AuthService extends DbService
                 return null;
             }
 
-            // If the User's password salt is empty use password_verify becayse the salt is built into the password, otherwise use the depreicated way.
+            // If the User's password salt is empty use password_verify because the salt is built into the password, otherwise use the depreicated way.
             if (empty($user->password_salt)) {
                 if (!password_verify($password, $user->password)) {
                     $this->w->Log->info('cmfive pasword mismatch for username: ' . $login);
@@ -48,6 +48,11 @@ class AuthService extends DbService
                 $this->w->Log->info('cmfive user is external: ' . $login);
                 return null;
             }
+        }
+
+        // Check if the User's password hash is depricated and update if so.
+        if ($user->updatePasswordHash($password)) {
+            $this->w->Log->info("User with ID: " . $user->id . " password hash was updated");
         }
 
         $this->w->Log->info("User logged in: " . $user->getFullName());

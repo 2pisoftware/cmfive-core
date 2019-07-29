@@ -2,16 +2,18 @@
 
 function update_password_GET(Web $w)
 {
-
 }
 
 function update_password_POST(Web $w)
 {
-    if (empty($_POST["password"]) || empty($_POST["confirm_password"])) {
+    $password = $_POST["password"];
+    $confirm_password = $_POST["confirm_password"];
+
+    if (empty($password) || empty($confirm_password)) {
         $w->error("Missing Password or Confirm Password", "/auth/update_password");
     }
 
-    if ($_POST["password"] !== $_POST["confirm_password"]) {
+    if ($password !== $confirm_password) {
         $w->error("Password and Confirm Password do not match", "/auth/update_password");
     }
 
@@ -20,14 +22,12 @@ function update_password_POST(Web $w)
         $w->error("Not logged in", "/auth/login");
     }
 
-    // Remove the User's salt because it will be stored in the password field from now on.
-    if (!empty($user->password_salt)) {
-        $user->password_salt = null;
-        $user->update(true);
+    // Check if the User's password hash is depricated and update if so.
+    if ($user->updatePasswordHash($password)) {
+        $this->w->Log->info("User with ID: " . $user->id . " password hash was updated");
     }
 
-    // Update the User's password using password_hash.
-    $user->setPassword($_POST["password"]);
+    // Set the User's password to be valid again.
     $user->is_password_invalid = false;
     $user->update();
 
