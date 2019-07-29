@@ -424,23 +424,34 @@ class User extends DbObject
      */
     public function updatePasswordHash($password)
     {
-        $wasPasswordHashUpdated = false;
+        if ($this->password !== $this->encryptPassword($password)) {
+            return false;
+        }
 
-        if (!empty($this->password_salt) && $this->password === $this->encryptPassword($password)) {
+        if (!empty($this->password_salt)) {
             $this->password_salt = null;
-            $wasPasswordHashUpdated = true;
         }
 
-        if (version_compare(PHP_VERSION, "7.3.0", ">=") && startsWith($this->password, "$2y$") && password_verify($password, $this->password)) {
-            $this->setPassword($password);
-            $wasPasswordHashUpdated = true;
-        }
+        $this->setPassword($password);
+        return $this->update(true);
 
-        if ($wasPasswordHashUpdated) {
-            return $this->update(true);
-        }
+        // $wasPasswordHashUpdated = false;
 
-        return false;
+        // if (!empty($this->password_salt) && $this->password === $this->encryptPassword($password)) {
+        //     $this->password_salt = null;
+        //     $wasPasswordHashUpdated = true;
+        // }
+
+        // if (version_compare(PHP_VERSION, "7.3.0", ">=") && startsWith($this->password, "$2y$") && password_verify($password, $this->password)) {
+        //     $this->setPassword($password);
+        //     $wasPasswordHashUpdated = true;
+        // }
+
+        // if ($wasPasswordHashUpdated) {
+        //     return $this->update(true);
+        // }
+
+        // return false;
     }
 
     public static function generateSalt()

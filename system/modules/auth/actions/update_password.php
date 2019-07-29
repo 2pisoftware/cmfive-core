@@ -24,7 +24,7 @@ function update_password_POST(Web $w)
 
     // Check if the User's password hash is depricated and update if so.
     if ($user->updatePasswordHash($password)) {
-        $this->w->Log->info("User with ID: " . $user->id . " password hash was updated");
+        $w->Log->info("User with ID: " . $user->id . " password hash was updated");
     }
 
     // Set the User's password to be valid again.
