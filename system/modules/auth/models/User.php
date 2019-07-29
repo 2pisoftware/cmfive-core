@@ -379,23 +379,18 @@ class User extends DbObject
             return sha1($this->password_salt . $password);
         }
 
-
-        // // If the User's password starts with '$2y$' use BCRYPT.
-        // if (startsWith($this->password, "$2y$")) {
-            //     $hash = password_hash($password, PASSWORD_BCRYPT);
-
-            //     return $hash === false ? "" : $hash;
-            // }
-
         $hash = false;
         $algorithm = PASSWORD_DEFAULT;
         $options = [];
 
+        // If the password hash is using BYCRYPT set the algorithm accordingly.
         if (startsWith($this->password, "$2y$")) {
             $algorithm = PASSWORD_BCRYPT;
         }
 
-        if (version_compare(PHP_VERSION, "7.3.0", ">=")) {
+        // If the password hash is not using BYCRYPT and the PHP version is at least 7.3.0 set the
+        // password hash is using ARGON2. Set the options accordingly.
+        if (!startsWith($this->password, "$2y$") && version_compare(PHP_VERSION, "7.3.0", ">=")) {
             $options = [
                 "memory_cost" => PASSWORD_ARGON2_DEFAULT_MEMORY_COST, // Max 1024 bytes.
                 "time_cost" => PASSWORD_ARGON2_DEFAULT_TIME_COST, // Max 2 seconds.
@@ -405,19 +400,6 @@ class User extends DbObject
         $hash = password_hash($password, $algorithm, $options);
 
         return $hash === false ? "" : $hash;
-
-        // // If the PHP Version is at least 7.3.0 use the default, ARGON2.
-        // if (version_compare(PHP_VERSION, "7.3.0", ">=")) {
-        //     $hash = password_hash($password, PASSWORD_DEFAULT, [
-        //         "memory_cost" => PASSWORD_ARGON2_DEFAULT_MEMORY_COST, // Max 1024 bytes.
-        //         "time_cost" => PASSWORD_ARGON2_DEFAULT_TIME_COST, // Max 2 seconds.
-        //         "threads" => PASSWORD_ARGON2_DEFAULT_THREADS]); // Max 2 threads.
-
-        //     return $hash === false ? "" : $hash;
-        // }
-
-        // // Check if the hash succeeded, return an empty string if it didn't for consistancy accross all hash methods.
-        // return $hash === false ? "" : $hash;
     }
 
     /**
