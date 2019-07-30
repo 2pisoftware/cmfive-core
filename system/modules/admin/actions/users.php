@@ -20,7 +20,7 @@ function users_GET(Web &$w)
             [$w->Admin->time2Dt($user->dt_lastlogin), true],
             Html::a("/admin/useredit/" . $user->id, "Edit", null, "button tiny editbutton") .
             Html::a("/admin/permissionedit/" . $user->id, "Permissions", null, "button tiny permissionsbutton") .
-            Html::a("/admin-user/invalidate_password/" . $user->id, "Invalidate Password", null, "button tiny warning") .
+            // Html::a("/admin-user/invalidate_password/" . $user->id, "Invalidate Password", null, "button tiny warning") .
             Html::a("/admin-user/remove/" . $user->id, "Remove", null, "button tiny alert deletebutton")
         ];
     }
