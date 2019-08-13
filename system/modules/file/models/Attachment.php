@@ -303,7 +303,13 @@ class Attachment extends DbObject
      */
     public function getImageCachePath()
     {
-        return ROOT_PATH . "/" . CACHE_PATH . "/" . IMAGE_PATH . "/" . str_replace("png", "jpg", $this->fullpath);
+        $path_info = pathinfo($this->fullpath);
+
+        if (!array_key_exists("dirname", $path_info)) {
+            return null;
+        }
+
+        return ROOT_PATH . "/" . CACHE_PATH . "/" . IMAGE_PATH . "/" . $path_info["dirname"] . "/" . $path_info["filename"] . ".jpg";
     }
 
     /**

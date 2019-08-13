@@ -35,4 +35,5 @@ Config::set('file', [
     ],
     'docx_viewing_window_duration' => 0,
     'cached_image_max_width' => 1920,
+    'cached_image_default_quality' => -1
 ]);

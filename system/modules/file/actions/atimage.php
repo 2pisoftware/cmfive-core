@@ -10,7 +10,7 @@ function atimage_GET(Web $w)
         return;
     }
 
-    header("Content-Type: image/png");
+    header("Content-Type: image/jpeg");
 
     if ($attachment->hasCachedImage()) {
         echo file_get_contents($attachment->getImageCachePath());
@@ -40,7 +40,6 @@ function atimage_GET(Web $w)
         default:
             $w->Log->setLogger("FILE")->error("Unable to convert image with mime type " . $image_info["mime"] . " to JPEG");
             return;
-            break;
     }
 
     $max_width = Config::get("file.cached_image_max_width", 1920);
@@ -58,6 +57,6 @@ function atimage_GET(Web $w)
         mkdir(dirname($attachment->getImageCachePath()), 0755, true);
     }
 
-    imagejpeg(empty($final_image) ? $original_image : $final_image, $attachment->getImageCachePath());
+    imagejpeg(empty($final_image) ? $original_image : $final_image, $attachment->getImageCachePath(), Config::get("file.cached_image_default_quality", -1));
     echo file_get_contents($attachment->getImageCachePath());
 }
