@@ -22,7 +22,8 @@ class CmfiveTimelogModule extends \Codeception\Module
 		$I->fillForm(['date:date_start' => strtotime($date)]);
 		$I->fillField('#time_start', $start_time);
 		$I->fillField('#time_end', $end_time);
-		$I->executeJS("$('#acp_search').autocomplete('search', '{$task}')");
+		$tagTask = explode('- ', $task)[1];
+		$I->executeJS("$('#acp_search').autocomplete('search', '{$tagTask}')");
 		$I->waitForText($task);
         $I->click($task);
 		$I->click('Save');

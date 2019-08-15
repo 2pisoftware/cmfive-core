@@ -116,7 +116,8 @@ class FormService extends DbService {
 			$application_mapping = $this->getObjects('FormApplicationMapping', ['application_id' => $object->id, 'is_deleted' => 0]);
 		}
 
-		return count($mapping) > 0 || count($application_mapping) > 0;
+		return count(countableArrayObject($mapping)) > 0 
+				|| count(countableArrayObject($application_mapping)) > 0;
 	}
 	
 	/**

@@ -25,8 +25,10 @@ class MigrationService extends DbService {
 					// Run the admin migrations to install the migration table (the normal cause of this error)
 					$_this->installInitialMigration();
 					
-					// Reload the page
-					$_this->w->redirect($_SERVER["REQUEST_URI"]);
+					// Reload the page unless migrations are from CLI
+					if ( array_key_exists('REQUEST_METHOD', $_SERVER) ) {
+						$_this->w->redirect($_SERVER["REQUEST_URI"]);
+						}
 				}
 			}
 		});

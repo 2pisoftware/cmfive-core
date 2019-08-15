@@ -51,9 +51,11 @@ class TaskModuleCest
 		'description'=>'a test task',
 	]);
     $I->click('Duplicate Task');
+	$I->wait(3);
     $I->see('Task duplicated');
     $I->see('testTasks_test task -Copy');
     $I->editTask($I,'testTasks_test task -Copy', ['status' => 'Wip']);
+	$I->wait(3);
     $I->see('Wip');
 	$I->updateMemberInTaskGroup($I,'testTasks_testgroup updated','testTasks_test user','ALL');
 	$I->removeMemberFromTaskGroup($I,'testTasks_testgroup updated','testTasks_test user');

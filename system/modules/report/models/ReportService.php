@@ -366,8 +366,8 @@ class ReportService extends DbService {
 
     // export a recordset as CSV
     function exportcsv($rows, $title) {
-        // require the necessary library
-        require_once("parsecsv/parsecsv.lib.php");
+        // require the necessary library, but sourcing from Composer
+        //require_once("parsecsv/parsecsv.lib.php");
 
         // set filename
         $filename = str_replace(" ", "_", $title) . "_" . date("Y.m.d-H.i") . ".csv";
@@ -380,7 +380,7 @@ class ReportService extends DbService {
                 $title = array_shift($row);
                 $hds = array_shift($row);
                 $hvals = array_values($hds);
-
+                
                 // find key of any links
                 foreach ($hvals as $h) {
                     if (stripos($h, "_link")) {
@@ -403,13 +403,17 @@ class ReportService extends DbService {
                     unset($arr);
                 }
 
-                $csv = new parseCSV();
-                $this->w->out($csv->output($filename, $row, $hds));
+                $csv = new parseCSV(null,null,null,[]);
+                $csv->output_filename = $filename;
+                // ignore lib wrapper csv->output, to keep control over header re-sends!
+                $this->w->out($csv->unparse($row, $hds, null, null, null));
+                // can't use this way without commenting out header section, which composer won't like
+                // $this->w->out($csv->output($filename, $row, $hds));
                 unset($ukey);
-            }
+            } 
             $this->w->sendHeader("Content-type", "application/csv");
             $this->w->sendHeader("Content-Disposition", "attachment; filename=" . $filename);
-            $this->w->setLayout(null);
+            $this->w->setLayout(null); 
         }
     }
 
@@ -417,8 +421,8 @@ class ReportService extends DbService {
     function exportpdf($rows, $title, $report_template = null) {
         $filename = str_replace(" ", "_", $title) . "_" . date("Y.m.d-H.i") . ".pdf";
 
-        // using TCPDF so grab includes
-        require_once('tcpdf/tcpdf.php');
+        // using TCPDF, but sourcing from Composer
+        //require_once('tcpdf/tcpdf.php');
 
         // instantiate and set parameters
         $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);

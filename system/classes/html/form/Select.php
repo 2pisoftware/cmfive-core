@@ -80,7 +80,7 @@ class Select extends \Html\Form\FormElement {
 				} else if (is_a($option, "DbObject")) {
 					// Check for DbObject
 					array_push($this->options, new Option(["value" => $option->getSelectOptionValue(), "label" => $option->getSelectOptionTitle()]));
-				} else if (count($option) >= 2) {
+				} else if (count(countableArrayObject($option)) >= 2) {
 					// Check for standard Option format
 					if (array_key_exists("label", $option) && array_key_exists("value", $option)) {
 						array_push($this->options, new Option($option));

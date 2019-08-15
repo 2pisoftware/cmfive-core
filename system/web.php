@@ -1475,9 +1475,14 @@ class Web {
 			if ($this->isClassActive($cname)) {
 				$s = new $cname($this);
 				// initialise
-				if (method_exists($s, "__init")) {
-					$s->__init();
-				}
+				if (method_exists($s, "_web_init")) {
+					$s->_web_init();
+				 	} else {
+					if (method_exists($s, "__init")) {
+						$this->Log->error($cname.": exposing __init does not conform to PHP 7.2");
+						$s->__init();
+						}
+					}
 				$this->_services[$name] = &$s;
 			} else {
 				return null;
@@ -2156,7 +2161,12 @@ class Web {
 	 * @return null
 	 */
 	function header($string) {
-		header($string);
+		if (!headers_sent()) {
+			header($string); 
+			} else {
+				$this->log->error("Attempted header resend as: ".$string);
+				echo $string;
+			}
 	}
 
 	/**

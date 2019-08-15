@@ -9,6 +9,7 @@ class CmfiveAdminModule extends \Codeception\Module
         $I->clickCmfiveNavbar($I,'Admin', 'List Users');
         $I->click('Add New User');
         $I->waitForElement('#login');
+		$I->wait(2);
         $I->fillForm([
             'login'=>$username,
             'password'=>$password,

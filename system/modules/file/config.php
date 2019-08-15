@@ -6,8 +6,11 @@ Config::set('file', [
     'fileroot' => dirname(__FILE__) . '/../uploads',
     'topmenu' => false,
     "dependencies" => [
-        "knplabs/gaufrette" => "0.4.*@dev",
-		"aws/aws-sdk-php" => "3.29.*"
+        "knplabs/gaufrette" => "~0.8", 	
+		"aws/aws-sdk-php" => "~3.69"
+		// watch this space: phpthumb ver2 has dropped support for file content objects?
+		// if support is fixed, should start using composer/ver2 instead of LIB/ver1
+		//"masterexploder/phpthumb" => "~2.1"	 
     ],
 	'hooks' => [
 		'admin'

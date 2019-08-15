@@ -41,11 +41,16 @@ class SearchService extends DbService {
 		
 		// go over each index and reindex
 		foreach ( $this->getIndexes () as $index ) {
-			$objects = $this->getObjects ( $index, array ("is_deleted" => 0 ) );
-			if (! empty ( $objects )) {
-				foreach ( $objects as $object ) {
-					if (property_exists($object, "_searchable")) {
-						$object->_searchable->insert ();
+			$o = new $index($this->w);
+			$table = $o->getDbTableName();
+			if($this->_db->get($table))	{
+
+				$objects = $this->getObjects ( $index, array ("is_deleted" => 0 ) );
+				if (! empty ( $objects )) {
+					foreach ( $objects as $object ) {
+						if (property_exists($object, "_searchable")) {
+							$object->_searchable->insert ();
+						}
 					}
 				}
 			}

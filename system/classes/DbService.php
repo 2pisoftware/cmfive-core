@@ -251,8 +251,9 @@ class DbService {
                 return null;
             }
         } else if ($where && is_scalar($where)) {
-            $this->_db->where($where, false);
-        }
+            // was $this->_db->where($where, false); , prior to FPDO update onto PHP7.2
+            $this->_db->where($where);
+        } 
 		
 		// Default is deleted checks to 0
 		$columns = $o->getDbTableColumnNames();
@@ -277,7 +278,7 @@ class DbService {
 		}
 
         $this->buildSelect($o, $table, $class);
-        $result = $this->_db->fetch_all();
+        $result = $this->_db->fetch_all(); 
         if ($result) {
             $objects = $this->getObjectsFromRows($class, $result, true);
             if ($objects) {
