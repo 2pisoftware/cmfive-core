@@ -2165,7 +2165,7 @@ class Web {
 			header($string); 
 			} else {
 				$this->log->error("Attempted header resend as: ".$string);
-				echo $string;
+				//echo $string;
 			}
 	}
 
