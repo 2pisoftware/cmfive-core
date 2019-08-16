@@ -22,7 +22,7 @@ function ajaxEditAttachment_POST(Web $w) {
 	}
 
 	$owner = $w->Restrictable->getOwner($attachment);
-	if (empty($owner) || $owner->id !== $user->id) {
+	if (!empty($owner) && $owner->id !== $user->id) {
 		$w->out((new AxiosResponse())->setErrorResponse(null, ["error_message" => "User not authorised to restrict objects"]));
 		return;
 	}
