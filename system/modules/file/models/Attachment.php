@@ -437,6 +437,11 @@ class Attachment extends DbObject
         require_once 'phpthumb/ThumbLib.inc.php';
 
         $full_file_path = $this->getFilePath() . "/" . $this->filename;
+
+        if (!file_exists($full_file_path)) {
+            return false;
+        }
+
         $image_info = getimagesize($full_file_path);
         $width = $image_info[0];
         $height = $image_info[1];
@@ -456,7 +461,7 @@ class Attachment extends DbObject
                 break;
             default:
                 $w->Log->setLogger("FILE")->error("Unable to convert image with mime type " . $image_info["mime"] . " to JPEG");
-                return;
+                return false;
         }
 
         $max_width = Config::get("file.cached_image_max_width", 1920);
@@ -475,6 +480,7 @@ class Attachment extends DbObject
         }
 
         imagejpeg(empty($final_image) ? $original_image : $final_image, $this->getImageCachePath(), Config::get("file.cached_image_default_quality", -1));
+        return true;
     }
 
     public function getSelectOptionTitle()
