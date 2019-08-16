@@ -460,7 +460,7 @@ class Attachment extends DbObject
                 $original_image = imagecreatefrombmp($full_file_path);
                 break;
             default:
-                $w->Log->setLogger("FILE")->error("Unable to convert image with mime type " . $image_info["mime"] . " to JPEG");
+                $this->w->Log->setLogger("FILE")->error("Unable to convert image with mime type " . $image_info["mime"] . " to JPEG");
                 return false;
         }
 
