@@ -17,6 +17,10 @@ function atimage_GET(Web $w)
         return;
     }
 
-    $attachment->createCachedImage();
+    if (!$attachment->createCachedImage()) {
+        header("HTTP/1.1 404 Not Found");
+        return;
+    }
+
     echo file_get_contents($attachment->getImageCachePath());
 }
