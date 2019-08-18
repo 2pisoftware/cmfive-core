@@ -735,7 +735,9 @@ function SystemSSLencrypt($text) {
 	$encryption_iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length($ssl_method));
 	if (empty($encryption_key) || empty($encryption_iv)) {
 		// raise exception
-		throw new Exception('Cannot encrypt/decrypt without system key.');
+		$err = 'Cannot encrypt without system key and IV.';
+		$this->w->Log->error($err);
+		throw new Exception($err);
 	} else {
 		$ssl = openssl_encrypt($text, $ssl_method, $encryption_key, 0, $encryption_iv);	
 		$encryption_iv = bin2hex($encryption_iv);
@@ -757,13 +759,15 @@ function SystemSSLdecrypt($text) {
 	$ssl_method = "AES-256-CBC";
 	$encryption_key = Config::get('system.encryption.key',null);
 	$text = explode("::",$text);  //var_dump($text);
-	$encryption_iv = hex2bin(array_pop($text));
+	$encryption_iv = array_pop($text);
 	if (empty($encryption_key) || empty($encryption_iv)) {
 		// raise exception
-		throw new Exception('Cannot encrypt/decrypt without system key.');
+		$err = 'Cannot decrypt without system key and IV.';
+		$this->w->Log->error($err);
+		throw new Exception($err);
 		} else {
 		$text = array_pop($text);
-		return openssl_decrypt($text, $ssl_method, $encryption_key, 0, $encryption_iv);
+		return openssl_decrypt($text, $ssl_method, $encryption_key, 0, hex2bin($encryption_iv));
 		}
 	}
 

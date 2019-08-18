@@ -17,14 +17,18 @@ class AdminSecurityAesToOpenssl extends CmfiveMigration {
         
         $db = Config::get("database.database");
         if (empty($db)) {
-            throw new Exception('Database config not set');
+            $err = 'Database config not set';
+            $this->w->Log->error($err);
+            throw new Exception($err);
         }
 
         $encryption_key = Config::get('system.encryption.key');
-        $encryption_iv = Config::get('system.encryption.iv');
+        //$encryption_iv = Config::get('system.encryption.iv');
 
-        if (empty($encryption_key) || empty($encryption_iv)) {
-            throw new Exception('Encryption key/iv is not set');
+        if (empty($encryption_key)) { // || empty($encryption_iv)) {
+            $err = 'Encryption key/iv is not set';
+            $this->w->Log->error($err);
+            throw new Exception($err);
         }
 
          /* DB table_name and ObjectName don't always match 
@@ -99,7 +103,9 @@ class AdminSecurityAesToOpenssl extends CmfiveMigration {
             && $this->checkMigrationStatus()['pass']
             && $this->checkPHPversion()['pass']
             && $this->checkSSLKeys()['pass'] )) {
-            throw new Exception("System is not suitable for ".get_class($this)." migration");
+                $err = "System is not suitable for ".get_class($this)." migration";
+                $this->w->Log->error($err);
+                throw new Exception($err);
         }
          $this->w->migrating = true;
          $this->migrate();
@@ -109,10 +115,16 @@ class AdminSecurityAesToOpenssl extends CmfiveMigration {
     public function down() {
 
         if(($this->checkMigrationStatus()['pass'] || (!$this->checkPHPversion()['pass']))) {
-            throw new Exception("System cannot rollback ".get_class($this)." migration");
+            // this MUST throw exception, or migration will be registered as rollback,
+            // regardless that encryption was not reversed
+            // BECAUSE : down() cannot return failure!
+            $err = "System cannot rollback ".get_class($this)." migration";
+                $this->w->Log->error($err);
+                throw new Exception($err);
+        } else {
+            $this->w->migrating = true;
+            $this->migrate(false);
         }
-        $this->w->migrating = true;
-        $this->migrate(false);
     }
 
     private function checkPHPversion() {
@@ -159,13 +171,13 @@ class AdminSecurityAesToOpenssl extends CmfiveMigration {
 
     private function checkSSLKeys() {
                 $encryption_key = Config::get('system.encryption.key',null);
-                $encryption_iv = Config::get('system.encryption.iv',null);
+                //$encryption_iv = Config::get('system.encryption.iv',null);
 
                 $checked = [ 
                     'pass' => false ,
                     'info' => "" ];
 
-                if (!(empty($encryption_key) || empty($encryption_iv))) {
+                if (!empty($encryption_key)) { // || empty($encryption_iv))) {
                     $checked['pass'] = true;
                     $checked['info'] = "SSL Key exists.";
                 } else {

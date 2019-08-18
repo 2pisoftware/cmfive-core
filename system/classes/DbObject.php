@@ -140,10 +140,12 @@ class DbObject extends DbService {
         
         if (!empty($result)) { 
                 $encryption_key = Config::get('system.encryption.key',null);
-                $encryption_iv = Config::get('system.encryption.iv',null);
+                //$encryption_iv = Config::get('system.encryption.iv',null);
 
-                if (empty($encryption_key) || empty($encryption_iv)) {
-                    throw new Exception('Encryption key/iv is not set');
+                if (empty($encryption_key)) { // || empty($encryption_iv)) {
+                    $err = 'Encryption key is not set';
+                    $this->w->Log->error($err);
+                    throw new Exception($err);
                 }
             $this->_systemEncrypt =  'SystemSSLencrypt'; 
             $this->_systemDecrypt =  'SystemSSLdecrypt'; 
