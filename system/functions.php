@@ -227,17 +227,6 @@ function defaultVal($val, $default = null)
 }
 
 /**
- * cope with nulls or mis-types being uncountable arrays,
- * eg. "$thisMightBeArray = null; $size = count(countableArrayObject($thisMightBeArray));"
- *
- * @param string $tentative
- */
-function countableArrayObject($tentative)
-{
-    return is_array($tentative) ? $tentative : [];
-}
-
-/**
  * Turns a title into a slug for meaningful urls,
  * eg. "This is my long Title" => "this-is-my-long-title"
  *

@@ -77,18 +77,18 @@ class Select extends \Html\Form\FormElement {
 				// Check for \Html\Form\Option
 				if (is_a($option, "\Html\Form\Option")) {
 					array_push($this->options, $option);
-				} else if (is_a($option, "DbObject")) {
+				} elseif (is_a($option, "DbObject")) {
 					// Check for DbObject
 					array_push($this->options, new Option(["value" => $option->getSelectOptionValue(), "label" => $option->getSelectOptionTitle()]));
-				} else if (count(countableArrayObject($option)) >= 2) {
+				} elseif (is_array($option) && count($option) >= 2) {
 					// Check for standard Option format
 					if (array_key_exists("label", $option) && array_key_exists("value", $option)) {
 						array_push($this->options, new Option($option));
-					} else if (count($option) == 2) {
+					} elseif (count($option) == 2) {
 						// Check for old (bad) style
 						array_push($this->options, new Option(["value" => $option[1], "label" => $option[0]]));
 					}
-				} else if (is_scalar ($option)) {
+				} elseif (is_scalar($option)) {
 					// Check for string option
 					array_push($this->options, new Option(["label" => $option, "value" => $option]));
 				} else {

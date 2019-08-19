@@ -561,9 +561,8 @@ class Html {
 
             // Loop through each row
             foreach ($rows as $row) {
-
                 // Print each field
-                $fieldCount = count(countableArrayObject($row)); //var_dump($row);
+                $fieldCount = is_array($row) ? count($row) : 1; // countableArrayObject($row));
                 $buffer .= "<ul class='small-block-grid-1 medium-block-grid-{$fieldCount} section-body'>";
 
 				if (empty($row)) {
