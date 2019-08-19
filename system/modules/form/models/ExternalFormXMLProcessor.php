@@ -179,11 +179,13 @@ class ExternalFormXMLProcessor extends ProcessorType {
 					};
 					case "attachment": {
 						$xml_path_attachments = $current_document->xpath('//' . $field->technical_name . '//photo');
-
+						if (empty($xml_path_attachments)) {
+							$xml_path_attachments = $current_document->xpath('//' . $field->technical_name);
+						}
 						if (!empty($xml_path_attachments) && !empty($non_standard_attachments)) {
 							foreach($xml_path_attachments as $xml_path_attachment) {
 								$xml_attachment_value = (string) $xml_path_attachment;
-
+								
 								foreach($non_standard_attachments as $non_standard_attachment) {
 									if ($non_standard_attachment->filename == $xml_path_attachment) {
 										$xml_value .= (!empty($xml_value) ? ',' : '') . $non_standard_attachment->id;
@@ -192,7 +194,6 @@ class ExternalFormXMLProcessor extends ProcessorType {
 								}
 							}
 						}
-
 						$this->createFormValue($form->w, $is_existing_instance, $instance, $field, $xml_value);
 						break;
 					};

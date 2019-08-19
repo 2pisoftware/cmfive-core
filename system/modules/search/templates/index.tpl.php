@@ -1,5 +1,14 @@
-<h3 class="subheading" style="border-bottom: 1px solid grey;">Search</h3>
-
+<div>
+    <h3 class="subheading columns large-6">Search</h3>
+    <span class="columns large-6" style="text-align: right;">
+        <p style="font-size: 12px;">
+        <strong>Note:</strong> Search terms must contain minimum 3 characters.
+        <br>
+        <strong>Tip:</strong> To search by Id, use 'id##' eg. id5.
+        </p>
+    </span>
+</div>
+<hr>
 <div class="row-fluid">
 <!--    <form action="<?php // echo $webroot; ?>/search/results" method="GET">-->
     <form id="search_form" class="clearfix">
@@ -19,6 +28,8 @@
             </div>
         </div>
     </form>
+
+    
 </div>
         
 <div id="search_message" class="row hide">
@@ -59,4 +70,6 @@
         
         return false;
     });
+    
 </script>
+<br>

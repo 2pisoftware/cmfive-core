@@ -1,7 +1,7 @@
 <?php
 
 Config::set('file', [
-	'active' => true,
+    'active' => true,
     'path' => 'system/modules',
     'fileroot' => dirname(__FILE__) . '/../uploads',
     'topmenu' => false,
@@ -12,29 +12,31 @@ Config::set('file', [
 		// if support is fixed, should start using composer/ver2 instead of LIB/ver1
 		//"masterexploder/phpthumb" => "~2.1"	 
     ],
-	'hooks' => [
-		'admin'
-	],
-	'adapters' => [
-		'local' => [
-			'active' => true
-		],
-		'memory' => [
-			'active' => false
-		],
-		's3' => [
-			'active' => false,
-			'region' => 'ap-southeast-2',
-			'version' => '2006-03-01',
-			'credentials' => [
-				'key' => '',
-				'secret' => ''
-			],
-			'bucket' => '',
-			'options' => [
-				'create' => true
-			]
-		]
-	],
-	'docx_viewing_window_duration' => 0,
+    'hooks' => [
+        'admin'
+    ],
+    'adapters' => [
+        'local' => [
+            'active' => true
+        ],
+        'memory' => [
+            'active' => false
+        ],
+        's3' => [
+            'active' => false,
+            'region' => 'ap-southeast-2',
+            'version' => '2006-03-01',
+            'credentials' => [
+                'key' => '',
+                'secret' => ''
+            ],
+            'bucket' => '',
+            'options' => [
+                'create' => true
+            ]
+        ]
+    ],
+    'docx_viewing_window_duration' => 0,
+    'cached_image_max_width' => 1920,
+    'cached_image_default_quality' => -1
 ]);
