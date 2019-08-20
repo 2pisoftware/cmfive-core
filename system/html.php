@@ -554,7 +554,6 @@ class Html {
 
         // Print internals
         foreach ($data as $section => $rows) {
-
             // Print section header
             $buffer .= "<div class='panel clearfix'>";
             $buffer .= "<div class='row-fluid clearfix section-header'><h4>{$section}<span style='display: none;' class='changed_status right alert radius label'>changed</span></h4></div>";
@@ -569,8 +568,7 @@ class Html {
 					continue;
 				}
 
-                foreach($row as $field) {
-
+                foreach ($row as $field) {
 					// Check if the row is an object like an InputField
 					if (!is_array($field) && is_object($field)) {
 						if ((property_exists($field, "type") && $field->type !== "hidden") || !property_exists($field, "type")) {
@@ -611,10 +609,10 @@ class Html {
                         $readonly = " readonly='true' ";
                     }
 
-                    switch($type) {
+                    switch ($type) {
                         case "text":
                         case "password":
-						case "email":
+                        case "email":
                             $size = !empty($field[4]) ? $field[4] : null;
                             $buffer .= '<input' . $readonly . ' style="width:100%;" type="' . $type . '" name="' . $name . '" value="' . htmlspecialchars($value) . '" size="' . $size . '" id="' . $name . '" ' . $required . " />";
                         break;

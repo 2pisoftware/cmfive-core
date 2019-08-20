@@ -362,7 +362,7 @@ class Web {
 			usort($this->_scripts, array($this, "cmp_weights"));
 
 			foreach ($this->_scripts as $script) {
-				try  {
+				try {
 					CmfiveScriptComponentRegister::registerComponent($script['name'], new CmfiveScriptComponent($script['uri'], ['weight' => $script['weight']]));
 				} catch (Exception $e) {
 					$this->Log->error($e->getMessage());
