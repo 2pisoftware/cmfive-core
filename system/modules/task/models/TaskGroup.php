@@ -29,8 +29,6 @@ class TaskGroup extends DbObject
 
 
     public static $_validation = [
-        "name" => ["required"],
-        "type" => ["required"],
         "title" => ["required"],
         "can_assign" => ["required"],
         "can_view" => ["required"],
