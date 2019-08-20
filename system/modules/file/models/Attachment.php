@@ -469,6 +469,9 @@ class Attachment extends DbObject
             case image_type_to_mime_type(IMAGETYPE_BMP):
                 $original_image = imagecreatefrombmp($full_file_path);
                 break;
+            case image_type_to_mime_type(IMAGETYPE_GIF):
+                $original_image = imagecreatefromgif($full_file_path);
+                break;
             default:
                 $this->w->Log->setLogger("FILE")->error("Unable to convert image with mime type " . $image_info["mime"] . " to JPEG");
                 return false;
