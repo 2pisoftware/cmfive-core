@@ -14,8 +14,8 @@ define("SYSTEM_LIBPATH", str_replace("\\", "/", getcwd() . '/system/lib'));
 define("FILE_ROOT", str_replace("\\", "/", getcwd() . "/uploads/")); // dirname(__FILE__)
 define("MEDIA_ROOT", str_replace("\\", "/", dirname(__FILE__) . "/../media/"));
 define("ROOT", str_replace("\\", "/", dirname(__FILE__)));
-define("STORAGE_PATH",str_replace("\\", "/", getcwd() . '/storage'));
-define("SESSION_NAME", "CM5_SID");
+define("STORAGE_PATH", str_replace("\\", "/", getcwd() . '/storage'));
+define("SESSION_NAME", "CM5-SID");
 
 set_include_path(get_include_path() . PATH_SEPARATOR . LIBPATH);
 set_include_path(get_include_path() . PATH_SEPARATOR . SYSTEM_LIBPATH);
@@ -227,32 +227,31 @@ class Web {
 
 		// Last try, recurse in "/lib"
 		$toplibpath = 'system' . DS . 'lib';
-		$namespaceparts = explode('\\', $className); 
+		$namespaceparts = explode('\\', $className);
 		$classfile = array_pop($namespaceparts).'.php';
 		$libmatch = false;
 
-			$topdirectory = new \RecursiveDirectoryIterator($toplibpath, \FilesystemIterator::FOLLOW_SYMLINKS|\FilesystemIterator::SKIP_DOTS);
-			$classfilter = new \RecursiveCallbackFilterIterator($topdirectory, function ($current, $key, $iterator) {
-								 if (!$current->isDir()) { // Only respond to possible class match files.
-								 	return  $current->getExtension() === "php";
-								 } else return true;
-								});
-			$iterator = new \RecursiveIteratorIterator($classfilter);
+        $topdirectory = new \RecursiveDirectoryIterator($toplibpath, \FilesystemIterator::FOLLOW_SYMLINKS|\FilesystemIterator::SKIP_DOTS);
+        $classfilter = new \RecursiveCallbackFilterIterator($topdirectory, function ($current, $key, $iterator) {
+            if (!$current->isDir()) { // Only respond to possible class match files.
+                return  $current->getExtension() === "php";
+            } else {
+                return true;
+            }
+        });
+        $iterator = new \RecursiveIteratorIterator($classfilter);
 
-			foreach ($iterator as $info) {				
-				if($info->getFilename()==$classfile) {
-					$matchfile = $info->getPathname();
-					require_once $matchfile;
-					file_put_contents($classdirectory_cache_file, '$this->_classdirectory["' . $className . '"]="' . $matchfile . '"; //' . implode("\\",$namespaceparts) . " " . $cause . "\n", FILE_APPEND);
-					$this->_classdirectory[$className]=$matchfile;
-					$libmatch = true;
-						}
-				}
-			if($libmatch) {
-					return true;
-							}
-						
-		return false;
+        foreach ($iterator as $info) {
+            if ($info->getFilename() == $classfile) {
+                $matchfile = $info->getPathname();
+                require_once $matchfile;
+                file_put_contents($classdirectory_cache_file, '$this->_classdirectory["' . $className . '"]="' . $matchfile . '"; //' . implode("\\", $namespaceparts) . " " . $cause . "\n", FILE_APPEND);
+                $this->_classdirectory[$className]=$matchfile;
+                $libmatch = true;
+            }
+        }
+        
+        return $libmatch;
 	}
 
 	private function componentLoader($name) {
@@ -570,15 +569,57 @@ class Web {
 		//Checks include is greater than 1 hour (3600 sec) is less than 1 month (2628000 sec)
 		if (!empty($gc_maxlifetime) && is_numeric($gc_maxlifetime) && $gc_maxlifetime >= 3600 && $gc_maxlifetime <= 2628000) {
 			ini_set('session.gc_maxlifetime', $gc_maxlifetime);
+        }
+        
+        /**
+         * Based on request domain we can route everything to a frontend module look into the domain routing and prepend the module.
+         * Check for frontend/portal modules first.
+         * To enable portal support set portal flag in the module to true.
+         * For it to work properly a domain name module must also be set.
+         *
+         * For exmaple:
+         * Config::set('{module}.portal', true);
+         * Config::set('{module}.domain_name', '{domain_url}');
+         */
+        $domainmodule = null;
+        foreach ($this->modules() as $module) {
+            // Module config must be active and either 'portal' or 'frontend' flag set to true
+            if (Config::get($module . '.active') == true && (Config::get($module . '.portal') == true || Config::get($module . '.frontend') == true)) {
+                if (strpos($_SERVER['HTTP_HOST'], Config::get($module . '.domain_name')) === 0) {
+                    // Found module
+                    $domainmodule = $module;
+                    break;
+                }
+            }
+        }
+
+		if (!empty($domainmodule)) {
+			$this->_loginpath = "auth";
+			$this->_isFrontend = true;
+			$this->_isPortal = !!Config::get($domainmodule . '.portal');
+
+			// now we have to decide whether the path points to
+			// a) a single top level action
+			// b) an action on a submodule
+			// but we need to make sure not to mistake a path paramater for a submodule or an action!
+			$domainsubmodules = $this->getSubmodules($domainmodule);
+			$action_or_module = !empty($this->_paths[0]) ? $this->_paths[0] : null;
+			if (!empty($domainsubmodules) && !empty($action_or_module) && array_search($action_or_module, $domainsubmodules) !== false) {
+				// just add the module to the first path entry, eg. frontend-page/1
+				$this->_paths[0] = $domainmodule . "-" . $this->_paths[0];
+			} else {
+				// add the module as an entry to the front of paths, eg. frontent/index
+				array_unshift($this->_paths, $domainmodule);
+			}
 		}
 
 		// start the session
 		// $sess = new SessionManager($this);
 		try {
 			if ($this->_isPortal === true) {
-				session_name(!empty($domainmodule) ? $domainmodule . '_SID' : 'PORTAL_SID');
+				session_id(!empty($domainmodule) ? $domainmodule . '_SID' : 'PORTAL_SID');
 			} else {
-				session_name(SESSION_NAME);
+				session_id(SESSION_NAME);
 			}
 
 			// Store the sessions locally to avoid permission errors between OS's
@@ -612,49 +653,6 @@ class Web {
 		$action_found = false;
 
 		$this->_paths = $this->_getCommandPath();
-
-		/**
-		 * Based on request domain we can route everything to a frontend module look into the domain routing and prepend the module.
-		 * Check for frontend/portal modules first.
-		 * To enable portal support set portal flag in the module to true.
-		 * For it to work properly a domain name module must also be set.
-		 *
-		 * For exmaple:
-		 * Config::set('{module}.portal', true);
-		 * Config::set('{module}.domain_name', '{domain_url}');
-		 */
-		$domainmodule = null;
-		foreach($this->modules() as $module) {
-			// Module config must be active and either 'portal' or 'frontend' flag set to true
-			if (Config::get($module . '.active') == true && (Config::get($module . '.portal') == true || Config::get($module . '.frontend') == true)) {
-				if (strpos($_SERVER['HTTP_HOST'], Config::get($module . '.domain_name')) === 0) {
-					// Found module
-					$domainmodule = $module;
-					break;
-				}
-			}
-		}
-
-		if (!empty($domainmodule)) {
-			$this->_loginpath = "auth";
-			$this->_isFrontend = true;
-			$this->_isPortal = !!Config::get($domainmodule . '.portal');
-
-			// now we have to decide whether the path points to
-			// a) a single top level action
-			// b) an action on a submodule
-			// but we need to make sure not to mistake a path paramater for a submodule or an action!
-			$domainsubmodules = $this->getSubmodules($domainmodule);
-			$action_or_module = !empty($this->_paths[0]) ? $this->_paths[0] : null;
-			if (!empty($domainsubmodules) && !empty($action_or_module) && array_search($action_or_module, $domainsubmodules) !== false) {
-				// just add the module to the first path entry, eg. frontend-page/1
-				$this->_paths[0] = $domainmodule . "-" . $this->_paths[0];
-			} else {
-				// add the module as an entry to the front of paths, eg. frontent/index
-				array_unshift($this->_paths, $domainmodule);
-			}
-		}
-
 
 		// first find the module file
 		if ($this->_paths && sizeof($this->_paths) > 0) {
@@ -2115,14 +2113,17 @@ class Web {
 	function sessionDestroy() {
 		$_SESSION = array();
 
-		session_name(SESSION_NAME);
+
+        // Check that we have an active session
+		if (!session_id()) {
+            return;
+        }
 
 		// If it's desired to kill the session, also delete the session cookie.
 		// Note: This will destroy the session, and not just the session data!
 		if (ini_get("session.use_cookies")) {
 			$params = session_get_cookie_params();
-			setcookie(session_name(), '', time() - 42000, $params["path"], $params["domain"], $params["secure"], $params["httponly"]
-			);
+			setcookie(session_name(), '', time() - 42000, $params["path"], $params["domain"], $params["secure"], $params["httponly"]);
 		}
 
 		// Finally, destroy the session.
