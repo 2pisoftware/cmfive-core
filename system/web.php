@@ -1,10 +1,9 @@
 <?php
 // ========= Session ========================
-//
+ini_set('session.gc_maxlifetime', 21400);
 
 //========== Constants =====================================
 defined("DS") || define("DS", DIRECTORY_SEPARATOR);
-define("CMFIVE_VERSION", "0.8.4");
 
 define("ROOT_PATH", str_replace("\\", "/", getcwd()));
 define("SYSTEM_PATH", str_replace("\\", "/", getcwd() . '/system'));
@@ -29,23 +28,27 @@ require_once __DIR__ . "/classes/History.php";
 
 // Load system Composer autoloader
 if (file_exists(ROOT_PATH . "/composer/vendor/autoload.php")) {
-	require ROOT_PATH . "/composer/vendor/autoload.php";
+    require ROOT_PATH . "/composer/vendor/autoload.php";
 } else if (file_exists(SYSTEM_PATH . "/composer/vendor/autoload.php")) {
-	require SYSTEM_PATH . "/composer/vendor/autoload.php";
+    require SYSTEM_PATH . "/composer/vendor/autoload.php";
 }
 
-class PermissionDeniedException extends Exception {
+class PermissionDeniedException extends Exception
+{
 
 }
 
 /**
- * A class for simple processing of web requests like http://webpy.org
+ * The Web class is the heart of Cmfive, it manages request routing, database connections,
+ * templating, configurations, lifecycle hooks, access security, static file registration,
+ * to name a few
  *
- *
- * Author 2007 Carsten Eckelmann
+ * Originally based of the WebPy Python framework, the Web class has features like implied
+ * routing instead of the conventional declarative routing. See how this works, and more at
+ * <https://cmfive.com/docs>
  */
-class Web {
-
+class Web
+{
 	public $_buffer = null;
 	public $_template = null;
 	public $_templatePath;
