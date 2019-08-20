@@ -166,9 +166,19 @@ class Attachment extends DbObject
     public function isDocument()
     {
         $document_mimetypes = [
-            'application/pdf', 'application/msword', 'application/msword', 'application/rtf', 'application/vnd.ms-excel', 'application/vnd.ms-excel',
-            'application/vnd.ms-powerpoint', 'application/vnd.ms-powerpoint', 'application/vnd.oasis.opendocument.text', 'application/vnd.oasis.opendocument.spreadsheet', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+            'application/pdf',
+            'application/msword',
+            'application/msword',
+            'application/rtf',
+            'application/vnd.ms-excel',
+            'application/vnd.ms-excel',
+            'application/vnd.ms-powerpoint',
+            'application/vnd.ms-powerpoint',
+            'application/vnd.oasis.opendocument.text',
+            'application/vnd.oasis.opendocument.spreadsheet',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
         ];
+
         return in_array($this->mimetype, $document_mimetypes);
     }
 
