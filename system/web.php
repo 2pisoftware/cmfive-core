@@ -160,79 +160,81 @@ class Web
 		}
 	}
 
-	private function modelLoader($className) {
+    private function modelLoader($className)
+    {
+        // Build a call trace for the cache file
+        $callinfo = debug_backtrace();
+        
+        $cause = '';
+        foreach ($callinfo ?? [] as $detailed) {
+            $cause .= ($cause ? " -> " : '') . $detailed['function'];
+        }
 
-		$callinfo = debug_backtrace();
-		$cause = "";
-		foreach($callinfo as $detailed) {
-		$cause .= ":".$detailed['function'];
-		} //var_dump($cause);
+        // 1. check if class directory has to be loaded from cache
+        $classdirectory_cache_file = ROOT_PATH . "/cache/classdirectory.cache";
 
-		// 1. check if class directory has to be loaded from cache
-		$classdirectory_cache_file = ROOT_PATH . "/cache/classdirectory.cache";
+        if (empty($this->_classdirectory) && file_exists($classdirectory_cache_file)) {
+            require_once $classdirectory_cache_file;
+        }
 
-		if (empty($this->_classdirectory) && file_exists($classdirectory_cache_file)) {
-			require_once $classdirectory_cache_file;
-		}
+        // 2. if filename is stored in $this->_classdirectory
+        if (!empty($this->_classdirectory[$className])) {
+            if (file_exists($this->_classdirectory[$className])) {
+                require_once $this->_classdirectory[$className];
+                return true;
+            }
+        }
 
-		// 2. if filename is stored in $this->_classdirectory
-		if (!empty($this->_classdirectory[$className])) {
-			if (file_exists($this->_classdirectory[$className])) {
-				require_once $this->_classdirectory[$className];
-				return true;
-			}
-		}
+        // 3. class has to be found the hard way
+        $modules = $this->modules();
 
-		// 3. class has to be found the hard way
-		$modules = $this->modules();
+        // create the class cache file
+        if (!file_exists($classdirectory_cache_file)) {
+            file_put_contents($classdirectory_cache_file, "<?php\n");
+        }
+        foreach ($modules as $model) {
+            // Check if the hosting module is active before we autoload it
+            if (Config::get("{$model}.active") === true) {
+                $file = $this->getModuleDir($model) . 'models/' . ucfirst($className) . ".php";
+                if (file_exists($file)) {
+                    require_once $file;
+                    // add this class file to the cache file
+                    file_put_contents($classdirectory_cache_file, '// ' . $cause . "\n" . '$this->_classdirectory["' . $className . '"]="' . $file . '";' . "\n\n", FILE_APPEND);
+                    $this->_classdirectory[$className]=$file;
+                    return true;
+                } else {
+                    // Try a lower case version
+                    $file = $this->getModuleDir($model) . 'models/' . $className . ".php";
+                    if (file_exists($file)) {
+                        require_once $file;
+                        // add this class file to the cache file
+                        file_put_contents($classdirectory_cache_file, '// ' . $cause . "\n" . '$this->_classdirectory["' . $className . '"]="' . $file . '";' . "\n\n", FILE_APPEND);
+                        $this->_classdirectory[$className]=$file;
+                        return true;
+                    }
+                }
+            }
+        }
 
-		// create the class cache file
-		if (!file_exists($classdirectory_cache_file)) {
-			file_put_contents($classdirectory_cache_file, "<?php\n");
-		}
-		foreach ($modules as $model) {
-			// Check if the hosting module is active before we autoload it
-			if (Config::get("{$model}.active") === true) {
-				$file = $this->getModuleDir($model) . 'models/' . ucfirst($className) . ".php";
-				if (file_exists($file)) {
-					require_once $file;
-					// add this class file to the cache file
-					file_put_contents($classdirectory_cache_file, '$this->_classdirectory["' . $className . '"]="' . $file . '"; //' . $cause . "\n", FILE_APPEND);
-					$this->_classdirectory[$className]=$file;
-					return true;
-				} else {
-					// Try a lower case version
-					$file = $this->getModuleDir($model) . 'models/' . $className . ".php";
-					if (file_exists($file)) {
-						require_once $file;
-						// add this class file to the cache file
-						file_put_contents($classdirectory_cache_file, '$this->_classdirectory["' . $className . '"]="' . $file . '"; //' . $cause . "\n", FILE_APPEND);
-						$this->_classdirectory[$className]=$file;
-						return true;
-					}
-				}
-			}
-		}
+        // Also autoload the html namespace
+        if (strstr($className, "Html") !== false) {
+            $filePath = explode('\\', $className);
+            $class = array_pop($filePath);
+            $file = 'system' . DS . 'classes' . DS . strtolower(implode("/", $filePath)) . DS . $class . ".php";
 
-		// Also autoload the html namespace
-		if (strstr($className, "Html") !== FALSE) {
-			$filePath = explode('\\', $className);
-			$class = array_pop($filePath);
-			$file = 'system' . DS . 'classes' . DS . strtolower(implode("/", $filePath)) . DS . $class . ".php";
+            if (file_exists($file)) {
+                require_once $file;
+                file_put_contents($classdirectory_cache_file, '// ' . $cause . "\n" . '$this->_classdirectory["' . $className . '"]="' . $file . '";' . "\n\n", FILE_APPEND);
+                $this->_classdirectory[$className]=$file;
+                return true;
+            }
+        }
 
-			if (file_exists($file)) {
-				require_once $file;
-				file_put_contents($classdirectory_cache_file, '$this->_classdirectory["' . $className . '"]="' . $file . '"; //' . $cause . "\n", FILE_APPEND);
-				$this->_classdirectory[$className]=$file;
-				return true;
-			}
-		}
-
-		// Last try, recurse in "/lib"
-		$toplibpath = 'system' . DS . 'lib';
-		$namespaceparts = explode('\\', $className);
-		$classfile = array_pop($namespaceparts).'.php';
-		$libmatch = false;
+        // Last try, recurse in "/lib"
+        $toplibpath = 'system' . DS . 'lib';
+        $namespaceparts = explode('\\', $className);
+        $classfile = array_pop($namespaceparts).'.php';
+        $libmatch = false;
 
         $topdirectory = new \RecursiveDirectoryIterator($toplibpath, \FilesystemIterator::FOLLOW_SYMLINKS|\FilesystemIterator::SKIP_DOTS);
         $classfilter = new \RecursiveCallbackFilterIterator($topdirectory, function ($current, $key, $iterator) {
@@ -248,14 +250,14 @@ class Web
             if ($info->getFilename() == $classfile) {
                 $matchfile = $info->getPathname();
                 require_once $matchfile;
-                file_put_contents($classdirectory_cache_file, '$this->_classdirectory["' . $className . '"]="' . $matchfile . '"; //' . implode("\\", $namespaceparts) . " " . $cause . "\n", FILE_APPEND);
+                file_put_contents($classdirectory_cache_file, '// ' . implode("\\", $namespaceparts) . " " . $cause . "\n" . '$this->_classdirectory["' . $className . '"]="' . $matchfile . '";' . "\n\n", FILE_APPEND);
                 $this->_classdirectory[$className]=$matchfile;
                 $libmatch = true;
             }
         }
         
         return $libmatch;
-	}
+    }
 
 	private function componentLoader($name) {
 		$classes_directory = 'system' . DS . 'classes';
@@ -823,7 +825,7 @@ class Web
 
 			$body = null;
 			// evaluate template only when buffer is empty
-			if (empty($this->_buffer)) { //(sizeof($this->_buffer) == 0) {
+			if (empty($this->_buffer)) {
 				$body = $this->fetchTemplate();
 			} else {
 				$body = $this->_buffer;
