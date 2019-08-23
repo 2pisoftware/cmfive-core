@@ -353,7 +353,8 @@ class Html {
                 case "autocomplete":
                     $options = !empty($field[4]) ? $field[4] : null;
                     $minValue = !empty($field[5]) ? $field[5] : 1;
-                    $buffer .= Html::autocomplete($name, $options, $value, null, "width: 100%;", $minValue);
+                    $required = !empty($field[6]) ? $field[6] : null;
+                    $buffer .= Html::autocomplete($name, $options, $value, null, "width: 100%;", $minValue, $required);
                 break;
                 case "date":
                     $size = !empty($field[4]) ? $field[4] : null;
@@ -1446,7 +1447,7 @@ UPLOAD;
         if ($is_docx) {
             return '<iframe src="https://docs.google.com/gview?url=' . $link . '&embedded=true"  width=' . $width . ' height=' . $height . ' allowfullscreen webkitallowfullscreen></iframe>';
         }
-        
+
 		return "<iframe src='/system/templates/js/viewerjs-0.5.8/ViewerJS/index.html?zoom={$zoom}#../../../../..{$link}' width='{$width}' height='{$height}' allowfullscreen webkitallowfullscreen></iframe>";
 	}
 }
