@@ -286,24 +286,13 @@
                     <h3 class="header"><?php echo $title; ?></h3>
                 </div>
                 <?php endif;?>
-                <?php if (!empty($error) || !empty($msg)) : ?>
-                    <?php
-						$type = [];
-						$nameValue='';
-						if (!empty($error)) {
-							$type= array("name" => "error", "class" => "warning");
-							$nameValue=$error;
-						} else {
-							$type=array("name" => "msg", "class" => "info");
-							$nameValue=$msg;
-						}
-                    ?>
-                    <div data-alert class="alert-box <?php echo $type["class"]; ?>">
-                        <?php echo $nameValue; ?>
-                        <a href="#" class="close">&times;</a>
-                    </div>
-                <?php endif; ?>
-
+                <?php
+                if (!empty($error)) {
+                    echo Html::alertBox($error, "warning");
+                } elseif (!empty($msg)) {
+                    echo Html::alertBox($msg);
+                }
+                ?>
                 <div class="row-fluid" style="overflow: hidden;">
                     <?php echo !empty($body) ? $body : ''; ?>
                 </div>
