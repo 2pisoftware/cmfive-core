@@ -205,20 +205,22 @@ class DbService {
 	}
     /**
      *
-     * @param String $class
-     * @param Mixed $where
-     * @param Boolean $useCache
-     * 
-     * @return <type>
+     * @param string $class
+     * @param mixed $where
+     * @param boolean $useCache
+     *
+     * @return array
      */
-    function getObjects($class, $where = null, $cache_list = false, $use_cache = true, $order_by = null, $offset = null, $limit = null, $includeDeleted = false) {
-        if (!$class)
+    public function getObjects($class, $where = null, $cache_list = false, $use_cache = true, $order_by = null, $offset = null, $limit = null, $includeDeleted = false)
+    {
+        if (!$class) {
             return null;
-		
-		if ($order_by !== null || $offset !== null || $limit !== null ) {
-			$use_cache=false;
-			$cache_list=false;
-		}
+        }
+        
+        if ($order_by !== null || $offset !== null || $limit !== null ) {
+            $use_cache=false;
+            $cache_list=false;
+        }
 
         // if using the list cache
         if ($cache_list) {
@@ -250,39 +252,39 @@ class DbService {
                 $this->w->Log->setLogger(get_class($this))->error("(getObjects) The WHERE condition: " . json_encode($where) . " has non-associative elements, this has security implications and is not allowed");
                 return null;
             }
-        } else if ($where && is_scalar($where)) {
+        } elseif ($where && is_scalar($where)) {
             // was $this->_db->where($where, false); , prior to FPDO update onto PHP7.2
             $this->_db->where($where);
-        } 
-		
-		// Default is deleted checks to 0
-		$columns = $o->getDbTableColumnNames();
-		
-		if (!$includeDeleted && (property_exists(get_class($o), "is_deleted") || (in_array("is_deleted", $columns)))) {
-			$this->_db->where('is_deleted', 0);
-		}
-		
-		// Ordering
+        }
+        
+        // Default is deleted checks to 0
+        $columns = $o->getDbTableColumnNames();
+        
+        if (!$includeDeleted && (property_exists(get_class($o), "is_deleted") || (in_array("is_deleted", $columns)))) {
+            $this->_db->where('is_deleted', 0);
+        }
+        
+        // Ordering
         if (!empty($order_by)) {
             $this->_db->order_by($order_by);
         }
-		
-		// Offset
-		if (!empty($offset) && !empty($limit)) {
-			$this->_db->offset($offset);
-		}
-		
-		// Limit
-		if (!empty($limit)) {
-			$this->_db->limit($limit);
-		}
+        
+        // Offset
+        if (!empty($offset) && !empty($limit)) {
+            $this->_db->offset($offset);
+        }
+        
+        // Limit
+        if (!empty($limit)) {
+            $this->_db->limit($limit);
+        }
 
         $this->buildSelect($o, $table, $class);
-        $result = $this->_db->fetch_all(); 
+        $result = $this->_db->fetch_all();
         if ($result) {
             $objects = $this->getObjectsFromRows($class, $result, true);
+            
             if ($objects) {
-
                 // store the complete list
                 if ($cache_list && !isset(self::$_cache2[$class][$key])) {
                     self::$_cache2[$class][$key] = $objects;
@@ -299,7 +301,7 @@ class DbService {
             }
             return $objects;
         } else {
-            return null;
+            return [];
         }
     }
 

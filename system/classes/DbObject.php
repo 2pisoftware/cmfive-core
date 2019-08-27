@@ -783,7 +783,7 @@ class DbObject extends DbService {
                     // if $force_null_values is TRUE and $v is NULL, then set fields in DB to NULL
                     // otherwise ignore NULL values
                     if ($v === null && $force_null_values == true) {
-                        $data [$dbk] = ""; // was: null;  but FPDO2.0 fails to bind!
+                        $data [$dbk] = null;
                     }
                 }
             }
