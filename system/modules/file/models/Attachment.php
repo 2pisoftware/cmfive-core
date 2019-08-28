@@ -2,6 +2,7 @@
 
 define('CACHE_PATH', 'cache');
 define('IMAGE_PATH', 'image');
+define('TEMP_PATH', 'temp');
 
 use Gaufrette\Filesystem;
 use Gaufrette\File as File;
@@ -320,6 +321,22 @@ class Attachment extends DbObject
         }
 
         return ROOT_PATH . "/" . CACHE_PATH . "/" . IMAGE_PATH . "/" . $path_info["dirname"] . "/" . $path_info["filename"] . ".jpg";
+    }
+
+    /**
+     * Returns temp cache path
+     *
+     * @return string
+     */
+    public function getTempCachePath()
+    {
+        $path_info = pathinfo($this->fullpath);
+
+        if (!array_key_exists("dirname", $path_info)) {
+            return null;
+        }
+
+        return ROOT_PATH . "/" . CACHE_PATH . "/" . TEMP_PATH . "/" . $this->fullpath;
     }
 
     /**
