@@ -559,15 +559,6 @@ class FileService extends DbService
         return true;
     }
 
-    public function cacheFileLocally($filename)
-    {
-        $file = $this->getFileObject($this->getFilesystem(), $filename);
-
-        $cached_file = new File($filename, $this->getFilesystem());
-        $cached_file->setContent($file->getContent());
-        file_put_contents(ROOT_PATH . "/" . CACHE_PATH . "/" . TEMP_PATH . "/" . $cached_file->getName(), $cached_file->getContent());
-    }
-
     /**
      * Save an attachment and create a file based on content passed as a parameter
      *
@@ -600,6 +591,47 @@ class FileService extends DbService
         $att->insert();
 
         return $att->id;
+    }
+
+    /**
+     * Takes a file and creates a local copy in the temp directory of the cache.
+     * All files in the temp directory are deleted at the end of every execution of Web->start().
+     * Returns the path to the cached file.
+     *
+     * @param File $file
+     * @return string
+     */
+    public function cacheFileLocally(File $file)
+    {
+        if (!file_exists(ROOT_PATH . "/cache/temp/")) {
+            mkdir(ROOT_PATH . "/cache/temp/");
+        }
+
+        $path_info = pathinfo($file->getName());
+        $temp_path = ROOT_PATH . "/cache/temp/" . $path_info["filename"];
+
+        if (!file_exists($temp_path . "." . $path_info["extension"])) {
+            try {
+                file_put_contents(ROOT_PATH . "/cache/temp/" . $file->getName(), $file->getContent());
+                return $temp_path . $path_info["extension"];
+            } catch (PermissionDeniedException $e) {
+                $this->w->Log->setLogger("FILE")->error("Failed to execute 'file_put_contents': Permission denied");
+                return "";
+            }
+        }
+
+        $count = 1;
+        while (file_exists($temp_path . "_" . $count . "." .$path_info["extension"])) {
+            $count++;
+        }
+
+        try {
+            file_put_contents($temp_path . "_" . $count . "." . $path_info["extension"], $file->getContent());
+            return $temp_path . "_" . $count . "." . $path_info["extension"];
+        } catch (PermissionDeniedException $e) {
+            $this->w->Log->setLogger("FILE")->error("Failed to execute 'file_put_contents': Permission denied");
+            return "";
+        }
     }
 
     /**
