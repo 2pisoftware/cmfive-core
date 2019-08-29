@@ -614,8 +614,8 @@ class FileService extends DbService
             try {
                 file_put_contents(ROOT_PATH . "/cache/temp/" . $file->getName(), $file->getContent());
                 return $temp_path . $path_info["extension"];
-            } catch (PermissionDeniedException $e) {
-                $this->w->Log->setLogger("FILE")->error("Failed to execute 'file_put_contents': Permission denied");
+            } catch (Exception $e) {
+                $this->w->Log->setLogger("FILE")->error("Failed to execute 'file_put_contents': " . $e->getMessage());
                 return "";
             }
         }
@@ -628,8 +628,8 @@ class FileService extends DbService
         try {
             file_put_contents($temp_path . "_" . $count . "." . $path_info["extension"], $file->getContent());
             return $temp_path . "_" . $count . "." . $path_info["extension"];
-        } catch (PermissionDeniedException $e) {
-            $this->w->Log->setLogger("FILE")->error("Failed to execute 'file_put_contents': Permission denied");
+        } catch (Exception $e) {
+            $this->w->Log->setLogger("FILE")->error("Failed to execute 'file_put_contents': " . $e->getMessage());
             return "";
         }
     }

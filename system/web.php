@@ -511,351 +511,357 @@ class Web {
 		exit();
 	}
 
-	/**
-	 * start processing of request
-	 * 1. look at the request parameter if the action parameter was set
-	 * 2. if not set, look at the pathinfo and use first
-	 */
-	function start($init_database = true) {
-		if ($init_database && !$this->_is_installing) {
-			$this->initDB();
-		}
+    /**
+     * start processing of request
+     * 1. look at the request parameter if the action parameter was set
+     * 2. if not set, look at the pathinfo and use first
+     */
+    public function start($init_database = true)
+    {
+        try {
+            if ($init_database && !$this->_is_installing) {
+                $this->initDB();
+            }
 
-		// Set the timezone from Config
-		$timezone = Config::get('system.timezone');
-		if (empty($timezone)) {
-			$timezone = 'UTC';
-		}
-		date_default_timezone_set($timezone);
+            // Set the timezone from Config
+            $timezone = Config::get('system.timezone');
+            if (empty($timezone)) {
+                $timezone = 'UTC';
+            }
+            date_default_timezone_set($timezone);
 
-		//check config for 'gc_maxlifetime' for the session
-		$gc_maxlifetime = Config::get('system.gc_maxlifetime');
-		//Checks include is greater than 1 hour (3600 sec) is less than 1 month (2628000 sec)
-		if (!empty($gc_maxlifetime) && is_numeric($gc_maxlifetime) && $gc_maxlifetime >= 3600 && $gc_maxlifetime <= 2628000) {
-			ini_set('session.gc_maxlifetime', $gc_maxlifetime);
-		}
+            //check config for 'gc_maxlifetime' for the session
+            $gc_maxlifetime = Config::get('system.gc_maxlifetime');
+            //Checks include is greater than 1 hour (3600 sec) is less than 1 month (2628000 sec)
+            if (!empty($gc_maxlifetime) && is_numeric($gc_maxlifetime) && $gc_maxlifetime >= 3600 && $gc_maxlifetime <= 2628000) {
+                ini_set('session.gc_maxlifetime', $gc_maxlifetime);
+            }
 
-		// start the session
-		// $sess = new SessionManager($this);
-		try {
-			if ($this->_isPortal === true) {
-				session_name(!empty($domainmodule) ? $domainmodule . '_SID' : 'PORTAL_SID');
-			} else {
-				session_name(SESSION_NAME);
-			}
+            // start the session
+            // $sess = new SessionManager($this);
+            try {
+                if ($this->_isPortal === true) {
+                    session_name(!empty($domainmodule) ? $domainmodule . '_SID' : 'PORTAL_SID');
+                } else {
+                    session_name(SESSION_NAME);
+                }
 
-			// Store the sessions locally to avoid permission errors between OS's
-            // I.e. on Windows by default tries to save to C:\Temp
-			session_save_path(STORAGE_PATH . DIRECTORY_SEPARATOR . "session");
+                // Store the sessions locally to avoid permission errors between OS's
+                // I.e. on Windows by default tries to save to C:\Temp
+                session_save_path(STORAGE_PATH . DIRECTORY_SEPARATOR . "session");
 
-			session_start();
-		} catch (Exception $e) {
-			$this->Log->info("Error starting session " . $e->getMessage());
-		}
+                session_start();
+            } catch (Exception $e) {
+                $this->Log->info("Error starting session " . $e->getMessage());
+            }
 
-		// Initialise the logger (needs to log "info" to include the request data, see LogService __call function)
-		$this->Log->info("info");
+            // Initialise the logger (needs to log "info" to include the request data, see LogService __call function)
+            $this->Log->info("info");
 
-		// Reset the session when a user is not logged in. This will ensure the CSRF tokens are always "fresh"
-		if ($_SERVER['REQUEST_METHOD'] == "GET" && empty($this->Auth->loggedIn())) {
-			CSRF::regenerate();
-		}
+            // Reset the session when a user is not logged in. This will ensure the CSRF tokens are always "fresh"
+            if ($_SERVER['REQUEST_METHOD'] == "GET" && empty($this->Auth->loggedIn())) {
+                CSRF::regenerate();
+            }
 
-		// Generate CSRF tokens and store them in the $_SESSION
-		if (Config::get('system.csrf.enabled') === true) {
-			CSRF::getTokenID();
-			CSRF::getTokenValue();
-		}
+            // Generate CSRF tokens and store them in the $_SESSION
+            if (Config::get('system.csrf.enabled') === true) {
+                CSRF::getTokenID();
+                CSRF::getTokenValue();
+            }
 
-		$_SESSION['last_request'] = time();
+            $_SESSION['last_request'] = time();
 
-		//$this->debug("Start processing: ".$_SERVER['REQUEST_URI']);
-		// find out which module to use
-		$module_found = false;
-		$action_found = false;
+            // find out which module to use
+            $module_found = false;
+            $action_found = false;
 
-		$this->_paths = $this->_getCommandPath();
+            $this->_paths = $this->_getCommandPath();
 
-		/**
-		 * Based on request domain we can route everything to a frontend module look into the domain routing and prepend the module.
-		 * Check for frontend/portal modules first.
-		 * To enable portal support set portal flag in the module to true.
-		 * For it to work properly a domain name module must also be set.
-		 *
-		 * For exmaple:
-		 * Config::set('{module}.portal', true);
-		 * Config::set('{module}.domain_name', '{domain_url}');
-		 */
-		$domainmodule = null;
-		foreach($this->modules() as $module) {
-			// Module config must be active and either 'portal' or 'frontend' flag set to true
-			if (Config::get($module . '.active') == true && (Config::get($module . '.portal') == true || Config::get($module . '.frontend') == true)) {
-				if (strpos($_SERVER['HTTP_HOST'], Config::get($module . '.domain_name')) === 0) {
-					// Found module
-					$domainmodule = $module;
-					break;
-				}
-			}
-		}
+            /**
+             * Based on request domain we can route everything to a frontend module look into the domain routing and prepend the module.
+             * Check for frontend/portal modules first.
+             * To enable portal support set portal flag in the module to true.
+             * For it to work properly a domain name module must also be set.
+             *
+             * For exmaple:
+             * Config::set('{module}.portal', true);
+             * Config::set('{module}.domain_name', '{domain_url}');
+             */
+            $domainmodule = null;
+            foreach ($this->modules() as $module) {
+                // Module config must be active and either 'portal' or 'frontend' flag set to true
+                if (Config::get($module . '.active') == true && (Config::get($module . '.portal') == true || Config::get($module . '.frontend') == true)) {
+                    if (strpos($_SERVER['HTTP_HOST'], Config::get($module . '.domain_name')) === 0) {
+                        // Found module
+                        $domainmodule = $module;
+                        break;
+                    }
+                }
+            }
 
-		if (!empty($domainmodule)) {
-			$this->_loginpath = "auth";
-			$this->_isFrontend = true;
-			$this->_isPortal = !!Config::get($domainmodule . '.portal');
+            if (!empty($domainmodule)) {
+                $this->_loginpath = "auth";
+                $this->_isFrontend = true;
+                $this->_isPortal = !!Config::get($domainmodule . '.portal');
 
-			// now we have to decide whether the path points to
-			// a) a single top level action
-			// b) an action on a submodule
-			// but we need to make sure not to mistake a path paramater for a submodule or an action!
-			$domainsubmodules = $this->getSubmodules($domainmodule);
-			$action_or_module = !empty($this->_paths[0]) ? $this->_paths[0] : null;
-			if (!empty($domainsubmodules) && !empty($action_or_module) && array_search($action_or_module, $domainsubmodules) !== false) {
-				// just add the module to the first path entry, eg. frontend-page/1
-				$this->_paths[0] = $domainmodule . "-" . $this->_paths[0];
-			} else {
-				// add the module as an entry to the front of paths, eg. frontent/index
-				array_unshift($this->_paths, $domainmodule);
-			}
-		}
+                // now we have to decide whether the path points to
+                // a) a single top level action
+                // b) an action on a submodule
+                // but we need to make sure not to mistake a path paramater for a submodule or an action!
+                $domainsubmodules = $this->getSubmodules($domainmodule);
+                $action_or_module = !empty($this->_paths[0]) ? $this->_paths[0] : null;
+                if (!empty($domainsubmodules) && !empty($action_or_module) && array_search($action_or_module, $domainsubmodules) !== false) {
+                    // just add the module to the first path entry, eg. frontend-page/1
+                    $this->_paths[0] = $domainmodule . "-" . $this->_paths[0];
+                } else {
+                    // add the module as an entry to the front of paths, eg. frontent/index
+                    array_unshift($this->_paths, $domainmodule);
+                }
+            }
 
 
-		// first find the module file
-		if ($this->_paths && sizeof($this->_paths) > 0) {
-			$this->_module = array_shift($this->_paths);
-		}
+            // first find the module file
+            if ($this->_paths && sizeof($this->_paths) > 0) {
+                $this->_module = array_shift($this->_paths);
+            }
 
-		// then find the action
-		if ($this->_paths && sizeof($this->_paths) > 0) {
-			$this->_action = array_shift($this->_paths);
-		}
+            // then find the action
+            if ($this->_paths && sizeof($this->_paths) > 0) {
+                $this->_action = array_shift($this->_paths);
+            }
 
-		if (!$this->_module) {
-			$this->_module = $this->_defaultHandler;
-		}
+            if (!$this->_module) {
+                $this->_module = $this->_defaultHandler;
+            }
 
-		// see if the module is a sub module
-		// eg. /sales-report/showreport/1..
-		$hsplit = explode("-", $this->_module);
-		$this->_module = array_shift($hsplit);
-		$this->_submodule = array_shift($hsplit);
+            // see if the module is a sub module
+            // eg. /sales-report/showreport/1..
+            $hsplit = explode("-", $this->_module);
+            $this->_module = array_shift($hsplit);
+            $this->_submodule = array_shift($hsplit);
 
-		// Check to see if module exists, if it doesn't, send a 403 header
-        if (Config::get("{$this->_module}.active") === null) {
-            header($_SERVER["SERVER_PROTOCOL"] . ' 404 Not Found');
-            exit();
+            // Check to see if module exists, if it doesn't, send a 403 header
+            if (Config::get("{$this->_module}.active") === null) {
+                header($_SERVER["SERVER_PROTOCOL"] . ' 404 Not Found');
+                exit();
+            }
+
+            // Check to see if the module is active (protect against main disabling)
+            if (!Config::get("{$this->_module}.active") && $this->_module !== "main") {
+                $this->error("The {$this->_module} module is not active", "/");
+            }
+
+            // configure translations lookup for this module
+            $this->initLocale();
+
+            try {
+                $this->setTranslationDomain('admin');
+                $this->setTranslationDomain('main');
+                $this->setTranslationDomain($this->currentModule());
+            } catch (Exception $e) {
+                $this->Log->setLogger('I18N')->error($e->getMessage());
+            }
+
+            if (!$this->_action) {
+                $this->_action = $this->_defaultAction;
+            }
+
+            // try to load the action file
+            $reqpath = $this->getModuleDir($this->_module) . 'actions/' . ($this->_submodule ? $this->_submodule . '/' : '') . $this->_action . '.php';
+            if (!file_exists($reqpath)) {
+                $reqpath = $this->getModuleDir($this->_module) . $this->_module . ($this->_submodule ? '.' . $this->_submodule : '') . ".actions.php";
+            }
+
+            // try to find action for the request type
+            // using <module>_<action>_<type>()
+            // or just <action>_<type>()
+
+            $this->_requestMethod = array_key_exists('REQUEST_METHOD', $_SERVER) ? $_SERVER['REQUEST_METHOD'] : '';
+
+            $actionmethods[] = $this->_action . '_' . $this->_requestMethod;
+
+            if ($this->_requestMethod === "HEAD") {
+                $this->_is_head_request = true;
+                $actionmethods[] = $this->_action . '_GET';
+            }
+
+            $actionmethods[] = $this->_action . '_' . $this->_requestMethod;
+            $actionmethods[] = $this->_action . '_ALL';
+
+            // change the submodule and action for installation
+            if ($this->_is_installing) {
+                if (is_file(ROOT_PATH . '/config.php')) {
+                    unset($this->_submodule);
+                    $this->_action = 'index';
+                } else {
+                    $step = $this->_action;
+
+                    // step name is either still in the paths array, or needs to be found
+                    $step_name = sizeof($this->_paths) > 0 ?
+                        array_shift($this->_paths) : $this->Install->findInstallStepName($step);
+
+                    $this->_submodule = $step . '-' . $step_name; // 1-general
+                    $this->_action = $step_name; // general
+                }
+                $actionmethods[] = $this->_defaultAction . '_ALL'; // index_ALL
+            }
+
+            // Check/validate CSRF token
+            if (Config::get('system.csrf.enabled') === true) {
+                $allowed = Config::get('system.csrf.protected');
+                if (!empty($allowed[$this->_module]) || (!empty($this->_submodule) && !empty($allowed[$this->_module . '-' . $this->_submodule]))) {
+                    if (in_array($this->_action, $allowed[$this->_module]) || (!empty($this->_submodule) && in_array($this->_action, $allowed[$this->_module . '-' . $this->_submodule]))) {
+                        // If we get here then we are configured to enforce CSRF checking
+                        $this->Log->debug("Checking CSRF");
+                        try {
+                            $this->validateCSRF();
+                        } catch (Exception $e) {
+                            $this->msg('The current session has expired, please resubmit the form', $_SERVER['REQUEST_URI']);
+                        }
+                    }
+                }
+            }
+
+            // if a module file for this url exists, then start processing
+            if (file_exists($reqpath)) {
+                $this->ctx('webroot', $this->_webroot);
+                $this->ctx('module', $this->_module);
+                $this->ctx('submodule', $this->_module);
+                $this->ctx('action', $this->_action);
+
+                // CHECK ACCESS!!
+                $this->checkAccess(); // will redirect if access denied!
+
+                // load the module file
+                require_once $reqpath;
+            } else {
+                $this->Log->error("System: No Action found for: " . $reqpath);
+                $this->notFoundPage();
+            }
+
+            foreach ($actionmethods as $action_method) {
+                if (function_exists($action_method)) {
+                    $action_found = true;
+                    $this->_actionMethod = $action_method;
+                    break;
+                }
+            }
+
+            if ($action_found) {
+                $this->ctx("loggedIn", $this->Auth->loggedIn());
+                $this->ctx("error", $this->session('error'));
+                $this->sessionUnset('error');
+                $this->ctx("msg", $this->session('msg'));
+                $this->sessionUnset('msg');
+                $this->ctx("w", $this);
+
+                try {
+                    // call hooks, generic to specific
+                    $this->_callWebHooks("before");
+
+                    // Execute the action
+                    $method = $this->_actionMethod;
+                    $this->_action_executed = true;
+                    $method($this);
+
+                    // call hooks, generic to specific
+                    $this->_callWebHooks("after");
+                } catch (PermissionDeniedException $ex) {
+                    $this->error($ex->getMessage());
+                }
+
+                // send headers first
+                if ($this->_headers) {
+                    foreach ($this->_headers as $key => $val) {
+                        $this->header($key . ': ' . $val);
+                    }
+                }
+
+                // If a HEAD request was sent, no body is required but it behaves like a GET
+                if ($this->_is_head_request === true) {
+                    return;
+                }
+
+                $body = null;
+                // evaluate template only when buffer is empty
+                if (sizeof($this->_buffer) == 0) {
+                    $body = $this->fetchTemplate();
+                } else {
+                    $body = $this->_buffer;
+                }
+
+                // but always check for layout
+                // if ajax call don't do the layout
+                if ($this->_layout && !$this->isAjax()) {
+                    $this->_buffer = null;
+                    $this->ctx($this->_layoutContentMarker, $body);
+                    $this->templateOut($this->_layout);
+                } else {
+                    $this->_buffer = $body;
+                }
+
+                echo $this->_buffer;
+            } else {
+                $this->notFoundPage();
+            }
+
+            $this->_callWebHooks("cleanup");
+        } catch (Exception $e) {
+            // TODO:
+        }
+    }
+
+    /**
+     * This creates and calls the following hooks:
+     *
+     * core_web_before
+     * core_web_after
+     * core_web_cleanup
+     * core_web_before_get
+     * core_web_before_get_[module]
+     * core_web_before_get_[module]_[action]
+     * core_web_before_get_[module]_[submodule]
+     * core_web_before_get_[module]_[submodule]_[action]
+     * core_web_after_get
+     * core_web_after_get_[module]
+     * core_web_after_get_[module]_[action]
+     * core_web_after_get_[module]_[submodule]
+     * core_web_after_get_[module]_[submodule]_[action]
+     * core_web_before_post
+     * core_web_before_post_[module]
+     * core_web_before_post_[module]_[action]
+     * core_web_before_post_[module]_[submodule]
+     * core_web_before_post_[module]_[submodule]_[action]
+     * core_web_after_post
+     * core_web_after_post_[module]
+     * core_web_after_post_[module]_[action]
+     * core_web_after_post_[module]_[submodule]
+     * core_web_after_post_[module]_[submodule]_[action]
+     *
+     * @param unknown $type eg. before / after
+     */
+    public function _callWebHooks($type)
+    {
+        // If there isn't a database connection, this will crash
+        if (empty($this->db)) {
+            return;
         }
 
-		// Check to see if the module is active (protect against main disabling)
-		if (!Config::get("{$this->_module}.active") && $this->_module !== "main") {
-            $this->error("The {$this->_module} module is not active", "/");
-		}
+        $request_method = strtolower($this->_requestMethod);
 
-		// configure translations lookup for this module
-		$this->initLocale();
+        // call hooks, generic to specific
+        $this->callHook("core_web", $type); // anything
+        $this->callHook("core_web", $type . "_" . $request_method); // GET /*
+        $this->callHook("core_web", $type . "_" . $request_method . "_" . $this->_module); // GET /module
 
-		try {
-			$this->setTranslationDomain('admin');
-			$this->setTranslationDomain('main');
-			$this->setTranslationDomain($this->currentModule());
-		} catch (Exception $e) {
-			$this->Log->setLogger('I18N')->error($e->getMessage());
-		}
-
-		if (!$this->_action) {
-			$this->_action = $this->_defaultAction;
-		}
-
-		// try to load the action file
-		$reqpath = $this->getModuleDir($this->_module) . 'actions/' . ($this->_submodule ? $this->_submodule . '/' : '') . $this->_action . '.php';
-		if (!file_exists($reqpath)) {
-			$reqpath = $this->getModuleDir($this->_module) . $this->_module . ($this->_submodule ? '.' . $this->_submodule : '') . ".actions.php";
-		}
-
-		// try to find action for the request type
-		// using <module>_<action>_<type>()
-		// or just <action>_<type>()
-
-		$this->_requestMethod = array_key_exists('REQUEST_METHOD', $_SERVER) ? $_SERVER['REQUEST_METHOD'] : '';
-
-		$actionmethods[] = $this->_action . '_' . $this->_requestMethod;
-
-		if ($this->_requestMethod === "HEAD") {
-			$this->_is_head_request = true;
-			$actionmethods[] = $this->_action . '_GET';
-		}
-
-		$actionmethods[] = $this->_action . '_' . $this->_requestMethod;
-		$actionmethods[] = $this->_action . '_ALL';
-		//$actionmethods[] = 'default_ALL';
-
-		// change the submodule and action for installation
-		if ($this->_is_installing) {
-			if (is_file(ROOT_PATH . '/config.php')) {
-				unset($this->_submodule);
-				$this->_action = 'index';
-			} else {
-				$step = $this->_action;
-
-				// step name is either still in the paths array, or needs to be found
-				$step_name = sizeof($this->_paths) > 0 ?
-				array_shift($this->_paths) :
-				$this->Install->findInstallStepName($step);
-
-				$this->_submodule = $step . '-' . $step_name; // 1-general
-				$this->_action = $step_name; // general
-			}
-			$actionmethods[] = $this->_defaultAction . '_ALL'; // index_ALL
-		}
-
-		// Check/validate CSRF token
-		if (Config::get('system.csrf.enabled') === true) {
-			$allowed = Config::get('system.csrf.protected');
-			if (!empty($allowed[$this->_module]) || (!empty($this->_submodule) && !empty($allowed[$this->_module . '-' . $this->_submodule]))) {
-				if (in_array($this->_action, $allowed[$this->_module]) || (!empty($this->_submodule) && in_array($this->_action, $allowed[$this->_module . '-' . $this->_submodule]))) {
-					// If we get here then we are configured to enforce CSRF checking
-					$this->Log->debug("Checking CSRF");
-					try {
-						$this->validateCSRF();
-					} catch (Exception $e) {
-						$this->msg('The current session has expired, please resubmit the form', $_SERVER['REQUEST_URI']);
-					}
-				}
-			}
-		}
-
-		// if a module file for this url exists, then start processing
-		if (file_exists($reqpath)) {
-			$this->ctx('webroot', $this->_webroot);
-			$this->ctx('module', $this->_module);
-			$this->ctx('submodule', $this->_module);
-			$this->ctx('action', $this->_action);
-
-			// CHECK ACCESS!!
-			$this->checkAccess(); // will redirect if access denied!
-
-			// load the module file
-			require_once $reqpath;
-		} else {
-			$this->Log->error("System: No Action found for: " . $reqpath);
-			$this->notFoundPage();
-		}
-
-		foreach ($actionmethods as $action_method) {
-			if (function_exists($action_method)) {
-				$action_found = true;
-				$this->_actionMethod = $action_method;
-				break;
-			}
-		}
-
-		if ($action_found) {
-			$this->ctx("loggedIn", $this->Auth->loggedIn());
-			$this->ctx("error", $this->session('error'));
-			$this->sessionUnset('error');
-			$this->ctx("msg", $this->session('msg'));
-			$this->sessionUnset('msg');
-			$this->ctx("w", $this);
-
-			try {
-				// call hooks, generic to specific
-				$this->_callWebHooks("before");
-
-				// Execute the action
-				$method = $this->_actionMethod;
-				$this->_action_executed = true;
-				$method($this);
-
-				// call hooks, generic to specific
-				$this->_callWebHooks("after");
-			} catch (PermissionDeniedException $ex) {
-				$this->error($ex->getMessage());
-			}
-
-			// send headers first
-			if ($this->_headers) {
-				foreach ($this->_headers as $key => $val) {
-					$this->header($key . ': ' . $val);
-				}
-			}
-
-			// If a HEAD request was sent, no body is required but it behaves like a GET
-			if ($this->_is_head_request === true) {
-				return;
-			}
-
-			$body = null;
-			// evaluate template only when buffer is empty
-			if (sizeof($this->_buffer) == 0) {
-				$body = $this->fetchTemplate();
-			} else {
-				$body = $this->_buffer;
-			}
-
-			// but always check for layout
-			// if ajax call don't do the layout
-			if ($this->_layout && !$this->isAjax()) {
-				$this->_buffer = null;
-				$this->ctx($this->_layoutContentMarker, $body);
-				$this->templateOut($this->_layout);
-			} else {
-				$this->_buffer = $body;
-			}
-
-			echo $this->_buffer;
-		} else {
-			$this->notFoundPage();
-		}
-	}
-
-	/**
-	 * This creates and calls the following hooks:
-	 *
-	 * core_web_before
-	 * core_web_after
-	 * core_web_before_get
-	 * core_web_before_get_[module]
-	 * core_web_before_get_[module]_[action]
-	 * core_web_before_get_[module]_[submodule]
-	 * core_web_before_get_[module]_[submodule]_[action]
-	 * core_web_after_get
-	 * core_web_after_get_[module]
-	 * core_web_after_get_[module]_[action]
-	 * core_web_after_get_[module]_[submodule]
-	 * core_web_after_get_[module]_[submodule]_[action]
-	 * core_web_before_post
-	 * core_web_before_post_[module]
-	 * core_web_before_post_[module]_[action]
-	 * core_web_before_post_[module]_[submodule]
-	 * core_web_before_post_[module]_[submodule]_[action]
-	 * core_web_after_post
-	 * core_web_after_post_[module]
-	 * core_web_after_post_[module]_[action]
-	 * core_web_after_post_[module]_[submodule]
-	 * core_web_after_post_[module]_[submodule]_[action]
-	 *
-	 * @param unknown $type eg. before / after
-	 */
-	public function _callWebHooks($type) {
-		// If there isn't a database connection, this will crash
-		if (empty($this->db)) {
-			return;
-		}
-
-		$request_method = strtolower($this->_requestMethod);
-
-		// call hooks, generic to specific
-		$this->callHook("core_web", $type); // anything
-		$this->callHook("core_web", $type . "_" . $request_method); // GET /*
-		$this->callHook("core_web", $type . "_" . $request_method . "_" . $this->_module); // GET /module
-
-		// Only call submodule hooks if a submodule is present, else call the module/action hook
-		if (!empty($this->_submodule)) {
-			$this->callHook("core_web", $type . "_" . $request_method . "_" . $this->_module . "_" . $this->_submodule); // GET /module-submodule/*
-			$this->callHook("core_web", $type . "_" . $request_method . "_" . $this->_module . "_" . $this->_submodule . "_" . $this->_action); // GET /module-submodule/action
-		} else {
-			$this->callHook("core_web", $type . "_" . $request_method . "_" . $this->_module . "_" . $this->_action); // GET /module/action
-		}
-	}
+        // Only call submodule hooks if a submodule is present, else call the module/action hook
+        if (!empty($this->_submodule)) {
+            $this->callHook("core_web", $type . "_" . $request_method . "_" . $this->_module . "_" . $this->_submodule); // GET /module-submodule/*
+            $this->callHook("core_web", $type . "_" . $request_method . "_" . $this->_module . "_" . $this->_submodule . "_" . $this->_action); // GET /module-submodule/action
+        } else {
+            $this->callHook("core_web", $type . "_" . $request_method . "_" . $this->_module . "_" . $this->_action); // GET /module/action
+        }
+    }
 
 	/**
 	 * Returns a service class instance that matches the name given,
