@@ -519,6 +519,15 @@ class Web {
     public function start($init_database = true)
     {
         try {
+            set_error_handler(function ($errno, $errstr, $errfile, $errline) {
+                echo "Error number: {$errno}";
+                echo "Error string: {$errstr}";
+                echo "Error file: {$errfile}";
+                echo "Error line: {$errline}";
+            });
+
+            trigger_error("Test error");
+
             if ($init_database && !$this->_is_installing) {
                 $this->initDB();
             }
