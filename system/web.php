@@ -816,7 +816,8 @@ class Web {
 
             $this->_callWebHooks("cleanup");
         } catch (Exception $e) {
-            // TODO:
+			// TODO:
+			$this->_callWebHooks("cleanup");
         }
     }
 
