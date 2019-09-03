@@ -17,6 +17,14 @@ class FileService extends DbService
     public static $_thumb_height = 200;
     public static $_thumb_width = 200;
     public static $_stream_name = "attachment";
+    public static $temp_file_parent_directory;
+    public static $temp_files = [];
+
+    public function __construct(Web $w)
+    {
+        parent::__construct($w);
+        $this->temp_file_parent_directory = uniqid();
+    }
 
     /**
      * Returns the max upload file size in bytes

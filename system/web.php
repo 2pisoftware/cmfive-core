@@ -56,7 +56,8 @@ class Web {
 	public $_defaultHandler;
 	public $_defaultAction;
 	public $_layoutContentMarker;
-	public $_notFoundTemplate;
+    public $_notFoundTemplate;
+    public $_fatalErrorTemplate;
 	public $_layout;
 	public $_headers;
 	public $_module = null;
@@ -519,14 +520,21 @@ class Web {
     public function start($init_database = true)
     {
         try {
-            set_error_handler(function ($errno, $errstr, $errfile, $errline) {
-                echo "Error number: {$errno}";
-                echo "Error string: {$errstr}";
-                echo "Error file: {$errfile}";
-                echo "Error line: {$errline}";
-            });
+            if (Config::get("system.environment") !== "development") {
+                set_error_handler(function ($errno, $errstr, $errfile, $errline) {
+                    $logger = empty($this->currentModule()) ? "CMFIVE" : strtoupper($this->currentModule());
+                    $this->Log->setLogger($logger)->error("Number: {$errno}, String: {$errstr}, File: {$errfile}, Line: {$errline}");
+                    // $this->templateOut($this->_layout);
+                    // echo $this->_buffer;
+                    // $this->fatalErrorPage();
+                    // $_SESSION['msg'] = "here";
+                    // $this->session("error", "Here");
+                    $_SESSION['error'] = "Here";
+                    $this->ctx('error', "Here");
+                });
+            }
 
-            trigger_error("Test error");
+            // trigger_error("Test error");
 
             if ($init_database && !$this->_is_installing) {
                 $this->initDB();
@@ -649,10 +657,9 @@ class Web {
             $this->_module = array_shift($hsplit);
             $this->_submodule = array_shift($hsplit);
 
-            // Check to see if module exists, if it doesn't, send a 403 header
+            // Check to see if module exists, if it doesn't, display not found page.
             if (Config::get("{$this->_module}.active") === null) {
-                header($_SERVER["SERVER_PROTOCOL"] . ' 404 Not Found');
-                exit();
+                $this->notFoundPage();
             }
 
             // Check to see if the module is active (protect against main disabling)
@@ -1390,13 +1397,36 @@ class Web {
 		} else {
 			if ($this->templateExists($this->_notFoundTemplate)) {
 				$this->header("HTTP/1.0 404 Not Found");
-				echo $this->fetchTemplate($this->_notFoundTemplate);
+                $this->ctx("w", $this);
+
+                if (empty($this->Auth->user())) {
+                    echo $this->fetchTemplate($this->_notFoundTemplate);
+                } else {
+                    $this->ctx($this->_layoutContentMarker, $this->fetchTemplate($this->_notFoundTemplate));
+                    $this->templateOut($this->_layout);
+                    echo $this->_buffer;
+                }
 			} else {
 				$this->header("HTTP/1.0 404 Not Found");
 				echo '<p align="center">Sorry, page not found.</p>';
 			}
 		}
 		exit();
+	}
+
+	public function fatalErrorPage() {
+		http_response_code(500);
+
+		if ($this->isAjax()) {
+			return;
+		}
+
+		if ($this->templateExists($this->_fatalErrorTemplate)) {
+			echo $this->fetchTemplate($this->_fatalErrorTemplate);
+			return;
+		}
+
+		echo Html::alertBox("Sorry, an error occurred. If this persists please contact your administrator.", "alert");
 	}
 
 	function internalLink($title, $module, $action = null, $params = null) {
@@ -2067,7 +2097,7 @@ class Web {
 			$_SESSION[$key] = $value;
 		}
 
-		return array_key_exists($key, $_SESSION) ? $_SESSION[$key] : null;
+		return !empty($_SESSION) && array_key_exists($key, $_SESSION) ? $_SESSION[$key] : null;
 	}
 
 	/**

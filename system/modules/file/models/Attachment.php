@@ -196,6 +196,10 @@ class Attachment extends DbObject
      */
     public function getFilePath()
     {
+        if (file_exists(ROOT_PATH . "/cache/temp/" . FileService::$temp_file_parent_directory)) {
+
+        }
+
         $path = dirname($this->fullpath);
 
         switch ($this->adapter) {
@@ -248,10 +252,34 @@ class Attachment extends DbObject
      * Returns attached file content
      * @return <string> content
      */
-    public function getContent()
+    public function getContent($cache_locally = false)
     {
         $file = $this->getFile();
-        return $file->exists() ? $file->getContent() : "";
+        if (empty($file) || !$file->exists()) {
+            return "";
+        }
+
+        if (!$cache_locally) {
+            return $file->getContent();
+        }
+
+        $directory_path = ROOT_PATH . "/cache/temp/" . FileService::$temp_file_parent_directory;
+        if (!file_exists($directory_path)) {
+            mkdir($directory_path, 0777, true);
+        }
+
+        $path_info = pathinfo($file->getName());
+        $file_path = $directory_path . $path_info["filename"];
+
+        if (!file_exists($file_path . "." . $path_info["extension"])) {
+            try {
+                file_put_contents($file_path . $path_info["extension"], $file->getContent());
+                return $file->getContent();
+            } catch (Exception $e) {
+                $this->w->Log->setLogger("FILE")->error("Failed to execute 'file_put_contents': " . $e->getMessage());
+                return "";
+            }
+        }
     }
 
     /**
