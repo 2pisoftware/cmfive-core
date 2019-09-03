@@ -1,0 +1,33 @@
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    font-family: Ubuntu, Roboto, Aerial, sans-serif;
+}
+
+label {
+    display: block;
+
+    input {
+        display: block;
+        padding: 5px;
+        width: 100%;
+    }
+}
+
+.row-fluid {
+    display: flex;
+    flex-direction: row;
+
+    .panel {
+        display: block;
+    }
+}
+
+.panel {
+    background-color: white;
+    border: none;
+}
