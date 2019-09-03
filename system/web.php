@@ -772,6 +772,18 @@ class Web
                 $this->error($ex->getMessage());
             }
 
+            // will need this when report-uri is properly deprecated
+            // see https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/report-uri
+            $this->sendHeader("Report-To", json_encode([
+                "group" => "log-action",
+                "max-age" => "10886400",
+                "endpoints" => ["url" => "/main/logCSPReport"],
+            ]));
+            $this->sendHeader(
+                "Content-Security-Policy-Report-Only",
+                "default-src 'self'; report-uri /main/logCSPReport/; report-to log-action"
+            );
+
             // send headers first
             if ($this->_headers) {
                 foreach ($this->_headers as $key => $val) {
@@ -1083,6 +1095,7 @@ class Web
 				}
 			}
 		} else if ($this->Auth && !$this->Auth->loggedIn() && $actual_path != $this->_loginpath && !$this->Auth->allowed($path)) {
+            $this->Log->info("a" . bool($this->Auth->allowed($path)));
 			$_SESSION['orig_path'] = $_SERVER['REQUEST_URI'];
 			$this->Log->info("Redirecting to login, user not logged in or not allowed");
 			$this->redirect($this->localUrl($this->_loginpath));
