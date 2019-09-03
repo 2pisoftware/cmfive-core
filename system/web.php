@@ -774,14 +774,14 @@ class Web
 
             // will need this when report-uri is properly deprecated
             // see https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/report-uri
-            $this->sendHeader("Report-To", json_encode([
-                "group" => "log-action",
-                "max-age" => "10886400",
-                "endpoints" => ["url" => "/main/logCSPReport"],
-            ]));
+            // $this->sendHeader("Report-To", json_encode([
+            //     "group" => "log-action",
+            //     "max-age" => "10886400",
+            //     "endpoints" => ["url" => "/main/logCSPReport"],
+            // ]));
             $this->sendHeader(
                 "Content-Security-Policy-Report-Only",
-                "default-src 'self'; report-uri /main/logCSPReport/; report-to log-action"
+                "default-src 'self'; report-uri /main/logCSPReport/;" // report-to log-action"
             );
 
             // send headers first
@@ -1048,65 +1048,65 @@ class Web
 		return isset($_SERVER['HTTP_X_REQUESTED_WITH']);
 	}
 
-	/**
-	 * Check if the currently logged in user has access to this path
-	 * Return true if access is allowed
-	 * Redirect back a page or logout and show an error if access is denied
-	 *
-	 * Save LAST_ALLOWED_URI to session
-	 *
-	 * @param <type> $msg
-	 * @return <type>
-	 */
-	function checkAccess($msg = "Access Restricted") {
-		// If we're installing cmfive then there won't be users
-		// TODO this may need refactoring
-		if ($this->_module == "install" && $this->_is_installing) {
-			return true;
-		}
+    /**
+     * Check if the currently logged in user has access to this path
+     * Return true if access is allowed
+     * Redirect back a page or logout and show an error if access is denied
+     *
+     * Save LAST_ALLOWED_URI to session
+     *
+     * @param <type> $msg
+     * @return <type>
+     */
+    function checkAccess($msg = "Access Restricted")
+    {
+        // If we're installing cmfive then there won't be users
+        // TODO this may need refactoring
+        if ($this->_module == "install" && $this->_is_installing) {
+            return true;
+        }
 
-		$submodule = $this->_submodule ? "-" . $this->_submodule : "";
-		$path = $this->_module . $submodule . "/" . $this->_action;
-		$actual_path = $path;
-		// Check for frontend modules
-		if ($this->_isFrontend || $this->_isPortal) {
-			$actual_path = $this->_action;
-		}
+        $submodule = $this->_submodule ? "-" . $this->_submodule : "";
+        $path = $this->_module . $submodule . "/" . $this->_action;
+        $actual_path = $path;
+        // Check for frontend modules
+        if ($this->_isFrontend || $this->_isPortal) {
+            $actual_path = $this->_action;
+        }
 
-		if ($this->Auth && $this->Auth->user()) {
-			$user = $this->Auth->user();
+        if ($this->Auth && $this->Auth->user()) {
+            $user = $this->Auth->user();
 
-			if ($user->is_password_invalid && $path !== "auth/update_password") {
-				$this->Log->info("Redirecting to reset password page, user password is invalid");
-				$this->redirect($this->localUrl("/auth/update_password"));
-			}
+            if ($user->is_password_invalid && $path !== "auth/update_password") {
+                $this->Log->info("Redirecting to reset password page, user password is invalid");
+                $this->redirect($this->localUrl("/auth/update_password"));
+            }
 
-			$usrmsg = $user ? " for " . $user->login : "";
-			if (!$this->Auth->allowed($path)) {
-				$this->Log->info("System: Access Denied to " . $path . $usrmsg . " from " . $this->requestIpAddress());
-				// redirect to the last allowed page
-				$lastAllowed = (is_array($_SESSION) && array_key_exists('LAST_ALLOWED_URI', $_SESSION)) ? $_SESSION['LAST_ALLOWED_URI'] : '';
-				if ($this->Auth->allowed($lastAllowed)) {
-					$this->error($msg, $lastAllowed);
-				} else {
-					// Logout user
-					$this->sessionDestroy();
-					$this->error($msg, $this->_loginpath);
-				}
-			}
-		} else if ($this->Auth && !$this->Auth->loggedIn() && $actual_path != $this->_loginpath && !$this->Auth->allowed($path)) {
-            $this->Log->info("a" . bool($this->Auth->allowed($path)));
-			$_SESSION['orig_path'] = $_SERVER['REQUEST_URI'];
-			$this->Log->info("Redirecting to login, user not logged in or not allowed");
-			$this->redirect($this->localUrl($this->_loginpath));
-		}
-		// Saving the last allowed path so we can
-		// redirect to it from a failed call
-		if (!$this->isAjax()) {
-			$_SESSION['LAST_ALLOWED_URI'] = $actual_path;
-		}
-		return true;
-	}
+            $usrmsg = $user ? " for " . $user->login : "";
+            if (!$this->Auth->allowed($path)) {
+                $this->Log->info("System: Access Denied to " . $path . $usrmsg . " from " . $this->requestIpAddress());
+                // redirect to the last allowed page
+                $lastAllowed = (is_array($_SESSION) && array_key_exists('LAST_ALLOWED_URI', $_SESSION)) ? $_SESSION['LAST_ALLOWED_URI'] : '';
+                if ($this->Auth->allowed($lastAllowed)) {
+                    $this->error($msg, $lastAllowed);
+                } else {
+                    // Logout user
+                    $this->sessionDestroy();
+                    $this->error($msg, $this->_loginpath);
+                }
+            }
+        } else if ($this->Auth && !$this->Auth->loggedIn() && $actual_path != $this->_loginpath && !$this->Auth->allowed($path)) {
+            $_SESSION['orig_path'] = $_SERVER['REQUEST_URI'];
+            $this->Log->info("Redirecting to login, user not logged in or not allowed");
+            $this->redirect($this->localUrl($this->_loginpath));
+        }
+        // Saving the last allowed path so we can
+        // redirect to it from a failed call
+        if (!$this->isAjax()) {
+            $_SESSION['LAST_ALLOWED_URI'] = $actual_path;
+        }
+        return true;
+    }
 
 	/**
 	 *

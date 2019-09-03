@@ -2,5 +2,8 @@
 
 function logCSPReport_POST(Web $w)
 {
-    $w->setLogger('CSP')->error('aaaaah' . $_POST['csp-report']);
+    $w->Log->setLogger('CSP')->error(
+        'CSP Violation: ' .
+        json_decode(file_get_contents('php://input'), true)['csp-report']['blocked-uri']
+    );
 }
