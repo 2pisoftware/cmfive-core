@@ -10,7 +10,8 @@ Config::set('file', [
         "aws/aws-sdk-php" => "3.29.*"
     ],
     'hooks' => [
-        'admin'
+        'admin',
+        'core_web'
     ],
     'adapters' => [
         'local' => [

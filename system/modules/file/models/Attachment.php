@@ -196,8 +196,8 @@ class Attachment extends DbObject
      */
     public function getFilePath()
     {
-        if (file_exists(ROOT_PATH . "/cache/temp/" . FileService::$temp_file_parent_directory)) {
-
+        if (file_exists(ROOT_PATH . "/cache/temp/" . FileService::$temp_file_parent_directory . $this->filename)) {
+            return ROOT_PATH . "/cache/temp/" . FileService::$temp_file_parent_directory;
         }
 
         $path = dirname($this->fullpath);
@@ -265,21 +265,23 @@ class Attachment extends DbObject
 
         $directory_path = ROOT_PATH . "/cache/temp/" . FileService::$temp_file_parent_directory;
         if (!file_exists($directory_path)) {
-            mkdir($directory_path, 0777, true);
-        }
-
-        $path_info = pathinfo($file->getName());
-        $file_path = $directory_path . $path_info["filename"];
-
-        if (!file_exists($file_path . "." . $path_info["extension"])) {
             try {
-                file_put_contents($file_path . $path_info["extension"], $file->getContent());
-                return $file->getContent();
+                mkdir($directory_path, 0777, true);
             } catch (Exception $e) {
-                $this->w->Log->setLogger("FILE")->error("Failed to execute 'file_put_contents': " . $e->getMessage());
-                return "";
+                $this->w->Log->setLogger("FILE")->error("Failed to execute 'mkdir': " . $e->getMessage());
             }
         }
+
+        $file_path = $directory_path . "/" . $file->getName();
+
+        try {
+            file_put_contents($file_path, $file->getContent());
+            return $file->getContent();
+        } catch (Exception $e) {
+            $this->w->Log->setLogger("FILE")->error("Failed to execute 'file_put_contents': " . $e->getMessage());
+        }
+
+        return "";
     }
 
     /**

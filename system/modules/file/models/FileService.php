@@ -23,7 +23,7 @@ class FileService extends DbService
     public function __construct(Web $w)
     {
         parent::__construct($w);
-        $this->temp_file_parent_directory = uniqid();
+        FileService::$temp_file_parent_directory = uniqid();
     }
 
     /**
@@ -599,47 +599,6 @@ class FileService extends DbService
         $att->insert();
 
         return $att->id;
-    }
-
-    /**
-     * Takes a file and creates a local copy in the temp directory of the cache.
-     * All files in the temp directory are deleted at the end of every execution of Web->start().
-     * Returns the path to the cached file.
-     *
-     * @param File $file
-     * @return string
-     */
-    public function cacheFileLocally(File $file)
-    {
-        if (!file_exists(ROOT_PATH . "/cache/temp/")) {
-            mkdir(ROOT_PATH . "/cache/temp/");
-        }
-
-        $path_info = pathinfo($file->getName());
-        $temp_path = ROOT_PATH . "/cache/temp/" . $path_info["filename"];
-
-        if (!file_exists($temp_path . "." . $path_info["extension"])) {
-            try {
-                file_put_contents(ROOT_PATH . "/cache/temp/" . $file->getName(), $file->getContent());
-                return $temp_path . $path_info["extension"];
-            } catch (Exception $e) {
-                $this->w->Log->setLogger("FILE")->error("Failed to execute 'file_put_contents': " . $e->getMessage());
-                return "";
-            }
-        }
-
-        $count = 1;
-        while (file_exists($temp_path . "_" . $count . "." .$path_info["extension"])) {
-            $count++;
-        }
-
-        try {
-            file_put_contents($temp_path . "_" . $count . "." . $path_info["extension"], $file->getContent());
-            return $temp_path . "_" . $count . "." . $path_info["extension"];
-        } catch (Exception $e) {
-            $this->w->Log->setLogger("FILE")->error("Failed to execute 'file_put_contents': " . $e->getMessage());
-            return "";
-        }
     }
 
     /**
