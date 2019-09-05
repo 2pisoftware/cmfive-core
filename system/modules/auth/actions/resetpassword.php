@@ -1,6 +1,7 @@
 <?php
 
-function resetpassword_GET(Web $w) {
+function resetpassword_GET(Web $w)
+{
     $email = $w->request('email'); // email
     $token = $w->request('token'); // token
 
@@ -19,10 +20,10 @@ function resetpassword_GET(Web $w) {
             if ($user_contact->email == $email) {
                 // We have passed the test
                 $password_form = Html::form(array(
-                            array("Enter new password", "section"),
-                            array("New password", "password", "password"),
-                            array("Confirm password", "password", "password_confirm"),
-                                ), $w->localUrl("auth/resetpassword?email=$email&token=$token"), "POST", "Reset");
+                    array("Enter new password", "section"),
+                    array("New password", "password", "password"),
+                    array("Confirm password", "password", "password_confirm"),
+                ), $w->localUrl("auth/resetpassword?email=$email&token=$token"), "POST", "Reset");
                 $w->out($password_form);
                 $validData = true;
             }
@@ -34,7 +35,8 @@ function resetpassword_GET(Web $w) {
     }
 }
 
-function resetpassword_POST(Web $w) {
+function resetpassword_POST(Web $w)
+{
     $email = $w->request('email'); // email
     $token = $w->request('token'); // token
     $password = $w->request('password'); // password

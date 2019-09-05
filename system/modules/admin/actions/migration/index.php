@@ -20,7 +20,7 @@ function index_GET(Web $w) {
 		foreach($available as $module => $_available) {
 			foreach($_available as $file => $class) {
 				if (!$w->Migration->isInstalled($class['class_name'])) {
-					$not_installed[$module][$file] = $class;
+					$not_installed[$module][$file] = array("class" => $class, "path" => $file);
 				}
 			}
 		}

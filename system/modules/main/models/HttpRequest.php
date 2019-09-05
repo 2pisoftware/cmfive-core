@@ -22,11 +22,18 @@ class HttpRequest {
 				curl_setopt($this->curl_handle, CURLOPT_POSTFIELDS, $this->data);
 				break;
 			};
+			case 'DELETE':
+					curl_setopt_array($this->curl_handle, [
+						CURLOPT_URL => $url,
+						CURLOPT_CUSTOMREQUEST => "DELETE"
+					]);
+				break;
 			case 'GET':
 			default:
 				curl_setopt($this->curl_handle, CURLOPT_URL, $url . (!empty($data) && is_array($data) ? '?' . http_build_query($data) : ''));
 		}
 		curl_setopt($this->curl_handle, CURLOPT_RETURNTRANSFER, true);
+
 		return $this;
 	}
 
@@ -42,11 +49,43 @@ class HttpRequest {
 		return $this;
 	}
 
-	public function run(&$output, &$error) {
-		$output = curl_exec($this->curl_handle);
-		$error = curl_error($this->curl_handle);
-
-		return $output;
+	/**
+	 * Adds Basic Authenication to the request.
+	 *
+	 * @param string $username
+	 * @param string $password
+	 * @return void
+	 */
+	public function setBasicAuth($username = "", $password = "") {
+		curl_setopt($this->curl_handle, CURLOPT_USERPWD, $username . ":" . $password);
 	}
 
+	/**
+	 * Executes the request and returns the response data, status code & error message.
+	 *
+	 * @return array[string]
+	 */
+	public function execute() {
+		$data = curl_exec($this->curl_handle);
+		$status_code = curl_getinfo($this->curl_handle, CURLINFO_HTTP_CODE);
+		$error_message = curl_error($this->curl_handle);
+
+		return ["status_code" => $status_code, "data" => $data, "error" => $error_message];
+	}
+
+	/**
+	 * Runs the request.
+	 *
+	 * @deprecated 2.14.5 - Use simplified function execute instead.
+	 *
+	 * @param string $output
+	 * @param string $error
+	 * @return string
+	 */
+	public function run(&$output, &$error) {
+		$response = $this->execute();
+		$output = $response["data"];
+		$error = $response["error_message"];
+		return $output;
+	}
 }

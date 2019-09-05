@@ -44,7 +44,7 @@ class EmailNotificationEventProcessor extends EventProcessorType {
         $subject = ''; 
         $message = '';
         $tmp_message = '';
-        
+        $attachments = [];
 
         //generate subject and massage line based on event type
         if ($form_event->event_type == 'On Created') {
@@ -72,8 +72,23 @@ class EmailNotificationEventProcessor extends EventProcessorType {
         } else {
             if (!empty($data['fields'])) {
                 foreach ($data['fields'] as $key=>$value) {
+                    //handle attachments
+                    if ($key == 'attachments') {
+                        
+                        foreach($value as $field_name=>$att) {
+                            $attachment_names = [];
+                            $message .= "<b>" . $field_name . ":</b> "; // . $value . "<br/>";
+                            foreach($att as $attachment) {
+                                $attachment_names[] = basename($attachment);
+                            }
+                            $attachments = array_merge($attachments,$att);
+                            
+                            $message .= implode(', ', $attachment_names);
+                            $message .= "</br>";
+                        }
+                    }
                     //need to add functionality for sub forms
-                    if (is_array($value)) {
+                    elseif (is_array($value)) {
                         $message .= "<b>" . $key . ":</b> <br/>";
                         foreach ($value as $sub_form) {
                             foreach ($sub_form as $sub_key=>$sub_value) {
@@ -98,7 +113,7 @@ class EmailNotificationEventProcessor extends EventProcessorType {
         $this->w->Mail->sendMail(
                             $settings->email_to_notify, 
                             Config::get('main.company_support_email'),
-                            $subject, $final_message
+                            $subject, $final_message,null,null,$attachments
                         );
 	}
 }

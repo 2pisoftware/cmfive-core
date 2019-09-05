@@ -1,47 +1,41 @@
 <?php
 
 function new_GET(Web $w) {
-	
 	$redirect_url = $w->request("redirect_url");
 	$redirect_url = defaultVal($redirect_url, defaultVal($_SERVER["REQUEST_URI"], "/"));
-	
+
 	$p = $w->pathMatch("class", "class_id");
 	if (empty($p['class']) || empty($p['class_id'])) {
 		$w->error("Missing class parameters", $redirect_url);
 	}
-	
-	$_form = [
-		'New Attachment' => [
-			[(new \Html\Form\InputField\File())->setName("file")->setId("file")->setAttribute("capture", "camera")], // ["File", "file", "file"]
-			[["Title", "text", "title"]],
-			[["Description", "textarea", "description", "",null,null,'justtext']]
-		]
-	];
 
-	$w->ctx("form", Html::multiColForm($_form, "/file/new/" . $p['class'] . '/' . $p['class_id'] . "?redirect_url=" . $redirect_url, "POST", "Save", 'file_form'));
-}
+	$object = $w->File->getObject($p["class"], $p["class_id"]);
+	$users = $w->Auth->getUsers();
+	$viewers = [];
 
-function new_POST(Web $w) {
-	$redirect_url = $w->request("redirect_url");
-	$redirect_url = defaultVal($redirect_url, defaultVal($_SERVER["REQUEST_URI"], "/"));
-	
-	$p = $w->pathMatch("class", "class_id");
-	if (empty($p['class']) || empty($p['class_id'])) {
-		$w->error("Missing class parameters", $redirect_url);
+	if (!empty($object)) {
+		foreach (empty($users) ? [] : $users as $user) {
+			if ($user->id === $w->Auth->user()->id) {
+				continue;
+			}
+
+			if ($object->canView($user)) {
+				$viewers[] = [
+					"id" => $user->id,
+					"name" => $user->getFullName(),
+					"can_view" => false
+				];
+			}
+		}
 	}
-	
-	$object = $w->File->getObject($p['class'], $p['class_id']);
-	
-	if (empty($object->id)) {
-		$w->error("Object not found", $redirect_url);
-	}
-	
-	$result = $w->File->uploadAttachment("file", $object, $_POST['title'], $_POST['description'], !empty($_POST['type_code']) ? $_POST['type_code'] : null);
-    if (empty($result)) {
-        $w->error("No file found for attachment", $redirect_url);
-    } elseif(!empty($_POST['file'])) {
-		$w->out(json_encode(array('success'=> 'true', 'key' => $_POST['key'])));
-	} else {
-		$w->msg("File attached", $redirect_url);
-	}
+
+	usort($viewers, function($a, $b) {
+		return strcmp($a["name"], $b["name"]);
+	});
+
+	$w->ctx("redirect_url", WEBROOT . "/" . $redirect_url);
+	$w->ctx("class", $p["class"]);
+	$w->ctx("class_id", $p["class_id"]);
+	$w->ctx("viewers", json_encode($viewers));
+	$w->ctx("can_restrict", property_exists(new Attachment($w), "_restrictable") && $w->Auth->user()->hasRole("restrict") ? "true" : "false");
 }
