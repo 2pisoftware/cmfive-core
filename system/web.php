@@ -111,13 +111,13 @@ class Web {
 		// if using IIS then value is "off" for non ssl requests
 		$sHttps = array_key_exists('HTTPS', $_SERVER) ? $_SERVER['HTTPS'] : '';
 		$sHttpHost = array_key_exists('HTTP_HOST', $_SERVER) ? $_SERVER['HTTP_HOST'] : '';
-		
+
 		if (empty($sHttps) || $sHttps == "off") {
 			$this->_webroot = "http://" . $sHttpHost;
 		} else {
 			$this->_webroot = "https://" . $sHttpHost;
 		}
-	
+
 		$this->_actionMethod = null;
 
 		// The order of the following three lines are important
@@ -286,7 +286,7 @@ class Web {
 				$components = array_merge($components, Config::get($module . '.vue_components'));
 			}
 		}
-		
+
 		if (!empty($components)) {
 			foreach($components as $component => $paths) {
 				CmfiveScriptComponentRegister::registerComponent($component, new CmfiveScriptComponent($paths[0], ['weight' => 100]));
@@ -392,19 +392,19 @@ class Web {
 				$language = $lang;
 			}
 		}
-		
+
 		// Fallback to en_AU if language is not set
 		if (empty($language)) {
 			$language = 'en_AU';
 		}
-		
+
 		$this->Log->info('init locale ' . $language);
 
 		$all_locale = getAllLocaleValues($language);
-		
+
 		putenv("LC_ALL={$language}");
 		$results = setlocale(LC_ALL, $all_locale);
-		
+
 		if (empty($results)) {
 			$this->Log->info('setlocale failed: locale function is not available on this platform, or the given locale (' . $language . ') does not exist in this environment');
 		}
@@ -438,7 +438,7 @@ class Web {
 		$path = ROOT_PATH . DS . $this->getModuleDir($domain) . "translations";
 		$translationFile = $path . DS . $this->currentLocale . DS . "LC_MESSAGES" . DS . $domain . ".mo";
 		$translationFileOverride = ROOT_PATH . DS . 'translations' . DS . $domain . DS . $this->currentLocale . DS . 'LC_MESSAGES' . DS . $domain . '.mo';
-		
+
 		if (file_exists($translationFileOverride) && !empty(bindtextdomain($domain, ROOT_PATH . DS . 'translations' . DS . $domain))) {
 			// Project language override has been loaded
 		} else if (file_exists($translationFile)) {
@@ -543,11 +543,11 @@ class Web {
 			} else {
 				session_name(SESSION_NAME);
 			}
-			
+
 			// Store the sessions locally to avoid permission errors between OS's
             // I.e. on Windows by default tries to save to C:\Temp
 			session_save_path(STORAGE_PATH . DIRECTORY_SEPARATOR . "session");
-			
+
 			session_start();
 		} catch (Exception $e) {
 			$this->Log->info("Error starting session " . $e->getMessage());
@@ -652,7 +652,7 @@ class Web {
 
 		// configure translations lookup for this module
 		$this->initLocale();
-		
+
 		try {
 			$this->setTranslationDomain('admin');
 			$this->setTranslationDomain('main');
@@ -660,7 +660,7 @@ class Web {
 		} catch (Exception $e) {
 			$this->Log->setLogger('I18N')->error($e->getMessage());
 		}
-		
+
 		if (!$this->_action) {
 			$this->_action = $this->_defaultAction;
 		}
@@ -959,12 +959,12 @@ class Web {
 							if (!$this->_is_installing) {
                                 include(ROOT_PATH . '/config.php');
                             }
-                            
+
 							if (Config::get("{$item}.active") === true) {
 								// Need to reset sandbox content to remove inclusion of project config
 								Config::clearSandbox();
 								include($searchingDir . '/config.php');
-								
+
 								// If we are loading with dependencies, register config in the dependency loader
 								// (located in Config.php) instead of putting into base config setup
 								if ($loadWithDependencies === true) {
@@ -976,14 +976,14 @@ class Web {
                                     Config::enableSandbox();
 								}
 							}
-							
+
 							// Always disable the sandbox to ensure other uses of Config do not get omitted
 							Config::clearSandbox();
 							Config::disableSandbox();
                         }
                     }
                 }
-				
+
 				// Load with dependencies if required
 				if ($loadWithDependencies === true) {
 					try {
@@ -1062,6 +1062,12 @@ class Web {
 
 		if ($this->Auth && $this->Auth->user()) {
 			$user = $this->Auth->user();
+
+			if ($user->is_password_invalid && $path !== "auth/update_password") {
+				$this->Log->info("Redirecting to reset password page, user password is invalid");
+				$this->redirect($this->localUrl("/auth/update_password"));
+			}
+
 			$usrmsg = $user ? " for " . $user->login : "";
 			if (!$this->Auth->allowed($path)) {
 				$this->Log->info("System: Access Denied to " . $path . $usrmsg . " from " . $this->requestIpAddress());
@@ -1532,11 +1538,11 @@ class Web {
 
 		// getModuleDir can return path with trailing '/' but we dont want that
 		$moduleDir = $this->getModuleDir($module);
-		
+
 		if ($moduleDir[strlen($moduleDir) - 1] === '/') {
 			$moduleDir = substr($moduleDir, 0, strlen($moduleDir) - 1);
 		}
-		
+
 		$partial_action_file = implode("/", array($moduleDir, $this->_partialsdir, "actions", $name . ".php"));
 
 		if (file_exists($partial_action_file)) {
@@ -1583,16 +1589,16 @@ class Web {
 		if (empty($currentbuf)) {
 			// try to find the partial template and execute if found
 			$partial_template_file = implode("/", array($moduleDir, $this->_partialsdir, "templates", $name . $this->_templateExtension));
-			
+
 			if (file_exists($partial_template_file)) {
-				
+
 				$tpl = new WebTemplate();
 				$this->ctx("w", $this);
 				$tpl->set_vars($this->_context);
 				$currentbuf = $tpl->fetch($partial_template_file);
 			}
 		}
-		
+
 		// restore output buffer and context
 		$this->_buffer = $oldbuf;
 		$this->_context = $oldctx;
@@ -1618,7 +1624,7 @@ class Web {
 	 * @return array array of return values from all functions that answer to this hool
 	 */
 	public function callHook($module, $function, $data = null) {
-		
+
 		if (empty($module) || empty($function)) {
 			return null;
 		}
@@ -1680,14 +1686,14 @@ class Web {
 					}
 
 					// Include and check if function exists
-					
+
 					include_once $this->getModuleDir($toInvoke) . $toInvoke . ".hooks.php";
 					// add module to loaded hooks array
 					$this->_module_loaded_hooks[] = $toInvoke;
 
 					if (function_exists($hook_function_name)) {
 						// Call function
-						
+
 						$buffer[] = $hook_function_name($this, $data);
 					}
 				}
@@ -1696,7 +1702,7 @@ class Web {
 					$buffer[] = $hook_function_name($this, $data);
 				}
 			}
-			
+
 		}
 
 		// restore translations module
