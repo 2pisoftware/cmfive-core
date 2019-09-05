@@ -14,6 +14,7 @@ define("SYSTEM_LIBPATH", str_replace("\\", "/", getcwd() . '/system/lib'));
 define("FILE_ROOT", str_replace("\\", "/", getcwd() . "/uploads/")); // dirname(__FILE__)
 define("MEDIA_ROOT", str_replace("\\", "/", dirname(__FILE__) . "/../media/"));
 define("ROOT", str_replace("\\", "/", dirname(__FILE__)));
+define("STORAGE_PATH",str_replace("\\", "/", getcwd() . '/storage'));
 define("SESSION_NAME", "CM5_SID");
 
 set_include_path(get_include_path() . PATH_SEPARATOR . LIBPATH);
@@ -78,6 +79,7 @@ class Web {
 	public $_is_head_request = false;
 	public $_languageModulesLoaded = [];
 	public $currentLocale = '';
+	public $_module_loaded_hooks = []; //cache loaded module hook files
 
 	private $_classdirectory; // used by the class auto loader
 
@@ -104,16 +106,18 @@ class Web {
 		$this->_submodule = null;
 		$this->_hooks = array();
 
+		$this->checkStorageDirectory();
+
 		// if using IIS then value is "off" for non ssl requests
 		$sHttps = array_key_exists('HTTPS', $_SERVER) ? $_SERVER['HTTPS'] : '';
 		$sHttpHost = array_key_exists('HTTP_HOST', $_SERVER) ? $_SERVER['HTTP_HOST'] : '';
-		
+
 		if (empty($sHttps) || $sHttps == "off") {
 			$this->_webroot = "http://" . $sHttpHost;
 		} else {
 			$this->_webroot = "https://" . $sHttpHost;
 		}
-	
+
 		$this->_actionMethod = null;
 
 		// The order of the following three lines are important
@@ -144,6 +148,15 @@ class Web {
 		clearstatcache();
 	}
 
+	private function checkStorageDirectory() {
+		if (!is_dir(STORAGE_PATH) ) {
+			mkdir(STORAGE_PATH);
+		}
+		if (!is_dir(STORAGE_PATH .'/session')) {
+			mkdir(STORAGE_PATH . "/session");
+		}
+	}
+
 	private function modelLoader($className) {
 		// 1. check if class directory has to be loaded from cache
 		$classdirectory_cache_file = ROOT_PATH . "/cache/classdirectory.cache";
@@ -155,7 +168,7 @@ class Web {
 		// 2. if filename is stored in $this->_classdirectory
 		if (!empty($this->_classdirectory[$className])) {
 			if (file_exists($this->_classdirectory[$className])) {
-				require $this->_classdirectory[$className];
+				require_once $this->_classdirectory[$className];
 				return true;
 			}
 		}
@@ -172,7 +185,7 @@ class Web {
 			if (Config::get("{$model}.active") === true) {
 				$file = $this->getModuleDir($model) . 'models/' . ucfirst($className) . ".php";
 				if (file_exists($file)) {
-					require $file;
+					require_once $file;
 					// add this class file to the cache file
 					file_put_contents($classdirectory_cache_file, '$this->_classdirectory["' . $className . '"]="' . $file . '";' . "\n", FILE_APPEND);
 					return true;
@@ -180,7 +193,7 @@ class Web {
 					// Try a lower case version
 					$file = $this->getModuleDir($model) . 'models/' . $className . ".php";
 					if (file_exists($file)) {
-						require $file;
+						require_once $file;
 						// add this class file to the cache file
 						file_put_contents($classdirectory_cache_file, '$this->_classdirectory["' . $className . '"]="' . $file . '";' . "\n", FILE_APPEND);
 						return true;
@@ -273,7 +286,7 @@ class Web {
 				$components = array_merge($components, Config::get($module . '.vue_components'));
 			}
 		}
-		
+
 		if (!empty($components)) {
 			foreach($components as $component => $paths) {
 				CmfiveScriptComponentRegister::registerComponent($component, new CmfiveScriptComponent($paths[0], ['weight' => 100]));
@@ -379,25 +392,26 @@ class Web {
 				$language = $lang;
 			}
 		}
-		
+
 		// Fallback to en_AU if language is not set
 		if (empty($language)) {
 			$language = 'en_AU';
 		}
-		
+
 		$this->Log->info('init locale ' . $language);
 
 		$all_locale = getAllLocaleValues($language);
-		
+
 		putenv("LC_ALL={$language}");
 		$results = setlocale(LC_ALL, $all_locale);
-		
+
 		if (empty($results)) {
 			$this->Log->info('setlocale failed: locale function is not available on this platform, or the given locale (' . $language . ') does not exist in this environment');
 		}
 		$langParts = explode(".", $language);
 		$this->currentLocale = $langParts[0];
 	}
+
 
 	function getAvailableLanguages() {
 		$lang = [];
@@ -424,7 +438,7 @@ class Web {
 		$path = ROOT_PATH . DS . $this->getModuleDir($domain) . "translations";
 		$translationFile = $path . DS . $this->currentLocale . DS . "LC_MESSAGES" . DS . $domain . ".mo";
 		$translationFileOverride = ROOT_PATH . DS . 'translations' . DS . $domain . DS . $this->currentLocale . DS . 'LC_MESSAGES' . DS . $domain . '.mo';
-		
+
 		if (file_exists($translationFileOverride) && !empty(bindtextdomain($domain, ROOT_PATH . DS . 'translations' . DS . $domain))) {
 			// Project language override has been loaded
 		} else if (file_exists($translationFile)) {
@@ -521,7 +535,43 @@ class Web {
 			ini_set('session.gc_maxlifetime', $gc_maxlifetime);
 		}
 
-		// Try and determine if the request is for a portal module
+		// start the session
+		// $sess = new SessionManager($this);
+		try {
+			if ($this->_isPortal === true) {
+				session_name(!empty($domainmodule) ? $domainmodule . '_SID' : 'PORTAL_SID');
+			} else {
+				session_name(SESSION_NAME);
+			}
+
+			// Store the sessions locally to avoid permission errors between OS's
+            // I.e. on Windows by default tries to save to C:\Temp
+			session_save_path(STORAGE_PATH . DIRECTORY_SEPARATOR . "session");
+
+			session_start();
+		} catch (Exception $e) {
+			$this->Log->info("Error starting session " . $e->getMessage());
+		}
+
+		// Initialise the logger (needs to log "info" to include the request data, see LogService __call function)
+		$this->Log->info("info");
+
+		// Reset the session when a user is not logged in. This will ensure the CSRF tokens are always "fresh"
+		if ($_SERVER['REQUEST_METHOD'] == "GET" && empty($this->Auth->loggedIn())) {
+			CSRF::regenerate();
+		}
+
+		// Generate CSRF tokens and store them in the $_SESSION
+		if (Config::get('system.csrf.enabled') === true) {
+			CSRF::getTokenID();
+			CSRF::getTokenValue();
+		}
+
+		$_SESSION['last_request'] = time();
+
+		//$this->debug("Start processing: ".$_SERVER['REQUEST_URI']);
+		// find out which module to use
+		$module_found = false;
 		$action_found = false;
 
 		$this->_paths = $this->_getCommandPath();
@@ -568,34 +618,6 @@ class Web {
 			}
 		}
 
-		// start the session
-		// $sess = new SessionManager($this);
-		try {
-			if ($this->_isPortal === true) {
-				session_name(!empty($domainmodule) ? $domainmodule . '_SID' : 'PORTAL_SID');
-			} else {
-				session_name(SESSION_NAME);
-			}
-			session_start();
-		} catch (Exception $e) {
-			$this->Log->info("Error starting session " . $e->getMessage());
-		}
-
-		// Initialise the logger (needs to log "info" to include the request data, see LogService __call function)
-		$this->Log->info("info");
-
-		// Reset the session when a user is not logged in. This will ensure the CSRF tokens are always "fresh"
-		if ($_SERVER['REQUEST_METHOD'] == "GET" && empty($this->Auth->loggedIn())) {
-			CSRF::regenerate();
-		}
-
-		// Generate CSRF tokens and store them in the $_SESSION
-		if (Config::get('system.csrf.enabled') === true) {
-			CSRF::getTokenID();
-			CSRF::getTokenValue();
-		}
-
-		$_SESSION['last_request'] = time();
 
 		// first find the module file
 		if ($this->_paths && sizeof($this->_paths) > 0) {
@@ -630,7 +652,7 @@ class Web {
 
 		// configure translations lookup for this module
 		$this->initLocale();
-		
+
 		try {
 			$this->setTranslationDomain('admin');
 			$this->setTranslationDomain('main');
@@ -638,7 +660,7 @@ class Web {
 		} catch (Exception $e) {
 			$this->Log->setLogger('I18N')->error($e->getMessage());
 		}
-		
+
 		if (!$this->_action) {
 			$this->_action = $this->_defaultAction;
 		}
@@ -851,7 +873,7 @@ class Web {
 	 */
 	public function initDB() {
 		try {
-			$this->db = new DbPDO(Config::get("database"));
+			$this->db = new DbPDO(Config::get("database"), Config::get("search.stopword_override"));
 		} catch (Exception $ex) {
 			echo "Error: Can't connect to database.";
 			die();
@@ -937,12 +959,12 @@ class Web {
 							if (!$this->_is_installing) {
                                 include(ROOT_PATH . '/config.php');
                             }
-                            
+
 							if (Config::get("{$item}.active") === true) {
 								// Need to reset sandbox content to remove inclusion of project config
 								Config::clearSandbox();
 								include($searchingDir . '/config.php');
-								
+
 								// If we are loading with dependencies, register config in the dependency loader
 								// (located in Config.php) instead of putting into base config setup
 								if ($loadWithDependencies === true) {
@@ -954,14 +976,14 @@ class Web {
                                     Config::enableSandbox();
 								}
 							}
-							
+
 							// Always disable the sandbox to ensure other uses of Config do not get omitted
 							Config::clearSandbox();
 							Config::disableSandbox();
                         }
                     }
                 }
-				
+
 				// Load with dependencies if required
 				if ($loadWithDependencies === true) {
 					try {
@@ -1040,6 +1062,12 @@ class Web {
 
 		if ($this->Auth && $this->Auth->user()) {
 			$user = $this->Auth->user();
+
+			if ($user->is_password_invalid && $path !== "auth/update_password") {
+				$this->Log->info("Redirecting to reset password page, user password is invalid");
+				$this->redirect($this->localUrl("/auth/update_password"));
+			}
+
 			$usrmsg = $user ? " for " . $user->login : "";
 			if (!$this->Auth->allowed($path)) {
 				$this->Log->info("System: Access Denied to " . $path . $usrmsg . " from " . $this->requestIpAddress());
@@ -1510,13 +1538,14 @@ class Web {
 
 		// getModuleDir can return path with trailing '/' but we dont want that
 		$moduleDir = $this->getModuleDir($module);
+
 		if ($moduleDir[strlen($moduleDir) - 1] === '/') {
 			$moduleDir = substr($moduleDir, 0, strlen($moduleDir) - 1);
 		}
+
 		$partial_action_file = implode("/", array($moduleDir, $this->_partialsdir, "actions", $name . ".php"));
 
 		if (file_exists($partial_action_file)) {
-
 			require_once $partial_action_file;
 
 			// Execute the action, accounting for the use of namespaces
@@ -1559,8 +1588,10 @@ class Web {
 
 		if (empty($currentbuf)) {
 			// try to find the partial template and execute if found
-			$partial_template_file = implode("/", array($this->getModuleDir($module), $this->_partialsdir, "templates", $name . $this->_templateExtension));
+			$partial_template_file = implode("/", array($moduleDir, $this->_partialsdir, "templates", $name . $this->_templateExtension));
+
 			if (file_exists($partial_template_file)) {
+
 				$tpl = new WebTemplate();
 				$this->ctx("w", $this);
 				$tpl->set_vars($this->_context);
@@ -1590,9 +1621,10 @@ class Web {
 	 * @param String module
 	 * @param String $function
 	 * @param Mixed $data
-	 * @return an array of return values from all functions that answer to this hool
+	 * @return array array of return values from all functions that answer to this hool
 	 */
 	public function callHook($module, $function, $data = null) {
+
 		if (empty($module) || empty($function)) {
 			return null;
 		}
@@ -1642,23 +1674,35 @@ class Web {
 
 			$hook_function_name = $toInvoke . "_" . $module . "_" . $function;
 
-			// if this function is already loaded from an earlier call, execute now
-			if (function_exists($hook_function_name)) {
-				$buffer[] = $hook_function_name($this, $data);
-			} else {
-				// Check if the file exists and load
-				if (!file_exists($this->getModuleDir($toInvoke) . $toInvoke . ".hooks.php")) {
-					continue;
-				}
-
-				// Include and check if function exists
-				include_once $this->getModuleDir($toInvoke) . $toInvoke . ".hooks.php";
-
+			//check if we have already loaded module hooks
+			if (!in_array($toInvoke,$this->_module_loaded_hooks)){
+				// if this function is already loaded from an earlier call, execute now
 				if (function_exists($hook_function_name)) {
-					// Call function
+					$buffer[] = $hook_function_name($this, $data);
+				} else {
+					// Check if the file exists and load
+					if (!file_exists($this->getModuleDir($toInvoke) . $toInvoke . ".hooks.php")) {
+						continue;
+					}
+
+					// Include and check if function exists
+
+					include_once $this->getModuleDir($toInvoke) . $toInvoke . ".hooks.php";
+					// add module to loaded hooks array
+					$this->_module_loaded_hooks[] = $toInvoke;
+
+					if (function_exists($hook_function_name)) {
+						// Call function
+
+						$buffer[] = $hook_function_name($this, $data);
+					}
+				}
+			} else {
+				if (function_exists($hook_function_name)) {
 					$buffer[] = $hook_function_name($this, $data);
 				}
 			}
+
 		}
 
 		// restore translations module
