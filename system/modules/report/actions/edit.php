@@ -193,7 +193,7 @@ function edit_POST(Web $w)
     // Insert or Update
     $report->fill($_POST);
 
-    $report->category = !empty($w->request('category', null)) ? $w->request('category') : null;
+    // $report->category = // !empty($w->request('category', null)) ? $w->request('category') : null;
 
     // Force select statements only
     $report->sqltype = "select";

@@ -27,6 +27,13 @@ label {
         width: 100%;
     }
 
+    select {
+        background-color: white;
+        padding: 10px 5px;
+        border-radius: 3px;
+        border: 1px solid darken($dark-border-colour, 20%);
+    }
+
     input {
         display: block;
         padding: 10px;
