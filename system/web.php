@@ -779,10 +779,11 @@ class Web
             //     "max-age" => "10886400",
             //     "endpoints" => ["url" => "/main/logCSPReport"],
             // ]));
-            $this->sendHeader(
-                "Content-Security-Policy-Report-Only",
-                "default-src 'self'; report-uri /main/logCSPReport/;" // report-to log-action"
-            );
+            // All content must come from the  site and dissallow flash.
+            // $this->sendHeader(
+            //     "Content-Security-Policy-Report-Only",
+            //     "default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; object-src 'none'; report-uri /main/logCSPReport/;" // report-to log-action"
+            // );
 
             // send headers first
             if ($this->_headers) {

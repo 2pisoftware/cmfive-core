@@ -10,21 +10,22 @@ Config::set("system.allow_module", array(
     // "rest", // uncomment this to switch on REST access to the database objects. Tread with CAUTION!
 ));
 
-Config::set('system.allow_action', array(
+Config::append('system.allow_action', array(
     "auth/login",
-    "auth/forgotpassword",
+    // "auth/forgotpassword",
     "auth/resetpassword",
     "admin/datamigration",
-	"install-steps/details",
-	"install-steps/database",
-	"install-steps/import",
-	"install-steps/finish"
+    "install-steps/details",
+    "install-steps/database",
+    "install-steps/import",
+    "install-steps/finish",
+    "main/logCSPReport",
 ));
 
 /**
  * The password salt is used by the AES encryption library
  * The salt length HAS to be 16, 24, or 32 characters long (8-bit)
- * 
+ *
  * The easiest way to generate a 32 char salt is to use MD5
  */
 Config::set('system.password_salt', md5('override this in your project config'));
