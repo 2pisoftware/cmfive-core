@@ -48,22 +48,22 @@
  * 1. SearchableAspect -> public $_searchable;
  *    This Aspect does not add any public functions to the object, but extends
  *    the insert/update/delete behaviour so that an index record is created (or updated)
- *    in the table object_index which contains the object_id reference and a sanitised 
+ *    in the table object_index which contains the object_id reference and a sanitised
  *    string of the content of the source object's fields for fulltext retrieval.
- *    
+ *
  *    Per default all properties (except thos in the $_exclude_index array) are concatenated
  *    and included in the index. In order to add custom content (eg. from dependent tables)
  *    create the following:
- *    
+ *
  *    function addToIndex() {}
- *    
+ *
  *    Which should return a string to be added to the indexable content. All sanitising and
  *    word de-duplication is performed on this.
- *    
- * 2. Aspects can be removed in the case of class inheritance. If the parent class has 
+ *
+ * 2. Aspects can be removed in the case of class inheritance. If the parent class has
  *    public $_searchable; defined then this can be removed by a child class using:
  *    public $_remove_searchable. However further childclasses can no longer add this aspect!
- *    
+ *
  * 3. Auditing of inserts and updates happens automatically to an audit table.
  *    However this can be turned off by setting
  *    public $__use_auditing = false;
@@ -77,9 +77,9 @@ class DbObject extends DbService {
     private static $_object_vars = array();
 	private static $_columns = array();
     private $_class;
-	public $__use_auditing = true;
-	
-    /**
+    public $__use_auditing = true;
+
+        /**
      * Constructor
      *
      * @param $w
@@ -208,7 +208,7 @@ class DbObject extends DbService {
 
     /**
      * print a view link to this object
-     * 
+     *
      * @param string $class
      * @param string $target
      * @return string
@@ -227,10 +227,24 @@ class DbObject extends DbService {
      * used by the search display function to check whether the user has
      * permission to see this result item.
      *
-     * @param <type> $user
-     * @return <type>
+     * @param User $user
+     * @return boolean
      */
     function canList(User $user) {
+        if (property_exists($this, "_restrictable") && $this->isRestricted()) {
+            $owner = $this->getObject("RestrictedObjectUserLink", ["object_id" => $this->id, "user_id" => $user->id, "type" => "owner"]);
+            if (!empty($owner)) {
+                return true;
+            }
+
+            $viewer = $this->getObject("RestrictedObjectUserLink", ["object_id" => $this->id, "user_id" => $user->id, "type" => "viewer"]);
+            if (!empty($viewer)) {
+                return true;
+            }
+
+            return false;
+        }
+
         return true;
     }
 
@@ -239,8 +253,23 @@ class DbObject extends DbService {
      * permission to view further details about this item.
      *
      * @param User $user
+     * @return boolean
      */
     function canView(User $user) {
+        if (property_exists($this, "_restrictable") && $this->isRestricted()) {
+            $owner = $this->getObject("RestrictedObjectUserLink", ["object_id" => $this->id, "user_id" => $user->id, "type" => "owner"]);
+            if (!empty($owner)) {
+                return true;
+            }
+
+            $viewer = $this->getObject("RestrictedObjectUserLink", ["object_id" => $this->id, "user_id" => $user->id, "type" => "viewer"]);
+            if (!empty($viewer)) {
+                return true;
+            }
+
+            return false;
+        }
+
         return true;
     }
 
@@ -249,8 +278,23 @@ class DbObject extends DbService {
      * permissions to edit this item.
      *
      * @param User $user
+     * @return boolean
      */
     function canEdit(User $user) {
+        if (property_exists($this, "_restrictable") && $this->isRestricted()) {
+            $owner = $this->getObject("RestrictedObjectUserLink", ["object_id" => $this->id, "user_id" => $user->id, "type" => "owner"]);
+            if (!empty($owner)) {
+                return true;
+            }
+
+            $viewer = $this->getObject("RestrictedObjectUserLink", ["object_id" => $this->id, "user_id" => $user->id, "type" => "viewer"]);
+            if (!empty($viewer)) {
+                return true;
+            }
+
+            return false;
+        }
+
         return true;
     }
 
@@ -259,14 +303,47 @@ class DbObject extends DbService {
      * permissions to delete this item.
      *
      * @param User $user
+     * @return boolean
      */
     function canDelete(User $user) {
+        if (property_exists($this, "_restrictable") && $this->isRestricted()) {
+            $owner = $this->getObject("RestrictedObjectUserLink", ["object_id" => $this->id, "user_id" => $user->id, "type" => "owner"]);
+            if (!empty($owner)) {
+                return true;
+            }
+
+            $viewer = $this->getObject("RestrictedObjectUserLink", ["object_id" => $this->id, "user_id" => $user->id, "type" => "viewer"]);
+            if (!empty($viewer)) {
+                return true;
+            }
+
+            return false;
+        }
+
         return true;
     }
 
     /**
+     * isRestricted checks for links between this object & the RestrictedObjectUserLink object.
+     * If there are links found the object is restricted, otherwise it is not.
+     *
+     * @return boolean
+     */
+    public function isRestricted() {
+        $links = $this->w->db->get("restricted_object_user_link")
+            ->select()
+            ->select("id")
+            ->where("object_class", get_class($this))
+            ->where("object_id", $this->id)
+            ->where("is_deleted", 0)
+            ->fetchAll();
+
+        return empty($links) ? false : true;
+    }
+
+    /**
      * Apply value conversions from database values
-     * 
+     *
      * @param string $k
      * @param mixed $v
      * @return mixed
@@ -280,10 +357,10 @@ class DbObject extends DbService {
             if (!empty($v)) {
                 return $this->d2Time($v);
             }
-        } 
+        }
         return $v;
     }
-    
+
     function getObjectVars() {
         if(!empty(self::$_object_vars[$this->_class])) {
             return self::$_object_vars[$this->_class];
@@ -298,7 +375,7 @@ class DbObject extends DbService {
         }
         return self::$_object_vars[$this->_class];
     }
-    
+
     /**
      * fill this object from an array where the keys correspond to the
      * variable of this object.
@@ -324,7 +401,7 @@ class DbObject extends DbService {
 
     /**
      * Creates a shallow copy of an object without saving to DB (by default)
-     * 
+     *
      * @param boolean saveToDB (optional, default false)
      * @return Object
      */
@@ -433,26 +510,26 @@ class DbObject extends DbService {
 	/**
 	 * Returns whether or not this object exists in the database
 	 * Base on the id not being null and greater than 0
-	 * 
+	 *
 	 * @return <bool> exists
 	 */
 	public function exists() {
 		return !is_null($this->id) && intval($this->id) > 0;
 	}
-	
+
 	/**
 	 * Checks whether or not a given property has changed. It does this by
 	 * looking for the $prop value in the __old array and comparing it against
 	 * the active property.
-	 * 
+	 *
 	 * @param string $prop
 	 * @return boolean
 	 */
 	public function propertyHasChanged($prop) {
-		return property_exists($this, '__old') && property_exists($this, $prop) && 
+		return property_exists($this, '__old') && property_exists($this, $prop) &&
 				array_key_exists($prop, $this->__old) && $this->__old[$prop] != $this->$prop;
 	}
-	
+
     /**
      * Utility function to decide
      * whether to insert or update
@@ -468,7 +545,7 @@ class DbObject extends DbService {
 
     /**
      * Call database action hooks:
-     * 
+     *
      * core_dbobject_before_insert
      * core_dbobject_before_insert_[classname]
      * core_dbobject_after_insert
@@ -481,7 +558,7 @@ class DbObject extends DbService {
      * core_dbobject_before_delete_[classname]
      * core_dbobject_after_delete
      * core_dbobject_after_delete_[classname]
-     * 
+     *
      * @param unknown $type eg. before / after
      * @param unknown $action eg. insert / update / delete
      */
@@ -500,6 +577,8 @@ class DbObject extends DbService {
     function insert($force_validation = true) {
         try {
             $this->startTransaction();
+
+            $this->validateBoolianProperties();
 
             if ($force_validation && property_exists($this, "_validation")) {
                 $valid_response = $this->validate();
@@ -570,8 +649,7 @@ class DbObject extends DbService {
 
             $this->id = $this->_db->last_insert_id();
 
-            // calling hooks AFTER inserting the object
-            $this->_callHooks("after", "insert");
+
 
             // call standard aspect methods
 
@@ -585,9 +663,12 @@ class DbObject extends DbService {
                 $this->_searchable->insert(false);
             }
 
+            // calling hooks AFTER inserting the object
+            $this->_callHooks("after", "insert");
+
             // give related objects the chance to update their index
             $this->w->callHook("core_dbobject", "indexChange_".get_class($this), $this);
-            
+
             // store this id in the context for hooks etc.
             $inserts = $this->w->ctx('db_inserts');
             if (!$inserts) {
@@ -613,8 +694,8 @@ class DbObject extends DbService {
      *
      * if $force_null_values is true set null values in db, if false, null values in object will be ignored.
      *
-     * @param boolean $force_null_values        	
-     * @param boolean $force_validation        	
+     * @param boolean $force_null_values
+     * @param boolean $force_validation
      * @return  boolean|array true or Array of validation errors
      */
     function update($force_null_values = false, $force_validation = true) {
@@ -629,6 +710,8 @@ class DbObject extends DbService {
                 }
             }
 
+            $deletedOnManualUpdate = false;
+
             // calling hooks BEFORE updating the object
             $this->_callHooks("before", "update");
 
@@ -637,6 +720,16 @@ class DbObject extends DbService {
             // check delete attribute
             if (in_array("is_deleted", $columns) && $this->is_deleted === null) {
                 $this->is_deleted = 0;
+            }
+
+            // call delete function if property is_deleted has changed to 1
+            else if (in_array("is_deleted", $columns) && $this->is_deleted == 1 && $this->__old["is_deleted"] != 1) {
+                $deletedOnManualUpdate = true;
+                $this->_callHooks("before", "delete");
+            }
+
+            else {
+                $deletedOnManualUpdate = false;
             }
 
             // set default attributes the old way
@@ -649,6 +742,9 @@ class DbObject extends DbService {
                     $this->modifier_id = $this->w->Auth->user()->id;
                 }
             }
+
+            $this->validateBoolianProperties();
+
             $data = array();
             foreach (get_object_vars($this) as $k => $v) {
                 if ($k {0} != "_" && $k != "w") { // ignore volatile vars
@@ -667,8 +763,13 @@ class DbObject extends DbService {
                 }
             }
 
+
             $this->_db->update($t, $data)->where($this->getDbColumnName('id'), $this->id);
             $this->_db->execute();
+
+            if ($deletedOnManualUpdate) {
+                $this->_callHooks("after", "delete");
+            }
 
             // calling hooks AFTER updating the object
             $this->_callHooks("after", "update");
@@ -683,10 +784,10 @@ class DbObject extends DbService {
             if (property_exists($this, "_searchable") && (null !== $this->_searchable)) {
                 $this->_searchable->update(false);
             }
-            
+
             // give related objects the chance to update their index
 			$this->w->callHook("core_dbobject", "indexChange_".get_class($this), $this);
-			
+
             // store this id in the context for hooks
             $updates = $this->w->ctx('db_updates');
             if (!$updates) {
@@ -736,7 +837,7 @@ class DbObject extends DbService {
 
             // give related objects the chance to update their index
             $this->w->callHook("core_dbobject", "indexChange_".get_class($this), $this);
-            
+
             // store this id in the context for listeners
             $deletes = $this->w->ctx('db_deletes');
             if (!$deletes) {
@@ -763,12 +864,12 @@ class DbObject extends DbService {
     /**
      * Returns the table name where this object is
      * stored
-     * 
+     *
      * Uses either:
-     * 
+     *
      * 1) the value of the property $_db_table (if it exists)
      * 2) the name of the class as "snake_case" (lowercase)
-     * 
+     *
      * You can also override this function completely.
      *
      * @return String
@@ -841,7 +942,7 @@ class DbObject extends DbService {
     /**
      * get Creator user object if creator_id
      * property exists
-     * 
+     *
      * @return User
      */
     function getCreator() {
@@ -857,7 +958,7 @@ class DbObject extends DbService {
     /**
      * get Modifier user object if creator_id
      * property exists
-     * 
+     *
      * @return User
      */
     function getModifier() {
@@ -872,38 +973,56 @@ class DbObject extends DbService {
 
     /**
      * Override this function if you want to add custom content
-     * to the search index for this object. 
-     * 
+     * to the search index for this object.
+     *
      * DO NOT CALL $this->getIndexContent() within this function
      * or you will create an endless loop which will destroy the universe!
-     * 
+     *
      * @return String
      */
     function addToIndex() {
-        
+
+    }
+
+    /**
+     * Override this function if you want to set wether this object should not be added
+     * to the search index for this object.
+     *
+     *
+     * @return Bool
+     */
+    function shouldAddToSearch() {
+        return true;
     }
 
     // a list of english words that need not be searched against
     // and thus do not need to be stored in an index
+
+    //This is list is depreciated, it has been left here for backwards compatability
     static $_stopwords = "about above across after again against all almost alone along already also although always among and any anybody anyone anything anywhere are area areas around ask asked asking asks away back backed backing backs became because become becomes been before began behind being beings best better between big both but came can cannot case cases certain certainly clear clearly come could did differ different differently does done down downed downing downs during each early either end ended ending ends enough even evenly ever every everybody everyone everything everywhere face faces fact facts far felt few find finds first for four from full fully further furthered furthering furthers gave general generally get gets give given gives going good goods got great greater greatest group grouped grouping groups had has have having her here herself high higher highest him himself his how however important interest interested interesting interests into its itself just keep keeps kind knew know known knows large largely last later latest least less let lets like likely long longer longest made make making man many may member members men might more most mostly mrs much must myself necessary need needed needing needs never new newer newest next nobody non noone not nothing now nowhere number numbers off often old older oldest once one only open opened opening opens order ordered ordering orders other others our out over part parted parting parts per perhaps place places point pointed pointing points possible present presented presenting presents problem problems put puts quite rather really right room rooms said same saw say says second seconds see seem seemed seeming seems sees several shall she should show showed showing shows side sides since small smaller smallest some somebody someone something somewhere state states still such sure take taken than that the their them then there therefore these they thing things think thinks this those though thought thoughts three through thus today together too took toward turn turned turning turns two under until upon use used uses very want wanted wanting wants was way ways well wells went were what when where whether which while who whole whose why will with within without work worked working works would year years yet you young younger youngest your yours";
 
     /**
      * Consolidate all object fields into one big search friendly string.
-     * 
+     *
      * @return string
      */
     function getIndexContent($ignoreAdditional = true) {
 
-        // -------------- concatenate all object fields ---------------------		
+        // -------------- concatenate all object fields ---------------------
         $str = "";
-        $exclude = array("dt_created", "dt_modified", "id", "w");
+        $exclude = array("dt_created", "dt_modified", "w");
 
         foreach (get_object_vars($this) as $k => $v) {
             if ($k{0} != "_" // ignore volatile vars
                     && (!property_exists($this, "_exclude_index") // ignore properties that should be excluded
                     || !in_array($k, $this->_exclude_index)) && stripos($k, "_id") === false && !in_array($k, $exclude)
             ) {
-                $str .= $v . " ";
+                if ($k == "id")
+                {
+                    $str .= "id" . $v . " ";
+                } else {
+                    $str .= $v . " ";
+                }
             }
         }
 
@@ -914,9 +1033,9 @@ class DbObject extends DbService {
         if (!$ignoreAdditional) {
 	        $additional = $this->w->callHook("core_dbobject", "add_to_index", $this);
         }
-        
+
         if (!empty($additional)) {
-			$str .= ' '.implode(" ",$additional); 
+			$str .= ' '.implode(" ",$additional);
         }
 
         // ------------ sanitise string ----------------------------------
@@ -929,12 +1048,12 @@ class DbObject extends DbService {
         // Remove line breaks
         $str = str_replace("\n", " ", $str);
 
-        // Remove all characters except A-Z, a-z, 0-9, dots, commas, hyphens, spaces and forward slashes (for dates) 
-        // Note that the hyphen must go last not to be confused with a range (A-Z) 
+        // Remove all characters except A-Z, a-z, 0-9, dots, commas, hyphens, spaces and forward slashes (for dates)
+        // Note that the hyphen must go last not to be confused with a range (A-Z)
         // and the dot, being special, is escaped with backslash
         $str = preg_replace("/[^A-Za-z0-9 \.,\-\/@':]/", '', $str);
 
-        // Replace sequences of spaces with one space 
+        // Replace sequences of spaces with one space
         $str = preg_replace('/  +/', ' ', $str);
 
         // de-duplicate string and remove any word shorter than 3 characters
@@ -943,7 +1062,8 @@ class DbObject extends DbService {
         });
 
         // remove stop words
-        $temparr = array_diff($temparr, explode(" ", self::$_stopwords));
+         $temparr = array_diff($temparr, explode(" ", Config::get("search.stopwords")));
+
         $str = implode(" ", $temparr);
 
         return $str;
@@ -955,20 +1075,20 @@ class DbObject extends DbService {
      * The Html::form() and Html::multiColForm() functions will use this function
      * to create a select option list if no other options are given in the parameters
      * for this field.
-     * 
+     *
      * There are 2 ways this function can be used ..
-     * 
+     *
      * 1. You can just override it in your subclass and do what you want
      * 2. You can use the automagic properties in your subclass explained below
-     * 
+     *
      * The return of this function should be an array that is fit for passing to Html::select(), eg.
-     * 
+     *
      * a) array("Option1", "Option2", ..)
      * b) array(array("Title","Value"), array("Title","Value), ..)
      * c) array($dbobject1, $dbobject2, ..)
-     * 
+     *
      * Automagic UI Field Hints
-     * 
+     *
      * static $_<fieldname>_ui_select_string = array("option1","option2",...);
      * --> create a select dropdown using those strings explicitly
      *
@@ -979,7 +1099,7 @@ class DbObject extends DbService {
      * static $_<fieldname>_ui_select_objects_class = "Contact";
      * static $_<fieldname>_ui_select_objects_filter = array("is_deleted"=>0);
      * --> create a select filling it with the objects for the _class filtered by the _filter criteria
-     * 
+     *
      * @param String $field
      * @return array
      */
@@ -1013,7 +1133,7 @@ class DbObject extends DbService {
     /**
      * Validate the object's properties according to the rules
      * defined in $_validation array.
-     * 
+     *
      * @return void|multitype:multitype: boolean
      */
     function validate() {
@@ -1178,5 +1298,18 @@ class DbObject extends DbService {
 	public function __toString() {
 		return $this->printSearchTitle();
 	}
-	
+
+    //loops through properties ensuring boolians are either 'true' or 'false'
+    public function validateBoolianProperties() {
+        foreach (get_object_vars($this) as $k => $v) {
+            if ($k {0} != "_" && $k != "w") { // ignore volatile vars
+                if (substr($k, 0, 3) === 'is_') {
+                    //echo $k; echo '<br>';
+                    $this->$k = $v ? 1 : 0;
+                    //echo $this->$k; echo '<br>';
+                }
+            }
+        }
+    }
 }
+

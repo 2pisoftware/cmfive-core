@@ -1,0 +1,33 @@
+
+table.cmfive-html-table {
+	width: 100%;
+	border: 1px solid #d4dbe1;
+	border-collapse: collapse;
+
+	thead {
+		tr {
+			th {
+				background-color: white;
+				font-weight: normal;
+			}
+		}
+	}
+
+	tbody {
+		tr {
+			border-top: 1px solid #d4dbe1;
+
+			&:nth-child(2n) {
+				background-color: white;
+			}
+
+			&:nth-child(2n-1) {
+				background-color: #f0f4f7;
+			}
+
+			td {
+
+			}
+		}
+	}
+}

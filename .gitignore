@@ -1,0 +1,10 @@
+/.buildpath
+/.externalToolBuilders/
+/.project
+/.settings/
+/system/composer.json
+/system/tests/vendor
+/system/tests/_output
+/system/tests/composer.phar
+/system/tests/composer.lock
+/system/tests/support/_generated

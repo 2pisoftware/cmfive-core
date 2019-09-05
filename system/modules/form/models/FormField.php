@@ -26,7 +26,17 @@ class FormField extends DbObject {
 	 * @return  boolean|array true or Array of validation errors
 	 */
 	public function insert($force_validation = true) {
-		$this->technical_name = strtolower(str_replace(" ", "_", $this->name));
+		if ($this->type === "unique_id") {
+			$existing_unique_field = $this->getForm()->getUniqueIdField();
+			if (!empty($existing_unique_field->id)) {
+				// Reuse the validation structure from DbObject
+				return ["valid" => [], "invalid" => ["type" => "There can only be one field of Unique ID per form"], "success" => false];
+			}
+		}
+
+		if (empty($this->technical_name)) {
+			$this->technical_name = strtolower(str_replace(" ", "_", $this->name));
+		}
 		$this->setInterfaceClass();
 		
 		return parent::insert($force_validation);
@@ -38,7 +48,17 @@ class FormField extends DbObject {
 	 * @return  boolean|array true or Array of validation errors
 	 */
 	public function update($force_null_values = false, $force_validation = true) {
-		$this->technical_name = strtolower(str_replace(" ", "_", $this->name));
+		if ($this->type === "unique_id") {
+			$existing_unique_field = $this->getForm()->getUniqueIdField();
+			if (!empty($existing_unique_field->id) && $existing_unique_field->id !== $this->id) {
+				// Reuse the validation structure from DbObject
+				return ["valid" => [], "invalid" => ["type" => "There can only be one field of Unique ID per form"], "success" => false];
+			}
+		}
+
+		if (empty($this->technical_name)) {
+			$this->technical_name = strtolower(str_replace(" ", "_", $this->name));
+		}
 		$this->setInterfaceClass();
 		
 		return parent::update($force_null_values, $force_validation);
@@ -72,7 +92,7 @@ class FormField extends DbObject {
 		$fieldTypes = [];
 		if (!empty($interfaces)) {
 			foreach($interfaces as $interface) {
-				$fieldTypes += $interface::respondsTo();  // array append
+				$fieldTypes = array_merge($fieldTypes, $interface::respondsTo());  // array append
 			}
 		}
 		return $fieldTypes;
@@ -83,7 +103,16 @@ class FormField extends DbObject {
 	 * @return [FormFieldMetaData]
 	 */
 	public function getMetadata() {
-		return $this->getObjects("FormFieldMetadata", ["form_field_id" => $this->id, "is_deleted" => 0]);
+		$metadata = $this->getObjects("FormFieldMetadata", ["form_field_id" => $this->id, "is_deleted" => 0]);
+		if (!empty($metadata)) {
+			foreach($metadata as &$metadata_row) {
+				if (is_array(json_decode($metadata_row->meta_value, true))) {
+					$metadata_row->meta_value = json_decode($metadata_row->meta_value, true);
+				}
+			}
+		}
+
+		return $metadata;
 	}
 	
 	/**
@@ -95,7 +124,7 @@ class FormField extends DbObject {
 		$additional_details = '';
 		if (!empty($metadata)){
 			foreach($metadata as $meta) {
-				$additional_details .= ucwords(str_replace("_", " ", $meta->meta_key)) . ": " . $meta->meta_value . ($meta !== end($metadata) ? ', ' : '');
+				$additional_details .= ucwords(str_replace("_", " ", $meta->meta_key)) . ": " . (is_array($meta->meta_value) ? json_encode($meta->meta_value) : $meta->meta_value) . ($meta !== end($metadata) ? ', ' : '');
 			}
 		}
 		return $additional_details;
@@ -106,7 +135,7 @@ class FormField extends DbObject {
 	 * @return FormFieldMetadata
 	 */
 	public function findMetadataByKey($key) {
-		$metadata = $this->getObject("FormFieldMetadata", ["meta_key" => $key, "form_field_id" => $this->id, "is_deleted" => 0]);
+		return $this->getObject("FormFieldMetadata", ["meta_key" => $key, "form_field_id" => $this->id, "is_deleted" => 0]);
 	}
 	
 	/**
@@ -127,21 +156,21 @@ class FormField extends DbObject {
 		if (empty($this->type)) {
 			return null;
 		}
+
 		$interface = $this->interface_class;
-		$row=[
-			$this->name, $interface::formType($this->type), $this->technical_name,""
-		];
+		$row = [$this->name, $interface::formType($this->type), $this->technical_name, ""];
 		$metaData=$this->getMetadata();
-		if (is_array($metaData) && count($metaData)>0) {
-			$metaArray=[];
+
+		if (is_array($metaData) && count($metaData) > 0) {
+			$metaArray = [];
 			foreach ($metaData as $meta) {
-				$metaArray[$meta->meta_key]=$meta->meta_value;
+				$metaArray[$meta->meta_key] = $meta->meta_value;
 			}
 			
-			$formConfig=$interface::formConfig($this->type,$metaArray,$this->w);
-			if (is_array($formConfig) && count($formConfig)>0) {
+			$formConfig=$interface::formConfig($this->type, $metaArray, $this->w);
+			if (is_array($formConfig) && count($formConfig) > 0) {
 				foreach ($formConfig as $v) {
-					$row[]=$v;
+					$row[] = $v;
 				}
 			}
 		}
@@ -158,7 +187,17 @@ class FormField extends DbObject {
 	public function getMetaDataForm() {
 		$interface = $this->interface_class;
 		if ($interface::respondsTo($this->type)) {
-			return $interface::metadataForm($this->type);
+			return $interface::metadataForm($this->type, $this->w);
 		}
+	}
+
+	/**
+	 * Returns the readable version of this fields type
+	 *
+	 * @return String readable type
+	 */
+	public function getReadableType() {
+		$interface = $this->interface_class;
+		return $interface::getReadableType($this->type);
 	}
 }

@@ -9,7 +9,8 @@
  * @author Adam Buckley <adam@2pisoftware.com>
  */
 class DbPDO extends PDO {
-    private static $table_names = array();
+    // private static $table_names = array();
+    private $table_names = array();
 	
     private static $_QUERY_CLASSNAME = array("InsertQuery", "SelectQuery", "UpdateQuery"); //"PDOStatement", 
 
@@ -24,26 +25,53 @@ class DbPDO extends PDO {
 
     private $migration_mode = 0;
     
-    public function __construct($config = array()) {
+    public function __construct($config = array(), $override = false) {
         // Set up our PDO class
-        $port = !empty($config['port']) ? ";port=".$config['port'] : "";
-        $url = "{$config['driver']}:host={$config['hostname']};dbname={$config['database']}{$port}";
-        parent::__construct($url,$config["username"],$config["password"], array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"));
+        //GC: sqlsrv requires a different dsn to mysql.
+        switch ($config['driver']) {
+			case 'sqlsrv':
+				$port = isset($config['port']) && !empty($config['port']) ? ",".$config['port'] : "";
+				$url = "{$config['driver']}:Server={$config['hostname']}{$port};Database={$config['database']}";
+				break;
+			//linux apache2 driver
+			case 'dblib':
+				$port = isset($config['port']) && !empty($config['port']) ? ",".$config['port'] : "";
+				$url = "{$config['driver']}:host={$config['hostname']}{$port};dbname={$config['database']}";
+				break;			
+                //mysql
+            case 'mysql':
+			default:
+				$port = isset($config['port']) && !empty($config['port']) ? ";port=".$config['port'] : "";
+				$url = "{$config['driver']}:host={$config['hostname']};dbname={$config['database']}{$port}";
+		}
+
+        parent::__construct($url,$config["username"],$config["password"], array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8mb4'"));
         $this->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         
-        // Since you cant bind table names, maybe its a good idea to
-        // load an array of table names to check against? But this is probably
-        // unecessary to do on every call so maybe move it to get()
-        // Setting this to static however should make this array share the memory
-        // heap for this var across all instances
-		$this->getAvailableTables();
+       
 		
         // Instantiate a FluentPDO class and init vars
         $this->fpdo = new FluentPDO($this);
         
         $this->sql = 'getSql'; //$this->getSql();
         $this->config = $config;
+
+         // Since you cant bind table names, maybe its a good idea to
+        // load an array of table names to check against? But this is probably
+        // unecessary to do on every call so maybe move it to get()
+        // Setting this to static however should make this array share the memory
+        // heap for this var across all instances
+        $this->getAvailableTables();
+       
+        if (in_array("custom_stopwords_override", $this->table_names) && $override == true && $config['driver'] == 'mysql') {
+            $this->disableStopwords();
+        }
     } 
+
+    public function disableStopwords() {
+        $database_name = $this->config['database'];
+        $this->sql("SET SESSION innodb_ft_user_stopword_table = '$database_name/custom_stopwords_override';");
+    }
 
     public function getDatabase() {
     	return $this->config['database'];
@@ -75,13 +103,17 @@ class DbPDO extends PDO {
      * @return Array DbPDO::$table_names all table names
      */
 	public function getAvailableTables() {
-        if ($this->migration_mode || empty(DbPDO::$table_names)) {
-            DbPDO::$table_names = [];
-            foreach($this->query("show tables")->fetchAll(PDO::FETCH_NUM) as $table) {
-                DbPDO::$table_names[] = $table[0];
+        if ($this->migration_mode || empty($this->table_names)) {
+            $this->table_names = [];
+            $query = 'show tables';
+			if ($this->config['driver'] == 'sqlsrv') {
+				$query = 'select TABLE_NAME from INFORMATION_SCHEMA.TABLES';
+			}
+            foreach($this->query($query)->fetchAll(PDO::FETCH_NUM) as $table) {
+                $this->table_names[] = $table[0];
             }
         }
-        return DbPDO::$table_names;
+        return $this->table_names;
 	}
 	
     /**
@@ -140,7 +172,7 @@ class DbPDO extends PDO {
      */
     public function count(){
         if ($this->query !== null){
-            $result = $this->select("count(*)")->fetch_element("count(*)");
+            $result = $this->select()->select("count(*)")->fetch_element("count(*)");
             return intval($result);
         }
     }
@@ -154,6 +186,19 @@ class DbPDO extends PDO {
     public function leftJoin($leftJoin){
         if ($this->query !== NULL && !empty($leftJoin)){
             $this->query = $this->query->leftJoin($leftJoin);
+        }
+        return $this;
+    }
+	
+	/**
+     * Adds left outer join to the current query
+     *
+     * @param String $leftjoin left join rule to apply
+     * @return DbPDO $this
+     */
+    public function leftOuterJoin($leftOuterJoin){
+        if ($this->query !== NULL && !empty($leftOuterJoin)){
+            $this->query = $this->query->leftOuterJoin($leftOuterJoin);
         }
         return $this;
     }

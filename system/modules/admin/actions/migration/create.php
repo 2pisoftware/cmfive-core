@@ -1,7 +1,6 @@
 <?php
 
 function create_GET(Web $w) {
-	
 	$p = $w->pathMatch("module");
 	
 	if (empty($p['module']) || !in_array($p['module'], $w->modules())) {
@@ -13,13 +12,11 @@ function create_GET(Web $w) {
 			[["Name", "text", "name"]]
 		]
 	];
-	
-	$w->out(Html::multiColForm($form, "/admin-migration/create/" . $p['module']));
-	
+
+	$w->out(Html::multiColForm($form, "/admin-migration/create/" . $p['module'], "POST", "Save", null, null, null, "_self", true, Migration::$_validation));
 }
 
 function create_POST(Web $w) {
-	
 	$p = $w->pathMatch("module");
 	
 	if (empty($p['module']) || !in_array($p['module'], $w->modules())) {
@@ -31,5 +28,4 @@ function create_POST(Web $w) {
 	$response = $w->Migration->createMigration($p['module'], $name);
 	
 	$w->msg($response, "/admin-migration");
-	
 }

@@ -1,4 +1,7 @@
 [[title|Adding a Channel]]
+[[title|Web Channel]]
+@todo document web channels
+[[title|Email Channel]]
 After you select "Email" from the "Add a New Channel" dropdown.
 An Email Channel is comprised of many parts:
 <hr/>
@@ -70,10 +73,10 @@ An Email Channel is comprised of many parts:
 <div id='filter-anchor' class='row-fluid panel'>
     <h3>Filter</h3>
     <h5 id='filter-to-anchor'>To, From and CC</h5>
-    The to, from and cc fields are the email addresses that we want to get emails to and from. For example if we wanted only get emails 
+    The to, from and cc fields are the email addresses that we want to get emails to and from. For example if we wanted only get emails
     that have been sent from "user@example.com" then put "user@example.com" in the FROM field.
     <h5 id='filter-subject-anchor'>Subject</h5>
-    The subject filter field, is the same as above except we can filter by the subject field. For example, if we wanted to only read 
+    The subject filter field, is the same as above except we can filter by the subject field. For example, if we wanted to only read
     emails with a subject "JOBS", then put "JOBS" in the subject filter field.
     <h5 id='filter-body-anchor'>Body</h5>
     Like above, the body filter will only retrieve emails where the body contains some text specified.

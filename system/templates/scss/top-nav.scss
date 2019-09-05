@@ -1,0 +1,166 @@
+// Top navigation
+
+@mixin nav_submenu_style() {
+	ul {
+		background-color: $tertiary_colour !important;
+		
+		&> li {
+		
+			a {
+				background-color: $tertiary_colour !important;
+				color: #dae2e7 !important;
+
+				&:hover, &:active, &:focus {
+					background-color: $primary_colour !important;
+				}
+			}
+		}
+
+		&.side-nav {
+			background-color: $primary_colour !important;
+			color: $text_accent_colour !important;
+			padding-bottom: 15px;
+
+			li {
+				margin-bottom: 0px;
+
+				a {
+					&:hover, &:active, &:focus {
+						background-color: $primary_colour;
+					}
+				}
+			}
+		}
+	}
+}
+
+.cmfive-nav {
+	color: white;
+	padding: 0px;
+	background-color: $primary_colour !important;
+	min-height: 50px;
+	height: 50px;
+
+	@include phone() {
+		display: none;	
+	}
+
+	section {
+		height: 100%;
+		clear: both;
+
+		ul {
+			height: 100% !important;
+			width: auto;
+			display: block;
+			list-style-type: none;
+
+			&:not(.accordion-menu) {
+				&>li > a::after {
+					display: none !important;
+				}
+			}
+
+			&> li {
+				height: 100%;
+				width: auto;
+				background-color: $primary_colour !important;
+				color: $text_accent_colour !important;
+
+				&> a {
+					height: 100% !important;
+					background-color: inherit !important;
+					color: inherit !important;
+
+					&.side-menu-toggle-button {
+						padding: 8px 16px !important;
+					}
+
+					&:hover {
+						background-color: $tertiary_colour !important;
+					}
+
+					img.home_logo {					// Main home logo
+						max-height: 50px;
+						height: 50px;
+					}
+
+					img.comment_avatar {
+						border-radius: 50px;
+						height: 40px;
+						width: 40px;
+						border: none;
+					}
+				}
+
+				&>span {
+					font-weight: lighter;
+					font-size: 18pt;
+					padding: 5px 15px;
+					display: inline-block;
+				}
+
+				&:hover > a {
+					background-color: $tertiary_colour !important;
+				}
+
+				@include nav_submenu_style();
+			}
+		}
+	}
+
+	.active {
+		padding: 0px !important;
+	}
+
+	@include nav_submenu_style();
+
+    .footer {
+        // position: absolute;
+        left: 0px;
+        right: 0px;
+		bottom: 15px;
+		font-size: 10pt;
+		padding-bottom: 15px;
+    }
+}
+
+.cmfive-phone-nav {
+	color: white;
+	padding: 0px;
+	background-color: $primary_colour !important;
+	min-height: 50px;
+	// height: 50px;
+	display: block;
+	overflow: auto;
+
+	@include tablet-up() {
+		display: none;
+	}
+
+	div {
+		a {
+			color: $text_accent_colour;
+			padding: 8px 15px;
+			display: inline-block;
+
+			&:hover, &:active, &:focus {
+				background-color: $tertiary_colour !important;
+			}
+		}
+
+		span {
+			display: inline-block;
+			color: $text-accent-colour;
+			font-size: 18pt;
+			font-weight: lighter;
+			padding: 5px 15px;
+		}
+
+		&.cmfive__company-name {
+			width: 80%;
+			float: right;
+			display: inline-block;
+		}
+	}
+}

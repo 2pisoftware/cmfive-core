@@ -5,6 +5,6 @@
     <input id="login" name="login" type="text" placeholder="Your login" />
     <label for="password">Password</label>
     <input id="password" name="password" type="password" placeholder="Your password" />
-    <button type="submit" class="button large-5 small-12">Login</button>
-    <button type="button" onclick="window.location.href='/auth/forgotpassword';" class="button alert large-5 small-12 right">Forgot Password</button>
+    <button type="submit" class="button medium-5 small-12">Login</button>
+    <a onclick="window.location.href='/auth/forgotpassword';" class="medium-5 small-12 right text-right">Forgot your password?</a>
 </form>

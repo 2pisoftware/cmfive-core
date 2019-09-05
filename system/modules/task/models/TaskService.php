@@ -4,96 +4,81 @@ class TaskService extends DbService {
 
     public $_tasks_loaded;
 
+    public function getSubscriber($subscriber_id) {
+        return $this->getObject("TaskSubscriber", $subscriber_id);
+    }
+
     public function getTaskGroupDetailsForUser() {
         $user_id = $this->w->Auth->user()->id;
-		
+
 		// Replacing functionality in favour of speed
 		$member_of_task_groups = $this->_db->get("task_group_member")
                 ->leftJoin("task_group on task_group.id = task_group_member.task_group_id")->select()->select("DISTINCT task_group.id")
                 ->where("task_group_member.user_id", $user_id)->and("task_group_member.is_active", 1)
                 ->and("task_group.is_active", 1)->and("task_group.is_deleted", 0)->fetchAll();
-		
+
 		$member_ids = [];
 		if (!empty($member_of_task_groups)) {
 			foreach ($member_of_task_groups as $member_of_task_group) {
 				$member_ids[]  = $member_of_task_group["id"];
 			}
 		}
-		
-	
+
+
 		$taskgroup_statuses = $this->w->db->get("task")->select()->select("DISTINCT status")
 				->where("task.is_deleted", 0)->order_by("status ASC")->fetchAll();
 		$statuses = [];
-		
+
 		if (!empty($taskgroup_statuses)) {
 			foreach($taskgroup_statuses as $taskgroup_status) {
 				$statuses[] = $taskgroup_status['status'];
 			}
 		}
-		
+
 		$taskgroup_priorities = $this->w->db->get("task")->select()->select("DISTINCT priority")
 				->where("task.is_deleted", 0)->order_by("priority ASC")->fetchAll();
 		$priorities = [];
-		
+
 		if (!empty($taskgroup_priorities)) {
 			foreach($taskgroup_priorities as $taskgroup_priority) {
 				$priorities[] = $taskgroup_priority['priority'];
 			}
 		}
-		
+
 		$taskgroup_tasktypes = $this->w->db->get("task")->select()->select("DISTINCT task_type")
 				->where("task.is_deleted", 0)->order_by("task_type ASC")->fetchAll();
 		$tasktypes = [];
-		
+
 		if (!empty($taskgroup_tasktypes)) {
 			foreach($taskgroup_tasktypes as $taskgroup_tasktype) {
 				$tasktypes[] = $taskgroup_tasktype['task_type'];
 			}
 		}
-		
-		$members = $this->w->db->get("task_group_member")->select()->select("DISTINCT task_group_member.user_id")->fetchAll(); // ->leftJoin("user on user.id = task_group_member.user_id")->leftJoin("contact on contact.id = user.contact_id")
-//				->order_by("contact.firstname ASC")
+
+		$members = $this->w->db->get("task_group_member")->select()->select("DISTINCT task_group_member.user_id")->fetchAll();
+
 		$flat_members = [];
 		if (!empty($members)) {
 			foreach($members as $member) {
 				$flat_members[] = $member['user_id'];
 			}
 		}
-		
-		$taskgroup_members = $this->w->Task->getObjects("User", ["id" => $flat_members]);
-		
-		uasort($taskgroup_members, function($a, $b) {
-			return strcmp($a->getFullName(), $b->getFullName());
-		});
-		
-		$taskgroup_details = ["statuses" => $statuses, "priorities" => $priorities, "members" => $taskgroup_members, "types" => $tasktypes];
-//        $taskgroups = $this->getTaskGroupsForMember($user_id);
-//        
-//        $taskgroup_details = array("taskgroups" => array(), "statuses" => array(), "priorities" => array(), "members" => array(), "types" => array());
-//        if (!empty($taskgroups)) {
-//            foreach($taskgroups as $taskgroup) {
-//                $taskgroup_details["taskgroups"][] = $taskgroup;
-//                $taskgroup_details["statuses"] = array_merge($taskgroup_details["statuses"], $taskgroup->getStatus());
-//                $taskgroup_details["priorities"] = array_merge($taskgroup_details["priorities"], $taskgroup->getPriority());
-//                $taskgroup_details["members"] = array_merge($taskgroup_details["members"], $this->getMembersInGroup($taskgroup->id));
-//                $task_type_array = $taskgroup->getTaskGroupTypeObject()->getTaskTypeArray();
-//                
-//                $taskgroup_details["types"][key($task_type_array)] = array($task_type_array[key($task_type_array)], key($task_type_array));
-//            }
-//        }
-//        
-//        // Flatten arrays
-//        $taskgroup_details["statuses"] = array_unique($this->flattenTaskGroupArray($taskgroup_details["statuses"]));
-//        $taskgroup_details["priorities"] = array_unique($this->flattenTaskGroupArray($taskgroup_details["priorities"]));
-////        $taskgroup_details["types"] = array_unique($taskgroup_details["types"]);
-//        $taskgroup_details["members"] = array_unique_multidimensional($taskgroup_details["members"]);
-        
-        return $taskgroup_details;
+
+		$taskgroup_members = [];
+		if (!empty($flat_members)) {
+			$taskgroup_members = $this->getObjects("User", ["id" => $flat_members]);
+
+			uasort($taskgroup_members, function($a, $b) {
+				return strcmp($a->getFullName(), $b->getFullName());
+			});
+		}
+
+		return ["statuses" => $statuses, "priorities" => $priorities, "members" => $taskgroup_members, "types" => $tasktypes];
     }
 
     public function getTaskGroupDetailsForTaskGroup($taskgroup_id) {
     	$taskgroup = $this->Task->getTaskGroup($taskgroup_id);
-    
+
     	$taskgroup_details = array("taskgroups" => array(), "statuses" => array(), "priorities" => array(), "members" => array(), "types" => array());
     	if (!empty($taskgroup)) {
     			$taskgroup_details["taskgroups"][] = $taskgroup;
@@ -103,10 +88,10 @@ class TaskService extends DbService {
     			$task_type_array = $taskgroup->getTaskGroupTypeObject()->getTaskTypeArray();
     			$taskgroup_details["types"][key($task_type_array)] = array($task_type_array[key($task_type_array)], key($task_type_array));
     	}
-    
+
     	return $taskgroup_details;
     }
-    
+
     public function flattenTaskGroupArray($statuses) {
         $result_array = array();
         if (!empty($statuses)) {
@@ -118,10 +103,10 @@ class TaskService extends DbService {
                 }
             }
         }
-        
+
         return $result_array;
     }
-    
+
     public function getSelectArrayForTaskGroupType($class) {
         $taskgroup_type_object = $this->getTaskGroupTypeObject($class);
         if (!empty($taskgroup_type_object)) {
@@ -130,7 +115,7 @@ class TaskService extends DbService {
         }
         return null;
     }
-    
+
     // function to sort lists by date created
     static function sortByCreated($a, $b) {
         if ($a->dt_created == $b->dt_created) {
@@ -244,8 +229,12 @@ class TaskService extends DbService {
     }
 
     // get all active task groups from the database
-    function getTaskGroups() {
-        return $this->getObjects("TaskGroup", array("is_active" => 1, "is_deleted" => 0));
+    function getTaskGroups($include_inactive = false) {
+        $where = ["is_deleted" => 0];
+        if (!$include_inactive) {
+            $where['is_active'] = 1;
+        }
+        return $this->getObjects("TaskGroup", $where);
     }
 
     // get all task groups from the database of given task group type
@@ -342,6 +331,58 @@ class TaskService extends DbService {
         return $this->getObject("TaskGroupNotify", array("task_group_id" => $id, "role" => $role, "type" => $type));
     }
 
+    function sendCreationNotificationForTask($task) {
+        $subject = $task->getHumanReadableAttributeName(TASK_NOTIFICATION_TASK_CREATION) . "[" . $task->id . "]: " . $task->title;
+	    $users_to_notify = $this->w->Task->getNotifyUsersForTask($task, TASK_NOTIFICATION_TASK_CREATION);
+
+	    $this->w->Notification->sendToAllWithCallback($subject, "task", "notification_email", $this->w->Auth->user(), $users_to_notify, function($user, $existing_template_data) use ($task) {
+	    	$template_data = $existing_template_data;
+			$template_data['status']		= "[{$task->id}] New task created";
+			$template_data['footer']		= $task->description;
+			$template_data['action_url']	= $this->w->localUrl('/task/edit/' . $task->id);
+			$template_data['logo_url']		= Config::get('main.application_logo');
+
+			$this->w->Log->debug("Logo: " . $template_data['logo_url']);
+
+			$template_data['fields'] = [
+				"Assigned to"	=> !empty($task->assignee_id) ? $task->getAssignee()->getFullName() : '',
+				"Type"			=> $task->getTypeTitle(),
+				"Title"			=> $task->title,
+				"Due"			=> !empty($task->dt_due) ? date('d-m-Y', strtotime(str_replace('/', '-', $task->dt_due))) : '',
+				"Status"		=> $task->status,
+				"Priority"		=> $task->isUrgent() ? "<b style='color: orange;'>{$task->priority}</b>" : $task->priority
+			];
+
+			if ($user->is_external) {
+				$template_data['fields']['Due'] = '';
+				$template_data['fields']['Priority'] = '';
+				$template_data['fields']['Status'] = '';
+			}
+
+			$template_data['can_view_task'] = $user->is_external == 0;
+
+			// Get additional details
+			if ($user->is_external == 0) {
+				$additional_details = $this->w->Task->getNotificationAdditionalDetails($task);
+				if (!empty($additional_details)) {
+					$template_data['footer'] .= $additional_details;
+				}
+			}
+
+			if (!empty($task->assignee_id)) {
+				if ($user->id == $task->assignee_id) {
+					$template_data['fields']["Assigned to"] = "You (" . $task->getAssignee()->getFullName() . ")";
+				} else {
+					$template_data['fields']["Assigned to"] = !empty($task->assignee_id) ? $task->getAssignee()->getFullName() : '';
+				}
+			} else {
+				$template_data['fields']["Assigned to"] = "No one";
+			}
+
+			return new NotificationCallback($user, $template_data, $this->w->file->getAttachmentsFileList($task, null, ['channel_email_raw']));
+	    });
+    }
+
     // static list of group permissions for can_view, can_assign, can_create
     function getTaskGroupPermissions() {
         return array("ALL", "GUEST", "MEMBER", "OWNER");
@@ -374,10 +415,10 @@ class TaskService extends DbService {
 
     public function getTasks($where = array()) {
         $where["is_deleted"] = 0;
-        
+
         return $this->getObjects("Task", $where);
     }
-    
+
     // return a task group from the database given its ID
     function getTasksbyGroupId($id) {
         $where = ($id) ? array("task_group_id" => $id) : null;
@@ -459,7 +500,7 @@ class TaskService extends DbService {
         if (empty($taskgroup)) {
             return null;
         }
-        
+
         $tasktypes = array();
         $this->_loadTaskFiles();
         foreach (get_declared_classes() as $class) {
@@ -534,7 +575,7 @@ class TaskService extends DbService {
 //    function getTaskTimes() {
 //        return $this->getObjects("TaskTime", array("is_deleted" => 0, "user_id" => $this->w->Auth->user()->id));
 //    }
-    
+
     // return a time log entry by log entry ID
 //    function getTimeLogEntry($id) {
 //        return $this->getObject("TaskTime", array("id" => $id, "is_deleted" => 0));
@@ -563,7 +604,7 @@ class TaskService extends DbService {
         if (empty($id)) {
             return null;
         }
-        
+
         $query = $this->_db->get("task_group_member")
                 ->leftJoin("task_group")
                 ->where("task_group_member.user_id", $id)->and("task_group_member.is_active", 1)
@@ -575,14 +616,14 @@ class TaskService extends DbService {
         if (empty($id)) {
             return null;
         }
-        
+
         $query = $this->_db->get("task_group_member")
                 ->leftJoin("task_group")->select("task_group.*")
                 ->where("task_group_member.user_id", $id)->and("task_group_member.is_active", 1)
                 ->and("task_group.is_active", 1)->and("task_group.is_deleted", 0);
         return $this->getObjectsFromRows("TaskGroup", $query->fetch_all());
     }
-    
+
     // return all members of a task group from the database, given the task group ID
     function getMemberGroup($id) {
         return $this->getObjects("TaskGroupMember", array("task_group_id" => $id, "is_active" => 1));
@@ -673,10 +714,10 @@ class TaskService extends DbService {
     		$tgm->delete();
     	}
     }
-    
+
     /**
      * Create a new Task
-     * 
+     *
      * @param unknown $task_type
      * @param unknown $task_group_id
      * @param unknown $title
@@ -685,7 +726,7 @@ class TaskService extends DbService {
      * @param unknown $dt_due
      * @param unknown $first_assignee_id
      */
-    function createTask($task_type, $task_group_id, $title, $description, $priority, $dt_due, $first_assignee_id) {
+    function createTask($task_type, $task_group_id, $title, $description, $priority, $dt_due, $first_assignee_id, $_skip_creation_notification = false) {
         $task = new Task($this->w);
         $task->task_type = $task_type;
         $task->task_group_id = $task_group_id;
@@ -695,15 +736,14 @@ class TaskService extends DbService {
         $task->dt_due = $dt_due;
         $task->first_assignee_id = $first_assignee_id;
         $task->assignee_id = $first_assignee_id;
-        $task->dt_assigned = time();
-        $task->dt_first_assigned = time();
+        $task->_skip_creation_notification = $_skip_creation_notification;
         $task->insert();
         return $task;
     }
 
     /**
      * Create a new Taskgroup using all the form details of the taskgroup form
-     * 
+     *
      * @param task_group_type, eg. "TaskGroupType_TaskTodo"
      * @param title, the task group title
      * @param can_assign, OWNER|MEMBER|GUEST
@@ -713,10 +753,10 @@ class TaskService extends DbService {
      * @param is_deleted, 0|1
      * @param description, a description
      * @param default_assignee_id, a user_id or null
-     *  
+     *
      * @return TaskGroup
      */
-    function createTaskGroup($type, $title, $description, $default_assignee_id, $can_assign = "OWNER", $can_view = "OWNER", $can_create = "OWNER", $is_active = 1, $is_deleted = 0, $default_task_type = null, $default_priority = null) {
+    function createTaskGroup($type, $title, $description, $default_assignee_id, $can_assign = "OWNER", $can_view = "OWNER", $can_create = "OWNER", $is_active = 1, $is_deleted = 0, $default_task_type = null, $default_priority = null, $is_automatic_subscription = false) {
         // title should be unique!
         $taskgroup = $this->getTaskGroupByUniqueTitle($title);
         if (null != $taskgroup) {
@@ -732,17 +772,18 @@ class TaskService extends DbService {
         $taskgroup->can_view = $can_view;
         $taskgroup->can_create = $can_create;
         $taskgroup->is_active = $is_active;
-        $taskgroup->is_deleted = $is_deleted;
+        $taskgroup->is_deleted = !empty($is_deleted) ? $is_deleted : 0;
         $taskgroup->default_assignee_id = $default_assignee_id;
         $taskgroup->default_task_type = $default_task_type;
         $taskgroup->default_priority = $default_priority;
+		$taskgroup->is_automatic_subscription = !!$is_automatic_subscription;
         $response = $taskgroup->insert();
-        
+
         // Check the validation
         if ($response !== true) {
             $this->w->errorMessage($taskgroup, "Taskgroup", $response, false, "/task-group/viewtaskgrouptypes#create");
         }
-        
+
         // if created succcessfully, create default notify matrix: all on
         if ($taskgroup->id) {
             $arr['guest']['creator'] = 1;
@@ -788,16 +829,18 @@ class TaskService extends DbService {
         if (empty($task)) {
             return array();
         }
-        
+
         $me = array();
         // This may be called from cron
         if (!empty($_SESSION['user_id'])) {
             $me = array($this->getMemberGroupById($task->task_group_id, $_SESSION['user_id']));
         }
-        
+
         // get member object for task creator
         $creator_id = $task->getTaskCreatorId();
-        $creator = array($this->getMemberGroupById($task->task_group_id, $creator_id));
+
+		// Notify assignee too
+        $creator = array($this->getMemberGroupById($task->task_group_id, $creator_id), !empty($task->assignee_id) ? $this->getMemberGroupById($task->task_group_id, $task->assignee_id) : null);
         // get member object(s) for task group owner(s)
         $owners = $this->getTaskGroupOwners($task->task_group_id);
 
@@ -810,15 +853,15 @@ class TaskService extends DbService {
         if (empty($us)) {
             return array();
         }
-        
+
         $notifyUsers = array();
-        
+
         // foreach relavent member
         foreach ($us as $i) {
             if (empty($i)) {
                 continue;
             }
-            
+
             // set default notification value. 0 = no notification
             $shouldNotify = false; // $value = "0";
             // set current user's role
@@ -852,7 +895,7 @@ class TaskService extends DbService {
                 // if no user task notification present, check user task group notification for role and type
                 else {
 
-                    // for each type, check the User defined notification table 
+                    // for each type, check the User defined notification table
                     foreach ($types as $type) {
                         $notify = $this->getTaskGroupUserNotifyType($i->user_id, $task->task_group_id, $role, $type);
                         // if there is a notification flag and it equals 1, no need to go further, a notification will be sent
@@ -888,11 +931,11 @@ class TaskService extends DbService {
         }
         return $notifyUsers;
     }
-    
+
 	public function getNotificationAdditionalDetails(Task $task) {
 		$additional_details = $this->w->callHook("task", "notification_additional_details", $task);
 		$message = '';
-		
+
 		if (!empty($additional_details)) {
 //			$message .= "<br/><p>Additional details:</p>";
 			foreach($additional_details as $additional_detail) {
@@ -901,10 +944,10 @@ class TaskService extends DbService {
 				}
 			}
 		}
-		
+
 		return !empty($message) ? "<br/><p>Additional details:</p>" . $message : '';
 	}
-    
+
     public function navigation(Web $w, $title = null, $nav = null) {
         if ($title) {
             $w->ctx("title", $title);
@@ -913,6 +956,7 @@ class TaskService extends DbService {
         $nav = $nav ? $nav : array();
 
         if ($w->Auth->loggedIn()) {
+            $w->menuLink("task/index", "Task Dashboard", $nav);
             $w->menuLink("task/edit", "New Task", $nav);
 //          $w->menuLink("task/index", "Task Dashboard", $nav);
             $w->menuLink("task/tasklist", "Task List", $nav);
