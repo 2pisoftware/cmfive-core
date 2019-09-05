@@ -30,11 +30,16 @@ function showReport(\Web $w, $params = [])
 
     if (true || !empty($params['include_export_options']) && $params['include_export_options'] === true) {
         $format_form = [
-            [(new \Html\Form\InputField\Radio(['id' => 'pdf', "name" => "format", "label" => "PDF", "checked" => true]))],
-            [(new \Html\Form\InputField\Radio(['id' => 'csv', "name" => "format", "label" => "csv"]))]
+            [
+                new \Html\Form\InputField\Radio(['id' => 'pdf', "name" => "format", "label" => "PDF", "value" => "pdf", "checked" => true, "class" => ""])
+            ],
+            [
+                new \Html\Form\InputField\Radio(['id' => 'csv', "name" => "format", "label" => "CSV", "value" => "csv", "class" => ""])
+            ]
         ];
-        $form["Select format"] = ($is_multicol_form ? [$format_form] : $format_form);
+        $form["Select format"] = $format_form; // ($is_multicol_form ? [$format_form] : $format_form);
     }
 
+    $w->ctx('report', $report);
     $w->ctx("form", $form);
 }

@@ -29,9 +29,18 @@ function runreport_ALL(Web &$w)
                 // get the form array
                 $form = $rep->getReportCriteria();
 
+                 // Determine if it's a multicolform
+                $section_key = array_keys($form);
+                if (!empty($section_key[0])) {
+                    $section_key = $section_key[0];
+                } else {
+                    $section_key = 0;
+                }
+                $form_function = !empty($form[$section_key][0]) && is_array($form[$section_key][0]) ? 'multiColForm': 'form';
+
                 // if there is a form display it, otherwise say as much
                 if ($form) {
-                    $theform = Html::form($form, $w->localUrl("/report/exereport/" . $rep->id), "POST", " Display Report ");
+                    $theform = Html::$form_function($form, $w->localUrl("/report/exereport/" . $rep->id), "POST", " Display Report ");
                 } else {
                     $w->redirect($w->localUrl("/report/exereport/" . $rep->id));
                 }
