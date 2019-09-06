@@ -20,7 +20,7 @@
         $w->enqueueStyle(array("name" => "jquery.asmselect.css", "uri" => "/system/templates/css/jquery.asmselect.css", "weight" => 940));
         $w->enqueueStyle(array("name" => "foundation-icons.css", "uri" => "/system/templates/font/foundation-icons/foundation-icons.css", "weight" => 930));
         $w->enqueueStyle(array("name" => "codemirror.css", "uri" => "/system/templates/js/codemirror-4.4/lib/codemirror.css", "weight" => 900));
-        
+
         $w->enqueueScript(['name' => 'vue.js', 'uri' => '/system/templates/js/vue.js', 'weight' => 2000]);
 
         $w->enqueueScript(array("name" => "modernizr.js", "uri" => "/system/templates/js/foundation-5.5.0/js/vendor/modernizr.js", "weight" => 1010));
@@ -72,10 +72,10 @@
                 } else {
                     $(".tab-head > a:first").trigger("click");
                 }
-                
+
                 // Set up CodeMirror instances if any
                 bindCodeMirror();
-                
+
                 // Adjust the breadcrumbs div if it's content is longer than the viewport
                 var breadcrumbs = $('.cmfive_breadcrumbs');
                 if (breadcrumbs.length) {
@@ -102,7 +102,7 @@
 				});
                 // Search function shortcut listener
                 $(document).on('keydown', function ( e ) {
-                    if ((e.ctrlKey || e.metaKey) && e.which === 70) {
+                    if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.which === 70) {
                         $('#cmfive_search_button').click();
                         return false;
                     }
@@ -110,7 +110,7 @@
 				if(jQuery('.enable_drop_attachments').length !== 0) {
 					globalFileUpload.init();
 				}
-				
+
 				// Look for cmfive__count-* classes and count the instances of *
 				$("span[class^='cmfive__count-'], span[class*=' cmfive__count-']").each(function(index, element) {
 					var classList = this.className.split(/\s+/);
@@ -126,17 +126,17 @@
             $("input[type=submit]").click(function() {
                 $(this).hide();
             });
-			
+
             $(document).bind('cbox_complete', function() {
                 $("input[type=submit]").click(function() {
                     $(this).hide();
                 });
             });
-			
+
 			// Focus first form element when the modal opens
 			$(document).ready(function() {
 				$('.body form:first :input:visible:enabled:first').not('.no-focus').focus();
-				
+
 				$(document).on('opened.fndtn.reveal', '[data-reveal]', function () {
 					$('form:visible:first :input:visible:enabled:first', $(this)).not('.no-focus').focus();
 				});
@@ -162,7 +162,7 @@
 				<h4 class="subheader">Uploading (0%)</h4>
 			</div>
 		</div>
-		
+
 		<?php if (Config::get('system.test_mode') === true) : ?>
 			<div class="row-fluid">
 				<div class="small-12">
@@ -172,7 +172,7 @@
 				</div>
 			</div>
 		<?php endif; ?>
-        
+
 		<div class="row-fluid">
             <nav class="top-bar" data-topbar><!-- To make it that you need to click to activate dropdown use  data-options="is_hover: false" -->
                 <ul class="title-area">
@@ -186,7 +186,7 @@
                     <!-- Right Nav Section -->
                     <ul class="right">
                         <!-- Module template injection -->
-                        <?php 
+                        <?php
                             $inject = $w->callHook('core_template', 'menu');
                             if (!empty($inject)) :
                                 foreach($inject as $i) : ?>
@@ -194,10 +194,10 @@
                                 <?php endforeach;
                             endif;
                         ?>
-                        
+
                         <!-- Search bar -->
                         <li><?php echo Html::box("/search", "<span class='fi-magnifying-glass show-for-medium-up'></span><span class='show-for-small'>Search</span>", false, false, null, null, null, "cmfive_search_button"); ?></li>
-                        
+
                         <?php if ($w->Auth->user()): ?>
 						<!-- Clear cache button -->
 							<?php if ($w->Auth->user()->is_admin): ?>
@@ -220,7 +220,7 @@
                                         $w->menuBox("auth/profile/box", $w->Auth->user()->getShortName()),
                                         $w->menuLink("auth/logout", "Logout")
                                     ), null, "dropdown");
-                                ?>    
+                                ?>
                             </li>
                         <?php endif; ?>
                     </ul>
@@ -242,7 +242,7 @@
                                             <?php // Try and get a badge count for the menu item
                                                 echo $menu_link;
                                                 $module_navigation = $w->service($module)->navigation($w);
-												
+
 												// Invoke hook to inject extra navigation
 												$hook_navigation_items = $w->callHook($module, "extra_navigation_items", $module_navigation);
 												if (!empty($hook_navigation_items)) {
@@ -263,7 +263,7 @@
                                     <?php endif;
                                 endif;
                             }
-                        
+
                             if ($w->Auth->allowed('help/view')) : ?>
                                 <li><?php echo Html::box(WEBROOT . "/help/view/" . $w->_module . ($w->_submodule ? "-" . $w->_submodule : "") . "/" . $w->_action, "<span class='fi-q show-for-medium-up'>?</span><span class='show-for-small'>Help</span>", false, true, 750, 500, "isbox", null, null, null, 'cmfive-help-modal'); ?> </li>
                             <?php endif;
@@ -277,7 +277,7 @@
         <div class="row-fluid">
             <?php echo Html::breadcrumbs(array(), $w); ?>
         </div>
-        
+
         <div class="row-fluid body">
             <?php // Body section w/ message and body from template ?>
             <div class="row-fluid <?php // if(!empty($boxes)) echo "medium-10 small-12 "; ?>">
@@ -286,24 +286,13 @@
                     <h3 class="header"><?php echo $title; ?></h3>
                 </div>
                 <?php endif;?>
-                <?php if (!empty($error) || !empty($msg)) : ?>
-                    <?php 
-						$type = [];
-						$nameValue='';
-						if (!empty($error)) {
-							$type= array("name" => "error", "class" => "warning");
-							$nameValue=$error;
-						} else {
-							$type=array("name" => "msg", "class" => "info"); 
-							$nameValue=$msg;
-						}
-                    ?>
-                    <div data-alert class="alert-box <?php echo $type["class"]; ?>">
-                        <?php echo $nameValue; ?>
-                        <a href="#" class="close">&times;</a>
-                    </div>
-                <?php endif; ?>
-
+                <?php
+                if (!empty($error)) {
+                    echo Html::alertBox($error, "warning");
+                } elseif (!empty($msg)) {
+                    echo Html::alertBox($msg);
+                }
+                ?>
                 <div class="row-fluid" style="overflow: hidden;">
                     <?php echo !empty($body) ? $body : ''; ?>
                 </div>
@@ -331,10 +320,10 @@
 					multi_expand: <?php echo defaultVal(Config::get('core_template.foundation.accordion.multi_expand'), 'true'); ?>,
 				}
 			});
-            
+
             var modal_history = [];
             var modal_history_pop = false;
-            
+
             // Automatically append the close 'x' to reveal modals
             $(document).on('opened', '[data-reveal]', function () {
                 $(this).css('top', $(document).scrollTop() + 100);
@@ -342,10 +331,10 @@
                 modal_history.push();
                 bindModalLinks();
             });
-            
+
             function bindModalLinks() {
                 // Stop a links and follow them inside the reveal modal
-                $("#cmfive-modal a:not(#modal-back)").click(function(event) {                    
+                $("#cmfive-modal a:not(#modal-back)").click(function(event) {
                     if ($(this).hasClass("close-reveal-modal")) {
                         $("#cmfive-modal").foundation("reveal", "close");
                     } else {
@@ -355,8 +344,8 @@
                     }
                     return false;
                 });
-                
-				$("#cmfive-help-modal a:not(#modal-back)").click(function(event) {                    
+
+				$("#cmfive-help-modal a:not(#modal-back)").click(function(event) {
                     if ($(this).hasClass("close-reveal-modal")) {
                         $("#cmfive-modal").foundation("reveal", "close");
                     } else {
@@ -373,7 +362,7 @@
                     }
                     return false;
                 });
-                
+
                 // Bind back traversal to modal window
                 $("#cmfive-modal #modal-back, #cmfive-help-modal #modal-back").click(function(event) {
                     // event.preventDefault();
@@ -390,11 +379,11 @@
                             changeModalWindow($(this).closest('.reveal-modal'), modal_history.pop());
                         }
 //                        console.log(modal_history);
-                    } 
+                    }
                     return false;
                 });
             }
-            
+
             // Updates the modal window by content from ajax request to uri
             function changeModalWindow(object, uri) {
                 $.get(uri, function(data) {
