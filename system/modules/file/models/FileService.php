@@ -18,7 +18,6 @@ class FileService extends DbService
     public static $_thumb_width = 200;
     public static $_stream_name = "attachment";
     public static $temp_file_parent_directory;
-    public static $temp_files = [];
 
     public function __construct(Web $w)
     {

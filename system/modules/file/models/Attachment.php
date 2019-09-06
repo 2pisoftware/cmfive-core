@@ -252,7 +252,7 @@ class Attachment extends DbObject
      * Returns attached file content
      * @return <string> content
      */
-    public function getContent($cache_locally = false)
+    public function getContent($cache_locally = true)
     {
         $file = $this->getFile();
         if (empty($file) || !$file->exists()) {
@@ -263,10 +263,10 @@ class Attachment extends DbObject
             return $file->getContent();
         }
 
-        $directory_path = ROOT_PATH . "/cache/temp/" . FileService::$temp_file_parent_directory;
+        $directory_path = ROOT_PATH . "/cache/". TEMP_PATH . "/" . FileService::$temp_file_parent_directory;
         if (!file_exists($directory_path)) {
             try {
-                mkdir($directory_path, 0777, true);
+                mkdir($directory_path, 0600, true);
             } catch (Exception $e) {
                 $this->w->Log->setLogger("FILE")->error("Failed to execute 'mkdir': " . $e->getMessage());
             }

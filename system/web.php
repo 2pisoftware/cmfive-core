@@ -528,8 +528,6 @@ class Web {
                 });
             }
 
-            trigger_error("Test error");
-
             if ($init_database && !$this->_is_installing) {
                 $this->initDB();
             }
@@ -818,9 +816,11 @@ class Web {
             } else {
                 $this->notFoundPage();
             }
-
-            $this->_callWebHooks("cleanup");
         } catch (Throwable $t) {
+            $logger = empty($this->currentModule()) ? "CMFIVE" : strtoupper($this->currentModule());
+            $this->Log->setLogger($logger)->error("Throwable caught: {$t->getMessage()}");
+            echo Html::alertBox("Oh no! Looks like an error occoured, if this message persists please contact your administrator.", "alert");
+        } finally {
             $this->_callWebHooks("cleanup");
         }
     }
