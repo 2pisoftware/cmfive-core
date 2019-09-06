@@ -570,11 +570,21 @@ class DbPDO extends PDO
     }
 
     /**
-     * Returns the last insert id
-     *
-     * @return mixed last insert id
+     * Warning: do not implement PSR2 rules for last_insert_id. Overriding the
+     * PDO::lastInsertId will cause an infinite loop via FluentPDOs use of
+     * the same function.
      */
-    public function lastInsertId()
+    // public function lastInsertId($seqname = null)
+    // {
+    //  
+    // }
+
+    /**
+     * Returns the lsat inserted id
+     *
+     * @return int|null
+     */
+    public function last_insert_id()
     {
         if ($this->query !== null) {
             // Checks if execute hasn't been called yet, and calls it
@@ -586,16 +596,6 @@ class DbPDO extends PDO
         }
 
         return null;
-    }
-
-    /**
-     * @see DbPDO::lastInsertId()
-     *
-     * @deprecated
-     */
-    public function last_insert_id()
-    {
-        return $this->lastInsertId();
     }
 
     /**
