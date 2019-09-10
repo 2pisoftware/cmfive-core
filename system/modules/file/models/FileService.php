@@ -53,7 +53,7 @@ class FileService extends DbService {
 	 */
 	function getFilePath($path) {
 		$active_adapter = $this->getActiveAdapter();
-		
+
 		switch($active_adapter) {
 			case "local":
 				if (strpos($path, FILE_ROOT . "attachments/") !== FALSE) {
@@ -74,7 +74,7 @@ class FileService extends DbService {
 
 	/**
 	 * Create a new Gaufrette File object from a filename and path
-	 * 
+	 *
 	 * @param \Gaufrette\Filesystem
 	 * @param string filename
 	 * @return \Gaufrette\File
@@ -86,9 +86,9 @@ class FileService extends DbService {
 
 	/**
 	 * Returns the first adapter maked as active that isn't "local".
-	 * 
+	 *
 	 * The local filesystem is the default adapter if none are specified.
-	 * 
+	 *
 	 * @return string adapter
 	 */
 	function getActiveAdapter() {
@@ -109,7 +109,7 @@ class FileService extends DbService {
 
 	/**
 	 * Get a Gaufrette Filesystem for the currently active adapter and selected path
-	 * 
+	 *
 	 * @param Mixed $path base path to load the filesystem adapter at
 	 * @param Mixed $content content to load into the filesystem (mainly used for the "memory" adapter
 	 * @param Array $options options to give to the filesystem
@@ -118,16 +118,16 @@ class FileService extends DbService {
 	function getFilesystem($path = null, $content = null, $options = []) {
 		return $this->getSpecificFilesystem($this->getActiveAdapter(), $path, $content, $options);
 	}
-	
+
 	/**
 	 * Get a Gaufrette Filesystem for a given adapter and path
-	 * 
+	 *
 	 * @param string $adapter adapter to load
 	 * @param string $path base path to load the filesystem adapter at
 	 * @param Mixed $content content to load into the filesystem (mainly used for the "memory" adapter
 	 * @param Array $options options to give to the filesystem
 	 * @return FileSystem
-	 */	
+	 */
 	function getSpecificFilesystem($adapter = "local", $path = null, $content = null, $options = []) {
 		$adapter_obj = null;
 		switch ($adapter) {
@@ -138,9 +138,12 @@ class FileService extends DbService {
 				$adapter_obj = new InMemoryAdapter(array(basename($path) => $content));
 				break;
 			case "s3":
+				$client = new Aws\S3\S3Client(Config::get('file.adapters.s3'));
 				$config_options = Config::get('file.adapters.s3.options');
-				$config_options = array_replace(is_array($config_options) ? $config_options : [], ["directory" => $path], $options);
-				$client = S3Client::factory(["key" => Config::get('file.adapters.s3.key'), "secret" => Config::get('file.adapters.s3.secret')]);
+				$s3path = (substr($path,-1)=="/")?substr($path,0,-1):$path; // because trailing presence varies with call/object history
+				$config_options = array_replace(is_array($config_options) ? $config_options : [], ["directory" => $s3path], $options);
+				// $config_options = array_replace(is_array($config_options) ? $config_options : [], ["directory" => $path], $options);
+				// $client = S3Client::factory(["key" => Config::get('file.adapters.s3.key'), "secret" => Config::get('file.adapters.s3.secret')]);
 				$adapter_obj = new AwsS3($client, Config::get('file.adapters.s3.bucket'), is_array($config_options) ? $config_options : []);
 				break;
 			case "dropbox":
@@ -165,7 +168,7 @@ class FileService extends DbService {
 
 	/**
 	 * Get a Gaufrette Filesystem for a given adapter, adapter config and path
-	 * 
+	 *
 	 * @param string $adapter adapter to load
 	 * @param Array $adapter_config to use
 	 * @param string $path base path to load the filesystem adapter at
@@ -207,13 +210,13 @@ class FileService extends DbService {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Register a gaufrette stream wrapper
-	 * 
+	 *
 	 * @param \Gaufrette\Filesystem
 	 * @return null
-	 */	
+	 */
 	function registerStreamWrapper($filesystem = null) {
 		if (!empty($filesystem)) {
 			$map = \Gaufrette\StreamWrapper::getFilesystemMap();
@@ -225,10 +228,10 @@ class FileService extends DbService {
 
 	/**
 	 * Create a HTML image tag for the image specified by $path
-	 * 
+	 *
 	 * @param string $path image file path
 	 * @return string html image tag
-	 */	
+	 */
 	function getImg($path) {
 		$file = FILE_ROOT . $path;
 		if (!file_exists($file))
@@ -242,10 +245,10 @@ class FileService extends DbService {
 
 	/**
 	 * Create a HTML image tag for a thumbnail of the image specified by $path
-	 * 
+	 *
 	 * @param string $path image file path
 	 * @return string thumbnail image url
-	 */	
+	 */
 	function getThumbImg($path) {
 		$file = FILE_ROOT . $path;
 		if (!file_exists($file))
@@ -256,13 +259,13 @@ class FileService extends DbService {
 		$tag = "<img src='" . WEBROOT . "/file/thumb/" . $path . "' height='" . self::$_thumb_height . "' width='" . self::$_thumb_width . "' />";
 		return $tag;
 	}
-	
+
 	/**
 	 * Check if an attachment is an image
-	 * 
+	 *
 	 * @param string $path image file path
 	 * @return bool
-	 */	
+	 */
 	function isImage($path) {
 		if (file_exists(str_replace("'", "\\'", FILE_ROOT . "/" . $path))) {
 			$path = str_replace("'", "\\'", FILE_ROOT . "/" . $path);
@@ -275,48 +278,63 @@ class FileService extends DbService {
 			return false;
 		}
 	}
-	
+
 	/**
 	 * Get a url to the file specified by $path
 	 * @return string URL to download file
-	 */	
+	 */
 	function getDownloadUrl($path) {
 		return WEBROOT . "/file/path/" . $path;
 	}
 
 	/**
 	 * Lookup the attachments for a given object
-	 * 
+	 *
 	 * @param Mixed $objectOrTable
 	 * @param Mixed $id
-	 * @return string
-	 */	
-	function getAttachmentsFileList($objectOrTable, $id = null) {
+	 * @param array $type_code_blacklist a list of type codes to exclude
+	 * @return array of the paths of the attached files
+	 */
+	function getAttachmentsFileList($objectOrTable, $id = null, $type_code_blacklist = []) {
 		$attachments = $this->getAttachments($objectOrTable, $id);
-                
 		if (!empty($attachments)) {
+
+			foreach ($attachments as $key => $attachment) {
+				if ($attachment->isRestricted()) {
+					unset($attachments[$key]);
+				}
+			}
+
 			$pluck = array();
+			if (!empty($type_code_blacklist)) {
+				$attachments = array_filter($attachments, function($attachment) use ($type_code_blacklist) {
+					if (in_array($attachment->type_code, $type_code_blacklist)) {
+						return false;
+					}
+					return true;
+				});
+			}
 			foreach ($attachments as $attachment) {
 				$file_path = $attachment->getFilePath();
 
 				if ($file_path[strlen($file_path) - 1] !== '/') {
 					$file_path .= '/';
 				}
-                
+
                 $pluck[] = realpath($file_path . $attachment->filename);
 			}
 			return $pluck;
 		}
 		return array();
 	}
-	
+
 	/**
 	 * Lookup the attachments for a given object
-	 * 
+	 *
 	 * @param Mixed $objectOrTable
 	 * @param Mixed $id
 	 * @return Attachment
-	 */	
+	 */
 	function getAttachments($objectOrTable, $id = null) {
 		$table = '';
 		if (is_scalar($objectOrTable)) {
@@ -332,10 +350,16 @@ class FileService extends DbService {
 		}
 		return null;
 	}
-	
+
+	function getAttachmentsForAdapter($adapter) {
+		if (Config::get('file.adapters.' . $adapter) !== null) {
+			return $this->getObjects('Attachment', ['adapter' => $adapter, 'is_deleted' => 0]);
+		}
+	}
+
 	/**
 	 * Counts attachments for a given object/table and id
-	 * 
+	 *
 	 * @param Mixed $objectOrTable
 	 * @param int (option) $id
 	 * @return int
@@ -347,17 +371,17 @@ class FileService extends DbService {
 			$table = $objectOrTable->getDbTableName();
 			$id = $objectOrTable->id;
 		}
-		
+
 		if ($table && $id) {
 			return $this->_db->get("attachment")->where("parent_table", $table)->and("parent_id", $id)->and("is_deleted", 0)->count();
 		}
-		
+
 		return 0;
 	}
-	
+
 	/**
 	 * Counts attachments for a given object/table and id
-	 * 
+	 *
 	 * @param Mixed $objectOrTable
 	 * @param int (option) $id
 	 * @return int
@@ -366,17 +390,17 @@ class FileService extends DbService {
 		if (empty($object) || empty($user) || !is_a($object, "DbObject")) {
 			return 0;
 		}
-		
+
 		return $this->_db->get("attachment")->where('creator_id', $user->id)
 				->and("parent_table", $object->getDbTableName())->and("parent_id", $object->id)->and("is_deleted", 0)->count();
 	}
-	
+
 	/**
 	 * Load a single attachment
-	 * 
+	 *
 	 * @param Mixed $id attachment ID
 	 * @return Attachment
-	 */	
+	 */
 	function getAttachment($id) {
 		return $this->getObject("Attachment", $id);
 	}
@@ -385,9 +409,9 @@ class FileService extends DbService {
 	 * Move an uploaded file from the temp location
 	 * to
 	 *  /files/attachments/<attachTable>/<year>/<month>/<day>/<attachId>/<filename>
-	 * 
+	 *
 	 * and create an Attachment record.
-	 * 
+	 *
 	 * @param <type> $filename
 	 * @param <type> $attachTable
 	 * @param <type> $attachId
@@ -395,20 +419,20 @@ class FileService extends DbService {
 	 * @param <type> $description
 	 * @return Mixed the id of the attachment object or null
 	 */
-	function uploadAttachment($requestkey, $parentObject, $title = null, $description = null, $type_code = null) {
-            
-                if (empty($_POST[$requestkey]) && (empty($_FILES[$requestkey]) || $_FILES[$requestkey]['size'] <= 0)) {
-                    return false;
-                }
-            
-            
-                if (!is_a($parentObject, "DbObject")) {
+	function uploadAttachment($requestkey, $parentObject, $title = null, $description = null, $type_code = null, $is_public = false) {
+
+		if (empty($_POST[$requestkey]) && (empty($_FILES[$requestkey]) || $_FILES[$requestkey]['size'] <= 0)) {
+			return false;
+		}
+
+
+        if (!is_a($parentObject, "DbObject")) {
 			$this->w->error("Parent not found.");
 		}
 
 		$replace_empty = array("..", "'", '"', ",", "\\", "/");
 		$replace_underscore = array(" ", "&", "+", "$", "?", "|", "%", "@", "#", "(", ")", "{", "}", "[", "]", ",", ";", ":");
-		
+
 		//Check for posted content
 		if(!empty($_POST[$requestkey]) && empty($_FILES[$requestkey])) {
 			$filename = str_replace($replace_underscore, "_", str_replace($replace_empty, "", $_POST[$requestkey]));
@@ -424,27 +448,28 @@ class FileService extends DbService {
 		$att->title = (!empty($title) ? $title : $filename);
 		$att->description = $description;
 		$att->type_code = $type_code;
+		$att->is_public = $is_public;
 		$att->insert();
-
+		
 		$filesystemPath = "attachments/" . $parentObject->getDbTableName() . '/' . date('Y/m/d') . '/' . $parentObject->id . '/';
 		$filesystem = $this->getFilesystem($this->getFilePath($filesystemPath));
 		if (empty($filesystem)) {
 			$this->w->Log->setLogger("FILE_SERVICE")->error("Cannot save file, no filesystem returned");
 			return null;
 		}
-		
+
 		$file = new File($filename, $filesystem);
-		
+
 		$att->adapter = $this->getActiveAdapter();
 		$att->fullpath = str_replace(FILE_ROOT, "", $filesystemPath . $filename);
-		
+
 		//Check for posted content
 		if(!empty($_POST[$requestkey])) {
 			preg_match('%data:(.*);base%', substr($_POST[$requestkey], 0, 25), $mime);
 			$data = substr($_POST[$requestkey], strpos($_POST[$requestkey], ",") + 1);
 			$mime_type = $mime[1];
 			$content = base64_decode($data);
-            $file->setContent($content, ['contentType' => $mime_type]); 
+            $file->setContent($content, ['contentType' => $mime_type]);
 		} else {
 			$content = file_get_contents($_FILES[$requestkey]['tmp_name']);
 			$file->setContent($content);
@@ -454,12 +479,12 @@ class FileService extends DbService {
                     break;
 				default:
 					$mime_type = $this->w->getMimetypeFromString($content);
-                    
+
 			}
 		}
-		
-		
-		$att->mimetype = $mime_type;		
+
+
+		$att->mimetype = $mime_type;
 		$att->update();
 		return $att->id;
 	}
@@ -520,15 +545,15 @@ class FileService extends DbService {
 
 	/**
 	 * Save an attachment and create a file based on content passed as a parameter
-	 * 
+	 *
 	 * @param DbObject $object object to save content to
 	 * @param string $content file content
 	 * @param Mixed $name
 	 * @param Mixed $type_code
 	 * @param Mixed $content_type
 	 * @return int Attachment ID
-	 */	
-	function saveFileContent($object, $content, $name = null, $type_code = null, $content_type = null) {
+	 */
+	function saveFileContent($object, $content, $name = null, $type_code = null, $content_type = null, $description = null) {
 
 		$filename = (!empty($name) ? $name : (str_replace(".", "", microtime()) . getFileExtension($content_type)));
 
@@ -544,6 +569,7 @@ class FileService extends DbService {
 		$att->parent_table = $object->getDbTableName();
 		$att->parent_id = $object->id;
 		$att->title = $filename;
+		$att->description = $description;
 		$att->type_code = $type_code;
 		$att->mimetype = $content_type;
 //                $att->modifier_user_id = $this->w->Auth->user()->id;
@@ -551,24 +577,24 @@ class FileService extends DbService {
 
 		return $att->id;
 	}
-	
+
 	/**
 	 * Get the attachment types for a given object type
-	 * 
+	 *
 	 * @param DbObejct $object
 	 * @return Array<AttachmentType>
-	 */	
+	 */
 	function getAttachmentTypesForObject($object) {
 		return $this->getObjects("AttachmentType", array("table_name" => $object->getDbTableName(), "is_active" => '1'));
 	}
 
 	/**
 	 * Render a template showing an attachment
-	 * 
+	 *
 	 * @param DbObject $object
 	 * @param string $backUrl
-	 * @return string  
-	 */	
+	 * @return string
+	 */
 	function getImageAttachmentTemplateForObject($object, $backUrl) {
 		$attachments = $this->getAttachments($object);
 		$template = "";
@@ -581,7 +607,7 @@ class FileService extends DbService {
 					rel="gallery"><img
 					src="' . WEBROOT . '/file/atthumb/' . $att->id . '/250/250" border="0" /></a><br/>' . $att->description . '
 				</div>
-				
+
 				<div class="actions">' . Html::a(WEBROOT . "/file/atdel/" . $att->id . "/" . $backUrl . "+" . $object->id, "Delete", null, null, "Do you want to delete this attachment?")
 						. ' ' . Html::a(WEBROOT . "/file/atfile/" . $att->id . "/" . $att->filename, "Download") . '
 				</div>

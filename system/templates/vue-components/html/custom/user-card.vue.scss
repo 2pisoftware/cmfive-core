@@ -1,0 +1,39 @@
+
+$card-border-colour: #d3d7dc;
+$card-background-colour: #bbc9d4;
+
+$card-content-border-colour: #d3d7dc;
+$card-content-background-colour: #fff;
+
+.user-card {
+	height: 60px;
+	max-height: 60px;
+	background-color: lighten($card-background-colour, 10%);
+	border: 1px solid $card-border-colour;
+	border-radius: 5px;
+	display: inline-block;
+	padding: 5px;
+	clear: both;
+
+	.user-card-avatar {
+		height: 100%;
+		width: auto;
+		// display: inline-block;
+		float: left;
+	}
+
+	.user-card-details {
+		padding-left: 5px;
+		display: inline-block;
+		float: right;
+		width: auto;
+
+		.user-card-name {
+			display: block;
+		}	
+
+		.user-card-email {
+			display: block;
+		}
+	}
+}

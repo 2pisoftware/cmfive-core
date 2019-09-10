@@ -4,7 +4,7 @@ function ajaxRemoveTag_GET(Web $w) {
 	$w->setLayout(null);
 	
 	list($class, $id) = $w->pathMatch();
-	$tag_id = $w->request('tag_id');
+	$tag_id = $w->request('_tag_id');
 	
 	if (empty($class) || empty($id) || empty($tag_id)) {
 		return;

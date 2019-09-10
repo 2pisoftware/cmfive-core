@@ -13,7 +13,7 @@ class MigrationService extends DbService {
 	
 	public function getAvailableMigrations($module_name) {
 		$_this = $this;
-		set_error_handler(function($errno, $errstr) use ($_this) {
+		set_error_handler(function($errno, $errstr, $errfile, $errline, $errcontext) use ($_this) {
 			if (!(error_reporting() & $errno)) {
 				return;
 			}
@@ -21,6 +21,7 @@ class MigrationService extends DbService {
 			if ($errno === E_USER_ERROR) {
 				// Check if error contains a db error message
 				if (strpos($errstr, "does not exist in the database") !== FALSE) {
+					$this->w->Log->error("Error Table not found. Running initial migration");
 					// Run the admin migrations to install the migration table (the normal cause of this error)
 					$_this->installInitialMigration();
 					
@@ -64,12 +65,28 @@ class MigrationService extends DbService {
 					if (!is_dir($file) && $file{0} !== '.') {
 						$classname = explode('.', str_replace('-', '.', $file));
 						if (!empty($classname[1])) {
-							$availableMigrations[$module][$migration_path . DS . $file] = $classname[1];
-						} else {
-							$this->w->Log->error("Migration '" . $file . "' does not conform to naming convention");
-						}
-					}
-				}
+							if ($this->isInstalled($classname[1]))
+							{
+								$mig = $this->getMigrationByClassname($classname[1]);
+								$availableMigrations[$module][$migration_path . DS . $file] = ['class_name'=>$classname[1], 'timestamp'=> $classname[0], 'description'=>$mig->description, 'pretext' => $mig->pretext, 'posttext'  => $mig->posttext];
+							} else {
+								//Create instance of class
+								$migpath = $migration_path . DS . $file;
+								if (file_exists(ROOT_PATH . DS . $migpath)) {
+									include_once ROOT_PATH . DS . $migpath;
+								
+									$migration_class = explode('-', $file)[1];
+									$migration_class = preg_replace('/.php$/', '', $migration_class);
+									if (class_exists($migration_class)) {
+										$migration = (new $migration_class(1))->setWeb($this->w);
+										$availableMigrations[$module][$migration_path . DS . $file] = ['class_name'=>$classname[1], 'timestamp'=> $classname[0], 'description'=> $migration->description(), 'pretext'=>$migration->preText(), 'posttext'=>$migration->postText()];
+									} 
+									
+								}
+							}
+						}	
+					} else { $this->w->Log->error("Migration '" . $file . "' does not conform to naming convention"); }
+				} 
 			}
 		}
 		return $availableMigrations;
@@ -81,7 +98,7 @@ class MigrationService extends DbService {
 	
 	public function isInstalled($classname) {
 		if (empty(self::$_installed[$classname])) {
-			self::$_installed[$classname] = $this->w->db->get('migration')->where('classname', $classname)->count() == 1;
+			self::$_installed[$classname] = $this->w->db->get('migration')->where('classname', $classname)->count() >= 1;
 		}
 		return self::$_installed[$classname];
 	}
@@ -96,7 +113,21 @@ class MigrationService extends DbService {
 		
 		if (!empty($migrations)) {
 			foreach($migrations as $migration) {
-				$migrationsInstalled[$migration['module']][] = $migration;
+				$to_add = true;
+				//var_dump($migration);
+				if (array_key_exists($migration['module'], $migrationsInstalled)) {
+					foreach($migrationsInstalled[$migration['module']] as $processed_migration) {
+						if ($migration['classname'] == $processed_migration['classname']) {
+							$to_add = false;
+						}
+					}
+					if ($to_add) {
+						$migrationsInstalled[$migration['module']][] = $migration;
+					}
+				} else {
+					$migrationsInstalled[$migration['module']][] = $migration;
+				}
+				
 			}
 		}
 		
@@ -145,12 +176,27 @@ class {$classname} extends CmfiveMigration {
 		\$column->setName('id')
 				->setType('biginteger')
 				->setIdentity(true);
+
 	}
 
 	public function down() {
 		// DOWN
 	}
 
+	public function preText()
+	{
+		return null;
+	}
+
+	public function postText()
+	{
+		return null;
+	}
+
+	public function description()
+	{
+		return null;
+	}
 }
 
 MIGRATION;
@@ -159,10 +205,33 @@ MIGRATION;
 		return "Migration created";
 	}
 	
-	public function runMigrations($module, $filename = null) {
+	public function runMigrations($module, $filename = null, $ignoremessages = true, $continuingrunall = false) {
+
+		// Check if migrations are being run from the batch menu
+		if ($module == "all")
+		{
+			$prevpage = "batch";
+		} else {
+			$prevpage = "individual";
+			// If not - set values of the migration that it should be migrating to
+			$_module = $module;
+			$_filename = $filename;
+		}
+
+		//if no migrations have run run initial migrations
+		$this->w->db->setMigrationMode(true);
+		if (!in_array('migration', $this->w->db->getAvailableTables()) || $this->w->db->get('migration')->select()->count() == 0) {
+			$this->w->Log->setLogger("MIGRATION")->info("initial migration not run. Running initial migration");
+			$this->installInitialMigration();
+			$alreadyRunMigrations = $this->getInstalledMigrations($module);
+		}
+
 		$alreadyRunMigrations = $this->getInstalledMigrations($module);
 		$availableMigrations = $this->getAvailableMigrations($module);
 
+		
+        
+       
 		// Return if there are no migrations to run
 		if (empty($availableMigrations)) {
 			return;
@@ -181,25 +250,35 @@ MIGRATION;
 			}
 		}
 		
+        
 		// If filename is specified then strip out migrations that shouldnt be run
+		
 		if (strtolower($module) !== "all" && !empty($filename)) {
 			$offset_index = 1;
-
-			foreach($availableMigrations[$module] as $availableMigrationsPath => $availableMigrationsClass) {
-				if (strpos($availableMigrationsPath, $filename) !== FALSE) {
-					break;
-				}
-				$offset_index++;
+            $filename_parts = explode('.', $filename);
+			$file_timestamp = (float)  $filename_parts[0];
+			
+			foreach($availableMigrations[$module] as $availableMigrationsPath => $data) {
+				//check module timestamp and remove available migrations with greater timestamp value
+                $availableMigrationTimestamp = (float) $data['timestamp'];
+                
+                if ($file_timestamp < $availableMigrationTimestamp) {
+                    unset($availableMigrations[$module][$availableMigrationsPath]);
+                }
+				
 			}
 			
-			$availableMigrations[$module] = array_slice($availableMigrations[$module], 0, $offset_index);
 		}
-		
-		// Install migrations
-		if (!empty($availableMigrations)) {
-			$this->w->db->startTransaction();
 
-			try {
+		// Install migrations
+		$buffer = "";
+		$installedBuffer = "";
+		$uninstalledBuffer = "";
+		if (!empty($availableMigrations)) {
+			
+			// try {
+				$this->w->db->setMigrationMode(1);
+
 				// Use MySQL for now
 				$mysql_adapter = new \Phinx\Db\Adapter\MysqlAdapter([
 					'connection' => $this->w->db,
@@ -211,44 +290,133 @@ MIGRATION;
 					if (empty($migrations)) {
 						continue;
 					}
-					
+                  
+                    //sort module migrations
+                    uasort($migrations, function($a,$b){
+                        return $a['timestamp'] > $b['timestamp'];
+                    });
+
 					foreach($migrations as $migration_path => $migration) {
-						if (file_exists(ROOT_PATH . '/' . $migration_path)) {
-							include_once ROOT_PATH . '/' . $migration_path;
+						// var_dump($migration_path);
+						// die;
+						if (file_exists(ROOT_PATH . DS . $migration_path)) {
+							include_once ROOT_PATH . DS . $migration_path;
 
 							// Class name must match filename after timestamp and hyphen 
-							if (class_exists($migration)) {
-								$this->w->Log->setLogger("MIGRATION")->info("Running migration: " . $migration);
+							if (class_exists($migration['class_name'])) {
+								$this->w->Log->setLogger("MIGRATION")->info("Running migration: " . $migration['class_name']);
 
-								// Run migration UP
-								$migration_class = (new $migration(1))->setWeb($this->w);
-								$migration_class->setAdapter($mysql_adapter);
-								$migration_class->up();
+								try {
+									$this->w->db->startTransaction();
+									// Set migration class
+									$migration_class = (new $migration['class_name'](1))->setWeb($this->w);
+									$migration_class->setAdapter($mysql_adapter);
+									
+									if ($continuingrunall == true)
+									{
+										$ignoremessages = true;
+									}
 
-								// Insert migration record into DB
-								$migration_object = new Migration($this->w);
-								$migration_object->path = $migration_path;
-								$migration_object->classname = $migration;
-								$migration_object->module = strtolower($module);
-								$migration_object->batch = $this->getNextBatchNumber();
-								$migration_object->insert();
-								
-								$runMigrations++;
-								$this->w->Log->setLogger("MIGRATION")->info("Migration has run");
+									// Check if the migration has a preText and the flag has not been enabled
+									if (!$ignoremessages)
+									{
+										if (!empty($migration_class->preText()))
+										{
+											$pathData = pathinfo($migration_path);
+											$messageurl = "/admin-migration/migrationmessage?module=".$module."&filename=".$pathData['filename']. "&migmodule=" . $_module . "&migfilename=" . $_filename . "&path=".$migration_path . "&prevpage=" . $prevpage;
+
+											$batchedMigrations = array();
+											foreach	($availableMigrations as $avmigration)
+											{
+												// If the avmigration array has elements in it that means it's part of the current batch
+												if (count($avmigration) > 0)
+												{
+													//Add it to the batched migration variable
+													$batchedMigrations[] = $avmigration;
+												}
+											}
+											foreach ($batchedMigrations as $bmigrations)
+											{
+												foreach ($bmigrations as $bmigration)
+												{
+													$classname = $bmigration['class_name'];
+
+													if ($this->isInstalled($classname))
+													{
+														// If the migration has been installed at it to the buffer to display this information on the event of the migrations being interupted by a pre text message
+														$installedBuffer .= $classname . "<br>";
+													} else {
+														// These are the migrations that were halted due to the pre text message and weren't installed
+														$uninstalledBuffer .= $classname . "<br>";
+													}
+												}
+											}
+												if ($runMigrations > 0)
+												{
+													$msg = "<table style width='100%'><tr><td><center>" . $runMigrations . ' migration' . ($runMigrations == 1 ? ' has' : 's have') . ' run. <br>';
+													
+													$msg .= ($buffer != "" ? "<h5><strong>Post Migration Output:</strong></h5>" . $buffer . "</center></td>": "<center>There was no post migration output</center>");
+
+													$msg .= ($installedBuffer != "" ? " <td><strong>Migrations that were run and installed:</strong> <br>" . $installedBuffer . "<br>" : "");
+
+													$msg .= ($uninstalledBuffer != "" ? "<strong>Migrations yet to run:</strong> <br>" . $uninstalledBuffer . "<br></td></tr></table>" : "");
+												}
+												$this->w->msg($msg, $messageurl);
+											
+										}
+									}
+
+									if ($continuingrunall == true)
+									{
+										$continuingrunall = false;
+										$ignoremessages = false;
+									}
+										
+									$migration_class->up();
+									
+
+									// Insert migration record into DB
+									$migration_object = new Migration($this->w);
+									$migration_object->path = $migration_path;
+									$migration_object->classname = $migration['class_name'];
+									$migration_object->module = strtolower($module);
+									$migration_object->batch = $this->getNextBatchNumber();
+									$migration_object->pretext = $migration_class->preText();
+									$migration_object->posttext = $migration_class->postText();
+									$migration_object->description = $migration_class->description();
+									$migration_object->insert();
+
+									// If migration has a post text message, add it to the buffer
+									if (!empty($migration_class->postText()))
+									{
+										$buffer .= "<strong>" . $migration_object->classname . ":</strong> " . $migration_class->postText() . "<br>";
+									}
+									$runMigrations++;
+
+									$this->w->db->commitTransaction();
+									$this->w->Log->setLogger("MIGRATION")->info("Migration has run");
+								} catch (Exception $e) {
+									$this->w->db->rollbackTransaction();
+									$this->w->out("Error with a migration: " . $e->getMessage() . "<br/>More info: " . var_export($e));
+									$this->w->Log->setLogger("MIGRATION")->error("Error with a migration: " . $e->getMessage());
+
+									// Skip current modules migrations
+									break;
+								}
 							}
 						}
 					}
 				}
 
 				// Finalise transaction
-				$this->w->db->commitTransaction();
-				return count($runMigrations) . ' migration' . (count($runMigrations) == 1 ? ' has' : 's have') . ' run'; 
-			} catch (Exception $e) {
-				$this->w->out("Error with a migration: " . $e->getMessage() . "<br/>More info: " . var_export($e));
-				$this->w->Log->setLogger("MIGRATION")->error("Error with a migration: " . $e->getMessage());
-				$this->w->db->rollbackTransaction();
-			}
+				$this->w->db->setMigrationMode(false);
+				
+				return $runMigrations . ' migration' . ($runMigrations == 1 ? ' has' : 's have') . ' run. <br>' . ($buffer != "" ? "<h5><strong>Post Migration Output:</strong></h5>" . $buffer : "There was no post migration output") ; 
+			// } catch (Exception $e) {
+				
+			// }
 		} else {
+			$this->w->db->setMigrationMode(false);
 			return "No migrations to run!";
 		}
 	}
@@ -287,20 +455,35 @@ MIGRATION;
 			return "There are no installed migrations to rollback";
 		}
 		
-		$offset_index = 0;
-		foreach($installed_migrations[$module] as $installed_module_migration) {
+        //find id of filename migration and remove migrations from list with lower ids
+        $file_migration_id = '';
+        foreach($installed_migrations[$module] as $installed_module_migration) {
 			if (strpos($installed_module_migration['path'], $filename) !== FALSE) {
-				break;
+				$file_migration_id = $installed_module_migration['id'];
 			}
-			$offset_index++;
 		}
 		
-		$migrations_to_rollback = array_slice($installed_migrations[$module], $offset_index);
+        if ($file_migration_id == '') {
+            return "Could not find migration in database";
+        }
+        foreach ($installed_migrations[$module] as $key => $installed_module_migration) {
+            if ($file_migration_id > $installed_module_migration['id']) {
+                unset($installed_migrations[$module][$key]);
+            }
+        }
+        
+        //sort installed migrations by id largest to smallest
+        $migrations_to_rollback = $installed_migrations[$module];
+        usort($migrations_to_rollback, function($a, $b){
+           return $a['id'] < $b['id']; 
+        });
 		
 		// Attempt to rollback all migrations
 		if (!empty($migrations_to_rollback)) {
 			$this->w->db->startTransaction();
-
+            //set migration mode
+            $this->w->db->setMigrationMode(true);
+            
 			try {
 				// Use MySQL for now
 				$mysql_adapter = new \Phinx\Db\Adapter\MysqlAdapter([
@@ -309,8 +492,9 @@ MIGRATION;
 				]);
 				
 				foreach($migrations_to_rollback as $migration) {
-					if (file_exists(ROOT_PATH . '/' . $migration['path'])) {
-						include_once ROOT_PATH . '/' . $migration['path'];
+					
+					if (file_exists(ROOT_PATH . DS . $migration['path'])) {
+						include_once ROOT_PATH . DS . $migration['path'];
 
 						// Class name must match filename after timestamp and hyphen 
 						if (class_exists($migration['classname'])) {
@@ -333,6 +517,8 @@ MIGRATION;
 
 				// Finalise transaction
 				$this->w->db->commitTransaction();
+				$this->w->db->setMigrationMode(false);
+				
 				return count($migrations_to_rollback) . ' migration' . (count($migrations_to_rollback) == 1 ? ' has' : 's have') . ' rolled back'; 
 			} catch (Exception $e) {
 				$this->w->out("Error with a migration: " . $e->getMessage());
@@ -440,7 +626,7 @@ MIGRATION;
 						if (!empty($classname[0])) {
 							$availableMigrations[$module][$migration_path . DS . $file] = $classname[0];
 						} else {
-							$this->w->Log->error("Migration '" . $file . "' does not conform to naming convention");
+							$this->w->Log->error("Migration '" . $file . "' in " . $module . " does not conform to naming convention");
 						}
 					}
 				}
@@ -495,3 +681,4 @@ MIGRATION;
 	}
 
 }
+	

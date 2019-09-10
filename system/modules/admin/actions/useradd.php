@@ -38,6 +38,7 @@ function useradd_POST(Web &$w) {
 	$contact->fill($_REQUEST);
 	$contact->dt_created = time();
 	$contact->private_to_user_id = null;
+	$contact->setTitle($_REQUEST['acp_title']);
 	$contact->insert();
 
 	// now saving the user
@@ -50,9 +51,8 @@ function useradd_POST(Web &$w) {
     $user->is_external = isset($_REQUEST['is_external']) ? 1 : 0;
 	$user->dt_created = time();
 	$user->contact_id = $contact->id;
+	$user->setPassword($_REQUEST['password'], false);
 	$user->insert();
-	$user->setPassword($_REQUEST['password']);
-	$user->update();
 	$w->ctx("user", $user);
 
 	// now saving the roles

@@ -60,13 +60,10 @@ function createtask_POST(Web &$w) {
 	// unserialise input from step I and store in array: arr_req
 	$arr_req = unserialize($w->request('formone'));
 
-	// set relevant dt variables with: Today.
-	$arr_req['dt_assigned'] = Date('c');
-	$arr_req['dt_first_assigned'] = Date('c');
-
 	// insert Task into database
 	$task = new Task($w);
 	$task->fill($arr_req);
+
 	$task->insert();
 
 	// if insert is successful, store additional fields as task data

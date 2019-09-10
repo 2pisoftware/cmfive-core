@@ -17,7 +17,7 @@ $form['Contact Details'][] = array(
 	array("First Name", "text", "firstname", $contact ? $contact->firstname : ""),
 	array("Last Name", "text", "lastname", $contact ? $contact->lastname : ""));
 $form['Contact Details'][] = array(
-	array("Title", "select", "title", $contact ? $contact->title : "", lookupForSelect($w, "title")),
+	array("Title", "autocomplete", "title", $contact->getTitle(), $w->Lookup->getLookupByType("title")),
 	array("Email", "text", "email", $contact ? $contact->email : ""));
 
 $groupUsers = $user->isInGroups();
@@ -33,7 +33,7 @@ if ($groupUsers) {
 }
 $form['User Groups'][] = array(array("Group Title", "static", "groupName", implode("<br/>", $groups)));
 
-print Html::multiColForm($form, $w->localUrl("/admin/useredit/" . $w->ctx("id")), "POST", "Save");
+print Html::multiColForm($form, $w->localUrl("/admin/useredit/" . $w->ctx("id")), "POST", "Save", null, null, null, "_self", true, User::$_validation);
 ?>
 
 <?php else: ?>

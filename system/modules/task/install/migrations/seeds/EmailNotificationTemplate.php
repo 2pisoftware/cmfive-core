@@ -367,28 +367,31 @@ class EmailNotificationTemplate extends CmfiveSeedMigration {
                   </tr></tbody></table>
 <table class="row collapse" style="border-spacing: 0; border-collapse: collapse; vertical-align: top; text-align: left; width: 100%; min-width:100%; position: relative; display: table; padding: 0;"><tbody><tr style="vertical-align: top; text-align: left; padding: 0;" align="left">
 <th class="small-12 large-12 columns first last" style="width: 588px; min-width: 588px;color: #0a0a0a; font-family: Helvetica, Arial, sans-serif; font-weight: 400; text-align: left; line-height: 19px; font-size: 16px; margin: 0 auto; padding: 0 0 16px;" align="left">
-                    <table style="border-spacing: 0; border-collapse: collapse; vertical-align: top; text-align: left; width: 100%; min-width:100%; padding: 0;">
-                      {% for title, value in fields %}
-                      <tr style="vertical-align: top; text-align: left; padding: 0;" align="left">
-<th style="color: #0a0a0a; font-family: Helvetica, Arial, sans-serif; font-weight: 400; text-align: left; line-height: 19px; font-size: 16px; margin: 0; padding: 0;" align="left">
-                          <table class="row cmfive-data-row" style="border-spacing: 0; border-collapse: collapse; vertical-align: top; text-align: left; width: 100%; min-width:100%; position: relative; display: table; padding: 0;"><tbody><tr style="vertical-align: top; text-align: left; padding: 0;" align="left">
-<th class="cmfive-data-row-heading small-12 large-6 columns first" style="width: 50%; min-width:50%; color: #0a0a0a; font-family: Helvetica, Arial, sans-serif; font-weight: 400; text-align: left; line-height: 19px; font-size: 16px; border-top-color: #000; border-top-width: 1px; border-top-style: solid; vertical-align: middle; background: #cdcdcd; margin: 0 auto; padding: 15px 20px 16px 16px;" align="left" bgcolor="#cdcdcd" valign="middle">
-                              
-                                    <span class="small-text-center large-text-right" style="width: 100%; min-width:100%; display: inline-block; font-size: 18pt; font-weight: lighter; line-height: normal; text-align: right; color: #000;">{{ title }}</span>
-                                  
-                            </th>
-                            <th class="cmfive-data-row-value small-12 large-6 columns last" style="width: 50%; min-width:50%; color: #0a0a0a; font-family: Helvetica, Arial, sans-serif; font-weight: 400; text-align: left; line-height: 19px; font-size: 16px; border-top-color: #000; border-top-width: 1px; border-top-style: solid; margin: 0 auto; padding: 15px 16px 16px 20px;" align="left">
-                              <table style="border-spacing: 0; border-collapse: collapse; vertical-align: top; text-align: left; width: 100%; min-width: 100%; padding: 0;"><tr style="vertical-align: top; text-align: left; padding: 0;" align="left">
-<th style="color: #0a0a0a; font-family: Helvetica, Arial, sans-serif; font-weight: 400; text-align: left; line-height: 19px; font-size: 16px; margin: 0; padding: 0;" align="left">
-                                    <span class="small-text-center" style="width: 100%; min-width: 100%; display: inline-block; font-size: 18pt; font-weight: lighter; line-height: normal;">{{ value | raw }}</span>
-                                  </th>
-                                </tr></table>
-</th>
-                            </tr></tbody></table>
-</th>
-                      </tr>
-                      {% endfor %}
-                    </table>
+<table style="border-spacing: 0; border-collapse: collapse; vertical-align: top; text-align: left; width: 100%; min-width:100%; padding: 0;">
+  {% for title, value in fields %}
+  {% if value %}
+    <tr style="vertical-align: top; text-align: left; padding: 0;" align="left">
+    <th style="color: #0a0a0a; font-family: Helvetica, Arial, sans-serif; font-weight: 400; text-align: left; line-height: 19px; font-size: 16px; margin: 0; padding: 0;" align="left">
+      <table class="row cmfive-data-row" style="border-spacing: 0; border-collapse: collapse; vertical-align: top; text-align: left; width: 100%; min-width:100%; position: relative; display: table; padding: 0;"><tbody><tr style="vertical-align: top; text-align: left; padding: 0;" align="left">
+        <th class="cmfive-data-row-heading small-12 large-6 columns first" style="width: 50%; min-width:50%; color: #0a0a0a; font-family: Helvetica, Arial, sans-serif; font-weight: 400; text-align: left; line-height: 19px; font-size: 16px; border-top-color: #000; border-top-width: 1px; border-top-style: solid; vertical-align: middle; background: #cdcdcd; margin: 0 auto; padding: 15px 20px 16px 16px;" align="left" bgcolor="#cdcdcd" valign="middle">
+          <span class="small-text-center large-text-right" style="width: 100%; min-width:100%; display: inline-block; font-size: 18pt; font-weight: lighter; line-height: normal; text-align: right; color: #000;">{{ title }}</span>
+        </th>
+    <th class="cmfive-data-row-value small-12 large-6 columns last" style="width: 50%; min-width:50%; color: #0a0a0a; font-family: Helvetica, Arial, sans-serif; font-weight: 400; text-align: left; line-height: 19px; font-size: 16px; border-top-color: #000; border-top-width: 1px; border-top-style: solid; margin: 0 auto; padding: 15px 16px 16px 20px;" align="left">
+      <table style="border-spacing: 0; border-collapse: collapse; vertical-align: top; text-align: left; width: 100%; min-width: 100%; padding: 0;">
+        <tr style="vertical-align: top; text-align: left; padding: 0;" align="left">
+          <th style="color: #0a0a0a; font-family: Helvetica, Arial, sans-serif; font-weight: 400; text-align: left; line-height: 19px; font-size: 16px; margin: 0; padding: 0;" align="left">
+            <span class="small-text-center" style="width: 100%; min-width: 100%; display: inline-block; font-size: 18pt; font-weight: lighter; line-height: normal;">{{ value | raw }}</span>
+          </th>
+        </tr>
+      </table>
+    </th>
+    </tr>
+    </tbody></table>
+  </th>
+  </tr>
+  {% endif %}
+  {% endfor %}
+</table>
 </th>
                   </tr></tbody></table>
                 {% if footer %}
@@ -403,7 +406,7 @@ class EmailNotificationTemplate extends CmfiveSeedMigration {
 </th>
                   </tr></tbody></table>
                 {% endif %}
-                {% if can_view_task | default(true) %}
+                {% if can_view_task | default(false) %}
                 <table class="row" style="background-color: #5eb2e1; border-spacing: 0; border-collapse: collapse; vertical-align: top; text-align: left; width: 100%; min-width: 100%; position: relative; display: table; padding: 0;">
                     <tbody>
                       <tr style="vertical-align: top; text-align: left; padding: 0;" align="left">

@@ -12,6 +12,14 @@ class Form extends DbObject {
 	public $header_template;   // if specified this string is used as the form table header
 	public $row_template;  	// if specified this string is used as a template for rendering a form row
 	public $summary_template;  // if specified this string is used as a template for rendering a form summary row
+
+    /**
+     * A static array of string arrays to be used for validaiton when creating forms with a Form in it.
+     *
+     * @var array[array[string]]
+     */
+	public static $_validation = [
+		'title' => ['required']];
 	
 	/**
 	 * Load the fields associated with this form
@@ -27,12 +35,12 @@ class Form extends DbObject {
 	 * 
 	 * @return Array<FormEvent>
 	 */
-	public function getFormEvents($type = null, $is_acitve = 'all') {
+	public function getFormEvents($type = null, $is_active = 'all') {
 		$where = ["form_id" => $this->id, "is_deleted" => 0];
 		if (!empty($type)) {
 			$where['event_type'] = $type;
 		}
-		if ($is_acitve != 'all') {
+		if ($is_active != 'all') {
 			$where['is_active'] = $is_active;
 		}
 		return $this->getObjects("FormEvent", $where);

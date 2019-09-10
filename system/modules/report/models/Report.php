@@ -158,7 +158,7 @@ class Report extends DbObject {
     }
 
     // generate the report based on selected parameters
-    function getReportData() {
+    function getReportData($params = []) {
         // build array of all contents within any @@...@@
         //		preg_match_all("/@@[a-zA-Z0-9_\s\|,;\(\)\{\}<>\/\-='\.@:%\+\*\$]*?@@/",preg_replace("/\n/"," ",$this->report_code), $arrsql);
         preg_match_all("/@@.*?@@/", preg_replace("/\n/", " ", $this->report_code), $arrsql);
@@ -187,7 +187,7 @@ class Report extends DbObject {
                         $crumbs = array(array());
                         // each form element should correspond to a field in our SQL where clause ... substitute
                         // do not use $_REQUEST because it includes unwanted cookies
-                        foreach (array_merge($_GET, $_POST) as $name => $value) {
+                        foreach (array_merge($params, $_GET, $_POST) as $name => $value) {
                             // convert input dates to yyyy-mm-dd for query
                             if (startsWith($name, "dt_"))
                                 $value = $this->Report->date2db($value);

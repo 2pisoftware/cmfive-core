@@ -6,8 +6,8 @@
  * @author Carsten Eckelmann, May 2014
  *
  */
-class User extends DbObject {
-
+class User extends DbObject
+{
     public $login;
     public $is_admin;
     public $password;
@@ -26,316 +26,418 @@ class User extends DbObject {
     public $_contact;
     public $_modifiable;
     public $language;
-	
-    
+    public $is_password_invalid;
 
-	public function getLanguage() {
-		return $this->$language;
-	}
+    public function checkPassword($password)
+    {
+        if (empty($this->password) || /*empty($this->password_salt) ||*/ empty($password)) {
+            return false;
+        }
 
-	public function getAvailableLanguages() {
-		return [[__("English"), "en_US.UTF-8"], [__("German"), "de_DE.UTF-8"], [__("French"), "fr_FR.UTF-8"], [__("Chinese"), "zh_CN.UTF-8"], [__("Japanese"), "ja_JP.UTF-8"], [__("Spanish"), "es_ES.UTF-8"], [__("Dutch"), "nl_NL.UTF-8"], [__("Russian"), "ru_RU.UTF-8"], [__("Gaelic"), "gd_GB.UTF-8"]];
-	}
+        return $this->password == $this->encryptPassword($password);
+    }
 
-	public function delete($force = false) {
+    /**
+     * A static array of string arrays to be used for validaiton when creating forms with a User in it.
+     *
+     * @var array[array[string]]
+     */
+    public static $_validation = [
+        'login' => ['required']
+    ];
 
-		try {
-			$this->startTransaction();
+    public function getAvailableLanguages()
+    {
+        return [
+            [
+                __("English"), "en_US.UTF-8"
+            ],
+            [
+                __("German"), "de_DE.UTF-8"
+            ],
+            [
+                __("French"), "fr_FR.UTF-8"
+            ],
+            [
+                __("Chinese"), "zh_CN.UTF-8"
+            ],
+            [
+                __("Japanese"), "ja_JP.UTF-8"
+            ],
+            [
+                __("Spanish"), "es_ES.UTF-8"
+            ],
+            [
+                __("Dutch"), "nl_NL.UTF-8"
+            ],
+            [
+                __("Russian"), "ru_RU.UTF-8"
+            ],
+            [
+                __("Gaelic"), "gd_GB.UTF-8"
+            ]
+        ];
+    }
 
-			$contact = $this->getContact();
-			if ($contact) {
-				$contact->delete($force);
-			}
+    public function delete($force = false)
+    {
+        try {
+            $this->startTransaction();
 
-			parent::delete($force);
-			$this->commitTransaction();
-		} catch (Exception $e) {
+            $contact = $this->getContact();
+            if ($contact) {
+                $contact->delete($force);
+            }
 
-			// The error should already be logged
-			$this->rollbackTransaction();
-		}
-	}
+            parent::delete($force);
+            $this->commitTransaction();
+        } catch (Exception $e) {
+            // The error should already be logged
+            $this->rollbackTransaction();
+        }
+    }
 
-	public function getContact() {
-		if (!$this->_contact) {
-			$this->_contact = $this->getObject("Contact", $this->contact_id);
-		}
-		return $this->_contact;
-	}
+    public function getContact()
+    {
+        if (!$this->_contact) {
+            $this->_contact = $this->getObject("Contact", $this->contact_id);
+        }
+        return $this->_contact;
+    }
 
-	/**
-	 * @param integer $group_id
-	 * @return true if this user is in the group with the id
-	 */
-	public function isInGroups($group_id = null) {
-		$groupUsers = isset($group_id) ? $this->getObjects("GroupUser", array(
-			'user_id' => $this->id,
-			'group_id' => $group_id,
-		)) : $this->getObjects("GroupUser", array(
-			'user_id' => $this->id,
-		));
+    /**
+     * @param integer $group_id
+     * @return true if this user is in the group with the id
+     */
+    public function isInGroups($group_id = null)
+    {
+        $groupUsers = isset($group_id) ? $this->getObjects("GroupUser", array(
+            'user_id' => $this->id,
+            'group_id' => $group_id,
+        )) : $this->getObjects("GroupUser", array(
+            'user_id' => $this->id,
+        ));
 
-		if ($groupUsers) {
-			return $groupUsers;
-		}
-		return null;
-	}
+        if ($groupUsers) {
+            return $groupUsers;
+        }
+        return null;
+    }
 
-	/**
-	 * Check if this user is member of the group.
-	 *
-	 * (Reminder: Groups are special User objects! so don't get confused
-	 *  that the $group is a User)
-	 *
-	 * @param User $group
-	 * @return true if this user is part of this group
-	 */
-	public function inGroup(User $group) {
-		$groupmembers = $this->Auth->getGroupMembers($group->id, null);
+    /**
+     * Check if this user is member of the group.
+     *
+     * (Reminder: Groups are special User objects! so don't get confused
+     *  that the $group is a User)
+     *
+     * @param User $group
+     * @return true if this user is part of this group
+     */
+    public function inGroup(User $group)
+    {
+        $groupmembers = $this->Auth->getGroupMembers($group->id, null);
 
-		if ($groupmembers) {
-			foreach ($groupmembers as $member) {
-				if ($member->user_id == $this->id) {
-					return true;
-				}
+        if ($groupmembers) {
+            foreach ($groupmembers as $member) {
+                if ($member->user_id == $this->id) {
+                    return true;
+                }
 
-				$usr = $this->Auth->getUser($member->user_id);
-				if (!empty($usr) && $usr->is_group == 1 && $this->inGroup($usr)) {
-					return true;
-				}
-			}
-		}
-	}
+                $usr = $this->Auth->getUser($member->user_id);
+                if (!empty($usr) && $usr->is_group == 1 && $this->inGroup($usr)) {
+                    return true;
+                }
+            }
+        }
+    }
 
-	public function getFirstName() {
-		$contact = $this->getContact();
+    public function getFirstName()
+    {
+        $contact = $this->getContact();
 
-		if ($contact) {
-			$name = $contact->getFirstName();
-		}
-		return $name;
-	}
+        if ($contact) {
+            $name = $contact->getFirstName();
+        }
+        return $name;
+    }
 
-	public function getSurname() {
-		$contact = $this->getContact();
-		if ($contact) {
-			$name = $contact->getSurname();
-		}
-		return $name;
-	}
+    public function getSurname()
+    {
+        $contact = $this->getContact();
+        if ($contact) {
+            $name = $contact->getSurname();
+        }
+        return $name;
+    }
 
-	public function getFullName() {
-		$contact = $this->getContact();
-		$name = ucfirst($this->login);
-		if ($contact) {
-			$name = $contact->getFullName();
-		}
-		return $name;
-	}
+    public function getFullName()
+    {
+        $contact = $this->getContact();
+        $name = ucfirst($this->login);
+        if ($contact) {
+            $name = $contact->getFullName();
+        }
+        return $name;
+    }
 
-	public function getSelectOptionTitle() {
-		return $this->getFullName();
-	}
+    public function getSelectOptionTitle()
+    {
+        return $this->getFullName();
+    }
 
-	public function getSelectOptionValue() {
-		return $this->id;
-	}
+    public function getSelectOptionValue()
+    {
+        return $this->id;
+    }
 
-	/**
-	 * @return string, either the login or first name
-	 */
-	public function getShortName() {
-		$contact = $this->getContact();
-		$name = ucfirst($this->login);
-		if ($contact) {
-			$name = $contact->firstname;
-		}
-		return $name;
-	}
+    /**
+     * @return string, either the login or first name
+     */
+    public function getShortName()
+    {
+        $contact = $this->getContact();
+        $name = ucfirst($this->login);
+        if ($contact) {
+            $name = $contact->firstname;
+        }
+        return $name;
+    }
 
-	/**
-	 * @param string $force
-	 * @return string array of all roles that this user has
-	 */
-	public function getRoles($force = false) {
-		if ($this->is_admin) {
-			return $this->Auth->getAllRoles();
-		}
-		if (!$this->_roles || $force) {
-			$this->_roles = array();
+    /**
+     * @param string $force
+     * @return string array of all roles that this user has
+     */
+    public function getRoles($force = false)
+    {
+        if ($this->is_admin) {
+            return $this->Auth->getAllRoles();
+        }
+        if (!$this->_roles || $force) {
+            $this->_roles = array();
 
-			$groupUsers = $this->isInGroups();
+            $groupUsers = $this->isInGroups();
 
-			if ($groupUsers) {
-				foreach ($groupUsers as $groupUser) {
-					$groupRoles = $groupUser->getGroupRoles();
+            if ($groupUsers) {
+                foreach ($groupUsers as $groupUser) {
+                    $groupRoles = $groupUser->getGroupRoles();
 
-					foreach ($groupRoles as $groupRole) {
-						if (!in_array($groupRole, $this->_roles)) {
-							$this->_roles[] = $groupRole;
-						}
+                    foreach ($groupRoles as $groupRole) {
+                        if (!in_array($groupRole, $this->_roles)) {
+                            $this->_roles[] = $groupRole;
+                        }
+                    }
+                }
+            }
+            $rows = $this->getObjects("UserRole", array("user_id" => $this->id));
 
-					}
-				}
-			}
-			$rows = $this->getObjects("UserRole", array("user_id" => $this->id), true);
+            if ($rows) {
+                foreach ($rows as $row) {
+                    if (!in_array($row->role, $this->_roles)) {
+                        $this->_roles[] = $row->role;
+                    }
+                }
+            }
+        }
+        return $this->_roles;
+    }
 
-			if ($rows) {
-				foreach ($rows as $row) {
-					if (!in_array($row->role, $this->_roles)) {
-						$this->_roles[] = $row->role;
-					}
+    /**
+     * update the last login field in the database
+     */
+    public function updateLastLogin()
+    {
+        $data = array(
+            "dt_lastlogin" => $this->time2Dt(time()),
+        );
+        $this->_db->update("user", $data)->where("id", $this->id)->execute();
+    }
 
-				}
-			}
-		}
-		return $this->_roles;
-	}
+    /**
+     * Check whether a user has this role
+     *
+     * @param string $role
+     * @return true if and only if the user has this role
+     */
+    public function hasRole($role)
+    {
+        if ($this->is_admin) {
+            return true;
+        }
+        if ($this->getRoles(true)) {
+            return in_array($role, $this->_roles);
+        } else {
+            return false;
+        }
+    }
 
-	/**
-	 * update the last login field in the database
-	 */
-	public function updateLastLogin() {
-		$data = array(
-			"dt_lastlogin" => $this->time2Dt(time()),
-		);
-		$this->_db->update("user", $data)->where("id", $this->id)->execute();
-	}
+    /**
+     * Check whether a user has a role in a list of roles
+     *
+     * @param array $roles
+     * @return true if the user has any one of these roles
+     */
+    public function hasAnyRole($roles)
+    {
+        if ($this->is_admin) {
+            return true;
+        }
+        if (!empty($roles)) {
+            if (is_array($roles)) {
+                foreach ($roles as $r) {
+                    if ($this->hasRole($r)) {
+                        return true;
+                    }
+                }
+            } elseif (is_string($roles)) {
+                if ($this->hasRole($roles)) {
+                    return true;
+                }
+            } else {
+                return false;
+            }
+        }
+        return false;
+    }
 
-	/**
-	 * Check whether a user has this role
-	 *
-	 * @param string $role
-	 * @return true if and only if the user has this role
-	 */
-	public function hasRole($role) {
-		if ($this->is_admin) {
-			return true;
-		}
-		if ($this->getRoles()) {
-			return in_array($role, $this->_roles);
-		} else {
-			return false;
-		}
-	}
+    /**
+     * Add a role to this user
+     *
+     * @param string a role
+     */
+    public function addRole($role)
+    {
+        if (!$this->hasRole($role)) {
+            $ur = new UserRole($this->w);
+            $ur->user_id = $this->id;
+            $ur->role = $role;
+            $ur->insert();
+        }
+    }
 
-	/**
-	 * Check whether a user has a role in a list of roles
-	 *
-	 * @param array $roles
-	 * @return true if the user has any one of these roles
-	 */
-	public function hasAnyRole($roles) {
-		if ($this->is_admin) {
-			return true;
-		}
-		if (!empty($roles)) {
-			if (is_array($roles)) {
-				foreach ($roles as $r) {
-					if ($this->hasRole($r)) {
-						return true;
-					}
-				}
-			} else if (is_string($roles)) {
-				if ($this->hasRole($roles)) {
-					return true;
-				}
-			} else {
-				return false;
-			}
-		}
-		return false;
-	}
+    /**
+     * Remove a role from this user
+     *
+     * @param string $role
+     */
+    public function removeRole($role)
+    {
+        if ($this->hasRole($role)) {
+            $role = $this->admin->getObject("UserRole", ["user_id" => $this->id, "role" => $role]);
+            if (!empty($role)) {
+                $role->delete();
+            }
+            $this->getRoles(true);
+        }
+    }
 
-	/**
-	 * Add a role to this user
-	 *
-	 * @param string a role
-	 */
-	public function addRole($role) {
-		if (!$this->hasRole($role)) {
-			$ur = new UserRole($this->w);
-			$ur->user_id = $this->id;
-			$ur->role = $role;
-			$ur->insert();
-		}
-	}
+    /**
+     * Check whether a user is allowed to navigate to a certain url
+     * in the system.
+     *
+     * This will execute all the functions associated to the user's roles
+     * until one function returns true.
+     *
+     * @param Web $w
+     * @param string $path
+     * @return true if one role function returned true
+     */
+    public function allowed($path)
+    {
+        if (!$this->is_active) {
+            return false;
+        }
+        if ($this->is_admin) {
+            return true;
+        }
+        if ($this->getRoles()) {
+            foreach ($this->getRoles() as $rn) {
+                $rolefunc = "role_" . $rn . "_allowed";
+                if (function_exists($rolefunc)) {
+                    if ($rolefunc($this->w, $path)) {
+                        return true;
+                    }
+                } else {
+                    $this->w->Log->error("Role '" . $rn . "' does not exist!");
+                }
+            }
+        }
+        return false;
+    }
 
-	/**
-	 * Remove a role from this user
-	 *
-	 * @param string $role
-	 */
-	public function removeRole($role) {
-		if ($this->hasRole($role)) {
-			$role = $this->admin->getObject("UserRole", ["user_id" => $this->id, "role" => $role]);
-			if (!empty($role)) {
-				$role->delete();
-			}
-			$this->getRoles(true);
-		}
-	}
+    /**
+     * Encrypt the password using sha1 or password_hash depending on whether the User's salt is build into the
+     * password hash and the PHP Version.
+     *
+     * @param string $password
+     * @param boolean $update_salt - DEPRICATED
+     * @return string
+     */
+    public function encryptPassword($password, $update_salt = true)
+    {
+        // If User's password salt is not built into the password hash use SHA1.
+        if (!empty($this->password_salt)) {
+            return sha1($this->password_salt . $password);
+        }
 
-	/**
-	 * Check whether a user is allowed to navigate to a certain url
-	 * in the system.
-	 *
-	 * This will execute all the functions associated to the user's roles
-	 * until one function returns true.
-	 *
-	 * @param Web $w
-	 * @param string $path
-	 * @return true if one role function returned true
-	 */
-	public function allowed($path) {
-		if (!$this->is_active) {
-			return false;
-		}
-		if ($this->is_admin) {
-			return true;
-		}
-		if ($this->getRoles()) {
-			foreach ($this->getRoles() as $rn) {
-				$rolefunc = "role_" . $rn . "_allowed";
-				if (function_exists($rolefunc)) {
-					if ($rolefunc($this->w, $path)) {
-						return true;
-					}
-				} else {
-					$this->w->Log->error("Role '" . $rn . "' does not exist!");
-				}
-			}
-		}
-		return false;
-	}
+        $hash = false;
+        $algorithm = PASSWORD_DEFAULT;
+        $options = [];
 
-	/**
-	 * encrypt the password using sha1 and a global salt.
-	 *
-	 * @param unknown $password
-	 * @return string
-	 */
-	public function encryptPassword($password) {
-		if (empty($this->password_salt)) {
-			// Salt hash is generated per user
-			$this->password_salt = md5(uniqid(rand(), TRUE));
-			$this->update();
-		}
-		return sha1($this->password_salt . $password);
-	}
+        // If the password hash is using BYCRYPT set the algorithm accordingly.
+        if (startsWith($this->password, "$2y$")) {
+            $algorithm = PASSWORD_BCRYPT;
+        }
 
-	/**
-	 * set the user's password and encrypt it using sha1 and the user's salt
-	 *
-	 * @param string $password
-	 */
-	public function setPassword($password) {
-		$this->password = $this->encryptPassword($password);
-		$this->w->callHook('auth', 'setpassword', [$password, $this]);
-	}
+        // If the password hash is not using BYCRYPT and the PHP version is at least 7.3.0 set the
+        // password hash is using ARGON2. Set the options accordingly.
+        if (!startsWith($this->password, "$2y$") && version_compare(PHP_VERSION, "7.3.0", ">=")) {
+            $options = [
+                "memory_cost" => PASSWORD_ARGON2_DEFAULT_MEMORY_COST, // Max 1024 bytes.
+                "time_cost" => PASSWORD_ARGON2_DEFAULT_TIME_COST, // Max 2 seconds.
+                "threads" => PASSWORD_ARGON2_DEFAULT_THREADS]; // Max 2 threads.
+        }
 
-	public static function generateSalt() {
-		return md5(uniqid(rand(), TRUE));
-	}
+        $hash = password_hash($password, $algorithm, $options);
 
+        return $hash === false ? "" : $hash;
+    }
+
+    /**
+     * Set the user's password and encrypt it using sha1 or password_hash depending on whether the user has a salt or
+     * not.
+     *
+     * @param string $password
+     * @param boolean $update_salt - DEPRICATED
+     */
+    public function setPassword($password, $update_salt = true)
+    {
+        $this->password = $this->encryptPassword($password);
+        $this->w->callHook('auth', 'setpassword', [$password, $this]);
+    }
+
+    /**
+     * If the User's password hash is depricated and the $password paramter matches the User's password,
+     * update the User's password to use the latest Hash.
+     *
+     * @param string $password
+     * @return boolean
+     */
+    public function updatePasswordHash($password)
+    {
+        if ($this->password !== $this->encryptPassword($password)) {
+            return false;
+        }
+
+        if (!empty($this->password_salt)) {
+            $this->password_salt = null;
+        }
+
+        $this->setPassword($password);
+        return $this->update(true);
+    }
+
+    public static function generateSalt()
+    {
+        return md5(uniqid(rand(), true));
+    }
 }
