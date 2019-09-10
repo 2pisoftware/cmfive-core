@@ -1,4 +1,1 @@
-<?php
-
-echo $addmembers;
-?>
+<?php echo $addmembers;

@@ -2,7 +2,7 @@
 
 class CommentService extends DbService {
     
-    public function getCommentsForTable($table = null, $object_id = null){
+    public function getCommentsForTable($table = null, $object_id = null, $internal_only = false, $external_only = false){
         $where = array("is_deleted = NULL OR is_deleted = ?" => 0);
         if (!empty($table)){
             if (is_a($table, "DbObject")){
@@ -14,6 +14,16 @@ class CommentService extends DbService {
             if (!empty($object_id)){
                 $where["obj_id"] = $object_id;
             }
+
+            // $internal_only and $external_only are mutually exclusive
+            if ($internal_only === true) {
+                $where['is_internal'] = 1;
+            }
+
+            if ($internal_only === false && $external_only === true) {
+                $where['is_internal'] = 0;
+            }
+
             return $this->getObjects("Comment", $where);
         }
         return null;
@@ -59,8 +69,9 @@ class CommentService extends DbService {
     }
     
     public function renderComment($text) {
-    	require_once 'creole/creole.php';
-    	return (new creole())->parse(strip_tags($text));
+    	// require_once 'creole/creole.php';
+    	// return (new creole())->parse(strip_tags($text));
+        return (new \softark\creole\Creole())->parse($text);
     }
     
 }

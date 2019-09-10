@@ -153,4 +153,36 @@ class Timelog extends DbObject {
 		
 		parent::update($force_null_values, $force_validation);
 	}
+	
+	public function canDelete(User $user) {
+		$hook_results = $this->w->callHook('timelog','can_delete_timelog',$this);
+		foreach ($hook_results as $result) {
+			if (!$result) {
+				return false;
+			}
+		}
+        // user is admin
+        if ($user->is_admin) {
+			return True;
+		}
+		// user is the timelog assignee
+		if ($this->user_id == $user->id) {
+			return True;
+		}
+		// user is an owner of the taskgroup
+		$object = $this->w->Timelog->getObject($this->object_class, $this->object_id);
+		if (get_class($object) == 'Task') {
+			if (!empty($object->task_group_id)) {
+				$task_group = $this->w->Task->getObject('TaskGroup', $object->task_group_id);
+				if ($task_group->isOwner($user)) {
+					return True;
+				}
+			}
+		}
+		return False;
+	}
+	
+	public function canEdit(User $user) {
+		return $this->canDelete($user);
+	}
 }

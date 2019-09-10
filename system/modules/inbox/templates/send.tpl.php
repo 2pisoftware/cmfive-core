@@ -40,7 +40,7 @@ if ($messageid){
 	);
 	print Html::form($lines,WEBROOT."/inbox/send/".$messageid,"POST","Send");
 
-	if ($message_arr){
+	if (isset($message_arr)){
 		foreach($message_arr as $mes){
 			print_r($mes);
 		}
@@ -57,12 +57,12 @@ if ($messageid){
 
 ?>
 <script type='text/javascript'>
-    
+
     CKEDITOR.replace( 'message' ,
     {
         toolbar : 'Basic'
     });
-    
+
     $('.savebutton').bind('click',function() {
 		if ($.trim($('#acp_receiver_id').val()).length==0) {
 			alert("You must enter a message recipient");

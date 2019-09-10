@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This class represents the data stored as additional information that 
  * can be entered for a form field.
@@ -12,4 +13,26 @@ class FormFieldMetadata extends DbObject {
 	public $meta_key;		// meta data field name
 	public $meta_value;		// stored value entered by user
 	
+	// public function afterConstruct() {
+	// 	if (is_array($this->meta_value)) {
+	// 		$this->meta_value = json_decode($this->meta_value);
+	// 	}
+	// }
+
+	public function insert($force_validation = true) {
+		if (is_array($this->meta_value)) {
+			$this->meta_value = json_encode($this->meta_value);
+		}
+
+		parent::insert($force_validation);
+	}
+
+	public function update($force_null_values = false, $force_validation = true) {
+		if (is_array($this->meta_value)) {
+			$this->meta_value = json_encode($this->meta_value);
+		}
+
+		parent::update($force_validation);
+	}
+
 }

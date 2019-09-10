@@ -1,7 +1,7 @@
 <div class="tabs">
 	<div class="tab-head">
 		<a href="#members">Members</a>
-		<a href="#notifications">Notifications</a>
+		<!-- <a href="#notifications">Notifications</a> -->
 	</div>
 	<div class="tab-body">
 		<div id="members">
@@ -14,10 +14,12 @@
 			<h4>Active Tasks</h4>
 			<?php echo $w->partial('listtasks', ['task_group_id' => $taskgroup->id, 'redirect' => '/task-group/viewmembergroup/' . $taskgroup->id, 'hide_filter' => true], 'task'); ?>
 		</div>
-		<div id="notifications">
+		
+		<!-- DEPRECATED IN FAVOUR OF TASK SUBSCRIBERS -->
+		<!-- <div id="notifications">
 			<div class="row-fluid clearfix">
 				<?php echo!empty($notifymatrix) ? $notifymatrix : ""; ?>
 			</div>
-		</div>
+		</div> -->
 	</div>
 </div>

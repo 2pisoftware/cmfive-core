@@ -29,20 +29,21 @@ class InboxService extends DbService {
         $msg->is_archived = 0;
         $msg->insert();
 
-        $receiver = $this->Auth->getUser($user_id);
+		// No need for inbox to send emails with the new NotificationService
+//        $receiver = $this->Auth->getUser($user_id);
         
         // Notify users via email if specified and the user isn't sending a message to themselves
         // $this->w->Log->debug("IDs: " . var_export($msg->user_id, true) . " - " . var_export($msg->sender_id, true));
-        if (!empty($mso) && !empty($msg) && !empty($receiver)) {
-			$rContact=$receiver->getContact();
-			$lSender=$this->w->Auth->getUser($msg->sender_id);
-			if (!empty($rContact) && !empty($lSender)) {
-				$lContact=$lSender->getContact();
-				if (!empty($lContact) && $send_email === true && $msg->user_id !== $msg->sender_id) {
-					$this->w->Mail->sendMail($rContact->email, $logged_in ? $lContact->email : Config::get('main.company_support_email'), $msg->subject, $mso->message);
-				}
-			}
-		}
+//        if (!empty($mso) && !empty($msg) && !empty($receiver)) {
+//			$rContact=$receiver->getContact();
+//			$lSender=$this->w->Auth->getUser($msg->sender_id);
+//			if (!empty($rContact) && !empty($lSender)) {
+//				$lContact=$lSender->getContact();
+//				if (!empty($lContact) && $send_email === true && $msg->user_id !== $msg->sender_id) {
+//					$this->w->Mail->sendMail($rContact->email, $logged_in ? $lContact->email : Config::get('main.company_support_email'), $msg->subject, $mso->message);
+//				}
+//			}
+//		}
     }
 
     function sendMail($to, $cc, $bcc, $from, $replyto, $subject, $message) {

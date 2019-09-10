@@ -110,7 +110,7 @@ class DbService {
      * @param <type> $idOrWhere
      * @return <type>
      */
-    function getObject($class, $idOrWhere, $use_cache = true, $order_by = null) {
+    function getObject($class, $idOrWhere, $use_cache = true, $order_by = null, $includeDeleted = false) {
         if (!$idOrWhere || !$class)
             return null;
 
@@ -148,17 +148,21 @@ class DbService {
                 $this->w->Log->setLogger(get_class($this))->error("(getObject) The WHERE condition: " . json_encode($idOrWhere) . " has non-associative elements, this has security implications and is not allowed");
                 return null;
             }
+			
+			// Default is deleted checks to 0
+			$columns = $o->getDbTableColumnNames();
+
+			if (!$includeDeleted && (property_exists(get_class($o), "is_deleted") || (in_array("is_deleted", $columns)))) {
+				$this->_db->where('is_deleted', 0);
+			}
         }
-        
+
         if (!empty($order_by)) {
             $this->_db->order_by($order_by);
         }
 		
 		$this->buildSelect($o, $table, $class);
-//        $this->w->Log->setLogger("DB_SERVICE")->debug("(getObject) TABLE: " . $table . " WHERE: " . json_encode($idOrWhere));
-        //$this->w->Log->setLogger("DB_SERVICE")->debug("SQL: " . $this->_db->getSql());
         $result = $this->_db->fetch_row();
-//        $this->w->Log->setLogger("DB_SERVICE")->debug("RESULT: " . json_encode($result));
 
         if ($result) {
             $obj = $this->getObjectFromRow($class, $result, true);
@@ -207,7 +211,7 @@ class DbService {
      * 
      * @return <type>
      */
-    function getObjects($class, $where = null, $cache_list = false, $use_cache = true, $order_by = null, $offset = null, $limit = null) {
+    function getObjects($class, $where = null, $cache_list = false, $use_cache = true, $order_by = null, $offset = null, $limit = null, $includeDeleted = false) {
         if (!$class)
             return null;
 		
@@ -249,6 +253,13 @@ class DbService {
         } else if ($where && is_scalar($where)) {
             $this->_db->where($where, false);
         }
+		
+		// Default is deleted checks to 0
+		$columns = $o->getDbTableColumnNames();
+		
+		if (!$includeDeleted && (property_exists(get_class($o), "is_deleted") || (in_array("is_deleted", $columns)))) {
+			$this->_db->where('is_deleted', 0);
+		}
 		
 		// Ordering
         if (!empty($order_by)) {

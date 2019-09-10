@@ -7,8 +7,9 @@
 function groupadd_GET(Web $w)
 {
 	$template['New Group'] = array(array(array("Group Title: ","text","title")));
+	$validation = ['title' => ['required']];
 
-	$w->out(Html::multiColForm($template,"/admin/groupadd","POST","Save"));
+	$w->out(Html::multiColForm($template,"/admin/groupadd","POST","Save", null, null, null, "_self", true, $validation));
 
 	$w->setLayout(null);
 }
