@@ -24,7 +24,8 @@ class SwiftMailerTransport implements GenericTransport {
 			case "swiftmailer":
 				$host = Config::get('email.host');
 				$port = Config::get('email.port');
-				$encryption = !empty(Config::get('email.encryption')) ? Config::get('email.encryption') : (Config::get('email.auth') == true ? 'ssl' : null);
+				$encryption = Config::get('email.encryption', Config::get('email.auth') == true ? 'ssl' : null);
+
 				$username = Config::get('email.username');
 				$password = Config::get('email.password');
 
