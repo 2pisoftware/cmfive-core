@@ -108,7 +108,11 @@ function edit_POST(Web $w) {
 			$timelog->dt_end = $time_object->format('Y-m-d H:i:s');
 		}
 	}
-
+	
+	if (empty($timelog->user_id)) {
+		$timelog->user_id = !empty($_POST['user_id']) ? intval($_POST['user_id']) : $this->w->Auth->user()->id;
+	}
+	
 	// Timelog user_id handled in insert/update
 	$timelog->insertOrUpdate();
 
