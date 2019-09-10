@@ -22,14 +22,21 @@ class SwiftMailerTransport implements GenericTransport {
 		switch(strtolower($layer)) {
 			case "smtp":
 			case "swiftmailer":
+				$host = Config::get('email.host');
+				$port = Config::get('email.port');
+				$encryption = Config::get('email.encryption', Config::get('email.auth') == true ? 'ssl' : null);
+
+				$username = Config::get('email.username');
+				$password = Config::get('email.password');
+
 				if (method_exists('Swift_SmtpTransport', 'newInstance')) {
-					return Swift_SmtpTransport::newInstance(Config::get('email.host'), Config::get('email.port'), Config::get('email.auth') == true ? 'ssl' : null)
-						->setUsername(Config::get('email.username'))
-						->setPassword(Config::get('email.password'));
+					return Swift_SmtpTransport::newInstance($host, $port, $encryption)
+						->setUsername($username)
+						->setPassword($password);
 				} else {
-					return (new Swift_SmtpTransport(Config::get('email.host'), Config::get('email.port'), Config::get('email.auth') == true ? 'ssl' : null))
-						->setUsername(Config::get('email.username'))
-						->setPassword(Config::get('email.password'));
+					return (new Swift_SmtpTransport($host, $port, $encryption))
+						->setUsername($username)
+						->setPassword($password);
 				}
 			break;
 			case "sendmail":
