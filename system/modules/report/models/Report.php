@@ -1,7 +1,7 @@
 <?php
 
-class Report extends DbObject {
-
+class Report extends DbObject
+{
     public $title;   // report title
     public $module; // module report pertains to
     public $category;   // category of report given by Lookup
@@ -14,32 +14,37 @@ class Report extends DbObject {
     public $_modifiable; // employ the modifiable aspect
     public static $_db_table = "report";
 
-    public function getTemplates() {
+    public function getTemplates()
+    {
         return $this->getObjects("ReportTemplate", array("report_id" => $this->id, "is_deleted" => 0));
     }
-	
-	public function getMembers() {
-		return $this->getObjects("ReportMember", ["report_id" => $this->id, "is_deleted" => 0]);
-	}
-    
-	public function getOwners() {
-		$members = $this->getMembers();
-		return array_filter($members ? : [], function($member) {
-			return strtoupper($member->role) === "OWNER";
-		});
-	}
-	
-	public function getNumberOfOwners() {
-		return $this->db->get("report_member")->where("report_id", $this->id)
-				->where("is_deleted", 0)
-				->where("role", "OWNER")->count();
-	}
-	
+
+    public function getMembers()
+    {
+        return $this->getObjects("ReportMember", ["report_id" => $this->id, "is_deleted" => 0]);
+    }
+
+    public function getOwners()
+    {
+        $members = $this->getMembers();
+        return array_filter($members ?: [], function ($member) {
+            return strtoupper($member->role) === "OWNER";
+        });
+    }
+
+    public function getNumberOfOwners()
+    {
+        return $this->db->get("report_member")->where("report_id", $this->id)
+            ->where("is_deleted", 0)
+            ->where("role", "OWNER")->count();
+    }
+
     /**
      * return the database object to call the report on.
-     * 
+     *
      */
-    function getDb() {
+    public function getDb()
+    {
         if (empty($this->report_connection_id)) {
             return $this->_db;
         } else {
@@ -51,7 +56,8 @@ class Report extends DbObject {
     }
 
     // return a category title using lookup with type: ReportCategory
-    function getCategoryTitle() {
+    public function getCategoryTitle()
+    {
         $c = $this->Report->getObject("Lookup", array("type" => "ReportCategory", "code" => $this->category));
         if (!empty($c)) {
             return property_exists($c, "title") ? $c->title : null;
@@ -63,8 +69,9 @@ class Report extends DbObject {
     /**
      *  build form of parameters for generating report
      */
-    function getReportCriteria() {
-    	
+    public function getReportCriteria()
+    {
+
         // build array of all contents within any [[...]]
         preg_match_all("/\[\[.*?\]\]/", preg_replace("/\n/", " ", $this->report_code), $form);
 
@@ -99,12 +106,13 @@ class Report extends DbObject {
                         }
 
                         if (empty($arr)) {
-                        	$arr = array(array("Select Report Criteria", "section"));
+                            $arr = array(array("Select Report Criteria", "section"));
                         }
                         // do something different based on form element type
                         switch ($type) {
                             case "autocomplete":
                                 $minValue = 3;
+                                // Fallthrough.
                             case "select":
                                 if ($sql != "") {
                                     // if sql exists, check SQL is valid
@@ -136,33 +144,30 @@ class Report extends DbObject {
                 }
             }
         }
-        
-        // get the selection of output formats as array
-//      $format = $this->Report->selectReportFormat();
-        
+
         $templates = $this->getTemplates();
         $template_values = array();
         if (!empty($templates)) {
-            foreach($templates as $temp) {
-                $template = $temp->getTemplate(); 
+            foreach ($templates as $temp) {
+                $template = $temp->getTemplate();
                 $template_values[] = array($template->title, $temp->id);
             }
         }
         // merge arrays to give all parameter form requirements
         if (!empty($template_values)) {
-        	$arr[] = array("Select an Optional Template", "section");
-        	$arr[] =array("Format", "select", "template", null, $template_values);
+            $arr[] = array("Select an Optional Template", "section");
+            $arr[] = array("Format", "select", "template", null, $template_values);
         }
         // return form
         return !empty($arr) ? $arr : null;
     }
 
     // generate the report based on selected parameters
-    function getReportData($params = []) {
+    public function getReportData($params = [])
+    {
         // build array of all contents within any @@...@@
-        //		preg_match_all("/@@[a-zA-Z0-9_\s\|,;\(\)\{\}<>\/\-='\.@:%\+\*\$]*?@@/",preg_replace("/\n/"," ",$this->report_code), $arrsql);
         preg_match_all("/@@.*?@@/", preg_replace("/\n/", " ", $this->report_code), $arrsql);
-        
+
         // if we have statements, continue ...
         if ($arrsql) {
             // foreach array element ...
@@ -174,7 +179,7 @@ class Report extends DbObject {
                         // strip our delimiters, remove newlines
                         $sql = preg_replace("/@@/", "", $sql);
                         $sql = preg_replace("/[\r\n]+/", " ", $sql);
-                        
+
                         // split into title and statement fields
                         list($stitle, $sql) = preg_split("/\|\|/", $sql);
                         $title = array(trim($stitle));
@@ -189,15 +194,17 @@ class Report extends DbObject {
                         // do not use $_REQUEST because it includes unwanted cookies
                         foreach (array_merge($params, $_GET, $_POST) as $name => $value) {
                             // convert input dates to yyyy-mm-dd for query
-                            if (startsWith($name, "dt_"))
+                            if (startsWith($name, "dt_")) {
                                 $value = $this->Report->date2db($value);
+                            }
 
                             // substitute place holder with form value
                             $sql = str_replace("{{" . $name . "}}", $value, $sql);
 
                             // list parameters for display
-                            if (($name != SESSION_NAME) && ($name != "format"))
+                            if (($name != SESSION_NAME) && ($name != "format")) {
                                 $crumbs[0][] = $value;
+                            }
                         }
 
                         // if our SQL is still intact ...
@@ -206,7 +213,7 @@ class Report extends DbObject {
                             $sql = $this->Report->putSpecialSQL($sql);
                             // check the SQL statement for validity
                             $flgsql = $this->Report->getcheckSQL($sql, $this->getDb());
-                            
+
                             // if valid SQL ...
                             if ($flgsql) {
                                 // starter arrays
@@ -240,7 +247,7 @@ class Report extends DbObject {
                                         $hds = array($hds);
                                         // merge to create completed report for display
                                         $tbl = array_merge($crumbs, $title, $hds, $line);
-                                        
+
                                         $alltbl[] = $tbl;
                                         unset($line);
                                         unset($hds);
@@ -285,19 +292,20 @@ class Report extends DbObject {
         } else {
             $alltbl = array(array("ERROR"), array("There is a problem with your SQL statement"));
         }
-        
+
         return $alltbl;
     }
 
     // given a report SQL statement, return recordset
-    private function getRowsfromSQL($sql) {
+    private function getRowsfromSQL($sql)
+    {
         if (!empty($this->report_connection_id)) {
             $connection = $this->getDb();
             $return = $connection->query($sql)->fetchAll();
         } else {
             $return = $this->_db->sql($sql)->fetch_all(PDO::FETCH_BOTH);
         }
-        
+
         if (!empty($return)) {
             foreach ($return as $key => $val) {
                 foreach ($val as $k => $v) {
@@ -307,8 +315,7 @@ class Report extends DbObject {
                 }
             }
         }
-        
+
         return $return;
     }
-
 }
