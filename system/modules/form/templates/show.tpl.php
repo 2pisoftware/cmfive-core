@@ -47,14 +47,14 @@
 					// Get new ordering and update via ajax
 					var ordering = [];
 					// var rows = document.querySelectorAll("#fields tbody tr");
-					
+
 					$("#fields tbody tr").each(function(index, element) {
 						var id_split = $(element).attr("id").split("_");
 						var id = id_split[1];
-						
+
 						ordering.push(id);
 					});
-					
+
 					$.post("/form-field/move/<?php echo $form->id; ?>", {ordering: ordering}, function() {
 						// Rebinding the events doesn't work...
 						//window.location.reload();
@@ -64,7 +64,7 @@
 					$( "#sortable" ).sortable({update: handleDrop});
 					$( "#sortable" ).disableSelection();
 				});
-					
+
 				</script>
 			<?php endif; ?>
 		</div>
@@ -118,8 +118,8 @@
 		</div>
 		<div id="events">
 			<?php echo Html::box('/form-event/edit?form_id=' . $form->id,'Add New Event', true); ?>
-			
-			<?php if (isset($event_table)): ?> 
+
+			<?php if (isset($event_table)): ?>
 				<h4>Events</h4>
 			<?php endif; ?>
 			<?php echo isset($event_table) ? $event_table : ''; ?>
