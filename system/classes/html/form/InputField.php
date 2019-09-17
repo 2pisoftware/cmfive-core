@@ -77,9 +77,16 @@ class InputField extends \Html\Form\FormElement
         $buffer = '<input ';
 
         foreach (get_object_vars($this) as $field => $value) {
-            if (!is_null($value) && !in_array($field, static::$_excludeFromOutput)) {
-                $field === "required" ? $buffer .= $field . " " : $buffer .= $field . '=\'' . $value . '\' ';
+            if (is_null($value) || in_array($field, static::$_excludeFromOutput)) {
+                continue;
             }
+
+            if ($field === "required" && ($value === true || $value === "true")) {
+                $buffer .= $field . " ";
+                continue;
+            }
+
+            $buffer .= $field . "='" . $value . "' ";
         }
 
         return $buffer . '/>';
