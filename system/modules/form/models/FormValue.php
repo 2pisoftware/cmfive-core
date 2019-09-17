@@ -81,10 +81,18 @@ class FormValue extends DbObject
     {
         $field = $this->getFormField();
         $row = $field->getFormRow();
+        $value = null;
 
-        // Was getting the masked value, I don't think this is right when editing the form
-        // For example, if it's a boolean type, "Yes" was being sent to the checkbox function instead of "1".
-        $value = $this->value; // $this->getMaskedValue();
+        switch ($field->type) {
+            case "date":
+            case "datetime":
+            case "time":
+                $value = $this->getMaskedValue();
+                break;
+            default:
+                $value = $this->value;
+                break;
+        }
 
         if (count($row) == 3) {
             array_push($row, $value);

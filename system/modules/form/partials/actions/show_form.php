@@ -21,8 +21,13 @@ function show_form(\Web $w, $params)
 
     $table_rows = [];
     foreach ($form_fields as $form_field) {
-        $form_instance_field_value = $w->Form->getFormValueForInstanceAndField($form_instance->id, $form_field->id);
-        $table_rows[] = [$form_field->name, "static", $form_field->technical_name, empty($form_instance_field_value) ? null : $form_instance_field_value->value];
+        $form_instance_field_value = null;
+
+        if (!empty($form_instance)) {
+            $form_instance_field_value = $w->Form->getFormValueForInstanceAndField($form_instance->id, $form_field->id);
+        }
+
+        $table_rows[] = [$form_field->name, "static", $form_field->technical_name, empty($form_instance_field_value) ? null : $form_instance_field_value->getMaskedValue()];
     }
 
     $table_data[$form->title] = [
