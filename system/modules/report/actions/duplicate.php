@@ -2,16 +2,16 @@
 
 function duplicate_ALL(Web $w)
 {
-    $redirect = "/report/index";
+    $failure_redirect_url = "/report/index";
     list($report_id) = $w->pathMatch("id");
 
     if (empty($report_id)) {
-        $w->error("Failed to find Report to duplicate", $redirect);
+        $w->error("Failed to find Report to duplicate", $failure_redirect_url);
     }
 
     $db_report = $w->Report->getReport($report_id);
     if (empty($db_report)) {
-        $w->error("Failed to find Report to duplicate", $redirect);
+        $w->error("Failed to find Report to duplicate", $failure_redirect_url);
     }
 
     $duplicate_report = $db_report->copy();
@@ -19,7 +19,7 @@ function duplicate_ALL(Web $w)
     $duplicate_report->report_connection_id = intval($w->request("report_connection_id"));
 
     if (!$duplicate_report->insert()) {
-        $w->error("Failed to save duplicated Report", $redirect);
+        $w->error("Failed to save duplicated Report", $failure_redirect_url);
     }
 
     $db_members = $db_report->getMembers();
@@ -33,5 +33,5 @@ function duplicate_ALL(Web $w)
         }
     }
 
-    $w->msg("Successfully duplicated Report", $redirect);
+    $w->msg("Successfully duplicated Report", "/report/edit/{$duplicate_report->id}");
 }
