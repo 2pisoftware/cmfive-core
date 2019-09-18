@@ -26,21 +26,37 @@ function form_core_template_tab_content(Web $w, $params)
         return;
     }
 
-    // Check and see if there are any forms mapped to the object
-    $forms = $w->Form->getFormsMappedToObject($params['object']);
+    $forms_list = "";
 
-    $forms_list = '';
-    if (!empty($forms)) {
-        foreach ($forms as $form) {
-            if ($form->is_deleted == 0) {
-                $forms_list .= '<div id="' . toSlug($form->title) . '">' . $w->partial($form->is_singleton ? "show_form" : "listform", [
-                    "form" => $form,
-                    "redirect_url" => $params['redirect_url'],
-                    'object' => $params['object']
-                ], "form") . '</div>';
-            }
+    $form_mappings = $w->Form->getFormMappingsForObject($params['object']);
+    foreach ($form_mappings ?? [] as $form_mapping) {
+        $form = $form_mapping->getForm();
+        if (empty($form)) {
+            continue;
         }
+
+        $forms_list .= '<div id="' . toSlug($form->title) . '">' . $w->partial($form_mapping->is_singleton ? "show_form" : "listform", [
+            "form" => $form,
+            "redirect_url" => $params['redirect_url'],
+            'object' => $params['object']
+        ], "form") . '</div>';
     }
+
+    // // Check and see if there are any forms mapped to the object
+    // $forms = $w->Form->getFormsMappedToObject($params['object']);
+
+    // $forms_list = '';
+    // if (!empty($forms)) {
+    //     foreach ($forms as $form) {
+    //         if ($form->is_deleted == 0) {
+    //             $forms_list .= '<div id="' . toSlug($form->title) . '">' . $w->partial($form->is_singleton ? "show_form" : "listform", [
+    //                 "form" => $form,
+    //                 "redirect_url" => $params['redirect_url'],
+    //                 'object' => $params['object']
+    //             ], "form") . '</div>';
+    //         }
+    //     }
+    // }
 
     return $forms_list;
 }

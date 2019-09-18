@@ -39,10 +39,8 @@ function show_form(\Web $w, $params)
     $object = $params["object"] ?? "";
 
     $edit_button = Html::box("/form-instance/edit/{$form_instance_id}?form_id={$form->id}&redirect_url={$redirect_url}&object_class={get_class($object)}&object_id={$object->id}", "Edit", true);
-    $delete_button = Html::b("/form-instance/delete/{$form_instance_id}?redirect_url={$redirect_url}", "Delete", "Are you sure you want to delete this " . $form->title . "?", null, false, "alert");
 
     $w->ctx("form", $form);
     $w->ctx("edit_button", $edit_button);
-    $w->ctx("delete_button", $delete_button);
     $w->ctx("table", Html::multiColTable($table_data));
 }

@@ -794,7 +794,7 @@ class Html
     public static function radio($name, $group, $value, $default_value = '1', $class = null, $required = null)
     {
         $default_value = $default_value === null ? '1' : $default_value;
-        $checked = $value == $default_value ? 'checked = "checked"' : "";
+        $checked = $value == $default_value ? "checked" : "";
         $buf = "<input type=\"radio\" name=\"" . $group . "\" value=\"" . $default_value . "\" $checked  id=\"" . $name . "\" class=\"" . $class . "\" " . $required . " />";
         return $buf;
     }

@@ -13,9 +13,6 @@ function edit_GET(Web $w)
             [
                 ["Description", "text", "description", $_form_object->description],
             ],
-            [
-                ["Singleton", "checkbox", "is_singleton", $_form_object->is_singleton],
-            ],
         ]
     ];
 

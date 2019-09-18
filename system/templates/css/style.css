@@ -28,10 +28,6 @@ form {
     flex-flow: row wrap;
 }
 
-/*.reveal-modal{
-    position : fixed;
-}*/
-
 ul.accordion {
     margin-left: 0px;
 }
@@ -819,4 +815,8 @@ input[type='checkbox'] {
     -webkit-transform: rotate(45deg);
     -ms-transform: rotate(45deg);
     transform: rotate(45deg);
+}
+
+.cmfive__checkbox-display-inline {
+    display: inline !important;
 }
