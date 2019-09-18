@@ -719,17 +719,57 @@ function in_modified_multiarray($value, $array, $levels = 3) {
 	return false;
 }
 
-function AESencrypt($text, $password) {
+function AESencrypt($text,$password) {
 	require_once "phpAES/AES.class.php";
 	$aes = new AES($password);
 	return base64_encode($aes->encrypt($text));
 }
 
-function AESdecrypt($text, $password) {
-	require_once "phpAES/AES.class.php";
-	$aes = new AES($password);
-	return $aes->decrypt(base64_decode($text));
+function SystemAESencrypt($text) {
+	return AESencrypt($text,Config::get('system.password_salt'));
 }
+
+function SystemSSLencrypt($text) {
+	$ssl_method = "AES-256-CBC";
+	$encryption_key = Config::get('system.encryption.key',null);
+	$encryption_iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length($ssl_method));
+	if (empty($encryption_key) || empty($encryption_iv)) {
+		// raise exception
+		$err = 'Cannot encrypt without system key and IV.';
+		$this->w->Log->error($err);
+		throw new Exception($err);
+	} else {
+		$ssl = openssl_encrypt($text, $ssl_method, $encryption_key, 0, $encryption_iv);	
+		$encryption_iv = bin2hex($encryption_iv);
+		return  $ssl . "::" . $encryption_iv;
+		}
+	}
+
+function AESdecrypt($text,$password) {
+		require_once "phpAES/AES.class.php";
+		$aes = new AES($password);
+		return $aes->decrypt(base64_decode($text));
+	}
+
+function SystemAESdecrypt($text) {
+	return AESdecrypt($text,Config::get('system.password_salt'));
+}
+
+function SystemSSLdecrypt($text) {
+	$ssl_method = "AES-256-CBC";
+	$encryption_key = Config::get('system.encryption.key',null);
+	$text = explode("::",$text);  //var_dump($text);
+	$encryption_iv = array_pop($text);
+	if (empty($encryption_key) || empty($encryption_iv)) {
+		// raise exception
+		$err = 'Cannot decrypt without system key and IV.';
+		$this->w->Log->error($err);
+		throw new Exception($err);
+		} else {
+		$text = array_pop($text);
+		return openssl_decrypt($text, $ssl_method, $encryption_key, 0, hex2bin($encryption_iv));
+		}
+	}
 
 /**
  * Gets content between two different strings
