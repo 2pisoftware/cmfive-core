@@ -13,7 +13,7 @@ function show_form(\Web $w, $params)
     }
 
     $form_instance = null;
-    $form_instances = $form->getFormInstances();
+    $form_instances = $w->Form->getFormInstancesForFormAndObject($form, $params['object']);
 
     if (!empty($form_instances) && count($form_instances) > 0) {
         $form_instance = $form_instances[0];
@@ -37,8 +37,13 @@ function show_form(\Web $w, $params)
     $form_instance_id = empty($form_instance) ? "" : $form_instance->id;
     $redirect_url = $params["redirect_url"] ?? "";
     $object = $params["object"] ?? "";
+    $object_class = "";
 
-    $edit_button = Html::box("/form-instance/edit/{$form_instance_id}?form_id={$form->id}&redirect_url={$redirect_url}&object_class={get_class($object)}&object_id={$object->id}", "Edit", true);
+    if (!empty($object)) {
+        $object_class = get_class($object);
+    }
+
+    $edit_button = Html::box("/form-instance/edit/{$form_instance_id}?form_id={$form->id}&redirect_url={$redirect_url}&object_class={$object_class}&object_id={$object->id}", "Edit", true);
 
     $w->ctx("form", $form);
     $w->ctx("edit_button", $edit_button);

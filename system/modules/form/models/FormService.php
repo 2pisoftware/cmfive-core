@@ -115,15 +115,38 @@ class FormService extends DbService
     }
 
     /**
+     * Get a FormApplicationMappings for an object that inheriits from DbObject.
+     *
+     * @param DbObject $object
+     * @return array[FormApplicationMapping]
+     */
+    public function getFormApplicationMappingsForObject(FormApplication $object)
+    {
+        return $this->getObject("FormApplicationMapping", ["application_id" => $object->id]);
+    }
+
+    /**
      * Gets a FormMapping that is mapped to the $form & $object parameters.
      *
      * @param Form $form
      * @param String $object
      * @return FormMapping
      */
-    public function getFormMappedToObject(Form $form, String $object)
+    public function getFormMapping(Form $form, String $object)
     {
         return $this->getObject("FormMapping", ["form_id" => $form->id, "object" => $object]);
+    }
+
+    /**
+     * Gets a FormApplicationMapping that is mapped to the $form & $object parameters.
+     *
+     * @param Form $form
+     * @param String $object
+     * @return FormApplicationMapping
+     */
+    public function getFormApplicationMapping(Form $form, DbObject $object)
+    {
+        return $this->getObject("FormApplicationMapping", ["form_id" => $form->id, "application_id" => $object->id]);
     }
 
     /**

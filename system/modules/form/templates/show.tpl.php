@@ -86,7 +86,7 @@
                             $mapping_names = Config::get('form.mapping');
                             if (!empty($mapping_names)) {
                                 foreach ($mapping_names as $mapping_name) {
-                                    $mapping = $w->Form->getFormMappedToObject($form, $mapping_name);
+                                    $mapping = $w->Form->getFormMapping($form, $mapping_name);
                                     $type = "";
 
                                     if (empty($mapping)) {
@@ -97,16 +97,10 @@
                                         $type = "multiple";
                                     }
 
-
                                     echo "<h3>$mapping_name</h3>";
-                                    echo "<label>" . Html::radio("none", $mapping_name . "type", $type, "none") . " None</label>";
-                                    echo "<label>" . Html::radio("single", $mapping_name . "type", $type, "none") . " Single</label>";
-                                    echo "<label>" . Html::radio("multiple", $mapping_name . "type", $type, "none") . " Multiple</label>";
-                                    // echo Html::checkbox($mapping_name, $w->Form->isFormMappedToObject($form, $mapping_name), '1', "cmfive__checkbox-display-inline");
-                                    // echo "<label>Mapped</label><br>";
-
-                                    // echo Html::checkbox("is_singleton", !empty($mapping) && $mapping->is_singleton ? true : false, '1', "cmfive__checkbox-display-inline");
-                                    // echo "<label>Singleton</label><br><br>";
+                                    echo "<label>" . Html::radio("none", $mapping_name, $type, "none") . " None</label>";
+                                    echo "<label>" . Html::radio("single", $mapping_name, $type, "single") . " Single</label>";
+                                    echo "<label>" . Html::radio("multiple", $mapping_name, $type, "multiple") . " Multiple</label>";
                                 }
                             }
                             ?>

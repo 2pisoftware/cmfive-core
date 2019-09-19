@@ -11,8 +11,10 @@ function form_core_template_tab_headers(Web $w, $object)
         $tabHeaders = [];
         $forms = $w->Form->getFormsMappedToObject($object);
         foreach ($forms as $form) {
+            $form_mapping = $w->Form->getFormMapping($form, get_class($object)) ?? $w->Form->getFormApplicationMapping($form, $object);
+
             if ($form->is_deleted == 0) {
-                $tabHeaders[] = "<a href='#" . toSlug($form->title) . "'>$form->title" . ($form->is_singleton ? "" : "<span class='secondary round label cmfive__tab-label'>" .  $form->countFormInstancesForObject($object) . "</span>") . "</a>";
+                $tabHeaders[] = "<a href='#" . toSlug($form->title) . "'>$form->title" . (!empty($form_mapping) && $form_mapping->is_singleton ? "" : "<span class='secondary round label cmfive__tab-label'>" .  $form->countFormInstancesForObject($object) . "</span>") . "</a>";
             }
         }
         return implode("", $tabHeaders);
@@ -29,6 +31,16 @@ function form_core_template_tab_content(Web $w, $params)
     $forms_list = "";
 
     $form_mappings = $w->Form->getFormMappingsForObject($params['object']);
+    $form_application_mapping = null;
+
+    if ($params['object'] instanceof FormApplication) {
+        $form_application_mapping = $w->Form->getFormApplicationMappingsForObject($params['object']);
+    }
+
+    if (!empty($form_application_mapping)) {
+        $form_mappings[] = $form_application_mapping;
+    }
+
     foreach ($form_mappings ?? [] as $form_mapping) {
         $form = $form_mapping->getForm();
         if (empty($form)) {
@@ -41,22 +53,6 @@ function form_core_template_tab_content(Web $w, $params)
             'object' => $params['object']
         ], "form") . '</div>';
     }
-
-    // // Check and see if there are any forms mapped to the object
-    // $forms = $w->Form->getFormsMappedToObject($params['object']);
-
-    // $forms_list = '';
-    // if (!empty($forms)) {
-    //     foreach ($forms as $form) {
-    //         if ($form->is_deleted == 0) {
-    //             $forms_list .= '<div id="' . toSlug($form->title) . '">' . $w->partial($form->is_singleton ? "show_form" : "listform", [
-    //                 "form" => $form,
-    //                 "redirect_url" => $params['redirect_url'],
-    //                 'object' => $params['object']
-    //             ], "form") . '</div>';
-    //         }
-    //     }
-    // }
 
     return $forms_list;
 }

@@ -193,6 +193,11 @@ function save_form_POST(Web $w)
         $mapping = new FormApplicationMapping($w);
         $mapping->application_id = $application_id;
         $mapping->form_id = $form_id;
+
+        if ($_POST["type"] === "single") {
+            $mapping->is_singleton = true;
+        }
+
         $mapping->insert();
     }
 
