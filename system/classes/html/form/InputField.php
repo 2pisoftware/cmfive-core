@@ -1,4 +1,6 @@
-<?php namespace Html\Form;
+<?php
+
+namespace Html\Form;
 
 /**
  * Class representation of an input field - HTML5 only
@@ -75,9 +77,16 @@ class InputField extends \Html\Form\FormElement
         $buffer = '<input ';
 
         foreach (get_object_vars($this) as $field => $value) {
-            if (!is_null($value) && !in_array($field, static::$_excludeFromOutput)) {
-                $buffer .= $field . '=\'' . $value . '\' ';
+            if (is_null($value) || in_array($field, static::$_excludeFromOutput)) {
+                continue;
             }
+
+            if ($field === "required" && ($value === true || $value === "true")) {
+                $buffer .= $field . " ";
+                continue;
+            }
+
+            $buffer .= $field . "='" . $value . "' ";
         }
 
         return $buffer . '/>';
@@ -85,35 +94,35 @@ class InputField extends \Html\Form\FormElement
 
     // A static list of labels to exclude from the output string
     public static $_excludeFromOutput = [
-        "label", "_typeList",
+        "label", "_typeList"
     ];
 
     // A static list of all possible values for an Input field
     public static $_typeList = [
         "button" => "button",
         "checkbox" => "checkbox",
-        "color" => "color", // HTML5
-        "colour" => "color", // HTML5
-        "date" => "date", // HTML5
-        "datetime" => "datetime", // HTML5
-        "datetime-local" => "datetime-local", // HTML5
-        "email" => "email", // HTML5
+        "color" => "color",                     // HTML5
+        "colour" => "color",                    // HTML5
+        "date" => "date",                       // HTML5
+        "datetime" => "datetime",               // HTML5
+        "datetime-local" => "datetime-local",   // HTML5
+        "email" => "email",                     // HTML5
         "file" => "file",
         "hidden" => "hidden",
         "image" => "image",
-        "month" => "month", // HTML5
-        "number" => "number", // HTML5
+        "month" => "month",                     // HTML5
+        "number" => "number",                   // HTML5
         "password" => "password",
         "radio" => "radio",
-        "range" => "range", // HTML5
+        "range" => "range",                     // HTML5
         "reset" => "reset",
-        "search" => "search", // HTML5
+        "search" => "search",                   // HTML5
         "submit" => "submit",
-        "tel" => "tel", // HTML5
+        "tel" => "tel",                         // HTML5
         "text" => "text",
-        "time" => "time", // HTML5
-        "url" => "url", // HTML5
-        "week" => "week", // HTML5
+        "time" => "time",                       // HTML5
+        "url" => "url",                         // HTML5
+        "week" => "week"                        // HTML5
     ];
 
     // HTML5 Setters
@@ -299,7 +308,7 @@ class InputField extends \Html\Form\FormElement
      *     post: The data from the form is included in the body of the form and
      *         is sent to the server.
      *     get: The data from the form are appended to the form attribute URI,
-     *           with a '?' as a separator, and the resulting URI is sent to the
+     *          with a '?' as a separator, and the resulting URI is sent to the
      *         server. Use this method when the form has no side-effects and
      *         contains only ASCII characters.
      *
@@ -339,17 +348,17 @@ class InputField extends \Html\Form\FormElement
      * context (for example, tab, window, or inline frame). If this attribute is
      * specified, it overrides the target attribute of the elements's form
      * owner. The following keywords have special meanings:
-     *        _self: Load the response into the same browsing context as the
+     *      _self: Load the response into the same browsing context as the
      *          current one. This value is the default if the attribute is not
-     *            specified.
-     *        _blank: Load the response into a new unnamed browsing context.
-     *        _parent: Load the response into the parent browsing context of the
-     *            current one. If there is no parent, this option behaves the same
-     *            way as _self.
-     *        _top: Load the response into the top-level browsing context (that
-     *            is, the browsing context that is an ancestor of the current one,
-     *            and has no parent). If there is no parent, this option behaves
-     *            the same way as _self.
+     *          specified.
+     *      _blank: Load the response into a new unnamed browsing context.
+     *      _parent: Load the response into the parent browsing context of the
+     *          current one. If there is no parent, this option behaves the same
+     *          way as _self.
+     *      _top: Load the response into the top-level browsing context (that
+     *          is, the browsing context that is an ancestor of the current one,
+     *          and has no parent). If there is no parent, this option behaves
+     *          the same way as _self.
      *
      * @param Mixed $formtarget
      * @return \Html\Form\InputField this

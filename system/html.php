@@ -341,11 +341,22 @@ class Html
         foreach ($data as $field) {
             $buffer .= "<div class='row-fluid'><div class='small-12'>";
 
+            // Check if the row is an object like an InputField
+            if (!is_array($field) && is_object($field)) {
+                if ((property_exists($field, "type") && $field->type !== "hidden") || !property_exists($field, "type")) {
+                    $buffer .= '<li><label class=\'small-12 columns\'>' . $field->label . ($field->required ? " <small>Required</small>" : "") . '<div>' . $field->__toString() . '</div></label></li>';
+                } else {
+                    $buffer .= $field->__toString();
+                }
+                continue;
+            }
+
             $title = !empty($field[0]) ? $field[0] : null;
             $type = !empty($field[1]) ? $field[1] : null;
             $name = !empty($field[2]) ? $field[2] : null;
             $value = !empty($field[3]) ? $field[3] : null;
             $readonly = "";
+
             // handle disabled fields
             if ($name[0] == '-') {
                 $name = substr($name, 1);
@@ -598,7 +609,7 @@ class Html
                     // Check if the row is an object like an InputField
                     if (!is_array($field) && is_object($field)) {
                         if ((property_exists($field, "type") && $field->type !== "hidden") || !property_exists($field, "type")) {
-                            $buffer .= '<li><label class=\'small-12 columns\'>' . $field->label . $field->__toString() . '</label></li>';
+                            $buffer .= '<li><label class=\'small-12 columns\'>' . $field->label . ($field->required ? " <small>Required</small>" : "") . $field->__toString() . '</label></li>';
                         } else {
                             $buffer .= $field->__toString();
                         }
