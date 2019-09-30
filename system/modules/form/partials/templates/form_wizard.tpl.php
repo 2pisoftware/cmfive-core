@@ -20,7 +20,10 @@
         el: "#app",
         data: function() {
             return {
+                form_id: '<?php echo $form_id; ?>',
                 fields: <?php echo json_encode($fields); ?>,
+                object_class: '<?php echo $object_class; ?>',
+                object_id: '<?php echo $object_id; ?>',
                 index: 0,
             }
         },
@@ -42,7 +45,24 @@
                 ++app.index;
             },
             submit: function() {
-                location.reload();
+                var _this = this;
+
+                var field_results = {};
+
+                _this.fields.forEach(function(item, index) {
+                    field_results[item['technical_name']] = item['value'];
+                });
+
+                axios.post("/form-instance/ajax_save_form_instance", {
+                    form_id: _this.form_id,
+                    field_results: field_results,
+                    object_class: _this.object_class,
+                    object_id: _this.object_id,
+                }).then(function(response) {
+
+                }).catch(function(error) {
+
+                });
             },
         },
     })
