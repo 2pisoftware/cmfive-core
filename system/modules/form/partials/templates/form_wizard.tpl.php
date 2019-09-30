@@ -9,7 +9,8 @@
         </div>
         <div class="columns medium-8 small-12 small-centered">
             <button class="radius" @click="decrement">Back</button>
-            <button class="radius right" @click="increment">Next</button>
+            <button v-if="index === fields.length - 1" class="radius right success" @click="submit">Submit</button>
+            <button v-else class="radius right" @click="increment">Next</button>
         </div>
     </div>
 </main>
@@ -38,6 +39,9 @@
                 }
 
                 ++app.index;
+            },
+            submit: function() {
+                location.reload();
             },
         },
     })
