@@ -21,7 +21,7 @@ class MigrationService extends DbService {
 			if ($errno === E_USER_ERROR) {
 				// Check if error contains a db error message
 				if (strpos($errstr, "does not exist in the database") !== FALSE) {
-					$this->w->Log->error("Error Table not found. Running initial migration");
+					$this->w->Log->error("Error table not found. Running initial migration. [" . $errstr . "]");
 					// Run the admin migrations to install the migration table (the normal cause of this error)
 					$_this->installInitialMigration();
 					

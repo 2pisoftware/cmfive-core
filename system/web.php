@@ -1805,6 +1805,8 @@ class Web
 		$paths[] = $this->_templatePath;
 		// Add system fallback
 		$paths[] = SYSTEM_PATH . "/" . $this->_templatePath;
+		// Allow specifying the full path
+		$paths[] = ROOT_PATH;
 
 		$names = array();
 		if ($name) {
