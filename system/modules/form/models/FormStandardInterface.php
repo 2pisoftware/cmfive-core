@@ -9,7 +9,10 @@ class FormStandardInterface extends FormFieldInterface
 {
     protected static $_respondsTo = [
         ["Text", "text"],
+        ["Text Area", "textarea"],
         ["Decimal", "decimal"],
+        ["Email", "email"],
+        ["Phone Number", "tel"],
         ["Date", "date"],
         ["Date & Time", "datetime"],
         ["Time", "time"],
@@ -19,7 +22,7 @@ class FormStandardInterface extends FormFieldInterface
 
     /**
      * Map FormField type to Html::multiColForm() type
-     *
+     *phonenumber
      * @return string
      */
     public static function formType($type)
@@ -38,6 +41,12 @@ class FormStandardInterface extends FormFieldInterface
                 return "autocomplete";
             case "select":
                 return "select";
+            case "textarea":
+                return "textarea";
+            case "email":
+                return "email";
+            case "tel":
+                return "tel";
             case "decimal":
             case "text":
             default:

@@ -650,6 +650,7 @@ class Html
                         case "text":
                         case "password":
                         case "email":
+                        case "tel":
                             $size = !empty($field[4]) ? $field[4] : null;
                             $buffer .= '<input' . $readonly . ' style="width:100%;" type="' . $type . '" name="' . $name . '" value="' . htmlspecialchars($value) . '" size="' . $size . '" id="' . $name . '" ' . $required . " />";
                             break;
