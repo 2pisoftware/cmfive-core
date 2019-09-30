@@ -1,16 +1,16 @@
 <?php
 
 /**
- * deduplicates arrays of arrays, something that array_unique can't do.
+ * Deduplicates arrays of arrays, something that array_unique can't do.
  * Given an array of arrays, this function will return an array containing only
  * unique arrays having removed any duplicate arrays.
  *
  * Thanks to http://stackoverflow.com/a/308955/1082633
  *
- * @param Array $input
- * @return multitype:
+ * @param array $input
+ * @return array
  */
-function array_unique_multidimensional(Array $input)
+function array_unique_multidimensional(array $input)
 {
     $serialized = array_map('serialize', $input);
     $unique = array_unique($serialized);
@@ -29,7 +29,7 @@ if (!function_exists('pgettext')) {
     function pgettext($context, $msgid, $domain = '')
     {
         $contextString = "{$context}\004{$msgid}";
-        
+
         if (strlen(trim($domain)) > 0) {
             $translation = dgettext($domain, $contextString);
         } else {
@@ -47,7 +47,7 @@ if (!function_exists('pgettext')) {
     {
         $contextString = "{$context}\004{$msgid}";
         $contextStringp = "{$context}\004{$msgid_plural}";
-        
+
         if (strlen(trim($domain)) > 0) {
             $translation = dngettext($domain, $contextString, $contextStringp, $num);
         } else {
@@ -246,7 +246,7 @@ function toSlug($title)
  *
  * ((1,2,3),(4,5,6),(7,8,9),(10,11))
  */
-function paginate(Array $array, $pageSize)
+function paginate(array $array, $pageSize)
 {
     return array_chunk($array, $pageSize);
 }
@@ -265,7 +265,7 @@ function paginate(Array $array, $pageSize)
  * always tries to have columns of equal length
  * but the last column can be shorter
  */
-function columnize(Array $array, $noOfColumns)
+function columnize(array $array, $noOfColumns)
 {
     return array_chunk($array, sizeof($array) / $noOfColumns);
 }
@@ -868,47 +868,44 @@ function AESdecrypt($text, $password)
     return SSLdecrypt($text);
 }
 
-function SystemSSLencrypt($text) {
-	$ssl_method = "AES-256-CBC";
-	$encryption_key = Config::get('system.encryption.key',null);
-	$encryption_iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length($ssl_method));
-	if (empty($encryption_key) || empty($encryption_iv)) {
-		// raise exception
-		$err = 'Cannot encrypt without system key and IV.';
-		$this->w->Log->error($err);
-		throw new Exception($err);
-	} else {
-		$ssl = openssl_encrypt($text, $ssl_method, $encryption_key, 0, $encryption_iv);	
-		$encryption_iv = bin2hex($encryption_iv);
-		return  $ssl . "::" . $encryption_iv;
-		}
-	}
-
-function AESdecrypt($text,$password) {
-		require_once "phpAES/AES.class.php";
-		$aes = new AES($password);
-		return $aes->decrypt(base64_decode($text));
-	}
-
-function SystemAESdecrypt($text) {
-	return AESdecrypt($text,Config::get('system.password_salt'));
+function SystemSSLencrypt($text)
+{
+    $ssl_method = "AES-256-CBC";
+    $encryption_key = Config::get('system.encryption.key', null);
+    $encryption_iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length($ssl_method));
+    if (empty($encryption_key) || empty($encryption_iv)) {
+        // raise exception
+        $err = 'Cannot encrypt without system key and IV.';
+        $this->w->Log->error($err);
+        throw new Exception($err);
+    } else {
+        $ssl = openssl_encrypt($text, $ssl_method, $encryption_key, 0, $encryption_iv);
+        $encryption_iv = bin2hex($encryption_iv);
+        return $ssl . "::" . $encryption_iv;
+    }
 }
 
-function SystemSSLdecrypt($text) {
-	$ssl_method = "AES-256-CBC";
-	$encryption_key = Config::get('system.encryption.key',null);
-	$text = explode("::",$text);  //var_dump($text);
-	$encryption_iv = array_pop($text);
-	if (empty($encryption_key) || empty($encryption_iv)) {
-		// raise exception
-		$err = 'Cannot decrypt without system key and IV.';
-		$this->w->Log->error($err);
-		throw new Exception($err);
-		} else {
-		$text = array_pop($text);
-		return openssl_decrypt($text, $ssl_method, $encryption_key, 0, hex2bin($encryption_iv));
-		}
-	}
+function SystemAESdecrypt($text)
+{
+    return AESdecrypt($text, Config::get('system.password_salt'));
+}
+
+function SystemSSLdecrypt($text)
+{
+    $ssl_method = "AES-256-CBC";
+    $encryption_key = Config::get('system.encryption.key', null);
+    $text = explode("::", $text); //var_dump($text);
+    $encryption_iv = array_pop($text);
+    if (empty($encryption_key) || empty($encryption_iv)) {
+        // raise exception
+        $err = 'Cannot decrypt without system key and IV.';
+        $this->w->Log->error($err);
+        throw new Exception($err);
+    } else {
+        $text = array_pop($text);
+        return openssl_decrypt($text, $ssl_method, $encryption_key, 0, hex2bin($encryption_iv));
+    }
+}
 
 /**
  * Encrypts given text with AES256
@@ -923,7 +920,7 @@ function SSLEncrypt($text)
     $ssl_method = "AES-256-CBC";
     $encryption_key = Config::get('system.encryption.key', null);
     $encryption_iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length($ssl_method));
-    
+
     if (empty($encryption_key) || empty($encryption_iv)) {
         $err = 'Cannot encrypt without system key and IV.';
         $this->w->Log->error($err);
@@ -1061,12 +1058,12 @@ function cast($destination, $sourceObject)
     $sourceReflection = new ReflectionObject($sourceObject);
     $destinationReflection = new ReflectionObject($destination);
     $sourceProperties = $sourceReflection->getProperties();
-    
+
     foreach ($sourceProperties ?? [] as $sourceProperty) {
         $sourceProperty->setAccessible(true);
         $name = $sourceProperty->getName();
         $value = $sourceProperty->getValue($sourceObject);
-        
+
         if ($destinationReflection->hasProperty($name)) {
             $propDest = $destinationReflection->getProperty($name);
             $propDest->setAccessible(true);
