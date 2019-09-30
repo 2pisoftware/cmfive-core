@@ -15,15 +15,11 @@ function form_wizard(\Web $w, $params)
     $form_instance = new \FormInstance($w);
     $form_instance->form_id = $form->id;
 
-    $form_values = $form_instance->getSavedValues();
-    foreach ($form_values ?? [] as $form_values) {
-
-    }
-
     $form_fields_array = [];
     $form_fields = $form->getFields();
     foreach ($form_fields ?? [] as $form_field) {
         $form_fields_array[] = [
+            "type" => $form_field->type,
             "technical_name" => $form_field->technical_name,
             "name" => $form_field->name,
             "hint" => ucfirst(str_replace("_", " ", $form_field->technical_name)),

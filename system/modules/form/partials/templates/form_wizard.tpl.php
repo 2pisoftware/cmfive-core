@@ -3,7 +3,8 @@
         <div class="columns medium-8 small-12 small-centered" style="min-height: 30vh;">
             <div class="text-center">
                 <h3>{{ fields[index]["name"] }}</h3>
-                    <input class="radius" type="text" v-model="fields[index]['value']" :placeholder="fields[index]['hint']">
+                <textarea v-if="fields[index]['type'] === 'textarea'" rows="4" :placeholder="fields[index]['hint']"></textarea>
+                <input v-else class="radius" :type="fields[index]['type']" v-model="fields[index]['value']" :placeholder="fields[index]['hint']">
                 <br>
             </div>
         </div>
