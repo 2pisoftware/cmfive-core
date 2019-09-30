@@ -22,7 +22,7 @@ class FormStandardInterface extends FormFieldInterface
 
     /**
      * Map FormField type to Html::multiColForm() type
-     *phonenumber
+     *
      * @return string
      */
     public static function formType($type)
