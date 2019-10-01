@@ -3,7 +3,7 @@
         <div class="columns medium-8 small-12 small-centered" style="min-height: 30vh;">
             <div class="text-center">
                 <h3>{{ fields[index]["name"] }}</h3>
-                <textarea v-if="fields[index]['type'] === 'textarea'" rows="4" :placeholder="fields[index]['hint']"></textarea>
+                <textarea v-if="fields[index]['type'] === 'textarea'" rows="4" v-model="fields[index]['value']" :placeholder="fields[index]['hint']"></textarea>
                 <input v-else class="radius" :type="fields[index]['type']" v-model="fields[index]['value']" :placeholder="fields[index]['hint']">
                 <br>
             </div>
@@ -25,6 +25,7 @@
                 object_class: '<?php echo $object_class; ?>',
                 object_id: '<?php echo $object_id; ?>',
                 index: 0,
+                is_loading: false,
             }
         },
         methods: {
@@ -47,6 +48,12 @@
             submit: function() {
                 var _this = this;
 
+                if (_this.is_loading) {
+                    return;
+                }
+
+                _this.is_loading = true;
+
                 var field_results = {};
 
                 _this.fields.forEach(function(item, index) {
@@ -59,9 +66,11 @@
                     object_class: _this.object_class,
                     object_id: _this.object_id,
                 }).then(function(response) {
-
+                    // TODO: Redirect.
+                    _this.is_loading = false;
                 }).catch(function(error) {
-
+                    // TODO: Redirect.
+                    _this.is_loading = false;
                 });
             },
         },
