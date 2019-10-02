@@ -28,10 +28,6 @@ function edit_POST(Web $w)
 
     $_form_object->fill($_POST);
 
-    if ($_form_object->is_singleton == "") {
-        $_form_object->is_singleton = false;
-    }
-
     $_form_object->insertOrUpdate();
 
     $redirect_url = $w->request("redirect_url");

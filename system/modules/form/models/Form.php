@@ -13,7 +13,6 @@ class Form extends DbObject
     public $header_template;    // if specified this string is used as the form table header
     public $row_template;       // if specified this string is used as a template for rendering a form row
     public $summary_template;   // if specified this string is used as a template for rendering a form summary row
-    public $is_singleton;       // If true, this form will not display as a list and only one instance of it can be created.
 
     /**
      * A static array of string arrays to be used for validaiton when creating forms with a Form in it.
