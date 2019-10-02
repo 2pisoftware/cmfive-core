@@ -14,7 +14,7 @@ define("SYSTEM_LIBPATH", str_replace("\\", "/", getcwd() . '/system/lib'));
 define("FILE_ROOT", str_replace("\\", "/", getcwd() . "/uploads/")); // dirname(__FILE__)
 define("MEDIA_ROOT", str_replace("\\", "/", dirname(__FILE__) . "/../media/"));
 define("ROOT", str_replace("\\", "/", dirname(__FILE__)));
-define("STORAGE_PATH",str_replace("\\", "/", getcwd() . '/storage'));
+define("STORAGE_PATH", str_replace("\\", "/", getcwd() . '/storage'));
 define("SESSION_NAME", "CM5_SID");
 
 set_include_path(get_include_path() . PATH_SEPARATOR . LIBPATH);
@@ -29,12 +29,13 @@ require_once __DIR__ . "/classes/History.php";
 
 // Load system Composer autoloader
 if (file_exists(ROOT_PATH . "/composer/vendor/autoload.php")) {
-	require ROOT_PATH . "/composer/vendor/autoload.php";
+    require ROOT_PATH . "/composer/vendor/autoload.php";
 } else if (file_exists(SYSTEM_PATH . "/composer/vendor/autoload.php")) {
-	require SYSTEM_PATH . "/composer/vendor/autoload.php";
+    require SYSTEM_PATH . "/composer/vendor/autoload.php";
 }
 
-class PermissionDeniedException extends Exception {
+class PermissionDeniedException extends Exception
+{
 
 }
 
@@ -782,8 +783,15 @@ class Web
             // All content must come from the  site and dissallow flash.
             // $this->sendHeader(
             //     "Content-Security-Policy-Report-Only",
-            //     "default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; object-src 'none'; report-uri /main/logCSPReport/;" // report-to log-action"
+            //     "default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; frame-ancestors 'none'; object-src 'none'; report-uri /main/logCSPReport/;" // report-to log-action"
             // );
+
+            $this->sendHeader("Feature-Policy", "ambient-light-sensor 'none'; autoplay 'none'; accelerometer 'none'; camera 'none'; display-capture 'none'; document-domain 'none'; encrypted-media 'none'; fullscreen 'none'; geolocation 'none'; gyroscope 'none'; magnetometer 'none'; microphone 'none'; midi 'none'; payment 'none'; picture-in-picture 'none'; speaker 'none'; sync-xhr 'self'; usb 'none'; wake-lock 'none'; webauthn 'none'; vr 'none'");
+
+            $this->sendHeader("Strict-Transport-Security", "max-age=63072000");
+            $this->sendHeader("X-Content-Type-Options", "nosniff");
+            $this->sendHeader("X-Frame-Options", "DENY");
+            $this->sendHeader("X-XSS-Protection", "1; mode=block");
 
             // send headers first
             if ($this->_headers) {
