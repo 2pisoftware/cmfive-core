@@ -5,6 +5,11 @@
                 <h3>{{ fields[index]["name"] }}</h3>
                 <label v-if="show_required" class="text-left alert" style="color: red;">Required</label>
                 <textarea v-if="fields[index]['type'] === 'textarea'" ref="input" rows="4" v-model="fields[index]['value']" :placeholder="fields[index]['hint']"></textarea>
+                <select v-else-if="fields[index]['type'] === 'select'" ref="input" v-model="fields[index]['value']">
+                    <option v-for="data in fields[index]['meta_data']" :value="data['value']">
+                        {{ data['value'] }}
+                    </option>
+                </select>
                 <input v-else ref="input" class="radius" :type="fields[index]['type']" v-model="fields[index]['value']" :placeholder="fields[index]['hint']">
                 <br>
             </div>
@@ -79,6 +84,7 @@
                 var field_results = {};
 
                 _this.fields.forEach(function(item, index) {
+                    console.log(item);
                     field_results[item['technical_name']] = item['value'];
                 });
 

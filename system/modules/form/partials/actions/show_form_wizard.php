@@ -18,12 +18,25 @@ function show_form_wizard(\Web $w, $params)
     $form_fields_array = [];
     $form_fields = $form->getFields();
     foreach ($form_fields ?? [] as $form_field) {
+        $meta_data_array = [];
+
+        if ($form_field->type === "select") {
+            $meta_data = $form_field->getMetaData() ?? [];
+
+            foreach ($meta_data as $m) {
+                if ($m->meta_key === "user_rows") {
+                    $meta_data_array = array_merge([["key" => "", "value" => "--Select--"]], $m->meta_value);
+                }
+            }
+        }
+
         $form_fields_array[] = [
             "type" => $form_field->type,
             "technical_name" => $form_field->technical_name,
             "name" => $form_field->name,
             "hint" => ucfirst(str_replace("_", " ", $form_field->technical_name)),
             "value" => "",
+            "meta_data" => $meta_data_array,
         ];
     }
 
