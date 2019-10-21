@@ -10,6 +10,7 @@
                         {{ data['value'] }}
                     </option>
                 </select>
+                <input v-else-if="fields[index]['type'] === 'boolean'" type="checkbox" ref="input" v-model="fields[index]['value']">
                 <input v-else ref="input" class="radius" :type="fields[index]['type']" v-model="fields[index]['value']" :placeholder="fields[index]['hint']">
                 <br>
             </div>
@@ -56,7 +57,7 @@
                 this.setFocus();
             },
             increment: function() {
-                if (app.fields[app.index]["value"].trim() === "") {
+                if (app.fields[app.index]["type"] !== "boolean" && app.fields[app.index]["value"].trim() === "") {
                     app.show_required = true;
                 this.setFocus();
                     return;
@@ -106,13 +107,6 @@
                     this.$refs.input.focus();
                 })
             },
-        },
-        created: function() {
-            window.addEventListener("keydown", (e) => {
-                if (e.key === "Enter") {
-                    app.increment();
-                }
-            });
         },
         mounted: function() {
             this.setFocus();

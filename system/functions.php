@@ -116,11 +116,11 @@ function getAllLocaleValues($base_locale) {
 		'fr_FR' => ['fr_FR', 'fr_FR@euro', 'french'],
 		'en_AU' => ['en_AU.utf8', 'en_AU', 'australian']
 	];
-	
+
 	if (array_key_exists($base_locale, $language_lookup)) {
 		return $language_lookup[$base_locale];
 	}
-	
+
 	return false;
 }
 
@@ -641,7 +641,7 @@ function in_multiarray($value, $array) {
  * a string $value will match it's integer equivalent (i.e. '1' == 1, but '1s' != 1)
  *
  * Similar to above except it will return the value
- * 
+ *
  * @param <Mixed> $value
  * @param <Mixed> $array
  * @return <boolean> $in_multiarray
@@ -893,7 +893,7 @@ function get_list_of_months_between_dates($from, $to, $format = 'M Y') {
 
 	if (is_numeric($to)) {
 		$to = date('d-m-Y', $to);
-	}	
+	}
 
 	$start    = (new DateTime($from))->modify('first day of this month');
 	$end      = (new DateTime($to))->modify('first day of next month');
