@@ -15,10 +15,10 @@
                 <br>
             </div>
             <div v-else-if="submission_status === 200">
-                <h3>Thanks for that, someone will be in touch soon.</h3>
+                <h3>{{ success_message }}</h3>
             </div>
             <div v-else>
-                <h3>Looks like something went wrong. Try submitting the form again, but if the problem persits please contact us.</h3>
+                <h3>{{ failure_message }}</h3>
             </div>
         </div>
         <div v-if="submission_status === 0" class="columns medium-8 small-12 small-centered">
@@ -37,6 +37,8 @@
                 fields: <?php echo json_encode($fields); ?>,
                 object_class: '<?php echo $object_class; ?>',
                 object_id: '<?php echo $object_id; ?>',
+                success_message: '<?php echo $success_message; ?>',
+                failure_message: '<?php echo $failure_message; ?>',
                 index: 0,
                 is_loading: false,
                 show_required: false,

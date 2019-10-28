@@ -5,13 +5,11 @@ namespace System\Modules\Form;
 function show_form_wizard(\Web $w, $params)
 {
     if (!array_key_exists("form", $params)) {
-        // TODO: Redirect.
         return;
     }
 
     $form = $params["form"];
     if (empty($form)) {
-        // TODO: Redirect.
         return;
     }
 
@@ -25,7 +23,7 @@ function show_form_wizard(\Web $w, $params)
 
             foreach ($meta_data as $m) {
                 if ($m->meta_key === "user_rows") {
-                    $meta_data_array = array_merge([["key" => "", "value" => "--Select--"]], $m->meta_value);
+                    $meta_data_array = $m->meta_value;
                 }
             }
         }
@@ -47,4 +45,6 @@ function show_form_wizard(\Web $w, $params)
     $w->ctx("fields", $form_fields_array);
     $w->ctx("object_class", $object_class);
     $w->ctx("object_id", $object_id);
+    $w->ctx("success_message", $params["success_message"]);
+    $w->ctx("failure_message", $params["failure_message"]);
 }

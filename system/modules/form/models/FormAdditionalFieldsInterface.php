@@ -155,13 +155,15 @@ class FormAdditionalFieldsInterface extends FormFieldInterface
                 return $form_value->value;
             case "boolean":
                 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-                    if (array_key_exists($field->technical_name, $_POST)) {
+                    $php_input = file_get_contents("php://input");
+                    $ajax_post_data = !$php_input ? [] : json_decode($php_input, true);
+
+                    if (array_key_exists($field->technical_name, $_POST) || array_key_exists($field->technical_name, $ajax_post_data["field_results"])) {
                         $form_value->value = 1;
                     } else {
                         $form_value->value = 0;
                     }
-                }
-                if ($form_value->value != 1 || $form_value->value != 0) {
+                } elseif ($form_value->value != 1 || $form_value->value != 0) {
                     $form_value->value = !!$form_value->value;
                 }
                 return $form_value->value;
