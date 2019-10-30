@@ -331,56 +331,57 @@ class TaskService extends DbService {
         return $this->getObject("TaskGroupNotify", array("task_group_id" => $id, "role" => $role, "type" => $type));
     }
 
-    function sendCreationNotificationForTask($task) {
+    public function sendCreationNotificationForTask($task)
+    {
         $subject = $task->getHumanReadableAttributeName(TASK_NOTIFICATION_TASK_CREATION) . "[" . $task->id . "]: " . $task->title;
-	    $users_to_notify = $this->w->Task->getNotifyUsersForTask($task, TASK_NOTIFICATION_TASK_CREATION);
+        $users_to_notify = $this->w->Task->getNotifyUsersForTask($task, TASK_NOTIFICATION_TASK_CREATION);
 
-	    $this->w->Notification->sendToAllWithCallback($subject, "task", "notification_email", $this->w->Auth->user(), $users_to_notify, function($user, $existing_template_data) use ($task) {
-	    	$template_data = $existing_template_data;
-			$template_data['status']		= "[{$task->id}] New task created";
-			$template_data['footer']		= $task->description;
-			$template_data['action_url']	= $this->w->localUrl('/task/edit/' . $task->id);
-			$template_data['logo_url']		= Config::get('main.application_logo');
+        $this->w->Notification->sendToAllWithCallback($subject, "task", "notification_email", $this->w->Auth->user(), $users_to_notify, function ($user, $existing_template_data) use ($task) {
+            $template_data = $existing_template_data;
+            $template_data['status']        = "[{$task->id}] New task created";
+            $template_data['footer']        = $task->description;
+            $template_data['action_url']    = $this->w->localUrl('/task/edit/' . $task->id);
+            $template_data['logo_url']        = Config::get('main.application_logo');
 
-			$this->w->Log->debug("Logo: " . $template_data['logo_url']);
+            $this->w->Log->debug("Logo: " . $template_data['logo_url']);
 
-			$template_data['fields'] = [
-				"Assigned to"	=> !empty($task->assignee_id) ? $task->getAssignee()->getFullName() : '',
-				"Type"			=> $task->getTypeTitle(),
-				"Title"			=> $task->title,
-				"Due"			=> !empty($task->dt_due) ? date('d-m-Y', strtotime(str_replace('/', '-', $task->dt_due))) : '',
-				"Status"		=> $task->status,
-				"Priority"		=> $task->isUrgent() ? "<b style='color: orange;'>{$task->priority}</b>" : $task->priority
-			];
+            $template_data['fields'] = [
+                "Assigned to"    => !empty($task->assignee_id) ? $task->getAssignee()->getFullName() : '',
+                "Type"            => $task->getTypeTitle(),
+                "Title"            => $task->title,
+                "Due"            => !empty($task->dt_due) ? date('d-m-Y', strtotime(str_replace('/', '-', $task->dt_due))) : '',
+                "Status"        => $task->status,
+                "Priority"        => $task->isUrgent() ? "<b style='color: orange;'>{$task->priority}</b>" : $task->priority
+            ];
 
-			if ($user->is_external) {
-				$template_data['fields']['Due'] = '';
-				$template_data['fields']['Priority'] = '';
-				$template_data['fields']['Status'] = '';
-			}
+            if ($user->is_external) {
+                $template_data['fields']['Due'] = '';
+                $template_data['fields']['Priority'] = '';
+                $template_data['fields']['Status'] = '';
+            }
 
-			$template_data['can_view_task'] = $user->is_external == 0;
+            $template_data['can_view_task'] = $user->is_external == 0;
 
-			// Get additional details
-			if ($user->is_external == 0) {
-				$additional_details = $this->w->Task->getNotificationAdditionalDetails($task);
-				if (!empty($additional_details)) {
-					$template_data['footer'] .= $additional_details;
-				}
-			}
+            // Get additional details
+            if ($user->is_external == 0) {
+                $additional_details = $this->w->Task->getNotificationAdditionalDetails($task);
+                if (!empty($additional_details)) {
+                    $template_data['footer'] .= $additional_details;
+                }
+            }
 
-			if (!empty($task->assignee_id)) {
-				if ($user->id == $task->assignee_id) {
-					$template_data['fields']["Assigned to"] = "You (" . $task->getAssignee()->getFullName() . ")";
-				} else {
-					$template_data['fields']["Assigned to"] = !empty($task->assignee_id) ? $task->getAssignee()->getFullName() : '';
-				}
-			} else {
-				$template_data['fields']["Assigned to"] = "No one";
-			}
+            if (!empty($task->assignee_id)) {
+                if ($user->id == $task->assignee_id) {
+                    $template_data['fields']["Assigned to"] = "You (" . $task->getAssignee()->getFullName() . ")";
+                } else {
+                    $template_data['fields']["Assigned to"] = !empty($task->assignee_id) ? $task->getAssignee()->getFullName() : '';
+                }
+            } else {
+                $template_data['fields']["Assigned to"] = "No one";
+            }
 
-			return new NotificationCallback($user, $template_data, $this->w->file->getAttachmentsFileList($task, null, ['channel_email_raw']));
-	    });
+            return new NotificationCallback($user, $template_data, $this->w->file->getAttachmentsFileList($task, null, ['channel_email_raw']));
+        });
     }
 
     // static list of group permissions for can_view, can_assign, can_create
