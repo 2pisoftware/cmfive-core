@@ -1,33 +1,38 @@
 <main id="app">
    <div class="row">
         <div class="columns medium-8 small-12 small-centered" style="min-height: 30vh;">
-            <div v-if="submission_status === 0" class="text-center">
-                <h3>{{ fields[index]["name"] }}</h3>
-                <label v-if="show_required" class="text-left alert" style="color: red;">Required</label>
-                <textarea v-if="fields[index]['type'] === 'textarea'" ref="input" rows="4" v-model="fields[index]['value']" :placeholder="fields[index]['hint']"></textarea>
-                <select v-else-if="fields[index]['type'] === 'select'" ref="input" v-model="fields[index]['value']">
-                    <option v-for="data in fields[index]['meta_data']" :value="data['value']">
-                        {{ data['value'] }}
-                    </option>
-                </select>
-                <input v-else-if="fields[index]['type'] === 'boolean'" type="checkbox" ref="input" v-model="fields[index]['value']">
-                <input v-else ref="input" class="radius" :type="fields[index]['type']" v-model="fields[index]['value']" :placeholder="fields[index]['hint']">
-                <br>
-            </div>
-            <div v-else-if="submission_status === 200">
-                <h3>{{ success_message }}</h3>
-            </div>
-            <div v-else>
-                <h3>{{ failure_message }}</h3>
+            <loading-indicator :show="is_loading"></loading-indicator>
+            <div v-if="!is_loading">
+                <div if="submission_status === 0" class="text-center">
+                    <h3 v-if="submission_status === 0">{{ fields[index]["name"] }}</h3>
+                    <label v-if="show_required" class="text-left alert" style="color: red;">Required</label>
+                    <textarea v-if="fields[index]['type'] === 'textarea'" ref="input" rows="4" v-model="fields[index]['value']" :placeholder="fields[index]['hint']"></textarea>
+                    <select v-else-if="fields[index]['type'] === 'select'" ref="input" v-model="fields[index]['value']">
+                        <option v-for="data in fields[index]['meta_data']" :value="data['value']">
+                            {{ data['value'] }}
+                        </option>
+                    </select>
+                    <input v-else-if="fields[index]['type'] === 'boolean'" type="checkbox" ref="input" v-model="fields[index]['value']">
+                    <input v-else-if="submission_status === 0" ref="input" class="radius" :type="fields[index]['type']" v-model="fields[index]['value']" :placeholder="fields[index]['hint']">
+                    <br>
+                </div>
+                <div v-if="submission_status === 200">
+                    <h3>{{ success_message }}</h3>
+                </div>
+                <div v-if="submission_status !== 0 && submission_status !== 200">
+                    <h3>{{ failure_message }}</h3>
+                </div>
             </div>
         </div>
         <div v-if="submission_status === 0" class="columns medium-8 small-12 small-centered">
-            <button v-if="index !== 0"class="radius" @click="decrement">Back</button>
-            <button v-if="index === fields.length - 1" class="radius right success" @click="submit">Submit</button>
-            <button v-else class="radius right" @click="increment">Next</button>
+            <button v-if="index !== 0 && !is_loading"class="radius" @click="decrement">Back</button>
+            <button v-if="index === fields.length - 1 && !is_loading" class="radius right success" @click="submit">Submit</button>
+            <button v-else-if="!is_loading" class="radius right" @click="increment">Next</button>
         </div>
     </div>
 </main>
+<link rel='stylesheet' href='/system/templates/vue-components/loading-indicator.vue.css' />
+<script src='/system/templates/vue-components/loading-indicator.vue.js'></script>
 <script>
     var app = new Vue({
         el: "#app",
