@@ -5,7 +5,6 @@
             <div v-if="!is_loading">
                 <div if="submission_status === 0" class="text-center">
                     <h3 v-if="submission_status === 0">{{ fields[index]["name"] }}</h3>
-                    <label v-if="show_required" class="text-left alert" style="color: red;">Required</label>
                     <textarea v-if="fields[index]['type'] === 'textarea'" ref="input" rows="4" v-model="fields[index]['value']" :placeholder="fields[index]['hint']"></textarea>
                     <select v-else-if="fields[index]['type'] === 'select'" ref="input" v-model="fields[index]['value']">
                         <option v-for="data in fields[index]['meta_data']" :value="data['value']">
@@ -14,6 +13,7 @@
                     </select>
                     <input v-else-if="fields[index]['type'] === 'boolean'" type="checkbox" ref="input" v-model="fields[index]['value']">
                     <input v-else-if="submission_status === 0" ref="input" class="radius" :type="fields[index]['type']" v-model="fields[index]['value']" :placeholder="fields[index]['hint']">
+                    <label v-if="show_required" class="text-left"><strong id="required">Please fill this in</strong></label>
                     <br>
                 </div>
                 <div v-if="submission_status === 200">
