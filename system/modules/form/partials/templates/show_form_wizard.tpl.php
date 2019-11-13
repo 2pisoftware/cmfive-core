@@ -55,30 +55,25 @@
             decrement: function() {
                 if (app.index <= 0) {
                     app.index = 0;
-                    this.setFocus();
                     return;
                 }
 
                 app.show_required = false;
                 --app.index;
-                this.setFocus();
             },
             increment: function() {
                 if (app.fields[app.index]["type"] !== "boolean" && app.fields[app.index]["value"].trim() === "") {
                     app.show_required = true;
-                this.setFocus();
                     return;
                 }
 
                 if (app.index >= app.fields.length - 1) {
                     app.index = app.fields.length - 1;
-                this.setFocus();
                     return;
                 }
 
                 app.show_required = false;
                 ++app.index;
-                this.setFocus();
             },
             submit: function() {
                 var _this = this;
@@ -109,14 +104,6 @@
                     _this.is_loading = false;
                 });
             },
-            setFocus: function() {
-                this.$nextTick(() => {
-                    this.$refs.input.focus();
-                })
-            },
-        },
-        mounted: function() {
-            this.setFocus();
         },
     })
 </script>
