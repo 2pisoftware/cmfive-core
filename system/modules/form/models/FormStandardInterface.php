@@ -236,6 +236,22 @@ class FormStandardInterface extends FormFieldInterface
 
         // Alter value based on type
         switch (strtolower($field->type)) {
+            case "select":
+                $meta_data_array = [];
+                $meta_data = $field->getMetaData() ?? [];
+
+                foreach ($meta_data as $m) {
+                    if ($m->meta_key === "user_rows") {
+                        $meta_data_array = $m->meta_value;
+                    }
+                }
+
+                foreach ($meta_data_array as $md) {
+                    if ($md["value"] === $form_value->value) {
+                        return $md["key"];
+                    }
+                }
+                break;
             case "date":
             case "datetime":
             case "time":
