@@ -9,6 +9,8 @@ class FormInstance extends DbObject
     public $object_class;
     public $object_id;
 
+    public $dt_created;
+
     /**
      * Load the object that this form instance is related to eg Task
      *
