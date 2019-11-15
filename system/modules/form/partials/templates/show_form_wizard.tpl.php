@@ -87,7 +87,6 @@
                 var field_results = {};
 
                 _this.fields.forEach(function(item, index) {
-                    console.log(item);
                     field_results[item['technical_name']] = item['value'];
                 });
 
