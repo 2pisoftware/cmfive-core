@@ -17,7 +17,7 @@
                     <br>
                 </div>
                 <div v-if="submission_status === 200">
-                    <h3>{{ success_message }}</h3>
+                    <h3 v-html="success_message"></h3>
                 </div>
                 <div v-if="submission_status !== 0 && submission_status !== 200">
                     <h3>{{ failure_message }}</h3>
