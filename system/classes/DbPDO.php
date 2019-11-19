@@ -50,10 +50,8 @@ class DbPDO extends PDO {
         ];
 
         if (!empty($config['ssl_cert_path'])) {
-            $options = array_merge($options, [
-                PDO::MYSQL_ATTR_SSL_CA => $config['ssl_cert_path'],
-                PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => false,
-            ]);
+            $options[PDO::MYSQL_ATTR_SSL_CA] = $config['ssl_cert_path'];
+            $options[PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = false;
         }
 
         parent::__construct($url,$config["username"],$config["password"], $options);
