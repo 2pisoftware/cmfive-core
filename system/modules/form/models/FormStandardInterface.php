@@ -249,6 +249,8 @@ class FormStandardInterface extends FormFieldInterface
                 foreach ($meta_data_array as $md) {
                     if ($md["value"] === $form_value->value) {
                         return $md["key"];
+                    } elseif ($md["key"] === $form_value->value) {
+                        return $md["key"];
                     }
                 }
                 break;
