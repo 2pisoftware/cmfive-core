@@ -63,7 +63,7 @@ class AdminSecurityAesToOpenssl extends CmfiveMigration {
                     $passwordSalt = hash("md5", $this->w->moduleConf("report", "__password"));
                 } else {
                     // Config::set('system.password_salt', md5('override this in your project config'));
-                    $passwordSalt = Config::get('system.password_salt');//md5('override this in your project config');
+                    $passwordSalt = Config::get('system.password_salt');
                 }
                 
                 $tbl = $this->w->db->query("select id, $columnName from $tableName")->fetchAll();
@@ -97,22 +97,31 @@ class AdminSecurityAesToOpenssl extends CmfiveMigration {
         
     }
 
-    public function up() {
+    public function up() { 
 
-        if(!( $this->checkMigrationClass()['pass']
-            && $this->checkMigrationStatus()['pass']
-            && $this->checkPHPversion()['pass']
-            && $this->checkSSLKeys()['pass'] )) {
+        if($this->checkBlankContemporyInstall()) {
+            return $this->w->migrating = true;
+        }
+
+        if(!( $this->checkMigrationClass()['pass'] // config must name this migration
+            && $this->checkMigrationStatus()['pass'] // named migration(this) must never have run
+            && $this->checkPHPversion()['pass'] // <5.3 and SSL won't work! >7.0 AES wont work!
+            && $this->checkSSLKeys()['pass'] )) { // no SSL without a key
                 $err = "System is not suitable for ".get_class($this)." migration";
                 $this->w->Log->error($err);
                 throw new Exception($err);
         }
          $this->w->migrating = true;
          $this->migrate();
-        
+        // finally, if no EXCEPTION --> migration named in config will be in table under 'ADMIN'
+        // DbObject --> detects migration entry & uses SSL wrappers from functions.PHP
     }
 
     public function down() {
+
+        if($this->checkBlankContemporyInstall()) {
+            return $this->w->migrating = true;
+        }
 
         if(($this->checkMigrationStatus()['pass'] || (!$this->checkPHPversion()['pass']))) {
             // this MUST throw exception, or migration will be registered as rollback,
@@ -204,6 +213,46 @@ class AdminSecurityAesToOpenssl extends CmfiveMigration {
         return $checked;
     }
 
+    private function checkBlankContemporyInstall() {
+        
+        // can we ever run SSL?
+        if(PHP_VERSION_ID<"050300") {
+            return false;
+        }
+
+        // is the DB empty of encryption?
+         $db = Config::get("database.database");
+         if (empty($db)) {
+             $err = 'Database config not set';
+             $this->w->Log->error($err);
+             throw new Exception($err);
+         }         
+         
+         $table = $this->w->db->query("select table_name, column_name from information_schema.columns 
+             where table_schema='$db' and column_name like 's\_%';")->fetchAll();
+         
+         if (empty($table)) {
+             return true;
+         }
+         
+         try {
+             foreach ($table as $row) { 
+                 foreach ($row as $key => $val) { 
+                     if (is_numeric($key)) {
+                         unset($row[$key]);
+                     }
+                 }   
+                $tableName = $row['table_name'];
+                $columnName = $row['column_name'];              
+                 $tbl = $this->w->db->query("select id, $columnName from $tableName")->fetchAll();
+                 if(!empty($tbl)) { return false; }
+             }
+          } catch (Exception $e) {
+             throw $e;
+         }
+
+         return true;
+    }
 
 	public function preText()
 	{        
@@ -218,6 +267,10 @@ class AdminSecurityAesToOpenssl extends CmfiveMigration {
 
 	public function postText()
 	{
+        if($this->checkBlankContemporyInstall()) {
+            return "Encryption will be SSL.";
+        }
+
         return "Encryption will ".(
             ($this->checkMigrationClass()['pass']
             && $this->checkPHPversion()['pass']
@@ -227,6 +280,9 @@ class AdminSecurityAesToOpenssl extends CmfiveMigration {
 
 	public function description()
 	{
+    if($this->checkBlankContemporyInstall()) {
+        return "New install does not need migration.";
+    }
         $configured = $this->checkMigrationClass();
         if(!$configured['pass']) {
                 return $configured['info'];
