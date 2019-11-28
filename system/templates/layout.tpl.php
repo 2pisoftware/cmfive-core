@@ -199,21 +199,21 @@
                         <li><?php echo Html::box("/search", "<span class='fi-magnifying-glass show-for-medium-up'></span><span class='show-for-small'>Search</span>", false, false, null, null, null, "cmfive_search_button"); ?></li>
 
                         <?php if ($w->Auth->user()): ?>
-						<!-- Clear cache button -->
-							<?php if ($w->Auth->user()->is_admin): ?>
-							<li>
-								<a id="admin_clear_cache" href="/admin/ajaxClearCache" onclick="return false;" title="Clear configuration cache">
-									<span class="clear_cache_icon fi-refresh show-for-medium-up"></span>
-									<span class="show-for-small">Clear cache</span>
-								</a>
-							</li>
-							<?php endif; ?>
+                        <!-- Clear cache button -->
+                            <?php if ($w->Auth->user()->is_admin): ?>
+                            <li>
+                                <a id="admin_clear_cache" href="/admin/ajaxClearCache" onclick="return false;" title="Clear configuration cache">
+                                    <span class="clear_cache_icon fi-refresh show-for-medium-up"></span>
+                                    <span class="show-for-small">Clear cache</span>
+                                </a>
+                            </li>
+                            <?php endif; ?>
                         <!-- User Profile drop down -->
                             <li class="has-dropdown">
                                 <a href="#">
-									<span class="fi-torso show-for-medium-up"></span>
-									<span class="show-for-small">Account</span>
-								</a>
+                                    <span class="fi-torso show-for-medium-up"></span>
+                                    <span class="show-for-small">Account</span>
+                                </a>
                                 <?php
                                 echo Html::ul(
                                     array(
@@ -235,7 +235,7 @@
                                 if (Config::get("{$module}.topmenu") && Config::get("{$module}.active")) :
                                     // Check for navigation
                                     $service_module = ucfirst($module);
-									$menu_link = method_exists($w->$service_module, "menuLink") ? $w->$service_module->menuLink() : $w->menuLink($module, is_bool(Config::get("{$module}.topmenu")) ? ucfirst($module) : Config::get("{$module}.topmenu"));
+                                    $menu_link = method_exists($w->$service_module, "menuLink") ? $w->$service_module->menuLink() : $w->menuLink($module, is_bool(Config::get("{$module}.topmenu")) ? ucfirst($module) : Config::get("{$module}.topmenu"));
                                     if ($menu_link !== false) :
                                         if (method_exists($module . "Service", "navigation")) : ?>
                                             <li class="has-dropdown <?php echo $w->_module == $module ? 'active' : ''; ?>" id="topnav_<?php echo $module; ?>">
@@ -243,18 +243,18 @@
                                                 echo $menu_link;
                                                 $module_navigation = $w->service($module)->navigation($w);
 
-												// Invoke hook to inject extra navigation
-												$hook_navigation_items = $w->callHook($module, "extra_navigation_items", $module_navigation);
-												if (!empty($hook_navigation_items)) {
-													foreach($hook_navigation_items as $hook_navigation_item) {
-														if (is_array($hook_navigation_item)) {
-															$module_navigation = array_merge($module_navigation, $hook_navigation_item);
-														} else {
-															$module_navigation[] = $hook_navigation_item;
-														}
-													}
-												}
-												echo Html::ul($module_navigation, null, "dropdown"); ?>
+                                                // Invoke hook to inject extra navigation
+                                                $hook_navigation_items = $w->callHook($module, "extra_navigation_items", $module_navigation);
+                                                if (!empty($hook_navigation_items)) {
+                                                    foreach($hook_navigation_items as $hook_navigation_item) {
+                                                        if (is_array($hook_navigation_item)) {
+                                                            $module_navigation = array_merge($module_navigation, $hook_navigation_item);
+                                                        } else {
+                                                            $module_navigation[] = $hook_navigation_item;
+                                                        }
+                                                    }
+                                                }
+                                                echo Html::ul($module_navigation, null, "dropdown"); ?>
                                             </li>
                                         <?php else: ?>
                                             <li <?php echo $w->_module == $module ? 'class="active"' : ''; ?>><?php echo $menu_link; ?></li>
@@ -281,7 +281,7 @@
         <div class="row-fluid body">
             <?php // Body section w/ message and body from template ?>
             <div class="row-fluid <?php // if(!empty($boxes)) echo "medium-10 small-12 "; ?>">
-                <?php if (empty($hideTitle) && !empty ($title)):?>
+                <?php if (empty($hideTitle) && !empty($title)) : ?>
                 <div class="row-fluid small-12">
                     <h3 class="header"><?php echo $title; ?></h3>
                 </div>
