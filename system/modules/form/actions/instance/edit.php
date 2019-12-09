@@ -50,7 +50,10 @@ function edit_POST(Web $w)
 
     try {
         $form_instance = $w->Form->saveForm($form_id, $_POST, $_FILES, $p['id'], $object_class, $object_id);
-        $w->callHook("form", "after_create_form", $form_instance);
+
+        if (empty($p["id"])) {
+            $w->callHook("form", "after_create_form", $form_instance);
+        }
     } catch (Exception $e) {
         echo "<pre>";
         var_dump($e);
