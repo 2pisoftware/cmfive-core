@@ -1,31 +1,52 @@
 <?php
+
 namespace Helper;
 
 class CmfiveTimelogModule extends \Codeception\Module
 {
-	public function createTimelogFromTimer($I, $task, $start_time = '') {
-		$I->clickCmfiveNavbar($I, 'Task', 'Task List');
-		// $row = $I->findTableRowMatching($I, 2, $task);
-		$I->click($task);
-		$I->click('Start Timer');
-		$I->waitForElement('#start_time');
-		$I->fillField('#start_time', $start_time);
-		$I->click('Save', '#timerModal');
-		$I->waitForElementVisible('#stop_timer');
-		$I->moveMouseOver('#active_log_time');
-		$I->click('#active_log_time');
-	}
-
-	public function createTimelog($I, $task, $date, $start_time, $end_time) {
-		$I->clickCmfiveNavbar($I, 'Timelog', 'Add Timelog');
-		$I->waitForElementVisible('#cmfive-modal');
-		$I->fillForm(['date:date_start' => strtotime($date)]);
-		$I->fillField('#time_start', $start_time);
-		$I->fillField('#time_end', $end_time);
-		$tagTask = explode('- ', $task)[1];
-		$I->executeJS("$('#acp_search').autocomplete('search', '{$tagTask}')");
-		$I->waitForText($task);
+    /**
+     * Creates a Timelog from the Timer.
+     *
+     * @param CmfiveUI $I
+     * @param string $task
+     * @param string $start_time
+     * @return void
+     */
+    public function createTimelogFromTimer($I, $task, $start_time = '')
+    {
+        $I->clickCmfiveNavbar($I, 'Task', 'Task List');
         $I->click($task);
-		$I->click('Save');
-	}
+        $I->click('Start Timer');
+        $I->waitForElement('#start_time');
+        $I->waitForElement("#timerModal");
+        $I->fillField('#start_time', $start_time);
+        $I->click('Save', '#timerModal');
+        $I->waitForElementVisible('#stop_timer');
+        $I->moveMouseOver('#active_log_time');
+        $I->click('#active_log_time');
+    }
+
+    /**
+     * Creates a Timelog using the edit action.
+     *
+     * @param CmfiveUI $I
+     * @param string $task
+     * @param string $date
+     * @param string $start_time
+     * @param string $end_time
+     * @return void
+     */
+    public function createTimelog($I, $task, $date, $start_time, $end_time)
+    {
+        $I->clickCmfiveNavbar($I, 'Timelog', 'Add Timelog');
+        $I->waitForElementVisible('#cmfive-modal');
+        $I->fillForm(['date:date_start' => strtotime($date)]);
+        $I->fillField('#time_start', $start_time);
+        $I->fillField('#time_end', $end_time);
+        $tagTask = explode('- ', $task)[1];
+        $I->executeJS("$('#acp_search').autocomplete('search', '{$tagTask}')");
+        $I->waitForText($task);
+        $I->click($task);
+        $I->click('Save');
+    }
 }
