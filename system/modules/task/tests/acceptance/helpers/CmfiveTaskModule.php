@@ -139,6 +139,8 @@ class CmfiveTaskModule extends \Codeception\Module
         ]);
         $I->click('Save');
         $I->waitForBackendToRefresh($I);
+
+        return $I->grabNumRecords('task');
     }
 
     public function editTask($I, $task, $data)

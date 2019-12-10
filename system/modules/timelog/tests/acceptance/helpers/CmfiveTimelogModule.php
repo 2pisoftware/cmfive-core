@@ -44,9 +44,48 @@ class CmfiveTimelogModule extends \Codeception\Module
         $I->fillField('#time_start', $start_time);
         $I->fillField('#time_end', $end_time);
         $tagTask = explode('- ', $task)[1];
-        $I->executeJS("$('#acp_search').autocomplete('search', '{$tagTask}')");
+        $I->executeJS("$('#acp_search').autocomplete('search', '$tagTask')");
         $I->waitForText($task);
         $I->click($task);
         $I->click('Save');
+    }
+
+    /**
+     * Edits a Timelog using the edit action.
+     *
+     * @param CmfiveUI $I
+     * @param string $task_name
+     * @param string $date
+     * @param string $start_time
+     * @param string $end_time
+     * @return void
+     */
+    public function editTimelog($I, $task_name, $date, $start_time, $end_time)
+    {
+        $I->clickCmfiveNavbar($I, "Timelog", "Timelog");
+        $I->click($task_name);
+        $I->click("Time Log");
+        $I->click("Edit");
+        $I->waitForElement("#timelog_edit_form");
+        $I->fillForm(["date:date_start" => strtotime($date)]);
+        $I->fillField("#time_start", $start_time);
+        $I->fillField("#time_end", $end_time);
+        $I->click("Save", "#timelog_edit_form");
+    }
+
+    /**
+     * Deletes a Timelog using the delete action.
+     *
+     * @param CmfiveUI $I
+     * @param string $task_name
+     * @return void
+     */
+    public function deleteTimelog($I, $task_name)
+    {
+        $I->clickCmfiveNavbar($I, "Timelog", "Timelog");
+        $I->click($task_name);
+        $I->click("Time Log");
+        $I->click("Delete", "#timelog");
+        $I->acceptPopup();
     }
 }

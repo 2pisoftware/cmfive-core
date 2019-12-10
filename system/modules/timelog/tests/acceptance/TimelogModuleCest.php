@@ -10,14 +10,15 @@ class TimelogModuleCest
      */
     public function testTimelogModule($I)
     {
-        $user_first_name = "timelog_first_name";
-        $user_last_name = "timelog_last_name";
-        $task_group_name = "timelog_taskgroup";
-        $task_name = "timelog_task";
+        $uniqid = uniqid();
+        $user_first_name = "timelog_first_name_$uniqid";
+        $user_last_name = "timelog_last_name_$uniqid";
+        $task_group_name = "timelog_taskgroup_$uniqid";
+        $task_name = "timelog_task_$uniqid";
 
-        $I->wantTo("Verify that timelogs can be created");
+        $I->wantTo("Verify that timelogs can be created, edited and deleted");
         $I->login($I, "admin", "admin");
-        $I->createUser($I, "timelog_user", "password", $user_first_name, $user_last_name, "timelog_user@cmfive.com");
+        $I->createUser($I, "timelog_user_$uniqid", "password", $user_first_name, $user_last_name, "timelog_user@cmfive.com");
 
         $I->createTaskGroup($I, $task_group_name, [
             "task_group_type" => "To Do",
@@ -28,7 +29,7 @@ class TimelogModuleCest
             "description" => "A test group",
         ]);
         $I->addMemberToTaskGroup($I, $task_group_name, "$user_first_name $user_last_name", "MEMBER");
-        $I->createTask($I, $task_group_name, $task_name, [
+        $task_count = $I->createTask($I, $task_group_name, $task_name, [
             "task_type" => "To Do",
             "status" => "New",
             "priority" => "Normal",
@@ -39,9 +40,12 @@ class TimelogModuleCest
             "description" => "a test task",
         ]);
 
-        // $I->clickCmfiveNavbar($I, "Timelog", "Add Timelog");
-        // $I->waitForElement("#cmfive-modal");
-        // $I->waitForElement(("#timelog_edit_form"));
         $I->createTimelogFromTimer($I, $task_name);
+        $I->editTimelog($I, $task_name, "+24 hours", "09:30", "17:30");
+        $I->deleteTimelog($I, $task_name);
+
+        $I->createTimelog($I, "$task_count - $task_name", "now", "09:00", "17:00");
+        $I->editTimelog($I, $task_name, "+24 hours", "09:30", "17:30");
+        $I->deleteTimelog($I, $task_name);
     }
 }

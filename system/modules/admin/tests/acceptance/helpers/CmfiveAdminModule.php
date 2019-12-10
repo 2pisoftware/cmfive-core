@@ -4,12 +4,23 @@ namespace Helper;
 
 class CmfiveAdminModule extends \Codeception\Module
 {
+    /**
+     * Creates a new user.
+     *
+     * @param CmfiveUI $I
+     * @param string $username
+     * @param string $password
+     * @param string $firstName
+     * @param string $lastName
+     * @param string $email
+     * @param array[string] $permissions
+     * @return void
+     */
     public function createUser($I, $username, $password, $firstName, $lastName, $email, array $permissions = [])
     {
         $I->clickCmfiveNavbar($I, 'Admin', 'List Users');
         $I->click('Add New User');
         $I->waitForElement('#login');
-        $I->wait(2);
         $I->fillForm(
             [
                 'login' => $username,

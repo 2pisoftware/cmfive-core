@@ -1,62 +1,67 @@
 <?php
 
-	/**
-	 * Returns an array of search indeces that the currently logged in user
-	 * has access to. This uses the global module configuration and auth system
-	 * to check.
-	 * 
-	 * @return array
-	 */
-	public function getIndexes() {
-		$indexes = array();
-		foreach ( $this->w->modules () as $module ) {
-			$search = Config::get ( "{$module}.search" );
-			if (! empty ( $search )) {
-				$indexes = array_merge ( $indexes, $search );
-			}
-		}
-		asort ( $indexes );
-		return $indexes;
-	}
-	public function reindex($index) {
-		$indexes = $this->getIndexes ();
-		if (! empty ( $index ) && in_array ( $index, $indexes )) {
-			// first delete all entries in the index table for this index
-			$sql = "DELETE FROM object_index WHERE class_name = '{$index}'";
-			$this->_db->sql ( $sql )->execute ();
-			
-			$objects = $this->getObjects ( $index, array ("is_deleted" => 0) );
-			if (! empty ( $objects )) {
-				foreach ( $objects as $object ) {
-					$object->_searchable->insert ();
-				}
-			}
-		}
-	}
-	public function reindexAll() {
-		// delete all index entries
-		$sql = "DELETE FROM object_index";
-		$this->_db->sql ( $sql )->execute ();
-		
-		// go over each index and reindex
-		foreach ( $this->getIndexes () as $index ) {
-			$o = new $index($this->w);
-			$table = $o->getDbTableName();
-			if($this->_db->get($table))	{
+class SearchService extends DbService
+{
+    /**
+     * Returns an array of search indeces that the currently logged in user
+     * has access to. This uses the global module configuration and auth system
+     * to check.
+     *
+     * @return array
+     */
+    public function getIndexes()
+    {
+        $indexes = array();
+        foreach ($this->w->modules() as $module) {
+            $search = Config::get("{$module}.search");
+            if (!empty($search)) {
+                $indexes = array_merge($indexes, $search);
+            }
+        }
+        asort($indexes);
+        return $indexes;
+    }
+    public function reindex($index)
+    {
+        $indexes = $this->getIndexes();
+        if (!empty($index) && in_array($index, $indexes)) {
+            // first delete all entries in the index table for this index
+            $sql = "DELETE FROM object_index WHERE class_name = '{$index}'";
+            $this->_db->sql($sql)->execute();
 
-				$objects = $this->getObjects ( $index, array ("is_deleted" => 0 ) );
-				if (! empty ( $objects )) {
-					foreach ( $objects as $object ) {
-						if (property_exists($object, "_searchable")) {
-							$object->_searchable->insert ();
-						}
-					}
-				}
-			}
-		}
-	}
-	public function reindexAllFulltextIndex() {
-		$this->_db->sql("ALTER TABLE object_index DROP INDEX object_index_content;");
+            $objects = $this->getObjects($index, array("is_deleted" => 0));
+            if (!empty($objects)) {
+                foreach ($objects as $object) {
+                    $object->_searchable->insert();
+                }
+            }
+        }
+    }
+    public function reindexAll()
+    {
+        // delete all index entries
+        $sql = "DELETE FROM object_index";
+        $this->_db->sql($sql)->execute();
+
+        // go over each index and reindex
+        foreach ($this->getIndexes() as $index) {
+            $o = new $index($this->w);
+            $table = $o->getDbTableName();
+            if ($this->_db->get($table)) {
+                $objects = $this->getObjects($index, array("is_deleted" => 0));
+                if (!empty($objects)) {
+                    foreach ($objects as $object) {
+                        if (property_exists($object, "_searchable")) {
+                            $object->_searchable->insert();
+                        }
+                    }
+                }
+            }
+        }
+    }
+    public function reindexAllFulltextIndex()
+    {
+        $this->_db->sql("ALTER TABLE object_index DROP INDEX object_index_content;");
         $this->_db->sql("CREATE FULLTEXT INDEX object_index_content ON object_index(content);");
     }
 
