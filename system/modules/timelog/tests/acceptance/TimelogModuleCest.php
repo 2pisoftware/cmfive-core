@@ -16,7 +16,7 @@ class TimelogModuleCest
         $task_group_name = "timelog_taskgroup_$uniqid";
         $task_name = "timelog_task_$uniqid";
 
-        $I->wantTo("Verify that timelogs can be created, edited and deleted");
+        $I->wantTo("Verify that Timelogs can be created, edited and deleted");
         $I->login($I, "admin", "admin");
         $I->createUser($I, "timelog_user_$uniqid", "password", $user_first_name, $user_last_name, "timelog_user@cmfive.com");
 
