@@ -105,25 +105,63 @@ class Report extends DbObject
             return substr($string, $ini, $len);
         };
 
-        $_form = $get_string($this->report_code, '[[', ']]');
-        $split_arr = preg_split("/\|\|/", $_form);
-        $section_name = trim(array_shift($split_arr));
-        $inner_fields = trim(implode('||', $split_arr));
+        $report_code = substr($this->report_code, 0, strpos($this->report_code, '@@'));
 
-        $form = [$section_name => []];
+        $report_form_layout = array_map('trim', explode('[[', $report_code));
+        array_shift($report_form_layout);
 
-        // Now we need to get the rows, to do this we need to find the matching closing brackets, not the first set we find
-        preg_match_all("/\[\[\s*(\[\[.*?\]\])\s*\]\]/ms", $inner_fields, $rows);
-        if (empty($rows[1]) || !is_array($rows[1])) {
-            return null;
+        $parsed_report_form = [];
+        $current_section = '';
+        $current_form_row_layout = '';
+        foreach ($report_form_layout as $report_form) {
+            $row = array_filter(array_map('trim', explode('||', $report_form)));
+            // If we have a section
+            if (count($row) == 1) {
+                if (!empty($current_section) && !empty($current_form_row_layout)) {
+                    $parsed_report_form[$current_section][] = $this->getSingleColFormCriteria($current_form_row_layout, true);
+                    $current_form_row_layout = '';
+                }
+                $current_section = $row[0];
+                $parsed_report_form[$current_section] = [];
+            } elseif (count($row) > 1) {
+                foreach ($row as &$r) {
+                    $has_r_bracket = strpos($r, ']]');
+                    if ($has_r_bracket !== false) {
+                        $r = substr($r, 0, $has_r_bracket);
+                    }
+                }
+                $current_form_row_layout .= '[[' . implode('||', $row) . ']]';
+            } else {
+                if (!empty($current_section) && !empty($current_form_row_layout)) {
+                    $parsed_report_form[$current_section][] = $this->getSingleColFormCriteria($current_form_row_layout, true);
+                    $current_form_row_layout = '';
+                }
+            }
         }
+        $parsed_report_form[$current_section][] = $this->getSingleColFormCriteria($current_form_row_layout, true);
 
-        // Get form in each row
-        foreach ($rows[1] as $form_row) {
-            $form[$section_name][] = $this->getSingleColFormCriteria($form_row, true);
-        }
+        // preg_match_all("/\[\[(.*?)\|\|\s*\[\[/ms", $this->report_code, $_sections);
+        // // var_dump($_sections);
 
-        return $form;
+        // $_form = $get_string($this->report_code, '[[', ']]');
+        // $split_arr = preg_split("/\|\|/", $_form);
+        // $section_name = trim(array_shift($split_arr));
+        // $inner_fields = trim(implode('||', $split_arr));
+
+        // $form = [$section_name => []];
+        // // Now we need to get the rows, to do this we need to find the matching closing brackets, not the first set we find
+        // preg_match_all("/\[\[\s*(\[\[.*?\]\])\s*\]\]/ms", $inner_fields, $rows);
+
+        // if (empty($rows[1]) || !is_array($rows[1])) {
+        //     return null;
+        // }
+
+        // // Get form in each row
+        // foreach ($rows[1] as $form_row) {
+        //     $form[$section_name][] = $this->getSingleColFormCriteria($form_row, true);
+        // }
+            
+        return $parsed_report_form;
     }
 
     // public function getReportCriteria()
