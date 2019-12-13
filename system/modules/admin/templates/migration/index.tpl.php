@@ -25,7 +25,7 @@
 								echo Html::b("/admin-migration/run/all?ignoremessages=false&prevpage=batch", "Install migrations", "Are you sure you want to install migrations?", null, false, "right");
 							?>
 							</center>
-								<?php 
+								<?php
 								$header = ["Name", "Description", "Pre Text", "Post Text"];
 								$data = [];
 								foreach($not_installed as $module => $_not_installed)
@@ -33,7 +33,7 @@
 									foreach ($_not_installed as $_migration_class)
 									{
 										$migration_path = $_migration_class['path'];
-										if (file_exists(ROOT_PATH . '/' . $migration_path)) 
+										if (file_exists(ROOT_PATH . '/' . $migration_path))
 										{
 											include_once ROOT_PATH . '/' . $migration_path;
 											$classname = $_migration_class['class']['class_name'];
@@ -52,14 +52,14 @@
 										}
 									}
 								}
-									
+
 								$table =  Html::table($data, null, "tablesorter", $header);
 								echo $table;
 								?>
 						</div>
 					</li>
 				<?php endif;
-				if (!empty($batched)) : 
+				if (!empty($batched)) :
 					krsort($batched);
 					foreach($batched as $batch_no => $batched_migrations) : ?>
 						<li class="accordion-navigation">
@@ -69,7 +69,7 @@
 									<?php
 										$header = ["Name", "Description", "Pre Text", "Post Text"];
 										$data = [];
-										foreach($batched_migrations as $batched_migration)	
+										foreach($batched_migrations as $batched_migration)
 										{
 											$row = [];
 											$row[] = $batched_migration['module'] . ' - ' . $batched_migration['classname'];
@@ -88,7 +88,7 @@
 					<?php //endforeach;
 				endif; ?>
 			</ul>
-		</div>	
+		</div>
 		<div id="individual">
 			<?php if (!empty($available)) : ?>
 				<ul id="migrations_list" class="tabs vertical" style="border: 1px solid #444;" data-tab>
@@ -131,18 +131,18 @@
 												<?php if ($w->Migration->isInstalled($migration_data['class_name'])) :
 													$installedMigration = $w->Migration->getMigrationByClassname($migration_data['class_name']); ?>
 													<span data-tooltip aria-haspopup="true" title="<?php echo @formatDate($installedMigration->dt_created, "d-M-Y \a\\t H:i"); ?>">
-														Run <?php echo Carbon::createFromTimeStamp($installedMigration->dt_created)->diffForHumans(); ?> by <?php echo !empty($installedMigration->creator_id) ? $w->Auth->getUser($installedMigration->creator_id)->getContact()->getFullName() : "System"; ?>
+														Run <?php echo Carbon::createFromTimeStamp($installedMigration->dt_created)->diffForHumans(); ?> by <?php echo !empty($installedMigration->creator_id) && !empty($w->Auth->getUser($installedMigration->creator_id)) ? $w->Auth->getUser($installedMigration->creator_id)->getContact()->getFullName() : "System"; ?>
 													</span>
-												<?php endif; ?> 
+												<?php endif; ?>
 											</td>
 											<td>
-											<?php 
-												
+											<?php
+
 												echo $migration_data['pretext'];
 											?>
 											</td>
 											<td>
-												<?php 
+												<?php
 													echo $migration_data['posttext'];
 												?>
 											</td>
@@ -156,7 +156,7 @@
 												}
 											?>
 											</td>
-											
+
 										</tr>
 										<?php endforeach; ?>
 									</tbody>
@@ -228,7 +228,7 @@
 												$seed_obj = new $classname($w);
 											}
 										}
-										if (!empty($seed_obj)) : 
+										if (!empty($seed_obj)) :
 											$migration_exists = $w->Migration->migrationSeedExists($classname); ?>
 											<tr>
 												<td><?php echo $seed_obj->name; ?></td>

@@ -1,0 +1,121 @@
+
+@import '../responsive.scss';
+
+//----- Extends
+%clearfix:after {
+	display:block;
+	clear:both;
+	content:'';
+}
+
+//----- Grid System
+$grid-spacing: 2%;
+
+[class^="row"] {
+    @extend %clearfix;
+    width: 100%;
+
+    &:not(.row-fluid) {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+	& + & {
+		margin-top:$grid-spacing;
+	}
+}
+
+[class^="column"] {
+	float:left;
+	margin-right:$grid-spacing;
+	-webkit-box-sizing:border-box;
+	-moz-box-sizing:border-box;
+	box-sizing:border-box;
+
+	&:last-child {
+		margin-right:0%;
+	}
+}
+
+.small-1 { width:(100% / 12) - ($grid-spacing * 11 / 12); }
+.small-2 { width:(100% / 6) - ($grid-spacing * 10 / 12); }
+.small-3 { width:(100% / 4) - ($grid-spacing * 9 / 12); }
+.small-4 { width:(100% / 3) - ($grid-spacing * 8 / 12); }
+.small-5 { width:(100% / 2.4) - ($grid-spacing * 7 / 12); }
+.small-6 { width:(100% / 2) - ($grid-spacing * 6 / 12); }
+.small-7 { width:(100% / 1.714285714285714) - ($grid-spacing * 5 / 12); }
+.small-8 { width:(100% / 1.5) - ($grid-spacing * 4 / 12); }
+.small-9 { width:(100% / 1.333333333333333) - ($grid-spacing * 3 / 12); }
+.small-10 { width:(100% / 1.2) - ($grid-spacing * 2 / 12); }
+.small-11 { width:(100% / 1.090909090909091) - ($grid-spacing * 1 / 12); }
+.small-12 { width:100%; }
+
+@include tablet-up() {
+    .medium-1 { width:(100% / 12) - ($grid-spacing * 11 / 12); }
+    .medium-2 { width:(100% / 6) - ($grid-spacing * 10 / 12); }
+    .medium-3 { width:(100% / 4) - ($grid-spacing * 9 / 12); }
+    .medium-4 { width:(100% / 3) - ($grid-spacing * 8 / 12); }
+    .medium-5 { width:(100% / 2.4) - ($grid-spacing * 7 / 12); }
+    .medium-6 { width:(100% / 2) - ($grid-spacing * 6 / 12); }
+    .medium-7 { width:(100% / 1.714285714285714) - ($grid-spacing * 5 / 12); }
+    .medium-8 { width:(100% / 1.5) - ($grid-spacing * 4 / 12); }
+    .medium-9 { width:(100% / 1.333333333333333) - ($grid-spacing * 3 / 12); }
+    .medium-10 { width:(100% / 1.2) - ($grid-spacing * 2 / 12); }
+    .medium-11 { width:(100% / 1.090909090909091) - ($grid-spacing * 1 / 12); }
+    .medium-12 { width:100%; }
+}
+
+@include desktop() {
+    .large-1 { width:(100% / 12) - ($grid-spacing * 11 / 12); }
+    .large-2 { width:(100% / 6) - ($grid-spacing * 10 / 12); }
+    .large-3 { width:(100% / 4) - ($grid-spacing * 9 / 12); }
+    .large-4 { width:(100% / 3) - ($grid-spacing * 8 / 12); }
+    .large-5 { width:(100% / 2.4) - ($grid-spacing * 7 / 12); }
+    .large-6 { width:(100% / 2) - ($grid-spacing * 6 / 12); }
+    .large-7 { width:(100% / 1.714285714285714) - ($grid-spacing * 5 / 12); }
+    .large-8 { width:(100% / 1.5) - ($grid-spacing * 4 / 12); }
+    .large-9 { width:(100% / 1.333333333333333) - ($grid-spacing * 3 / 12); }
+    .large-10 { width:(100% / 1.2) - ($grid-spacing * 2 / 12); }
+    .large-11 { width:(100% / 1.090909090909091) - ($grid-spacing * 1 / 12); }
+    .large-12 { width:100%; }
+}
+
+ 
+[class*="-block-grid-"] {
+    display: block;
+    margin: -($grid-spacing/2);
+    padding: 0;
+    @extend %clearfix;
+  }
+   
+  li {
+    display: inline;
+    margin: 0;
+    padding: ($grid-spacing/2);
+    height: auto;
+    float: left;
+    list-style: none;
+  }
+   
+  @mixin block-grid ($per-row) {
+    & > li {
+      width: (100%/$per-row);
+   
+      $nth-equation: #{$per-row}n+1;
+      &:nth-of-type(n) { clear: none; }
+      &:nth-of-type(#{$nth-equation}) { clear: both; }
+    }
+  }
+   
+  $grid-columns: 12;
+  @mixin block-grids($size, $columns: $grid-columns) {
+    @for $i from 1 through $columns {
+      .#{$size}-block-grid-#{$i} {
+        @include block-grid($i)
+      }
+    }
+  }
+   
+  @include block-grids(small); 
+  @include tablet-up() { @include block-grids(medium) }
+  @include desktop() { @include block-grids(large) }
