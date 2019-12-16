@@ -16,7 +16,7 @@ class ChannelsModuleCest
         $web_api_url = "channel_web_api_url_$uniqid";
         $web_api_url_edited = "channel_web_api_url_{$uniqid}_edited";
 
-        $I->wantTo("Verify that Channels can be created, edited and deleted");
+        $I->wantTo("Verify that Channels and Processors can be created, edited and deleted");
         $I->login($I, "admin", "admin");
         $I->amOnPage("channels/listchannels");
 
@@ -28,9 +28,47 @@ class ChannelsModuleCest
         $I->verifyWebChannel($I, $channel_name_edited, true, true, $web_api_url_edited);
         $I->waitForElementNotVisible("#channelform");
 
+        $I->amOnPage("channels/listprocessors");
+
+        $processor_name = "processor_name_$uniqid";
+
+        $I->createProcessor($I, $processor_name, $channel_name_edited, "channels.TestProcessor");
+        $I->verifyProcessor($I, $processor_name, $channel_name_edited, "channels.TestProcessor");
+        $I->waitForElementNotVisible("#processor_form");
+        $I->deleteProcessor($I);
+
+        $I->amOnPage("channels/listchannels");
         $I->deleteChannel($I);
 
-        $I->createEmailChannel($I, $channel_name, false, false, "POP3", "channel_server_url_$uniqid", "channel_username_$uniqid", "channel_password_$uniqid", 563, true, false, true, "channel_folder_directory_$uniqid", "to@$uniqid.com", "from@$uniqid.com", "cc@$uniqid.com", "channel_subject_$uniqid", "channel_body_$uniqid", "Archive", "channel_post_read_data_$uniqid");
+        $channel_url = "channel_server_url_$uniqid";
+        $channel_url_edited = "channel_server_url_{$uniqid}_edited";
+        $channel_username = "channel_username_$uniqid";
+        $channel_username_edited = "channel_username_{$uniqid}_edited";
+        $channel_password = "channel_password_$uniqid";
+        $channel_password_edited = "channel_password_{$uniqid}_edited";
+        $channel_folder = "channel_folder_directory_$uniqid";
+        $channel_folder_edited = "channel_folder_directory_{$uniqid}_edited";
+        $to = "to@$uniqid.com";
+        $to_edited = "to_edited@$uniqid.com";
+        $from = "from@$uniqid.com";
+        $from_edited = "from_edited@$uniqid.com";
+        $cc = "cc@$uniqid.com";
+        $cc_edited = "cc_edited@$uniqid.com";
+        $channel_subject = "channel_subject_$uniqid";
+        $channel_subject_edited = "channel_subject_{$uniqid}_edited";
+        $channel_body = "channel_body_$uniqid";
+        $channel_body_edited = "channel_body_{$uniqid}_edited";
+        $channel_post_read_data = "channel_post_read_data_$uniqid";
+        $channel_post_read_data_edited = "channel_post_read_data_{$uniqid}_edited";
+
+        $I->createEmailChannel($I, $channel_name, false, false, "POP3", $channel_url, $channel_username, $channel_password, 563, true, false, true, $channel_folder, $to, $from, $cc, $channel_subject, $channel_body, "Archive", $channel_post_read_data);
+        $I->verifyEmailChannel($I, $channel_name, false, false, "POP3", $channel_url, $channel_username, $channel_password, 563, true, false, true, $channel_folder, $to, $from, $cc, $channel_subject, $channel_body, "Archive", $channel_post_read_data);
+        $I->waitForElementNotVisible("#channelform");
+
+        $I->editEmailChannel($I, $channel_name_edited, true, true, "IMAP", $channel_url_edited, $channel_username_edited, $channel_password_edited, 564, false, true, false, $channel_folder_edited, $to_edited, $from_edited, $cc_edited, $channel_subject_edited, $channel_body_edited, "Move to Folder", $channel_post_read_data_edited);
+        $I->verifyEmailChannel($I, $channel_name_edited, true, true, "IMAP", $channel_url_edited, $channel_username_edited, $channel_password_edited, 564, false, true, false, $channel_folder_edited, $to_edited, $from_edited, $cc_edited, $channel_subject_edited, $channel_body_edited, "Move to Folder", $channel_post_read_data_edited);
+        $I->waitForElementNotVisible("#channelform");
+
         $I->deleteChannel($I);
     }
 }
