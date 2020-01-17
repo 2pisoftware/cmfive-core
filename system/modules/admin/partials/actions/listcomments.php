@@ -1,6 +1,7 @@
 <?php namespace System\Modules\Admin;
 
-function listcomments(\Web $w, $params) {
+function listcomments(\Web $w, $params)
+{
     $object = $params['object'];
     $redirect = $params['redirect'];
     $internal_only = array_key_exists('internal_only', $params) ? $params['internal_only'] : true;
@@ -26,9 +27,9 @@ function listcomments(\Web $w, $params) {
     $recipients_form_html = '';
     if (!empty($get_recipients)) {
         $unique_recipients = [];
-        foreach($get_recipients as $recipients) {
+        foreach ($get_recipients as $recipients) {
             foreach ($recipients as $user_id => $is_notify) {
-                if(!array_key_exists($user_id, $unique_recipients)){
+                if (!array_key_exists($user_id, $unique_recipients)) {
                     $unique_recipients[$user_id] = $is_notify;
                 } else {
                     if ($is_notify != $unique_recipients[$user_id]) {
@@ -43,12 +44,12 @@ function listcomments(\Web $w, $params) {
             $user = $w->Auth->getUser($user_id);
             if (!empty($user)) {
                 if ($internal_only === true && $user->is_external == 0) {
-                    $recipients_form_html .= '<li><label classs="small-12 columns">' . addcslashes($user->getFullName(),'\'') . ' <input type="checkbox" name="recipient_' . $user->id . '" value="1" ';
+                    $recipients_form_html .= '<li><label classs="small-12 columns">' . addcslashes($user->getFullName(), '\'') . ' <input type="checkbox" name="recipient_' . $user->id . '" value="1" ';
                     $recipients_form_html .= $user->id != $w->auth->loggedIn() && $is_notify == 1 ? 'checked="checked"' : '';
                     $recipients_form_html .= 'id="recipient_' . $user_id . '" class=""></label></li>';
                 } else {
                     if ($internal_only === false) {
-                        $recipients_form_html .= '<li><label class="small-12 columns">' . addcslashes($user->getFullName(),'\'') . ($user->is_external == 1 ? ' (external)' : '') . ' <input type="checkbox" name="recipient_' . $user->id . '" value="1" ';
+                        $recipients_form_html .= '<li><label class="small-12 columns">' . addcslashes($user->getFullName(), '\'') . ($user->is_external == 1 ? ' (external)' : '') . ' <input type="checkbox" name="recipient_' . $user->id . '" value="1" ';
                         $recipients_form_html .= $user->id != $w->auth->loggedIn() && $is_notify == 1 ? 'checked="checked"' : '';
                         $recipients_form_html .= 'id="recipient_' . $user_id . '" class=""></label></li>';
                     }
@@ -59,4 +60,3 @@ function listcomments(\Web $w, $params) {
     }
     $w->ctx('recipients_html', $recipients_form_html);
 }
-
