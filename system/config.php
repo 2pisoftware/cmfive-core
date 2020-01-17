@@ -30,6 +30,13 @@ Config::append('system.allow_action', array(
  */
 Config::set('system.password_salt', md5('override this in your project config'));
 
+/**
+ * Otherwise, SSL will be used with KEY & IV from config,
+ * if system has been upgraded per this migration:
+ */
+
+Config::set('system.encryptionMigration', 'AdminSecurityAesToOpenssl');
+
 
 /**
  * Syntax for csrf config

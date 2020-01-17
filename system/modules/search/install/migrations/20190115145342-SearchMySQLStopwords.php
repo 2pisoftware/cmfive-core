@@ -14,7 +14,7 @@ class SearchMySQLStopwords extends CmfiveMigration {
 					->create();
 				$query = "INSERT INTO custom_stopwords_override(value) VALUE ('dgiwdgwidwdiv2');";
 				$this->w->db->sql($query);
-				$this->w->Search->reindexAll();
+				// $this->w->Search->reindexAll();
 		$query = "ALTER TABLE object_index ENGINE = InnoDB;";
 		$this->w->db->sql($query);
 		}
@@ -28,7 +28,7 @@ class SearchMySQLStopwords extends CmfiveMigration {
 
 	public function postText()
 	{
-		return "";
+		return "Make sure to reindex the search functionality by going to admin -> Search Admin and clicking \"Reindex All Search Objects\"";
 	}
 
 	public function description()
