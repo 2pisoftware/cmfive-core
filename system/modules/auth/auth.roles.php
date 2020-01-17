@@ -13,7 +13,7 @@
  *
  * @param Web $w
  * @param string $path
- * @return boolean
+ * @return bool
  */
 function anonymous_allowed(Web $w, string $path): bool
 {
