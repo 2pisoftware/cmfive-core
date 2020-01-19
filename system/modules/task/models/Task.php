@@ -55,14 +55,21 @@ class Task extends DbObject
 
     /**
      * add a subscriber to a task, if they aren't already subscribed
+     *
+     * @param User $user
+     *
+     * @return bool true if the user was not already a subscriber
      */
-    public function addSubscriber(User $user = null): void
+    public function addSubscriber(User $user = null): bool
     {
-        if (!empty($user) && $this->isUserSubscribed($user)) {
+        if (!empty($user) && !$this->isUserSubscribed($user->id)) {
             $subscriber = new TaskSubscriber($this->w);
             $subscriber->task_id = $this->id;
             $subscriber->user_id = $user->id;
             $subscriber->insert();
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -606,31 +613,14 @@ class Task extends DbObject
                     $members = $taskgroup->getMembers();
                     if (!empty($members)) {
                         foreach ($members as $member) {
-                            if (!$this->isUserSubscribed($member->user_id)) {
-                                $task_subscriber = new TaskSubscriber($this->w);
-                                $task_subscriber->task_id = $this->id;
-                                $task_subscriber->user_id = $member->user_id;
-                                $task_subscriber->insert();
-                            }
+                            $this->addSubscriber($member);
                         }
                     }
                     // Else only assign the assignee and creator
                 } else {
                     $creator_id = $this->getTaskCreatorId();
-                    if (!empty($creator_id) && !$this->isUserSubscribed($creator_id)) {
-                        //$this->Log->debug("Inserting Task: adding creator as subscriber");
-                        $creator_assigner = new TaskSubscriber($this->w);
-                        $creator_assigner->task_id = $this->id;
-                        $creator_assigner->user_id = $creator_id;
-                        $creator_assigner->insert();
-                    }
-                    if (!empty($this->assignee_id) && !$this->isUserSubscribed($this->assignee_id)) {
-                        //$this->Log->debug("Inserting Task: adding assignee as subscriber");
-                        $assignee_subscriber = new TaskSubscriber($this->w);
-                        $assignee_subscriber->task_id = $this->id;
-                        $assignee_subscriber->user_id = $this->assignee_id;
-                        $assignee_subscriber->insert();
-                    }
+                    $this->addSubscriber($this->w->Auth->getUser($creator_id));
+                    $this->addSubscriber($this->w->Auth->getUser($this->assignee_id));
                 }
             }
 
@@ -719,12 +709,7 @@ class Task extends DbObject
             //if not 'unassigned' add user to subscribers
             //check user exists
             $user = $this->w->auth->getUser($this->assignee_id);
-            if (!empty($user) && !$this->isUserSubscribed($this->assignee_id)) {
-                $assignee_subscriber = new TaskSubscriber($this->w);
-                $assignee_subscriber->task_id = $this->id;
-                $assignee_subscriber->user_id = $this->assignee_id;
-                $assignee_subscriber->insert();
-            }
+            $this->addSubscriber($user);
 
             $this->commitTransaction();
         } catch (Exception $ex) {

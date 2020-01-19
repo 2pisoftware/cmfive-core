@@ -82,14 +82,7 @@ function add_POST(Web $w)
 
         $user_id = $w->Auth->createExernalUserForContact($contact->id);
 
-        $existing_subscription = $w->Task->getObject("TaskSubscriber", ['task_id' => $task->id, "user_id" => $user_id, "is_deleted" => 0]);
-
-        if (empty($existing_subscription->id)) {
-            $subscription = new TaskSubscriber($w);
-            $subscription->task_id = $task->id;
-            $subscription->user_id = $user_id;
-            $subscription->insert();
-
+        if ($task->addSubscriber($w->auth->getUser($user_id))) {
             $w->msg('Contact subscribed', '/task/edit/' . $task->id);
         } else {
             $w->msg('This contact is already a subscriber for this task', '/task/edit/' . $task->id);
@@ -113,10 +106,7 @@ function add_POST(Web $w)
 
         $user_id = $w->Auth->createExernalUserForContact($contact->id);
 
-        $subscription = new TaskSubscriber($w);
-        $subscription->task_id = $task->id;
-        $subscription->user_id = $user_id;
-        $subscription->insert();
+        $task->addSubscriber($w->Auth->getUser($user_id));
 
         $w->msg('New contact subscribed', '/task/edit/' . $task->id);
     }
