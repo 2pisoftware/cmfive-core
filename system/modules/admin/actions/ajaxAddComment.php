@@ -80,7 +80,7 @@ function ajaxAddComment_POST(Web $w)
     $w->callHook("comment", "send_notification_recipients_" . $top_object_table_name, [
         "object_id" => $top_object_id,
         "recipients" => $notify_recipient_ids,
-        "commentor_id" => $user->id,
+        "commenter_id" => $user->id,
         "comment" => $comment,
         "is_new" => $is_new,
     ]);

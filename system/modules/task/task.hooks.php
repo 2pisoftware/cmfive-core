@@ -229,7 +229,7 @@ function task_comment_get_notification_recipients_task(Web $w, $params)
  * Receives parameters for users to notify from comments
  * $params = array(
  *      'recipients'=>['user_ids'],
- *      'commentor_id=>int (user_id of comment author),
+ *      'commenter_id=>int (user_id of comment author),
  *      'object_id'=>int (id of object comment is attached to. class included in funtion name),
  *      'comment'=>comment Object
  * )
@@ -238,14 +238,14 @@ function task_comment_send_notification_recipients_task(Web $w, $params)
 {
 
     $task = $w->task->getTask($params['object_id']);
-    $commenter = $w->Auth->getUser($params['commentor_id']);
+    $commenter = $w->Auth->getUser($params['commenter_id']);
 
     // make sure that people who comment become subscribers
     $task->addSubscriber($commenter);
 
     $subject = (!empty($commenter->id) ? $commenter->getFullName() : 'Someone') . ' has commented on a task that you\'re a part of (' . $task->title . ' [' . $task->id . '])';
 
-    $w->Notification->sendToAllWithCallback($subject, "task", "notification_email", $w->auth->getUser($params['commentor_id']), $params['recipients'], function ($user, $existing_template_data) use ($params, $task, $w) {
+    $w->Notification->sendToAllWithCallback($subject, "task", "notification_email", $w->auth->getUser($params['commenter_id']), $params['recipients'], function ($user, $existing_template_data) use ($params, $task, $w) {
         $template_data = $existing_template_data;
         $template_data['status'] = "[{$task->id}] New comment";
         $template_data['footer'] = $task->description;
