@@ -48,7 +48,7 @@ class Task extends DbObject
      *
      * @return TaskSubscriber[]
      */
-    public function getSubscribers(): ?array
+    public function getSubscribers():
     {
         return $this->getObjects('TaskSubscriber', ['task_id' => $this->id, 'is_deleted' => 0]);
     }
