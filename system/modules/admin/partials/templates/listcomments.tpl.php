@@ -10,7 +10,7 @@ if ($w->auth->hasRole('comment')) {
     // /admin/comment/[COMMENT_ID]/[TABLE_NAME]/[OBJECT_ID]?redirect_url=[REDIRECT_URL]
     // Its a bit farfetched but provides us with a standard commenting interface
     // Dont need to worry about urlencoding the redirect url
-    echo Html::box("/admin/comment/0/" . get_class($object) . "/{$object->id}?redirect_url=" . urlencode($redirect) . "&internal_only=" . ($internal_only === true ? '1' : '0') . "&notification_selection=" . ($notification_selection ? '1' : '0'), "Add Comment", true);
+    echo Html::box("/admin/comment/0/" . get_class($object) . "/{$object->id}?redirect_url=" . urlencode($redirect) . "&internal_only=" . ($internal_only === true ? '1' : '0') . "&has_notification_selection=" . ($has_notification_selection ? '1' : '0'), "Add Comment", true);
 
 
     if (!empty($comments)) :

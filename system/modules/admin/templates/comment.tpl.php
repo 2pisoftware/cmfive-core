@@ -3,7 +3,7 @@
         <h3>{{ is_new_comment == "true" ? "New Comment" : "Edit Comment" }}</h3>
         <form id="comment_form" method="POST" @submit.prevent="">
             <textarea placeholder="Add comment here..." @input="textareaAutoResize" ref="textarea" v-model="comment"></textarea><br>
-            <div v-if="notification_selection == 1">
+            <div v-if="has_notification_selection == 1">
                 <div>
                     <div v-if="viewers.length !== 0">
                         <strong>Select the users that will be notified by this comment</strong>
@@ -58,7 +58,7 @@
                 can_restrict: "<?php echo $can_restrict; ?>",
                 is_new_comment: "<?php echo $is_new_comment; ?>",
                 is_internal_only: "<?php echo $is_internal_only; ?>",
-                notification_selection: "<?php echo $notification_selection; ?>",
+                has_notification_selection: "<?php echo $has_notification_selection; ?>",
                 is_restricted: <?php echo $is_restricted; ?>,
                 is_parent_restricted: <?php echo $is_parent_restricted; ?>,
             }

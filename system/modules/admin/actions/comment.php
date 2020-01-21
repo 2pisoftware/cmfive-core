@@ -4,7 +4,7 @@ function comment_GET(Web $w)
 {
     $p = $w->pathMatch("comment_id", "object_class", "object_id");
     $is_internal_only = intval($w->request("internal_only", 0));
-    $notification_selection = $w->request("notification_selection", 1);
+    $has_notification_selection = $w->request("has_notification_selection", 1);
 
     $comment_id = intval($p["comment_id"]);
     $comment = $comment_id > 0 ? $w->Comment->getComment($comment_id) : new Comment($w);
@@ -120,7 +120,7 @@ function comment_GET(Web $w)
     $w->ctx("new_owner", json_encode($new_owner));
     $w->ctx("is_new_comment", empty($p["comment_id"]) || $p["comment_id"] == 0 ? "true" : "false");
     $w->ctx("is_internal_only", $is_internal_only);
-    $w->ctx("notification_selection", $notification_selection);
+    $w->ctx("has_notification_selection", $has_notification_selection);
     $w->ctx("is_restricted", json_encode($is_restricted));
     $w->ctx("is_parent_restricted", json_encode($is_parent_restricted));
     $w->ctx("can_restrict", property_exists($comment, '_restrictable') && $is_internal_only && $w->Auth->user()->hasRole("restrict") ? "true" : "false");

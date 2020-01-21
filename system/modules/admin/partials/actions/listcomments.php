@@ -6,7 +6,7 @@ function listcomments(\Web $w, $params)
     $redirect = $params['redirect'];
     $internal_only = array_key_exists('internal_only', $params) ? $params['internal_only'] : true;
     $external_only = $internal_only === true ? false : array_key_exists('external_only', $params) ? $params['external_only'] : false;
-    $notification_selection = array_key_exists('notification_selection', $params) ? $params["notification_selection"] : true;
+    $has_notification_selection = array_key_exists('has_notification_selection', $params) ? $params["has_notification_selection"] : true;
 
 
     $comments = $w->Comment->getCommentsForTable($object->getDbTableName(), $object->id, $internal_only, $external_only);
@@ -22,7 +22,7 @@ function listcomments(\Web $w, $params)
     $w->ctx("external_only", $external_only);
     $w->ctx("redirect", $redirect);
     $w->ctx("object", $object);
-    $w->ctx("notification_selection", $notification_selection);
+    $w->ctx("has_notification_selection", $has_notification_selection);
 
     //get recipients for comment notifications
     $get_recipients = $w->callHook('comment', 'get_notification_recipients_' . $object->getDbTableName(), ['object_id' => $object->id, 'internal_only' => $internal_only]);
