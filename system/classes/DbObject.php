@@ -671,7 +671,7 @@ class DbObject extends DbService
                     $this->creator_id = $this->w->Auth->user()->id;
                 }
 
-                if (in_array("dt_modified", $columns) && !isset($this->modified)) {
+                if (in_array("dt_modified", $columns) && !isset($this->dt_modified)) {
                     $this->dt_modified = time();
                 }
 
