@@ -781,10 +781,10 @@ class Web
 
             // All content must come from the site and dissallow flash.
             // report uri is deprecated in chrome 70, but still required for firefox and other browsers (as of jan 2020)
-            // see http://url.com https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/report-uri
+            // see https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/report-uri
             $this->sendHeader(
                 "Content-Security-Policy-Report-Only",
-                "default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; frame-ancestors 'none'; object-src 'none'; report-uri /main/logCSPReport/;" // report-to log-action"
+                "default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; frame-ancestors 'none'; object-src 'none'; report-uri /main/logCSPReport/;"
             );
 
             $this->sendHeader("Feature-Policy", "ambient-light-sensor 'none'; autoplay 'none'; accelerometer 'none'; camera 'none'; display-capture 'none'; document-domain 'none'; encrypted-media 'none'; fullscreen 'none'; geolocation 'none'; gyroscope 'none'; magnetometer 'none'; microphone 'none'; midi 'none'; payment 'none'; picture-in-picture 'none'; speaker 'none'; sync-xhr 'self'; usb 'none'; wake-lock 'none'; webauthn 'none'; vr 'none'");
