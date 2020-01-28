@@ -15,9 +15,9 @@ Config::set('system.allow_action', array(
     "auth/forgotpassword",
     "auth/resetpassword",
     "admin/datamigration",
-	"install-steps/details",
-	"install-steps/database",
-	"install-steps/import",
+    "install-steps/details",
+    "install-steps/database",
+    "install-steps/import",
 	"install-steps/finish"
 ));
 
