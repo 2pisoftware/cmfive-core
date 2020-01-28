@@ -12,7 +12,7 @@ Config::set("system.allow_module", array(
 
 Config::append('system.allow_action', array(
     "auth/login",
-    // "auth/forgotpassword",
+    "auth/forgotpassword",
     "auth/resetpassword",
     "admin/datamigration",
     "install-steps/details",

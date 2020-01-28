@@ -11,7 +11,7 @@ Vue.filter('capitalise', function(val) {
 	return val.charAt(0).toUpperCase() + val.slice(1)
 });
 
-// placeholder function to stop JS complaining
+// placeholder function to stop JS complaining 
 function selectAutocompleteCallback(event, ui) {
 }
 
@@ -165,24 +165,24 @@ function changeTab(hash) {
         $('.tab-head > a').each(function() {
             $(this).removeClass("active");
         });
-
+        
         if (hash[0] === "#"){
             hash = hash.substr(1);
         }
-
+        
         if(history.replaceState) {
             history.replaceState(null, null, '#' + hash);
         } else {
             location.hash = '#' + hash;
         }
-
+        
         $(".tab-body > div[id='" + hash + "']").show().addClass("active");
         $('.tab-head > a[href$="' + hash + '"]').addClass("active");
-
+        
         // Update codemirror instances
         $('.CodeMirror').each(function(){
            this.CodeMirror.refresh();
-        });
+        }); 
     }
 }
 
@@ -222,7 +222,7 @@ function bindCodeMirror() {
                     autoCloseTags: true,
                     wordWrap: true,
 					viewportMargin: Infinity,
-
+					
                 });
                 if (codeInstanceCount < (maxCodeInstances - 1)) {
                     codeInstanceCount++;
@@ -231,7 +231,7 @@ function bindCodeMirror() {
 //        });
     });
 }
-
+    
 /**
  * Clears all elements of a form
  */
@@ -253,7 +253,7 @@ function clearForm(ele) {
     });
 }
 
-/* This function gets dates in dd/mm/yyyy format,
+/* This function gets dates in dd/mm/yyyy format, 
  * splits them and rearranges it in mm/dd/yyy format
  * so JS can convert the date string into milliseconds
  * and then it is converted into days. The two day
@@ -280,26 +280,26 @@ function compareDates(from_date, to_date) {
 
 /**
  * Parses a given time into a date object
- *
+ * 
  * From: http://stackoverflow.com/a/2188651
- *
+ * 
  * @param {string} timeString
  * @returns {Date|parseTime.d}
  */
-function parseTime(timeString) {
+function parseTime(timeString) {    
     if (timeString == '') return null;
 
-    var time = timeString.match(/(\d+)(:(\d\d))?\s*(p?)/i);
+    var time = timeString.match(/(\d+)(:(\d\d))?\s*(p?)/i); 
     if (time == null) return null;
-
-    var hours = parseInt(time[1],10);
-	hours += (hours < 12 && time[4])? 12 : 0;
-
-	var d = new Date();
+	
+    var hours = parseInt(time[1],10);    
+	hours += (hours < 12 && time[4])? 12 : 0;   
+    
+	var d = new Date();             
     d.setHours(hours);
     d.setMinutes(parseInt(time[3],10) || 0);
-    d.setSeconds(0, 0);
-
+    d.setSeconds(0, 0);  
+    
 	return d;
 }
 
