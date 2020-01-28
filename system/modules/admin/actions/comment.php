@@ -112,7 +112,9 @@ function comment_GET(Web $w)
         "name" => $user->getFullName(),
     ];
 
-    $w->ctx("comment", $comment->comment);
+    // make sure line breaks are escaped for correct processing in js
+    $w->ctx("comment", addcslashes($comment->comment, "\n"));
+
     $w->ctx("comment_id", $p["comment_id"] == "{0}" ? "0" : $p["comment_id"]);
     $w->ctx("viewers", json_encode($viewers));
     $w->ctx("top_object_class_name", strtolower(preg_replace('/(?<=\\w)(?=[A-Z])/', "_$1", $parent_object_class_name)));
