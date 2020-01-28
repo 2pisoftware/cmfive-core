@@ -58,19 +58,12 @@
                 can_restrict: "<?php echo $can_restrict; ?>",
                 is_new_comment: "<?php echo $is_new_comment; ?>",
                 is_internal_only: "<?php echo $is_internal_only; ?>",
-<<<<<<< HEAD
                 has_notification_selection: "<?php echo $has_notification_selection; ?>",
-=======
->>>>>>> hotfix/editCommentsWithNewlines
                 is_restricted: <?php echo $is_restricted; ?>,
                 is_parent_restricted: <?php echo $is_parent_restricted; ?>,
             }
         },
-<<<<<<< HEAD
         methods: {
-=======
-          methods: {
->>>>>>> hotfix/editCommentsWithNewlines
             toggleIsRestricted: function() {
                 this.is_restricted = !this.is_restricted;
 
