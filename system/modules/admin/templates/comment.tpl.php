@@ -2,42 +2,44 @@
     <div class="panel">
         <h3>{{ is_new_comment == "true" ? "New Comment" : "Edit Comment" }}</h3>
         <form id="comment_form" method="POST" @submit.prevent="">
-            <div>
-                <textarea placeholder="Add comment here..." @input="textareaAutoResize" ref="textarea" v-model="comment"></textarea><br>
-                <div v-if="viewers.length !== 0">
-                    <strong>Select the users that will be notified by this comment</strong>
-                </div>
-                <ul class="small-block-grid-1 medium-block-grid-2 large-block-grid-3">
-                    <li v-for="viewer in canNotifyViewers" style="padding-bottom: 0;">
-                        <label class="cmfive__checkbox-container">{{ viewer.name }}
-                            <input type="checkbox" v-model="viewer.is_notify" @click="toggleIsNotify(viewer)">
-                            <span class="cmfive__checkbox-checkmark"></span>
-                        </label>
-                    </li>
-                </ul>
-            </div><br>
-            <div v-if="can_restrict == 'true'">
-                <label class="cmfive__checkbox-container">Restricted
-                    <input type="checkbox" v-model="is_restricted" @click="toggleIsRestricted()" :disabled="is_parent_restricted">
-                    <span class="cmfive__checkbox-checkmark"></span>
-                </label>
-                <div v-show="is_restricted"><strong>Select the users that can view this comment</strong>
+            <textarea placeholder="Add comment here..." @input="textareaAutoResize" ref="textarea" v-model="comment"></textarea><br>
+            <div v-if="has_notification_selection == 1">
+                <div>
+                    <div v-if="viewers.length !== 0">
+                        <strong>Select the users that will be notified by this comment</strong>
+                    </div>
                     <ul class="small-block-grid-1 medium-block-grid-2 large-block-grid-3">
-                        <li v-for="viewer in canRestrictViewers" style="padding-bottom: 0;">
+                        <li v-for="viewer in canNotifyViewers" style="padding-bottom: 0;">
                             <label class="cmfive__checkbox-container">{{ viewer.name }}
-                                <input type="checkbox" v-model="viewer.can_view" @click="toggleCanView(viewer)">
-                                <span class="cmfive__checkbox-checkmark" ></span>
+                                <input type="checkbox" v-model="viewer.is_notify" @click="toggleIsNotify(viewer)">
+                                <span class="cmfive__checkbox-checkmark"></span>
                             </label>
                         </li>
                     </ul>
-                    <strong v-if="comment_id != 0">Comment Owner</strong>
-                    <select v-if="comment_id != 0" @change="updateOwner">
-                        <option v-for="viewer in canViewViewers" :value="JSON.stringify(viewer)">
-                            {{ viewer.name }}
-                        </option>
-                    </select>
-                </div>
-            </div><br>
+                </div><br>
+                <div v-if="can_restrict == 'true'">
+                    <label class="cmfive__checkbox-container">Restricted
+                        <input type="checkbox" v-model="is_restricted" @click="toggleIsRestricted()" :disabled="is_parent_restricted">
+                        <span class="cmfive__checkbox-checkmark"></span>
+                    </label>
+                    <div v-show="is_restricted"><strong>Select the users that can view this comment</strong>
+                        <ul class="small-block-grid-1 medium-block-grid-2 large-block-grid-3">
+                            <li v-for="viewer in canRestrictViewers" style="padding-bottom: 0;">
+                                <label class="cmfive__checkbox-container">{{ viewer.name }}
+                                    <input type="checkbox" v-model="viewer.can_view" @click="toggleCanView(viewer)">
+                                    <span class="cmfive__checkbox-checkmark" ></span>
+                                </label>
+                            </li>
+                        </ul>
+                        <strong v-if="comment_id != 0">Comment Owner</strong>
+                        <select v-if="comment_id != 0" @change="updateOwner">
+                            <option v-for="viewer in canViewViewers" :value="JSON.stringify(viewer)">
+                                {{ viewer.name }}
+                            </option>
+                        </select>
+                    </div>
+                </div><br>
+            </div>
             <button class="small" style="margin-bottom: 0rem;" @click="saveComment()">Save</button>
         </form>
     </div>
@@ -56,11 +58,12 @@
                 can_restrict: "<?php echo $can_restrict; ?>",
                 is_new_comment: "<?php echo $is_new_comment; ?>",
                 is_internal_only: "<?php echo $is_internal_only; ?>",
+                has_notification_selection: "<?php echo $has_notification_selection; ?>",
                 is_restricted: <?php echo $is_restricted; ?>,
                 is_parent_restricted: <?php echo $is_parent_restricted; ?>,
             }
         },
-          methods: {
+        methods: {
             toggleIsRestricted: function() {
                 this.is_restricted = !this.is_restricted;
 
