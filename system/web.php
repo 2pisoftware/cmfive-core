@@ -774,25 +774,24 @@ class Web
                 $this->error($ex->getMessage());
             }
 
-            $this->sendHeader("Report-To", json_encode([
+            /*$this->sendHeader("Report-To", json_encode([
                 "group" => "log-action",
                 "max-age" => "10886400",
                 "endpoints" => ["url" => "/main/logCSPReport"],
-            ]));
-
+            ])); */
             // All content must come from the site and dissallow flash.
             // report uri is deprecated in chrome 70, but still required for firefox and other browsers (as of jan 2020)
             // see https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/report-uri
-            $this->sendHeader(
+           /* $this->sendHeader(
                 "Content-Security-Policy-Report-Only",
                 "default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; frame-ancestors 'none'; object-src 'none'; report-uri /main/logCSPReport/;"
-            );
+            ); */
 
             $this->sendHeader("Feature-Policy", "ambient-light-sensor 'none'; autoplay 'none'; accelerometer 'none'; camera 'none'; display-capture 'none'; document-domain 'none'; encrypted-media 'none'; fullscreen 'none'; geolocation 'none'; gyroscope 'none'; magnetometer 'none'; microphone 'none'; midi 'none'; payment 'none'; picture-in-picture 'none'; speaker 'none'; sync-xhr 'self'; usb 'none'; wake-lock 'none'; webauthn 'none'; vr 'none'");
 
             $this->sendHeader("Strict-Transport-Security", "max-age=63072000");
             $this->sendHeader("X-Content-Type-Options", "nosniff");
-            $this->sendHeader("X-Frame-Options", "DENY");
+          //  $this->sendHeader("X-Frame-Options", "DENY");
             $this->sendHeader("X-XSS-Protection", "1; mode=block");
 
             // send headers first

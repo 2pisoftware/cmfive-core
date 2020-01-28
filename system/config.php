@@ -10,7 +10,7 @@ Config::set("system.allow_module", array(
     // "rest", // uncomment this to switch on REST access to the database objects. Tread with CAUTION!
 ));
 
-Config::append('system.allow_action', array(
+Config::set('system.allow_action', array(
     "auth/login",
     "auth/forgotpassword",
     "auth/resetpassword",
@@ -18,8 +18,7 @@ Config::append('system.allow_action', array(
     "install-steps/details",
     "install-steps/database",
     "install-steps/import",
-    "install-steps/finish",
-    "main/logCSPReport",
+	"install-steps/finish"
 ));
 
 /**
