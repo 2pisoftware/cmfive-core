@@ -4,6 +4,14 @@ namespace Helper;
 
 class CmfiveTaskModule extends \Codeception\Module
 {
+    /**
+     * Creates a new TaskGroup.
+     *
+     * @param CmfiveUI $I
+     * @param string $taskGroup
+     * @param array[string] $data
+     * @return void
+     */
     public function createTaskGroup($I, $taskGroup, $data)
     {
         $I->clickCmfiveNavbar($I, 'Task', 'Task Groups');
@@ -31,6 +39,14 @@ class CmfiveTaskModule extends \Codeception\Module
         $I->see('Task Group ' . $taskGroup . ' added');
     }
 
+    /**
+     * Updates an existing TaskGroup.
+     *
+     * @param CmfiveUI $I
+     * @param string $taskGroup
+     * @param array[string] $data
+     * @return void
+     */
     public function updateTaskGroup($I, $taskGroup, $data)
     {
         $I->clickCmfiveNavbar($I, 'Task', 'Task Groups');
@@ -62,6 +78,13 @@ class CmfiveTaskModule extends \Codeception\Module
         $I->see('Task Group ' . $data['title'] . ' updated.');
     }
 
+    /**
+     * Deletes an existing TaskGroup.
+     *
+     * @param CmfiveUI $I
+     * @param string $taskGroup
+     * @return void
+     */
     public function deleteTaskGroup($I, $taskGroup)
     {
         $I->clickCmfiveNavbar($I, 'Task', 'Task Groups');
@@ -83,6 +106,15 @@ class CmfiveTaskModule extends \Codeception\Module
         $I->see('Task Group ' . $taskGroup . ' deleted.');
     }
 
+    /**
+     * Adds a User as a Member to an existing TaskGroup.
+     *
+     * @param CmfiveUI $I
+     * @param string $taskGroup
+     * @param string $userLabel
+     * @param string $role
+     * @return void
+     */
     public function addMemberToTaskGroup($I, $taskGroup, $userLabel, $role)
     {
         $I->clickCmfiveNavbar($I, 'Task', 'Task Groups');
@@ -95,6 +127,15 @@ class CmfiveTaskModule extends \Codeception\Module
         $I->see('Task Group updated');
     }
 
+    /**
+     * Updates a User's existing Member details with an existing TaskGroup.
+     *
+     * @param CmfiveUI $I
+     * @param string $taskGroup
+     * @param string $user
+     * @param string $role
+     * @return void
+     */
     public function updateMemberInTaskGroup($I, $taskGroup, $user, $role)
     {
         $I->clickCmfiveNavbar($I, 'Task', 'Task Groups');
@@ -107,6 +148,14 @@ class CmfiveTaskModule extends \Codeception\Module
         $I->see('Task Group updated');
     }
 
+    /**
+     * Removes a User's existing Member details with an existing TaskGroup.
+     *
+     * @param CmfiveUI $I
+     * @param string $taskGroup
+     * @param string $user
+     * @return void
+     */
     public function removeMemberFromTaskGroup($I, $taskGroup, $user)
     {
         $I->clickCmfiveNavbar($I, 'Task', 'Task Groups');
@@ -118,6 +167,15 @@ class CmfiveTaskModule extends \Codeception\Module
         $I->see('Task Group updated');
     }
 
+    /**
+     * Creates a new Task.
+     *
+     * @param CmfiveUI $I
+     * @param string $taskGroup
+     * @param string $task
+     * @param array[string] $data
+     * @return void
+     */
     public function createTask($I, $taskGroup, $task, $data)
     {
         $I->clickCmfiveNavbar($I, 'Task', 'New Task');
@@ -143,6 +201,14 @@ class CmfiveTaskModule extends \Codeception\Module
         return $I->grabNumRecords('task');
     }
 
+    /**
+     * Edits an existing Task.
+     *
+     * @param CmfiveUI $I
+     * @param string $task
+     * @param array[string] $data
+     * @return void
+     */
     public function editTask($I, $task, $data)
     {
         $I->clickCmfiveNavbar($I, 'Task', 'Task List');
@@ -155,6 +221,13 @@ class CmfiveTaskModule extends \Codeception\Module
         $I->waitForBackendToRefresh($I);
     }
 
+    /**
+     * Deletes an existing Task.
+     *
+     * @param CmfiveUI $I
+     * @param string $url
+     * @return void
+     */
     public function deleteTask($I, $url)
     {
         $I->amOnUrl($url);

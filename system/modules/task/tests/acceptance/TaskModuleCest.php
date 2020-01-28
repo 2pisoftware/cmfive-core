@@ -2,14 +2,12 @@
 
 class TaskModuleCest
 {
-    public function _before()
-    {
-    }
-
-    public function _after()
-    {
-    }
-
+    /**
+     * Runs the Task module tests.
+     *
+     * @param CmfiveUI $I
+     * @return void
+     */
     public function testTaskModule($I)
     {
         $I->wantTo('Verify that the tasks module supports creation and members');
