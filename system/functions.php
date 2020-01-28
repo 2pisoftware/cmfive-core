@@ -116,11 +116,11 @@ function getAllLocaleValues($base_locale) {
 		'fr_FR' => ['fr_FR', 'fr_FR@euro', 'french'],
 		'en_AU' => ['en_AU.utf8', 'en_AU', 'australian']
 	];
-	
+
 	if (array_key_exists($base_locale, $language_lookup)) {
 		return $language_lookup[$base_locale];
 	}
-	
+
 	return false;
 }
 
@@ -641,7 +641,7 @@ function in_multiarray($value, $array) {
  * a string $value will match it's integer equivalent (i.e. '1' == 1, but '1s' != 1)
  *
  * Similar to above except it will return the value
- * 
+ *
  * @param <Mixed> $value
  * @param <Mixed> $array
  * @return <boolean> $in_multiarray
@@ -739,7 +739,7 @@ function SystemSSLencrypt($text) {
 		$this->w->Log->error($err);
 		throw new Exception($err);
 	} else {
-		$ssl = openssl_encrypt($text, $ssl_method, $encryption_key, 0, $encryption_iv);	
+		$ssl = openssl_encrypt($text, $ssl_method, $encryption_key, 0, $encryption_iv);
 		$encryption_iv = bin2hex($encryption_iv);
 		return  $ssl . "::" . $encryption_iv;
 		}
@@ -933,7 +933,7 @@ function get_list_of_months_between_dates($from, $to, $format = 'M Y') {
 
 	if (is_numeric($to)) {
 		$to = date('d-m-Y', $to);
-	}	
+	}
 
 	$start    = (new DateTime($from))->modify('first day of this month');
 	$end      = (new DateTime($to))->modify('first day of next month');
@@ -946,4 +946,26 @@ function get_list_of_months_between_dates($from, $to, $format = 'M Y') {
 	}
 
 	return $month_list;
+}
+
+// Polyfills for array_key functions for php < 7.3
+if (!function_exists('array_key_first')) {
+    function array_key_first(array $array)
+    {
+        foreach ($array as $key => $unused) {
+            return $key;
+        }
+        return null;
+    }
+}
+
+if (! function_exists("array_key_last")) {
+    function array_key_last(array $array)
+    {
+        if (!is_array($array) || empty($array)) {
+            return null;
+        }
+
+        return array_keys($array)[count($array)-1];
+    }
 }
