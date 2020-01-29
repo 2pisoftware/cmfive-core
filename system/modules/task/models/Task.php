@@ -613,7 +613,7 @@ class Task extends DbObject
                     $members = $taskgroup->getMembers();
                     if (!empty($members)) {
                         foreach ($members as $member) {
-                            $this->addSubscriber($member);
+                            $this->addSubscriber($this->w->Auth->getUser($member->user_id));
                         }
                     }
                     // Else only assign the assignee and creator
