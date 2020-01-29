@@ -652,13 +652,11 @@ class Html
                         case "password":
                         case "email":
                             $size = !empty($field[4]) ? $field[4] : null;
-                            $required = !empty($field[5]) ? $field[5] : null;
                             $buffer .= '<input' . $readonly . ' style="width:100%;" type="' . $type . '" name="' . $name . '" value="' . htmlspecialchars($value) . '" size="' . $size . '" id="' . $name . '" ' . $required . " />";
                             break;
                         case "autocomplete":
                             $options = !empty($field[4]) ? $field[4] : null;
                             $minValue = !empty($field[5]) ? $field[5] : 1;
-                            $required = !empty($field[6]) ? $field[6] : null;
                             $buffer .= Html::autocomplete($name, $options, $value, null, "width: 100%;", $minValue, $required);
                             break;
                         case "date":
@@ -691,7 +689,6 @@ class Html
 
                             $default = !empty($field[5]) ? ($field[5] == "null" ? null : $field[5]) : "-- Select --";
                             $sl_class = !empty($field[6]) ? $field[6] : null;
-                            $required = !empty($field[7]) ? $field[7] : null;
                             $buffer .= Html::select($name, $items, $value, $sl_class, "width: 100%;", $default, ($readonly ? ' disabled="disabled" ' : null) . ' ' . $required);
                             break;
                         case "multiSelect":
