@@ -7,8 +7,8 @@
  * @property DbPDO $_db
  * @property Web $w
  */
-class DbService {
-
+class DbService
+{
     public $_db;
     public $w;
 
@@ -19,8 +19,8 @@ class DbService {
      * @var <type>
      */
     private static $_cache = array(); // used for single objects
-    public static $_cache2 = array();  // used for lists of objects
-	public static $_select_cache = array();
+    public static $_cache2 = array(); // used for lists of objects
+    public static $_select_cache = array();
 
     /**
      * This variable keeps track of active transactions
@@ -29,27 +29,32 @@ class DbService {
      */
     public static $_active_trx = false;
 
-    public function __get($name) {
+    public function __get($name)
+    {
         return $this->w->$name;
     }
-    
-    public static function getCache() {
-		return self::$_cache;
-	}
-    public static function getCacheValue($class,$id) {
-		if (array_key_exists($class,self::$_cache) && array_key_exists($id,self::$_cache[$class]))  {
-			return self::$_cache[$class][$id];
-		}
-		return null;
-	}
-    public static function getCacheListValue($class,$key) {
-		if (array_key_exists($class,self::$_cache2) && array_key_exists($key,self::$_cache2[$class]))  {
-			return self::$_cache2[$class][$key];
-		}
-		return null;
-	}
 
-    function __construct(Web $w) {
+    public static function getCache()
+    {
+        return self::$_cache;
+    }
+    public static function getCacheValue($class, $id)
+    {
+        if (array_key_exists($class, self::$_cache) && array_key_exists($id, self::$_cache[$class])) {
+            return self::$_cache[$class][$id];
+        }
+        return null;
+    }
+    public static function getCacheListValue($class, $key)
+    {
+        if (array_key_exists($class, self::$_cache2) && array_key_exists($key, self::$_cache2[$class])) {
+            return self::$_cache2[$class][$key];
+        }
+        return null;
+    }
+
+    public function __construct(Web $w)
+    {
         $this->_db = $w->db;
         $this->w = $w;
     }
@@ -61,7 +66,8 @@ class DbService {
      * @param $time
      * @param $format
      */
-    function time2Dt($time = null, $format = 'Y-m-d H:i:s') {
+    public function time2Dt($time = null, $format = 'Y-m-d H:i:s')
+    {
         return formatDate($time ? $time : time(), $format, false);
     }
 
@@ -72,23 +78,28 @@ class DbService {
      * @param $time
      * @param $format
      */
-    function time2D($time = null, $format = 'Y-m-d') {
+    public function time2D($time = null, $format = 'Y-m-d')
+    {
         return formatDate($time ? $time : time(), $format, false);
     }
 
-    function time2T($time = null, $format = 'H:i:s') {
+    public function time2T($time = null, $format = 'H:i:s')
+    {
         return date($format, $time ? $time : time());
     }
 
-    function dt2Time($dt) {
+    public function dt2Time($dt)
+    {
         return strtotime(str_replace("/", "-", $dt));
     }
 
-    function d2Time($d) {
+    public function d2Time($d)
+    {
         return strtotime(str_replace("/", "-", $d));
     }
 
-    function t2Time($t) {
+    public function t2Time($t)
+    {
         return strtotime(str_replace("/", "-", $t));
     }
 
@@ -96,7 +107,8 @@ class DbService {
      * Clear object cache completely!
      *
      */
-    function clearCache() {
+    public function clearCache()
+    {
         self::$_cache = array();
         self::$_cache2 = array();
     }
@@ -110,17 +122,21 @@ class DbService {
      * @param <type> $idOrWhere
      * @return <type>
      */
-    function getObject($class, $idOrWhere, $use_cache = true, $order_by = null, $includeDeleted = false) {
-        if (!$idOrWhere || !$class)
+    public function getObject($class, $idOrWhere, $use_cache = true, $order_by = null, $includeDeleted = false)
+    {
+        if (!$idOrWhere || !$class) {
             return null;
+        }
 
-		if ($order_by !== null) $use_cache=false;
+        if ($order_by !== null) {
+            $use_cache = false;
+        }
 
         $key = $idOrWhere;
         if (is_array($idOrWhere)) {
             $key = "";
             foreach ($idOrWhere as $k => $v) {
-                $key.=$k . "::" . $v . "::";
+                $key .= $k . "::" . $v . "::";
             }
         }
         $usecache = $use_cache && is_scalar($key);
@@ -137,7 +153,7 @@ class DbService {
 
         $o = new $class($this->w);
         $table = $o->getDbTableName();
-        
+
         if (is_scalar($idOrWhere)) {
             $this->_db->get($table)->where($o->getDbColumnName('id'), $idOrWhere);
         } elseif (is_array($idOrWhere)) {
@@ -148,20 +164,20 @@ class DbService {
                 $this->w->Log->setLogger(get_class($this))->error("(getObject) The WHERE condition: " . json_encode($idOrWhere) . " has non-associative elements, this has security implications and is not allowed");
                 return null;
             }
-			
-			// Default is deleted checks to 0
-			$columns = $o->getDbTableColumnNames();
 
-			if (!$includeDeleted && (property_exists(get_class($o), "is_deleted") || (in_array("is_deleted", $columns)))) {
-				$this->_db->where('is_deleted', 0);
-			}
+            // Default is deleted checks to 0
+            $columns = $o->getDbTableColumnNames();
+
+            if (!$includeDeleted && (property_exists(get_class($o), "is_deleted") || (in_array("is_deleted", $columns)))) {
+                $this->_db->where('is_deleted', 0);
+            }
         }
 
         if (!empty($order_by)) {
             $this->_db->order_by($order_by);
         }
-		
-		$this->buildSelect($o, $table, $class);
+
+        $this->buildSelect($o, $table, $class);
         $result = $this->_db->fetch_row();
 
         if ($result) {
@@ -177,32 +193,33 @@ class DbService {
             return null;
         }
     }
-	function buildSelect($object, $table, $class) {
-		$this->_db->clearSelect();
-		if(!isset(self::$_select_cache[$class])) {
-			self::$_select_cache[$class] = array();
-		}
-		if(!empty(self::$_select_cache[$class][$table])) {
-			$this->_db->select(self::$_select_cache[$class][$table]);
-			return NULL;
-		}
+    public function buildSelect($object, $table, $class)
+    {
+        $this->_db->clearSelect();
+        if (!isset(self::$_select_cache[$class])) {
+            self::$_select_cache[$class] = array();
+        }
+        if (!empty(self::$_select_cache[$class][$table])) {
+            $this->_db->select(self::$_select_cache[$class][$table]);
+            return null;
+        }
         // Move date conversion to SQL.
         // Automatically converts keys with different database values
-		$parts = array();
+        $parts = array();
         foreach ($object->getDbTableColumnNames() as $k) {
-            if(0 === strpos($k, 'dt_') || 0 === strpos($k, 'd_')) { //  || 0 === strpos($k, 't_')
+            if (0 === strpos($k, 'dt_') || 0 === strpos($k, 'd_')) { //  || 0 === strpos($k, 't_')
                 // This is MySQL specific!
-                $parts[] = "UNIX_TIMESTAMP($table.`".$object->getDbColumnName($k)."`) AS `$k`";
-            } else if($k != $object->getDbColumnName($k)) {
-                $parts[] = "`".$object->getDbColumnName($k)."` as `$k`";
+                $parts[] = "UNIX_TIMESTAMP($table.`" . $object->getDbColumnName($k) . "`) AS `$k`";
+            } elseif ($k != $object->getDbColumnName($k)) {
+                $parts[] = "`" . $object->getDbColumnName($k) . "` as `$k`";
             } else {
                 $parts[] = $k;
             }
         }
-		self::$_select_cache[$class][$table] = implode(',', $parts);
-		$this->_db->select(self::$_select_cache[$class][$table]);
-		return NULL;
-	}
+        self::$_select_cache[$class][$table] = implode(',', $parts);
+        $this->_db->select(self::$_select_cache[$class][$table]);
+        return null;
+    }
     /**
      *
      * @param string $class
@@ -216,10 +233,10 @@ class DbService {
         if (!$class) {
             return null;
         }
-        
-        if ($order_by !== null || $offset !== null || $limit !== null ) {
-            $use_cache=false;
-            $cache_list=false;
+
+        if ($order_by !== null || $offset !== null || $limit !== null) {
+            $use_cache = false;
+            $cache_list = false;
         }
 
         // if using the list cache
@@ -268,12 +285,12 @@ class DbService {
         if (!empty($order_by)) {
             $this->_db->order_by($order_by);
         }
-        
+
         // Offset
         if (!empty($offset) && !empty($limit)) {
             $this->_db->offset($offset);
         }
-        
+
         // Limit
         if (!empty($limit)) {
             $this->_db->limit($limit);
@@ -311,20 +328,23 @@ class DbService {
      * @param <type> $id
      * @return <type>
      */
-    function getObjectFromRow($class, $row, $from_db = false) {
-        if (!$row || !$class)
+    public function getObjectFromRow($class, $row, $from_db = false)
+    {
+        if (!$row || !$class) {
             return null;
+        }
+
         $o = new $class($this->w);
-		
-		// The second parameter below is the prompt to convert mysql timestamps into unix timestamps
-		// We make this convert in the db query now but there are times when using getObjectFromRow
-		// where you may have made the query yourself (and therefore no UNIX() cast in mysql)
-		// It also happens that the $from_db flag is inversely related to the convert parameter below
+
+        // The second parameter below is the prompt to convert mysql timestamps into unix timestamps
+        // We make this convert in the db query now but there are times when using getObjectFromRow
+        // where you may have made the query yourself (and therefore no UNIX() cast in mysql)
+        // It also happens that the $from_db flag is inversely related to the convert parameter below
         $o->fill($row, !$from_db);
-		 
+
         // test implementation for preserving original database values
         if ($from_db == true) {
-        	$o->__old = $row;
+            $o->__old = $row;
         }
         // Test implementation for a post fill callback
         if (method_exists($o, "afterConstruct")) {
@@ -334,7 +354,8 @@ class DbService {
         return $o;
     }
 
-    function getObjectsFromRows($class, $rows, $from_db = false) {
+    public function getObjectsFromRows($class, $rows, $from_db = false)
+    {
         $list = array();
         if (!empty($class) && !empty($rows) && class_exists($class)) {
             foreach ($rows as &$row) {
@@ -345,44 +366,49 @@ class DbService {
     }
 
     // DEPRECATED AS OF 0.7.0
-    function fillObjects($class, $rows, $from_db = false) {
+    public function fillObjects($class, $rows, $from_db = false)
+    {
         return $this->getObjectsFromRows($class, $rows, $from_db);
     }
 
     /**
      * Start a transaction
      */
-    public function startTransaction() {
+    public function startTransaction()
+    {
         $this->_db->startTransaction();
     }
 
     /**
      * Commit a transaction
      */
-    public function commitTransaction() {
+    public function commitTransaction()
+    {
         $this->_db->commitTransaction();
     }
 
     /**
      * Rollback a transaction!
      */
-    public function rollbackTransaction() {
+    public function rollbackTransaction()
+    {
         $this->_db->rollbackTransaction();
     }
 
     /**
      * Returns true if a transaction is currently active!
      */
-    public function isActiveTransaction() {
+    public function isActiveTransaction()
+    {
         return $this->_db->activeTransaction();
     }
 
-    function lookupArray($type) {
+    public function lookupArray($type)
+    {
         $rows = $this->_db->get("lookup")->where("type", $type)->fetch_all(); // select("code,title")->from
         foreach ($rows as $row) {
             $select[$row['code']] = $row['title'];
         }
         return $select;
     }
-
 }

@@ -85,16 +85,15 @@ class Web
 	public $_languageModulesLoaded = [];
 	public $currentLocale = '';
 	public $_module_loaded_hooks = []; //cache loaded module hook files
+    private $_classdirectory; // used by the class auto loader
 
-	private $_classdirectory; // used by the class auto loader
+    public $_scripts = array();
+    public $_styles = array();
+    public $sHttps = null;
 
-	public $_scripts = array();
-	public $_styles = array();
-        public $sHttps = null;
-
-	/**
-	 * Constructor
-	 */
+    /**
+     * Constructor
+     */
 	function __construct() {
 		$this->_templatePath = "templates";
 		$this->_templateExtension = ".tpl.php";
@@ -554,22 +553,23 @@ class Web
 		exit();
 	}
 
-	/**
-	 * start processing of request
-	 * 1. look at the request parameter if the action parameter was set
-	 * 2. if not set, look at the pathinfo and use first
-	 */
-	function start($init_database = true) {
-		if ($init_database && !$this->_is_installing) {
-			$this->initDB();
-		}
+    /**
+     * start processing of request
+     * 1. look at the request parameter if the action parameter was set
+     * 2. if not set, look at the pathinfo and use first
+     */
+    public function start($init_database = true)
+    {
+        if ($init_database && !$this->_is_installing) {
+            $this->initDB();
+        }
 
-		// Set the timezone from Config
-		$timezone = Config::get('system.timezone');
-		if (empty($timezone)) {
-			$timezone = 'UTC';
-		}
-		date_default_timezone_set($timezone);
+        // Set the timezone from Config
+        $timezone = Config::get('system.timezone');
+        if (empty($timezone)) {
+            $timezone = 'UTC';
+        }
+        date_default_timezone_set($timezone);
 
 		//check config for 'gc_maxlifetime' for the session
 		$gc_maxlifetime = Config::get('system.gc_maxlifetime');
@@ -629,203 +629,224 @@ class Web
 				session_id(SESSION_NAME);
 			}
 
-			// Store the sessions locally to avoid permission errors between OS's
+            // Store the sessions locally to avoid permission errors between OS's
             // I.e. on Windows by default tries to save to C:\Temp
-			session_save_path(STORAGE_PATH . DIRECTORY_SEPARATOR . "session");
+            session_save_path(STORAGE_PATH . DIRECTORY_SEPARATOR . "session");
 
-			session_start();
-		} catch (Exception $e) {
-			$this->Log->info("Error starting session " . $e->getMessage());
-		}
+            session_set_cookie_params(0, '/', $_SERVER['HTTP_HOST'], true, true);
+            session_start();
+        } catch (Exception $e) {
+            $this->Log->info("Error starting session " . $e->getMessage());
+        }
 
-		// Initialise the logger (needs to log "info" to include the request data, see LogService __call function)
-		$this->Log->info("info");
+        // Initialise the logger (needs to log "info" to include the request data, see LogService __call function)
+        $this->Log->info("info");
 
-		// Reset the session when a user is not logged in. This will ensure the CSRF tokens are always "fresh"
-		if ($_SERVER['REQUEST_METHOD'] == "GET" && empty($this->Auth->loggedIn())) {
-			CSRF::regenerate();
-		}
+        // Reset the session when a user is not logged in. This will ensure the CSRF tokens are always "fresh"
+        if ($_SERVER['REQUEST_METHOD'] == "GET" && empty($this->Auth->loggedIn())) {
+            CSRF::regenerate();
+        }
 
-		// Generate CSRF tokens and store them in the $_SESSION
-		if (Config::get('system.csrf.enabled') === true) {
-			CSRF::getTokenID();
-			CSRF::getTokenValue();
-		}
+        // Generate CSRF tokens and store them in the $_SESSION
+        if (Config::get('system.csrf.enabled') === true) {
+            CSRF::getTokenID();
+            CSRF::getTokenValue();
+        }
 
-		$_SESSION['last_request'] = time();
+        $_SESSION['last_request'] = time();
 
-		//$this->debug("Start processing: ".$_SERVER['REQUEST_URI']);
-		// find out which module to use
-		$module_found = false;
-		$action_found = false;
+        //$this->debug("Start processing: ".$_SERVER['REQUEST_URI']);
+        // find out which module to use
+        $module_found = false;
+        $action_found = false;
 
-		$this->_paths = $this->_getCommandPath();
+        $this->_paths = $this->_getCommandPath();
 
 		// first find the module file
 		if ($this->_paths && sizeof($this->_paths) > 0) {
 			$this->_module = array_shift($this->_paths);
 		}
 
-		// then find the action
-		if ($this->_paths && sizeof($this->_paths) > 0) {
-			$this->_action = array_shift($this->_paths);
-		}
+        // then find the action
+        if ($this->_paths && sizeof($this->_paths) > 0) {
+            $this->_action = array_shift($this->_paths);
+        }
 
-		if (!$this->_module) {
-			$this->_module = $this->_defaultHandler;
-		}
+        if (!$this->_module) {
+            $this->_module = $this->_defaultHandler;
+        }
 
-		// see if the module is a sub module
-		// eg. /sales-report/showreport/1..
-		$hsplit = explode("-", $this->_module);
-		$this->_module = array_shift($hsplit);
-		$this->_submodule = array_shift($hsplit);
+        // see if the module is a sub module
+        // eg. /sales-report/showreport/1..
+        $hsplit = explode("-", $this->_module);
+        $this->_module = array_shift($hsplit);
+        $this->_submodule = array_shift($hsplit);
 
-		// Check to see if module exists, if it doesn't, send a 403 header
+        // Check to see if module exists, if it doesn't, send a 403 header
         if (Config::get("{$this->_module}.active") === null) {
             header($_SERVER["SERVER_PROTOCOL"] . ' 404 Not Found');
             exit();
         }
 
-		// Check to see if the module is active (protect against main disabling)
-		if (!Config::get("{$this->_module}.active") && $this->_module !== "main") {
+        // Check to see if the module is active (protect against main disabling)
+        if (!Config::get("{$this->_module}.active") && $this->_module !== "main") {
             $this->error("The {$this->_module} module is not active", "/");
-		}
+        }
 
-		// configure translations lookup for this module
-		$this->initLocale();
+        // configure translations lookup for this module
+        $this->initLocale();
 
-		try {
-			$this->setTranslationDomain('admin');
-			$this->setTranslationDomain('main');
-			$this->setTranslationDomain($this->currentModule());
-		} catch (Exception $e) {
-			$this->Log->setLogger('I18N')->error($e->getMessage());
-		}
+        try {
+            $this->setTranslationDomain('admin');
+            $this->setTranslationDomain('main');
+            $this->setTranslationDomain($this->currentModule());
+        } catch (Exception $e) {
+            $this->Log->setLogger('I18N')->error($e->getMessage());
+        }
 
-		if (!$this->_action) {
-			$this->_action = $this->_defaultAction;
-		}
+        if (!$this->_action) {
+            $this->_action = $this->_defaultAction;
+        }
 
-		// try to load the action file
-		$reqpath = $this->getModuleDir($this->_module) . 'actions/' . ($this->_submodule ? $this->_submodule . '/' : '') . $this->_action . '.php';
-		if (!file_exists($reqpath)) {
-			$reqpath = $this->getModuleDir($this->_module) . $this->_module . ($this->_submodule ? '.' . $this->_submodule : '') . ".actions.php";
-		}
+        // try to load the action file
+        $reqpath = $this->getModuleDir($this->_module) . 'actions/' . ($this->_submodule ? $this->_submodule . '/' : '') . $this->_action . '.php';
+        if (!file_exists($reqpath)) {
+            $reqpath = $this->getModuleDir($this->_module) . $this->_module . ($this->_submodule ? '.' . $this->_submodule : '') . ".actions.php";
+        }
 
-		// try to find action for the request type
-		// using <module>_<action>_<type>()
-		// or just <action>_<type>()
+        // try to find action for the request type
+        // using <module>_<action>_<type>()
+        // or just <action>_<type>()
 
-		$this->_requestMethod = array_key_exists('REQUEST_METHOD', $_SERVER) ? $_SERVER['REQUEST_METHOD'] : '';
+        $this->_requestMethod = array_key_exists('REQUEST_METHOD', $_SERVER) ? $_SERVER['REQUEST_METHOD'] : '';
 
-		$actionmethods[] = $this->_action . '_' . $this->_requestMethod;
+        $actionmethods[] = $this->_action . '_' . $this->_requestMethod;
 
-		if ($this->_requestMethod === "HEAD") {
-			$this->_is_head_request = true;
-			$actionmethods[] = $this->_action . '_GET';
-		}
+        if ($this->_requestMethod === "HEAD") {
+            $this->_is_head_request = true;
+            $actionmethods[] = $this->_action . '_GET';
+        }
 
-		$actionmethods[] = $this->_action . '_' . $this->_requestMethod;
-		$actionmethods[] = $this->_action . '_ALL';
-		//$actionmethods[] = 'default_ALL';
+        $actionmethods[] = $this->_action . '_' . $this->_requestMethod;
+        $actionmethods[] = $this->_action . '_ALL';
+        //$actionmethods[] = 'default_ALL';
 
-		// change the submodule and action for installation
-		if ($this->_is_installing) {
-			if (is_file(ROOT_PATH . '/config.php')) {
-				unset($this->_submodule);
-				$this->_action = 'index';
-			} else {
-				$step = $this->_action;
+        // change the submodule and action for installation
+        if ($this->_is_installing) {
+            if (is_file(ROOT_PATH . '/config.php')) {
+                unset($this->_submodule);
+                $this->_action = 'index';
+            } else {
+                $step = $this->_action;
 
-				// step name is either still in the paths array, or needs to be found
-				$step_name = sizeof($this->_paths) > 0 ?
-				array_shift($this->_paths) :
-				$this->Install->findInstallStepName($step);
+                // step name is either still in the paths array, or needs to be found
+                $step_name = sizeof($this->_paths) > 0 ?
+                array_shift($this->_paths) :
+                $this->Install->findInstallStepName($step);
 
-				$this->_submodule = $step . '-' . $step_name; // 1-general
-				$this->_action = $step_name; // general
-			}
-			$actionmethods[] = $this->_defaultAction . '_ALL'; // index_ALL
-		}
+                $this->_submodule = $step . '-' . $step_name; // 1-general
+                $this->_action = $step_name; // general
+            }
+            $actionmethods[] = $this->_defaultAction . '_ALL'; // index_ALL
+        }
 
-		// Check/validate CSRF token
-		if (Config::get('system.csrf.enabled') === true) {
-			$allowed = Config::get('system.csrf.protected');
-			if (!empty($allowed[$this->_module]) || (!empty($this->_submodule) && !empty($allowed[$this->_module . '-' . $this->_submodule]))) {
-				if (in_array($this->_action, $allowed[$this->_module]) || (!empty($this->_submodule) && in_array($this->_action, $allowed[$this->_module . '-' . $this->_submodule]))) {
-					// If we get here then we are configured to enforce CSRF checking
-					$this->Log->debug("Checking CSRF");
-					try {
-						$this->validateCSRF();
-					} catch (Exception $e) {
-						$this->msg('The current session has expired, please resubmit the form', $_SERVER['REQUEST_URI']);
-					}
-				}
-			}
-		}
+        // Check/validate CSRF token
+        if (Config::get('system.csrf.enabled') === true) {
+            $allowed = Config::get('system.csrf.protected');
+            if (!empty($allowed[$this->_module]) || (!empty($this->_submodule) && !empty($allowed[$this->_module . '-' . $this->_submodule]))) {
+                if (in_array($this->_action, $allowed[$this->_module]) || (!empty($this->_submodule) && in_array($this->_action, $allowed[$this->_module . '-' . $this->_submodule]))) {
+                    // If we get here then we are configured to enforce CSRF checking
+                    $this->Log->debug("Checking CSRF");
+                    try {
+                        $this->validateCSRF();
+                    } catch (Exception $e) {
+                        $this->msg('The current session has expired, please resubmit the form', $_SERVER['REQUEST_URI']);
+                    }
+                }
+            }
+        }
 
-		// if a module file for this url exists, then start processing
-		if (file_exists($reqpath)) {
-			$this->ctx('webroot', $this->_webroot);
-			$this->ctx('module', $this->_module);
-			$this->ctx('submodule', $this->_module);
-			$this->ctx('action', $this->_action);
+        // if a module file for this url exists, then start processing
+        if (file_exists($reqpath)) {
+            $this->ctx('webroot', $this->_webroot);
+            $this->ctx('module', $this->_module);
+            $this->ctx('submodule', $this->_module);
+            $this->ctx('action', $this->_action);
 
-			// CHECK ACCESS!!
-			$this->checkAccess(); // will redirect if access denied!
+            // CHECK ACCESS!!
+            $this->checkAccess(); // will redirect if access denied!
 
-			// load the module file
-			require_once $reqpath;
-		} else {
-			$this->Log->error("System: No Action found for: " . $reqpath);
-			$this->notFoundPage();
-		}
+            // load the module file
+            require_once $reqpath;
+        } else {
+            $this->Log->error("System: No Action found for: " . $reqpath);
+            $this->notFoundPage();
+        }
 
-		foreach ($actionmethods as $action_method) {
-			if (function_exists($action_method)) {
-				$action_found = true;
-				$this->_actionMethod = $action_method;
-				break;
-			}
-		}
+        foreach ($actionmethods as $action_method) {
+            if (function_exists($action_method)) {
+                $action_found = true;
+                $this->_actionMethod = $action_method;
+                break;
+            }
+        }
 
-		if ($action_found) {
-			$this->ctx("loggedIn", $this->Auth->loggedIn());
-			$this->ctx("error", $this->session('error'));
-			$this->sessionUnset('error');
-			$this->ctx("msg", $this->session('msg'));
-			$this->sessionUnset('msg');
-			$this->ctx("w", $this);
+        if ($action_found) {
+            $this->ctx("loggedIn", $this->Auth->loggedIn());
+            $this->ctx("error", $this->session('error'));
+            $this->sessionUnset('error');
+            $this->ctx("msg", $this->session('msg'));
+            $this->sessionUnset('msg');
+            $this->ctx("w", $this);
 
-			try {
-				// call hooks, generic to specific
-				$this->_callWebHooks("before");
+            try {
+                // call hooks, generic to specific
+                $this->_callWebHooks("before");
 
-				// Execute the action
-				$method = $this->_actionMethod;
-				$this->_action_executed = true;
-				$method($this);
+                // Execute the action
+                $method = $this->_actionMethod;
+                $this->_action_executed = true;
+                $method($this);
 
-				// call hooks, generic to specific
-				$this->_callWebHooks("after");
-			} catch (PermissionDeniedException $ex) {
-				$this->error($ex->getMessage());
-			}
+                // call hooks, generic to specific
+                $this->_callWebHooks("after");
+            } catch (PermissionDeniedException $ex) {
+                $this->error($ex->getMessage());
+            }
 
-			// send headers first
-			if ($this->_headers) {
-				foreach ($this->_headers as $key => $val) {
-					$this->header($key . ': ' . $val);
-				}
-			}
+            /*$this->sendHeader("Report-To", json_encode([
+                "group" => "log-action",
+                "max-age" => "10886400",
+                "endpoints" => ["url" => "/main/logCSPReport"],
+            ])); */
+            // All content must come from the site and dissallow flash.
+            // report uri is deprecated in chrome 70, but still required for firefox and other browsers (as of jan 2020)
+            // see https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/report-uri
+           /* $this->sendHeader(
+                "Content-Security-Policy-Report-Only",
+                "default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; frame-ancestors 'none'; object-src 'none'; report-uri /main/logCSPReport/;"
+            ); */
 
-			// If a HEAD request was sent, no body is required but it behaves like a GET
-			if ($this->_is_head_request === true) {
-				return;
-			}
+            $this->sendHeader("Feature-Policy", "ambient-light-sensor 'none'; autoplay 'none'; accelerometer 'none'; camera 'none'; display-capture 'none'; document-domain 'none'; encrypted-media 'none'; fullscreen 'none'; geolocation 'none'; gyroscope 'none'; magnetometer 'none'; microphone 'none'; midi 'none'; payment 'none'; picture-in-picture 'none'; speaker 'none'; sync-xhr 'self'; usb 'none'; wake-lock 'none'; webauthn 'none'; vr 'none'");
 
-			$body = null;
+            $this->sendHeader("Strict-Transport-Security", "max-age=63072000");
+            $this->sendHeader("X-Content-Type-Options", "nosniff");
+          //  $this->sendHeader("X-Frame-Options", "DENY");
+            $this->sendHeader("X-XSS-Protection", "1; mode=block");
+
+            // send headers first
+            if ($this->_headers) {
+                foreach ($this->_headers as $key => $val) {
+                    $this->header($key . ': ' . $val);
+                }
+            }
+
+            // If a HEAD request was sent, no body is required but it behaves like a GET
+            if ($this->_is_head_request === true) {
+                return;
+            }
+
+           	$body = null;
 			// evaluate template only when buffer is empty
 			if (empty($this->_buffer)) {
 				$body = $this->fetchTemplate();
@@ -833,21 +854,21 @@ class Web
 				$body = $this->_buffer;
 			}
 
-			// but always check for layout
-			// if ajax call don't do the layout
-			if ($this->_layout && !$this->isAjax()) {
-				$this->_buffer = null;
-				$this->ctx($this->_layoutContentMarker, $body);
-				$this->templateOut($this->_layout);
-			} else {
-				$this->_buffer = $body;
-			}
+            // but always check for layout
+            // if ajax call don't do the layout
+            if ($this->_layout && !$this->isAjax()) {
+                $this->_buffer = null;
+                $this->ctx($this->_layoutContentMarker, $body);
+                $this->templateOut($this->_layout);
+            } else {
+                $this->_buffer = $body;
+            }
 
-			echo $this->_buffer;
-		} else {
-			$this->notFoundPage();
-		}
-	}
+            echo $this->_buffer;
+        } else {
+            $this->notFoundPage();
+        }
+    }
 
 	/**
 	 * This creates and calls the following hooks:
@@ -1077,64 +1098,65 @@ class Web
 		return isset($_SERVER['HTTP_X_REQUESTED_WITH']);
 	}
 
-	/**
-	 * Check if the currently logged in user has access to this path
-	 * Return true if access is allowed
-	 * Redirect back a page or logout and show an error if access is denied
-	 *
-	 * Save LAST_ALLOWED_URI to session
-	 *
-	 * @param <type> $msg
-	 * @return <type>
-	 */
-	function checkAccess($msg = "Access Restricted") {
-		// If we're installing cmfive then there won't be users
-		// TODO this may need refactoring
-		if ($this->_module == "install" && $this->_is_installing) {
-			return true;
-		}
+    /**
+     * Check if the currently logged in user has access to this path
+     * Return true if access is allowed
+     * Redirect back a page or logout and show an error if access is denied
+     *
+     * Save LAST_ALLOWED_URI to session
+     *
+     * @param <type> $msg
+     * @return <type>
+     */
+    function checkAccess($msg = "Access Restricted")
+    {
+        // If we're installing cmfive then there won't be users
+        // TODO this may need refactoring
+        if ($this->_module == "install" && $this->_is_installing) {
+            return true;
+        }
 
-		$submodule = $this->_submodule ? "-" . $this->_submodule : "";
-		$path = $this->_module . $submodule . "/" . $this->_action;
-		$actual_path = $path;
-		// Check for frontend modules
-		if ($this->_isFrontend || $this->_isPortal) {
-			$actual_path = $this->_action;
-		}
+        $submodule = $this->_submodule ? "-" . $this->_submodule : "";
+        $path = $this->_module . $submodule . "/" . $this->_action;
+        $actual_path = $path;
+        // Check for frontend modules
+        if ($this->_isFrontend || $this->_isPortal) {
+            $actual_path = $this->_action;
+        }
 
-		if ($this->Auth && $this->Auth->user()) {
-			$user = $this->Auth->user();
+        if ($this->Auth && $this->Auth->user()) {
+            $user = $this->Auth->user();
 
-			if ($user->is_password_invalid && $path !== "auth/update_password") {
-				$this->Log->info("Redirecting to reset password page, user password is invalid");
-				$this->redirect($this->localUrl("/auth/update_password"));
-			}
+            if ($user->is_password_invalid && $path !== "auth/update_password") {
+                $this->Log->info("Redirecting to reset password page, user password is invalid");
+                $this->redirect($this->localUrl("/auth/update_password"));
+            }
 
-			$usrmsg = $user ? " for " . $user->login : "";
-			if (!$this->Auth->allowed($path)) {
-				$this->Log->info("System: Access Denied to " . $path . $usrmsg . " from " . $this->requestIpAddress());
-				// redirect to the last allowed page
-				$lastAllowed = (is_array($_SESSION) && array_key_exists('LAST_ALLOWED_URI', $_SESSION)) ? $_SESSION['LAST_ALLOWED_URI'] : '';
-				if ($this->Auth->allowed($lastAllowed)) {
-					$this->error($msg, $lastAllowed);
-				} else {
-					// Logout user
-					$this->sessionDestroy();
-					$this->error($msg, $this->_loginpath);
-				}
-			}
-		} else if ($this->Auth && !$this->Auth->loggedIn() && $actual_path != $this->_loginpath && !$this->Auth->allowed($path)) {
-			$_SESSION['orig_path'] = $_SERVER['REQUEST_URI'];
-			$this->Log->info("Redirecting to login, user not logged in or not allowed");
-			$this->redirect($this->localUrl($this->_loginpath));
-		}
-		// Saving the last allowed path so we can
-		// redirect to it from a failed call
-		if (!$this->isAjax()) {
-			$_SESSION['LAST_ALLOWED_URI'] = $actual_path;
-		}
-		return true;
-	}
+            $usrmsg = $user ? " for " . $user->login : "";
+            if (!$this->Auth->allowed($path)) {
+                $this->Log->info("System: Access Denied to " . $path . $usrmsg . " from " . $this->requestIpAddress());
+                // redirect to the last allowed page
+                $lastAllowed = (is_array($_SESSION) && array_key_exists('LAST_ALLOWED_URI', $_SESSION)) ? $_SESSION['LAST_ALLOWED_URI'] : '';
+                if ($this->Auth->allowed($lastAllowed)) {
+                    $this->error($msg, $lastAllowed);
+                } else {
+                    // Logout user
+                    $this->sessionDestroy();
+                    $this->error($msg, $this->_loginpath);
+                }
+            }
+        } else if ($this->Auth && !$this->Auth->loggedIn() && $actual_path != $this->_loginpath && !$this->Auth->allowed($path)) {
+            $_SESSION['orig_path'] = $_SERVER['REQUEST_URI'];
+            $this->Log->info("Redirecting to login, user not logged in or not allowed");
+            $this->redirect($this->localUrl($this->_loginpath));
+        }
+        // Saving the last allowed path so we can
+        // redirect to it from a failed call
+        if (!$this->isAjax()) {
+            $_SESSION['LAST_ALLOWED_URI'] = $actual_path;
+        }
+        return true;
+    }
 
 	/**
 	 *

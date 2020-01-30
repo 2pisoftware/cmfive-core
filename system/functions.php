@@ -1143,3 +1143,25 @@ function get_list_of_months_between_dates($from, $to, $format = 'M Y')
 
     return $month_list;
 }
+
+// Polyfills for array_key functions for php < 7.3
+if (!function_exists('array_key_first')) {
+    function array_key_first(array $array)
+    {
+        foreach ($array as $key => $unused) {
+            return $key;
+        }
+        return null;
+    }
+}
+
+if (! function_exists("array_key_last")) {
+    function array_key_last(array $array)
+    {
+        if (!is_array($array) || empty($array)) {
+            return null;
+        }
+
+        return array_keys($array)[count($array)-1];
+    }
+}
