@@ -1,4 +1,5 @@
 <?php
+
 /**
  * PDO Extension class, some methods exist to emulate methods called from Crystal DB
  * to ensure backwards compatability with older modules. I.e. having both fetch_all()
@@ -25,24 +26,33 @@ class DbPDO extends PDO
     {
         // Set up our PDO class
         switch ($config['driver']) {
-            // MsSQL
+                // MsSQL
             case 'sqlsrv':
                 $port = isset($config['port']) && !empty($config['port']) ? "," . $config['port'] : "";
                 $url = "{$config['driver']}:Server={$config['hostname']}{$port};Database={$config['database']}";
                 break;
-            // Linux Apache2 driver
+                // Linux Apache2 driver
             case 'dblib':
                 $port = isset($config['port']) && !empty($config['port']) ? "," . $config['port'] : "";
                 $url = "{$config['driver']}:host={$config['hostname']}{$port};dbname={$config['database']}";
                 break;
-            // MySQL
+                // MySQL
             case 'mysql':
             default:
                 $port = isset($config['port']) && !empty($config['port']) ? ";port=" . $config['port'] : "";
                 $url = "{$config['driver']}:host={$config['hostname']};dbname={$config['database']}{$port}";
         }
 
-        parent::__construct($url, $config["username"], $config["password"], array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8mb4'"));
+        $options = [
+            PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8mb4'",
+        ];
+
+        if (!empty($config['ssl_cert_path'])) {
+            $options[PDO::MYSQL_ATTR_SSL_CA] = $config['ssl_cert_path'];
+            $options[PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = false;
+        }
+
+        parent::__construct($url, $config["username"], $config["password"], $options);
         $this->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
         // Instantiate a FluentPDO class and init vars
@@ -356,7 +366,7 @@ class DbPDO extends PDO
     {
         return $this->fetchElement($element);
     }
-    
+
 
     /**
      * Fetches the first matching row from the query
@@ -393,7 +403,7 @@ class DbPDO extends PDO
 
         return [];
     }
-    
+
     public function fetch_all()
     {
         return $this->fetchAll();
@@ -576,7 +586,7 @@ class DbPDO extends PDO
      */
     // public function lastInsertId($seqname = null)
     // {
-    //  
+    //
     // }
 
     /**
