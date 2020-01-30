@@ -1,9 +1,5 @@
 <?php
 
-// now leaning on custom autoloader for this
-// require_once "lib/FluentPDO/FluentPDO.php";
-
-
 require_once "classes/DbPDO.php";
 require_once "classes/DbService.php";
 require_once 'classes/DbObject.php';

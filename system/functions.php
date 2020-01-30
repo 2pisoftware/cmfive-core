@@ -670,7 +670,7 @@ function recursiveArraySearch($haystack, $needle, $index = null)
  * To use this function, use the list function, calling this function.
  * i.e. list($from_date, $to_date) = returncorrectdates($w,$dm_var,$from_date,$to_date);
  *
- * @TODO: Move this somewhere else, we shouldn't be passing Web into functions - maybe even remove?
+ * @deprecated v3.0.0
  *
  * @param Web $w
  * @param string $dm_var
@@ -837,9 +837,9 @@ function in_modified_multiarray($value, $array, $levels = 3)
 }
 
 /**
- * DEPRECATED from v3.0.0 - use SSLEncrypt instead
- *
  * Returns AES encrypted string - will now use new SSLEncrypt function
+ *
+ * @deprecated v3.0.0
  *
  * @param mixed text to encrypt
  * @param mixed password (unused)
@@ -853,9 +853,9 @@ function AESencrypt($text, $password)
 }
 
 /**
- * DEPRECATED from v3.0.0 - use SSLDecrypt instead
- *
  * Decrypts AES string - will now use new SSLDecrypt function
+ *
+ * @deprecated v3.0.0
  *
  * @param mixed text to decrypt
  * @param mixed password (unused)
@@ -883,11 +883,6 @@ function SystemSSLencrypt($text)
         $encryption_iv = bin2hex($encryption_iv);
         return $ssl . "::" . $encryption_iv;
     }
-}
-
-function SystemAESdecrypt($text)
-{
-    return AESdecrypt($text, Config::get('system.password_salt'));
 }
 
 function SystemSSLdecrypt($text)
