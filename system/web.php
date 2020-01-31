@@ -165,7 +165,7 @@ class Web
     {
         // Build a call trace for the cache file
         $callinfo = debug_backtrace();
-        
+
         $cause = '';
         foreach ($callinfo ?? [] as $detailed) {
             $cause .= ($cause ? " -> " : '') . $detailed['function'];
@@ -256,7 +256,7 @@ class Web
                 $libmatch = true;
             }
         }
-        
+
         return $libmatch;
     }
 
@@ -577,7 +577,7 @@ class Web
 		if (!empty($gc_maxlifetime) && is_numeric($gc_maxlifetime) && $gc_maxlifetime >= 3600 && $gc_maxlifetime <= 2628000) {
 			ini_set('session.gc_maxlifetime', $gc_maxlifetime);
         }
-        
+
         /**
          * Based on request domain we can route everything to a frontend module look into the domain routing and prepend the module.
          * Check for frontend/portal modules first.
@@ -1888,7 +1888,6 @@ class Web
 		$template = $this->templateExists($name);
 
 		if (!$template) {
-			$this->service('log')->error("System: No Template found.");
 			return null;
 		}
 		$tpl = new WebTemplate();
@@ -2200,7 +2199,7 @@ class Web
 	 */
 	function header($string) {
 		if (!headers_sent()) {
-			header($string); 
+			header($string);
 			} else {
 				$this->log->error("Attempted header resend as: ".$string);
 				//echo $string;

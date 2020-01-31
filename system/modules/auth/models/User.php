@@ -349,18 +349,20 @@ class User extends DbObject
         if ($this->is_admin) {
             return true;
         }
-        if ($this->getRoles()) {
-            foreach ($this->getRoles() as $rn) {
-                $rolefunc = "role_" . $rn . "_allowed";
-                if (function_exists($rolefunc)) {
-                    if ($rolefunc($this->w, $path)) {
-                        return true;
-                    }
-                } else {
-                    $this->w->Log->error("Role '" . $rn . "' does not exist!");
+
+        $roles = $this->getRoles();
+
+        foreach ($roles as $rn) {
+            $rolefunc = "role_" . $rn . "_allowed";
+            if (function_exists($rolefunc)) {
+                if ($rolefunc($this->w, $path)) {
+                    return true;
                 }
+            } else {
+                $this->w->Log->error("Role '" . $rn . "' does not exist!");
             }
         }
+
         return false;
     }
 
