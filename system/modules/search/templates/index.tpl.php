@@ -29,9 +29,9 @@
         </div>
     </form>
 
-    
+
 </div>
-        
+
 <div id="search_message" class="row hide">
     <div data-alert class="alert-box warning" id="message_box"></div>
 </div>
@@ -39,18 +39,17 @@
 <div id="result" class="row" style="display: none;">
 
 </div>
-        
+
 <script>
     $("#search_form").submit(function(event) {
         event.preventDefault();
         $("#search_message").hide();
         $("#result").hide();
-        
+
         var data = $("#search_form").serialize();
-        
+
         $.getJSON("/search/results", data,
             function(response) {
-//                var j_response = JSON.parse(response);
                 if (response.success === false) {
                     $("#message_box").html(response.data);
                     $("#search_message").show();
@@ -67,9 +66,9 @@
                 $("#search_message").show();
             }
         );
-        
+
         return false;
     });
-    
+
 </script>
 <br>
