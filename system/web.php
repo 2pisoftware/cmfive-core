@@ -799,6 +799,29 @@ class Web
             $this->sessionUnset('msg');
             $this->ctx("w", $this);
 
+            /*$this->sendHeader("Report-To", json_encode([
+                "group" => "log-action",
+                "max-age" => "10886400",
+                "endpoints" => ["url" => "/main/logCSPReport"],
+            ])); */
+            // All content must come from the site and dissallow flash.
+            // report uri is deprecated in chrome 70, but still required for firefox and other browsers (as of jan 2020)
+            // see https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/report-uri
+           /* $this->sendHeader(
+                "Content-Security-Policy-Report-Only",
+                "default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; frame-ancestors 'none'; object-src 'none'; report-uri /main/logCSPReport/;"
+            ); */
+
+            // send security headers before actions to avoid actions echoing out content
+            // @todo move security header configuration to system config.php
+
+            $this->header("Feature-Policy", "ambient-light-sensor 'none'; autoplay 'none'; accelerometer 'none'; camera 'none'; display-capture 'none'; document-domain 'none'; encrypted-media 'none'; fullscreen 'none'; geolocation 'none'; gyroscope 'none'; magnetometer 'none'; microphone 'none'; midi 'none'; payment 'none'; picture-in-picture 'none'; speaker 'none'; sync-xhr 'self'; usb 'none'; wake-lock 'none'; webauthn 'none'; vr 'none'");
+
+            $this->header("Strict-Transport-Security", "max-age=63072000");
+            $this->header("X-Content-Type-Options", "nosniff");
+          //  $this->sendHeader("X-Frame-Options", "DENY");
+            $this->header("X-XSS-Protection", "1; mode=block");
+
             try {
                 // call hooks, generic to specific
                 $this->_callWebHooks("before");
@@ -813,26 +836,6 @@ class Web
             } catch (PermissionDeniedException $ex) {
                 $this->error($ex->getMessage());
             }
-
-            /*$this->sendHeader("Report-To", json_encode([
-                "group" => "log-action",
-                "max-age" => "10886400",
-                "endpoints" => ["url" => "/main/logCSPReport"],
-            ])); */
-            // All content must come from the site and dissallow flash.
-            // report uri is deprecated in chrome 70, but still required for firefox and other browsers (as of jan 2020)
-            // see https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/report-uri
-           /* $this->sendHeader(
-                "Content-Security-Policy-Report-Only",
-                "default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; frame-ancestors 'none'; object-src 'none'; report-uri /main/logCSPReport/;"
-            ); */
-
-            $this->sendHeader("Feature-Policy", "ambient-light-sensor 'none'; autoplay 'none'; accelerometer 'none'; camera 'none'; display-capture 'none'; document-domain 'none'; encrypted-media 'none'; fullscreen 'none'; geolocation 'none'; gyroscope 'none'; magnetometer 'none'; microphone 'none'; midi 'none'; payment 'none'; picture-in-picture 'none'; speaker 'none'; sync-xhr 'self'; usb 'none'; wake-lock 'none'; webauthn 'none'; vr 'none'");
-
-            $this->sendHeader("Strict-Transport-Security", "max-age=63072000");
-            $this->sendHeader("X-Content-Type-Options", "nosniff");
-          //  $this->sendHeader("X-Frame-Options", "DENY");
-            $this->sendHeader("X-XSS-Protection", "1; mode=block");
 
             // send headers first
             if ($this->_headers) {
@@ -2184,27 +2187,27 @@ class Web
 		exit();
 	}
 
-	/**
-	 * set http header values
-	 */
-	function sendHeader($key, $value) {
-		$this->_headers[$key] = $value;
-	}
+    /**
+     * set http header values
+     */
+    function sendHeader($key, $value) {
+        $this->_headers[$key] = $value;
+    }
 
-	/**
-	 * Wrapper for PHP header function
-	 *
-	 * @param string $string
-	 * @return null
-	 */
-	function header($string) {
-		if (!headers_sent()) {
-			header($string);
-			} else {
-				$this->log->error("Attempted header resend as: ".$string);
-				//echo $string;
-			}
-	}
+    /**
+     * Wrapper for PHP header function
+     *
+     * @param string $string
+     *
+     * @return null
+     */
+    function header($string) {
+        if (!headers_sent($file, $line)) {
+            header($string);
+        } else {
+            $this->log->error("Attempted to resend header {$string}, output started in {$file} on line {$line}");
+        }
+    }
 
 	/**
 	 * returns a string representation of everything
