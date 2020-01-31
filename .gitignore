@@ -8,3 +8,4 @@
 /system/tests/composer.phar
 /system/tests/composer.lock
 /system/tests/support/_generated
+system/system

@@ -1,7 +1,7 @@
 <?php
 
-function edit_GET(Web $w) {
-
+function edit_GET(Web $w)
+{
     $p = $w->pathMatch("id");
     $channel_id = $p["id"];
 
@@ -13,22 +13,30 @@ function edit_GET(Web $w) {
 
     $web_channel = $channel_id ? $w->Channel->getWebChannel($channel_id) : new WebChannelOption($w);
 
-    $form["Web"] = array(
-        array(
-            array("Web API URL", "text", "url", $web_channel->url)
-        ),
-    );
+    $form["Web"] = [
+        [
+            [
+                "Web API URL",
+                "text",
+                "url",
+                $web_channel->url
+            ]
+        ],
+    ];
 
     $w->ctx("form", Html::multiColForm($form, "/channels-web/edit/{$channel_id}", "POST", "Save", "channelform"));
 }
 
-function edit_POST(Web $w) {
+function edit_POST(Web $w)
+{
     $p = $w->pathMatch("id");
     $channel_id = $p["id"];
 
     $channel_object = $channel_id ? $w->Channel->getChannel($channel_id) : new Channel($w);
     $channel_object->fill($_POST);
-    $channel_object->notify_user_id = !empty($_POST["notify_user_id"]) ? intval($_POST["notify_user_id"]) : NULL;
+    $channel_object->notify_user_id = !empty($_POST["notify_user_id"]) ? intval($_POST["notify_user_id"]) : null;
+    $channel_object->is_active = !empty($_POST["is_active"]) ? intval($_POST["is_active"]) : 0;
+    $channel_object->do_processing = !empty($_POST["do_processing"]) ? intval($_POST["do_processing"]) : 0;
     $channel_object->insertOrUpdate();
 
     $web_channel = $channel_id ? $w->Channel->getWebChannel($channel_id) : new WebChannelOption($w);

@@ -1,10 +1,11 @@
 <?php
 // ========= Session ========================
-ini_set('session.gc_maxlifetime', 21600);
+if (!headers_sent()) {
+    ini_set('session.gc_maxlifetime', 21400);
+}
 
 //========== Constants =====================================
 defined("DS") || define("DS", DIRECTORY_SEPARATOR);
-define("CMFIVE_VERSION", "0.8.4");
 
 define("ROOT_PATH", str_replace("\\", "/", getcwd()));
 define("SYSTEM_PATH", str_replace("\\", "/", getcwd() . '/system'));
@@ -15,7 +16,7 @@ define("FILE_ROOT", str_replace("\\", "/", getcwd() . "/uploads/")); // dirname(
 define("MEDIA_ROOT", str_replace("\\", "/", dirname(__FILE__) . "/../media/"));
 define("ROOT", str_replace("\\", "/", dirname(__FILE__)));
 define("STORAGE_PATH", str_replace("\\", "/", getcwd() . '/storage'));
-define("SESSION_NAME", "CM5_SID");
+define("SESSION_NAME", "CM5-SID");
 
 set_include_path(get_include_path() . PATH_SEPARATOR . LIBPATH);
 set_include_path(get_include_path() . PATH_SEPARATOR . SYSTEM_LIBPATH);
@@ -40,48 +41,50 @@ class PermissionDeniedException extends Exception
 }
 
 /**
- * A class for simple processing of web requests like http://webpy.org
+ * The Web class is the heart of Cmfive, it manages request routing, database connections,
+ * templating, configurations, lifecycle hooks, access security, static file registration,
+ * to name a few
  *
- *
- * Author 2007 Carsten Eckelmann
+ * Originally based of the WebPy Python framework, the Web class has features like implied
+ * routing instead of the conventional declarative routing. See how this works, and more at
+ * <https://cmfive.com/docs>
  */
 class Web
 {
-    public $_buffer = null;
-    public $_template = null;
-    public $_templatePath;
-    public $_templateExtension;
-    public $_url;
-    public $_context = array();
-    public $_action;
-    public $_defaultHandler;
-    public $_defaultAction;
-    public $_layoutContentMarker;
-    public $_notFoundTemplate;
-    public $_layout;
-    public $_headers;
-    public $_module = null;
-    public $_submodule = null;
-    public $_modulePath;
-    public $_moduleExtension;
-    public $_modules;
-    public $_hooks;
-    public $_requestMethod;
-    public $_action_executed = false;
-    public $_action_redirected = false;
-    public $_services;
-    public $_paths;
-    public $_loginpath = 'auth/login';
-    public $_partialsdir = "partials";
-    public $db;
-    public $_isFrontend = false;
-    public $_isPortal = false;
-    public $_is_installing = false;
-    public $_is_head_request = false;
-    public $_languageModulesLoaded = [];
-    public $currentLocale = '';
-    public $_module_loaded_hooks = []; //cache loaded module hook files
-
+	public $_buffer = null;
+	public $_template = null;
+	public $_templatePath;
+	public $_templateExtension;
+	public $_url;
+	public $_context = array();
+	public $_action;
+	public $_defaultHandler;
+	public $_defaultAction;
+	public $_layoutContentMarker;
+	public $_notFoundTemplate;
+	public $_layout;
+	public $_headers;
+	public $_module = null;
+	public $_submodule = null;
+	public $_modulePath;
+	public $_moduleExtension;
+	public $_modules;
+	public $_hooks;
+	public $_requestMethod;
+	public $_action_executed = false;
+	public $_action_redirected = false;
+	public $_services;
+	public $_paths;
+	public $_loginpath = 'auth/login';
+	public $_partialsdir = "partials";
+	public $db;
+	public $_isFrontend = false;
+	public $_isPortal = false;
+	public $_is_installing = false;
+	public $_is_head_request = false;
+	public $_languageModulesLoaded = [];
+	public $currentLocale = '';
+	public $_module_loaded_hooks = []; //cache loaded module hook files
     private $_classdirectory; // used by the class auto loader
 
     public $_scripts = array();
@@ -158,66 +161,104 @@ class Web
 		}
 	}
 
-	private function modelLoader($className) {
-		// 1. check if class directory has to be loaded from cache
-		$classdirectory_cache_file = ROOT_PATH . "/cache/classdirectory.cache";
+    private function modelLoader($className)
+    {
+        // Build a call trace for the cache file
+        $callinfo = debug_backtrace();
 
-		if (empty($this->_classdirectory) && file_exists($classdirectory_cache_file)) {
-			require_once $classdirectory_cache_file;
-		}
+        $cause = '';
+        foreach ($callinfo ?? [] as $detailed) {
+            $cause .= ($cause ? " -> " : '') . $detailed['function'];
+        }
 
-		// 2. if filename is stored in $this->_classdirectory
-		if (!empty($this->_classdirectory[$className])) {
-			if (file_exists($this->_classdirectory[$className])) {
-				require_once $this->_classdirectory[$className];
-				return true;
-			}
-		}
+        // 1. check if class directory has to be loaded from cache
+        $classdirectory_cache_file = ROOT_PATH . "/cache/classdirectory.cache";
 
-		// 3. class has to be found the hard way
-		$modules = $this->modules();
+        if (empty($this->_classdirectory) && file_exists($classdirectory_cache_file)) {
+            require_once $classdirectory_cache_file;
+        }
 
-		// create the class cache file
-		if (!file_exists($classdirectory_cache_file)) {
-			file_put_contents($classdirectory_cache_file, "<?php\n");
-		}
-		foreach ($modules as $model) {
-			// Check if the hosting module is active before we autoload it
-			if (Config::get("{$model}.active") === true) {
-				$file = $this->getModuleDir($model) . 'models/' . ucfirst($className) . ".php";
-				if (file_exists($file)) {
-					require_once $file;
-					// add this class file to the cache file
-					file_put_contents($classdirectory_cache_file, '$this->_classdirectory["' . $className . '"]="' . $file . '";' . "\n", FILE_APPEND);
-					return true;
-				} else {
-					// Try a lower case version
-					$file = $this->getModuleDir($model) . 'models/' . $className . ".php";
-					if (file_exists($file)) {
-						require_once $file;
-						// add this class file to the cache file
-						file_put_contents($classdirectory_cache_file, '$this->_classdirectory["' . $className . '"]="' . $file . '";' . "\n", FILE_APPEND);
-						return true;
-					}
-				}
-			}
-		}
+        // 2. if filename is stored in $this->_classdirectory
+        if (!empty($this->_classdirectory[$className])) {
+            if (file_exists($this->_classdirectory[$className])) {
+                require_once $this->_classdirectory[$className];
+                return true;
+            }
+        }
 
-		// Also autoload the html namespace
-		if (strstr($className, "Html") !== FALSE) {
-			$filePath = explode('\\', $className);
-			$class = array_pop($filePath);
-			$file = 'system' . DS . 'classes' . DS . strtolower(implode("/", $filePath)) . DS . $class . ".php";
+        // 3. class has to be found the hard way
+        $modules = $this->modules();
 
-			if (file_exists($file)) {
-				require_once $file;
-				file_put_contents($classdirectory_cache_file, '$this->_classdirectory["' . $className . '"]="' . $file . '";' . "\n", FILE_APPEND);
-				return true;
-			}
-		}
-		// $this->Log->debug("Class " . $file . " not found.");
-		return false;
-	}
+        // create the class cache file
+        if (!file_exists($classdirectory_cache_file)) {
+            file_put_contents($classdirectory_cache_file, "<?php\n");
+        }
+        foreach ($modules as $model) {
+            // Check if the hosting module is active before we autoload it
+            if (Config::get("{$model}.active") === true) {
+                $file = $this->getModuleDir($model) . 'models/' . ucfirst($className) . ".php";
+                if (file_exists($file)) {
+                    require_once $file;
+                    // add this class file to the cache file
+                    file_put_contents($classdirectory_cache_file, '// ' . $cause . "\n" . '$this->_classdirectory["' . $className . '"]="' . $file . '";' . "\n\n", FILE_APPEND);
+                    $this->_classdirectory[$className]=$file;
+                    return true;
+                } else {
+                    // Try a lower case version
+                    $file = $this->getModuleDir($model) . 'models/' . $className . ".php";
+                    if (file_exists($file)) {
+                        require_once $file;
+                        // add this class file to the cache file
+                        file_put_contents($classdirectory_cache_file, '// ' . $cause . "\n" . '$this->_classdirectory["' . $className . '"]="' . $file . '";' . "\n\n", FILE_APPEND);
+                        $this->_classdirectory[$className]=$file;
+                        return true;
+                    }
+                }
+            }
+        }
+
+        // Also autoload the html namespace
+        if (strstr($className, "Html") !== false) {
+            $filePath = explode('\\', $className);
+            $class = array_pop($filePath);
+            $file = 'system' . DS . 'classes' . DS . strtolower(implode("/", $filePath)) . DS . $class . ".php";
+
+            if (file_exists($file)) {
+                require_once $file;
+                file_put_contents($classdirectory_cache_file, '// ' . $cause . "\n" . '$this->_classdirectory["' . $className . '"]="' . $file . '";' . "\n\n", FILE_APPEND);
+                $this->_classdirectory[$className]=$file;
+                return true;
+            }
+        }
+
+        // Last try, recurse in "/lib"
+        $toplibpath = 'system' . DS . 'lib';
+        $namespaceparts = explode('\\', $className);
+        $classfile = array_pop($namespaceparts).'.php';
+        $libmatch = false;
+
+        $topdirectory = new \RecursiveDirectoryIterator($toplibpath, \FilesystemIterator::FOLLOW_SYMLINKS|\FilesystemIterator::SKIP_DOTS);
+        $classfilter = new \RecursiveCallbackFilterIterator($topdirectory, function ($current, $key, $iterator) {
+            if (!$current->isDir()) { // Only respond to possible class match files.
+                return  $current->getExtension() === "php";
+            } else {
+                return true;
+            }
+        });
+        $iterator = new \RecursiveIteratorIterator($classfilter);
+
+        foreach ($iterator as $info) {
+            if ($info->getFilename() == $classfile) {
+                $matchfile = $info->getPathname();
+                require_once $matchfile;
+                file_put_contents($classdirectory_cache_file, '// ' . implode("\\", $namespaceparts) . " " . $cause . "\n" . '$this->_classdirectory["' . $className . '"]="' . $matchfile . '";' . "\n\n", FILE_APPEND);
+                $this->_classdirectory[$className]=$matchfile;
+                $libmatch = true;
+            }
+        }
+
+        return $libmatch;
+    }
 
 	private function componentLoader($name) {
 		$classes_directory = 'system' . DS . 'classes';
@@ -327,7 +368,7 @@ class Web
 			usort($this->_scripts, array($this, "cmp_weights"));
 
 			foreach ($this->_scripts as $script) {
-				try  {
+				try {
 					CmfiveScriptComponentRegister::registerComponent($script['name'], new CmfiveScriptComponent($script['uri'], ['weight' => $script['weight']]));
 				} catch (Exception $e) {
 					$this->Log->error($e->getMessage());
@@ -530,21 +571,63 @@ class Web
         }
         date_default_timezone_set($timezone);
 
-        //check config for 'gc_maxlifetime' for the session
-        $gc_maxlifetime = Config::get('system.gc_maxlifetime');
-        //Checks include is greater than 1 hour (3600 sec) is less than 1 month (2628000 sec)
-        if (!empty($gc_maxlifetime) && is_numeric($gc_maxlifetime) && $gc_maxlifetime >= 3600 && $gc_maxlifetime <= 2628000) {
-            ini_set('session.gc_maxlifetime', $gc_maxlifetime);
+		//check config for 'gc_maxlifetime' for the session
+		$gc_maxlifetime = Config::get('system.gc_maxlifetime');
+		//Checks include is greater than 1 hour (3600 sec) is less than 1 month (2628000 sec)
+		if (!empty($gc_maxlifetime) && is_numeric($gc_maxlifetime) && $gc_maxlifetime >= 3600 && $gc_maxlifetime <= 2628000) {
+			ini_set('session.gc_maxlifetime', $gc_maxlifetime);
         }
 
-        // start the session
-        // $sess = new SessionManager($this);
-        try {
-            if ($this->_isPortal === true) {
-                session_name(!empty($domainmodule) ? $domainmodule . '_SID' : 'PORTAL_SID');
-            } else {
-                session_name(SESSION_NAME);
+        /**
+         * Based on request domain we can route everything to a frontend module look into the domain routing and prepend the module.
+         * Check for frontend/portal modules first.
+         * To enable portal support set portal flag in the module to true.
+         * For it to work properly a domain name module must also be set.
+         *
+         * For exmaple:
+         * Config::set('{module}.portal', true);
+         * Config::set('{module}.domain_name', '{domain_url}');
+         */
+        $domainmodule = null;
+        foreach ($this->modules() as $module) {
+            // Module config must be active and either 'portal' or 'frontend' flag set to true
+            if (Config::get($module . '.active') == true && (Config::get($module . '.portal') == true || Config::get($module . '.frontend') == true)) {
+                if (strpos($_SERVER['HTTP_HOST'], Config::get($module . '.domain_name')) === 0) {
+                    // Found module
+                    $domainmodule = $module;
+                    break;
+                }
             }
+        }
+
+		if (!empty($domainmodule)) {
+			$this->_loginpath = "auth";
+			$this->_isFrontend = true;
+			$this->_isPortal = !!Config::get($domainmodule . '.portal');
+
+			// now we have to decide whether the path points to
+			// a) a single top level action
+			// b) an action on a submodule
+			// but we need to make sure not to mistake a path paramater for a submodule or an action!
+			$domainsubmodules = $this->getSubmodules($domainmodule);
+			$action_or_module = !empty($this->_paths[0]) ? $this->_paths[0] : null;
+			if (!empty($domainsubmodules) && !empty($action_or_module) && array_search($action_or_module, $domainsubmodules) !== false) {
+				// just add the module to the first path entry, eg. frontend-page/1
+				$this->_paths[0] = $domainmodule . "-" . $this->_paths[0];
+			} else {
+				// add the module as an entry to the front of paths, eg. frontent/index
+				array_unshift($this->_paths, $domainmodule);
+			}
+		}
+
+		// start the session
+		// $sess = new SessionManager($this);
+		try {
+			if ($this->_isPortal === true) {
+				session_id(!empty($domainmodule) ? $domainmodule . '_SID' : 'PORTAL_SID');
+			} else {
+				session_id(SESSION_NAME);
+			}
 
             // Store the sessions locally to avoid permission errors between OS's
             // I.e. on Windows by default tries to save to C:\Temp
@@ -579,53 +662,10 @@ class Web
 
         $this->_paths = $this->_getCommandPath();
 
-        /**
-         * Based on request domain we can route everything to a frontend module look into the domain routing and prepend the module.
-         * Check for frontend/portal modules first.
-         * To enable portal support set portal flag in the module to true.
-         * For it to work properly a domain name module must also be set.
-         *
-         * For exmaple:
-         * Config::set('{module}.portal', true);
-         * Config::set('{module}.domain_name', '{domain_url}');
-         */
-        $domainmodule = null;
-        foreach ($this->modules() as $module) {
-            // Module config must be active and either 'portal' or 'frontend' flag set to true
-            if (Config::get($module . '.active') == true && (Config::get($module . '.portal') == true || Config::get($module . '.frontend') == true)) {
-                if (strpos($_SERVER['HTTP_HOST'], Config::get($module . '.domain_name')) === 0) {
-                    // Found module
-                    $domainmodule = $module;
-                    break;
-                }
-            }
-        }
-
-        if (!empty($domainmodule)) {
-            $this->_loginpath = "auth";
-            $this->_isFrontend = true;
-            $this->_isPortal = !!Config::get($domainmodule . '.portal');
-
-            // now we have to decide whether the path points to
-            // a) a single top level action
-            // b) an action on a submodule
-            // but we need to make sure not to mistake a path paramater for a submodule or an action!
-            $domainsubmodules = $this->getSubmodules($domainmodule);
-            $action_or_module = !empty($this->_paths[0]) ? $this->_paths[0] : null;
-            if (!empty($domainsubmodules) && !empty($action_or_module) && array_search($action_or_module, $domainsubmodules) !== false) {
-                // just add the module to the first path entry, eg. frontend-page/1
-                $this->_paths[0] = $domainmodule . "-" . $this->_paths[0];
-            } else {
-                // add the module as an entry to the front of paths, eg. frontent/index
-                array_unshift($this->_paths, $domainmodule);
-            }
-        }
-
-
-        // first find the module file
-        if ($this->_paths && sizeof($this->_paths) > 0) {
-            $this->_module = array_shift($this->_paths);
-        }
+		// first find the module file
+		if ($this->_paths && sizeof($this->_paths) > 0) {
+			$this->_module = array_shift($this->_paths);
+		}
 
         // then find the action
         if ($this->_paths && sizeof($this->_paths) > 0) {
@@ -809,13 +849,13 @@ class Web
                 return;
             }
 
-            $body = null;
-            // evaluate template only when buffer is empty
-            if (sizeof($this->_buffer) == 0) {
-                $body = $this->fetchTemplate();
-            } else {
-                $body = $this->_buffer;
-            }
+           	$body = null;
+			// evaluate template only when buffer is empty
+			if (empty($this->_buffer)) {
+				$body = $this->fetchTemplate();
+			} else {
+				$body = $this->_buffer;
+			}
 
             // but always check for layout
             // if ajax call don't do the layout
@@ -1471,9 +1511,14 @@ class Web
 			if ($this->isClassActive($cname)) {
 				$s = new $cname($this);
 				// initialise
-				if (method_exists($s, "__init")) {
-					$s->__init();
-				}
+				if (method_exists($s, "_web_init")) {
+					$s->_web_init();
+				 	} else {
+					if (method_exists($s, "__init")) {
+						$this->Log->error($cname.": exposing __init does not conform to PHP 7.2");
+						$s->__init();
+						}
+					}
 				$this->_services[$name] = &$s;
 			} else {
 				return null;
@@ -1846,7 +1891,6 @@ class Web
 		$template = $this->templateExists($name);
 
 		if (!$template) {
-			$this->service('log')->error("System: No Template found.");
 			return null;
 		}
 		$tpl = new WebTemplate();
@@ -2102,13 +2146,17 @@ class Web
 	function sessionDestroy() {
 		$_SESSION = array();
 
-        session_name(SESSION_NAME);
+
+        // Check that we have an active session
+		if (!session_id()) {
+            return;
+        }
 
 		// If it's desired to kill the session, also delete the session cookie.
 		// Note: This will destroy the session, and not just the session data!
 		if (ini_get("session.use_cookies")) {
-            // By setting the expiry in the past the cookie is deleted
-			setcookie(session_name(), '', time() - 42000);
+			$params = session_get_cookie_params();
+			setcookie(session_name(), '', time() - 42000, $params["path"], $params["domain"], $params["secure"], $params["httponly"]);
 		}
 
 		// Finally, destroy the session.

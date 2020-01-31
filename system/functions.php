@@ -1,19 +1,20 @@
 <?php
 
 /**
- * deduplicates arrays of arrays, something that array_unique can't do.
+ * Deduplicates arrays of arrays, something that array_unique can't do.
  * Given an array of arrays, this function will return an array containing only
  * unique arrays having removed any duplicate arrays.
  *
  * Thanks to http://stackoverflow.com/a/308955/1082633
  *
- * @param unknown $input
- * @return multitype:
+ * @param array $input
+ * @return array
  */
-function array_unique_multidimensional($input) {
-	$serialized = array_map('serialize', $input);
-	$unique = array_unique($serialized);
-	return array_intersect_key($input, $unique);
+function array_unique_multidimensional(array $input)
+{
+    $serialized = array_map('serialize', $input);
+    $unique = array_unique($serialized);
+    return array_intersect_key($input, $unique);
 }
 
 /**
@@ -25,183 +26,215 @@ function array_unique_multidimensional($input) {
 
 // Implement gettext context
 if (!function_exists('pgettext')) {
-	function pgettext($context, $msgid, $domain = '') {
-		//echo "pgettext:".$context."|".$msgid."|".$domain;
-		$contextString = "{$context}\004{$msgid}";
-		if (strlen(trim($domain)) > 0) {
-			//$oldDomain=textdomain(NULL);
-			//echo "olddomain:".$oldDomain;
-			//textDomain($domain);
-			$translation = dgettext($domain, $contextString);
-			//textDomain($oldDomain);
-		} else {
-			$translation = gettext($contextString);
-		}
-		if ($translation === $contextString) {
-			return $msgid;
-		} else {
-			return $translation;
-		}
+    function pgettext($context, $msgid, $domain = '')
+    {
+        $contextString = "{$context}\004{$msgid}";
 
-	}
+        if (strlen(trim($domain)) > 0) {
+            $translation = dgettext($domain, $contextString);
+        } else {
+            $translation = gettext($contextString);
+        }
 
-	function npgettext($context, $msgid, $msgid_plural, $num, $domain = '') {
-		$contextString = "{$context}\004{$msgid}";
-		$contextStringp = "{$context}\004{$msgid_plural}";
-		if (strlen(trim($domain)) > 0) {
-			$translation = dngettext($domain, $contextString, $contextStringp, $num);
-		} else {
-			$translation = ngettext($contextString, $contextStringp, $num);
-		}
-		if ($translation === $contextString) {
-			return $msgid;
-		} else if ($translation === $contextStringp) {
-			return $msgid_plural;
-		} else {
-			return $translation;
-		}
-	}
+        if ($translation === $contextString) {
+            return $msgid;
+        } else {
+            return $translation;
+        }
+    }
+
+    function npgettext($context, $msgid, $msgid_plural, $num, $domain = '')
+    {
+        $contextString = "{$context}\004{$msgid}";
+        $contextStringp = "{$context}\004{$msgid_plural}";
+
+        if (strlen(trim($domain)) > 0) {
+            $translation = dngettext($domain, $contextString, $contextStringp, $num);
+        } else {
+            $translation = ngettext($contextString, $contextStringp, $num);
+        }
+
+        if ($translation === $contextString) {
+            return $msgid;
+        } elseif ($translation === $contextStringp) {
+            return $msgid_plural;
+        } else {
+            return $translation;
+        }
+    }
 }
 
 /**
  * Lookup translation
  */
-function __($key, $context = '', $domain = '') {
-	if (strlen(trim($context)) > 0) {
-		return pgettext($context, $key, $domain);
-	} else {
-		if (strlen(trim($domain)) > 0) {
-			return dgettext($domain, $key);
-		} else {
-			return gettext($key);
-		}
-	}
+function __($key, $context = '', $domain = '')
+{
+    if (strlen(trim($context)) > 0) {
+        return pgettext($context, $key, $domain);
+    } else {
+        if (strlen(trim($domain)) > 0) {
+            return dgettext($domain, $key);
+        } else {
+            return gettext($key);
+        }
+    }
 }
+
 /**
  * Echo a translation lookup
  */
-function _e($key, $context = '', $domain = '') {
-	echo __($key, $context, $domain);
+function _e($key, $context = '', $domain = '')
+{
+    echo __($key, $context, $domain);
 }
 
 /**
  * Lookup a plural translation
  */
-function _n($key1, $key2, $n, $context = '', $domain = '') {
-	if (strlen(trim($context)) > 0) {
-		return npgettext($context, $key1, $key2, $n, $domain);
-	} else {
-		if (strlen(trim($domain)) > 0) {
-			return dngettext($domain, $key1, $key2, $n);
-		} else {
-			return ngettext($key1, $key2, $n);
-		}
-	}
+function _n($key1, $key2, $n, $context = '', $domain = '')
+{
+    if (strlen(trim($context)) > 0) {
+        return npgettext($context, $key1, $key2, $n, $domain);
+    } else {
+        if (strlen(trim($domain)) > 0) {
+            return dngettext($domain, $key1, $key2, $n);
+        } else {
+            return ngettext($key1, $key2, $n);
+        }
+    }
 }
+
 /**
  * Echo a plural translation lookup
  */
-function _en($key1, $key2, $n, $context = '', $domain = '') {
-	echo _n($key1, $key2, $n, $domain, $context);
+function _en($key1, $key2, $n, $context = '', $domain = '')
+{
+    echo _n($key1, $key2, $n, $domain, $context);
 }
 
 /**
- * Conver
- * @param String $base_locale
+ * Convert locale string to array of accepted versions
+ *
+ * @param string $base_locale
  * @return Array
  */
-function getAllLocaleValues($base_locale) {
-	static $language_lookup = [
-		'de_DE' => ['de_DE', 'de_DE@euro', 'deu', 'deu_deu', 'german'],
-		'fr_FR' => ['fr_FR', 'fr_FR@euro', 'french'],
-		'en_AU' => ['en_AU.utf8', 'en_AU', 'australian']
-	];
+function getAllLocaleValues($base_locale)
+{
+    static $language_lookup = [
+        'de_DE' => ['de_DE', 'de_DE@euro', 'deu', 'deu_deu', 'german'],
+        'fr_FR' => ['fr_FR', 'fr_FR@euro', 'french'],
+        'en_AU' => ['en_AU.utf8', 'en_AU', 'australian'],
+    ];
 
-	if (array_key_exists($base_locale, $language_lookup)) {
-		return $language_lookup[$base_locale];
-	}
+    if (array_key_exists($base_locale, $language_lookup)) {
+        return $language_lookup[$base_locale];
+    }
 
-	return false;
-}
-
-function humanReadableBytes($input, $rounding = 2, $bytesValue = true) {
-	$ext = array("B", "KB", "MB", "GB", "TB");
-	$barrier = 1024;
-	if (!$bytesValue) {
-		// If bytes value is false then we what to use 1000 (bits?)
-		$barrier = 1000;
-	}
-
-	while ($input > $barrier) {
-		$input /= $barrier;
-		array_shift($ext);
-		if ($ext[0] === end($ext)) {
-			$input = round($input, $rounding);
-			return "$input $ext[0]";
-		}
-	}
-	// Round input to something reasonable
-	$input = round($input, $rounding);
-	return "$input $ext[0]";
-}
-
-function getFileExtension($contentType) {
-	$map = array(
-		'application/pdf' => '.pdf',
-		'application/zip' => '.zip',
-		'image/gif' => '.gif',
-		'image/jpeg' => '.jpg',
-		'image/png' => '.png',
-		'text/css' => '.css',
-		'text/html' => '.html',
-		'text/javascript' => '.js',
-		'text/plain' => '.txt',
-		'text/xml' => '.xml',
-	);
-
-	if (isset($map[$contentType])) {
-		return $map[$contentType];
-	}
-
-	// HACKISH CATCH ALL (WHICH IN MY CASE IS
-	// PREFERRED OVER THROWING AN EXCEPTION)
-	$pieces = explode('/', $contentType);
-	return '.' . array_pop($pieces);
-}
-
-/** Small helper function to test for isset and is_numeric
- * wihtout having to write
- */
-function isNumber($var) {
-	return (!empty($var) && is_numeric($var));
-//    if (!isset($var))
-	//        return false;
-	//    if ($var === null)
-	//        return false;
-	//    return is_numeric($var);
-}
-
-function defaultVal($val, $default = null, $forceNull = false) {
-	// Experiment to see if we can easily remove the strict standards
-	// errors with a small function
-	if (isset($default) && is_null($default)) {
-		return $val;
-	} else if (is_null($val)) {
-		return $default;
-	}
-
-	return $val;
+    return false;
 }
 
 /**
- * turn a title into a slug for meaningful urls,
+ * Returns human readable string of given byte value
+ *
+ * @param int $input
+ * @param int $rounding (optional, default 2)
+ * @param bool $bytesValue if false will divide by 1000 instead of 1024 (optional, default true)
+ * @return string
+ */
+function humanReadableBytes($input, $rounding = 2, $bytesValue = true)
+{
+    $ext = array("B", "KB", "MB", "GB", "TB");
+    $barrier = 1024;
+    if (!$bytesValue) {
+        // If bytes value is false then we what to use 1000 (bits?)
+        $barrier = 1000;
+    }
+
+    while ($input > $barrier) {
+        $input /= $barrier;
+        array_shift($ext);
+        if ($ext[0] === end($ext)) {
+            $input = round($input, $rounding);
+            return "$input $ext[0]";
+        }
+    }
+    // Round input to something reasonable
+    $input = round($input, $rounding);
+    return "$input $ext[0]";
+}
+
+/**
+ * DEPRECATED from v3.0.0
+ * Returns the extension for given content type
+ *
+ * @param string contentType
+ * @return string extension
+ */
+function getFileExtension($contentType)
+{
+    $map = array(
+        'application/pdf' => '.pdf',
+        'application/zip' => '.zip',
+        'image/gif' => '.gif',
+        'image/jpeg' => '.jpg',
+        'image/png' => '.png',
+        'text/css' => '.css',
+        'text/html' => '.html',
+        'text/javascript' => '.js',
+        'text/plain' => '.txt',
+        'text/xml' => '.xml',
+    );
+
+    if (isset($map[$contentType])) {
+        return $map[$contentType];
+    }
+
+    // HACKISH CATCH ALL (WHICH IN MY CASE IS
+    // PREFERRED OVER THROWING AN EXCEPTION)
+    $pieces = explode('/', $contentType);
+    return '.' . array_pop($pieces);
+}
+
+/**
+ * Small helper function to test for isset and is_numeric
+ *
+ * @param mixed|null var
+ * @return boolean
+ */
+function isNumber($var)
+{
+    return (!empty($var) && is_numeric($var));
+}
+
+/**
+ * Returns a given default if given value is null
+ *
+ * @param mixed val
+ * @param mixed default
+ * @return mixed val or default
+ */
+function defaultVal($val, $default = null)
+{
+    // Experiment to see if we can easily remove the strict standards
+    // errors with a small function
+    if (isset($default) && is_null($default)) {
+        return $val;
+    } elseif (is_null($val)) {
+        return $default;
+    }
+
+    return $val;
+}
+
+/**
+ * Turns a title into a slug for meaningful urls,
  * eg. "This is my long Title" => "this-is-my-long-title"
  *
  * @param string $title
  */
-function toSlug($title) {
-	$slug = str_replace(array(" ", "_", ",", ".", "/"), "-", $title);
-	return strtolower($slug);
+function toSlug($title)
+{
+    return strtolower(str_replace([' ', '_', ',', '.', '/'], '-', $title));
 }
 
 /**
@@ -213,8 +246,9 @@ function toSlug($title) {
  *
  * ((1,2,3),(4,5,6),(7,8,9),(10,11))
  */
-function paginate($array, $pageSize) {
-	return array_chunk($array, $pageSize);
+function paginate(array $array, $pageSize)
+{
+    return array_chunk($array, $pageSize);
 }
 
 /**
@@ -231,8 +265,9 @@ function paginate($array, $pageSize) {
  * always tries to have columns of equal length
  * but the last column can be shorter
  */
-function columnize($array, $noOfColumns) {
-	return array_chunk($array, sizeof($array) / $noOfColumns);
+function columnize(array $array, $noOfColumns)
+{
+    return array_chunk($array, sizeof($array) / $noOfColumns);
 }
 
 /**
@@ -245,84 +280,109 @@ function columnize($array, $noOfColumns) {
  * @param $img
  * @param $rotation (90, 180, 270, 0, 360)
  */
-function rotateImage($img, $rotation) {
-	$width = imagesx($img);
-	$height = imagesy($img);
-	switch ($rotation) {
-	case 90:$newimg = @imagecreatetruecolor($height, $width);
-		break;
-	case 180:$newimg = @imagecreatetruecolor($width, $height);
-		break;
-	case 270:$newimg = @imagecreatetruecolor($height, $width);
-		break;
-	case 0:return $img;
-		break;
-	case 360:return $img;
-		break;
-	}
-	if ($newimg) {
-		for ($i = 0; $i < $width; $i++) {
-			for ($j = 0; $j < $height; $j++) {
-				$reference = imagecolorat($img, $i, $j);
-				switch ($rotation) {
-				case 90:if (!@imagesetpixel($newimg, ($height - 1) - $j, $i, $reference)) {
-						return false;
-					}
-					break;
-				case 180:if (!@imagesetpixel($newimg, $width - $i, ($height - 1) - $j, $reference)) {
-						return false;
-					}
-					break;
-				case 270:if (!@imagesetpixel($newimg, $j, $width - $i, $reference)) {
-						return false;
-					}
-					break;
-				}
-			}
-		}
-		return $newimg;
-	}
-	return false;
-}
-
-function lookupForSelect(&$w, $type) {
-	$select = array();
-	$rows = $w->db->get("lookup")->where("type", $type)->fetch_all();
-	if ($rows) {
-		foreach ($rows as $row) {
-			$select[] = array($row['title'], $row['code']);
-		}
-	}
-	return $select;
-}
-
-function getStateSelectArray() {
-	return array(
-		array("ACT", "ACT"),
-		array("NSW", "NSW"),
-		array("NT", "NT"),
-		array("QLD", "QLD"),
-		array("SA", "SA"),
-		array("TAS", "TAS"),
-		array("VIC", "VIC"),
-		array("WA", "WA"));
+function rotateImage($img, $rotation)
+{
+    $width = imagesx($img);
+    $height = imagesy($img);
+    switch ($rotation) {
+        case 90:
+        case 270:
+            $newimg = @imagecreatetruecolor($height, $width);
+            break;
+        case 180:
+            $newimg = @imagecreatetruecolor($width, $height);
+            break;
+        case 0:
+            return $img;
+        case 360:
+            return $img;
+    }
+    if ($newimg) {
+        for ($i = 0; $i < $width; $i++) {
+            for ($j = 0; $j < $height; $j++) {
+                $reference = imagecolorat($img, $i, $j);
+                switch ($rotation) {
+                    case 90:
+                        if (!@imagesetpixel($newimg, ($height - 1) - $j, $i, $reference)) {
+                            return false;
+                        }
+                        break;
+                    case 180:
+                        if (!@imagesetpixel($newimg, $width - $i, ($height - 1) - $j, $reference)) {
+                            return false;
+                        }
+                        break;
+                    case 270:
+                        if (!@imagesetpixel($newimg, $j, $width - $i, $reference)) {
+                            return false;
+                        }
+                        break;
+                }
+            }
+        }
+        return $newimg;
+    }
+    return false;
 }
 
 /**
- * Iterates over $needle_array and
- * applies $func to $haystack and $current_needle.
- * Returns
- * @param unknown_type $haystack
- * @param unknown_type $needles
+ * DEPRECATED from v3.0.0 - use LookupService::lookupForSelect instead
+ *
+ * Returns a lookup by type from the database and formats
+ * it ready for a Html::select field
+ *
+ * @param Web $w
+ * @param string type
+ * @return array lookup for select
  */
-function strcontains($haystack, $needle_array) {
-	foreach ($needle_array as $needle) {
-		if (stripos($haystack, $needle) !== false) {
-			return true;
-		}
+function lookupForSelect($w, $type)
+{
+    $select = [];
+    $rows = $w->db->get("lookup")->where("type", $type)->fetch_all();
+    if ($rows) {
+        foreach ($rows ?? [] as $row) {
+            $select[] = [$row['title'], $row['code']];
+        }
+    }
+    return $select;
+}
 
-	}
-	return false;
+/**
+ * DEPRECATED from v3.0.0 - define this whenever needed in your module
+ *
+ * Returns a list of states of Australia structured for a Html::select field
+ *
+ * @return Array states
+ */
+function getStateSelectArray()
+{
+    return array(
+        array("ACT", "ACT"),
+        array("NSW", "NSW"),
+        array("NT", "NT"),
+        array("QLD", "QLD"),
+        array("SA", "SA"),
+        array("TAS", "TAS"),
+        array("VIC", "VIC"),
+        array("WA", "WA"));
+}
+
+/**
+ * Iterates over $needle_array and applies $func to $haystack and $current_needle.
+ *
+ * @param string $haystack
+ * @param array $needles
+ * @return bool true if item from $needle_array is found in haystack
+ */
+function strcontains($haystack, $needle_array)
+{
+    foreach ($needle_array as $needle) {
+        if (stripos($haystack, $needle) !== false) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 /**
@@ -331,107 +391,133 @@ function strcontains($haystack, $needle_array) {
  *
  * Returns true when a needle is found at the start of the haystack, false otherwise.
  *
- * @param unknown $haystack
- * @param unknown $needle
+ * @param string $haystack
+ * @param string|array $needle
  * @return boolean
  */
-function startsWith($haystack, $needle) {
-	// This could cause problems, we'll see
-	if (empty($haystack) || empty($needle)) {
-		return false;
-	}
+function startsWith($haystack, $needle)
+{
+    if (empty($haystack) || empty($needle)) {
+        return false;
+    }
 
-	if (is_scalar($needle)) {
-		return strpos($haystack, $needle) === 0;
-	} else if (is_array($needle) && sizeof($needle) > 0) {
-		foreach ($needle as $pref) {
-			if (strpos($haystack, $pref) === 0) {
-				return true;
-			}
-		}
-	}
-	return false;
+    if (is_scalar($needle)) {
+        return strpos($haystack, $needle) === 0;
+    } elseif (is_array($needle) && sizeof($needle) > 0) {
+        foreach ($needle as $pref) {
+            if (strpos($haystack, $pref) === 0) {
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
-function str_whitelist($dirty_data, $limit = 0) {
-	if ($limit > 0) {
-		$dirty_data = substr($dirty_data, 0, $limit);
-	}
-	$dirty_array = str_split($dirty_data);
-	$clean_data = "";
-	foreach ($dirty_array as $char) {
-		$clean_char = preg_replace("/[^a-zA-Z0-9 ,.'\"-\/]/", "", $char);
-		$clean_data = $clean_data . $clean_char;
-	}
-	return $clean_data;
+function str_whitelist($dirty_data, $limit = 0)
+{
+    if ($limit > 0) {
+        $dirty_data = substr($dirty_data, 0, $limit);
+    }
+    $dirty_array = str_split($dirty_data);
+    $clean_data = "";
+    foreach ($dirty_array as $char) {
+        $clean_char = preg_replace("/[^a-zA-Z0-9 ,.'\"-\/]/", "", $char);
+        $clean_data = $clean_data . $clean_char;
+    }
+    return $clean_data;
 }
 
-function phone_whitelist($dirty_data) {
-	$dirty_array = str_split($dirty_data);
-	$clean_data = "";
-	foreach ($dirty_array as $char) {
-		$clean_char = preg_replace("/[^0-9 ()+-]/", "", $char);
-		$clean_data = $clean_data . $clean_char;
-	}
-	return $clean_data;
+function phone_whitelist($dirty_data)
+{
+    $dirty_array = str_split($dirty_data);
+    $clean_data = "";
+    foreach ($dirty_array as $char) {
+        $clean_char = preg_replace("/[^0-9 ()+-]/", "", $char);
+        $clean_data = $clean_data . $clean_char;
+    }
+    return $clean_data;
 }
 
-function int_whitelist($dirty_data, $limit) {
-	$dirty_data = substr($dirty_data, 0, $limit);
-	$dirty_array = str_split($dirty_data);
-	$clean_data = "";
-	foreach ($dirty_array as $char) {
-		$clean_char = preg_replace("/[^0-9]/", "", $char);
-		$clean_data = $clean_data . $clean_char;
-	}
-	return $clean_data;
+function int_whitelist($dirty_data, $limit)
+{
+    $dirty_data = substr($dirty_data, 0, $limit);
+    $dirty_array = str_split($dirty_data);
+    $clean_data = "";
+    foreach ($dirty_array as $char) {
+        $clean_char = preg_replace("/[^0-9]/", "", $char);
+        $clean_data = $clean_data . $clean_char;
+    }
+    return $clean_data;
 }
 
-function getTimeSelect($start = 8, $end = 19) {
-	for ($i = $start; $i <= $end; $i++) {
-		$m = " am";
-		$t = $i;
-		if ($i >= 12) {
-			$m = " pm";
-			if ($i > 12) {
-				$t = $i - 12;
-			}
-		}
-		$t = sprintf("%02d", $t);
-		$select[] = array($t . ":00" . $m, $i . ":00");
-		$select[] = array($t . ":30" . $m, $i . ":30");
-	}
-	return $select;
+function getTimeSelect($start = 8, $end = 19)
+{
+    for ($i = $start; $i <= $end; $i++) {
+        $m = " am";
+        $t = $i;
+        if ($i >= 12) {
+            $m = " pm";
+            if ($i > 12) {
+                $t = $i - 12;
+            }
+        }
+        $t = sprintf("%02d", $t);
+        $select[] = array($t . ":00" . $m, $i . ":00");
+        $select[] = array($t . ":30" . $m, $i . ":30");
+    }
+    return $select;
 }
 
-function formatDate($date, $format = "d/m/Y", $usetimezone = true) {
-	if (!$date) {
-		return NULL;
-	}
+/**
+ * Formats a date in the given format
+ * Can take either unix timestamp or string date
+ *
+ * @param mixed $date
+ * @param string format (optional, default "d/m/Y")
+ * @return string|false
+ */
+function formatDate($date, $format = "d/m/Y")
+{
+    if (!$date) {
+        return null;
+    }
 
-	if (!is_long($date) && !is_numeric($date)) {
-		$date = strtotime(str_replace("/", "-", $date));
-	}
-	/*
-		      $timezone = new DateTimeZone( "Australia/Sydney" );
-		      $d = new DateTime();
-		      $d->setTimestamp( $date);
-		      $d->setTimezone( $timezone );
-		      return $d->format($format);
-	*/
-	return date($format, $date);
+    if (!is_long($date) && !is_numeric($date)) {
+        $date = strtotime(str_replace("/", "-", $date));
+    }
+
+    return date($format, $date);
 }
 
-function formatDateTime($date, $format = "d/m/Y h:i a", $usetimezone = true) {
-	return formatDate($date, $format);
+/**
+ * Formats a date and time in the given format
+ * Can take either unix timestamp or string date
+ *
+ * @param mixed $date
+ * @param string format (optional, default "d/m/Y h:i a")
+ * @return string|false
+ */
+function formatDateTime($date, $format = "d/m/Y h:i a")
+{
+    return formatDate($date, $format);
 }
 
-function formatTime($date, $format = "H:i") {
-	return formatDate($date, $format);
+/**
+ * Formats a time in the given format
+ * Can take either unix timestamp or string time
+ *
+ * @param mixed $date
+ * @param string format (optional, default "d/m/Y h:i a")
+ * @return string|false
+ */
+function formatTime($date, $format = "H:i")
+{
+    return formatDate($date, $format);
 }
 
-function formatNumber($number) {
-	return sprintf('%.2f',$number);
+function formatNumber($number)
+{
+    return sprintf('%.2f', $number);
 }
 
 /**
@@ -439,165 +525,192 @@ function formatNumber($number) {
  * available on most Linux based systems with the strfmon C function.
  *
  * For those that do not (Windows), then the function is imitated with code.
+ *
+ * @param string format
+ * @param float|mixed number
  */
-function formatMoney($format, $number) {
-	if (function_exists('money_format')) {
-		setlocale(LC_MONETARY, 'en_AU');
-		return money_format($format, doubleval($number));
-	}
+function formatMoney($format, $number)
+{
+    if (function_exists('money_format')) {
+        setlocale(LC_MONETARY, 'en_AU');
+        return money_format($format, doubleval($number));
+    }
 
-	$regex = '/%((?:[\^!\-]|\+|\(|\=.)*)([0-9]+)?' .
-		'(?:#([0-9]+))?(?:\.([0-9]+))?([in%])/';
-	if (setlocale(LC_MONETARY, 0) == 'C') {
-		setlocale(LC_MONETARY, '');
-	}
-	$locale = localeconv();
-	if (empty($locale['mon_decimal_point'])) {
-		$locale['mon_decimal_point'] = ".";
-	}
-	if (empty($locale['mon_thousands_sep'])) {
-		$locale['mon_thousands_sep'] = ",";
-	}
+    $regex = '/%((?:[\^!\-]|\+|\(|\=.)*)([0-9]+)?' .
+        '(?:#([0-9]+))?(?:\.([0-9]+))?([in%])/';
+    if (setlocale(LC_MONETARY, 0) == 'C') {
+        setlocale(LC_MONETARY, '');
+    }
 
-	preg_match_all($regex, $format, $matches, PREG_SET_ORDER);
+    $locale = localeconv();
+    if (empty($locale['mon_decimal_point'])) {
+        $locale['mon_decimal_point'] = ".";
+    }
 
-	foreach ($matches as $fmatch) {
-		$value = floatval($number);
-		$flags = array(
-			'fillchar' => preg_match('/\=(.)/', $fmatch[1], $match) ?
-			$match[1] : ' ',
-			'nogroup' => preg_match('/\^/', $fmatch[1]) > 0,
-			'usesignal' => preg_match('/\+|\(/', $fmatch[1], $match) ?
-			$match[0] : '+',
-			'nosimbol' => preg_match('/\!/', $fmatch[1]) > 0,
-			'isleft' => preg_match('/\-/', $fmatch[1]) > 0,
-		);
-		$width = trim($fmatch[2]) ? (int) $fmatch[2] : 0;
-		$left = trim($fmatch[3]) ? (int) $fmatch[3] : 0;
-		$right = trim($fmatch[4]) ? (int) $fmatch[4] : $locale['int_frac_digits'];
-		$conversion = $fmatch[5];
+    if (empty($locale['mon_thousands_sep'])) {
+        $locale['mon_thousands_sep'] = ",";
+    }
 
-		$positive = true;
-		if ($value < 0) {
-			$positive = false;
-			$value *= -1;
-		}
-		$letter = $positive ? 'p' : 'n';
+    preg_match_all($regex, $format, $matches, PREG_SET_ORDER);
 
-		$prefix = $suffix = $cprefix = $csuffix = $signal = '';
+    foreach ($matches ?? [] as $fmatch) {
+        $value = floatval($number);
+        $flags = [
+            'fillchar' => preg_match('/\=(.)/', $fmatch[1], $fmatch) ? $fmatch[1] : ' ',
+            'nogroup' => preg_match('/\^/', $fmatch[1]) > 0,
+            'usesignal' => preg_match('/\+|\(/', $fmatch[1], $fmatch) ? $fmatch[0] : '+',
+            'nosimbol' => preg_match('/\!/', $fmatch[1]) > 0,
+            'isleft' => preg_match('/\-/', $fmatch[1]) > 0,
+        ];
 
-		$signal = $positive ? $locale['positive_sign'] : $locale['negative_sign'];
-		switch (true) {
-		case $locale["{$letter}_sign_posn"] == 1 && $flags['usesignal'] == '+':
-			$prefix = $signal;
-			break;
-		case $locale["{$letter}_sign_posn"] == 2 && $flags['usesignal'] == '+':
-			$suffix = $signal;
-			break;
-		case $locale["{$letter}_sign_posn"] == 3 && $flags['usesignal'] == '+':
-			$cprefix = $signal;
-			break;
-		case $locale["{$letter}_sign_posn"] == 4 && $flags['usesignal'] == '+':
-			$csuffix = $signal;
-			break;
-		case $flags['usesignal'] == '(':
-		case $locale["{$letter}_sign_posn"] == 0:
-			$prefix = '(';
-			$suffix = ')';
-			break;
-		}
-		if (!$flags['nosimbol']) {
-			$currency = $cprefix .
-				($conversion == 'i' ? $locale['int_curr_symbol'] : $locale['currency_symbol']) .
-				$csuffix;
-		} else {
-			$currency = '';
-		}
-		$space = $locale["{$letter}_sep_by_space"] ? ' ' : '';
-		$value = number_format($value, $right, $locale['mon_decimal_point'], $flags['nogroup'] ? '' : $locale['mon_thousands_sep']);
-		$value = @explode($locale['mon_decimal_point'], $value);
+        $width = trim($fmatch[2]) ? intval($fmatch[2]) : 0;
+        $left = trim($fmatch[3]) ? intval($fmatch[3]) : 0;
+        $right = trim($fmatch[4]) ? intval($fmatch[4]) : $locale['int_frac_digits'];
+        $conversion = $fmatch[5];
 
-		$n = strlen($prefix) + strlen($currency) + strlen($value[0]);
-		if ($left > 0 && $left > $n) {
-			$value[0] = str_repeat($flags['fillchar'], $left - $n) . $value[0];
-		}
+        $positive = true;
+        if ($value < 0) {
+            $positive = false;
+            $value *= -1;
+        }
 
-		if (!empty($value)) {
-			$value = implode($locale['mon_decimal_point'], $value);
-		}
-		if ($locale["{$letter}_cs_precedes"]) {
-			$value = $prefix . $currency . $space . $value . $suffix;
-		} else {
-			$value = $prefix . $value . $space . $currency . $suffix;
-		}
-		if ($width > 0) {
-			$value = str_pad($value, $width, $flags['fillchar'], $flags['isleft'] ?
-				STR_PAD_RIGHT : STR_PAD_LEFT);
-		}
+        $letter = $positive ? 'p' : 'n';
 
-		$format = str_replace($fmatch[0], $value, $format);
-	}
-	return trim($format);
-}
+        $prefix = $suffix = $cprefix = $csuffix = $signal = '';
 
-function recursiveArraySearch($haystack, $needle, $index = null) {
-	$aIt = new RecursiveArrayIterator($haystack);
-	$it = new RecursiveIteratorIterator($aIt);
+        $signal = $positive ? $locale['positive_sign'] : $locale['negative_sign'];
+        switch (true) {
+            case $locale["{$letter}_sign_posn"] == 1 && $flags['usesignal'] == '+':
+                $prefix = $signal;
+                break;
+            case $locale["{$letter}_sign_posn"] == 2 && $flags['usesignal'] == '+':
+                $suffix = $signal;
+                break;
+            case $locale["{$letter}_sign_posn"] == 3 && $flags['usesignal'] == '+':
+                $cprefix = $signal;
+                break;
+            case $locale["{$letter}_sign_posn"] == 4 && $flags['usesignal'] == '+':
+                $csuffix = $signal;
+                break;
+            case $flags['usesignal'] == '(':
+            case $locale["{$letter}_sign_posn"] == 0:
+                $prefix = '(';
+                $suffix = ')';
+                break;
+        }
 
-	while ($it->valid()) {
-		if (((isset($index) && ($it->key() == $index)) || (!isset($index))) && ($it->current() == $needle)) {
-			return $aIt->key();
-		}
+        if (!$flags['nosimbol']) {
+            $currency = $cprefix .
+                ($conversion == 'i' ? $locale['int_curr_symbol'] : $locale['currency_symbol']) .
+                $csuffix;
+        } else {
+            $currency = '';
+        }
 
-		$it->next();
-	}
+        $space = $locale["{$letter}_sep_by_space"] ? ' ' : '';
+        $value = number_format($value, $right, $locale['mon_decimal_point'], $flags['nogroup'] ? '' : $locale['mon_thousands_sep']);
+        $value = @explode($locale['mon_decimal_point'], $value);
 
-	return false;
+        $n = strlen($prefix) + strlen($currency) + strlen($value[0]);
+        if ($left > 0 && $left > $n) {
+            $value[0] = str_repeat($flags['fillchar'], $left - $n) . $value[0];
+        }
+
+        if (!empty($value)) {
+            $value = implode($locale['mon_decimal_point'], $value);
+        }
+
+        if ($locale["{$letter}_cs_precedes"]) {
+            $value = $prefix . $currency . $space . $value . $suffix;
+        } else {
+            $value = $prefix . $value . $space . $currency . $suffix;
+        }
+
+        if ($width > 0) {
+            $value = str_pad($value, $width, $flags['fillchar'], $flags['isleft'] ?
+                STR_PAD_RIGHT : STR_PAD_LEFT);
+        }
+
+        $format = str_replace($fmatch[0], $value, $format);
+    }
+    return trim($format);
 }
 
 /**
+ * Recursively searches though given haystack for a given needle
  *
+ * @param array haystack
+ * @param mixed needle
+ * @param mixed optional array key to only look at when searching (optional)
+ * @return mixed key of found needle
+ */
+function recursiveArraySearch($haystack, $needle, $index = null)
+{
+    $aIt = new RecursiveArrayIterator($haystack);
+    $it = new RecursiveIteratorIterator($aIt);
+
+    while ($it->valid()) {
+        if (((isset($index) && ($it->key() == $index)) || (!isset($index))) && ($it->current() == $needle)) {
+            return $aIt->key();
+        }
+
+        $it->next();
+    }
+
+    return false;
+}
+
+/**
  * This function will return the correct dates using date picker or a custom month picker.
  * If you have a from date and to date criteria, this function changes the to date based on
  * the dm_var. parse in 'm' for month selection and 'd' for day selection.
  * With date pickers, they always return the beginning of that day. i.e. 00:00:00 10/11/2010
  * this will change the to date to: 23:59:59 10/11/2010.
  *
- *  To use this function, use the list function, calling this function.
- *  i.e. list($from_date, $to_date) = returncorrectdates($w,$dm_var,$from_date,$to_date);
- * @param obj $w
+ * To use this function, use the list function, calling this function.
+ * i.e. list($from_date, $to_date) = returncorrectdates($w,$dm_var,$from_date,$to_date);
+ *
+ * @deprecated v3.0.0
+ *
+ * @param Web $w
  * @param string $dm_var
  * @param string $from_date
  * @param string $to_date
  */
-function returncorrectdates(Web &$w, $dm_var, $from_date, $to_date) {
-	if ($dm_var == 'm') {
-		$from_date = strtotime(str_replace("/", "-", $from_date));
-		$to_date = strtotime(str_replace("/", "-", $to_date));
-		$accepted_date = getDate($to_date);
-		$month_number = $accepted_date['mon'];
-		$accepted_year = $accepted_date['year'];
-		if (date('I')) {
-			$minus_var = "3601";
-		} else {
-			$minus_var = '1';
-		}
-		if ($to_date) {
-			$to_date = $to_date + ((60 * 60 * 24 * cal_days_in_month(CAL_GREGORIAN, $month_number, $accepted_year)) - $minus_var);
-		}
-		return array($from_date, $to_date);
-	}
-	if ($dm_var == 'd') {
-		$from_date = strtotime(str_replace("/", "-", $_GET['from_date']));
-		$to_date = strtotime(str_replace("/", "-", $_GET['to_date']));
-		$accepted_date = getDate($to_date);
-		$month_number = $accepted_date['mon'];
-		$accepted_year = $accepted_date['year'];
-		if ($to_date) {
-			$to_date = $to_date + 86399;
-		}
-		return array($from_date, $to_date);
-	}
+function returncorrectdates(Web $w, $dm_var, $from_date, $to_date)
+{
+    if ($dm_var == 'm') {
+        $from_date = strtotime(str_replace("/", "-", $from_date));
+        $to_date = strtotime(str_replace("/", "-", $to_date));
+        $accepted_date = getDate($to_date);
+        $month_number = $accepted_date['mon'];
+        $accepted_year = $accepted_date['year'];
+
+        if (date('I')) {
+            $minus_var = "3601";
+        } else {
+            $minus_var = '1';
+        }
+
+        if ($to_date) {
+            $to_date = $to_date + ((60 * 60 * 24 * cal_days_in_month(CAL_GREGORIAN, $month_number, $accepted_year)) - $minus_var);
+        }
+
+        return array($from_date, $to_date);
+    }
+
+    if ($dm_var == 'd') {
+        $from_date = strtotime(str_replace("/", "-", $_GET['from_date']));
+        $to_date = strtotime(str_replace("/", "-", $_GET['to_date']));
+        $accepted_date = getDate($to_date);
+        $month_number = $accepted_date['mon'];
+        $accepted_year = $accepted_date['year'];
+        if ($to_date) {
+            $to_date = $to_date + 86399;
+        }
+
+        return array($from_date, $to_date);
+    }
 }
 
 /**
@@ -608,31 +721,27 @@ function returncorrectdates(Web &$w, $dm_var, $from_date, $to_date) {
  * Setting the value to an integer will match against non-associative array keys of
  * the same value
  *
- * @param <Mixed> $value
- * @param <Mixed> $array
- * @return <boolean> $in_multiarray
+ * @param mixed $value
+ * @param mixed $array
+ * @return bool $in_multiarray
  */
-function in_multiarray($value, $array) {
-	if (is_array($array)) {
-		if (in_array($value, $array, true) || array_key_exists($value, $array)) {
-			return true;
-		} else {
-			foreach ($array as $key => $arr_value) {
-//                if (in_multiarray($value, $key)) {
-				//                    return true;
-				//                } else {
-				if (is_array($arr_value) && in_multiarray($value, $arr_value)) {
-					return true;
-				}
-//                }
-			}
-		}
-	} else {
-		if ($value === $array) {
-			return true;
-		}
-	}
-	return false;
+function in_multiarray($value, $array)
+{
+    if (is_array($array)) {
+        if (in_array($value, $array, true) || array_key_exists($value, $array)) {
+            return true;
+        } else {
+            foreach ($array as $key => $arr_value) {
+                if (is_array($arr_value) && in_multiarray($value, $arr_value)) {
+                    return true;
+                }
+            }
+        }
+    } elseif ($value === $array) {
+        return true;
+    }
+
+    return false;
 }
 
 /**
@@ -642,24 +751,25 @@ function in_multiarray($value, $array) {
  *
  * Similar to above except it will return the value
  *
- * @param <Mixed> $value
- * @param <Mixed> $array
- * @return <boolean> $in_multiarray
+ * @param mixed $value
+ * @param mixed $array
+ * @return bool $in_multiarray
  */
-function getValueFromMultiarray($key, $array) {
-	if (is_array($array)) {
-		if (array_key_exists($key, $array)) {
-			return $array[$key];
-		} else {
-			foreach ($array as $_key => $arr_key) {
-				$value = getValueFromMultiarray($key, $arr_key);
-				if ($value !== null) {
-					return $value;
-				}
-			}
-		}
-	}
-	return null;
+function getValueFromMultiarray($key, $array)
+{
+    if (is_array($array)) {
+        if (array_key_exists($key, $array)) {
+            return $array[$key];
+        } else {
+            foreach ($array as $_key => $arr_key) {
+                $value = getValueFromMultiarray($key, $arr_key);
+                if ($value !== null) {
+                    return $value;
+                }
+            }
+        }
+    }
+    return null;
 }
 
 /**
@@ -673,140 +783,213 @@ function getValueFromMultiarray($key, $array) {
  * @param array $multiarray
  * @return boolean
  */
-function objectPropertyHasValueInMultiArray($object, $property, $value, $multiarray = []) {
-	if (!empty($multiarray)) {
-		foreach ($multiarray as $array_key => $array_value) {
-			if (is_array($array_value)) {
-				return objectPropertyHasValueInMultiArray($object, $property, $value, $array_value);
-			}
+function objectPropertyHasValueInMultiArray($object, $property, $value, $multiarray = [])
+{
+    if (!empty($multiarray)) {
+        foreach ($multiarray as $array_key => $array_value) {
+            if (is_array($array_value)) {
+                return objectPropertyHasValueInMultiArray($object, $property, $value, $array_value);
+            }
 
-			if (is_object($array_value) && is_a($array_value, $object, true) && property_exists($array_value, $property) && $array_value->$property === $value) {
-				return true;
-			}
-		}
-	}
+            if (is_object($array_value) && is_a($array_value, $object, true) && property_exists($array_value, $property) && $array_value->$property === $value) {
+                return true;
+            }
+        }
+    }
 
-	return false;
+    return false;
 }
 
-// Find a value in a multidimension array
-// Modified to only look at the keys, this will always return true in instances like:
-// Look for file in form array, will be true is the values in the select is file (like get all modules)
-function in_modified_multiarray($value, $array, $levels = 3) {
-	if (is_array($array)) {
-		if (in_array($value, $array)) {
-			return true;
-		} else {
-			if (--$levels < 0) {
-				return false;
-			}
+/**
+ * Find a value in a multidimensional array will only look at the array keys
+ *
+ * @param mixed value
+ * @param mixed array
+ * @param int levels (optional, default 3)
+ * @return bool
+ */
+function in_modified_multiarray($value, $array, $levels = 3)
+{
+    if (is_array($array)) {
+        if (in_array($value, $array)) {
+            return true;
+        } else {
+            if (--$levels < 0) {
+                return false;
+            }
 
-			foreach ($array as $key => $arr_value) {
-				if ($value === $key) {
-					return true;
-				}
+            foreach ($array as $key => $arr_value) {
+                if ($value === $key) {
+                    return true;
+                }
 
-				if (is_array($arr_value) && in_modified_multiarray($value, $arr_value, $levels)) {
-					return true;
-				}
-			}
-		}
-	} else {
-		if ($value === $array) {
-			return true;
-		}
-	}
-	return false;
+                if (is_array($arr_value) && in_modified_multiarray($value, $arr_value, $levels)) {
+                    return true;
+                }
+            }
+        }
+    } else {
+        if ($value === $array) {
+            return true;
+        }
+    }
+    return false;
 }
 
-function AESencrypt($text,$password) {
-	require_once "phpAES/AES.class.php";
-	$aes = new AES($password);
-	return base64_encode($aes->encrypt($text));
+/**
+ * Returns AES encrypted string - will now use new SSLEncrypt function
+ *
+ * @deprecated v3.0.0
+ *
+ * @param mixed text to encrypt
+ * @param mixed password (unused)
+ * @return string encrypted text
+ */
+function AESencrypt($text, $password)
+{
+    $this->w->Log->info('AES and override password are deprecated, attempting compatibility through SSL.');
+
+    return SSLencrypt($text);
 }
 
-function SystemAESencrypt($text) {
-	return AESencrypt($text,Config::get('system.password_salt'));
+/**
+ * Decrypts AES string - will now use new SSLDecrypt function
+ *
+ * @deprecated v3.0.0
+ *
+ * @param mixed text to decrypt
+ * @param mixed password (unused)
+ * @return string decrypted text
+ */
+function AESdecrypt($text, $password)
+{
+    $this->w->Log->info('AES and override password are deprecated, attempting compatibility through SSL.');
+
+    return SSLdecrypt($text);
 }
 
-function SystemSSLencrypt($text) {
-	$ssl_method = "AES-256-CBC";
-	$encryption_key = Config::get('system.encryption.key',null);
-	$encryption_iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length($ssl_method));
-	if (empty($encryption_key) || empty($encryption_iv)) {
-		// raise exception
-		$err = 'Cannot encrypt without system key and IV.';
-		$this->w->Log->error($err);
-		throw new Exception($err);
-	} else {
-		$ssl = openssl_encrypt($text, $ssl_method, $encryption_key, 0, $encryption_iv);
-		$encryption_iv = bin2hex($encryption_iv);
-		return  $ssl . "::" . $encryption_iv;
-		}
-	}
-
-function AESdecrypt($text,$password) {
-		require_once "phpAES/AES.class.php";
-		$aes = new AES($password);
-		return $aes->decrypt(base64_decode($text));
-	}
-
-function SystemAESdecrypt($text) {
-	return AESdecrypt($text,Config::get('system.password_salt'));
+function SystemSSLencrypt($text)
+{
+    $ssl_method = "AES-256-CBC";
+    $encryption_key = Config::get('system.encryption.key', null);
+    $encryption_iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length($ssl_method));
+    if (empty($encryption_key) || empty($encryption_iv)) {
+        // raise exception
+        $err = 'Cannot encrypt without system key and IV.';
+        $this->w->Log->error($err);
+        throw new Exception($err);
+    } else {
+        $ssl = openssl_encrypt($text, $ssl_method, $encryption_key, 0, $encryption_iv);
+        $encryption_iv = bin2hex($encryption_iv);
+        return $ssl . "::" . $encryption_iv;
+    }
 }
 
-function SystemSSLdecrypt($text) {
-	$ssl_method = "AES-256-CBC";
-	$encryption_key = Config::get('system.encryption.key',null);
-	$text = explode("::",$text);  //var_dump($text);
-	$encryption_iv = array_pop($text);
-	if (empty($encryption_key) || empty($encryption_iv)) {
-		// raise exception
-		$err = 'Cannot decrypt without system key and IV.';
-		$this->w->Log->error($err);
-		throw new Exception($err);
-		} else {
-		$text = array_pop($text);
-		return openssl_decrypt($text, $ssl_method, $encryption_key, 0, hex2bin($encryption_iv));
-		}
-	}
+function SystemSSLdecrypt($text)
+{
+    $ssl_method = "AES-256-CBC";
+    $encryption_key = Config::get('system.encryption.key', null);
+    $text = explode("::", $text); //var_dump($text);
+    $encryption_iv = array_pop($text);
+    if (empty($encryption_key) || empty($encryption_iv)) {
+        // raise exception
+        $err = 'Cannot decrypt without system key and IV.';
+        $this->w->Log->error($err);
+        throw new Exception($err);
+    } else {
+        $text = array_pop($text);
+        return openssl_decrypt($text, $ssl_method, $encryption_key, 0, hex2bin($encryption_iv));
+    }
+}
+
+/**
+ * Encrypts given text with AES256
+ * Warning: this is a two way encryption method, use only if you understand the risks
+ *
+ * @param mixed text to encrypt
+ * @return string encrypted text
+ * @throws Exception when system encryption key is missing or IV cannot be generated
+ */
+function SSLEncrypt($text)
+{
+    $ssl_method = "AES-256-CBC";
+    $encryption_key = Config::get('system.encryption.key', null);
+    $encryption_iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length($ssl_method));
+
+    if (empty($encryption_key) || empty($encryption_iv)) {
+        $err = 'Cannot encrypt without system key and IV.';
+        $this->w->Log->error($err);
+        throw new Exception($err);
+    } else {
+        $ssl = openssl_encrypt($text, $ssl_method, $encryption_key, 0, $encryption_iv);
+        $encryption_iv = bin2hex($encryption_iv);
+        return $ssl . "::" . $encryption_iv;
+    }
+}
+
+/**
+ * Decrypts given text with AES256
+ *
+ * @param mixed text to decrypt
+ * @return string decrypted text
+ * @throws Exception when system encryption key is missing or IV cannot be generated
+ */
+function SSLDecrypt($text)
+{
+    $ssl_method = "AES-256-CBC";
+    $encryption_key = Config::get('system.encryption.key', null);
+    $text = explode("::", $text);
+    $encryption_iv = array_pop($text);
+
+    if (empty($encryption_key) || empty($encryption_iv)) {
+        $err = 'Cannot decrypt without system key and IV.';
+        $this->w->Log->error($err);
+        throw new Exception($err);
+    } else {
+        $text = array_pop($text);
+        return openssl_decrypt($text, $ssl_method, $encryption_key, 0, hex2bin($encryption_iv));
+    }
+}
 
 /**
  * Gets content between two different strings
  * (Source: http://tonyspiro.com/using-php-to-get-a-string-between-two-strings/)
  *
- * @param String $content
- * @param String $start
- * @param String $end
+ * @param string $content
+ * @param string $start
+ * @param string $end
  * @return string
  */
-function getBetween($content, $start, $end) {
-	$r = explode($start, $content);
-	if (isset($r[1])) {
-		$r = explode($end, $r[1]);
-		return $r[0];
-	}
-	return '';
+function getBetween($content, $start, $end)
+{
+    $r = explode($start, $content);
+    if (isset($r[1])) {
+        $r = explode($end, $r[1]);
+        return $r[0];
+    }
+    return '';
 }
 
 /**
  * Returns true if array is associative, i.e. at least one key index is a string type
  * http://stackoverflow.com/questions/173400/how-to-check-if-php-array-is-associative-or-sequential/4254008#4254008
  *
- * @param <Array> $array
- * @return <Boolean>
+ * @param array $array
+ * @return bool
  */
-function is_associative_array($array) {
-	return (bool) count(array_filter(array_keys($array), 'is_string'));
+function is_associative_array($array)
+{
+    return (bool) count(array_filter(array_keys($array), 'is_string'));
 }
 
 /**
  * Similar to above, except it checks that ALL keys are strings
- * @param <Array> $array
- * @return <Boolean>
+ * @param array $array
+ * @return bool
  */
-function is_complete_associative_array($array) {
-	return (bool) (count(array_filter(array_keys($array), 'is_string')) == count($array));
+function is_complete_associative_array($array)
+{
+    return (bool) (count(array_filter(array_keys($array), 'is_string')) == count($array));
 }
 
 /**
@@ -818,38 +1001,39 @@ function is_complete_associative_array($array) {
  *      $include == true will return true (1 <= 10 <= 10 is true)
  *      $include == false will return false (1 < 10 < 10 is false)
  *
- * @param <float> $subject
- * @param <float> $min
- * @param <float> $max
- * @param <boolean> $include
- * @return <boolean>
+ * @param float $subject
+ * @param float $min
+ * @param float $max
+ * @param bool $include
+ * @return bool
  */
-function in_numeric_range($subject, $min, $max, $include = true) {
-	// Sanity checks
-	if (!is_numeric($subject) || !is_numeric($min) || !is_numeric($max)) {
-		return false;
-	}
+function in_numeric_range($subject, $min, $max, $include = true)
+{
+    // Sanity checks
+    if (!is_numeric($subject) || !is_numeric($min) || !is_numeric($max)) {
+        return false;
+    }
 
-	// Check if bounds given in wrong order
-	// Has effect of checking outside the boundary
-	if ($max < $min) {
-		if (true === $include) {
-			return ($subject <= $min || $subject >= $max);
-		} else {
-			return ($subject < $min || $subject > $max);
-		}
-	}
-	// For cases where for some reason all given vars are the same
-	if ($min === $max && $min === $subject) {
-		return $include;
-	}
+    // Check if bounds given in wrong order
+    // Has effect of checking outside the boundary
+    if ($max < $min) {
+        if (true === $include) {
+            return ($subject <= $min || $subject >= $max);
+        } else {
+            return ($subject < $min || $subject > $max);
+        }
+    }
+    // For cases where for some reason all given vars are the same
+    if ($min === $max && $min === $subject) {
+        return $include;
+    }
 
-	// Check
-	if (true === $include) {
-		return ($subject >= $min && $subject <= $max);
-	} else {
-		return $subject > $min && $subject < $max;
-	}
+    // Check
+    if (true === $include) {
+        return ($subject >= $min && $subject <= $max);
+    } else {
+        return $subject > $min && $subject < $max;
+    }
 }
 
 /**
@@ -860,26 +1044,31 @@ function in_numeric_range($subject, $min, $max, $include = true) {
  * @param object $sourceObject
  * @return object
  */
-function cast($destination, $sourceObject) {
-	if (is_string($destination)) {
-		$destination = new $destination();
-	}
-	$sourceReflection = new ReflectionObject($sourceObject);
-	$destinationReflection = new ReflectionObject($destination);
-	$sourceProperties = $sourceReflection->getProperties();
-	foreach ($sourceProperties as $sourceProperty) {
-		$sourceProperty->setAccessible(true);
-		$name = $sourceProperty->getName();
-		$value = $sourceProperty->getValue($sourceObject);
-		if ($destinationReflection->hasProperty($name)) {
-			$propDest = $destinationReflection->getProperty($name);
-			$propDest->setAccessible(true);
-			$propDest->setValue($destination, $value);
-		} else {
-			$destination->$name = $value;
-		}
-	}
-	return $destination;
+function cast($destination, $sourceObject)
+{
+    if (is_string($destination)) {
+        $destination = new $destination();
+    }
+
+    $sourceReflection = new ReflectionObject($sourceObject);
+    $destinationReflection = new ReflectionObject($destination);
+    $sourceProperties = $sourceReflection->getProperties();
+
+    foreach ($sourceProperties ?? [] as $sourceProperty) {
+        $sourceProperty->setAccessible(true);
+        $name = $sourceProperty->getName();
+        $value = $sourceProperty->getValue($sourceObject);
+
+        if ($destinationReflection->hasProperty($name)) {
+            $propDest = $destinationReflection->getProperty($name);
+            $propDest->setAccessible(true);
+            $propDest->setValue($destination, $value);
+        } else {
+            $destination->$name = $value;
+        }
+    }
+
+    return $destination;
 }
 
 /**
@@ -895,25 +1084,26 @@ function cast($destination, $sourceObject) {
  * @param string $string
  * @return string
  */
-function delete_all_between($beginning, $end, $string, $remove_every_instance = false) {
-	$beginningPos = strpos($string, $beginning);
-	$endPos = strpos($string, $end);
+function delete_all_between($beginning, $end, $string, $remove_every_instance = false)
+{
+    $beginningPos = strpos($string, $beginning);
+    $endPos = strpos($string, $end);
 
-	if ($beginningPos === false || $endPos === false) {
-		return $string;
-	}
+    if ($beginningPos === false || $endPos === false) {
+        return $string;
+    }
 
-	if (!$remove_every_instance) {
-		return trim(str_replace(substr($string, $beginningPos, ($endPos + strlen($end)) - $beginningPos), '', $string));
-	} else {
-		while (($beginningPos !== FALSE && $endPos !== FALSE)) {
-			$string = trim(str_replace(substr($string, $beginningPos, ($endPos + strlen($end)) - $beginningPos), '', $string));
-			$beginningPos = strpos($string, $beginning);
-			$endPos = strpos($string, $end);
-		}
+    if (!$remove_every_instance) {
+        return trim(str_replace(substr($string, $beginningPos, ($endPos + strlen($end)) - $beginningPos), '', $string));
+    } else {
+        while (($beginningPos !== false && $endPos !== false)) {
+            $string = trim(str_replace(substr($string, $beginningPos, ($endPos + strlen($end)) - $beginningPos), '', $string));
+            $beginningPos = strpos($string, $beginning);
+            $endPos = strpos($string, $end);
+        }
 
-		return $string;
-	}
+        return $string;
+    }
 }
 
 /**
@@ -921,31 +1111,32 @@ function delete_all_between($beginning, $end, $string, $remove_every_instance = 
  *
  * Thanks to this SO answer: https://stackoverflow.com/a/18743012
  *
- * @param String from date in the format d-m-Y
- * @param String to date in the format d-m-Y
- * @param String optional format of returned values
- * @return Array<String> month list
+ * @param string from date in the format d-m-Y
+ * @param string to date in the format d-m-Y
+ * @param string optional format of returned values
+ * @return array<string> month list
  */
-function get_list_of_months_between_dates($from, $to, $format = 'M Y') {
-	if (is_numeric($from)) {
-		$from = date('d-m-Y', $from);
-	}
+function get_list_of_months_between_dates($from, $to, $format = 'M Y')
+{
+    if (is_numeric($from)) {
+        $from = date('d-m-Y', $from);
+    }
 
-	if (is_numeric($to)) {
-		$to = date('d-m-Y', $to);
-	}
+    if (is_numeric($to)) {
+        $to = date('d-m-Y', $to);
+    }
 
-	$start    = (new DateTime($from))->modify('first day of this month');
-	$end      = (new DateTime($to))->modify('first day of next month');
-	$interval = DateInterval::createFromDateString('1 month');
-	$period   = new DatePeriod($start, $interval, $end);
+    $start = (new DateTime($from))->modify('first day of this month');
+    $end = (new DateTime($to))->modify('first day of next month');
+    $interval = DateInterval::createFromDateString('1 month');
+    $period = new DatePeriod($start, $interval, $end);
 
-	$month_list = [];
-	foreach ($period as $dt) {
-	    $month_list[] = $dt->format($format);
-	}
+    $month_list = [];
+    foreach ($period as $dt) {
+        $month_list[] = $dt->format($format);
+    }
 
-	return $month_list;
+    return $month_list;
 }
 
 // Polyfills for array_key functions for php < 7.3
