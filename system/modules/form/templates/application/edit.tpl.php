@@ -4,29 +4,29 @@
 	}
 </style>
 <div id='form-application-<?php echo $application->id; ?>__vue-instance' style='background-color: #efefef; padding-top: 20px;'>
-	<div class='row'>
-		<div class='small-12 columns'>
-			<h3>Editing Application: {{ application.title }} <a class='button tiny secondary right' style='margin-bottom: 0px;' href='/form-application/show/<?php echo $application->id; ?>'>View Application</a><a class='button tiny secondary right' style='margin-bottom: 0px;' href='/form-application/export/<?php echo $application->id; ?>'>Export Application</a></h3>
-		</div>
-	</div>
-	<form style='margin-top: 0px;' v-on:submit='saveApplication()'>
-		<form-row label="Title">
-			<input type="text" v-model='application.title' v-on:keyup.prevent='form_changed = true' v-bind:value="application.title" />
-		</form-row>
-		<form-row label="Description">
-			<textarea v-model='application.description' v-on:keyup.prevent='form_changed = true'>{{ application.description }}</textarea>
-		</form-row>
-		<form-row label="Active" label-for="active_switch">
-			<div class="switch">
-				<input id="active_switch" name='is_active' type="checkbox" v-on:change='form_changed = true' :checked='setChecked()' v-model='application.is_active' :true-value='1' :false-value='0'>
-				<label for='active_switch'></label>
-			</div>
-		</form-row>
-		<form-row v-show='form_changed'>
-			<a v-on:click='saveApplication()' class='button small'>Save</a>
-			<a v-on:click='resetApplication()' class='button small secondary right'>Cancel</a>
-		</form-row>
-	</form>
+    <div class='row'>
+        <div class='small-12 columns'>
+            <h3>Editing Application: {{ application.title }} <a class='button tiny secondary right' style='margin-bottom: 0px;' href='/form-application/show/<?php echo $application->id; ?>'>View Application</a><a class='button tiny secondary right' style='margin-bottom: 0px;' href='/form-application/export/<?php echo $application->id; ?>'>Export Application</a></h3>
+        </div>
+    </div>
+    <form style='margin-top: 0px;' v-on:submit='saveApplication()'>
+        <form-row label="Title">
+            <input type="text" v-model='application.title' v-on:keyup.prevent='form_changed = true' />
+        </form-row>
+        <form-row label="Description">
+            <textarea v-model='application.description' v-on:keyup.prevent='form_changed = true'>{{ application.description }}</textarea>
+        </form-row>
+        <form-row label="Active" label-for="active_switch">
+            <div class="switch">
+                <input id="active_switch" name='is_active' type="checkbox" v-on:change='form_changed = true' :checked='setChecked()' v-model='application.is_active' :true-value='1' :false-value='0'>
+                <label for='active_switch'></label>
+            </div>
+        </form-row>
+        <form-row v-show='form_changed'>
+            <a v-on:click='saveApplication()' class='button small'>Save</a>
+            <a v-on:click='resetApplication()' class='button small secondary right'>Cancel</a>
+        </form-row>
+    </form>
 
 	<hr/>
 

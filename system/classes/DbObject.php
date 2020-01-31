@@ -130,29 +130,19 @@ class DbObject extends DbService
         }
     }
 
-    private function establishEncryptionModel()
-    {
+    private function establishEncryptionModel() {
+        
+        $this->_systemEncrypt = 'SSLencrypt'; 
+        $this->_systemDecrypt = 'SSLdecrypt'; 
 
-        $this->_systemEncrypt = 'SystemAESencrypt';
-        $this->_systemDecrypt = 'SystemAESdecrypt';
+                $encryption_key = Config::get('system.encryption.key',null);
+                //$encryption_iv = Config::get('system.encryption.iv',null);
 
-        $result = $this->w->db->query(
-            "select id from migration
-        where module = 'admin' and classname = '" . Config::get('system.encryptionMigration', "") . "' ; "
-        )->fetchAll();
-
-        if (!empty($result)) {
-            $encryption_key = Config::get('system.encryption.key', null);
-            //$encryption_iv = Config::get('system.encryption.iv',null);
-
-            if (empty($encryption_key)) { // || empty($encryption_iv)) {
-                $err = 'Encryption key is not set';
-                $this->w->Log->error($err);
-                throw new Exception($err);
-            }
-            $this->_systemEncrypt = 'SystemSSLencrypt';
-            $this->_systemDecrypt = 'SystemSSLdecrypt';
-        }
+                if (empty($encryption_key)) { // || empty($encryption_iv)) {
+                    $err = 'Encryption key is not set';
+                    $this->w->Log->error($err);
+                    throw new Exception($err);
+                }
     }
 
     /**
@@ -383,7 +373,6 @@ class DbObject extends DbService
         $links = $this->w->db->get("restricted_object_user_link")
             ->select()
             ->select("id")
-            ->where("object_class", get_class($this))
             ->where("object_id", $this->id)
             ->where("is_deleted", 0)
             ->fetchAll();

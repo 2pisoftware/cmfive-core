@@ -8,11 +8,12 @@
  * Original source was modified to emit the select method up to the parent instead of using the autocompleteBus.
  * Also added the emission of the 'idProperty' instead of the text selected. Our usage is normally {id: 1, name: 'Adam'}
  *     where we want to return '1' when 'Adam' is selected.
- * 
+ *
  * @author Tobias Kriebisch <https://github.com/tecbeast42>
  * @author Adam Buckley <adam@2pisoftware.com> (modified to fit our needs)
  * @license spdx.org/licenses/MIT.html MIT License
  */
+//:value="value" \
 Vue.component('autocomplete', {
    template: '<div :class="classPrefix" v-on:mousedown="mousefocus = true" v-on:mouseout="mousefocus = false"> \
         <input type="text" v-on:blur="focused = false" v-on:focus="focused = true" \
@@ -21,7 +22,6 @@ Vue.component('autocomplete', {
             v-on:keydown.up.prevent.stop="moveUp()" \
             v-on:keydown.enter.prevent.stop="select(selectedIndex)" \
             v-on:keydown.tab="mousefocus = false" \
-            :value="value" \
             ref="input" \
             :required="required"> \
         <div v-if="showSuggestions" :class="classPrefix + \'__suggestions\'"> \

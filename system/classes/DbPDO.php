@@ -1,4 +1,5 @@
 <?php
+
 /**
  * PDO Extension class, some methods exist to emulate methods called from Crystal DB
  * to ensure backwards compatability with older modules. I.e. having both fetch_all()
@@ -8,41 +9,38 @@
  *
  * @author Adam Buckley <adam@2pisoftware.com>
  */
-class DbPDO extends PDO {
-    // private static $table_names = array();
-    private $table_names = array();
-
-    private static $_QUERY_CLASSNAME = array("InsertQuery", "SelectQuery", "UpdateQuery"); //"PDOStatement",
-
-    private $query = null;
-    private $fpdo = null;
+class DbPDO extends PDO
+{
     public $sql = null;
     public $total_results = 0;
 
+    private $table_names = [];
+    private static $_QUERY_CLASSNAME = ["\Envms\FluentPDO\Queries\Insert", "\Envms\FluentPDO\Queries\Select", "\Envms\FluentPDO\Queries\Update"];
+    private $query = null;
+    private $fpdo = null;
     private static $trx_token = 0;
-
     private $config;
-
     private $migration_mode = 0;
 
-    public function __construct($config = array(), $override = false) {
+    public function __construct($config = [], $override = false)
+    {
         // Set up our PDO class
-        //GC: sqlsrv requires a different dsn to mysql.
         switch ($config['driver']) {
-			case 'sqlsrv':
-				$port = isset($config['port']) && !empty($config['port']) ? ",".$config['port'] : "";
-				$url = "{$config['driver']}:Server={$config['hostname']}{$port};Database={$config['database']}";
-				break;
-			//linux apache2 driver
-			case 'dblib':
-				$port = isset($config['port']) && !empty($config['port']) ? ",".$config['port'] : "";
-				$url = "{$config['driver']}:host={$config['hostname']}{$port};dbname={$config['database']}";
-				break;
-                //mysql
+                // MsSQL
+            case 'sqlsrv':
+                $port = isset($config['port']) && !empty($config['port']) ? "," . $config['port'] : "";
+                $url = "{$config['driver']}:Server={$config['hostname']}{$port};Database={$config['database']}";
+                break;
+                // Linux Apache2 driver
+            case 'dblib':
+                $port = isset($config['port']) && !empty($config['port']) ? "," . $config['port'] : "";
+                $url = "{$config['driver']}:host={$config['hostname']}{$port};dbname={$config['database']}";
+                break;
+                // MySQL
             case 'mysql':
-			default:
-				$port = isset($config['port']) && !empty($config['port']) ? ";port=".$config['port'] : "";
-				$url = "{$config['driver']}:host={$config['hostname']};dbname={$config['database']}{$port}";
+            default:
+                $port = isset($config['port']) && !empty($config['port']) ? ";port=" . $config['port'] : "";
+                $url = "{$config['driver']}:host={$config['hostname']};dbname={$config['database']}{$port}";
         }
 
         $options = [
@@ -54,22 +52,16 @@ class DbPDO extends PDO {
             $options[PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = false;
         }
 
-        parent::__construct($url,$config["username"],$config["password"], $options);
+        parent::__construct($url, $config["username"], $config["password"], $options);
         $this->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-
-
         // Instantiate a FluentPDO class and init vars
-        $this->fpdo = new FluentPDO($this);
+        $this->fpdo = new \Envms\FluentPDO\Query($this);
+        $this->fpdo->convertTypes(true, true);
 
-        $this->sql = 'getSql'; //$this->getSql();
+        $this->sql = 'getSql';
         $this->config = $config;
 
-         // Since you cant bind table names, maybe its a good idea to
-        // load an array of table names to check against? But this is probably
-        // unecessary to do on every call so maybe move it to get()
-        // Setting this to static however should make this array share the memory
-        // heap for this var across all instances
         $this->getAvailableTables();
 
         if (in_array("custom_stopwords_override", $this->table_names) && $override == true && $config['driver'] == 'mysql') {
@@ -77,65 +69,68 @@ class DbPDO extends PDO {
         }
     }
 
-    public function disableStopwords() {
-        $database_name = $this->config['database'];
-        $this->sql("SET SESSION innodb_ft_user_stopword_table = '$database_name/custom_stopwords_override';");
+    public function disableStopwords()
+    {
+        $this->sql("SET SESSION innodb_ft_user_stopword_table = '{$this->getDatabase()}/custom_stopwords_override';");
     }
 
-    public function getDatabase() {
-    	return $this->config['database'];
+    public function getDatabase()
+    {
+        return $this->config['database'];
     }
 
-    public function getHost() {
-    	return $this->config['host'];
+    public function getHost()
+    {
+        return $this->config['host'];
     }
 
-    public function getPort() {
-    	return $this->config['port'];
+    public function getPort()
+    {
+        return $this->config['port'];
     }
 
-    public function getDriver() {
-    	return $this->config['driver'];
+    public function getDriver()
+    {
+        return $this->config['driver'];
     }
 
-    public function setMigrationMode($value) {
-        if ($value) {
-            $this->migration_mode = 1;
-        } else {
-            $this->migration_mode = 0;
-        }
+    public function setMigrationMode($value)
+    {
+        $this->migration_mode = $value ? 1 : 0;
     }
 
     /**
      * Returns a cached list of available tables in the database
      *
-     * @return Array DbPDO::$table_names all table names
+     * @return array DbPDO::$table_names all table names
      */
-	public function getAvailableTables() {
+    public function getAvailableTables()
+    {
         if ($this->migration_mode || empty($this->table_names)) {
             $this->table_names = [];
             $query = 'show tables';
-			if ($this->config['driver'] == 'sqlsrv') {
-				$query = 'select TABLE_NAME from INFORMATION_SCHEMA.TABLES';
-			}
-            foreach($this->query($query)->fetchAll(PDO::FETCH_NUM) as $table) {
+            if ($this->config['driver'] == 'sqlsrv') {
+                $query = 'select TABLE_NAME from INFORMATION_SCHEMA.TABLES';
+            }
+            foreach ($this->query($query)->fetchAll(PDO::FETCH_NUM) as $table) {
                 $this->table_names[] = $table[0];
             }
         }
         return $this->table_names;
-	}
+    }
 
     /**
      * This function sets up a FluentPDO query with the given table name, an
      * error will be thrown if the table name doesn't exist in the database
      *
-     * @param type $table_name
+     * @param string $table_name
      * @return \DbPDO|null
      */
-    public function get($table_name){
-        if (!in_array($table_name, $this->getAvailableTables())){
-			trigger_error("Table $table_name does not exist in the database", E_USER_ERROR);
-			return null;
+    public function get($table_name)
+    {
+        if (!in_array($table_name, $this->getAvailableTables())) {
+            trigger_error("Table $table_name does not exist in the database", E_USER_ERROR);
+            return null;
         }
         $this->query = $this->fpdo->from($table_name);
         return $this;
@@ -162,12 +157,13 @@ class DbPDO extends PDO {
      * results in
      *      "SELECT contact.email FROM users LEFT JOIN..."
      *
-     * @param String|null $select select query
-     * @return DbPDO $this
+     * @param string|null $select select query
+     * @return \DbPDO $this
      */
-	public function select($select = null){
-        if ($this->query !== NULL){
-			$this->query = $this->query->select($select);
+    public function select($select = null)
+    {
+        if ($this->query !== null) {
+            $this->query = $this->query->select($select);
         }
         return $this;
     }
@@ -179,8 +175,9 @@ class DbPDO extends PDO {
      *
      * @return int|null $result number of results
      */
-    public function count(){
-        if ($this->query !== null){
+    public function count()
+    {
+        if ($this->query !== null) {
             $result = $this->select()->select("count(*)")->fetch_element("count(*)");
             return intval($result);
         }
@@ -189,24 +186,26 @@ class DbPDO extends PDO {
     /**
      * Adds left join to the current query
      *
-     * @param String $leftjoin left join rule to apply
-     * @return DbPDO $this
+     * @param string $leftjoin left join rule to apply
+     * @return \DbPDO $this
      */
-    public function leftJoin($leftJoin){
-        if ($this->query !== NULL && !empty($leftJoin)){
+    public function leftJoin($leftJoin)
+    {
+        if ($this->query !== null && !empty($leftJoin)) {
             $this->query = $this->query->leftJoin($leftJoin);
         }
         return $this;
     }
 
-	/**
+    /**
      * Adds left outer join to the current query
      *
-     * @param String $leftjoin left join rule to apply
-     * @return DbPDO $this
+     * @param string $leftjoin left join rule to apply
+     * @return \DbPDO $this
      */
-    public function leftOuterJoin($leftOuterJoin){
-        if ($this->query !== NULL && !empty($leftOuterJoin)){
+    public function leftOuterJoin($leftOuterJoin)
+    {
+        if ($this->query !== null && !empty($leftOuterJoin)) {
             $this->query = $this->query->leftOuterJoin($leftOuterJoin);
         }
         return $this;
@@ -215,31 +214,33 @@ class DbPDO extends PDO {
     /**
      * Adds inner join to the current query
      *
-     * @param String $innerjoin inner join rule to apply
-     * @return DbPDO $this
+     * @param string $innerjoin inner join rule to apply
+     * @return \DbPDO $this
      */
-    public function innerJoin($innerJoin){
-    	if ($this->query !== NULL && !empty($innerJoin)){
-    		$this->query = $this->query->innerJoin($innerJoin);
-    	}
-    	return $this;
+    public function innerJoin($innerJoin)
+    {
+        if ($this->query !== null && !empty($innerJoin)) {
+            $this->query = $this->query->innerJoin($innerJoin);
+        }
+        return $this;
     }
 
     /**
      * This function appends where clauses to the query, the where part of the
      * statement can be reset by passing NULL as the first parameter
      *
-     * @param String|Array $column
-     * @param String $equals
+     * @param string|array $column
+     * @param string $equals
      * @return \DbPDO|null
      */
-   public function where($column, $equals = null){
-        if ($this->query !== null){
-            if (empty($column)){
+    public function where($column, $equals = null)
+    {
+        if ($this->query !== null) {
+            if (empty($column)) {
                 // Resets the where part of the statement
                 $this->query = $this->query->where(null);
             } else {
-                if (is_array($column)){
+                if (is_array($column)) {
                     $this->query = $this->query->where($column);
                 } else {
                     if (func_num_args() == 2) {
@@ -256,28 +257,36 @@ class DbPDO extends PDO {
     /**
      * Orders result set in query (SQL ORDER BY)
      *
-     * @param String $orderby what to order result set by
-     * @return DbPDO $this
+     * @param string $orderby what to order result set by
+     * @return \DbPDO $this
      */
-    public function orderBy($orderby){
-        if ($this->query !== null && !empty($orderby)){
+    public function orderBy($orderby)
+    {
+        if ($this->query !== null && !empty($orderby)) {
             $this->query = $this->query->orderBy($orderby);
         }
         return $this;
     }
 
-    public function order_by($orderby){
+    /**
+     * @see DbPDO::orderBy()
+     *
+     * @deprecated
+     */
+    public function order_by($orderby)
+    {
         return $this->orderBy($orderby);
     }
 
     /**
      * Limits the results returned in a query (SQL LIMIT)
      *
-     * @param Mixed $limit how many records to limit the query to
-     * @return DbPDO $this
+     * @param mixed $limit how many records to limit the query to
+     * @return \DbPDO $this
      */
-    public function limit($limit){
-        if ($this->query !== null and !is_null($limit)){
+    public function limit($limit)
+    {
+        if ($this->query !== null and !is_null($limit)) {
             $this->query = $this->query->limit($limit);
         }
         return $this;
@@ -286,24 +295,26 @@ class DbPDO extends PDO {
     /**
      * Offsets the result set of a query (SQL OFFSET)
      *
-     * @param Mixed $offset how many records to offset by
-     * @return DbPDO $this
+     * @param mixed $offset how many records to offset by
+     * @return \DbPDO $this
      */
-	public function offset($offset) {
-		if ($this->query !== null and !is_null($offset)){
+    public function offset($offset)
+    {
+        if ($this->query !== null and !is_null($offset)) {
             $this->query = $this->query->offset($offset);
         }
         return $this;
-	}
+    }
 
     /**
      * Groups results in query (SQL GROUP BY)
      *
-     * @param String $grouping what to group results by
-     * @return DbPDO $this
+     * @param string $grouping what to group results by
+     * @return \DbPDO $this
      */
-    public function groupBy($grouping) {
-        if ($this->query !== null and !is_null($grouping)){
+    public function groupBy($grouping)
+    {
+        if ($this->query !== null and !is_null($grouping)) {
             $this->query = $this->query->groupBy($grouping);
         }
         return $this;
@@ -314,10 +325,11 @@ class DbPDO extends PDO {
      * Note that in the migration from Crystal, the sql function executed RAW SQL
      * Which is what this is emulating
      *
-     * @param String $query
+     * @param string $query
      * @return DbPDO
      */
-    public function sql($query){
+    public function sql($query)
+    {
         $this->query = $this->query($query);
         return $this;
     }
@@ -325,9 +337,10 @@ class DbPDO extends PDO {
     /**
      * Executes a prepared statement
      *
-     * @return Result
+     * @return mixed
      */
-    public function execute(){
+    public function execute()
+    {
         $this->query = $this->query->execute();
         return $this->query;
     }
@@ -335,59 +348,76 @@ class DbPDO extends PDO {
     /**
      * Fetches $element from the first matching row in the query
      *
-     * @param String $element row key to return
-     * @return Mixed|null element
+     * @param string $element row key to return
+     * @return mixed|null element
      */
-    public function fetch_element($element){
+    public function fetchElement($element)
+    {
         $row = $this->fetch_row();
         return (!is_null($row[$element]) ? $row[$element] : null);
     }
 
-	public function fetchElement($element) {
-		return $this->fetch_element($element);
-	}
+    /**
+     * @see DbPDO::fetchElement()
+     *
+     * @deprecated
+     */
+    public function fetch_element($element)
+    {
+        return $this->fetchElement($element);
+    }
+
 
     /**
      * Fetches the first matching row from the query
      *
-     * Crystal used "fetch_row" whereas PDO uses "fetch"
-     *
-     * @return Array row
+     * @return array row
      */
-    public function fetch_row() {
+    public function fetchRow()
+    {
         return $this->query->fetch();
     }
 
-	public function fetchRow() {
-		return $this->fetch_row();
-	}
+    /**
+     * @see DbPDO::fetchRow()
+     *
+     * @deprecated
+     */
+    public function fetch_row()
+    {
+        return $this->fetchRow();
+    }
 
     /**
      * Fetches all matching rows from the query
      *
      * Crystal used "fetch_all" whereas PDO uses "fetchAll"
      *
-     * @return Array rows
+     * @return array rows
      */
-    public function fetch_all(){
-        if (!empty($this->query)){
+    public function fetchAll()
+    {
+        if (!empty($this->query)) {
             return $this->query->fetchAll();
         }
-        return array();
+
+        return [];
     }
 
-	public function fetchAll() {
-		return $this->fetch_all();
-	}
+    public function fetch_all()
+    {
+        return $this->fetchAll();
+    }
 
     /**
      * Sets up class with a PDO insert query and required array of values
      *
-     * @param String $table_name Name of data table
-     * @param Array $data Data to insert
+     * @param string $table_name Name of data table
+     * @param array $data Data to insert
      * @return \DbPDO
      */
-    public function insert($table_name, $data){
+    public function insert($table_name, $data)
+    {
         $this->query = $this->fpdo->insertInto($table_name, $data);
         return $this;
     }
@@ -396,60 +426,65 @@ class DbPDO extends PDO {
      * Sets up class with a PDO update query, also appends optional
      * update data if needed
      *
-     * @param String $table_name
-     * @param Array $data
+     * @param string $table_name
+     * @param array $data
      * @return \DbPDO
      */
-    public function update($table_name, $data = null) {
+    public function update($table_name, $data = null)
+    {
         $this->query = $this->fpdo->update($table_name);
-        if (!empty($data)){
+        if (!empty($data)) {
             $this->query = $this->query->set($data);
         }
+
         return $this;
     }
 
     /**
      * Sets up class with a PDO delete query
      *
-     * @param String $table_name
+     * @param string $table_name
      * @return \DbPDO
      */
-    public function delete($table_name){
+    public function delete($table_name)
+    {
         $this->query = $this->fpdo->deleteFrom($table_name);
         return $this;
     }
 
-	/**
-	 * Helper functions to help with sorting and pagination
-	 */
+    /**
+     * Helper functions to help with sorting and pagination
+     */
 
-	/**
-	 * Paginates data, pages are expected to start at 1
-	 *
-	 * @param int $page
-	 * @param int $page_size
-	 * @return \DbPDO
-	 */
-	public function paginate($page = null, $page_size = null) {
-		if ($this->query && !is_null($page) && !is_null($page_size) && is_numeric($page) && is_numeric($page_size)) {
-			$this->query = $this->query->offset(($page - 1) * $page_size)->limit($page_size);
-		}
-		return $this;
-	}
+    /**
+     * Paginates data, pages are expected to start at 1
+     *
+     * @param int $page
+     * @param int $page_size
+     * @return \DbPDO
+     */
+    public function paginate($page = null, $page_size = null)
+    {
+        if ($this->query && !is_null($page) && !is_null($page_size) && is_numeric($page) && is_numeric($page_size)) {
+            $this->query = $this->query->offset(($page - 1) * $page_size)->limit($page_size);
+        }
+        return $this;
+    }
 
-	/**
-	 * Sorts data
-	 *
-	 * @param string $sort_field
-	 * @param string $sort_direction
-	 * @return \DbPDO
-	 */
-	public function sort($sort_field = null, $sort_direction = null) {
-		if (!is_null($this->query) && !is_null($sort_field) && !is_null($sort_direction) && in_array(strtolower($sort_direction), ['asc', 'desc'])) {
-			$this->query = $this->query->orderBy($sort_field . ' ' . $sort_direction);
-		}
-		return $this;
-	}
+    /**
+     * Sorts data
+     *
+     * @param string $sort_field
+     * @param string $sort_direction
+     * @return \DbPDO
+     */
+    public function sort($sort_field = null, $sort_direction = null)
+    {
+        if (!is_null($this->query) && !is_null($sort_field) && !is_null($sort_direction) && in_array(strtolower($sort_direction), ['asc', 'desc'])) {
+            $this->query = $this->query->orderBy($sort_field . ' ' . $sort_direction);
+        }
+        return $this;
+    }
 
     /**
      * Magic method call so we can use reserved words in this class
@@ -458,62 +493,70 @@ class DbPDO extends PDO {
      * This method can also be used to force calls down to PDO, bypassing this class and FluentPDO.
      * To do that, prefix only the first intended PDO call with an underscore.
      *
-     * @param String $func
-     * @param Array $args
-     * @return This
+     * @param string $func
+     * @param array $args
+     * @return \DbPDO
      */
-    public function __call($func, $args){
-        if ($func[0] == "_"){
+    public function __call($func, $args)
+    {
+        if ($func[0] == "_") {
             $func = substr($func, 1);
         }
-        switch ($func){
+        switch ($func) {
             case 'and':
                 return $this->where($args[0], $args[1]);
                 break;
 
             default:
-                // What this does is palm off unknown function calls to the parent
-                // which will still throw an error if the method doesnt exist BUT
-                // with the code above that strips off the leading underscore (if present) will mean
-                // that we can bypass the whacky adapted DbPDO/FluentPDO and go STRAIGHT to the
-                // underlying PDO implementation, just by prefixing underscores to the first method call.
+                /**
+                 * What this does is palm off unknown function calls to the parent
+                 * which will still throw an error if the method doesnt exist BUT
+                 * with the code above that strips off the leading underscore
+                 * (if present) will mean that we can bypass this DbPDO/FluentPDO
+                 * class and go straight to the underlying PDO implementation,
+                 * just by prefixing underscores to the first method call.
 
-                // NOTE: You only need to prefix the first method when chaining as the return value for
-                // the first call is a PDOStatement
-
-                return call_user_func_array("parent::".$func, $args);
+                 * NOTE: You only need to prefix the first method when chaining as the return value for
+                 * the first call is a PDOStatement
+                 */
+                return call_user_func_array("parent::" . $func, $args);
         }
     }
 
     /**
      * Returns the SQL query string
      *
-     * @return String|null the sql query
+     * @return string|null the sql query
      */
-    public function getSql(){
+    public function getSql()
+    {
         if (!empty($this->query) && in_array(get_class($this->query), DbPDO::$_QUERY_CLASSNAME)) {
             return $this->query->getQuery();
         }
         return null;
     }
 
-    public function columnCount() {
+    public function columnCount()
+    {
         return $this->query->columnCount();
     }
 
-    public function getColumnMeta($i) {
+    public function getColumnMeta($i)
+    {
         return $this->query->getColumnMeta($i);
     }
 
     // Completely clears the select statement (removes table.*)
-    public function clearSelect() {
-        if (!empty($this->query) && is_a($this->query, "SelectQuery")) {
+    public function clearSelect()
+    {
+        if (!empty($this->query) && (is_a($this->query, 'Envms\FluentPDO\Queries\Select'))) {
             $this->query = $this->query->select(null);
         }
         return $this;
     }
 
-    public function clear_sql(){
+    public function clearSql()
+    {
         // Clear everything
         if (!empty($this->query) && is_a($this->query, "PDOStatement")) {
             $this->query = $this->query->where(null);
@@ -527,19 +570,41 @@ class DbPDO extends PDO {
     }
 
     /**
-     * Returns the last insert id
+     * @see DbPDO::clearSql()
      *
-     * @return Mixed last insert id
+     * @deprecated
      */
-    public function last_insert_id(){
-        if ($this->query !== null){
+    public function clear_sql()
+    {
+        return $this->clearSql();
+    }
+
+    /**
+     * Warning: do not implement PSR2 rules for last_insert_id. Overriding the
+     * PDO::lastInsertId will cause an infinite loop via FluentPDOs use of
+     * the same function.
+     */
+    // public function lastInsertId($seqname = null)
+    // {
+    //
+    // }
+
+    /**
+     * Returns the lsat inserted id
+     *
+     * @return int|null
+     */
+    public function last_insert_id()
+    {
+        if ($this->query !== null) {
             // Checks if execute hasn't been called yet, and calls it
-            if ($this->query instanceof InsertQuery) {
+            if ($this->query instanceof \Envms\FluentPDO\Queries\Insert) {
                 $this->execute();
-			}
+            }
 
             return $this->query;
         }
+
         return null;
     }
 
@@ -548,13 +613,14 @@ class DbPDO extends PDO {
      *
      * @return null
      */
-    public function startTransaction() {
-    	// start if there is no current transaction
-    	if (self::$trx_token == 0) {
-    		$this->beginTransaction();
-    	}
-    	// raise the transaction counter by one
-    	self::$trx_token++;
+    public function startTransaction()
+    {
+        // start if there is no current transaction
+        if (self::$trx_token == 0) {
+            $this->beginTransaction();
+        }
+        // raise the transaction counter by one
+        self::$trx_token++;
     }
 
     /**
@@ -562,17 +628,18 @@ class DbPDO extends PDO {
      *
      * @return null
      */
-    public function commitTransaction() {
-    	// only do anything if there is an active transaction
-    	if (self::$trx_token == 0) {
-    		return;
-    	}
-    	// only the first transaction will be committed
-    	if (self::$trx_token == 1) {
-	    	$this->commit();
-    	}
-    	// decrease the transaction counter
-    	self::$trx_token--;
+    public function commitTransaction()
+    {
+        // only do anything if there is an active transaction
+        if (self::$trx_token == 0) {
+            return;
+        }
+        // only the first transaction will be committed
+        if (self::$trx_token == 1) {
+            $this->commit();
+        }
+        // decrease the transaction counter
+        self::$trx_token--;
     }
 
     /**
@@ -583,60 +650,24 @@ class DbPDO extends PDO {
      *
      * @return null
      */
-    public function rollbackTransaction() {
+    public function rollbackTransaction()
+    {
         // only do anything if there is an active transaction
-    	if (self::$trx_token == 0) {
-    		return;
-    	}
-    	$this->clear_sql();
-    	$this->rollBack();
-    	self::$trx_token = 0;
-	}
+        if (self::$trx_token == 0) {
+            return;
+        }
+        $this->clear_sql();
+        $this->rollBack();
+        self::$trx_token = 0;
+    }
 
-	/**
-	 * Returns true if there is an active transaction
-	 *
-	 * @return boolean
-	 */
-	public function activeTransaction() {
-		return self::$trx_token > 0;
-	}
-
-	/**
-	 * A self healing function when a table doesn't exist
-	 * This class will check the Config definition for a module and try and load
-	 * its install SQL file
+    /**
+     * Returns true if there is an active transaction
      *
-     * @DEPRECATED
-     * @param String $table
-     * @return boolean success
-	 */
-	public function install($table) {
-		if (!class_exists("Config")) {
-			return false;
-		}
-
-		// Check if $table happens to be an entry in Config, i.e. a module
-		$config = Config::get($table);
-		if (empty($config)) {
-			return false;
-		}
-
-		// Get install path
-		$sql_folder_path = ROOT_PATH . '/' . $config['path'] . '/' . $table . '/install';
-		if (!is_dir($sql_folder_path) || !file_exists($sql_folder_path . '/db.sql')) {
-			return false;
-		}
-
-		try {
-			$statement = $this->prepare(file_get_contents($sql_folder_path . '/db.sql'));
-			$statement->execute();
-		} catch (Exception $e) {
-			echo $e->getMessage();
-			return false;
-		}
-
-
-		return true;
-	}
+     * @return boolean
+     */
+    public function activeTransaction()
+    {
+        return self::$trx_token > 0;
+    }
 }
