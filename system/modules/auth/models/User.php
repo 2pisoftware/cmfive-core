@@ -350,7 +350,7 @@ class User extends DbObject
             return true;
         }
 
-        $roles = $this->getRoles();
+        $roles = $this->getRoles() ?? [];
 
         foreach ($roles as $rn) {
             $rolefunc = "role_" . $rn . "_allowed";
