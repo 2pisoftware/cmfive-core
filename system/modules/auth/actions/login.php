@@ -12,7 +12,7 @@ function login_GET(Web $w) {
                     array("Password", "password", "password"),
                         ), $w->localUrl("auth/login"), "POST", "Login");
     $w->ctx("loginform", $loginform);
-    $w->ctx("passwordHelp", Config::get('auth.access_hint', ''));
+    $w->ctx("passwordHelp", Config::get('auth.access_hint', 'Forgot Password?'));
 }
 
 function login_POST(Web &$w) {
