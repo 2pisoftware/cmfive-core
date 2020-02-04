@@ -61,12 +61,34 @@ class HttpTransport implements GenericTransport
             $bcc = array_map("trim", explode(",", $bcc));
         }
 
-        if (is_null($cc)) {
+        if (empty($cc)) {
             $cc = [];
         }
 
-        if (is_null($bcc)) {
+        if (empty($bcc)) {
             $bcc = [];
+        }
+
+        $attachment_files = [];
+
+        foreach ($attachments as $attachment) {
+            if (!file_exists($attachment)) {
+                continue;
+            }
+
+            $file_contents = file_get_contents($attachment);
+            if ($file_contents === false) {
+                $this->w->Log->setLogger("MAIL")->error("Unable to get contents from attachment: $attachment");
+                continue;
+            }
+
+            $attachment_file = [
+                "filename" => basename($attachment),
+                "data" => file_get_contents($attachment),
+                "inline" => false,
+            ];
+
+            $attachment_files[] = $attachment_file;
         }
 
         $request_body = [
@@ -82,7 +104,7 @@ class HttpTransport implements GenericTransport
             "body" => $body,
             "body_content_type" => "text/html",
             "headers" => $headers,
-            "attachments" => $attachments,
+            "attachments" => $attachment_files,
         ];
 
         try {
