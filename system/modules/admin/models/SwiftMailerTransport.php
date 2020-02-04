@@ -62,7 +62,7 @@ class SwiftMailerTransport implements GenericTransport
         }
     }
 
-    public function send($to, $replyto, $subject, $body, $cc = null, $bcc = null, $attachments = array(), $headers = [])
+    public function send($to, $replyto, $subject, $body, $cc = null, $bcc = null, $attachments = [], $headers = [])
     {
         if (!empty($to) && strlen($to) > 0) {
             try {
@@ -98,7 +98,7 @@ class SwiftMailerTransport implements GenericTransport
                 if (is_array($replyto)) {
                     $message->setReplyTo($replyto);
                 } else {
-                    $message->setReplyTo(array($replyto));
+                    $message->setReplyTo([$replyto]);
                 }
                 if (!empty($cc)) {
                     if (strpos($cc, ",") !== false) {

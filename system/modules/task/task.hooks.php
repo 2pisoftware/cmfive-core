@@ -33,7 +33,7 @@ function task_timelog_type_options_for_Task(Web $w, $object)
                 "options" => $time_types,
                 "label" => "Task time",
                 "required" => $required,
-            ]))->setSelectedOption($object->time_type)]; //[["Task time", "select", "time_type", $object->time_type, $time_types]];
+            ]))->setSelectedOption($object->time_type)];
         }
     }
 }
