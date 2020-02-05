@@ -28,7 +28,7 @@ function ajaxSaveComment_POST(Web $w) {
                 $obj_id = $exp_key[2];
             }
         }
-        $results = $w->callHook('comment', 'send_notification_recipients_' . $table,['object_id'=>$obj_id, 'recipients'=>$recipients, 'commentor_id'=>$w->auth->loggedIn(),'comment'=>$comment, 'is_new'=>true]);
+        $results = $w->callHook('comment', 'send_notification_recipients_' . $table,['object_id'=>$obj_id, 'recipients'=>$recipients, 'commenter_id'=>$w->auth->loggedIn(),'comment'=>$comment, 'is_new'=>true]);
 
 
     }

@@ -20,7 +20,7 @@ function index_ALL(Web &$w) {
     $where = '';
     if (empty($reset)){
         if (!empty($module)) {
-			$where .= " and r.module = " . $w->db->quote($module);        	
+			$where .= " and r.module = " . $w->db->quote($module);
             $w->ctx("reqModule", $module);
         }
     }

@@ -19,7 +19,7 @@ class InstallService
         
     }
     
-    function __init()
+    function _web_init()
     {
     }
     

@@ -207,23 +207,23 @@
                     <!-- Search bar -->
                     <li><?php echo Html::box("/search", "<span class='fi-magnifying-glass show-for-medium-up'></span><span class='show-for-small'>Search</span>", false, false, null, null, null, "cmfive_search_button"); ?></li>
 
-                    <?php if ($w->Auth->user()) : ?>
+                        <?php if ($w->Auth->user()): ?>
                         <!-- Clear cache button -->
-                        <?php if ($w->Auth->user()->is_admin) : ?>
+                            <?php if ($w->Auth->user()->is_admin): ?>
                             <li>
                                 <a id="admin_clear_cache" href="/admin/ajaxClearCache" onclick="return false;" title="Clear configuration cache">
                                     <span class="clear_cache_icon fi-refresh show-for-medium-up"></span>
                                     <span class="show-for-small">Clear cache</span>
                                 </a>
                             </li>
-                        <?php endif; ?>
+                            <?php endif; ?>
                         <!-- User Profile drop down -->
-                        <li class="has-dropdown">
-                            <a href="#">
-                                <span class="fi-torso show-for-medium-up"></span>
-                                <span class="show-for-small">Account</span>
-                            </a>
-                            <?php
+                            <li class="has-dropdown">
+                                <a href="#">
+                                    <span class="fi-torso show-for-medium-up"></span>
+                                    <span class="show-for-small">Account</span>
+                                </a>
+                                <?php
                                 echo Html::ul(
                                     array(
                                         $w->menuBox("auth/profile/box", $w->Auth->user()->getShortName()),
@@ -244,38 +244,37 @@
                         <li class="divider"></li>
                         <?php foreach ($w->modules() as $module) {
                                 // Check if config is set to display on topmenu
-                            if (Config::get("{$module}.topmenu") && Config::get("{$module}.active")) :
-                                // Check for navigation
-                                $service_module = ucfirst($module);
-                                $menu_link = method_exists($w->$service_module, "menuLink") ? $w->$service_module->menuLink() : $w->menuLink($module, is_bool(Config::get("{$module}.topmenu")) ? ucfirst($module) : Config::get("{$module}.topmenu"));
-                                if ($menu_link !== false) :
-                                    if (method_exists($module . "Service", "navigation")) : ?>
-                                    <li class="has-dropdown <?php echo $w->_module == $module ? 'active' : ''; ?>" id="topnav_<?php echo $module; ?>">
-                                        <?php // Try and get a badge count for the menu item
-                                        echo $menu_link;
-                                        $module_navigation = $w->service($module)->navigation($w);
+                                if (Config::get("{$module}.topmenu") && Config::get("{$module}.active")) :
+                                    // Check for navigation
+                                    $service_module = ucfirst($module);
+                                    $menu_link = method_exists($w->$service_module, "menuLink") ? $w->$service_module->menuLink() : $w->menuLink($module, is_bool(Config::get("{$module}.topmenu")) ? ucfirst($module) : Config::get("{$module}.topmenu"));
+                                    if ($menu_link !== false) :
+                                        if (method_exists($module . "Service", "navigation")) : ?>
+                                            <li class="has-dropdown <?php echo $w->_module == $module ? 'active' : ''; ?>" id="topnav_<?php echo $module; ?>">
+                                            <?php // Try and get a badge count for the menu item
+                                                echo $menu_link;
+                                                $module_navigation = $w->service($module)->navigation($w);
 
-                                        // Invoke hook to inject extra navigation
-                                        $hook_navigation_items = $w->callHook($module, "extra_navigation_items", $module_navigation);
-                                        if (!empty($hook_navigation_items)) {
-                                            foreach ($hook_navigation_items as $hook_navigation_item) {
-                                                if (is_array($hook_navigation_item)) {
-                                                    $module_navigation = array_merge($module_navigation, $hook_navigation_item);
-                                                } else {
-                                                    $module_navigation[] = $hook_navigation_item;
+                                                // Invoke hook to inject extra navigation
+                                                $hook_navigation_items = $w->callHook($module, "extra_navigation_items", $module_navigation);
+                                                if (!empty($hook_navigation_items)) {
+                                                    foreach($hook_navigation_items as $hook_navigation_item) {
+                                                        if (is_array($hook_navigation_item)) {
+                                                            $module_navigation = array_merge($module_navigation, $hook_navigation_item);
+                                                        } else {
+                                                            $module_navigation[] = $hook_navigation_item;
+                                                        }
+                                                    }
                                                 }
-                                            }
-                                        }
-                                        echo Html::ul($module_navigation, null, "dropdown");
-                                        ?>
-                                    </li>
-                                    <?php else : ?>
-                                    <li <?php echo $w->_module == $module ? 'class="active"' : ''; ?>><?php echo $menu_link; ?></li>
-                                    <?php endif; ?>
-                                <li class="divider"></li>
-                                <?php endif;
-                            endif;
-                        }
+                                                echo Html::ul($module_navigation, null, "dropdown"); ?>
+                                            </li>
+                                        <?php else: ?>
+                                            <li <?php echo $w->_module == $module ? 'class="active"' : ''; ?>><?php echo $menu_link; ?></li>
+                                        <?php endif; ?>
+                                        <li class="divider"></li>
+                                    <?php endif;
+                                endif;
+                            }
 
                         if ($w->Auth->allowed('help/view')) : ?>
                             <li><?php echo Html::box(WEBROOT . "/help/view/" . $w->_module . ($w->_submodule ? "-" . $w->_submodule : "") . "/" . $w->_action, "<span class='fi-q show-for-medium-up'>?</span><span class='show-for-small'>Help</span>", false, true, 750, 500, "isbox", null, null, null, 'cmfive-help-modal'); ?> </li>

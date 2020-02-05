@@ -5,6 +5,9 @@ Config::set('task', array(
     'active' => true,
     'path' => 'system/modules',
     'topmenu' => true,
+    "dependencies" => array(
+        "floriansemm/official-library-php-email-parser" => "~1.0"
+    ),
     'search' => array('Tasks' => "Task"),
     'hooks' => array(
         'core_web',

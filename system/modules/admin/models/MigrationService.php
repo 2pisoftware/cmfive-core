@@ -8,44 +8,46 @@ defined('SEED_MIGRATION_DIRECTORY') || define('SEED_MIGRATION_DIRECTORY', MIGRAT
 
 class MigrationService extends DbService
 {
-
-    public static $_installed = [];
-    public $_NEXT_BATCH;
-
-    public function getAvailableMigrations($module_name)
-    {
-        $_this = $this;
-        set_error_handler(function ($errno, $errstr, $errfile, $errline, $errcontext) use ($_this) {
-            if (!(error_reporting() & $errno)) {
-                return;
-            }
-
-            if ($errno === E_USER_ERROR) {
-                // Check if error contains a db error message
-                if (strpos($errstr, "does not exist in the database") !== false) {
-                    $this->w->Log->error("Error Table not found. Running initial migration");
-                    // Run the admin migrations to install the migration table (the normal cause of this error)
-                    $_this->installInitialMigration();
-
-                    // Reload the page
-                    $_this->w->redirect($_SERVER["REQUEST_URI"]);
-                }
-            }
-        });
-
-        $availableMigrations = [];
-
-        // Read all modules directories for any migrations that need to run
-        if ($module_name === 'all') {
-            foreach ($this->w->modules() as $module) {
-                $availableMigrations += $this->getMigrationsForModule($module);
-            }
-        } else {
-            $availableMigrations = $this->getMigrationsForModule($module_name);
-        }
-
-        return $availableMigrations;
-    }
+	public static $_installed = []; 
+	public $_NEXT_BATCH;
+	
+	public function getAvailableMigrations($module_name) {
+		$_this = $this;
+		set_error_handler(function($errno, $errstr, $errfile, $errline, $errcontext) use ($_this) {
+			if (!(error_reporting() & $errno)) {
+				return;
+			}
+			
+			if ($errno === E_USER_ERROR) {
+				// Check if error contains a db error message
+				if (strpos($errstr, "does not exist in the database") !== FALSE) {
+					$this->w->Log->error("Error table not found. Running initial migration. [" . $errstr . "]");
+					// Run the admin migrations to install the migration table (the normal cause of this error)
+					$_this->installInitialMigration();
+					
+					// Reload the page unless migrations are from CLI
+					if ( array_key_exists('REQUEST_METHOD', $_SERVER) ) {
+						$_this->w->redirect($_SERVER["REQUEST_URI"]);
+						}
+				}
+			}
+		});
+		
+		$availableMigrations = [];
+		
+		// Read all modules directories for any migrations that need to run
+		if ($module_name === 'all') {
+			foreach($this->w->modules() as $module) {
+				$availableMigrations += $this->getMigrationsForModule($module);
+			}
+		} else {
+			$availableMigrations = $this->getMigrationsForModule($module_name);
+		}
+		
+		// restore_error_handler();
+		
+		return $availableMigrations;
+	}
 
     public function getMigrationsForModule($module)
     {

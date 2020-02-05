@@ -1,15 +1,16 @@
 <?php
 
-function delete_GET(Web $w) {
-	$p = $w->pathMatch("id");
-	$id = $p["id"];
+function delete_GET(Web $w)
+{
+    $p = $w->pathMatch("id");
+    $id = $p["id"];
 
-	if ($id) {
-		$processor = $w->Channel->getProcessor($id);
-		$processor->delete();
+    if ($id) {
+        $processor = $w->Channel->getProcessor($id);
+        $processor->delete();
 
-		$w->msg("Processor deleted", "/channels/listprocessors");
-	} else {
-		$w->error("Could not find processor");
-	}
+        $w->msg("Processor deleted", "/channels/listprocessors");
+    } else {
+        $w->error("Could not find processor");
+    }
 }

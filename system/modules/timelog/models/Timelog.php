@@ -116,7 +116,6 @@ class Timelog extends DbObject {
     }
     
     public function start($object, $start_time = null) {
-		$this->w->Log->debug("TimeLog Start");
         if (empty($object->id)) {
             return false;
         }
@@ -132,9 +131,7 @@ class Timelog extends DbObject {
     }
     
     public function stop() {
-        $this->w->Log->debug("time " . $this->dt_end);
         if (empty($this->dt_end)) {
-            $this->w->Log->debug("stopping time");
             $this->dt_end = time();
             $this->update();
         }
@@ -142,16 +139,16 @@ class Timelog extends DbObject {
     
 	public function insert($force_validation = true) {
 		// If user is admin try and set the user_id to the given one from the timelog form
-		if (empty($this->user_id)) {
-			$this->user_id = $this->w->Auth->user()->id;
+		if ($this->w->Auth->user()->is_admin) {
+			$this->user_id = !empty($_POST['user_id']) ? intval($_POST['user_id']) : $this->w->Auth->user()->id;
 		}
 		
 		parent::insert($force_validation);
 	}
 	
 	public function update($force_null_values = false, $force_validation = true) {
-		if (empty($this->user_id)) {
-			$this->user_id = $this->w->Auth->user()->id;
+		if ($this->w->Auth->user()->is_admin) {
+			$this->user_id = !empty($_POST['user_id']) ? intval($_POST['user_id']) : $this->w->Auth->user()->id;
 		}
 		
 		parent::update($force_null_values, $force_validation);
