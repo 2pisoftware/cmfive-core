@@ -20,34 +20,75 @@
 					<li class="accordion-navigation">
 						<a href="#batch_available">Not Installed</a>
 						<div id="batch_available" class="content active">
-							<?php echo Html::b("/admin-migration/run/all", "Install migrations", "Are you sure you want to install migrations?", null, false, "right");?>
-							<ul>
-								<?php foreach($not_installed as $module => $_not_installed) :
-									foreach($_not_installed as $file => $classname) : ?>
-										<li><?php echo $module . ' - ' . $classname; ?></li>
-									<?php endforeach;
-								endforeach; ?>
-							</ul>
+							<center>
+							<?php
+								echo Html::b("/admin-migration/run/all?ignoremessages=false&prevpage=batch", "Install migrations", "Are you sure you want to install migrations?", null, false, "right");
+							?>
+							</center>
+								<?php
+								$header = ["Name", "Description", "Pre Text", "Post Text"];
+								$data = [];
+								foreach($not_installed as $module => $_not_installed)
+								{
+									foreach ($_not_installed as $_migration_class)
+									{
+										$migration_path = $_migration_class['path'];
+										if (file_exists(ROOT_PATH . '/' . $migration_path))
+										{
+											include_once ROOT_PATH . '/' . $migration_path;
+											$classname = $_migration_class['class']['class_name'];
+											if (class_exists($classname)) {
+												$migration = (new $classname(1))->setWeb($w);
+												$migration_description = $migration->description();
+												$migration_preText = $migration->preText();
+												$migration_postText = $migration->postText();
+											}
+											$row = [];
+											$row[] = $module . ' - ' . $classname;
+											$row[] = $migration_description;
+											$row[] = $migration_preText;
+											$row[] = $migration_postText;
+											$data[] = $row;
+										}
+									}
+								}
+
+								$table =  Html::table($data, null, "tablesorter", $header);
+								echo $table;
+								?>
 						</div>
 					</li>
 				<?php endif;
-				if (!empty($batched)) : 
+				if (!empty($batched)) :
 					krsort($batched);
 					foreach($batched as $batch_no => $batched_migrations) : ?>
 						<li class="accordion-navigation">
 							<a href="#batch_<?php echo $batch_no; ?>">Batch <?php echo $batch_no; ?></a>
 							<div id="batch_<?php echo $batch_no; ?>" class="content">
-								<ul>
-									<?php foreach($batched_migrations as $batched_migration): ?>
-										<li><?php echo $batched_migration['module'] . ' - ' . $batched_migration['classname']; ?></li>
+								<table style width="100%">
+									<?php
+										$header = ["Name", "Description", "Pre Text", "Post Text"];
+										$data = [];
+										foreach($batched_migrations as $batched_migration)
+										{
+											$row = [];
+											$row[] = $batched_migration['module'] . ' - ' . $batched_migration['classname'];
+											$row[] = $batched_migration['description'];
+											$row[] = $batched_migration['pretext'];
+											$row[] = $batched_migration['posttext'];
+											$data[] = $row;
+										}
+										$table =  Html::table($data, null, "tablesorter", $header);
+										echo $table;
+									?>
 									<?php endforeach; ?>
-								</ul>
+								</table>
 							</div>
 						</li>
-					<?php endforeach;
+					<?php //endforeach;
 				endif; ?>
 			</ul>
-		</div>	
+		</div>
 		<div id="individual">
 			<?php if (!empty($available)) : ?>
 				<ul id="migrations_list" class="tabs vertical" style="border: 1px solid #444;" data-tab>
@@ -71,34 +112,51 @@
 						<div class="content" style="padding-top: 0px;" id="<?php echo $module; ?>">
 							<?php echo Html::box("/admin-migration/create/" . $module, "Create a" . (in_array($module{0}, ['a', 'e', 'i' ,'o', 'u']) ? 'n' : '') . ' ' . $module . " migration", true); ?>
 							<?php if (count($available[$module]) > 0) : ?>
-								<?php echo Html::b("/admin-migration/run/" . $module, "Run all " . $module . " migrations", "Are you sure you want to run all outstanding migrations for this module?"); ?>
+								<?php echo Html::b("/admin-migration/run/" . $module . "?ignoremessages=false&prevage=individual", "Run all " . $module . " migrations", "Are you sure you want to run all outstanding migrations for this module?"); ?>
 								<table>
 									<thead>
-										<tr><th>Name</th><th>Path</th><th>Date run</th><th>Actions</th></tr>
+										<tr><th>Name</th><th>Description</th><th>Path</th><th>Date run</th><th>Pre Text</th><th>Post Text</th><th>Actions</th></tr>
 									</thead>
 									<tbody>
-										<?php foreach($available_in_module as $a_migration_path => $a_migration_class): ?>
-										<tr <?php echo ($w->Migration->isInstalled($a_migration_class)) ? 'style="background-color: #43CD80;"' : ''; ?>>
-											<td><?php echo $a_migration_class; ?></td>
+										<?php foreach($available_in_module as $a_migration_path => $migration_data): ?>
+										<tr <?php echo ($w->Migration->isInstalled($migration_data['class_name'])) ? 'style="background-color: #43CD80;"' : ''; ?>>
+											<td><?php echo $migration_data['class_name']; ?></td>
+											<td>
+											<?php
+												echo $migration_data['description'];
+											?>
+											</td>
 											<td><?php echo $a_migration_path; ?></td>
 											<td>
-												<?php if ($w->Migration->isInstalled($a_migration_class)) :
-													$installedMigration = $w->Migration->getMigrationByClassname($a_migration_class); ?>
+												<?php if ($w->Migration->isInstalled($migration_data['class_name'])) :
+													$installedMigration = $w->Migration->getMigrationByClassname($migration_data['class_name']); ?>
 													<span data-tooltip aria-haspopup="true" title="<?php echo @formatDate($installedMigration->dt_created, "d-M-Y \a\\t H:i"); ?>">
-														Run <?php echo Carbon::createFromTimeStamp($installedMigration->dt_created)->diffForHumans(); ?> by <?php echo !empty($installedMigration->creator_id) ? $w->Auth->getUser($installedMigration->creator_id)->getContact()->getFullName() : "System"; ?>
+														Run <?php echo Carbon::createFromTimeStamp($installedMigration->dt_created)->diffForHumans(); ?> by <?php echo !empty($installedMigration->creator_id) && !empty($w->Auth->getUser($installedMigration->creator_id)) ? $w->Auth->getUser($installedMigration->creator_id)->getContact()->getFullName() : "System"; ?>
 													</span>
-												<?php endif; ?> 
+												<?php endif; ?>
+											</td>
+											<td>
+											<?php
+
+												echo $migration_data['pretext'];
+											?>
+											</td>
+											<td>
+												<?php
+													echo $migration_data['posttext'];
+												?>
 											</td>
 											<td>
 											<?php
 												$filename = basename($a_migration_path, ".php");
-												if ($w->Migration->isInstalled($a_migration_class)) {
+												if ($w->Migration->isInstalled($migration_data['class_name'])) {
 													echo Html::b('/admin-migration/rollback/' . $module . '/' . $filename, "Rollback to here", "Are you 110% sure you want to rollback a migration? DATA COULD BE LOST PERMANENTLY!", null, false, "warning expand");
 												} else {
-													echo Html::b('/admin-migration/run/' . $module . '/' . $filename, "Migrate to here", "Are you sure you want to run a migration?", null, false, "info expand");
+													echo Html::b('/admin-migration/run/' . $module . '/' . $filename. "?ignoremessages=false&prevpage=individual", "Migrate to here", "Are you sure you want to run a migration?", null, false, "info expand");
 												}
 											?>
 											</td>
+
 										</tr>
 										<?php endforeach; ?>
 									</tbody>
@@ -170,7 +228,7 @@
 												$seed_obj = new $classname($w);
 											}
 										}
-										if (!empty($seed_obj)) : 
+										if (!empty($seed_obj)) :
 											$migration_exists = $w->Migration->migrationSeedExists($classname); ?>
 											<tr>
 												<td><?php echo $seed_obj->name; ?></td>
@@ -197,4 +255,3 @@
 		</div>
 	</div>
 </div>
-	

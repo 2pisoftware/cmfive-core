@@ -25,8 +25,7 @@ function taskAjaxSelectbyTaskGroup_ALL(Web $w) {
     //$ttype = Html::select("task_type",$tasktypes,null);
     //$ttype = Html::select("task_type",$tasktypes,$taskgroup->default_task_type);
     
-    $ttype = (new Select())
-                ->setLabel("Task Type")
+    $ttype = "Task Type <small>Required</small>" . (new Select())
                 ->setName("task_type")
                 ->setId("task_type")
                 ->setOptions($tasktypes)

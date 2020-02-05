@@ -6,20 +6,19 @@ function addwidget_GET(Web $w) {
 	$module = $p["module"];
 
 	$modulelist = $w->modules();
-	$modules = array_filter($modulelist, function($module) use (&$w) {
+	$modules = array_filter($modulelist, function ($module) use (&$w) {
 		$names = $w->Widget->getWidgetNamesForModule($module);
 		return !empty($names);
 	});
 
-	$form = array("Add a widget" =>
-		array(
-			// array(array("Add widget for", "select", "destination_module", $module, $w->modules())),
-			array(array("Source module", "select", "source_module", null, $modules)),
-			array(array("Widget Name", "select", "widget_name", null, array()))
-		)
+	$form = array(__("Add a widget") => array(
+		// array(array("Add widget for", "select", "destination_module", $module, $w->modules())),
+		array(array(__("Source module"), "select", "source_module", null, $modules)),
+		array(array(__("Widget Name"), "select", "widget_name", null, array())),
+	),
 	);
 
-	$w->ctx("widgetform", Html::multiColForm($form, "/main/addwidget/{$module}", "POST", "Add"));
+	$w->ctx("widgetform", Html::multiColForm($form, "/main/addwidget/{$module}", "POST", __("Add")));
 }
 
 function addwidget_POST(Web $w) {
@@ -41,8 +40,8 @@ function addwidget_POST(Web $w) {
 	$response = $widget->insert();
 
 	if ($response === true) {
-		$w->msg("Widget Added", "/{$module}/index");
+		$w->msg(__("Widget Added"), "/{$module}/index");
 	} else {
-		$w->error("Could not add widget", "/{$module}/index");
+		$w->error(__("Could not add widget"), "/{$module}/index");
 	}
 }

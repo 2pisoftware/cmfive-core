@@ -24,7 +24,7 @@ class MainInitialMigration extends CmfiveMigration {
 					->addCmfiveParameters()
 					->create();
 		}
-		
+
 		/**
 		 * REST SESSION TABLE
 		 */
@@ -38,7 +38,7 @@ class MainInitialMigration extends CmfiveMigration {
 					->addCmfiveParameters(['creator_id', 'modifier_id', 'is_deleted'])
 					->create();
 		}
-		
+
 		/**
 		 * SESSIONS TABLE
 		 */
@@ -51,7 +51,7 @@ class MainInitialMigration extends CmfiveMigration {
 					->addColumn('expires', 'integer', ['default' => 0])
 					->create();
 		}
-		
+
 		/**
 		 * OBJECT HISTORY TABLE
 		 */
@@ -78,7 +78,7 @@ class MainInitialMigration extends CmfiveMigration {
 					->addColumn('attr_value', 'text', ['limit' => \Phinx\Db\Adapter\MysqlAdapter::TEXT_LONG])
 					->create();
 		}
-		
+
 		/**
 		 * OBJECT INDEX TABLE
 		 */
@@ -94,9 +94,9 @@ class MainInitialMigration extends CmfiveMigration {
 				`content` longtext COLLATE utf8_unicode_ci NOT NULL,
 				PRIMARY KEY (`id`),
 				FULLTEXT KEY `object_index_content` (`content`)
-			  ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=10 ;');
+			  ) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=10 ;');
 		}
-		
+
 		/**
 		 * OBJECT INDEX TABLE
 		 */
@@ -110,7 +110,7 @@ class MainInitialMigration extends CmfiveMigration {
 					->addCmfiveParameters(['is_deleted'])
 					->create();
 		}
-//			
+//
 //		$this->table('object_history', [
 //					'id' => false,
 //					'primary_key' => 'id'
@@ -119,7 +119,7 @@ class MainInitialMigration extends CmfiveMigration {
 //				->addColumn('object_id', 'biginteger')
 //				->addCmfiveParameters('is_deleted')
 //				->create();
-		
+
 	}
 
 	public function down() {

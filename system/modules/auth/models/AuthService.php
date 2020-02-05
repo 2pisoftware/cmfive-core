@@ -1,38 +1,94 @@
 <?php
 
-class AuthService extends DbService {
-
+class AuthService extends DbService
+{
     public $_roles;
     public $_roles_loaded = false;
     public $_rest_user = null;
-	private static $_cache = array();
+    private static $_cache = [];
 
-    function login($login, $password, $client_timezone, $skip_session = false) {
-        // $password = User::encryptPassword($password);
-        // $user_data = $this->_db->get("user")->where("login", $login)->and("password", $password)->and("is_active", "1")->and("is_deleted", "0")->fetch_row();
-        $user = $this->getUserForLogin($login);
-        if (empty($user->id) || ($user->encryptPassword($password) !== $user->password) || $user->is_external == 1) {
-            return null;
+    public function login($login, $password, $client_timezone, $skip_session = false)
+    {
+        $credentials['login'] = $login;
+        $credentials['password'] = $password;
+        $hook_results = $this->w->callHook("auth", "prelogin", $credentials);
+
+        if (!empty($hook_results)) {
+            foreach ($hook_results as $module => $user) {
+                if (!empty($user)) {
+                    $this->w->Log->info($user->getFullName() . " authenticated via " . $module . " prelogin hook");
+                    break;
+                } else {
+                    $this->w->Log->info('prelogin hook did not provide authentication: ' . $login);
+                }
+            }
         }
-        // if ($user_data != null) {
-        // $user = new User($this->w);
-        // $user->fill($user_data);
+
+        if (empty($user)) {
+            $user = $this->getUserForLogin($login);
+            if (empty($user)) {
+                $this->w->Log->info('cmfive user does not exist: ' . $login);
+                return null;
+            }
+
+            // If the User's password salt is empty use password_verify because the salt is built into the password, otherwise use the depreicated way.
+            if (empty($user->password_salt)) {
+                if (!password_verify($password, $user->password)) {
+                    $this->w->Log->info('cmfive pasword mismatch for username: ' . $login);
+                    return null;
+                }
+            } else {
+                if ($user->encryptPassword($password) !== $user->password) {
+                    $this->w->Log->info('cmfive pasword mismatch for username: ' . $login);
+                    return null;
+                }
+            }
+
+            if ($user->is_external == 1) {
+                $this->w->Log->info('cmfive user is external: ' . $login);
+                return null;
+            }
+        }
+
+        // Check if the User's password hash is depricated and update if so.
+        if ($user->updatePasswordHash($password)) {
+            $this->w->Log->info("User with ID: " . $user->id . " password hash was updated");
+        }
+
+        $this->w->Log->info("User logged in: " . $user->getFullName());
+        //allow post login hook to do whatever
+        $hook_results = $this->w->callHook("auth", "postlogin", $user);
         $user->updateLastLogin();
+
         if (!$skip_session) {
             $this->w->session('user_id', $user->id);
             $this->w->session('timezone', $client_timezone);
         }
+
         return $user;
-        // } else {
-        //     return null;
-        // }
+    }
+    public function externalLogin($login, $password, $skip_session = false)
+    {
+
+        $user = $this->getUserForLogin($login);
+        if (empty($user->id) || ($user->encryptPassword($password) !== $user->password) || $user->is_external == 0) {
+            return null;
+        }
+
+
+        $user->updateLastLogin();
+        if (!$skip_session) {
+            $this->w->session('user_id', $user->id);
+        }
+        return $user;
     }
 
-    function forceLogin($user_id = null) {
+    public function forceLogin($user_id = null)
+    {
         if (empty($user_id)) {
             return;
         }
-        
+
         $user = $this->getUser($user_id);
         if (empty($user->id)) {
             return null;
@@ -42,39 +98,44 @@ class AuthService extends DbService {
         $this->w->session('user_id', $user->id);
     }
 
-    function __init() {
+    public function _web_init() {
         $this->_loadRoles();
     }
 
-    function loggedIn() {
+    public function loggedIn()
+    {
         return $this->w->session('user_id');
     }
 
-    function getUserForLogin($login) {
+    public function getUserForLogin($login)
+    {
         $user = $this->db->get("user")->where("login", $login)->and("is_deleted", 0)->fetch_row();
-		return $this->getObjectFromRow("User", $user);
+        return $this->getObjectFromRow("User", $user);
     }
 
-    function getUserForToken($token) {
+    public function getUserForToken($token)
+    {
         return $this->getObject("User", array("password_reset_token" => $token));
     }
 
-    function setRestUser($user) {
+    public function setRestUser($user)
+    {
         $this->_rest_user = $user;
     }
 
     /**
      * There is no way to enforce the creation of a User object when creating a Contact
      * E.g. for an address book, there is no need to create a User object. However, if you
-     * want to ensure that a Contact will have a User account, call this function before doing
+     * want to ensure that a Contact will have a User account, call this public function before doing
      * anything else with the Contact.
-     *  
+     *
      * As a security measure, all user accounts created this way are external only.
      *
      * @param mixed $contact_id
      * @return int user_id
      */
-    function createExernalUserForContact($contact_id) {
+    public function createExernalUserForContact($contact_id)
+    {
         $contact = $this->getContact($contact_id);
 
         if (empty($contact->id)) {
@@ -95,27 +156,36 @@ class AuthService extends DbService {
         return $user->id;
     }
 
-    function getContacts() {
+    public function getContacts()
+    {
         return $this->getObjects('Contact', ['is_deleted' => 0]);
     }
 
-    function getContact($contact_id) {
+    public function getContact($contact_id)
+    {
         return $this->getObject("Contact", ['id' => $contact_id]);
+    }
+
+    public function getContactByEmail($email)
+    {
+        return $this->getObject("Contact", ['email' => filter_var($email, FILTER_SANITIZE_EMAIL), 'is_deleted' => 0]);
     }
 
     /**
      * Return the logged in user based on the session variable user_id.
-     * 
+     *
      * If a user has been set from a REST service, then that user will
      * be returned.
-     * 
+     *
      * @return User|NULL
      */
-    function user() {
+    public function user()
+    {
         // special case where RestService handles authentication
         if ($this->_rest_user) {
             return $this->_rest_user;
         }
+
         // normal session based authentication
         if ($this->loggedIn()) {
             return $this->getObject("User", $this->w->session('user_id'));
@@ -124,36 +194,58 @@ class AuthService extends DbService {
     }
 
     /**
-     * 
+     *
      * checks if the CURRENT user has this role
      */
-    function hasRole($role) {
+    public function hasRole($role)
+    {
         return $this->user() ? $this->user()->hasRole($role) : false;
     }
 
-	/**
-     * 
+    /**
+     *
      * Check if the current user can access the specified path
      * @ return false if the login user is not allowed access to this path
      *  OR return string url if it is provided as a parameter
      */
-    function allowed($path, $url = null) {
-		$key = $path.'::'.$url;
-		if(!empty(self::$_cache[$key])) {
-			return self::$_cache[$key];
-		}
+    public function allowed($path, $url = null)
+    {
+        $key = $path . '::' . $url;
+        if (!empty(self::$_cache[$key])) {
+            return self::$_cache[$key];
+        }
         $parts = $this->w->parseUrl($path);
         if (!in_array($parts['module'], $this->w->modules())) {
-            $this->Log->error("Denied access: module '". urlencode($parts['module']). "' doesn't exist");
-			self::$_cache[$key] = false;
+            $this->Log->error("Denied access: module '" . urlencode($parts['module']) . "' doesn't exist");
+            self::$_cache[$key] = false;
             return false;
         }
 
-        if ((function_exists("anonymous_allowed") && anonymous_allowed($this->w, $path)) || 
-        	($this->user() && $this->user()->allowed($path))) {
-			self::$_cache[$key] = $url ? $url : true;
-        	return self::$_cache[$key];
+        if ((function_exists("anonymous_allowed") && anonymous_allowed($this->w, $path)) || ($this->user() && $this->user()->allowed($path))) {
+            self::$_cache[$key] = $url ? $url : true;
+            return self::$_cache[$key];
         }
+
+        if (empty($this->user()) && (Config::get('system.use_passthrough_authentication') === true) && !empty($_SERVER['AUTH_USER'])) {
+            // Get the username
+            $username = explode('\\', $_SERVER["AUTH_USER"]);
+            $username = end($username);
+            $this->w->Log->debug("Passthrough Username: " . $username);
+
+            //this hook returns $hook_results[$module][0]=$user or null.
+            $hook_results = $this->w->callHook("auth", "get_user_for_passthrough", $username);
+            foreach ($hook_results as $module => $user) {
+                if (!empty($user) && $user instanceof User) {
+                    $this->forceLogin($user->id);
+                    if ($user->allowed($path)) {
+                        self::$_cache[$key] = $url ? $url : true;
+                    }
+                } else {
+                    $this->Log->info($module . ' did not provide passthrough user for:' . $username);
+                }
+            }
+        }
+
         self::$_cache[$key] = false;
         return false;
     }
@@ -163,7 +255,8 @@ class AuthService extends DbService {
      *
      * @return array of strings
      */
-    function getAllRoles() {
+    public function getAllRoles()
+    {
         $this->_loadRoles();
         if (!$this->_roles) {
             $roles = array();
@@ -179,10 +272,12 @@ class AuthService extends DbService {
         return $this->_roles;
     }
 
-    function _loadRoles() {
+    public function _loadRoles()
+    {
         // do this only once
-        if ($this->_roles_loaded)
+        if ($this->_roles_loaded) {
             return;
+        }
 
         $modules = $this->w->modules();
         foreach ($modules as $model) {
@@ -194,40 +289,45 @@ class AuthService extends DbService {
         $this->_roles_loaded = true;
     }
 
-    function getUser($id) {
+    public function getUser($id)
+    {
         return $this->getObject("User", $id);
     }
 
-    function getUsersAndGroups($includeDeleted = false) {
-    	$where = [
+    public function getUsersAndGroups($includeDeleted = false)
+    {
+        $where = [
             "is_active" => 1,
             "is_external" => 0
         ];
 
-    	if (!$includeDeleted) {
-    		$where["is_deleted"] = 0;
-    	}
+        if (!$includeDeleted) {
+            $where["is_deleted"] = 0;
+        }
         return $this->getObjects("User", $where);
     }
 
-    function getUsers($includeDeleted = false) {
+    public function getUsers($includeDeleted = false)
+    {
         $where = [
             "is_group" => 0,
             "is_active" => 1,
             "is_external" => 0
         ];
 
-    	if (!$includeDeleted) {
-    		$where["is_deleted"]=0;
-    	}
-    	return $this->getObjects("User", $where);
+        if (!$includeDeleted) {
+            $where["is_deleted"] = 0;
+        }
+        return $this->getObjects("User", $where);
     }
-    
-    function getUserForContact($cid) {
+
+    public function getUserForContact($cid)
+    {
         return $this->getObject("User", array("contact_id" => $cid));
     }
 
-    function getUsersForRole($role) {
+    public function getUsersForRole($role)
+    {
         if (!$role) {
             return null;
         }
@@ -243,7 +343,8 @@ class AuthService extends DbService {
         return $roleUsers;
     }
 
-    function getGroups() {
+    public function getGroups()
+    {
         $rows = $this->_db->get("user")->where(array('is_active' => 1, 'is_deleted' => 0, 'is_group' => 1))->fetch_all();
 
         if ($rows) {
@@ -254,12 +355,15 @@ class AuthService extends DbService {
         return null;
     }
 
-    function getGroupMembers($group_id = null, $user_id = null) {
-        if ($group_id)
+    public function getGroupMembers($group_id = null, $user_id = null)
+    {
+        if ($group_id) {
             $option['group_id'] = $group_id;
+        }
 
-        if ($user_id)
+        if ($user_id) {
             $option['user_id'] = $user_id;
+        }
 
         $groupMembers = $this->getObjects("GroupUser", $option, true);
 
@@ -269,7 +373,8 @@ class AuthService extends DbService {
         return null;
     }
 
-    function getGroupMemberById($id) {
+    public function getGroupMemberById($id)
+    {
         $groupMember = $this->getObject("GroupUser", $id);
 
         if ($groupMember) {
@@ -278,7 +383,8 @@ class AuthService extends DbService {
         return null;
     }
 
-    function getRoleForLoginUser($group_id, $user_id) {
+    public function getRoleForLoginUser($group_id, $user_id)
+    {
         $groupMember = $this->getObject("GroupUser", array('group_id' => $group_id, 'user_id' => $user_id));
 
         if ($groupMember) {
@@ -286,5 +392,4 @@ class AuthService extends DbService {
         }
         return null;
     }
-
 }

@@ -50,16 +50,24 @@ class AspectSearchable {
 	 * Create index entry for new objects
 	 */
 	function insert($ignoreAdditional = true) {
-		if (!$this->getIndex()) {
-			$io = new ObjectIndex($this->object->w);
-			$io->class_name = get_class($this->object);
-			$io->object_id = $this->object->id;
-			$io->dt_created = time();
-			$io->creator_id = ($io->Auth->loggedIn() ? $io->Auth->user()->id : 0);
-			
-			$io->content = $this->object->getIndexContent($ignoreAdditional);
-			
-			$io->insert();
+		if ($this->object->shouldAddToSearch()) {
+			//adding to search
+			$index = $this->getIndex();
+			if (empty($index)) {
+				$io = new ObjectIndex($this->object->w);
+				$io->class_name = get_class($this->object);
+				$io->object_id = $this->object->id;
+				$io->dt_created = time();
+				$io->creator_id = ($io->Auth->loggedIn() ? $io->Auth->user()->id : 0);
+				$io->content = $this->object->getIndexContent($ignoreAdditional);
+				$io->insert();
+			}
+		} else {
+			//removing from search
+			$index = $this->getIndex();
+			if (!empty($index)) {
+				$this->delete();
+			}
 		}
 	}
 	
@@ -67,15 +75,23 @@ class AspectSearchable {
 	 * Update index for updated object
 	 */
 	function update($ignoreAdditional = true) {
-		if ($this->getIndex()) {
-			$this->_index->dt_modified = time();
-			$this->_index->modifier_id = ($this->_index->w->Auth->loggedIn() ? $this->_index->w->Auth->user()->id : 0);
-			
-			$this->_index->content = $this->object->getIndexContent($ignoreAdditional);
-					
-			$this->_index->update();
+		if ($this->object->shouldAddToSearch()) {
+			$index = $this->getIndex();
+			if (empty($index)) {
+				$this->insert($ignoreAdditional);
+			} else {
+				$this->_index->dt_modified = time();
+				$this->_index->modifier_id = ($this->_index->w->Auth->loggedIn() ? $this->_index->w->Auth->user()->id : 0);
+				
+				$this->_index->content = $this->object->getIndexContent($ignoreAdditional);
+						
+				$this->_index->update();
+			}
 		} else {
-			$this->insert();
+			$index = $this->getIndex();
+			if (!empty($index)) {
+				$this->delete();
+			}
 		}
 	}
 	

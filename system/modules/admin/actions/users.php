@@ -1,7 +1,8 @@
 <?php
 
-function users_GET(Web &$w) {
-	$w->Admin->navigation($w, "Users");
+function users_GET(Web &$w)
+{
+    $w->Admin->navigation($w, "Users");
 
 	$header = ["Login", "Name", ["Admin", true], ["Active", true], ["External", true], ["Created", true], ["Last Login", true], "Operations"];
 	$users = $w->Admin->getObjects("User", ["is_deleted" => 0, "is_group" => 0]);

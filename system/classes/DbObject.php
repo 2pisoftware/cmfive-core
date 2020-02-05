@@ -48,22 +48,22 @@
  * 1. SearchableAspect -> public $_searchable;
  *    This Aspect does not add any public functions to the object, but extends
  *    the insert/update/delete behaviour so that an index record is created (or updated)
- *    in the table object_index which contains the object_id reference and a sanitised 
+ *    in the table object_index which contains the object_id reference and a sanitised
  *    string of the content of the source object's fields for fulltext retrieval.
- *    
+ *
  *    Per default all properties (except thos in the $_exclude_index array) are concatenated
  *    and included in the index. In order to add custom content (eg. from dependent tables)
  *    create the following:
- *    
+ *
  *    function addToIndex() {}
- *    
+ *
  *    Which should return a string to be added to the indexable content. All sanitising and
  *    word de-duplication is performed on this.
- *    
- * 2. Aspects can be removed in the case of class inheritance. If the parent class has 
+ *
+ * 2. Aspects can be removed in the case of class inheritance. If the parent class has
  *    public $_searchable; defined then this can be removed by a child class using:
  *    public $_remove_searchable. However further childclasses can no longer add this aspect!
- *    
+ *
  * 3. Auditing of inserts and updates happens automatically to an audit table.
  *    However this can be turned off by setting
  *    public $__use_auditing = false;
@@ -71,20 +71,25 @@
  * @author carsten
  *
  */
-class DbObject extends DbService {
+class DbObject extends DbService
+{
 
     public $id;
     private static $_object_vars = array();
-	private static $_columns = array();
+    private static $_columns = array();
     private $_class;
-	public $__use_auditing = true;
-	
+    public $__use_auditing = true;
+
+    private $_systemEncrypt = null;
+    private $_systemDecrypt = null;
+
     /**
      * Constructor
      *
      * @param $w
      */
-    function __construct(Web &$w) {
+    public function __construct(Web &$w)
+    {
         parent::__construct($w);
 
         // add standard aspects
@@ -98,12 +103,15 @@ class DbObject extends DbService {
             $this->_searchable = new AspectSearchable($this);
         }
         $this->_class = get_class($this);
+
+        $this->establishEncryptionModel();
     }
 
     // public function __clone(){
     // }
 
-    public function __get($name) {
+    public function __get($name)
+    {
         // cater for modifiable aspect!
         if (isset($this->_modifiable)) {
             if ($name == "dt_created") {
@@ -122,6 +130,21 @@ class DbObject extends DbService {
         }
     }
 
+    private function establishEncryptionModel() {
+        
+        $this->_systemEncrypt = 'SSLencrypt'; 
+        $this->_systemDecrypt = 'SSLdecrypt'; 
+
+                $encryption_key = Config::get('system.encryption.key',null);
+                //$encryption_iv = Config::get('system.encryption.iv',null);
+
+                if (empty($encryption_key)) { // || empty($encryption_iv)) {
+                    $err = 'Encryption key is not set';
+                    $this->w->Log->error($err);
+                    throw new Exception($err);
+                }
+    }
+
     /**
      * Set a cryptography password for
      * automatic encryption, decryption
@@ -129,8 +152,11 @@ class DbObject extends DbService {
      * for 128bit AES choose 16 characters
      * for 192bit AES choose 24 characters
      * for 256bit AES choose 32 characters
+     *
+     * Will be ignored if SSL key/IV in use > 7.0
      */
-    function setPassword($password) {
+    public function setPassword($password)
+    {
         if ($password) {
             Config::set('system.password_salt', $password);
         }
@@ -140,11 +166,13 @@ class DbObject extends DbService {
      * decrypt all fields that are marked with
      * a 's_' prefix
      */
-    function decrypt() {
+    public function decrypt()
+    {
         foreach (get_object_vars($this) as $k => $v) {
             if (strpos($k, "s_") === 0) {
                 if ($v) {
-                    $this->$k = AESdecrypt($v, Config::get('system.password_salt'));
+                    $call_decrypt = $this->_systemDecrypt;
+                    $this->$k = $call_decrypt($v); //AESdecrypt($v, Config::get('system.password_salt'));
                 }
             }
         }
@@ -155,11 +183,12 @@ class DbObject extends DbService {
      * intermediate method to facilitate transition from
      * selectTitle to getSelectOptionTitle
      */
-    function _selectOptionTitle() {
+    public function _selectOptionTitle()
+    {
         $title = $this->getSelectOptionValue();
         if (property_exists(get_class($this), "title")) {
             $title = $this->title;
-        } else if (property_exists(get_class($this), "name")) {
+        } elseif (property_exists(get_class($this), "name")) {
             $title = $this->name;
         }
         return $title;
@@ -169,7 +198,8 @@ class DbObject extends DbService {
      * is used by the Html::select() function to display this object in
      * a select list. Could also be used by other similar functions.
      */
-    function getSelectOptionTitle() {
+    public function getSelectOptionTitle()
+    {
         return $this->_selectOptionTitle(); // only until all references are resolved
     }
 
@@ -178,7 +208,8 @@ class DbObject extends DbService {
      *
      * this should only be overridden, if the id is NOT the key.
      */
-    function getSelectOptionValue() {
+    public function getSelectOptionValue()
+    {
         return $this->id;
     }
 
@@ -186,7 +217,8 @@ class DbObject extends DbService {
      * used by the search display function to print a title with a
      * possible link for this item in the list of results.
      */
-    function printSearchTitle() {
+    public function printSearchTitle()
+    {
         return get_class($this) . "[" . $this->id . "]";
     }
 
@@ -194,7 +226,8 @@ class DbObject extends DbService {
      * used by the search display function to print more information
      * about this item in the list of search results.
      */
-    function printSearchListing() {
+    public function printSearchListing()
+    {
         return get_class($this) . "[" . $this->id . "]";
     }
 
@@ -202,18 +235,20 @@ class DbObject extends DbService {
      * used by the search display function to print a url for viewing details
      * about this item.
      */
-    function printSearchUrl() {
+    public function printSearchUrl()
+    {
         return null;
     }
 
     /**
      * print a view link to this object
-     * 
+     *
      * @param string $class
      * @param string $target
      * @return string
      */
-    function toLink($class = null, $target = null, $user = null) {
+    public function toLink($class = null, $target = null, $user = null)
+    {
         if (empty($user)) {
             $user = $this->w->Auth->user();
         }
@@ -227,10 +262,25 @@ class DbObject extends DbService {
      * used by the search display function to check whether the user has
      * permission to see this result item.
      *
-     * @param <type> $user
-     * @return <type>
+     * @param User $user
+     * @return boolean
      */
-    function canList(User $user) {
+    public function canList(User $user)
+    {
+        if (property_exists($this, "_restrictable") && $this->isRestricted()) {
+            $owner = $this->getObject("RestrictedObjectUserLink", ["object_id" => $this->id, "user_id" => $user->id, "type" => "owner"]);
+            if (!empty($owner)) {
+                return true;
+            }
+
+            $viewer = $this->getObject("RestrictedObjectUserLink", ["object_id" => $this->id, "user_id" => $user->id, "type" => "viewer"]);
+            if (!empty($viewer)) {
+                return true;
+            }
+
+            return false;
+        }
+
         return true;
     }
 
@@ -239,8 +289,24 @@ class DbObject extends DbService {
      * permission to view further details about this item.
      *
      * @param User $user
+     * @return boolean
      */
-    function canView(User $user) {
+    public function canView(User $user)
+    {
+        if (property_exists($this, "_restrictable") && $this->isRestricted()) {
+            $owner = $this->getObject("RestrictedObjectUserLink", ["object_id" => $this->id, "user_id" => $user->id, "type" => "owner"]);
+            if (!empty($owner)) {
+                return true;
+            }
+
+            $viewer = $this->getObject("RestrictedObjectUserLink", ["object_id" => $this->id, "user_id" => $user->id, "type" => "viewer"]);
+            if (!empty($viewer)) {
+                return true;
+            }
+
+            return false;
+        }
+
         return true;
     }
 
@@ -249,8 +315,24 @@ class DbObject extends DbService {
      * permissions to edit this item.
      *
      * @param User $user
+     * @return boolean
      */
-    function canEdit(User $user) {
+    public function canEdit(User $user)
+    {
+        if (property_exists($this, "_restrictable") && $this->isRestricted()) {
+            $owner = $this->getObject("RestrictedObjectUserLink", ["object_id" => $this->id, "user_id" => $user->id, "type" => "owner"]);
+            if (!empty($owner)) {
+                return true;
+            }
+
+            $viewer = $this->getObject("RestrictedObjectUserLink", ["object_id" => $this->id, "user_id" => $user->id, "type" => "viewer"]);
+            if (!empty($viewer)) {
+                return true;
+            }
+
+            return false;
+        }
+
         return true;
     }
 
@@ -259,53 +341,90 @@ class DbObject extends DbService {
      * permissions to delete this item.
      *
      * @param User $user
+     * @return boolean
      */
-    function canDelete(User $user) {
+    public function canDelete(User $user)
+    {
+        if (property_exists($this, "_restrictable") && $this->isRestricted()) {
+            $owner = $this->getObject("RestrictedObjectUserLink", ["object_id" => $this->id, "user_id" => $user->id, "type" => "owner"]);
+            if (!empty($owner)) {
+                return true;
+            }
+
+            $viewer = $this->getObject("RestrictedObjectUserLink", ["object_id" => $this->id, "user_id" => $user->id, "type" => "viewer"]);
+            if (!empty($viewer)) {
+                return true;
+            }
+
+            return false;
+        }
+
         return true;
     }
 
     /**
+     * isRestricted checks for links between this object & the RestrictedObjectUserLink object.
+     * If there are links found the object is restricted, otherwise it is not.
+     *
+     * @return boolean
+     */
+    public function isRestricted()
+    {
+        $links = $this->w->db->get("restricted_object_user_link")
+            ->select()
+            ->select("id")
+            ->where("object_id", $this->id)
+            ->where("is_deleted", 0)
+            ->fetchAll();
+
+        return empty($links) ? false : true;
+    }
+
+    /**
      * Apply value conversions from database values
-     * 
+     *
      * @param string $k
      * @param mixed $v
      * @return mixed
      */
-    function readConvert($k, $v) {
+    public function readConvert($k, $v)
+    {
         if (strpos($k, "dt_") === 0) {
             if (!empty($v)) {
                 return $this->dt2Time($v);
             }
-        } else if (strpos($k, "d_") === 0) {
+        } elseif (strpos($k, "d_") === 0) {
             if (!empty($v)) {
                 return $this->d2Time($v);
             }
-        } 
+        }
         return $v;
     }
-    
-    function getObjectVars() {
-        if(!empty(self::$_object_vars[$this->_class])) {
+
+    public function getObjectVars()
+    {
+        if (!empty(self::$_object_vars[$this->_class])) {
             return self::$_object_vars[$this->_class];
         }
         // build cache of filtered object vars
         self::$_object_vars[$this->_class] = array();
-        foreach(get_object_vars($this) as $k => $v) {
+        foreach (get_object_vars($this) as $k => $v) {
             // ignore volatile vars and web
-            if('_' !== $k{0} && 'w' !== $k) {
+            if ('_' !== $k{0} && 'w' !== $k) {
                 self::$_object_vars[$this->_class][] = $k;
             }
         }
         return self::$_object_vars[$this->_class];
     }
-    
+
     /**
      * fill this object from an array where the keys correspond to the
      * variable of this object.
      *
      * @param array $row
      */
-    function fill($row, $convert = false) {
+    public function fill($row, $convert = false)
+    {
         foreach ($this->getObjectVars() as $k) {
             if (array_key_exists($k, $row)) {
                 $this->$k = ($convert ? $this->readConvert($k, $row[$k]) : $row[$k]);
@@ -324,11 +443,12 @@ class DbObject extends DbService {
 
     /**
      * Creates a shallow copy of an object without saving to DB (by default)
-     * 
+     *
      * @param boolean saveToDB (optional, default false)
      * @return Object
      */
-    public function copy($saveToDB = false) {
+    public function copy($saveToDB = false)
+    {
         $newObject = clone $this;
 
         $toClear = array("id", "creator_id", "modifier_id", "dt_created", "dt_modified", "is_deleted");
@@ -353,7 +473,8 @@ class DbObject extends DbService {
      *
      * @return array
      */
-    function toArray() {
+    public function toArray()
+    {
         $arr = array();
         foreach ($this->getObjectVars() as $k) {
             $arr[$k] = $this->$k;
@@ -368,7 +489,8 @@ class DbObject extends DbService {
      * @param <type> $format
      * @return <type> a formatted date
      */
-    function getDate($var, $format = 'd/m/Y') {
+    public function getDate($var, $format = 'd/m/Y')
+    {
         if (array_key_exists($var, get_object_vars($this)) && $this->$var) {
             return $this->time2D($this->$var, $format);
         }
@@ -380,7 +502,8 @@ class DbObject extends DbService {
      * @param <type> $format
      * @return <type> formatted date and time
      */
-    function getDateTime($var, $format = 'd/m/Y H:i') {
+    public function getDateTime($var, $format = 'd/m/Y H:i')
+    {
         if (array_key_exists($var, get_object_vars($this)) && $this->$var) {
             return $this->time2Dt($this->$var, $format);
         }
@@ -392,13 +515,15 @@ class DbObject extends DbService {
      * @param <type> $format
      * @return <type> formatted date and time
      */
-    function getTime($var, $format = null) {
+    public function getTime($var, $format = null)
+    {
         if (array_key_exists($var, get_object_vars($this)) && $this->$var) {
             return $this->time2T($this->$var, $format);
         }
     }
 
-    function setTime($var, $date) {
+    public function setTime($var, $date)
+    {
         if (array_key_exists($var, get_object_vars($this))) {
             $this->$var = $this->t2Time($date);
         }
@@ -411,7 +536,8 @@ class DbObject extends DbService {
      * @param <type> $var
      * @param <type> $date
      */
-    function setDate($var, $date) {
+    public function setDate($var, $date)
+    {
         if (array_key_exists($var, get_object_vars($this))) {
             $this->$var = $this->d2Time($date);
         }
@@ -424,41 +550,45 @@ class DbObject extends DbService {
      * @param <type> $var
      * @param <type> $date
      */
-    function setDateTime($var, $date) {
+    public function setDateTime($var, $date)
+    {
         if (array_key_exists($var, get_object_vars($this))) {
             $this->$var = $this->dt2Time($date);
         }
     }
 
-	/**
-	 * Returns whether or not this object exists in the database
-	 * Base on the id not being null and greater than 0
-	 * 
-	 * @return <bool> exists
-	 */
-	public function exists() {
-		return !is_null($this->id) && intval($this->id) > 0;
-	}
-	
-	/**
-	 * Checks whether or not a given property has changed. It does this by
-	 * looking for the $prop value in the __old array and comparing it against
-	 * the active property.
-	 * 
-	 * @param string $prop
-	 * @return boolean
-	 */
-	public function propertyHasChanged($prop) {
-		return property_exists($this, '__old') && property_exists($this, $prop) && 
-				array_key_exists($prop, $this->__old) && $this->__old[$prop] != $this->$prop;
-	}
-	
+    /**
+     * Returns whether or not this object exists in the database
+     * Base on the id not being null and greater than 0
+     *
+     * @return <bool> exists
+     */
+    public function exists()
+    {
+        return !is_null($this->id) && intval($this->id) > 0;
+    }
+
+    /**
+     * Checks whether or not a given property has changed. It does this by
+     * looking for the $prop value in the __old array and comparing it against
+     * the active property.
+     *
+     * @param string $prop
+     * @return boolean
+     */
+    public function propertyHasChanged($prop)
+    {
+        return property_exists($this, '__old') && property_exists($this, $prop) &&
+        array_key_exists($prop, $this->__old) && $this->__old[$prop] != $this->$prop;
+    }
+
     /**
      * Utility function to decide
      * whether to insert or update
      * an object in the database.
      */
-    function insertOrUpdate($force_null_values = false, $force_validation = true) {
+    public function insertOrUpdate($force_null_values = false, $force_validation = true)
+    {
         if ($this->id != null) {
             return $this->update($force_null_values, $force_validation);
         } else {
@@ -468,7 +598,7 @@ class DbObject extends DbService {
 
     /**
      * Call database action hooks:
-     * 
+     *
      * core_dbobject_before_insert
      * core_dbobject_before_insert_[classname]
      * core_dbobject_after_insert
@@ -481,11 +611,12 @@ class DbObject extends DbService {
      * core_dbobject_before_delete_[classname]
      * core_dbobject_after_delete
      * core_dbobject_after_delete_[classname]
-     * 
+     *
      * @param unknown $type eg. before / after
      * @param unknown $action eg. insert / update / delete
      */
-    private function _callHooks($type, $action) {
+    private function _callHooks($type, $action)
+    {
         $this->w->callHook("core_dbobject", $type . "_" . $action, $this);
         $this->w->callHook("core_dbobject", $type . "_" . $action . "_" . get_class($this), $this);
     }
@@ -497,13 +628,16 @@ class DbObject extends DbService {
      * @throws Exception e
      * @return  boolean|array true or Array of validation errors
      */
-    function insert($force_validation = true) {
+    public function insert($force_validation = true)
+    {
         try {
             $this->startTransaction();
 
+            $this->validateBoolianProperties();
+
             if ($force_validation && property_exists($this, "_validation")) {
                 $valid_response = $this->validate();
-                if (!$valid_response ['success']) {
+                if (!$valid_response['success']) {
                     $this->rollbackTransaction();
                     return $valid_response;
                 }
@@ -518,49 +652,50 @@ class DbObject extends DbService {
             // set some default attributes
             if (!property_exists($this, "_modifiable")) { // $this->_modifiable) {
                 // for backwards compatibility
-                if (in_array("dt_created", $columns)) {
+                if (in_array("dt_created", $columns) && !isset($this->dt_created)) {
                     $this->dt_created = time();
-				}
+                }
 
-                if (in_array("creator_id", $columns) && $this->w->Auth->loggedIn()) {
+                if (in_array("creator_id", $columns) && $this->w->Auth->loggedIn() && !isset($this->creator_id)) {
                     $this->creator_id = $this->w->Auth->user()->id;
-				}
+                }
 
-                if (in_array("dt_modified", $columns)) {
+                if (in_array("dt_modified", $columns) && !isset($this->dt_modified)) {
                     $this->dt_modified = time();
-				}
+                }
 
-                if (in_array("modifier_id", $columns) && $this->w->Auth->loggedIn()) {
+                if (in_array("modifier_id", $columns) && $this->w->Auth->loggedIn() && !isset($this->modifier_id)) {
                     $this->modifier_id = $this->w->Auth->user()->id;
-				}
+                }
             }
 
             $data = array();
             foreach (get_object_vars($this) as $k => $v) {
-                if ($k {0} != "_" && $k != "w" && $v !== null) {
+                if ($k{0} != "_" && $k != "w" && $v !== null) {
                     $dbk = $this->getDbColumnName($k);
                     if (strpos($k, "dt_") === 0) {
                         if ($v) {
                             $v = $this->time2Dt($v);
-                            $data [$dbk] = $v;
+                            $data[$dbk] = $v;
                         }
-                    } else if (strpos($k, "d_") === 0) {
+                    } elseif (strpos($k, "d_") === 0) {
                         if ($v) {
                             $v = $this->time2D($v);
-                            $data [$dbk] = $v;
+                            $data[$dbk] = $v;
                         }
-                    } else if (strpos($k, "t_") === 0) {
+                    } elseif (strpos($k, "t_") === 0) {
                         if ($v) {
                             $v = $this->time2T($v);
-                            $data [$dbk] = $v;
+                            $data[$dbk] = $v;
                         }
-                    } else if (strpos($k, "s_") === 0) {
+                    } elseif (strpos($k, "s_") === 0) {
                         if ($v) {
-                            $v = AESencrypt($v, Config::get('system.password_salt'));
-                            $data [$dbk] = $v;
+                            $call_encrypt = $this->_systemEncrypt;
+                            $v = $call_encrypt($v); //AESencrypt($v, Config::get('system.password_salt'));
+                            $data[$dbk] = $v;
                         }
                     } else {
-                        $data [$dbk] = $v;
+                        $data[$dbk] = $v;
                     }
                 }
             }
@@ -569,9 +704,6 @@ class DbObject extends DbService {
             $this->_db->execute();
 
             $this->id = $this->_db->last_insert_id();
-
-            // calling hooks AFTER inserting the object
-            $this->_callHooks("after", "insert");
 
             // call standard aspect methods
 
@@ -585,15 +717,18 @@ class DbObject extends DbService {
                 $this->_searchable->insert(false);
             }
 
+            // calling hooks AFTER inserting the object
+            $this->_callHooks("after", "insert");
+
             // give related objects the chance to update their index
-            $this->w->callHook("core_dbobject", "indexChange_".get_class($this), $this);
-            
+            $this->w->callHook("core_dbobject", "indexChange_" . get_class($this), $this);
+
             // store this id in the context for hooks etc.
             $inserts = $this->w->ctx('db_inserts');
             if (!$inserts) {
                 $inserts = array();
             }
-            $inserts [get_class($this)] [] = $this->id;
+            $inserts[get_class($this)][] = $this->id;
             $this->w->ctx('db_inserts', $inserts);
 
             $this->commitTransaction();
@@ -613,21 +748,24 @@ class DbObject extends DbService {
      *
      * if $force_null_values is true set null values in db, if false, null values in object will be ignored.
      *
-     * @param boolean $force_null_values        	
-     * @param boolean $force_validation        	
+     * @param boolean $force_null_values
+     * @param boolean $force_validation
      * @return  boolean|array true or Array of validation errors
      */
-    function update($force_null_values = false, $force_validation = true) {
+    public function update($force_null_values = false, $force_validation = true)
+    {
         try {
             $this->startTransaction();
 
             if ($force_validation && property_exists($this, "_validation")) {
                 $valid_response = $this->validate();
-                if (!$valid_response ['success']) {
+                if (!$valid_response['success']) {
                     $this->rollbackTransaction();
                     return $valid_response;
                 }
             }
+
+            $deletedOnManualUpdate = false;
 
             // calling hooks BEFORE updating the object
             $this->_callHooks("before", "update");
@@ -637,6 +775,12 @@ class DbObject extends DbService {
             // check delete attribute
             if (in_array("is_deleted", $columns) && $this->is_deleted === null) {
                 $this->is_deleted = 0;
+            } elseif (in_array("is_deleted", $columns) && $this->is_deleted == 1 && $this->__old["is_deleted"] != 1) {
+                // call delete function if property is_deleted has changed to 1
+                $deletedOnManualUpdate = true;
+                $this->_callHooks("before", "delete");
+            } else {
+                $deletedOnManualUpdate = false;
             }
 
             // set default attributes the old way
@@ -649,26 +793,33 @@ class DbObject extends DbService {
                     $this->modifier_id = $this->w->Auth->user()->id;
                 }
             }
+
+            $this->validateBoolianProperties();
+
             $data = array();
             foreach (get_object_vars($this) as $k => $v) {
-                if ($k {0} != "_" && $k != "w") { // ignore volatile vars
+                if ($k{0} != "_" && $k != "w") { // ignore volatile vars
                     $dbk = $this->getDbColumnName($k);
 
                     // call update conversions
                     $v = $this->updateConvert($k, $v);
                     if ($v !== null) {
-                        $data [$dbk] = $v;
+                        $data[$dbk] = $v;
                     }
                     // if $force_null_values is TRUE and $v is NULL, then set fields in DB to NULL
                     // otherwise ignore NULL values
                     if ($v === null && $force_null_values == true) {
-                        $data [$dbk] = null;
+                        $data[$dbk] = null;
                     }
                 }
             }
 
             $this->_db->update($t, $data)->where($this->getDbColumnName('id'), $this->id);
             $this->_db->execute();
+
+            if ($deletedOnManualUpdate) {
+                $this->_callHooks("after", "delete");
+            }
 
             // calling hooks AFTER updating the object
             $this->_callHooks("after", "update");
@@ -683,16 +834,16 @@ class DbObject extends DbService {
             if (property_exists($this, "_searchable") && (null !== $this->_searchable)) {
                 $this->_searchable->update(false);
             }
-            
+
             // give related objects the chance to update their index
-			$this->w->callHook("core_dbobject", "indexChange_".get_class($this), $this);
-			
+            $this->w->callHook("core_dbobject", "indexChange_" . get_class($this), $this);
+
             // store this id in the context for hooks
             $updates = $this->w->ctx('db_updates');
             if (!$updates) {
                 $updates = array();
             }
-            $updates [get_class($this)] [] = $this->id;
+            $updates[get_class($this)][] = $this->id;
             $this->w->ctx('db_updates', $updates);
             $this->commitTransaction();
         } catch (Exception $e) {
@@ -711,7 +862,8 @@ class DbObject extends DbService {
      *
      * @param $force
      */
-    function delete($force = false) {
+    public function delete($force = false)
+    {
         try {
             $this->startTransaction();
 
@@ -735,8 +887,8 @@ class DbObject extends DbService {
             $this->_callHooks("after", "delete");
 
             // give related objects the chance to update their index
-            $this->w->callHook("core_dbobject", "indexChange_".get_class($this), $this);
-            
+            $this->w->callHook("core_dbobject", "indexChange_" . get_class($this), $this);
+
             // store this id in the context for listeners
             $deletes = $this->w->ctx('db_deletes');
             if (!$deletes) {
@@ -763,20 +915,21 @@ class DbObject extends DbService {
     /**
      * Returns the table name where this object is
      * stored
-     * 
+     *
      * Uses either:
-     * 
+     *
      * 1) the value of the property $_db_table (if it exists)
      * 2) the name of the class as "snake_case" (lowercase)
-     * 
+     *
      * You can also override this function completely.
      *
      * @return String
      */
-    function getDbTableName() {
+    public function getDbTableName()
+    {
         if (isset($this->_db_table)) {
             return $this->_db_table;
-        } else if (isset(static::$_db_table)) {
+        } elseif (isset(static::$_db_table)) {
             return static::$_db_table;
         } else {
             // Help from: http://www.tech-recipes.com/rx/5626/php-camel-case-to-spaces-or-underscore/
@@ -785,10 +938,11 @@ class DbObject extends DbService {
         // return strtolower(get_class($this));
     }
 
-    function getDbTableColumnNames() {
-		if(!empty(self::$_columns[$this->_class])) {
-			return self::$_columns[$this->_class];
-		}
+    public function getDbTableColumnNames()
+    {
+        if (!empty(self::$_columns[$this->_class])) {
+            return self::$_columns[$this->_class];
+        }
         $rs = $this->_db->_query('SELECT * FROM ' . $this->getDbTableName() . ' LIMIT 0');
         if ($rs !== false) {
             for ($i = 0; $i < $rs->columnCount(); $i++) {
@@ -797,11 +951,12 @@ class DbObject extends DbService {
             }
             return self::$_columns[$this->_class]; //$this->_db->prepare("DESCRIBE tablename")->execute()->fetchAll(PDO::FETCH_COLUMN);
         }
-		self::$_columns[$this->_class][] = array();
+        self::$_columns[$this->_class][] = array();
         return array();
     }
 
-    function getHumanReadableAttributeName($attribute) {
+    public function getHumanReadableAttributeName($attribute)
+    {
         // Remove magic markers (d_, dt_, etc)
         $replace_magic = array("d_", "dt_", "t_");
         foreach ($replace_magic as $rm) {
@@ -826,28 +981,32 @@ class DbObject extends DbService {
      * @param <type> $attr
      * @return <type>
      */
-    function getDbColumnName($attr) {
+    public function getDbColumnName($attr)
+    {
         return $attr;
     }
 
-    function _tn() {
+    public function _tn()
+    {
         return $this->getDbTableName();
     }
 
-    function _cn($attr) {
+    public function _cn($attr)
+    {
         return $this->getDbColumnName($attr);
     }
 
     /**
      * get Creator user object if creator_id
      * property exists
-     * 
+     *
      * @return User
      */
-    function getCreator() {
+    public function getCreator()
+    {
         if ($this->_modifiable) {
             return $this->_modifiable->getCreator();
-        } else if (property_exists(get_class($this), "creator_id")) {
+        } elseif (property_exists(get_class($this), "creator_id")) {
             return $this->w->Auth->getUser($this->creator_id);
         } else {
             return null;
@@ -857,13 +1016,14 @@ class DbObject extends DbService {
     /**
      * get Modifier user object if creator_id
      * property exists
-     * 
+     *
      * @return User
      */
-    function getModifier() {
+    public function getModifier()
+    {
         if ($this->_modifiable) {
             return $this->_modifiable->getModifier();
-        } else if (property_exists(get_class($this), "modifier_id")) {
+        } elseif (property_exists(get_class($this), "modifier_id")) {
             return $this->w->Auth->getUser($this->modifier_id);
         } else {
             return null;
@@ -872,38 +1032,57 @@ class DbObject extends DbService {
 
     /**
      * Override this function if you want to add custom content
-     * to the search index for this object. 
-     * 
+     * to the search index for this object.
+     *
      * DO NOT CALL $this->getIndexContent() within this function
      * or you will create an endless loop which will destroy the universe!
-     * 
+     *
      * @return String
      */
-    function addToIndex() {
-        
+    public function addToIndex()
+    {
+    }
+
+    /**
+     * Override this function if you want to set wether this object should not be added
+     * to the search index for this object.
+     *
+     *
+     * @return Bool
+     */
+    public function shouldAddToSearch()
+    {
+        return true;
     }
 
     // a list of english words that need not be searched against
     // and thus do not need to be stored in an index
+
+    //This is list is depreciated, it has been left here for backwards compatability
     static $_stopwords = "about above across after again against all almost alone along already also although always among and any anybody anyone anything anywhere are area areas around ask asked asking asks away back backed backing backs became because become becomes been before began behind being beings best better between big both but came can cannot case cases certain certainly clear clearly come could did differ different differently does done down downed downing downs during each early either end ended ending ends enough even evenly ever every everybody everyone everything everywhere face faces fact facts far felt few find finds first for four from full fully further furthered furthering furthers gave general generally get gets give given gives going good goods got great greater greatest group grouped grouping groups had has have having her here herself high higher highest him himself his how however important interest interested interesting interests into its itself just keep keeps kind knew know known knows large largely last later latest least less let lets like likely long longer longest made make making man many may member members men might more most mostly mrs much must myself necessary need needed needing needs never new newer newest next nobody non noone not nothing now nowhere number numbers off often old older oldest once one only open opened opening opens order ordered ordering orders other others our out over part parted parting parts per perhaps place places point pointed pointing points possible present presented presenting presents problem problems put puts quite rather really right room rooms said same saw say says second seconds see seem seemed seeming seems sees several shall she should show showed showing shows side sides since small smaller smallest some somebody someone something somewhere state states still such sure take taken than that the their them then there therefore these they thing things think thinks this those though thought thoughts three through thus today together too took toward turn turned turning turns two under until upon use used uses very want wanted wanting wants was way ways well wells went were what when where whether which while who whole whose why will with within without work worked working works would year years yet you young younger youngest your yours";
 
     /**
      * Consolidate all object fields into one big search friendly string.
-     * 
+     *
      * @return string
      */
-    function getIndexContent($ignoreAdditional = true) {
+    public function getIndexContent($ignoreAdditional = true)
+    {
 
-        // -------------- concatenate all object fields ---------------------		
+        // -------------- concatenate all object fields ---------------------
         $str = "";
-        $exclude = array("dt_created", "dt_modified", "id", "w");
+        $exclude = array("dt_created", "dt_modified", "w");
 
         foreach (get_object_vars($this) as $k => $v) {
             if ($k{0} != "_" // ignore volatile vars
-                    && (!property_exists($this, "_exclude_index") // ignore properties that should be excluded
-                    || !in_array($k, $this->_exclude_index)) && stripos($k, "_id") === false && !in_array($k, $exclude)
+                 && (!property_exists($this, "_exclude_index") // ignore properties that should be excluded
+                     || !in_array($k, $this->_exclude_index)) && stripos($k, "_id") === false && !in_array($k, $exclude)
             ) {
-                $str .= $v . " ";
+                if ($k == "id") {
+                    $str .= "id" . $v . " ";
+                } else {
+                    $str .= $v . " ";
+                }
             }
         }
 
@@ -912,11 +1091,11 @@ class DbObject extends DbService {
 
         // add content from hooks anywhere in the system
         if (!$ignoreAdditional) {
-	        $additional = $this->w->callHook("core_dbobject", "add_to_index", $this);
+            $additional = $this->w->callHook("core_dbobject", "add_to_index", $this);
         }
-        
+
         if (!empty($additional)) {
-			$str .= ' '.implode(" ",$additional); 
+            $str .= ' ' . implode(" ", $additional);
         }
 
         // ------------ sanitise string ----------------------------------
@@ -929,12 +1108,12 @@ class DbObject extends DbService {
         // Remove line breaks
         $str = str_replace("\n", " ", $str);
 
-        // Remove all characters except A-Z, a-z, 0-9, dots, commas, hyphens, spaces and forward slashes (for dates) 
-        // Note that the hyphen must go last not to be confused with a range (A-Z) 
+        // Remove all characters except A-Z, a-z, 0-9, dots, commas, hyphens, spaces and forward slashes (for dates)
+        // Note that the hyphen must go last not to be confused with a range (A-Z)
         // and the dot, being special, is escaped with backslash
         $str = preg_replace("/[^A-Za-z0-9 \.,\-\/@':]/", '', $str);
 
-        // Replace sequences of spaces with one space 
+        // Replace sequences of spaces with one space
         $str = preg_replace('/  +/', ' ', $str);
 
         // de-duplicate string and remove any word shorter than 3 characters
@@ -943,7 +1122,8 @@ class DbObject extends DbService {
         });
 
         // remove stop words
-        $temparr = array_diff($temparr, explode(" ", self::$_stopwords));
+        $temparr = array_diff($temparr, explode(" ", Config::get("search.stopwords")));
+
         $str = implode(" ", $temparr);
 
         return $str;
@@ -955,20 +1135,20 @@ class DbObject extends DbService {
      * The Html::form() and Html::multiColForm() functions will use this function
      * to create a select option list if no other options are given in the parameters
      * for this field.
-     * 
+     *
      * There are 2 ways this function can be used ..
-     * 
+     *
      * 1. You can just override it in your subclass and do what you want
      * 2. You can use the automagic properties in your subclass explained below
-     * 
+     *
      * The return of this function should be an array that is fit for passing to Html::select(), eg.
-     * 
+     *
      * a) array("Option1", "Option2", ..)
      * b) array(array("Title","Value"), array("Title","Value), ..)
      * c) array($dbobject1, $dbobject2, ..)
-     * 
+     *
      * Automagic UI Field Hints
-     * 
+     *
      * static $_<fieldname>_ui_select_string = array("option1","option2",...);
      * --> create a select dropdown using those strings explicitly
      *
@@ -979,11 +1159,12 @@ class DbObject extends DbService {
      * static $_<fieldname>_ui_select_objects_class = "Contact";
      * static $_<fieldname>_ui_select_objects_filter = array("is_deleted"=>0);
      * --> create a select filling it with the objects for the _class filtered by the _filter criteria
-     * 
+     *
      * @param String $field
      * @return array
      */
-    function getSelectOptions($field) {
+    public function getSelectOptions($field)
+    {
 
         // check whether this field has hints
         $prop_string = "_" . $field . "_ui_select_strings";
@@ -999,9 +1180,9 @@ class DbObject extends DbService {
             } else {
                 return $this->$prop_string;
             }
-        } else if (property_exists($this, $prop_lookup) && $this->$prop_lookup) {
+        } elseif (property_exists($this, $prop_lookup) && $this->$prop_lookup) {
             return $this->getObjects("Lookup", array("type" => $this->$prop_lookup, "is_deleted" => 0));
-        } else if (property_exists($this, $prop_class) && $this->$prop_class) {
+        } elseif (property_exists($this, $prop_class) && $this->$prop_class) {
             if (property_exists($this, $prop_filter) && $this->$prop_filter) {
                 return $this->getObjects($this->$prop_class, $this->$prop_filter, true);
             } else {
@@ -1013,12 +1194,14 @@ class DbObject extends DbService {
     /**
      * Validate the object's properties according to the rules
      * defined in $_validation array.
-     * 
+     *
      * @return void|multitype:multitype: boolean
      */
-    function validate() {
-        if (!property_exists($this, "_validation"))
+    public function validate()
+    {
+        if (!property_exists($this, "_validation")) {
             return;
+        }
 
         // Get table columns
         $table_columns = get_object_vars($this);
@@ -1102,15 +1285,17 @@ class DbObject extends DbService {
                         }
                         break;
                     case "unique":
-
                         break;
                     case "custom":
                     case "regex":
                         // Add surrounding regex slashes if they dont exist
-                        if ($rule[0] !== '/')
+                        if ($rule[0] !== '/') {
                             $rule = '/' . $rule;
-                        if ($rule[strlen($rule) - 1] !== '/')
+                        }
+
+                        if ($rule[strlen($rule) - 1] !== '/') {
                             $rule = $rule . '/';
+                        }
 
                         if (!filter_var($this->$vr_key, FILTER_VALIDATE_REGEXP, array('regexp' => $rule))) {
                             $response["invalid"]["$vr_key"][] = "Invalid";
@@ -1138,10 +1323,10 @@ class DbObject extends DbService {
         // better to do the following:
         // - update or insert just fail but send an exception containing the invalid messages
         // - caller should call validate BEFORE update / insert to react to messages in a UI fashion (eg. redisplay form with message, etc)
-// 		if (count($response["invalid"]) > 0){
-// 			$_SESSION["errors"] = $response["invalid"]; // <-- GENIUS!... hopefully that works
-// 			$this->w->redirect($this->w->localUrl($_SERVER["REDIRECT_URL"]));
-// 		}
+        //         if (count($response["invalid"]) > 0){
+        //             $_SESSION["errors"] = $response["invalid"]; // <-- GENIUS!... hopefully that works
+        //             $this->w->redirect($this->w->localUrl($_SERVER["REDIRECT_URL"]));
+        //         }
     }
 
     /**
@@ -1151,32 +1336,51 @@ class DbObject extends DbService {
      * @param mixed $v
      * @return mixed
      */
-    function updateConvert($k, $v) {
+    public function updateConvert($k, $v)
+    {
         if (strpos($k, "dt_") === 0) {
             if (!empty($v)) {
                 return $this->time2Dt($v);
-            } else
+            } else {
                 return null;
-        } else if (strpos($k, "d_") === 0) {
+            }
+        } elseif (strpos($k, "d_") === 0) {
             if (!empty($v)) {
                 return $this->time2D($v);
-            } else
+            } else {
                 return null;
-        } else if (strpos($k, "t_") === 0) {
+            }
+        } elseif (strpos($k, "t_") === 0) {
             if (!empty($v) && is_int($v)) {
                 return $this->time2T($v);
-            } else
+            } else {
                 return null;
-        } else if (strpos($k, "s_") === 0) {
+            }
+        } elseif (strpos($k, "s_") === 0) {
             if (!empty($v)) {
-                return AESencrypt($v, Config::get('system.password_salt'));
+                $call_encrypt = $this->_systemEncrypt;
+                return $call_encrypt($v); //AESencrypt($v, Config::get('system.password_salt'));
             }
         }
         return $v;
     }
 
-	public function __toString() {
-		return $this->printSearchTitle();
-	}
-	
+    public function __toString()
+    {
+        return $this->printSearchTitle();
+    }
+
+    //loops through properties ensuring boolians are either 'true' or 'false'
+    public function validateBoolianProperties()
+    {
+        foreach (get_object_vars($this) as $k => $v) {
+            if ($k{0} != "_" && $k != "w") { // ignore volatile vars
+                if (substr($k, 0, 3) === 'is_') {
+                    //echo $k; echo '<br>';
+                    $this->$k = $v ? 1 : 0;
+                    //echo $this->$k; echo '<br>';
+                }
+            }
+        }
+    }
 }

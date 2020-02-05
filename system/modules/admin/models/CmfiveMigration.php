@@ -1,6 +1,6 @@
 <?php
 
-require "CmfiveTable.php";
+require_once "CmfiveTable.php";
 
 use \Cmfive\Table as Table;
 use Phinx\Db\Table\Column as Column;
@@ -9,6 +9,21 @@ class CmfiveMigration extends Phinx\Migration\AbstractMigration {
 	
 	public $w;
 	
+	public function preText()
+	{
+		return null;
+	}
+
+	public function postText()
+	{
+		return null;
+	}
+
+	public function description()
+	{
+		return null;
+	}
+
 	public function setWeb($w) {
 		$this->w = $w;
 		return $this;
@@ -127,6 +142,24 @@ class CmfiveMigration extends Phinx\Migration\AbstractMigration {
 			$update_statement_string .= " WHERE id=" . $data['id'];
 			
 			$this->execute($update_statement_string);
+		}
+	}
+
+	/**
+	 * Removes a column from a table. Takes care of checking for table/column
+	 * existance
+	 * 
+	 * @param string $table
+	 * @param string $column
+	 * @param string $type
+	 * @param Array $options
+	 * @return null
+	 */
+	public function changeColumnInTable($table, $column, $type, $options = []) {
+		if ($this->hasTable($table)) {
+			if ($this->table($table)->hasColumn($column)) {
+				$this->table($table)->changeColumn($column, $type, $options)->save();
+			}
 		}
 	}
 	

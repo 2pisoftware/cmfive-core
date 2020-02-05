@@ -6,7 +6,7 @@ function editprinter_GET(Web $w) {
     if (!empty($p["id"])){
         $printer = $w->Printer->getPrinter($p["id"]);
     }
-    
+
     $form = array(
         "Details" => array(
             array(array("Printer name", "text", "name", $printer->name)),
@@ -14,8 +14,8 @@ function editprinter_GET(Web $w) {
             array(array("Port", "text", "port", $printer->port))
         )
     );
-            
-    $w->out(Html::multiColForm($form, "/admin/editprinter/{$p['id']}"));
+
+    $w->out(Html::multiColForm($form, "/admin/editprinter/{$p['id']}", "POST", "Save", null, null, null, "_self", true, Printer::$_validation));
 }
 
 function editprinter_POST(Web $w) {
