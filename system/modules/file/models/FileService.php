@@ -60,6 +60,7 @@ class FileService extends DbService
      * Return the path adjusted to the currently active adapter.
      *
      * @param string file path
+     *
      * @return string resulting file path
      */
     public function getFilePath($path)
@@ -89,6 +90,7 @@ class FileService extends DbService
      *
      * @param \Gaufrette\Filesystem
      * @param string filename
+     *
      * @return \Gaufrette\File
      */
     public function getFileObject($filesystem, $filename)
@@ -97,7 +99,7 @@ class FileService extends DbService
     }
 
     /**
-     * Returns the first adapter maked as active that isn't "local".
+     * Returns the first adapter marked as active that isn't "local".
      *
      * The local filesystem is the default adapter if none are specified.
      *
@@ -122,9 +124,10 @@ class FileService extends DbService
     /**
      * Get a Gaufrette Filesystem for the currently active adapter and selected path
      *
-     * @param Mixed $path base path to load the filesystem adapter at
-     * @param Mixed $content content to load into the filesystem (mainly used for the "memory" adapter
-     * @param Array $options options to give to the filesystem
+     * @param mixed $path base path to load the filesystem adapter at
+     * @param mixed $content content to load into the filesystem (mainly used for the "memory" adapter
+     * @param array $options options to give to the filesystem
+     *
      * @return \Gaufrette\Filesystem
      */
     public function getFilesystem($path = null, $content = null, $options = [])
@@ -137,8 +140,9 @@ class FileService extends DbService
      *
      * @param string $adapter adapter to load
      * @param string $path base path to load the filesystem adapter at
-     * @param Mixed $content content to load into the filesystem (mainly used for the "memory" adapter
-     * @param Array $options options to give to the filesystem
+     * @param mixed $content content to load into the filesystem (mainly used for the "memory" adapter
+     * @param array $options options to give to the filesystem
+     *
      * @return FileSystem
      */
     public function getSpecificFilesystem($adapter = "local", $path = null, $content = null, $options = [])
@@ -184,10 +188,11 @@ class FileService extends DbService
      * Get a Gaufrette Filesystem for a given adapter, adapter config and path
      *
      * @param string $adapter adapter to load
-     * @param Array $adapter_config to use
+     * @param array $adapter_config to use
      * @param string $path base path to load the filesystem adapter at
-     * @param Mixed $content content to load into the filesystem (mainly used for the "memory" adapter
-     * @param Array $options options to give to the filesystem
+     * @param mixed $content content to load into the filesystem (mainly used for the "memory" adapter
+     * @param array $options options to give to the filesystem
+     *
      * @return FileSystem
      */
     public function getSpecificFilesystemWithCustomAdapter($adapter = 'local', $adapter_config = null, $path = null, $content = null, $options = [])
@@ -230,7 +235,8 @@ class FileService extends DbService
      * Register a gaufrette stream wrapper
      *
      * @param \Gaufrette\Filesystem
-     * @return null
+     *
+     * @return void
      */
     public function registerStreamWrapper($filesystem = null)
     {
@@ -246,6 +252,7 @@ class FileService extends DbService
      * Create a HTML image tag for the image specified by $path
      *
      * @param string $path image file path
+     *
      * @return string html image tag
      */
     public function getImg($path)
@@ -265,6 +272,7 @@ class FileService extends DbService
      * Create a HTML image tag for a thumbnail of the image specified by $path
      *
      * @param string $path image file path
+     *
      * @return string thumbnail image url
      */
     public function getThumbImg($path)
@@ -284,6 +292,7 @@ class FileService extends DbService
      * Check if an attachment is an image
      *
      * @param string $path image file path
+     *
      * @return bool
      */
     public function isImage($path)
@@ -302,6 +311,7 @@ class FileService extends DbService
 
     /**
      * Get a url to the file specified by $path
+     *
      * @return string URL to download file
      */
     public function getDownloadUrl($path)
@@ -312,9 +322,10 @@ class FileService extends DbService
     /**
      * Lookup the attachments for a given object
      *
-     * @param Mixed $objectOrTable
-     * @param Mixed $id
+     * @param mixed $objectOrTable
+     * @param mixed $id
      * @param array $type_code_blacklist a list of type codes to exclude
+     *
      * @return array of the paths of the attached files
      */
     public function getAttachmentsFileList($objectOrTable, $id = null, $type_code_blacklist = [])
@@ -353,8 +364,9 @@ class FileService extends DbService
     /**
      * Lookup the attachments for a given object
      *
-     * @param Mixed $objectOrTable
-     * @param Mixed $id
+     * @param mixed $objectOrTable
+     * @param mixed $id
+     *
      * @return array
      */
     public function getAttachments($objectOrTable, $id = null)
@@ -384,8 +396,9 @@ class FileService extends DbService
     /**
      * Counts attachments for a given object/table and id
      *
-     * @param Mixed $objectOrTable
+     * @param mixed $objectOrTable
      * @param int (option) $id
+     *
      * @return int
      */
     public function countAttachments($objectOrTable, $id = null)
@@ -407,8 +420,9 @@ class FileService extends DbService
     /**
      * Counts attachments for a given object/table and id
      *
-     * @param Mixed $objectOrTable
+     * @param mixed $objectOrTable
      * @param int (option) $id
+     *
      * @return int
      */
     public function countAttachmentsForUser($object, $user)
@@ -424,7 +438,8 @@ class FileService extends DbService
     /**
      * Load a single attachment
      *
-     * @param Mixed $id attachment ID
+     * @param mixed $id attachment ID
+     *
      * @return Attachment
      */
     public function getAttachment($id)
@@ -433,22 +448,20 @@ class FileService extends DbService
     }
 
     /**
-     * Move an uploaded file from the temp location
-     * to
-     *  /files/attachments/<attachTable>/<year>/<month>/<day>/<attachId>/<filename>
+     * Move an uploaded file from the temp location to /files/attachments/<attachTable>/<year>/<month>/<day>/<attachId>/<filename> and create an Attachment record.
      *
-     * and create an Attachment record.
+     * @param string $request_key
+     * @param DbObject $parentObject
+     * @param string $title
+     * @param string $description
+     * @param string $type_code
+     * @param boolean $is_public
      *
-     * @param <type> $filename
-     * @param <type> $attachTable
-     * @param <type> $attachId
-     * @param <type> $title
-     * @param <type> $description
-     * @return Mixed the id of the attachment object or null
+     * @return mixed the id of the attachment object or null
      */
-    public function uploadAttachment($requestkey, $parentObject, $title = null, $description = null, $type_code = null, $is_public = false)
+    public function uploadAttachment($request_key, $parentObject, $title = null, $description = null, $type_code = null, $is_public = false)
     {
-        if (empty($_POST[$requestkey]) && (empty($_FILES[$requestkey]) || $_FILES[$requestkey]['size'] <= 0)) {
+        if (empty($_POST[$request_key]) && (empty($_FILES[$request_key]) || $_FILES[$request_key]['size'] <= 0)) {
             return false;
         }
 
@@ -460,10 +473,10 @@ class FileService extends DbService
         $replace_underscore = array(" ", "&", "+", "$", "?", "|", "%", "@", "#", "(", ")", "{", "}", "[", "]", ",", ";", ":");
 
         //Check for posted content
-        if (!empty($_POST[$requestkey]) && empty($_FILES[$requestkey])) {
-            $filename = str_replace($replace_underscore, "_", str_replace($replace_empty, "", $_POST[$requestkey]));
+        if (!empty($_POST[$request_key]) && empty($_FILES[$request_key])) {
+            $filename = str_replace($replace_underscore, "_", str_replace($replace_empty, "", $_POST[$request_key]));
         } else {
-            $filename = str_replace($replace_underscore, "_", str_replace($replace_empty, "", basename($_FILES[$requestkey]['name'])));
+            $filename = str_replace($replace_underscore, "_", str_replace($replace_empty, "", basename($_FILES[$request_key]['name'])));
         }
 
         $att = new Attachment($this->w);
@@ -490,14 +503,14 @@ class FileService extends DbService
         $att->fullpath = str_replace(FILE_ROOT, "", $filesystemPath . $filename);
 
         //Check for posted content
-        if (!empty($_POST[$requestkey])) {
-            preg_match('%data:(.*);base%', substr($_POST[$requestkey], 0, 25), $mime);
-            $data = substr($_POST[$requestkey], strpos($_POST[$requestkey], ",") + 1);
+        if (!empty($_POST[$request_key])) {
+            preg_match('%data:(.*);base%', substr($_POST[$request_key], 0, 25), $mime);
+            $data = substr($_POST[$request_key], strpos($_POST[$request_key], ",") + 1);
             $mime_type = $mime[1];
             $content = base64_decode($data);
             $file->setContent($content, ['contentType' => $mime_type]);
         } else {
-            $content = file_get_contents($_FILES[$requestkey]['tmp_name']);
+            $content = file_get_contents($_FILES[$request_key]['tmp_name']);
             $file->setContent($content);
             switch ($att->adapter) {
                 case "local":
@@ -507,7 +520,6 @@ class FileService extends DbService
                     $mime_type = $this->w->getMimetypeFromString($content);
             }
         }
-
 
         $att->mimetype = $mime_type;
         $att->update();
@@ -519,14 +531,15 @@ class FileService extends DbService
      *
      *  Stores in /uploads/attachments/<ObjectTableName>/<year>/<month>/<day>/<attachId>/<filename>
      *
-     * @param string $requestKey
+     * @param string $request_Key
      * @param DbObject $parentObject
-     * @param Array $titles
-     * @param Array $descriptions
-     * @param Array $type_codes
+     * @param array $titles
+     * @param array $descriptions
+     * @param array $type_codes
+     *
      * @return bool if upload was successful
      */
-    public function uploadMultiAttachment($requestkey, $parentObject, $titles = null, $descriptions = null, $type_codes = null)
+    public function uploadMultiAttachment($request_key, $parentObject, $titles = null, $descriptions = null, $type_codes = null)
     {
         if (!is_a($parentObject, "DbObject")) {
             $this->w->error("Parent object not found.");
@@ -536,9 +549,9 @@ class FileService extends DbService
         $rpl_nil = array("..", "'", '"', ",", "\\", "/");
         $rpl_ws = array(" ", "&", "+", "$", "?", "|", "%", "@", "#", "(", ")", "{", "}", "[", "]", ",", ";", ":");
 
-        if (!empty($_FILES[$requestkey]['name']) && is_array($_FILES[$requestkey]['name'])) {
+        if (!empty($_FILES[$request_key]['name']) && is_array($_FILES[$request_key]['name'])) {
             $file_index = 0;
-            foreach ($_FILES[$requestkey]['name'] as $FILE_filename) {
+            foreach ($_FILES[$request_key]['name'] as $FILE_filename) {
                 // Files can be empty
                 if (!empty($FILE_filename['file'])) {
                     $filename = str_replace($rpl_ws, "_", str_replace($rpl_nil, "", basename($FILE_filename['file'])));
@@ -556,7 +569,7 @@ class FileService extends DbService
                     $filesystemPath = FILE_ROOT . "attachments/" . $parentObject->getDbTableName() . '/' . date('Y/m/d') . '/' . $att->id . '/';
                     $filesystem = $this->getFilesystem($filesystemPath);
                     $file = new File($filename, $filesystem);
-                    $file->setContent(file_get_contents($_FILES[$requestkey]['tmp_name'][$file_index]['file']));
+                    $file->setContent(file_get_contents($_FILES[$request_key]['tmp_name'][$file_index]['file']));
 
                     $att->fullpath = str_replace(FILE_ROOT, "", $filesystemPath . $filename);
                     $att->update();
@@ -574,9 +587,10 @@ class FileService extends DbService
      *
      * @param DbObject $object object to save content to
      * @param string $content file content
-     * @param Mixed $name
-     * @param Mixed $type_code
-     * @param Mixed $content_type
+     * @param mixed $name
+     * @param mixed $type_code
+     * @param mixed $content_type
+     *
      * @return int Attachment ID
      */
     public function saveFileContent($object, $content, $name = null, $type_code = null, $content_type = null, $description = null)
@@ -606,8 +620,9 @@ class FileService extends DbService
     /**
      * Get the attachment types for a given object type
      *
-     * @param DbObejct $object
-     * @return Array<AttachmentType>
+     * @param DbObject $object
+     *
+     * @return array<AttachmentType>
      */
     public function getAttachmentTypesForObject($object)
     {
@@ -619,6 +634,7 @@ class FileService extends DbService
      *
      * @param DbObject $object
      * @param string $backUrl
+     *
      * @return string
      */
     public function getImageAttachmentTemplateForObject($object, $backUrl)

@@ -1,18 +1,20 @@
 <?php
 
+/**
+ * Use of variables created with define should be phased out in favour of public const property equivalent of an object.
+ * These will deprecated and removed in a future version of Cmfive.
+ * This will help with avoiding clashing variable names.
+ */
 define('CACHE_PATH', 'cache');
 define('IMAGE_PATH', 'image');
-define('TEMP_PATH', 'temp');
 
-use Gaufrette\Filesystem;
 use Gaufrette\File as File;
-use Gaufrette\Adapter\Local as LocalAdapter;
-use Gaufrette\Adapter\InMemory as InMemoryAdapter;
-use Gaufrette\Adapter\AwsS3 as AwsS3;
-use Aws\S3\S3Client as S3Client;
 
 class Attachment extends DbObject
 {
+    public const CACHE_PATH = "cache";
+    public const IMAGE_PATH = "image";
+    public const TEMP_PATH = "temp";
 
     public $parent_table;
     public $parent_id;
@@ -32,7 +34,7 @@ class Attachment extends DbObject
     public $dt_viewing_window; // dt of access to list attachments. checked against config file.docx_viewing_window_duration to bypass authentication.
 
     /**
-     * Used by the task_attachment_attachment_added_task hook to skip the Attachement added notification if true
+     * Used by the task_attachment_attachment_added_task hook to skip the Attachment added notification if true
      * @var boolean
      */
     public $_skip_added_notification;
@@ -116,7 +118,7 @@ class Attachment extends DbObject
         if ($this->isImage()) {
             return WEBROOT . "/file/atthumb/" . $this->id;
         }
-        return null; // WEBROOT . "/img/document.jpg";
+        return null;
     }
 
     /**
@@ -192,7 +194,7 @@ class Attachment extends DbObject
      * The local adapter for e.g. needs an absolute reference, this absolute
      * prefix isn't needed when using S3 buckets
      *
-     * @return <String> filepath
+     * @return string
      */
     public function getFilePath()
     {
@@ -232,7 +234,8 @@ class Attachment extends DbObject
 
     /**
      * Returns attachment mimetype
-     * @return <String> mimetype
+     *
+     * @return string mimetype
      */
     public function getMimetype()
     {
@@ -240,7 +243,8 @@ class Attachment extends DbObject
     }
 
     /**
-     * Retuns Gaufrette File instance (of the attached file)
+     * Returns Gaufrette File instance (of the attached file)
+     *
      * @return \Gaufrette\File
      */
     public function getFile()
@@ -250,7 +254,8 @@ class Attachment extends DbObject
 
     /**
      * Returns attached file content
-     * @return <string> content
+     *
+     * @return string content
      */
     public function getContent($cache_locally = true)
     {
@@ -263,10 +268,10 @@ class Attachment extends DbObject
             return $file->getContent();
         }
 
-        $directory_path = ROOT_PATH . "/cache/". TEMP_PATH . "/" . FileService::$temp_file_parent_directory;
+        $directory_path = ROOT_PATH . "/" . Attachment::CACHE_PATH . "/" . Attachment::TEMP_PATH . "/" . FileService::$temp_file_parent_directory;
         if (!file_exists($directory_path)) {
             try {
-                mkdir($directory_path, 0600, true);
+                mkdir($directory_path, 0774, true);
             } catch (Exception $e) {
                 $this->w->Log->setLogger("FILE")->error("Failed to execute 'mkdir': " . $e->getMessage());
             }
@@ -334,7 +339,7 @@ class Attachment extends DbObject
      */
     public function getThumbnailCachePath()
     {
-        return ROOT_PATH . '/' . CACHE_PATH . '/' . $this->fullpath;
+        return ROOT_PATH . '/' . Attachment::CACHE_PATH . '/' . $this->fullpath;
     }
 
     /**
@@ -350,7 +355,7 @@ class Attachment extends DbObject
             return null;
         }
 
-        return ROOT_PATH . "/" . CACHE_PATH . "/" . IMAGE_PATH . "/" . $path_info["dirname"] . "/" . $path_info["filename"] . ".jpg";
+        return ROOT_PATH . "/" . Attachment::CACHE_PATH . "/" . Attachment::IMAGE_PATH . "/" . $path_info["dirname"] . "/" . $path_info["filename"] . ".jpg";
     }
 
     /**
@@ -366,7 +371,7 @@ class Attachment extends DbObject
             return null;
         }
 
-        return ROOT_PATH . "/" . CACHE_PATH . "/" . TEMP_PATH . "/" . $this->fullpath;
+        return ROOT_PATH . "/" . Attachment::CACHE_PATH . "/" . Attachment::TEMP_PATH . "/" . $this->fullpath;
     }
 
     /**
