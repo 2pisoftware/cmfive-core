@@ -43,7 +43,11 @@ class FileService extends DbService
         $multiplier = 1;
         switch (strtoupper($units)) {
             case "G":
+                $multiplier *= 1024;
+                // Fallthrough.
             case "M":
+                $multiplier *= 1024;
+                // Fallthrough.
             case "K":
                 $multiplier *= 1024;
                 break;
@@ -447,7 +451,6 @@ class FileService extends DbService
         if (empty($_POST[$requestkey]) && (empty($_FILES[$requestkey]) || $_FILES[$requestkey]['size'] <= 0)) {
             return false;
         }
-
 
         if (!is_a($parentObject, "DbObject")) {
             $this->w->error("Parent not found.");
