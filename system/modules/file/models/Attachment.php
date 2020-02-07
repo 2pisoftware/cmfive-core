@@ -137,7 +137,7 @@ class Attachment extends DbObject
 
     public function getCodeTypeTitle()
     {
-        $t = $this->w->Auth->getObject('AttachmentType', array('code' => $this->type_code, 'table_name' => $this->parent_table));
+        $t = $this->w->Auth->getObject('AttachmentType', ['code' => $this->type_code, 'table_name' => $this->parent_table]);
 
         if ($t) {
             return $t->title;
@@ -198,8 +198,8 @@ class Attachment extends DbObject
      */
     public function getFilePath()
     {
-        if (file_exists(ROOT_PATH . "/cache/temp/" . FileService::$temp_file_parent_directory . $this->filename)) {
-            return ROOT_PATH . "/cache/temp/" . FileService::$temp_file_parent_directory;
+        if (file_exists(ROOT_PATH . "/" . Attachment::CACHE_PATH . "/". Attachment::TEMP_PATH ."/" . FileService::$temp_file_parent_directory . "/" . $this->filename)) {
+            return ROOT_PATH . "/" . Attachment::CACHE_PATH . "/". Attachment::TEMP_PATH ."/" . FileService::$temp_file_parent_directory;
         }
 
         $path = dirname($this->fullpath);
@@ -249,7 +249,14 @@ class Attachment extends DbObject
      */
     public function getFile()
     {
-        return new \Gaufrette\File($this->filename, $this->getFilesystem());
+        $cache_directory = ROOT_PATH . "/" . Attachment::CACHE_PATH . "/" . Attachment::TEMP_PATH . "/" . FileService::$temp_file_parent_directory;
+        $cached_file_path = $cache_directory . "/" . $this->filename;
+
+        if (file_exists($cached_file_path)) {
+            return new File($this->filename, $this->w->File->getSpecificFilesystem("local", $cache_directory));
+        }
+
+        return new File($this->filename, $this->getFilesystem());
     }
 
     /**
@@ -264,23 +271,25 @@ class Attachment extends DbObject
             return "";
         }
 
-        if (!$cache_locally) {
+        $cache_directory_path = ROOT_PATH . "/" . Attachment::CACHE_PATH . "/" . Attachment::TEMP_PATH . "/" . FileService::$temp_file_parent_directory;
+        $cache_file_path = $cache_directory_path . "/" . $this->filename;
+
+        if ($this->adapter === "local" || !$cache_locally || file_exists($cache_file_path)) {
             return $file->getContent();
         }
 
-        $directory_path = ROOT_PATH . "/" . Attachment::CACHE_PATH . "/" . Attachment::TEMP_PATH . "/" . FileService::$temp_file_parent_directory;
-        if (!file_exists($directory_path)) {
+        if (!file_exists($cache_directory_path)) {
             try {
-                mkdir($directory_path, 0774, true);
+                mkdir($cache_directory_path, 0774, true);
             } catch (Exception $e) {
                 $this->w->Log->setLogger("FILE")->error("Failed to execute 'mkdir': " . $e->getMessage());
             }
         }
 
-        $file_path = $directory_path . "/" . $file->getName();
+        $cache_file_path = $cache_directory_path . "/" . $file->getName();
 
         try {
-            file_put_contents($file_path, $file->getContent());
+            file_put_contents($cache_file_path, $file->getContent());
             return $file->getContent();
         } catch (Exception $e) {
             $this->w->Log->setLogger("FILE")->error("Failed to execute 'file_put_contents': " . $e->getMessage());
@@ -409,9 +418,8 @@ class Attachment extends DbObject
             return false;
         }
 
-        $replace_empty = array("..", "'", '"', ",", "\\", "/");
-        $replace_underscore = array(" ", "&", "+", "$", "?", "|", "%", "@", "#", "(", ")", "{", "}", "[", "]", ",", ";", ":");
-
+        $replace_empty = ["..", "'", '"', ",", "\\", "/"];
+        $replace_underscore = [" ", "&", "+", "$", "?", "|", "%", "@", "#", "(", ")", "{", "}", "[", "]", ",", ";", ":"];
 
         if (!empty($_POST[$requestkey]) && empty($_FILES[$requestkey])) {
             $filename = str_replace($replace_underscore, "_", str_replace($replace_empty, "", $_POST[$requestkey]));

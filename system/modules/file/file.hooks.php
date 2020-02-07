@@ -27,9 +27,9 @@ function file_core_web_cleanup(Web $w)
     $files = new RecursiveIteratorIterator(
         new RecursiveDirectoryIterator($directory_path, RecursiveDirectoryIterator::SKIP_DOTS),
         RecursiveIteratorIterator::CHILD_FIRST
-    );
+    ) ?? [];
 
-    foreach ($files ?? [] as $file) {
+    foreach ($files as $file) {
         try {
             $file->isDir() ? rmdir($file->getRealPath()) : unlink($file->getRealPath());
         } catch (Throwable $t) {

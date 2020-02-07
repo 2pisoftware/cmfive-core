@@ -153,28 +153,14 @@ class FileService extends DbService
                 $adapter_obj = new LocalAdapter($path, true);
                 break;
             case "memory":
-                $adapter_obj = new InMemoryAdapter(array(basename($path) => $content));
+                $adapter_obj = new InMemoryAdapter([basename($path) => $content]);
                 break;
             case "s3":
                 $client = new Aws\S3\S3Client(Config::get('file.adapters.s3'));
                 $config_options = Config::get('file.adapters.s3.options');
                 $s3path = (substr($path, -1) == "/") ? substr($path, 0, -1) : $path; // because trailing presence varies with call/object history
                 $config_options = array_replace(is_array($config_options) ? $config_options : [], ["directory" => $s3path], $options);
-                // $config_options = array_replace(is_array($config_options) ? $config_options : [], ["directory" => $path], $options);
-                // $client = S3Client::factory(["key" => Config::get('file.adapters.s3.key'), "secret" => Config::get('file.adapters.s3.secret')]);
                 $adapter_obj = new AwsS3($client, Config::get('file.adapters.s3.bucket'), is_array($config_options) ? $config_options : []);
-                break;
-            case "dropbox":
-                if (!function_exists("oauth")) {
-                    $this->w->Log->setLogger("FILE_SERVICE")->error("The Dropbox API requires the oAuth extension to be installed.");
-                    return null;
-                }
-                $app_id = Config::get('file.adapters.dropbox.app_id');
-                if (!empty($app_id)) {
-                    $adapter_obj = new \Gaufrette\Adapter\Dropbox(new Dropbox_API(new Dropbox_OAuth_PHP($app_id, '')));
-                } else {
-                    $this->w->Log->setLogger("FILE_SERVICE")->error("Dropbox adapter requested but no app ID has been provided in the config.");
-                }
                 break;
         }
 
@@ -203,25 +189,13 @@ class FileService extends DbService
                 $adapter_obj = new LocalAdapter($path, true);
                 break;
             case "memory":
-                $adapter_obj = new InMemoryAdapter(array(basename($path) => $content));
+                $adapter_obj = new InMemoryAdapter([basename($path) => $content]);
                 break;
             case "s3":
                 $config_options = $adapter_config['options'];
                 $config_options = array_replace(is_array($config_options) ? $config_options : [], ["directory" => $path], $options);
                 $client = S3Client::factory(["key" => $adapter_config['key'], "secret" => $adapter_config['secret']]);
                 $adapter_obj = new AwsS3($client, $adapter_config['bucket'], is_array($config_options) ? $config_options : []);
-                break;
-            case "dropbox":
-                if (!function_exists("oauth")) {
-                    $this->w->Log->setLogger("FILE_SERVICE")->error("The Dropbox API requires the oAuth extension to be installed.");
-                    return null;
-                }
-                $app_id = $adapter_config['app_id'];
-                if (!empty($app_id)) {
-                    $adapter_obj = new \Gaufrette\Adapter\Dropbox(new Dropbox_API(new Dropbox_OAuth_PHP($app_id, '')));
-                } else {
-                    $this->w->Log->setLogger("FILE_SERVICE")->error("Dropbox adapter requested but no app ID has been provided in the config.");
-                }
                 break;
         }
 
@@ -338,7 +312,7 @@ class FileService extends DbService
                 }
             }
 
-            $pluck = array();
+            $pluck = [];
             if (!empty($type_code_blacklist)) {
                 $attachments = array_filter($attachments, function ($attachment) use ($type_code_blacklist) {
                     if (in_array($attachment->type_code, $type_code_blacklist)) {
@@ -358,7 +332,7 @@ class FileService extends DbService
             }
             return $pluck;
         }
-        return array();
+        return [];
     }
 
     /**
@@ -469,8 +443,8 @@ class FileService extends DbService
             $this->w->error("Parent not found.");
         }
 
-        $replace_empty = array("..", "'", '"', ",", "\\", "/");
-        $replace_underscore = array(" ", "&", "+", "$", "?", "|", "%", "@", "#", "(", ")", "{", "}", "[", "]", ",", ";", ":");
+        $replace_empty = ["..", "'", '"', ",", "\\", "/"];
+        $replace_underscore = [" ", "&", "+", "$", "?", "|", "%", "@", "#", "(", ")", "{", "}", "[", "]", ",", ";", ":"];
 
         //Check for posted content
         if (!empty($_POST[$request_key]) && empty($_FILES[$request_key])) {
@@ -546,8 +520,8 @@ class FileService extends DbService
             return false;
         }
 
-        $rpl_nil = array("..", "'", '"', ",", "\\", "/");
-        $rpl_ws = array(" ", "&", "+", "$", "?", "|", "%", "@", "#", "(", ")", "{", "}", "[", "]", ",", ";", ":");
+        $rpl_nil = ["..", "'", '"', ",", "\\", "/"];
+        $rpl_ws = [" ", "&", "+", "$", "?", "|", "%", "@", "#", "(", ")", "{", "}", "[", "]", ",", ";", ":"];
 
         if (!empty($_FILES[$request_key]['name']) && is_array($_FILES[$request_key]['name'])) {
             $file_index = 0;
@@ -626,7 +600,7 @@ class FileService extends DbService
      */
     public function getAttachmentTypesForObject($object)
     {
-        return $this->getObjects("AttachmentType", array("table_name" => $object->getDbTableName(), "is_active" => '1'));
+        return $this->getObjects("AttachmentType", ["table_name" => $object->getDbTableName(), "is_active" => '1']);
     }
 
     /**
