@@ -198,8 +198,8 @@ class Attachment extends DbObject
      */
     public function getFilePath()
     {
-        if (file_exists(ROOT_PATH . "/" . Attachment::CACHE_PATH . "/". Attachment::TEMP_PATH ."/" . FileService::$temp_file_parent_directory . "/" . $this->filename)) {
-            return ROOT_PATH . "/" . Attachment::CACHE_PATH . "/". Attachment::TEMP_PATH ."/" . FileService::$temp_file_parent_directory;
+        if (file_exists(ROOT_PATH . "/" . Attachment::CACHE_PATH . "/". Attachment::TEMP_PATH . "/" . $this->id . "/" . $this->dt_created . "/" . $this->filename)) {
+            return ROOT_PATH . "/" . Attachment::CACHE_PATH . "/". Attachment::TEMP_PATH . "/" . $this->id . "/" . $this->dt_created;
         }
 
         $path = dirname($this->fullpath);
@@ -249,7 +249,7 @@ class Attachment extends DbObject
      */
     public function getFile()
     {
-        $cache_directory = ROOT_PATH . "/" . Attachment::CACHE_PATH . "/" . Attachment::TEMP_PATH . "/" . FileService::$temp_file_parent_directory;
+        $cache_directory = ROOT_PATH . "/" . Attachment::CACHE_PATH . "/" . Attachment::TEMP_PATH . "/" . $this->id . "/" . $this->dt_created;
         $cached_file_path = $cache_directory . "/" . $this->filename;
 
         if (file_exists($cached_file_path)) {
@@ -271,7 +271,7 @@ class Attachment extends DbObject
             return "";
         }
 
-        $cache_directory_path = ROOT_PATH . "/" . Attachment::CACHE_PATH . "/" . Attachment::TEMP_PATH . "/" . FileService::$temp_file_parent_directory;
+        $cache_directory_path = ROOT_PATH . "/" . Attachment::CACHE_PATH . "/" . Attachment::TEMP_PATH . "/" . $this->id . "/" . $this->dt_created;
         $cache_file_path = $cache_directory_path . "/" . $this->filename;
 
         if ($this->adapter === "local" || !$cache_locally || file_exists($cache_file_path)) {
@@ -285,8 +285,6 @@ class Attachment extends DbObject
                 $this->w->Log->setLogger("FILE")->error("Failed to execute 'mkdir': " . $e->getMessage());
             }
         }
-
-        $cache_file_path = $cache_directory_path . "/" . $file->getName();
 
         try {
             file_put_contents($cache_file_path, $file->getContent());
@@ -365,22 +363,6 @@ class Attachment extends DbObject
         }
 
         return ROOT_PATH . "/" . Attachment::CACHE_PATH . "/" . Attachment::IMAGE_PATH . "/" . $path_info["dirname"] . "/" . $path_info["filename"] . ".jpg";
-    }
-
-    /**
-     * Returns temp cache path
-     *
-     * @return string
-     */
-    public function getTempCachePath()
-    {
-        $path_info = pathinfo($this->fullpath);
-
-        if (!array_key_exists("dirname", $path_info)) {
-            return null;
-        }
-
-        return ROOT_PATH . "/" . Attachment::CACHE_PATH . "/" . Attachment::TEMP_PATH . "/" . $this->fullpath;
     }
 
     /**
