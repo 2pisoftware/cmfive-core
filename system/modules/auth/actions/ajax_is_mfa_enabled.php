@@ -12,7 +12,7 @@ function ajax_is_mfa_enabled_GET(Web $w)
         return;
     }
 
-    $user = AuthService::getInstance($w)->getUserForLogin($login);
+    $user = $w->Auth->getUserForLogin($login);
     if (empty($user)) {
         $w->out((new AxiosResponse())->setErrorResponse("user not found", null));
         return;
