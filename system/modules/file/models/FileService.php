@@ -18,11 +18,6 @@ class FileService extends DbService
     public static $_thumb_width = 200;
     public static $_stream_name = "attachment";
 
-    public function __construct(Web $w)
-    {
-        parent::__construct($w);
-    }
-
     /**
      * Returns the max upload file size in bytes
      *
