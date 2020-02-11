@@ -1,10 +1,17 @@
 <div id="app">
-    <input type="hidden" name="<?php echo CSRF::getTokenID(); ?>" value="<?php echo CSRF::getTokenValue(); ?>" />
     <div v-if="is_mfa_enabled">
-        <h1>MFA Enabled</h1>
+        <form @submit="executeLogin">
+            <input type="hidden" name="<?php echo CSRF::getTokenID(); ?>" value="<?php echo CSRF::getTokenValue(); ?>" />
+            <input type="hidden" name="login" v-model="login" />
+            <input type="hidden" name="password" v-model="password" />
+            <label for="mfa_code">MFA Code</label>
+            <input id="mfa_code" name="mfa_code" type="text" placeholder="Your code" v-model="mfa_code" required />
+            <button type="submit" class="button medium-5 small-12">Confirm</button>
+        </form>
     </div>
     <div v-else>
-        <form @submit="validateForm">
+        <form @submit="executeLogin">
+            <input type="hidden" name="<?php echo CSRF::getTokenID(); ?>" value="<?php echo CSRF::getTokenValue(); ?>" />
             <label for="login">Login</label>
             <input id="login" name="login" type="text" placeholder="Your login" v-model="login" required />
             <label for="password">Password</label>
@@ -21,32 +28,30 @@
             return {
                 login: "",
                 password: "",
+                mfa_code: "",
                 is_mfa_enabled: false,
             }
         },
         methods: {
-            validateForm: function(e) {
+            executeLogin: function(e) {
                 e.preventDefault();
 
-                if (this.login.trim() === "" || this.password.trim() === "") {
-                    return;
-                }
+                var _this = this;
 
-                this.isMfaEnabled();
-            },
-            isMfaEnabled: function() {
-                axios.get("/auth/ajax_is_mfa_enabled", {
-                    params: {
-                        token_id: <?php echo "\"" . CSRF::getTokenID() . "\""; ?>,
-                        token_value: <?php echo "\"" . CSRF::getTokenValue() . "\""; ?>,
-                        login: this.login,
-                        password: this.password,
-                    }
+                axios.post("/auth/login", {
+                    <?php echo "\"" . CSRF::getTokenID() . "\""; ?>: <?php echo "\"" . CSRF::getTokenValue() . "\""; ?>,
+                    login: _this.login,
+                    password: _this.password,
+                    mfa_code: _this.mfa_code,
                 }).then(function(response) {
-                    this.is_mfa_enabled = response.data.is_mfa_enabled;
-                    console.log(response);
+                    debugger;
+                    if (response.data.redirect_url != null) {
+                        window.location.href = response.data.redirect_url;
+                        return;
+                    }
+
+                    _this.is_mfa_enabled = response.data.is_mfa_enabled;
                 }).catch(function(error) {
-                    console.log(error);
                     new Toast("Login failed").show();
                 });
             }

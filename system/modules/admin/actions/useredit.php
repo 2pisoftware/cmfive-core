@@ -53,7 +53,6 @@ function useredit_GET(Web &$w)
 
                 ["Password", "password", "password"],
                 ["Repeat Password", "password", "password2"],
-                ["MFA Enabled", "checkbox", "is_mfa_enabled", $user->is_mfa_enabled],
                 ["MFA Required", "checkbox", "is_mfa_required", $user->is_mfa_required],
             ],
         ],
@@ -108,7 +107,6 @@ function useredit_POST(Web &$w)
     $user->is_admin = isset($_REQUEST['is_admin']) ? 1 : 0;
     $user->is_active = isset($_REQUEST['is_active']) ? 1 : 0;
     $user->is_external = isset($_REQUEST['is_external']) ? 1 : 0;
-    $user->is_mfa_enabled = isset($_REQUEST['is_mfa_enabled']) ? 1 : 0;
     $user->is_mfa_required = isset($_REQUEST['is_mfa_required']) ? 1 : 0;
     $user->update();
 

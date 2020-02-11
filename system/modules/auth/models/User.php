@@ -43,7 +43,7 @@ class User extends DbObject
             return false;
         }
 
-        return $this->password === $this->encryptPassword($password);
+        return password_verify($password, $this->password);
     }
 
     /**

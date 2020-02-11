@@ -25,12 +25,33 @@ function login_GET(Web $w)
 
 function login_POST(Web &$w)
 {
-    if (!$_POST['login'] || $_POST['password']) {
+    $w->setLayout(null);
+
+    $request_data = json_decode(file_get_contents("php://input"), true);
+    if (empty($request_data)) {
         $w->error("Please enter your login and password", "/auth/login");
     }
 
-    $user = $w->Auth->login($_POST['login'], $_POST['password'], "Australia/Sydney");
-    if (!$user) {
+    $login = $request_data["login"];
+    $password = $request_data["password"];
+    $mfa_token = array_key_exists("mfa_token", $request_data) ? $request_data["mfa_token"] : null;
+
+    if (empty($login) || empty($password)) {
+        $w->error("Please enter your login and password", "/auth/login");
+    }
+
+    $user = $w->Auth->getUserForLogin($login);
+    if (empty($user)) {
+        $w->error("Please enter your login and password", "/auth/login");
+    }
+
+    if ($user->is_mfa_enabled && empty($mfa_token)) {
+        $w->out((new AxiosResponse())->setSuccessfulResponse(null, ["is_mfa_enabled" => true]));
+        return;
+    }
+
+    $user = $w->Auth->login($login, $password, "Australia/Sydney");
+    if (empty($user)) {
         $w->error("Login or Password incorrect", "/auth/login");
     }
 
@@ -43,8 +64,8 @@ function login_POST(Web &$w)
             $url = $user->redirect_url;
         }
         $w->sessionUnset('orig_path');
-        $w->redirect($w->localUrl($url));
+        $w->out((new AxiosResponse())->setSuccessfulResponse(null, ["redirect_url" => $w->localUrl($url)]));
     } else {
-        $w->redirect(!empty($user->redirect_url) ? $w->localUrl($user->redirect_url) : $w->localUrl());
+        $w->out((new AxiosResponse())->setSuccessfulResponse(null, ["redirect_url" => !empty($user->redirect_url) ? $w->localUrl($user->redirect_url) : $w->localUrl()]));
     }
 }
