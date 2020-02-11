@@ -4,14 +4,14 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<link rel="shortcut icon" href="/system/templates/img/favicon.ico" type="image/x-icon"/>
+        <link rel="shortcut icon" href="/system/templates/img/favicon.ico" type="image/x-icon"/>
         <title><?php echo ucfirst($w->currentModule()); ?><?php echo!empty($title) ? ' - ' . $title : ''; ?></title>
 
         <?php
         $w->enqueueStyle(array("name" => "normalize.css", "uri" => "/system/templates/js/foundation-5.5.0/css/normalize.css", "weight" => 1010));
         $w->enqueueStyle(array("name" => "foundation.css", "uri" => "/system/templates/js/foundation-5.5.0/css/foundation.css", "weight" => 1005));
         $w->enqueueStyle(array("name" => "style.css", "uri" => "/system/templates/css/style.css", "weight" => 1000));
-		$w->enqueueStyle(array("name" => "print.css", "uri" => "/system/templates/css/print.css", "weight" => 995));
+        $w->enqueueStyle(array("name" => "print.css", "uri" => "/system/templates/css/print.css", "weight" => 995));
         $w->enqueueStyle(array("name" => "tablesorter.css", "uri" => "/system/templates/css/tablesorter.css", "weight" => 990));
         $w->enqueueStyle(array("name" => "datePicker.css", "uri" => "/system/templates/css/datePicker.css", "weight" => 980));
         $w->enqueueStyle(array("name" => "jquery-ui-1.8.13.custom.css", "uri" => "/system/templates/js/jquery-ui-new/css/custom-theme/jquery-ui-1.8.13.custom.css", "weight" => 970));
@@ -84,22 +84,22 @@
                     }
                 }
 
-				// Admin clear cache button function
-				$('#admin_clear_cache').bind('click', function(e) {
-					$('#admin_clear_cache').css('color', '#CD0000');
-					$.get($(this).attr('href'), function() {
-						setTimeout(function() {
-							$('#admin_clear_cache').css('color', '#4B6995');
-							$('#admin_clear_cache .clear_cache_icon').removeClass('fi-refresh').addClass('fi-check');
-							setTimeout(function() {
-								$('#admin_clear_cache').css('color', '#FFF');
-								$('#admin_clear_cache .clear_cache_icon').removeClass('fi-check').addClass('fi-refresh');
-							}, 500);
-						}, 500);
-					});
-					e.preventDefault();
-					return false;
-				});
+                // Admin clear cache button function
+                $('#admin_clear_cache').bind('click', function(e) {
+                    $('#admin_clear_cache').css('color', '#CD0000');
+                    $.get($(this).attr('href'), function() {
+                        setTimeout(function() {
+                            $('#admin_clear_cache').css('color', '#4B6995');
+                            $('#admin_clear_cache .clear_cache_icon').removeClass('fi-refresh').addClass('fi-check');
+                            setTimeout(function() {
+                                $('#admin_clear_cache').css('color', '#FFF');
+                                $('#admin_clear_cache .clear_cache_icon').removeClass('fi-check').addClass('fi-refresh');
+                            }, 500);
+                        }, 500);
+                    });
+                    e.preventDefault();
+                    return false;
+                });
                 // Search function shortcut listener
                 $(document).on('keydown', function ( e ) {
                     if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.which === 70) {
@@ -107,19 +107,19 @@
                         return false;
                     }
                 });
-				if(jQuery('.enable_drop_attachments').length !== 0) {
-					globalFileUpload.init();
-				}
+                if(jQuery('.enable_drop_attachments').length !== 0) {
+                    globalFileUpload.init();
+                }
 
-				// Look for cmfive__count-* classes and count the instances of *
-				$("span[class^='cmfive__count-'], span[class*=' cmfive__count-']").each(function(index, element) {
-					var classList = this.className.split(/\s+/);
-					for(var i in classList) {
-						if (classList[i].indexOf('cmfive__count-') > -1) {
-							$(this).text($('.' + classList[i].substring(classList[i].indexOf('-') + 1)).length);
-						}
-					}
-				});
+                // Look for cmfive__count-* classes and count the instances of *
+                $("span[class^='cmfive__count-'], span[class*=' cmfive__count-']").each(function(index, element) {
+                    var classList = this.className.split(/\s+/);
+                    for(var i in classList) {
+                        if (classList[i].indexOf('cmfive__count-') > -1) {
+                            $(this).text($('.' + classList[i].substring(classList[i].indexOf('-') + 1)).length);
+                        }
+                    }
+                });
             });
 
             // Try and prevent multiple form submissions
@@ -133,47 +133,47 @@
                 });
             });
 
-			// Focus first form element when the modal opens
-			$(document).ready(function() {
-				$('.body form:first :input:visible:enabled:first').not('.no-focus').focus();
+            // Focus first form element when the modal opens
+            $(document).ready(function() {
+                $('.body form:first :input:visible:enabled:first').not('.no-focus').focus();
 
-				$(document).on('opened.fndtn.reveal', '[data-reveal]', function () {
-					$('form:visible:first :input:visible:enabled:first', $(this)).not('.no-focus').focus();
-				});
-			});
+                $(document).on('opened.fndtn.reveal', '[data-reveal]', function () {
+                    $('form:visible:first :input:visible:enabled:first', $(this)).not('.no-focus').focus();
+                });
+            });
         </script>
     </head>
     <body>
-		<?php /** @var Web */ ?>
+        <?php /** @var Web */ ?>
         <div class="loading_overlay" <?php echo $w->request('show_overlay') == null ? 'style="display:none;"' : ''; ?>>
             <div class="circle"></div>
-			<img class="center_image" width="100px" height="100px" src="/system/templates/img/cmfive_V_logo.png" />
+            <img class="center_image" width="100px" height="100px" src="/system/templates/img/cmfive_V_logo.png" />
             <h4 class="subheader">Please wait</h4>
         </div>
-		<div class="global_file_drop_area" id="global_file_drop_area">
-			<div class="global_file_drop_overlay_init">
-				<h4 class="subheader">Drop files here...</h4>
-			</div>
-		</div>
-		<div class="global_file_drop_overlay" id="global_file_drop_overlay" style="display:none;">
-			<div class="global_file_drop_overlay_loading">
-				<div class="circle"></div>
-				<img class="center_image" width="100px" height="100px" src="/system/templates/img/cmfive_V_logo.png" />
-				<h4 class="subheader">Uploading (0%)</h4>
-			</div>
-		</div>
+        <div class="global_file_drop_area" id="global_file_drop_area">
+            <div class="global_file_drop_overlay_init">
+                <h4 class="subheader">Drop files here...</h4>
+            </div>
+        </div>
+        <div class="global_file_drop_overlay" id="global_file_drop_overlay" style="display:none;">
+            <div class="global_file_drop_overlay_loading">
+                <div class="circle"></div>
+                <img class="center_image" width="100px" height="100px" src="/system/templates/img/cmfive_V_logo.png" />
+                <h4 class="subheader">Uploading (0%)</h4>
+            </div>
+        </div>
 
-		<?php if (Config::get('system.test_mode') === true) : ?>
-			<div class="row-fluid">
-				<div class="small-12">
-					<div data-alert class="alert-box warning" style="margin-bottom: 0px; padding: 5px 0px;">
-						<h4 style="font-weight: lighter; text-align: center; color: white; padding: 5px 0px 0px 0px;"><?php echo Config::get('system.test_mode_message')?></h4>
-					</div>
-				</div>
-			</div>
-		<?php endif; ?>
+        <?php if (Config::get('system.test_mode') === true) : ?>
+            <div class="row-fluid">
+                <div class="small-12">
+                    <div data-alert class="alert-box warning" style="margin-bottom: 0px; padding: 5px 0px;">
+                        <h4 style="font-weight: lighter; text-align: center; color: white; padding: 5px 0px 0px 0px;"><?php echo Config::get('system.test_mode_message')?></h4>
+                    </div>
+                </div>
+            </div>
+        <?php endif; ?>
 
-		<div class="row-fluid">
+        <div class="row-fluid">
             <nav class="top-bar" data-topbar><!-- To make it that you need to click to activate dropdown use  data-options="is_hover: false" -->
                 <ul class="title-area">
                     <li class="name">
@@ -314,12 +314,12 @@
                 reveal : {
                     animation_speed: <?php echo defaultVal(Config::get('core_template.foundation.reveal.animation_speed'), 150); ?>,
                     animation: '<?php echo defaultVal(Config::get('core_template.foundation.reveal.animation'), 'fade'); ?>',
-					close_on_background_click: <?php echo defaultVal(Config::get('core_template.foundation.reveal.close_on_background_click'), 'true'); // Must be string value in PHP ?>
-				},
-				accordion: {
-					multi_expand: <?php echo defaultVal(Config::get('core_template.foundation.accordion.multi_expand'), 'true'); ?>,
-				}
-			});
+                    close_on_background_click: <?php echo defaultVal(Config::get('core_template.foundation.reveal.close_on_background_click'), 'true'); // Must be string value in PHP ?>
+                },
+                accordion: {
+                    multi_expand: <?php echo defaultVal(Config::get('core_template.foundation.accordion.multi_expand'), 'true'); ?>,
+                }
+            });
 
             var modal_history = [];
             var modal_history_pop = false;
@@ -338,14 +338,14 @@
                     if ($(this).hasClass("close-reveal-modal")) {
                         $("#cmfive-modal").foundation("reveal", "close");
                     } else {
-						// No one is using the help system at the moment
-						// Therefore no real need for a dynamic modal history
-						return true;
+                        // No one is using the help system at the moment
+                        // Therefore no real need for a dynamic modal history
+                        return true;
                     }
                     return false;
                 });
 
-				$("#cmfive-help-modal a:not(#modal-back)").click(function(event) {
+                $("#cmfive-help-modal a:not(#modal-back)").click(function(event) {
                     if ($(this).hasClass("close-reveal-modal")) {
                         $("#cmfive-modal").foundation("reveal", "close");
                     } else {

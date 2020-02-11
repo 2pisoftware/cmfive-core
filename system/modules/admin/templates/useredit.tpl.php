@@ -1,45 +1,19 @@
-<?php if ($user): ?>
-<?php if (!empty($box)): ?><h1>Edit User</h1><?php endif;?>
 <?php
-    $contact = $user->getContact();
-    $form['User Details'][]=array(
-            array("Login","text","login",$user->login),
-            array("Admin","checkbox","is_admin",$user->is_admin),
-            array("Active","checkbox","is_active",$user->is_active),
-            array("External", "checkbox", "is_external", $user->is_external),
-			array("Language", "select", "language", $user->language, $availableLocales));
 
-$form['User Details'][] = array(
-	array("Password", "password", "password"),
-	array("Repeat Password", "password", "password2"));
-
-$form['Contact Details'][] = array(
-	array("First Name", "text", "firstname", $contact ? $contact->firstname : ""),
-	array("Last Name", "text", "lastname", $contact ? $contact->lastname : ""));
-$form['Contact Details'][] = array(
-	array("Title", "autocomplete", "title", $contact->getTitle(), $w->Lookup->getLookupByType("title")),
-	array("Email", "text", "email", $contact ? $contact->email : ""));
-
-$groupUsers = $user->isInGroups();
-
-if ($groupUsers) {
-	foreach ($groupUsers as $groupUser) {
-		$group = $groupUser->getGroup();
-
-		$groups[] = " - " . Html::a("/admin/moreInfo/" . $group->id, $group->login);
-	}
-} else {
-	$groups = array();
+if (!empty($user)) {
+    if (!empty($box)) {
+        echo "<h1>Edit User</h1>";
+    }
 }
-$form['User Groups'][] = array(array("Group Title", "static", "groupName", implode("<br/>", $groups)));
 
-print Html::multiColForm($form, $w->localUrl("/admin/useredit/" . $w->ctx("id")), "POST", "Save", null, null, null, "_self", true, User::$_validation);
+if (!empty($form)) {
+    echo $form;
+} else {
+    echo "<div class=\"error\">User does not exist.</div>";
+}
+
 ?>
 
-<?php else: ?>
-<div class="error">User with ID <?php echo $id; ?> does not exist.</div>
-<?php endif;?>
-
 <script type="text/javascript">
-	$(".form-section").attr("width","");
+    $(".form-section").attr("width","");
 </script>

@@ -98,7 +98,8 @@ class AuthService extends DbService
         $this->w->session('user_id', $user->id);
     }
 
-    public function _web_init() {
+    public function _web_init()
+    {
         $this->_loadRoles();
     }
 
@@ -107,6 +108,12 @@ class AuthService extends DbService
         return $this->w->session('user_id');
     }
 
+    /**
+     * Returns a User from the passed login parameter.
+     *
+     * @param string $login
+     * @return User
+     */
     public function getUserForLogin($login)
     {
         $user = $this->db->get("user")->where("login", $login)->and("is_deleted", 0)->fetch_row();

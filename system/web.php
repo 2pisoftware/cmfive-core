@@ -76,6 +76,7 @@ class Web
 	public $_services;
 	public $_paths;
 	public $_loginpath = 'auth/login';
+	public $_is_mfa_enabled_path = "auth/ajax_is_mfa_enabled";
 	public $_partialsdir = "partials";
 	public $db;
 	public $_isFrontend = false;
@@ -1063,8 +1064,14 @@ class Web
         }
     }
 
+	/**
+	 * Check for CSRF token and that we have a valid request method
+	 *
+	 * @throws CSRFException
+	 *
+	 * @return void
+	 */
 	public function validateCSRF() {
-		// Check for CSRF token and that we have a valid request method
 		if (Config::get("system.csrf.enabled") == true && !CSRF::isValid($this->_requestMethod)) {
 			if (!CSRF::inHistory()) {
 				@$this->service('log')->error("System: CSRF Detected from " . $this->requestIpAddress());
@@ -1148,7 +1155,7 @@ class Web
                     $this->error($msg, $this->_loginpath);
                 }
             }
-        } else if ($this->Auth && !$this->Auth->loggedIn() && $actual_path != $this->_loginpath && !$this->Auth->allowed($path)) {
+        } else if ($this->Auth && !$this->Auth->loggedIn() && ($actual_path != $this->_loginpath && $actual_path != $this->_is_mfa_enabled_path) && !$this->Auth->allowed($path)) {
             $_SESSION['orig_path'] = $_SERVER['REQUEST_URI'];
             $this->Log->info("Redirecting to login, user not logged in or not allowed");
             $this->redirect($this->localUrl($this->_loginpath));

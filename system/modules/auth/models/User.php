@@ -27,14 +27,23 @@ class User extends DbObject
     public $_modifiable;
     public $language;
     public $is_password_invalid;
+    public $is_mfa_enabled;
+    public $is_mfa_required;
+    public $mfa_secret;
 
+    /**
+     * Checks if the passed password matches the stored password when hashed.
+     *
+     * @param string $password
+     * @return boolean
+     */
     public function checkPassword($password)
     {
-        if (empty($this->password) || /*empty($this->password_salt) ||*/ empty($password)) {
+        if (empty($this->password) || empty($password)) {
             return false;
         }
 
-        return $this->password == $this->encryptPassword($password);
+        return $this->password === $this->encryptPassword($password);
     }
 
     /**
