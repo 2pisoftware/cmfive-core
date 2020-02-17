@@ -629,14 +629,14 @@ class Web
                 }
             }
 
-            // start the session
-            // $sess = new SessionManager($this);
-            try {
-                if ($this->_isPortal === true) {
-                    session_id(!empty($domainmodule) ? $domainmodule . '_SID' : 'PORTAL_SID');
-                } else {
-                    session_id(SESSION_NAME);
-                }
+        // start the session
+        // $sess = new SessionManager($this);
+        try {
+            if ($this->_isPortal === true) {
+                session_name(!empty($domainmodule) ? $domainmodule . '_SID' : 'PORTAL_SID');
+            } else {
+                session_name(SESSION_NAME);
+            }
 
                 // Store the sessions locally to avoid permission errors between OS's
                 // I.e. on Windows by default tries to save to C:\Temp
