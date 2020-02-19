@@ -16,9 +16,8 @@
   }
 
  * */
-
-class Comment extends DbObject {
-
+class Comment extends DbObject
+{
     public $id;
     public $obj_table;   // varchar
     public $obj_id;
@@ -40,14 +39,14 @@ class Comment extends DbObject {
      * webforum.jpg File deleted. Description: Image of something.
      * By serg_admin-Manager Ops Manager,18/02/2011 03:10 pm
      * */
-
-    public function __toString() {
+    public function __toString()
+    {
         $str = $this->comment;
         $u = $this->w->Auth->getUser($this->creator_id);
         if ($u) {
             $str .= "<br>By <i>" . $u->getFullName() . ",</i>";
         }
-        $str.= "<i>" . formatDateTime($this->dt_created) . "</i>";
+        $str .= "<i>" . formatDateTime($this->dt_created) . "</i>";
         return $str;
     }
 
@@ -55,7 +54,8 @@ class Comment extends DbObject {
      * get object for comment thread
      * return object
      */
-    public function getParentObject() {
+    public function getParentObject()
+    {
         if ($this->obj_table == 'comment') {
             return $this->w->Comment->getComment($this->obj_id)->getParentObject();
         } else {
@@ -71,20 +71,18 @@ class Comment extends DbObject {
     /*
      * New comments go First !
      * */
-
-    static function cmp_obj($a, $b) {
+    public static function cmp_obj($a, $b)
+    {
         if ($a->dt_created == $b->dt_created) {
             return 0;
         }
         return ($a->dt_created < $b->dt_created) ? +1 : -1;
     }
 
-    public function insert($force_validation = true) {
-        parent::insert($force_validation);
-
-        // Call Hook
+    public function insert($force_validation = true)
+    {
+        $result = parent::insert($force_validation);
         $this->w->callHook("comment", "comment_added_" . $this->obj_table, $this);
+        return $result;
     }
-
 }
-

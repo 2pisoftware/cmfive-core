@@ -1,7 +1,5 @@
 <?php
 
-use Carbon\Carbon;
-
 if ($w->auth->hasRole('comment')) {
     if (!isset($internal_only)) {
         $internal_only = false;

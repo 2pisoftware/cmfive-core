@@ -32,7 +32,7 @@ class DbService {
     public function __get($name) {
         return $this->w->$name;
     }
-    
+
     public static function getCache() {
 		return self::$_cache;
 	}
@@ -137,7 +137,7 @@ class DbService {
 
         $o = new $class($this->w);
         $table = $o->getDbTableName();
-        
+
         if (is_scalar($idOrWhere)) {
             $this->_db->get($table)->where($o->getDbColumnName('id'), $idOrWhere);
         } elseif (is_array($idOrWhere)) {
@@ -148,7 +148,7 @@ class DbService {
                 $this->w->Log->setLogger(get_class($this))->error("(getObject) The WHERE condition: " . json_encode($idOrWhere) . " has non-associative elements, this has security implications and is not allowed");
                 return null;
             }
-			
+
 			// Default is deleted checks to 0
 			$columns = $o->getDbTableColumnNames();
 
@@ -160,7 +160,7 @@ class DbService {
         if (!empty($order_by)) {
             $this->_db->order_by($order_by);
         }
-		
+
 		$this->buildSelect($o, $table, $class);
         $result = $this->_db->fetch_row();
 
@@ -208,13 +208,13 @@ class DbService {
      * @param String $class
      * @param Mixed $where
      * @param Boolean $useCache
-     * 
+     *
      * @return <type>
      */
     function getObjects($class, $where = null, $cache_list = false, $use_cache = true, $order_by = null, $offset = null, $limit = null, $includeDeleted = false) {
         if (!$class)
             return null;
-		
+
 		if ($order_by !== null || $offset !== null || $limit !== null ) {
 			$use_cache=false;
 			$cache_list=false;
@@ -253,24 +253,24 @@ class DbService {
         } else if ($where && is_scalar($where)) {
             $this->_db->where($where, false);
         }
-		
+
 		// Default is deleted checks to 0
 		$columns = $o->getDbTableColumnNames();
-		
+
 		if (!$includeDeleted && (property_exists(get_class($o), "is_deleted") || (in_array("is_deleted", $columns)))) {
 			$this->_db->where('is_deleted', 0);
 		}
-		
+
 		// Ordering
         if (!empty($order_by)) {
             $this->_db->order_by($order_by);
         }
-		
+
 		// Offset
 		if (!empty($offset) && !empty($limit)) {
 			$this->_db->offset($offset);
 		}
-		
+
 		// Limit
 		if (!empty($limit)) {
 			$this->_db->limit($limit);
@@ -312,13 +312,13 @@ class DbService {
         if (!$row || !$class)
             return null;
         $o = new $class($this->w);
-		
+
 		// The second parameter below is the prompt to convert mysql timestamps into unix timestamps
 		// We make this convert in the db query now but there are times when using getObjectFromRow
 		// where you may have made the query yourself (and therefore no UNIX() cast in mysql)
 		// It also happens that the $from_db flag is inversely related to the convert parameter below
         $o->fill($row, !$from_db);
-		 
+
         // test implementation for preserving original database values
         if ($from_db == true) {
         	$o->__old = $row;
