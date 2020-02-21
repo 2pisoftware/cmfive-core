@@ -310,9 +310,14 @@ class Attachment extends DbObject
      */
     public function moveToAdapter($adapter = "local", $delete_after_move = false)
     {
-        // Get content of file
-        $content = $this->getContent();
-        $current_file = $this->getFile();
+        try {
+            // Get content of file
+            $content = $this->getContent();
+            $current_file = $this->getFile();
+        } catch (InvalidArgumentException $e) {
+            $this->w->Log->setLogger("FILE")->error("Attachment's {id: $this->id} file does not exist at path: $this->fullpath");
+            return;
+        }
 
         $this->adapter = $adapter;
 
