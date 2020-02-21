@@ -149,7 +149,7 @@ class Attachment extends DbObject
     public function getDocumentEmbedHtml($width = '1024', $height = '724')
     {
         $view_url = $this->getViewUrl();
-        if ($this->isDocument() && $this->adapter == 'local') {
+        if ($this->isDocument()) {
             if (stripos($this->filename, '.docx') || stripos($this->filename, '.doc')) {
                 $view_url = substr($view_url, 0, 1) == '/' ? substr($view_url, 1) : $view_url;
                 return Html::embedDocument($this->w->localUrl() . $view_url, $width, $height, 'page-width', true);
