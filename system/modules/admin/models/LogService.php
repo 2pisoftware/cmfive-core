@@ -62,6 +62,25 @@ class LogService extends \DbService
         $this->setFormatter();
         $this->loggers[$name] = new Logger($name);
 
+        $key = Config::get("admin.logging.credentials.key");
+        $secret = Config::get("admin.logging.credentials.secret");
+
+        if (empty($key) || empty($secret)) {
+            // Work out if we can reach aws (if it's our preferred destination) and fallback to file if we can't
+            $log_destination = Config::get('admin.logging.target', 'file');
+            if ($log_destination == 'aws') {
+                // I doubt this URL will change but it may be worth putting this in the config
+                $response = (new HttpRequest("http://169.254.169.254/latest/meta-data/instance-id"))->execute();
+
+                if (!empty($response['error'])) {
+                    // $this->w->Log->error("Could not authenticate instance ID with AWS, falling back to local filesystem");
+                    syslog(LOG_ERR, "LogService: Could not authenticate instance ID with AWS, falling back to local filesystem");
+                    Config::set('admin.logging.target', 'file');
+                    $log_destination = 'file';
+                }
+            }
+        }
+
         switch (Config::get('admin.logging.target', 'file')) {
             case 'aws':
                 try {
