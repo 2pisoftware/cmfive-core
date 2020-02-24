@@ -62,10 +62,7 @@ class LogService extends \DbService
         $this->setFormatter();
         $this->loggers[$name] = new Logger($name);
 
-        $key = Config::get("admin.logging.credentials.key");
-        $secret = Config::get("admin.logging.credentials.secret");
-
-        if (empty($key) || empty($secret)) {
+        if (empty(Config::get("admin.logging.credentials.key")) || empty(Config::get("admin.logging.credentials.secret"))) {
             // Work out if we can reach aws (if it's our preferred destination) and fallback to file if we can't
             $log_destination = Config::get('admin.logging.target', 'file');
             if ($log_destination == 'aws') {
