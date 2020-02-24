@@ -13,7 +13,7 @@ defined("LOG_SERVICE_DEFAULT_RETENTION_PERIOD") or define("LOG_SERVICE_DEFAULT_R
 
 class LogService extends \DbService
 {
-    private $loggers = array();
+    private $loggers = [];
     private $logger;
     private static $system_logger = 'cmfive';
     private $formatter = null;
@@ -113,10 +113,9 @@ class LogService extends \DbService
 
         if ((!empty($arguments[0]) && $arguments[0] === "info") || stristr($name, "err") !== false) {
             // Add the introspection processor if an error (Adds the line/file/class/method from which the log call originated)
-            // $this->logger->pushProcessor(new IntrospectionProcessor());
             $this->logger->pushProcessor(new WebProcessor());
         }
-        $this->logger->$name($arguments[0], array("user" => $this->w->session('user_id')));
+        $this->logger->$name($arguments[0], ["user" => $this->w->session('user_id')]);
 
         // In the interest of not breaking system logs, we will return the logger back to cmfive
         // This means for every log that isn't system, the call should look something like this:
