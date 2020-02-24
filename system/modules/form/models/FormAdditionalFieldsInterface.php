@@ -158,7 +158,7 @@ class FormAdditionalFieldsInterface extends FormFieldInterface
                     $php_input = file_get_contents("php://input");
                     $ajax_post_data = !$php_input ? [] : json_decode($php_input, true);
 
-                    if (array_key_exists($field->technical_name, $_POST) || (array_key_exists($field->technical_name, $ajax_post_data["field_results"]) && $ajax_post_data["field_results"][$field->technical_name] == true)) {
+                    if (array_key_exists($field->technical_name, $_POST) || (array_key_exists($field->technical_name, $ajax_post_data["field_results"] ?? []) && $ajax_post_data["field_results"][$field->technical_name] == true)) {
                         $form_value->value = 1;
                     } else {
                         $form_value->value = 0;
