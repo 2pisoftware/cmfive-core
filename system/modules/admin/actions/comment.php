@@ -1,8 +1,10 @@
 <?php
 
-function comment_GET(Web $w){
+function comment_GET(Web $w)
+{
     $p = $w->pathMatch("comment_id", "object_class", "object_id");
     $is_internal_only = intval($w->request("internal_only", 0));
+    $has_notification_selection = $w->request("has_notification_selection", 1);
 
     $comment_id = intval($p["comment_id"]);
     $comment = $comment_id > 0 ? $w->Comment->getComment($comment_id) : new Comment($w);
@@ -39,10 +41,9 @@ function comment_GET(Web $w){
 
     // Add checkboxes to the form for each notification recipient.
     if (!empty($get_recipients)) {
-        foreach($get_recipients as $recipients) {
+        foreach ($get_recipients as $recipients) {
             foreach ($recipients as $user_id => $is_notify) {
-
-                if(!array_key_exists($user_id, $notify_recipients)) {
+                if (!array_key_exists($user_id, $notify_recipients)) {
                     $notify_recipients[$user_id] = ["is_notify" => $is_notify];
                 } else {
                     if ($is_notify != $notify_recipients[$user_id]) {
@@ -78,7 +79,7 @@ function comment_GET(Web $w){
                     "name" => $user->getFullName(),
                     "can_view" => (!empty($link) || $user->id === $w->Auth->user()->id) ? true : false,
                     "is_notify" => $is_notify,
-                    "is_original_notify" => $is_notify
+                    "is_original_notify" => $is_notify,
                 ];
             }
         }
@@ -101,17 +102,19 @@ function comment_GET(Web $w){
         }
     }
 
-    usort($viewers, function($a, $b) {
+    usort($viewers, function ($a, $b) {
         return strcmp($a["name"], $b["name"]);
     });
 
     $user = $w->Auth->user();
     $new_owner = [
         "id" => $user->id,
-        "name" => $user->getFullName()
+        "name" => $user->getFullName(),
     ];
 
-    $w->ctx("comment", $comment->comment);
+    // make sure line breaks are escaped for correct processing in js
+    $w->ctx("comment", addcslashes($comment->comment, "\n\""));
+
     $w->ctx("comment_id", $p["comment_id"] == "{0}" ? "0" : $p["comment_id"]);
     $w->ctx("viewers", json_encode($viewers));
     $w->ctx("top_object_class_name", strtolower(preg_replace('/(?<=\\w)(?=[A-Z])/', "_$1", $parent_object_class_name)));
@@ -119,6 +122,7 @@ function comment_GET(Web $w){
     $w->ctx("new_owner", json_encode($new_owner));
     $w->ctx("is_new_comment", empty($p["comment_id"]) || $p["comment_id"] == 0 ? "true" : "false");
     $w->ctx("is_internal_only", $is_internal_only);
+    $w->ctx("has_notification_selection", $has_notification_selection);
     $w->ctx("is_restricted", json_encode($is_restricted));
     $w->ctx("is_parent_restricted", json_encode($is_parent_restricted));
     $w->ctx("can_restrict", property_exists($comment, '_restrictable') && $is_internal_only && $w->Auth->user()->hasRole("restrict") ? "true" : "false");

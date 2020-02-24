@@ -15,19 +15,26 @@ Config::set('system.allow_action', array(
     "auth/forgotpassword",
     "auth/resetpassword",
     "admin/datamigration",
-	"install-steps/details",
-	"install-steps/database",
-	"install-steps/import",
+    "install-steps/details",
+    "install-steps/database",
+    "install-steps/import",
 	"install-steps/finish"
 ));
 
 /**
  * The password salt is used by the AES encryption library
  * The salt length HAS to be 16, 24, or 32 characters long (8-bit)
- * 
+ *
  * The easiest way to generate a 32 char salt is to use MD5
  */
 Config::set('system.password_salt', md5('override this in your project config'));
+
+/**
+ * Otherwise, SSL will be used with KEY & IV from config,
+ * if system has been upgraded per this migration:
+ */
+
+Config::set('system.encryptionMigration', 'AdminSecurityAesToOpenssl');
 
 
 /**

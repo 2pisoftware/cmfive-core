@@ -11,54 +11,6 @@ function edit_GET(Web &$w)
         $w->error("Report not found", "/report");
     }
 
-    if (empty($report)) {
-        History::add("Create Report");
-    } else {
-        History::add("Edit Report: " . $report->title, null, $report);
-    }
-
-    $w->ctx("report", $report);
-
-    $form = array(
-        array((!empty($report->id) ? "Edit" : "Create a New") . " Report", "section"),
-        array("Title", "text", "title", $report->title),
-        array("Module", "select", "module", $report->module, $w->Report->getModules()),
-        array("Description", "textarea", "description", $report->description, "110", "2"),
-        array("Connection", "select", "report_connection_id", $report->report_connection_id, $w->Report->getConnections())
-    );
-
-    if (!empty($report)) {
-        $sqlform = array(
-            array("", "hidden", "title", $report->title),
-            array("", "hidden", "module", $report->module),
-            array("", "hidden", "description", $report->description),
-            array("Code", "textarea", "report_code", $report->report_code, "110", "82", "codemirror"),
-            array("", "hidden", "report_connection_id", $report->report_connection_id, $w->Report->getConnections())
-        );
-    }
-
-    // DB view table
-    $db_table = Html::form(array(
-        array("Special Parameters", "section"),
-        array("User", "static", "user", "{{current_user_id}}"),
-        array("Roles", "static", "roles", "{{roles}}"),
-        array("Site URL", "static", "webroot", "{{webroot}}"),
-        array("View Database", "section"),
-        array("Tables", "select", "dbtables", null, $w->Report->getAllDBTables()),
-        array("Fields", "static", "dbfields", "<span id=\"dbfields\"></span>")
-    ));
-
-    $w->ctx("dbform", $db_table);
-
-    if (!empty($report->id)) {
-        $btnrun = Html::b("/report/runreport/" . $report->id, "Execute Report");
-        $duplicate_button = Html::b($w->localUrl("/report/duplicate/{$report->id}"), "Duplicate");
-        $w->ctx("btnrun", $btnrun);
-        $w->ctx("duplicate_button", $duplicate_button);
-    } else {
-        $w->ctx("btnrun", "");
-        $w->ctx("duplicate_button", "");
-    }
 
     // Check access rights
     // If user is editing, we need to check multiple things, detailed in the helper function
@@ -77,12 +29,90 @@ function edit_GET(Web &$w)
         }
     }
 
-    // Access checked and OK, add approval to form only if is report_admin or admin
-    if ($w->Auth->user()->is_admin == 1 || $w->Auth->user()->hasRole("report_admin")) {
-        $form[] = array("Approved", "checkbox", "is_approved", $report->is_approved);
+    // Get list of categories from modules, JS in template is responsible for switching them around in UI
+    $category_config = [];
+    $category_config_for_select = [];
+    foreach (Config::keys() ?? [] as $module) {
+        $module_report_categories = Config::get($module . '.report.categories');
+        if ($module_report_categories !== null) {
+            $category_config[$module] = $module_report_categories;
+            
+            $categories_for_select = [];
+            foreach ($module_report_categories as $key => $value) {
+                $categories_for_select[] = [$value, $key];
+            }
+            $category_config_for_select[$module] = $categories_for_select;
+        }
     }
 
-    $w->ctx("report_form", Html::form($form, $w->localUrl("/report/edit/{$report->id}"), "POST", "Save Report"));
+    $w->ctx('category_config', $category_config);
+
+    if (empty($report)) {
+        History::add("Create Report");
+    } else {
+        History::add("Edit Report: " . $report->title, null, $report);
+    }
+
+    $w->ctx("report", $report);
+
+    $form = [!empty($report->id) ? "Edit" : "Create a New" . " Report" =>
+        [
+            [["Title", "text", "title", $report->title]],
+            [
+                ["Module", "select", "module", $report->module, $w->Report->getModules()],
+                [(new \Html\Form\Select([
+                    'id|name' => 'category',
+                    'label' => 'Category',
+                    'selected_option' => $report->category,
+                    'options' => !empty($category_config_for_select[$report->module]) ? $category_config_for_select[$report->module] : []
+                ]))->setLabel('Category')]
+                // ["Category", "select", "category", $report->category, !empty($category_config[$report->module]) ? $category_config[$report->module] : []]
+            ],
+            [["Description", "textarea", "description", $report->description, "110", "2"]],
+            [["Connection", "select", "report_connection_id", $report->report_connection_id, $w->Report->getConnections()]],
+        ]
+    ];
+
+    // Access checked and OK, add approval to form only if is report_admin or admin
+    if ($w->Auth->user()->hasRole("report_admin")) {
+        $section_form_title_key = array_keys($form);
+        $form[$section_form_title_key[0] ?? 0][] = [["Approved", "checkbox", "is_approved", $report->is_approved]];
+    }
+
+    if (!empty($report)) {
+        $sqlform = array(
+            array("", "hidden", "title", $report->title),
+            array("", "hidden", "module", $report->module),
+            array("", "hidden", "description", $report->description),
+            array("Code", "textarea", "report_code", $report->report_code, "110", "82", "codemirror"),
+            array("", "hidden", "report_connection_id", $report->report_connection_id, $w->Report->getConnections()),
+        );
+    }
+
+    // DB view table
+    $db_table = Html::form(array(
+        array("Special Parameters", "section"),
+        array("User", "static", "user", "{{current_user_id}}"),
+        array("Roles", "static", "roles", "{{roles}}"),
+        array("Site URL", "static", "webroot", "{{webroot}}"),
+        array("View Database", "section"),
+        array("Tables", "select", "dbtables", null, $w->Report->getAllDBTables()),
+        array("Fields", "static", "dbfields", "<span id=\"dbfields\"></span>"),
+    ));
+
+    $w->ctx("dbform", $db_table);
+
+    if (!empty($report->id)) {
+        $btnrun = Html::b("/report/runreport/" . $report->id, "Execute Report");
+        $duplicate_button = Html::b($w->localUrl("/report/duplicate/{$report->id}"), "Duplicate");
+        $w->ctx("btnrun", $btnrun);
+        $w->ctx("duplicate_button", $duplicate_button);
+    } else {
+        $w->ctx("btnrun", "");
+        $w->ctx("duplicate_button", "");
+    }
+
+    $w->ctx("report_form", Html::multiColForm($form, $w->localUrl("/report/edit/{$report->id}"), "POST", "Save Report"));
     $w->ctx("sql_form", !empty($sqlform) ? Html::form($sqlform, $w->localUrl("/report/edit/{$report->id}"), "POST", "Save Report") : "");
 
     if (!empty($report->id)) {
@@ -100,7 +130,7 @@ function edit_GET(Web &$w)
                     $member->is_email_recipient ? "Yes" : "No",
                     $member->role,
                     Html::box("/report/editmember/" . $report->id . "/" . $member->user_id, " Edit ", true) .
-                        Html::box("/report/deletemember/" . $report->id . "/" . $member->user_id, " Delete ", true)
+                    Html::box("/report/deletemember/" . $report->id . "/" . $member->user_id, " Delete ", true),
                 );
             }
         } else {
@@ -129,7 +159,7 @@ function edit_GET(Web &$w)
                     $report_template->is_email_template ? "Yes" : "No",
                     $report_template->type,
                     Html::box("/report-templates/edit/{$report->id}/{$report_template->id}", "Edit", true) .
-                        Html::b("/report-templates/delete/{$report_template->id}", "Delete", "Are you sure you want to delete this Report template entry?")
+                    Html::b("/report-templates/delete/{$report_template->id}", "Delete", "Are you sure you want to delete this Report template entry?"),
                 );
             }
         }
@@ -137,7 +167,6 @@ function edit_GET(Web &$w)
         $w->ctx("templates_table", Html::table($table_data, null, "tablesorter", $table_header));
     }
 }
-
 
 function edit_POST(Web $w)
 {
@@ -168,12 +197,13 @@ function edit_POST(Web $w)
     // Insert or Update
     $report->fill($_POST);
 
+    // $report->category = // !empty($w->request('category', null)) ? $w->request('category') : null;
+
     // Force select statements only
     $report->sqltype = "select";
 
-    $report_connection_id = $w->request("report_connection_id");
-    $report->report_connection_id = intval($report_connection_id);
-    $response = $report->insertOrUpdate();
+    $report->report_connection_id = intval($w->request("report_connection_id"));
+    $response = $report->insertOrUpdate(true);
 
     // Handle the response
     if ($response === true) {
@@ -190,4 +220,59 @@ function edit_POST(Web $w)
     } else {
         $w->errorMessage($report, "Report", $response, $p['id'] ? true : false, "/report" . (!empty($account->id) ? "/edit/{$account->id}" : ""));
     }
+
+    // OLD CODE - REDUNDANT, KEEPING FOR FEED REFERENCE
+    /*
+
+if (!array_key_exists("is_approved",$_REQUEST))
+$_REQUEST['is_approved'] = 0;
+
+// if there is a report ID in the URL ...
+if ($p['id']) {
+// get report details
+$rep = $w->Report->getReportInfo($p['id']);
+
+// if report exists, update it
+if ($rep) {
+$_POST['sqltype'] = $w->Report->getSQLStatementType($_POST['report_code']);
+$rep->fill($_POST);
+$rep->report_connection_id = intval($_POST["report_connection_id"]);
+$rep->update();
+$repmsg = "Report updated.";
+
+// check if there is a feed associated with this report
+$feed = $w->Report->getFeedInfobyReportId($rep->id);
+if ($feed) {
+// if feed exists, need to reevaluate the URL in case of changes in the report parameters
+$elements = $rep->getReportCriteria();
+
+if ($elements) {
+foreach ($elements as $element) {
+if (($element[0] != "Description") && ($element[2] != ""))
+$query .= $element[2] . "=&lt;value&gt;&";
+}
+}
+
+$query = rtrim($query,"&");
+
+// use existing key to reevaluate feed URL
+$feedurl = $w->localUrl("/report/feed/?key=" . $feed->key . "&" . $query);
+
+// update feed URL
+$feed->url = $feedurl;
+$feed->update();
+}
+}
+else {
+$repmsg = "Report does not exist";
+}
+}
+else {
+$repmsg = "Report does not exist";
+}
+
+// return
+$w->msg($repmsg,"/report/viewreport/".$rep->id);
+
+ */
 }

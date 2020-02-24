@@ -98,8 +98,7 @@ class AuthService extends DbService
         $this->w->session('user_id', $user->id);
     }
 
-    public function __init()
-    {
+    public function _web_init() {
         $this->_loadRoles();
     }
 

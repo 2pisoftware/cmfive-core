@@ -4,10 +4,10 @@ class Report extends DbObject
 {
     public $title;   // report title
     public $module; // module report pertains to
-    public $category;   // category of report given by Lookup
+    public $category; // category of report given by Lookup
     public $description; // description of report
-    public $report_code;  // the 'code' describing the report
-    public $sqltype;  // determine type of statement: select/update/insert/delete
+    public $report_code; // the 'code' describing the report
+    public $sqltype; // determine type of statement: select/update/insert/delete
     public $is_approved; // has the Report Admin approved this report
     public $is_deleted; // is report deleted
     public $report_connection_id; // database connection object or null for default
@@ -71,9 +71,105 @@ class Report extends DbObject
      */
     public function getReportCriteria()
     {
+        // Determine if report is using single col form or multi col form
+        // The way to do this is to find two sets of '[[' before a closing ']]'
+        $is_single_col_form = true;
+        $first_open_bracket_set = strpos($this->report_code, '[[');
+        if ($first_open_bracket_set === false) {
+            return null;
+        }
+
+        $first_closing_bracket_set = strpos($this->report_code, ']]');
+        if ($first_closing_bracket_set === false) {
+            return null; // Log error due to invalid report code?
+        }
+
+        $second_open_bracket_set = strpos($this->report_code, '[[', $first_open_bracket_set + 1);
+        if ($second_open_bracket_set !== false && $second_open_bracket_set < $first_closing_bracket_set) {
+            $is_single_col_form = false;
+        }
+
+        if ($is_single_col_form === true) {
+            return $this->getSingleColFormCriteria();
+        }
+
+        $get_string = function ($string, $start, $end) {
+            $string = $string;
+            $ini = strpos($string, $start);
+            if ($ini === false) {
+                return '';
+            }
+            $ini += strlen($start);
+            $len = strrpos($string, $end) - strlen($end);
+            return substr($string, $ini, $len);
+        };
+
+        $report_code = substr($this->report_code, 0, strpos($this->report_code, '@@'));
+
+        $report_form_layout = array_map('trim', explode('[[', $report_code));
+        array_shift($report_form_layout);
+
+        $parsed_report_form = [];
+        $current_section = '';
+        $current_form_row_layout = '';
+        foreach ($report_form_layout as $report_form) {
+            $row = array_filter(array_map('trim', explode('||', $report_form)));
+            // If we have a section
+            if (count($row) == 1) {
+                if (!empty($current_section) && !empty($current_form_row_layout)) {
+                    $parsed_report_form[$current_section][] = $this->getSingleColFormCriteria($current_form_row_layout, true);
+                    $current_form_row_layout = '';
+                }
+                $current_section = $row[0];
+                $parsed_report_form[$current_section] = [];
+            } elseif (count($row) > 1) {
+                foreach ($row as &$r) {
+                    $has_r_bracket = strpos($r, ']]');
+                    if ($has_r_bracket !== false) {
+                        $r = substr($r, 0, $has_r_bracket);
+                    }
+                }
+                $current_form_row_layout .= '[[' . implode('||', $row) . ']]';
+            } else {
+                if (!empty($current_section) && !empty($current_form_row_layout)) {
+                    $parsed_report_form[$current_section][] = $this->getSingleColFormCriteria($current_form_row_layout, true);
+                    $current_form_row_layout = '';
+                }
+            }
+        }
+        $parsed_report_form[$current_section][] = $this->getSingleColFormCriteria($current_form_row_layout, true);
+
+        // preg_match_all("/\[\[(.*?)\|\|\s*\[\[/ms", $this->report_code, $_sections);
+        // // var_dump($_sections);
+
+        // $_form = $get_string($this->report_code, '[[', ']]');
+        // $split_arr = preg_split("/\|\|/", $_form);
+        // $section_name = trim(array_shift($split_arr));
+        // $inner_fields = trim(implode('||', $split_arr));
+
+        // $form = [$section_name => []];
+        // // Now we need to get the rows, to do this we need to find the matching closing brackets, not the first set we find
+        // preg_match_all("/\[\[\s*(\[\[.*?\]\])\s*\]\]/ms", $inner_fields, $rows);
+
+        // if (empty($rows[1]) || !is_array($rows[1])) {
+        //     return null;
+        // }
+
+        // // Get form in each row
+        // foreach ($rows[1] as $form_row) {
+        //     $form[$section_name][] = $this->getSingleColFormCriteria($form_row, true);
+        // }
+            
+        return $parsed_report_form;
+    }
+
+    // public function getReportCriteria()
+    public function getSingleColFormCriteria($data = null, $skip_section_header = false)
+    {
+        $data = $data ?? $this->report_code;
 
         // build array of all contents within any [[...]]
-        preg_match_all("/\[\[.*?\]\]/", preg_replace("/\n/", " ", $this->report_code), $form);
+        preg_match_all("/\[\[.*?\]\]/", preg_replace("/\n/", " ", $data), $form);
 
         // if we've found elements meeting that style ....
         if ($form) {
@@ -84,13 +180,7 @@ class Report extends DbObject
                     // it will be as an array so ....
                     foreach ($element as $f) {
                         // element enclosed in [[...]]. dump [[ & ]]
-                        $patterns = array();
-                        $patterns[0] = "/\[\[\s*/";
-                        $patterns[1] = "/\s*\]\]/";
-                        $replacements = array();
-                        $replacements[0] = "";
-                        $replacements[1] = "";
-                        $f = preg_replace($patterns, $replacements, $f);
+                        $f = preg_replace(["/\[\[\s*/", "/\s*\]\]/"], ["", ""], $f);
 
                         // split element on ||. rules provide for at most 4 parts in strict order
                         $name = $type = $label = $sql = null;
@@ -105,7 +195,7 @@ class Report extends DbObject
                             $sql = $this->Report->putSpecialSQL($sql);
                         }
 
-                        if (empty($arr)) {
+                        if (empty($arr) && !$skip_section_header) {
                             $arr = array(array("Select Report Criteria", "section"));
                         }
                         // do something different based on form element type
@@ -145,6 +235,9 @@ class Report extends DbObject
             }
         }
 
+        // get the selection of output formats as array
+        //      $format = $this->Report->selectReportFormat();
+
         $templates = $this->getTemplates();
         $template_values = array();
         if (!empty($templates)) {
@@ -166,6 +259,7 @@ class Report extends DbObject
     public function getReportData($params = [])
     {
         // build array of all contents within any @@...@@
+        //        preg_match_all("/@@[a-zA-Z0-9_\s\|,;\(\)\{\}<>\/\-='\.@:%\+\*\$]*?@@/",preg_replace("/\n/"," ",$this->report_code), $arrsql);
         preg_match_all("/@@.*?@@/", preg_replace("/\n/", " ", $this->report_code), $arrsql);
 
         // if we have statements, continue ...

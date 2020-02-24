@@ -21,7 +21,6 @@ class SearchService extends DbService
         asort($indexes);
         return $indexes;
     }
-
     public function reindex($index)
     {
         $indexes = $this->getIndexes();
@@ -38,7 +37,6 @@ class SearchService extends DbService
             }
         }
     }
-
     public function reindexAll()
     {
         // delete all index entries
@@ -47,17 +45,20 @@ class SearchService extends DbService
 
         // go over each index and reindex
         foreach ($this->getIndexes() as $index) {
-            $objects = $this->getObjects($index, array("is_deleted" => 0));
-            if (!empty($objects)) {
-                foreach ($objects as $object) {
-                    if (property_exists($object, "_searchable")) {
-                        $object->_searchable->insert();
+            $o = new $index($this->w);
+            $table = $o->getDbTableName();
+            if ($this->_db->get($table)) {
+                $objects = $this->getObjects($index, array("is_deleted" => 0));
+                if (!empty($objects)) {
+                    foreach ($objects as $object) {
+                        if (property_exists($object, "_searchable")) {
+                            $object->_searchable->insert();
+                        }
                     }
                 }
             }
         }
     }
-
     public function reindexAllFulltextIndex()
     {
         $this->_db->sql("ALTER TABLE object_index DROP INDEX object_index_content;");

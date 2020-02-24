@@ -1,0 +1,120 @@
+
+// These styles should not be used along with Foundation
+@import "_settings.scss";
+@import "responsive.scss";
+
+@import "new_layout/_grid.scss";
+@import "new_layout/_button.scss";
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    // font-family: Ubuntu, Roboto, Aerial, sans-serif !important;
+}
+
+label {
+    display: block;
+   
+    &:hover {
+        cursor: pointer;
+    }
+
+    & > div {
+        display: inline-block;
+        width: 100%;
+    }
+
+    select {
+        background-color: white;
+        padding: 10px 5px;
+        border-radius: 3px;
+        border: 1px solid darken($dark-border-colour, 20%);
+    }
+
+    input {
+        display: block;
+        padding: 10px;
+        width: 100%;
+        border-radius: 3px;
+        border: 1px solid darken($dark-border-colour, 20%);
+
+        &[type=radio] {
+            margin-top: 3px;
+            margin-right: 15px;
+            width: auto;
+            float: left;
+            display: inline-block;
+
+            &:after {
+                width: 15px;
+                height: 15px;
+                border-radius: 15px;
+                top: -2px;
+                left: -1px;
+                position: relative;
+                background-color: white;
+                content: '';
+                display: inline-block;
+                visibility: visible;
+                border: 3px solid white;
+                box-shadow: 0px 0px 0px 1px darken($dark-border-colour, 20%);
+            }
+        
+            &:checked:after {
+                background-color: $secondary-colour;
+                box-shadow: 0px 0px 0px 1px $secondary-colour;
+                // width: 15px;
+                // height: 15px;
+                // border-radius: 15px;
+                // top: -2px;
+                // left: -1px;
+                // position: relative;
+                // content: '';
+                // display: inline-block;
+                // visibility: visible;
+                // border: 2px solid white;
+            }
+        }
+
+    }
+}
+
+.section-header {
+    padding: 0px 5px;
+    color: #333;
+}
+
+.multicolform {
+    
+    div.panel {
+        background-color: white;
+        border: none;
+        padding: 10px 10px 15px 10px;
+    }
+
+    // This is normally the buttons container for the multicolform
+    & + .row {
+        border-top: 1px solid $light-border-colour;
+
+        & > button {
+            padding: 10px 20px;
+            margin: 15px;
+            float: right;
+            border: 1px solid $secondary-colour;
+            font-size: 100% !important;
+
+            &.savebutton {
+                margin-left: 0px;
+            }
+    
+            &.cancelbutton {
+                // Pulled from new layout button.outline
+                background-color: white;
+                color: $secondary-colour;
+            }
+        }
+    }
+}

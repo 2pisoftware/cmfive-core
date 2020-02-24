@@ -376,7 +376,8 @@ class Html
                 case "text":
                 case "password":
                     $size = !empty($field[4]) ? $field[4] : null;
-                    $buffer .= '<input' . $readonly . ' style="width:100%;" type="' . $type . '" name="' . $name . '" value="' . htmlspecialchars($value) . '" size="' . $size . '" id="' . $name . '" />';
+                    $required = !empty($field[5]) ? $field[5] : null;
+                    $buffer .= '<input' . $readonly . ' style="width:100%;" type="' . $type . '" name="' . $name . '" value="' . htmlspecialchars($value) . '" size="' . $size . '" id="' . $name . '"  ' . $required . '/>';
                     break;
                 case "autocomplete":
                     $options = !empty($field[4]) ? $field[4] : null;
@@ -598,7 +599,7 @@ class Html
             // Loop through each row
             foreach ($rows as $row) {
                 // Print each field
-                $fieldCount = count($row);
+                $fieldCount = is_array($row) ? count($row) : 1;
                 $buffer .= "<ul class='small-block-grid-1 medium-block-grid-{$fieldCount} section-body'>";
 
                 if (empty($row)) {
@@ -609,7 +610,7 @@ class Html
                     // Check if the row is an object like an InputField
                     if (!is_array($field) && is_object($field)) {
                         if ((property_exists($field, "type") && $field->type !== "hidden") || !property_exists($field, "type")) {
-                            $buffer .= '<li><label class=\'small-12 columns\'>' . $field->label . ($field->required ? " <small>Required</small>" : "") . '<div>' . $field->__toString() . '</div></label></li>';
+                            $buffer .= '<li><label class=\'small-12 columns\'>' . $field->label . ($field->required ? " <small>Required</small>" : "") . $field->__toString() . '</label></li>';
                         } else {
                             $buffer .= $field->__toString();
                         }
@@ -1514,6 +1515,6 @@ UPLOAD;
             $type = "info";
         }
 
-        return "<div data-alert class=\"alert-box " . $type . "\">" . $msg . "<a href=\"#\" class=\"close\">&times;</a></div>";
+        return "<div data-alert class='alert-box {$type}'>{$msg}<a href='#' class='close'>&times;</a></div>";
     }
 }
