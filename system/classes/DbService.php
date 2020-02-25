@@ -134,10 +134,7 @@ class DbService
 
         $key = $idOrWhere;
         if (is_array($idOrWhere)) {
-            $key = "";
-            foreach ($idOrWhere as $k => $v) {
-                $key .= $k . "::" . $v . "::";
-            }
+            $key = json_encode(ksort($idOrWhere));
         }
         $usecache = $use_cache && is_scalar($key);
         // check if we should use the cache
@@ -242,10 +239,7 @@ class DbService
         // if using the list cache
         if ($cache_list) {
             if (is_array($where)) {
-                $key = "";
-                foreach ($where as $k => $v) {
-                    $key .= $k . "::" . $v . "::";
-                }
+                $key = json_encode(ksort($idOrWhere));
             } else {
                 $key = $where;
             }
