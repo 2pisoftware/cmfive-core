@@ -264,7 +264,7 @@ class Attachment extends DbObject
      *
      * @return string content
      */
-    public function getContent($cache_locally = true)
+    public function getContent($cache_locally = false)
     {
         $file = $this->getFile();
         if (empty($file) || !$file->exists()) {
