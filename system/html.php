@@ -1515,6 +1515,6 @@ UPLOAD;
             $type = "info";
         }
 
-        return "<div data-alert class=\"alert-box " . $type . "\">" . $msg . "<a href=\"#\" class=\"close\">&times;</a></div>";
+        return "<div data-alert class='alert-box {$type}'>{$msg}<a href='#' class='close'>&times;</a></div>";
     }
 }
