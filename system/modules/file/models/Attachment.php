@@ -149,7 +149,7 @@ class Attachment extends DbObject
     public function getDocumentEmbedHtml($width = '1024', $height = '724')
     {
         $view_url = $this->getViewUrl();
-        if ($this->isDocument() && $this->adapter == 'local') {
+        if ($this->isDocument()) {
             if (stripos($this->filename, '.docx') || stripos($this->filename, '.doc')) {
                 $view_url = substr($view_url, 0, 1) == '/' ? substr($view_url, 1) : $view_url;
                 return Html::embedDocument($this->w->localUrl() . $view_url, $width, $height, 'page-width', true);
@@ -264,7 +264,7 @@ class Attachment extends DbObject
      *
      * @return string content
      */
-    public function getContent($cache_locally = true)
+    public function getContent($cache_locally = false)
     {
         $file = $this->getFile();
         if (empty($file) || !$file->exists()) {
@@ -310,9 +310,14 @@ class Attachment extends DbObject
      */
     public function moveToAdapter($adapter = "local", $delete_after_move = false)
     {
-        // Get content of file
-        $content = $this->getContent();
-        $current_file = $this->getFile();
+        try {
+            // Get content of file
+            $content = $this->getContent();
+            $current_file = $this->getFile();
+        } catch (InvalidArgumentException $e) {
+            $this->w->Log->setLogger("FILE")->error("Attachment's {id: $this->id} file does not exist at path: $this->fullpath");
+            return;
+        }
 
         $this->adapter = $adapter;
 

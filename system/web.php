@@ -885,7 +885,7 @@ class Web
             }
         } catch (Throwable $t) {
             $logger = empty($this->currentModule()) ? "CMFIVE" : strtoupper($this->currentModule());
-            $this->Log->setLogger($logger)->error("Throwable caught: {$t->getMessage()}");
+            $this->Log->setLogger($logger)->error("Throwable caught in Web: {$t->getMessage()} Trace: {$t->getTraceAsString()}");
             echo Html::alertBox("An error occoured, if this message persists please contact your administrator.", "alert");
         } finally {
             $this->_callWebHooks("cleanup");
