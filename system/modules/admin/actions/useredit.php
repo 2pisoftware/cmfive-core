@@ -3,7 +3,7 @@
 /**
  * Display User edit form
  *
- * @param <type> $w
+ * @param Web $w
  */
 function useredit_GET(Web &$w)
 {
