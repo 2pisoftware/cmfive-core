@@ -23,6 +23,7 @@ function ajax_update_account_details_POST(Web $w)
     }
 
     $contact->fill($request_data["account_details"]);
+    $contact->setTitle($request_data["account_details"]["title"]);
 
     if (!$contact->insertOrUpdate()) {
         $w->out((new AxiosResponse())->setErrorResponse("Failed to update details", null));

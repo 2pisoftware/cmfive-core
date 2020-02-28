@@ -8,7 +8,7 @@
     <div class="tab-body">
         <div id="account">
             <div class="row-fluid body panel clearfix">
-                <div class="small-12 medium-6 large-4 columns">
+                <div class="small-12 medium-6 large-6 columns">
                     <h3>Personal</h3>
                     <label for="title">Title</label>
                     <input id="title" type="text" v-model="user.account.title">
@@ -18,8 +18,12 @@
                     <input id="lastname" type="text" v-model="user.account.lastname">
                     <label for="othername">Other Name</label>
                     <input id="othername" type="text" v-model="user.account.othername">
+                    <label for="language">Language</label>
+                    <select id="language">
+                        <option value="">-- Select --</option>
+                    </select>
                 </div>
-                <div class="small-12 medium-6 large-4 columns">
+                <div class="small-12 medium-6 large-6 columns">
                     <h3>Contact</h3>
                     <label for="homephone">Home Phone</label>
                     <input id="homephone" type="tel" v-model="user.account.homephone">
@@ -34,12 +38,7 @@
                     <label for="email">Email Address</label>
                     <input id="email" type="email" v-model="user.account.email">
                 </div>
-                <div class="small-12 medium-6 large-4 columns end">
-                    <h3>Internationalisation</h3>
-                    <label for="language">Language</label>
-                    <select id="language"></select>
-                </div>
-                <div class="small-12 columns end">
+                <div class="small-12 columns">
                     <br>
                     <button class="tiny" @click="updateAccountDetails" :disabled="is_loading">Update</button>
                 </div>
@@ -63,8 +62,8 @@
                     </form>
                 </div>
                 <div class="small-12 medium-6 large-4 columns">
+                    <h3>Update Password</h3>
                     <form>
-                        <h3>Update Password</h3>
                         <label for="password">New Password</label>
                         <input id="password" type="password" v-model="user.security.new_password" required>
                         <label for="repeatpassword">Repeat New Password</label>
@@ -103,8 +102,8 @@
             <div class="row-fluid body panel clearfix">
                 <h3>Groups</h3>
                 <ul>
-                    <li v-for="group in user.group">
-                        {{ group }}
+                    <li v-for="group in user.groups">
+                        <a :href="group.url" target="_blank">{{ group.title }}</a
                     </li>
                 </ul>
             </div>

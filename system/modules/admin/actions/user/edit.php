@@ -25,14 +25,17 @@ function edit_GET(Web $w)
     if (!empty($group_users)) {
         foreach ($group_users as $group_user) {
             $group = $group_user->getGroup();
-            $groups[] = " - " . Html::a("/admin/moreinfo/" . $group->id, $group->login);
+            $groups[] = [
+                "url" =>  WEBROOT . "/admin/moreInfo/$group->id",
+                "title" => $group->login
+            ];
         }
     }
 
     $user_details = [
         "id" => $user->id,
         "account" => [
-            "title" => "",
+            "title" => $contact->getTitle(),
             "firstname" => $contact->firstname,
             "lastname" => $contact->lastname,
             "othername" => $contact->othername,

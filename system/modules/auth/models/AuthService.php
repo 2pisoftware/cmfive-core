@@ -7,7 +7,7 @@ class AuthService extends DbService
     public $_rest_user = null;
     private static $_cache = [];
 
-    public function login($login, $password, $client_timezone, $skip_session = false)
+    public function login($login, $password, $client_timezone, $skip_session = false, $mfa_code = "")
     {
         $credentials['login'] = $login;
         $credentials['password'] = $password;
@@ -46,6 +46,11 @@ class AuthService extends DbService
 
             if ($user->is_external == 1) {
                 $this->w->Log->info('cmfive user is external: ' . $login);
+                return null;
+            }
+
+            if ($user->is_mfa_enabled && !$user->checkMfaCode($mfa_code)) {
+                $this->w->Log->setLogger("AUTH")->warning("User attempted to login with invalid MFA code: $mfa_code");
                 return null;
             }
         }

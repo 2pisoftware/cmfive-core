@@ -34,7 +34,7 @@ function login_POST(Web &$w)
 
     $login = $request_data["login"];
     $password = $request_data["password"];
-    $mfa_token = array_key_exists("mfa_token", $request_data) ? $request_data["mfa_token"] : null;
+    $mfa_code = array_key_exists("mfa_code", $request_data) ? $request_data["mfa_code"] : null;
 
     if (empty($login) || empty($password)) {
         $w->error("Please enter your login and password", "/auth/login");
@@ -45,12 +45,12 @@ function login_POST(Web &$w)
         $w->error("Please enter your login and password", "/auth/login");
     }
 
-    if ($user->is_mfa_enabled && empty($mfa_token)) {
+    if ($user->is_mfa_enabled && empty($mfa_code)) {
         $w->out((new AxiosResponse())->setSuccessfulResponse(null, ["is_mfa_enabled" => true]));
         return;
     }
 
-    $user = $w->Auth->login($login, $password, "Australia/Sydney");
+    $user = $w->Auth->login($login, $password, "Australia/Sydney", false, $mfa_code);
     if (empty($user)) {
         $w->error("Login or Password incorrect", "/auth/login");
     }
