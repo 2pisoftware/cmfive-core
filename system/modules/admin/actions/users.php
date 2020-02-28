@@ -25,7 +25,6 @@ function users_GET(Web &$w)
                 [$internal_user->is_admin ? "Yes" : "No", true],
                 [$internal_user->is_active ? "Yes" : "No", true],
                 [$internal_user->is_mfa_enabled ? "Yes" : "No", true],
-                [$internal_user->is_mfa_required ? "Yes" : "No", true],
                 [$w->Admin->time2Dt($internal_user->dt_created), true],
                 [empty($internal_user->dt_lastlogin) ? "" : $w->Admin->time2Dt($internal_user->dt_lastlogin), true],
                 Html::b("/admin/useredit/" . $internal_user->id, "Old Edit", null, "button tiny editbutton") .
@@ -56,7 +55,7 @@ function users_GET(Web &$w)
         }
     }
 
-    $internal_header = ["Login", "First Name", "Last Name", ["Admin", true], ["Active", true], ["Is MFA Enabled", true], ["Is MFA Required", true], ["Created", true], ["Last Login", true], "Operations"];
+    $internal_header = ["Login", "First Name", "Last Name", ["Admin", true], ["Active", true], ["Is MFA Enabled", true], ["Created", true], ["Last Login", true], "Operations"];
     $external_header = ["Login", "First Name", "Last Name", ["Admin", true], ["Active", true], ["Created", true], ["Last Login", true], "Operations"];
 
     $w->ctx("internal_table", Html::table($internal_data, null, "tablesorter", $internal_header));

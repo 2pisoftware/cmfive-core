@@ -107,7 +107,6 @@ function useredit_POST(Web &$w)
     $user->is_admin = isset($_REQUEST['is_admin']) ? 1 : 0;
     $user->is_active = isset($_REQUEST['is_active']) ? 1 : 0;
     $user->is_external = isset($_REQUEST['is_external']) ? 1 : 0;
-    $user->is_mfa_required = isset($_REQUEST['is_mfa_required']) ? 1 : 0;
     $user->update();
 
     $contact = $user->getContact();

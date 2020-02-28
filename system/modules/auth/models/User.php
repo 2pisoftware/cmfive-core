@@ -28,7 +28,6 @@ class User extends DbObject
     public $language;
     public $is_password_invalid;
     public $is_mfa_enabled;
-    public $is_mfa_required;
     public $mfa_secret;
 
     /**
