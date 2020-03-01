@@ -344,7 +344,7 @@ class Html
             // Check if the row is an object like an InputField
             if (!is_array($field) && is_object($field)) {
                 if ((property_exists($field, "type") && $field->type !== "hidden") || !property_exists($field, "type")) {
-                    $buffer .= '<li><label class=\'small-12 columns\'>' . $field->label . ($field->required ? " <small>Required</small>" : "") . '<div>' . $field->__toString() . '</div></label></li>';
+                    $buffer .= '<label class=\'small-12 columns\'>' . $field->label . ($field->required ? " <small>Required</small>" : "") . '<div>' . $field->__toString() . '</div></label>';
                 } else {
                     $buffer .= $field->__toString();
                 }
