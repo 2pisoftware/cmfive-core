@@ -11,6 +11,10 @@
     </div>
     <div v-else>
         <form @submit="executeLogin">
+            <div data-alert class="alert-box alert" v-if="error_message != ''">
+                {{ error_message }}
+                <a href="#" class="close" @click="error_message = ''">&times;</a>
+            </div>
             <input type="hidden" name="<?php echo CSRF::getTokenID(); ?>" value="<?php echo CSRF::getTokenValue(); ?>" />
             <label for="login">Login</label>
             <input id="login" name="login" type="text" placeholder="Your login" v-model="login" required />
@@ -29,14 +33,21 @@
                 login: "",
                 password: "",
                 mfa_code: "",
+                error_message: "",
                 is_mfa_enabled: false,
+                is_loading: false,
             }
         },
         methods: {
             executeLogin: function(e) {
                 e.preventDefault();
-
                 var _this = this;
+
+                if (_this.is_loading) {
+                    return;
+                }
+
+                _this.is_loading = true;
 
                 axios.post("/auth/login", {
                     <?php echo "\"" . CSRF::getTokenID() . "\""; ?>: <?php echo "\"" . CSRF::getTokenValue() . "\""; ?>,
@@ -44,7 +55,6 @@
                     password: _this.password,
                     mfa_code: _this.mfa_code,
                 }).then(function(response) {
-                    debugger;
                     if (response.data.redirect_url != null) {
                         window.location.href = response.data.redirect_url;
                         return;
@@ -52,7 +62,10 @@
 
                     _this.is_mfa_enabled = response.data.is_mfa_enabled;
                 }).catch(function(error) {
-                    new Toast("Login failed").show();
+                    _this.is_mfa_enabled = false;
+                    _this.error_message = "Incorrect login details";
+                }).finally(function() {
+                    _this.is_loading = false;
                 });
             }
         }

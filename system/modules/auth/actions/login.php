@@ -19,8 +19,6 @@ function login_GET(Web $w)
 
     $w->enqueueScript(["name" => "vue.js", "uri" => "/system/templates/js/vue.js", "weight" => 2000]);
     CmfiveScriptComponentRegister::registerComponent("AxiosJS", new CmfiveScriptComponent("/system/templates/js/axios.min.js"));
-    CmfiveScriptComponentRegister::registerComponent("ToastJS", new CmfiveScriptComponent("/system/templates/js/Toast.js"));
-    CmfiveStyleComponentRegister::registerComponent("ToastSCSS", new CmfiveStyleComponent("/system/templates/css/Toast.scss", ["/system/templates/scss/"]));
 }
 
 function login_POST(Web &$w)
@@ -52,7 +50,8 @@ function login_POST(Web &$w)
 
     $user = $w->Auth->login($login, $password, "Australia/Sydney", false, $mfa_code);
     if (empty($user)) {
-        $w->error("Login or Password incorrect", "/auth/login");
+        $w->out((new AxiosResponse())->setErrorResponse("Incorrect login details", null));
+        return;
     }
 
     if ($w->session('orig_path') != "auth/login") {

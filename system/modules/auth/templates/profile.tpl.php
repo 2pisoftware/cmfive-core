@@ -1,14 +1,22 @@
+<?php
+$w->setTemplatePath(SYSTEM_PATH . "/templates");
+$w->setLayout("layout")
+?>
 <div id="app">
     <div class="tabs">
         <div class="tab-head">
             <a class="active" href="#account">Account</a>
             <a href="#security">Security</a>
-            <a href="#groups">Groups</a>
         </div>
         <div class="tab-body">
             <div id="account">
                 <div class="row-fluid body panel clearfix">
-                    <div class="small-12 medium-6 large-6 columns">
+                    <div class="small-12 medium-6 large-4 columns">
+                        <h3>General</h3>
+                        <label for="redirect_url">Redirect URL</label>
+                        <input id="redirect_url" type="text" v-model="user.account.redirect_url">
+                    </div>
+                    <div class="small-12 medium-6 large-4 columns">
                         <h3>Personal</h3>
                         <label for="title">Title</label>
                         <input id="title" type="text" v-model="user.account.title">
@@ -23,7 +31,7 @@
                             <option value="">-- Select --</option>
                         </select>
                     </div>
-                    <div class="small-12 medium-6 large-6 columns">
+                    <div class="small-12 medium-6 large-4 columns">
                         <h3>Contact</h3>
                         <label for="homephone">Home Phone</label>
                         <input id="homephone" type="tel" v-model="user.account.homephone">
@@ -46,22 +54,7 @@
             </div>
             <div id="security">
                 <div class="row-fluid body panel clearfix">
-                    <div class="small-12 medium-6 large-4 columns">
-                        <h3>General</h3>
-                        <form>
-                            <label for="login">Login</label>
-                            <input id="login" type="text" v-model="user.security.login" required>
-                            <label for="admin">Admin</label>
-                            <input id="admin" type="checkbox" v-model="user.security.is_admin">
-                            <label for="active">Active</label>
-                            <input id="active" type="checkbox" v-model="user.security.is_active">
-                            <label for="external">External</label>
-                            <input id="external" type="checkbox" v-model="user.security.is_external">
-                            <br>
-                            <input class="button tiny" type="submit" value="Update" style="font-size: 0.8rem;" @click="updateSecurityDetails" :disabled="is_loading">
-                        </form>
-                    </div>
-                    <div class="small-12 medium-6 large-4 columns">
+                    <div class="small-12 medium-6 columns">
                         <h3>Update Password</h3>
                         <form>
                             <label for="password">New Password</label>
@@ -72,7 +65,7 @@
                             <input class="button tiny" type="submit" value="Update Password" style="font-size: 0.8rem;" @click="updatePassword" :disabled="is_loading">
                         </form>
                     </div>
-                    <div class="small-12 medium-6 large-4 columns end">
+                    <div class="small-12 medium-6 columns end">
                         <div class="large-12">
                             <h3>Two Factor Authentication</h3>
                         </div>
@@ -96,16 +89,6 @@
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-            <div id="groups">
-                <div class="row-fluid body panel clearfix">
-                    <h3>Groups</h3>
-                    <ul>
-                        <li v-for="group in user.groups">
-                            <a :href="group.url" target="_blank">{{ group.title }}</a
-                        </li>
-                    </ul>
                 </div>
             </div>
         </div>
@@ -143,33 +126,6 @@
                     }
 
                     new Toast("Account details updated").show();
-                }).catch(function(error) {
-                    new Toast("Failed to update").show();
-                    console.log(error);
-                }).finally(function() {
-                    _this.is_loading = false;
-                });
-            },
-            updateSecurityDetails: function() {
-                var _this = this;
-                _this.user.security.login = _this.user.security.login.trim();
-
-                if (_this.is_loading === true || _this.user.security.login === "") {
-                    return;
-                }
-
-                _this.is_loading = true;
-
-                axios.post("/admin-user/ajax_update_security_details", {
-                    id: _this.user.id,
-                    security_details: _this.user.security
-                }).then(function(response) {
-                    if (response.status !== 200) {
-                        new Toast("Failed to update").show();
-                        return;
-                    }
-
-                    new Toast("Security details updated").show();
                 }).catch(function(error) {
                     new Toast("Failed to update").show();
                     console.log(error);

@@ -16,6 +16,13 @@ function ajax_update_account_details_POST(Web $w)
         return;
     }
 
+    $user->redirect_url = $request_data["account_details"]["redirect_url"];
+
+    if (!$user->insertOrUpdate()) {
+        $w->out((new AxiosResponse())->setErrorResponse("Failed to update details", null));
+        return;
+    }
+
     $contact = $user->getContact();
     if (empty($contact)) {
         $w->out((new AxiosResponse())->setErrorResponse("Unable to find user", null));

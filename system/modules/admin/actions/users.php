@@ -27,7 +27,6 @@ function users_GET(Web &$w)
                 [$internal_user->is_mfa_enabled ? "Yes" : "No", true],
                 [$w->Admin->time2Dt($internal_user->dt_created), true],
                 [empty($internal_user->dt_lastlogin) ? "" : $w->Admin->time2Dt($internal_user->dt_lastlogin), true],
-                Html::b("/admin/useredit/" . $internal_user->id, "Old Edit", null, "button tiny editbutton") .
                 Html::b("/admin-user/edit/" . $internal_user->id, "Edit", null, "button tiny") .
                 Html::b("/admin/permissionedit/" . $internal_user->id, "Permissions", null, "button tiny permissionsbutton") .
                 Html::b("/admin-user/remove/" . $internal_user->id, "Remove", null, "button tiny deletebutton", false, "alert")
