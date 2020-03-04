@@ -53,7 +53,7 @@ function edit_GET($w)
             $priority = $w->Task->getTaskPriority($taskgroup->task_group_type);
             $members = $w->Task->getMembersBeAssigned($taskgroup->id);
             sort($members);
-            array_unshift($members, ["Unassigned", "unassigned"]);
+            array_unshift($members, ["Unassigned", "0"]);
             $assigned = (empty($task->assignee_id)) ? "unassigned" : $task->assignee_id;
         }
     }
@@ -85,8 +85,7 @@ function edit_GET($w)
             [
                 ["Priority", "select", "priority", $task->priority, $priority],
                 ["Date Due", "date", "dt_due", formatDate($task->dt_due)],
-                !empty($taskgroup) && $taskgroup->getCanIAssign() ?
-                    ["Assigned To", "select", "assignee_id", $assigned, $members] : ["Assigned To", "select", "-assignee_id", $assigned, $members]
+                !empty($taskgroup) && $taskgroup->getCanIAssign() ? ["Assigned To", "select", "assignee_id", $assigned, $members, $task->assignee_id] : ["Assigned To", "select", "-assignee_id", $assigned, $members, $task->assignee_id]
             ],
             [
                 ["Estimated hours", "text", "estimate_hours", $task->estimate_hours],
