@@ -85,7 +85,14 @@ function edit_GET($w)
             [
                 ["Priority", "select", "priority", $task->priority, $priority],
                 ["Date Due", "date", "dt_due", formatDate($task->dt_due)],
-                !empty($taskgroup) && $taskgroup->getCanIAssign() ? ["Assigned To", "select", "assignee_id", $assigned, $members, $task->assignee_id] : ["Assigned To", "select", "-assignee_id", $assigned, $members, $task->assignee_id]
+                (new Select([
+                    "id|name" => "assignee_id",
+                    "label" => "Assigned To",
+                    "style" => "width: 100%"
+                ]))->setOptions($members, true)
+                   ->setDisabled(!empty($taskgroup) && $taskgroup->getCanIAssign() ? null : "disabled")
+                   ->setRequired("required")
+                   ->setSelectedOption($task->assignee_id),
             ],
             [
                 ["Estimated hours", "text", "estimate_hours", $task->estimate_hours],
