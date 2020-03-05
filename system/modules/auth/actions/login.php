@@ -40,7 +40,8 @@ function login_POST(Web &$w)
 
     $user = $w->Auth->getUserForLogin($login);
     if (empty($user)) {
-        $w->error("Please enter your login and password", "/auth/login");
+        $w->out((new AxiosResponse())->setErrorResponse("Incorrect login details", null));
+        return;
     }
 
     if ($user->is_mfa_enabled && empty($mfa_code)) {

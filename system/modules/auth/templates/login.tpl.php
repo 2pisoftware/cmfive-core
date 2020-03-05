@@ -7,13 +7,14 @@
             <label for="mfa_code">MFA Code</label>
             <input id="mfa_code" name="mfa_code" type="text" placeholder="Your code" v-model="mfa_code" required />
             <button type="submit" class="button medium-5 small-12">Confirm</button>
+            <button class="button info medium-5 small-12 right" @click="back">Back</button>
         </form>
     </div>
     <div v-else>
         <form @submit="executeLogin">
-            <div data-alert class="alert-box alert" v-if="error_message != ''">
+            <div data-alert class="alert-box alert" v-if="error_message != null">
                 {{ error_message }}
-                <a href="#" class="close" @click="error_message = ''">&times;</a>
+                <a href="#" class="close" @click="error_message = null">&times;</a>
             </div>
             <input type="hidden" name="<?php echo CSRF::getTokenID(); ?>" value="<?php echo CSRF::getTokenValue(); ?>" />
             <label for="login">Login</label>
@@ -30,16 +31,16 @@
         el: "#app",
         data: function() {
             return {
-                login: "",
-                password: "",
-                mfa_code: "",
-                error_message: "",
+                login: null,
+                password: null,
+                mfa_code: null,
+                error_message: null,
                 is_mfa_enabled: false,
                 is_loading: false,
             }
         },
         methods: {
-            executeLogin: function(e) {
+            executeLogin(e) {
                 e.preventDefault();
                 var _this = this;
 
@@ -62,11 +63,19 @@
 
                     _this.is_mfa_enabled = response.data.is_mfa_enabled;
                 }).catch(function(error) {
+                    _this.login = null,
+                    _this.password = null,
+                    _this.mfa_code = null,
                     _this.is_mfa_enabled = false;
                     _this.error_message = "Incorrect login details";
                 }).finally(function() {
                     _this.is_loading = false;
                 });
+            },
+            back(e) {
+                e.preventDefault();
+                this.is_mfa_enabled = false;
+                this.mfa_code = null;
             }
         }
     })
