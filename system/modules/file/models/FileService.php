@@ -572,7 +572,7 @@ class FileService extends DbService
         $att->title = (!empty($name) ? $name : $filename);
         $att->description = $description;
         $att->type_code = $type_code;
-        $att->mime_type = "text/plain";
+        $att->mimetype = "text/plain";
         $att->insert();
 
         $filesystemPath = "attachments/" . $object->getDbTableName() . '/' . date('Y/m/d') . '/' . $object->id . '/';
