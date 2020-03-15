@@ -50,7 +50,7 @@ class AuthService extends DbService
             }
 
             if ($user->is_mfa_enabled && !$user->checkMfaCode($mfa_code)) {
-                $this->w->Log->setLogger("AUTH")->warning("User attempted to login with invalid MFA code: $mfa_code");
+                $this->w->Log->setLogger("AUTH")->warning("User attempted to login with invalid MFA code");
                 return null;
             }
         }
@@ -171,6 +171,16 @@ class AuthService extends DbService
     public function getContacts()
     {
         return $this->getObjects('Contact', ['is_deleted' => 0]);
+    }
+
+    /**
+     * Returns an array of titles from the lookup table.
+     *
+     * @return array[Lookup]
+     */
+    public function getTitles() : array
+    {
+        return $this->getObjects("lookup", ["type" => "title"]);
     }
 
     public function getContact($contact_id)

@@ -35,6 +35,8 @@ class User extends DbObject
     /**
      * Checks if the passed password matches the stored password when hashed.
      *
+     * @deprecated v3.0.0
+     *
      * @param string $password
      *
      * @return bool

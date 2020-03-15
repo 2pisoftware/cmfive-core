@@ -12,6 +12,7 @@
                         <h3>Personal</h3>
                         <label for="title">Title</label>
                         <input id="title" type="text" v-model="user.account.title">
+                        <autocomplete></autocomplete>
                         <label for="firstname">First Name</label>
                         <input id="firstname" type="text" v-model="user.account.firstname">
                         <label for="lastname">Last Name</label>
@@ -81,18 +82,15 @@
                             <button v-if="!user.security.is_mfa_enabled && mfa_qr_code_url === null" class="tiny success" @click="getMfaQrCode" :disabled="is_loading">Enable</button>
                             <button v-if="user.security.is_mfa_enabled" class="tiny alert" @click="disableMfa" :disabled="is_loading">Disable</button>
                             <div v-if="mfa_qr_code_url !== null">
-                                <div class="columns small-12">
-                                    <img :src="mfa_qr_code_url" width="250" height="250">
-                                </div>
-                                <div class="columns small-12">
-                                    <form>
-                                        <label for="code">Code</label>
-                                        <input id="code" type="text" v-model="mfa_code" required>
-                                        <br>
-                                        <button class="tiny success" @click="confirmMfaCode" :disabled="is_loading">Confirm Code</button>
-                                        <button class="tiny info" @click="mfa_qr_code_url = null">Cancel</button>
-                                    </form>
-                                </div>
+                                <img v-if="show_qr_code" :src="mfa_qr_code_url" width="250" height="250">
+                                <button v-else class="tiny" @click="show_qr_code = true">Show QR Code</button>
+                                <form>
+                                    <label for="code">Code</label>
+                                    <input id="code" type="text" v-model="mfa_code" required>
+                                    <br>
+                                    <button class="tiny success" @click="confirmMfaCode" :disabled="is_loading">Confirm Code</button>
+                                    <button class="tiny info" @click="cancel">Cancel</button>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -119,6 +117,7 @@
                 user: <?php echo json_encode($user); ?>,
                 mfa_code: "",
                 mfa_qr_code_url: null,
+                show_qr_code: false,
                 is_confirming_code: false,
                 is_loading: false,
             }
@@ -298,6 +297,11 @@
                 }).finally(function() {
                     _this.is_loading = false;
                 });
+            },
+            cancel: function(e) {
+                e.preventDefault();
+                this.mfa_qr_code_url = null;
+                this.show_qr_code = false;
             }
         }
     })

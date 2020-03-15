@@ -2,7 +2,7 @@
 class Contact extends DbObject
 {
     // these parameters will be excluded from indexing
-    public $_exclude_index = array("is_deleted", "private_to_user_id");
+    public $_exclude_index = ["is_deleted", "private_to_user_id"];
 
     public $firstname;
     public $lastname;

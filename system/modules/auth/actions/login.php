@@ -26,7 +26,7 @@ function login_POST(Web &$w)
     $w->setLayout(null);
 
     $request_data = json_decode(file_get_contents("php://input"), true);
-    if (empty($request_data)) {
+    if (empty($request_data) || !array_key_exists("login", $request_data) || !array_key_exists("password", $request_data)) {
         $w->error("Please enter your login and password", "/auth/login");
     }
 
