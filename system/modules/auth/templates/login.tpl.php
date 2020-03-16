@@ -1,11 +1,26 @@
 <div id="app">
     <div v-if="is_mfa_enabled">
         <form @submit="executeLogin">
-            <input type="hidden" name="<?php echo CSRF::getTokenID(); ?>" value="<?php echo CSRF::getTokenValue(); ?>" />
-            <input type="hidden" name="login" v-model="login" />
-            <input type="hidden" name="password" v-model="password" />
+            <?php
+            echo (new \Html\Form\InputField\Hidden([
+                "name" => CSRF::getTokenID(),
+                "value" => CSRF::getTokenValue(),
+            ]))->__toString() .
+            (new \Html\Form\InputField\Hidden([
+                "name" => "login",
+            ]))->setAttribute("v-model", "login")->__toString() .
+            (new \Html\Form\InputField\Hidden([
+                "name" => "password",
+            ]))->setAttribute("v-model", "password")->__toString();
+            ?>
             <label for="mfa_code">MFA Code</label>
-            <input id="mfa_code" name="mfa_code" type="text" placeholder="Your code" v-model="mfa_code" required />
+            <?php
+            echo (new \Html\Form\InputField([
+                "id" => "mfa_code",
+                "placeholder" => "Your code",
+                "required" => true,
+            ]))->setAttribute("v-model", "mfa_code")->__toString();
+            ?>
             <button type="submit" class="button medium-5 small-12">Confirm</button>
             <button class="button info medium-5 small-12 right" @click="back">Back</button>
         </form>
@@ -16,11 +31,28 @@
                 {{ error_message }}
                 <a href="#" class="close" @click="error_message = null">&times;</a>
             </div>
-            <input type="hidden" name="<?php echo CSRF::getTokenID(); ?>" value="<?php echo CSRF::getTokenValue(); ?>" />
+            <?php
+            echo (new \Html\Form\InputField\Hidden([
+                "name" => CSRF::getTokenID(),
+                "value" => CSRF::getTokenValue(),
+            ]))->__toString();
+            ?>
             <label for="login">Login</label>
-            <input id="login" name="login" type="text" placeholder="Your login" v-model="login" required />
+            <?php
+            echo (new \Html\Form\InputField([
+                "id" => "login",
+                "placeholder" => "Your login",
+                "required" => true,
+            ]))->setAttribute("v-model", "login")->__toString();
+            ?>
             <label for="password">Password</label>
-            <input id="password" name="password" type="password" placeholder="Your password" v-model="password" required />
+            <?php
+            echo (new \Html\Form\InputField([
+                "id" => "password",
+                "placeholder" => "Your password",
+                "required" => true,
+            ]))->setAttribute("v-model", "password")->__toString();
+            ?>
             <button type="submit" class="button medium-5 small-12">Login</button>
             <a onclick="window.location.href='/auth/forgotpassword';" class="medium-5 small-12 right text-right"><?php echo $passwordHelp; ?></a>
         </form>
@@ -51,7 +83,7 @@
                 _this.is_loading = true;
 
                 axios.post("/auth/login", {
-                    <?php echo "\"" . CSRF::getTokenID() . "\""; ?>: <?php echo "\"" . CSRF::getTokenValue() . "\""; ?>,
+                    <?php echo '"' . CSRF::getTokenID() . '"'; ?>: <?php echo '"' . CSRF::getTokenValue() . '"'; ?>,
                     login: _this.login,
                     password: _this.password,
                     mfa_code: _this.mfa_code,

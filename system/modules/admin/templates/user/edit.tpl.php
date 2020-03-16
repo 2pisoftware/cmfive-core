@@ -1,4 +1,5 @@
 <div id="app">
+    <h3>Edit - {{ user.account.firstname + ' ' + user.account.lastname }}</h3>
     <html-tabs>
         <html-tab title="Account" selected>
             <div id="account">
@@ -308,7 +309,9 @@
                     _this.is_loading = false;
                 });
             },
-            confirmMfaCode: function() {
+            confirmMfaCode: function(e) {
+                e.preventDefault();
+
                 var _this = this;
                 _this.mfa_code = _this.mfa_code.trim();
 
