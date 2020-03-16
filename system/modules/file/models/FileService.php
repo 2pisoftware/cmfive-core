@@ -13,6 +13,7 @@ use Aws\S3\S3Client as S3Client;
  */
 class FileService extends DbService
 {
+    private static $cache_runtime_path;
 
     public static $_thumb_height = 200;
     public static $_thumb_width = 200;
@@ -596,7 +597,7 @@ class FileService extends DbService
             default:
                 $att->mimetype = $this->w->getMimetypeFromString($content);
         }
-        
+
         $att->update();
 
         return $att->id;
@@ -643,5 +644,19 @@ class FileService extends DbService
             }
         }
         return $template;
+    }
+
+    /**
+     * Returns the cache runtime path.
+     *
+     * @return string
+     */
+    public static function getCacheRuntimePath() : string
+    {
+        if (self::$cache_runtime_path === null) {
+            self::$cache_runtime_path = uniqid();
+        }
+
+        return self::$cache_runtime_path;
     }
 }
