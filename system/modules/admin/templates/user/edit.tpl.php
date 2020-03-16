@@ -1,43 +1,75 @@
 <div id="app">
-    <div class="tabs">
-        <div class="tab-head">
-            <a class="active" href="#account">Account</a>
-            <a href="#security">Security</a>
-            <a href="#groups">Groups</a>
-        </div>
-        <div class="tab-body">
+    <html-tabs>
+        <html-tab title="Account" selected>
             <div id="account">
                 <div class="row-fluid body panel clearfix">
                     <div class="small-12 medium-6 large-6 columns">
                         <h3>Personal</h3>
                         <label for="title">Title</label>
-                        <input id="title" type="text" v-model="user.account.title">
-                        <autocomplete></autocomplete>
+                        <autocomplete :list="user.account.titles" v-model="user.account.title"></autocomplete>
                         <label for="firstname">First Name</label>
-                        <input id="firstname" type="text" v-model="user.account.firstname">
+                        <?php
+                        echo (new \Html\Form\InputField([
+                            "id" => "firstname",
+                        ]))->setAttribute("v-model", "user.account.firstname")->__toString();
+                        ?>
                         <label for="lastname">Last Name</label>
-                        <input id="lastname" type="text" v-model="user.account.lastname">
+                        <?php
+                        echo (new \Html\Form\InputField([
+                            "id" => "lastname",
+                        ]))->setAttribute("v-model", "user.account.lastname")->__toString();
+                        ?>
                         <label for="othername">Other Name</label>
-                        <input id="othername" type="text" v-model="user.account.othername">
+                        <?php
+                        echo (new \Html\Form\InputField([
+                            "id" => "othername",
+                        ]))->setAttribute("v-model", "user.account.othername")->__toString();
+                        ?>
                         <label for="language">Language</label>
-                        <select id="language">
-                            <option value="">-- Select --</option>
-                        </select>
+                        <?php
+                        echo (new \Html\Form\Select([
+                            "id" => "language",
+                        ]))->setOptions([])->__toString();
+                        ?>
                     </div>
                     <div class="small-12 medium-6 large-6 columns">
                         <h3>Contact</h3>
                         <label for="homephone">Home Phone</label>
-                        <input id="homephone" type="tel" v-model="user.account.homephone">
+                        <?php
+                        echo (new \Html\Form\InputField\Tel([
+                            "id" => "homephone",
+                        ]))->setAttribute("v-model", "user.account.homephone")->__toString();
+                        ?>
                         <label for="workphone">Work Phone</label>
-                        <input id="workphone" type="tel" v-model="user.account.workphone">
+                        <?php
+                        echo (new \Html\Form\InputField\Tel([
+                            "id" => "workphone",
+                        ]))->setAttribute("v-model", "user.account.workphone")->__toString();
+                        ?>
                         <label for="mobile">Mobile</label>
-                        <input id="mobile" type="tel" v-model="user.account.mobile">
+                        <?php
+                        echo (new \Html\Form\InputField\Tel([
+                            "id" => "mobile",
+                        ]))->setAttribute("v-model", "user.account.mobile")->__toString();
+                        ?>
                         <label for="priv_mobile">Private Mobile</label>
-                        <input id="priv_mobile" type="tel" v-model="user.account.priv_mobile">
+                        <?php
+                        echo (new \Html\Form\InputField\Tel([
+                            "id" => "priv_mobile",
+                        ]))->setAttribute("v-model", "user.account.priv_mobile")->__toString();
+                        ?>
                         <label for="fax">Fax</label>
-                        <input id="fax" type="text" v-model="user.account.fax">
+                        <?php
+                        echo (new \Html\Form\InputField([
+                            "id" => "fax",
+                        ]))->setAttribute("v-model", "user.account.fax")->__toString();
+                        ?>
                         <label for="email">Email Address</label>
-                        <input id="email" type="email" v-model="user.account.email">
+                        <?php
+                        echo (new \Html\Form\InputField\Email([
+                            "id" => "email",
+                        ]))->setAttribute("v-model", "user.account.email")->__toString();
+                        ?>
                     </div>
                     <div class="small-12 columns">
                         <br>
@@ -45,69 +77,106 @@
                     </div>
                 </div>
             </div>
-            <div id="security">
-                <div class="row-fluid body panel clearfix">
-                    <div class="small-12 medium-6 large-4 columns">
-                        <h3>General</h3>
-                        <form>
-                            <label for="login">Login</label>
-                            <input id="login" type="text" v-model="user.security.login" required>
-                            <label for="admin">Admin</label>
-                            <input id="admin" type="checkbox" v-model="user.security.is_admin">
-                            <label for="active">Active</label>
-                            <input id="active" type="checkbox" v-model="user.security.is_active">
-                            <label for="external">External</label>
-                            <input id="external" type="checkbox" v-model="user.security.is_external">
-                            <br>
-                            <input class="button tiny" type="submit" value="Update" style="font-size: 0.8rem;" @click="updateSecurityDetails" :disabled="is_loading">
-                        </form>
+        </html-tab>
+        <html-tab title="Security">
+            <div class="row-fluid body panel clearfix">
+                <div class="small-12 medium-6 large-4 columns">
+                    <h3>General</h3>
+                    <form>
+                        <label for="login">Login</label>
+                        <?php
+                        echo (new \Html\Form\InputField([
+                            "id" => "login",
+                            "required" => true,
+                        ]))->setAttribute("v-model", "user.security.login")->__toString();
+                        ?>
+                        <label for="admin">Admin</label>
+                        <?php
+                        echo (new \Html\Form\InputField\Checkbox([
+                            "id" => "admin",
+                            "class" => "",
+                        ]))->setAttribute("v-model", "user.security.is_admin")->__toString();
+                        ?>
+                        <label for="active">Active</label>
+                        <?php
+                        echo (new \Html\Form\InputField\Checkbox([
+                            "id" => "active",
+                            "class" => "",
+                        ]))->setAttribute("v-model", "user.security.is_active")->__toString();
+                        ?>
+                        <label for="external">External</label>
+                        <?php
+                        echo (new \Html\Form\InputField\Checkbox([
+                            "id" => "external",
+                            "class" => "",
+                        ]))->setAttribute("v-model", "user.security.is_external")->__toString();
+                        ?>
+                        <br>
+                        <input class="button tiny" type="submit" value="Update" style="font-size: 0.8rem;" @click="updateSecurityDetails" :disabled="is_loading">
+                    </form>
+                </div>
+                <div class="small-12 medium-6 large-4 columns">
+                    <h3>Update Password</h3>
+                    <form>
+                        <label for="password">New Password</label>
+                        <?php
+                        echo (new \Html\Form\InputField\Password([
+                            "id" => "password",
+                            "required" => true,
+                        ]))->setAttribute("v-model", "user.security.new_password")->__toString();
+                        ?>
+                        <label for="repeatpassword">Repeat New Password</label>
+                        <?php
+                        echo (new \Html\Form\InputField\Password([
+                            "id" => "repeatpassword",
+                            "required" => true,
+                        ]))->setAttribute("v-model", "user.security.repeat_new_password")->__toString();
+                        ?>
+                        <br>
+                        <br>
+                        <input class="button tiny" type="submit" value="Update Password" style="font-size: 0.8rem;" @click="updatePassword" :disabled="is_loading">
+                    </form>
+                </div>
+                <div class="small-12 medium-6 large-4 columns end">
+                    <div class="large-12">
+                        <h3>Two Factor Authentication</h3>
                     </div>
-                    <div class="small-12 medium-6 large-4 columns">
-                        <h3>Update Password</h3>
-                        <form>
-                            <label for="password">New Password</label>
-                            <input id="password" type="password" v-model="user.security.new_password" required>
-                            <label for="repeatpassword">Repeat New Password</label>
-                            <input id="repeatpassword" type="password" v-model="user.security.repeat_new_password" required>
-                            <br>
-                            <input class="button tiny" type="submit" value="Update Password" style="font-size: 0.8rem;" @click="updatePassword" :disabled="is_loading">
-                        </form>
-                    </div>
-                    <div class="small-12 medium-6 large-4 columns end">
-                        <div class="large-12">
-                            <h3>Two Factor Authentication</h3>
-                        </div>
-                        <div class="large-12">
-                            <label>Google Authenticator</label>
-                            <button v-if="!user.security.is_mfa_enabled && mfa_qr_code_url === null" class="tiny success" @click="getMfaQrCode" :disabled="is_loading">Enable</button>
-                            <button v-if="user.security.is_mfa_enabled" class="tiny alert" @click="disableMfa" :disabled="is_loading">Disable</button>
-                            <div v-if="mfa_qr_code_url !== null">
-                                <img v-if="show_qr_code" :src="mfa_qr_code_url" width="250" height="250">
-                                <button v-else class="tiny" @click="show_qr_code = true">Show QR Code</button>
-                                <form>
-                                    <label for="code">Code</label>
-                                    <input id="code" type="text" v-model="mfa_code" required>
-                                    <br>
-                                    <button class="tiny success" @click="confirmMfaCode" :disabled="is_loading">Confirm Code</button>
-                                    <button class="tiny info" @click="cancel">Cancel</button>
-                                </form>
-                            </div>
+                    <div class="large-12">
+                        <label>Google Authenticator</label>
+                        <button v-if="!user.security.is_mfa_enabled && mfa_qr_code_url === null" class="tiny success" @click="getMfaQrCode" :disabled="is_loading">Enable</button>
+                        <button v-if="user.security.is_mfa_enabled" class="tiny alert" @click="disableMfa" :disabled="is_loading">Disable</button>
+                        <div v-if="mfa_qr_code_url !== null">
+                            <img v-if="show_qr_code" :src="mfa_qr_code_url" width="250" height="250">
+                            <button v-else class="tiny" @click="show_qr_code = true">Show QR Code</button>
+                            <form>
+                                <label for="code">Code</label>
+                                <?php
+                                echo (new \Html\Form\InputField([
+                                    "id" => "code",
+                                    "required" => true,
+                                ]))->setAttribute("v-model", "mfa_code")->__toString();
+                                ?>
+                                <br>
+                                <br>
+                                <button class="tiny success" @click="confirmMfaCode" :disabled="is_loading">Confirm Code</button>
+                                <button class="tiny info" @click="cancel">Cancel</button>
+                            </form>
                         </div>
                     </div>
                 </div>
             </div>
-            <div id="groups">
-                <div class="row-fluid body panel clearfix">
-                    <h3>Groups</h3>
-                    <ul>
-                        <li v-for="group in user.groups">
-                            <a :href="group.url" target="_blank">{{ group.title }}</a
-                        </li>
-                    </ul>
-                </div>
+        </html-tab>
+        <html-tab title="Groups">
+            <div class="row-fluid body panel clearfix">
+                <h3>Groups</h3>
+                <ul>
+                    <li v-for="group in user.groups">
+                        <a :href="group.url" target="_blank">{{ group.title }}</a>
+                    </li>
+                </ul>
             </div>
-        </div>
-    </div>
+        </html-tab>
+    </html-tabs>
 </div>
 <script>
     var app = new Vue({

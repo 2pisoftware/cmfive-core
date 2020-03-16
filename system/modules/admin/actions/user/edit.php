@@ -32,10 +32,21 @@ function edit_GET(Web $w)
         }
     }
 
+    $titles_array = [];
+    $titles = $w->Auth->getTitles();
+
+    foreach ($titles as $title) {
+        $titles_array[] = [
+            "id" => $title->id,
+            "name" => $title->title,
+        ];
+    }
+
     $user_details = [
         "id" => $user->id,
         "account" => [
             "title" => $contact->getTitle(),
+            "titles" => $titles_array,
             "firstname" => $contact->firstname,
             "lastname" => $contact->lastname,
             "othername" => $contact->othername,
@@ -59,4 +70,6 @@ function edit_GET(Web $w)
     ];
 
     $w->ctx("user", $user_details);
+
+    VueComponentRegister::registerComponent("autocomplete", new VueComponent("autocomplete", "/system/templates/vue-components/form/elements/autocomplete.vue.js", "/system/templates/vue-components/form/elements/autocomplete.vue.css"));
 }
