@@ -89,7 +89,9 @@
         </div>
         <div class="row-fluid clearfix">
             <div class="small-12 medium-6 large-4 columns">
-                <label>Select new Assignee (was <?php echo $w->Auth->getUser($task->assignee_id)->getFullName(); ?>)
+                <label>Select new Assignee <?php
+                                            $user = $w->Auth->getUser($task->assignee_id);
+                                            echo "(was " . (!empty($user) ? $user->getFullName() : "unassigned") . ")"; ?>
                     <div id="new_assignee_placeholder">
                         <?php echo (new \Html\Form\Select())->setName("new_assignee")->setId("new_assignee"); ?>
                     </div>

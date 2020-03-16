@@ -668,8 +668,8 @@ class Task extends DbObject
                 }
             }
         } else {
-            // MYSQL 5.7+ integers cannot have empty strings as null.
-            $this->assignee_id = null;
+            // assignee_id cannot be null.
+            $this->assignee_id = 0;
         }
 
         try {
