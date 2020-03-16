@@ -8,45 +8,46 @@ defined('SEED_MIGRATION_DIRECTORY') || define('SEED_MIGRATION_DIRECTORY', MIGRAT
 
 class MigrationService extends DbService
 {
-    public static $_installed = [];
-    public $_NEXT_BATCH;
-
-    public function getAvailableMigrations($module_name)
-    {
-        $_this = $this;
-        set_error_handler(function ($errno, $errstr, $errfile, $errline, $errcontext) use ($_this) {
-            if (!(error_reporting() & $errno)) {
-                return;
-            }
-
-            if ($errno === E_USER_ERROR) {
-                // Check if error contains a db error message
-                if (strpos($errstr, "does not exist in the database") !== false) {
-                    $this->w->Log->error("Error table not found. Running initial migration. [" . $errstr . "]");
-                    // Run the admin migrations to install the migration table (the normal cause of this error)
-                    $_this->installInitialMigration();
-
-                    // Reload the page unless migrations are from CLI
-                    if (array_key_exists('REQUEST_METHOD', $_SERVER)) {
-                        $_this->w->redirect($_SERVER["REQUEST_URI"]);
-                    }
-                }
-            }
-        });
-
-        $availableMigrations = [];
-
-        // Read all modules directories for any migrations that need to run
-        if ($module_name === 'all') {
-            foreach ($this->w->modules() as $module) {
-                $availableMigrations += $this->getMigrationsForModule($module);
-            }
-        } else {
-            $availableMigrations = $this->getMigrationsForModule($module_name);
-        }
-
-        return $availableMigrations;
-    }
+	public static $_installed = []; 
+	public $_NEXT_BATCH;
+	
+	public function getAvailableMigrations($module_name) {
+		$_this = $this;
+		set_error_handler(function($errno, $errstr, $errfile, $errline, $errcontext) use ($_this) {
+			if (!(error_reporting() & $errno)) {
+				return;
+			}
+			
+			if ($errno === E_USER_ERROR) {
+				// Check if error contains a db error message
+				if (strpos($errstr, "does not exist in the database") !== FALSE) {
+					$this->w->Log->error("Error table not found. Running initial migration. [" . $errstr . "]");
+					// Run the admin migrations to install the migration table (the normal cause of this error)
+					$_this->installInitialMigration();
+					
+					// Reload the page unless migrations are from CLI
+					if ( array_key_exists('REQUEST_METHOD', $_SERVER) ) {
+						$_this->w->redirect($_SERVER["REQUEST_URI"]);
+						}
+				}
+			}
+		});
+		
+		$availableMigrations = [];
+		
+		// Read all modules directories for any migrations that need to run
+		if ($module_name === 'all') {
+			foreach($this->w->modules() as $module) {
+				$availableMigrations += $this->getMigrationsForModule($module);
+			}
+		} else {
+			$availableMigrations = $this->getMigrationsForModule($module_name);
+		}
+		
+		// restore_error_handler();
+		
+		return $availableMigrations;
+	}
 
     public function getMigrationsForModule($module)
     {
@@ -65,12 +66,18 @@ class MigrationService extends DbService
             if (is_dir(ROOT_PATH . DS . $migration_path)) {
                 foreach (scandir(ROOT_PATH . DS . $migration_path) as $file) {
                     if (!is_dir($file) && $file{
-                    0} !== '.') {
+                        0} !== '.') {
                         $classname = explode('.', str_replace('-', '.', $file));
                         if (!empty($classname[1])) {
                             if ($this->isInstalled($classname[1])) {
                                 $mig = $this->getMigrationByClassname($classname[1]);
-                                $availableMigrations[$module][$migration_path . DS . $file] = ['class_name' => $classname[1], 'timestamp' => $classname[0], 'description' => $mig->description, 'pretext' => $mig->pretext, 'posttext'  => $mig->posttext];
+                                $availableMigrations[$module][$migration_path . DS . $file] = [
+                                    'class_name' => $classname[1],
+                                    'timestamp' => $classname[0],
+                                    'description' => $mig->description,
+                                    'pretext' => $mig->pretext,
+                                    'posttext'  => $mig->posttext
+                                ];
                             } else {
                                 //Create instance of class
                                 $migpath = $migration_path . DS . $file;
@@ -81,12 +88,17 @@ class MigrationService extends DbService
                                     $migration_class = preg_replace('/.php$/', '', $migration_class);
                                     if (class_exists($migration_class)) {
                                         $migration = (new $migration_class(1))->setWeb($this->w);
-                                        $availableMigrations[$module][$migration_path . DS . $file] = ['class_name' => $classname[1], 'timestamp' => $classname[0], 'description' => $migration->description(), 'pretext' => $migration->preText(), 'posttext' => $migration->postText()];
+                                        $availableMigrations[$module][$migration_path . DS . $file] = [
+                                            'class_name' => $classname[1],
+                                            'timestamp' => $classname[0],
+                                            'description' => $migration->description(),
+                                            'pretext' => $migration->preText(),
+                                            'posttext' => $migration->postText()];
                                     }
                                 }
                             }
                         }
-                    } elseif ($file !== "." && $file !== "..") {
+                    } else {
                         $this->w->Log->error("Migration '" . $file . "' does not conform to naming convention");
                     }
                 }
@@ -120,7 +132,7 @@ class MigrationService extends DbService
         if (!empty($migrations)) {
             foreach ($migrations as $migration) {
                 $to_add = true;
-
+                //var_dump($migration);
                 if (array_key_exists($migration['module'], $migrationsInstalled)) {
                     foreach ($migrationsInstalled[$migration['module']] as $processed_migration) {
                         if ($migration['classname'] == $processed_migration['classname']) {
@@ -213,7 +225,6 @@ MIGRATION;
 
     public function runMigrations($module, $filename = null, $ignoremessages = true, $continuingrunall = false)
     {
-
         // Check if migrations are being run from the batch menu
         if ($module == "all") {
             $prevpage = "batch";
@@ -255,6 +266,7 @@ MIGRATION;
 
         // If filename is specified then strip out migrations that shouldnt be run
         if (strtolower($module) !== "all" && !empty($filename)) {
+            $offset_index = 1;
             $filename_parts = explode('.', $filename);
             $file_timestamp = (float)  $filename_parts[0];
 
@@ -293,6 +305,8 @@ MIGRATION;
                 });
 
                 foreach ($migrations as $migration_path => $migration) {
+                    // var_dump($migration_path);
+                    // die;
                     if (file_exists(ROOT_PATH . DS . $migration_path)) {
                         include_once ROOT_PATH . DS . $migration_path;
 
@@ -316,7 +330,7 @@ MIGRATION;
                                         $pathData = pathinfo($migration_path);
                                         $messageurl = "/admin-migration/migrationmessage?module=" . $module . "&filename=" . $pathData['filename'] . "&migmodule=" . $_module . "&migfilename=" . $_filename . "&path=" . $migration_path . "&prevpage=" . $prevpage;
 
-                                        $batchedMigrations = [];
+                                        $batchedMigrations = array();
                                         foreach ($availableMigrations as $avmigration) {
                                             // If the avmigration array has elements in it that means it's part of the current batch
                                             if (count($avmigration) > 0) {
@@ -356,7 +370,6 @@ MIGRATION;
                                 }
 
                                 $migration_class->up();
-
 
                                 // Insert migration record into DB
                                 $migration_object = new Migration($this->w);
@@ -605,7 +618,7 @@ MIGRATION;
             if (is_dir(ROOT_PATH . DS . $migration_path)) {
                 foreach (scandir(ROOT_PATH . DS . $migration_path) as $file) {
                     if (!is_dir($file) && $file{
-                    0} !== '.') {
+                        0} !== '.') {
                         $classname = explode('.', str_replace('-', '.', $file));
                         if (!empty($classname[0])) {
                             $availableMigrations[$module][$migration_path . DS . $file] = $classname[0];

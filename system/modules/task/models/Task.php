@@ -667,6 +667,9 @@ class Task extends DbObject
                     $this->first_assignee_id = $this->assignee_id;
                 }
             }
+        } else {
+            // assignee_id cannot be null.
+            $this->assignee_id = 0;
         }
 
         try {

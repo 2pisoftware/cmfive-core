@@ -15,27 +15,34 @@ define('TASK_NOTIFICATION_TASK_DOCUMENTS', 'task_documents');
  */
 function task_timelog_type_options_for_Task(Web $w, $object)
 {
-    if (!empty($object)) {
-        $task_type = $w->Task->getTaskTypeObject($object->task_type);
-        $time_types = $task_type->getTimeTypes();
+    if (empty($object)) {
+        return;
+    }
 
-        $required = null;
-        if (!empty(Timelog::$_validation["time_type"])) {
-            if (in_array("required", Timelog::$_validation["time_type"])) {
-                $required = "required";
-            }
-        }
+    $task_type = $w->Task->getTaskTypeObject($object->task_type);
+    if (empty($task_type)) {
+        return;
+    }
 
-        if (!empty($time_types)) {
-            return [(new \Html\Form\Select([
-                "name" => "time_type",
-                "id" => "time_type",
-                "options" => $time_types,
-                "label" => "Task time",
-                "required" => $required,
-            ]))->setSelectedOption($object->time_type)];
+    $time_types = $task_type->getTimeTypes();
+    if (empty($time_types)) {
+        return;
+    }
+
+    $required = null;
+    if (!empty(Timelog::$_validation["time_type"])) {
+        if (in_array("required", Timelog::$_validation["time_type"])) {
+            $required = "required";
         }
     }
+
+    return [(new \Html\Form\Select([
+        "name" => "time_type",
+        "id" => "time_type",
+        "options" => $time_types,
+        "label" => "Task time",
+        "required" => $required,
+    ]))->setSelectedOption($object->time_type)];
 }
 
 /**
