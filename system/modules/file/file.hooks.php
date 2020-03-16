@@ -18,7 +18,7 @@ function file_admin_extra_navigation_items(Web $w)
  */
 function file_core_web_cleanup(Web $w)
 {
-    $directory_path = ROOT_PATH . "/" . Attachment::CACHE_PATH . "/" . Attachment::TEMP_PATH;
+    $directory_path = ROOT_PATH . "/" . Attachment::CACHE_PATH . "/" . Attachment::TEMP_PATH . "/" . FileService::getCacheRuntimePath();
 
     if (!file_exists($directory_path)) {
         return;
@@ -36,4 +36,6 @@ function file_core_web_cleanup(Web $w)
             $w->Log->setLogger("FILE")->error("Failed to remove directory at {$directory_path}: " . $t->getMessage());
         }
     }
+
+    rmdir($directory_path);
 }
