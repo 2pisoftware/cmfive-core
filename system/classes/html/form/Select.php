@@ -10,7 +10,6 @@
  */
 class Select extends \Html\Form\FormElement
 {
-
     use \Html\GlobalAttributes;
 
     public $autofocus;
@@ -70,12 +69,16 @@ class Select extends \Html\Form\FormElement
      * If the given option doesn't match one of the above use cases then it
      * will be ignored.
      *
-     * @param Array $options
+     * @param array $options
+     * @param bool $omit_deleted
+     *
      * @return \Html\Form\Select this
      */
-    public function setOptions($options = [])
+    public function setOptions($options = [], $omit_default = false)
     {
-        array_push($this->options, new Option(['label' => '-- Select --', 'value' => '']));
+        if (!$omit_default) {
+            array_push($this->options, new Option(['label' => '-- Select --', 'value' => '']));
+        }
 
         if (!is_null($options) && is_array($options) && count($options) > 0) {
             foreach ($options as $option) {
