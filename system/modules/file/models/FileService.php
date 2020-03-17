@@ -13,6 +13,7 @@ use Aws\S3\S3Client as S3Client;
  */
 class FileService extends DbService
 {
+    private static $cache_runtime_path;
 
     public static $_thumb_height = 200;
     public static $_thumb_width = 200;
@@ -564,22 +565,40 @@ class FileService extends DbService
     {
         $filename = (!empty($name) ? $name : (str_replace(".", "", microtime()) . getFileExtension($content_type)));
 
-        $filesystemPath = FILE_ROOT . "attachments/" . $object->getDbTableName() . '/' . date('Y/m/d') . '/' . $object->id . '/';
-
-        $filesystem = $this->getFilesystem($filesystemPath);
-        $file = new File($filename, $filesystem);
-        $file->setContent($content);
-
         $att = new Attachment($this->w);
         $att->filename = $filename;
-        $att->fullpath = str_replace(FILE_ROOT, "", $this->getFilePath($filesystemPath) . (substr($this->getFilePath($filesystemPath), -1) !== '/' ? '/' : '') . $att->filename);
+        $att->fullpath = null;
         $att->parent_table = $object->getDbTableName();
         $att->parent_id = $object->id;
-        $att->title = $filename;
+        $att->title = (!empty($name) ? $name : $filename);
         $att->description = $description;
         $att->type_code = $type_code;
-        $att->mimetype = $content_type;
+        $att->mimetype = "text/plain";
         $att->insert();
+
+        $filesystemPath = "attachments/" . $object->getDbTableName() . '/' . date('Y/m/d') . '/' . $object->id . '/';
+        $filesystem = $this->getFilesystem($this->getFilePath($filesystemPath));
+        if (empty($filesystem)) {
+            $this->w->Log->setLogger("FILE_SERVICE")->error("Cannot save file, no filesystem returned");
+            return null;
+        }
+
+        $file = new File($filename, $filesystem);
+
+        $att->adapter = $this->getActiveAdapter();
+        $att->fullpath = str_replace(FILE_ROOT, "", $filesystemPath . $filename);
+
+        //Check for posted content
+        $file->setContent($content);
+        switch ($att->adapter) {
+            case "local":
+                $att->mimetype = $this->w->getMimetype(FILE_ROOT . $att->fullpath);
+                break;
+            default:
+                $att->mimetype = $this->w->getMimetypeFromString($content);
+        }
+
+        $att->update();
 
         return $att->id;
     }
@@ -625,5 +644,19 @@ class FileService extends DbService
             }
         }
         return $template;
+    }
+
+    /**
+     * Returns the cache runtime path.
+     *
+     * @return string
+     */
+    public static function getCacheRuntimePath() : string
+    {
+        if (self::$cache_runtime_path === null) {
+            self::$cache_runtime_path = uniqid();
+        }
+
+        return self::$cache_runtime_path;
     }
 }
