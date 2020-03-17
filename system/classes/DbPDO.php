@@ -15,7 +15,7 @@ class DbPDO extends PDO
     public $total_results = 0;
 
     private $table_names = [];
-    private static $_QUERY_CLASSNAME = ["\Envms\FluentPDO\Queries\Insert", "\Envms\FluentPDO\Queries\Select", "\Envms\FluentPDO\Queries\Update"];
+    private static $_QUERY_CLASSNAME = ["\Envms\FluentPDO\Queries\Insert", "\Envms\FluentPDO\Queries\Select", "\Envms\FluentPDO\Queries\Update", "Envms\FluentPDO\Queries\Insert", "Envms\FluentPDO\Queries\Select", "Envms\FluentPDO\Queries\Update"];
     private $query = null;
     private $fpdo = null;
     private static $trx_token = 0;
