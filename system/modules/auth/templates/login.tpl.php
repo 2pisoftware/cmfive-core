@@ -47,7 +47,7 @@
             ?>
             <label for="password">Password</label>
             <?php
-            echo (new \Html\Form\InputField([
+            echo (new \Html\Form\InputField\Password([
                 "id" => "password",
                 "placeholder" => "Your password",
                 "required" => true,
