@@ -7,7 +7,7 @@ class AuthService extends DbService
     public $_rest_user = null;
     private static $_cache = [];
 
-    public function login($login, $password, $client_timezone, $skip_session = false)
+    public function login($login, $password, $client_timezone, $skip_session = false, $mfa_code = "")
     {
         $credentials['login'] = $login;
         $credentials['password'] = $password;
@@ -46,6 +46,11 @@ class AuthService extends DbService
 
             if ($user->is_external == 1) {
                 $this->w->Log->info('cmfive user is external: ' . $login);
+                return null;
+            }
+
+            if ($user->is_mfa_enabled && !$user->checkMfaCode($mfa_code)) {
+                $this->w->Log->setLogger("AUTH")->warning("User attempted to login with invalid MFA code");
                 return null;
             }
         }
@@ -98,7 +103,8 @@ class AuthService extends DbService
         $this->w->session('user_id', $user->id);
     }
 
-    public function _web_init() {
+    public function _web_init()
+    {
         $this->_loadRoles();
     }
 
@@ -107,6 +113,12 @@ class AuthService extends DbService
         return $this->w->session('user_id');
     }
 
+    /**
+     * Returns a User from the passed login parameter.
+     *
+     * @param string $login
+     * @return User
+     */
     public function getUserForLogin($login)
     {
         $user = $this->db->get("user")->where("login", $login)->and("is_deleted", 0)->fetch_row();
@@ -190,8 +202,8 @@ class AuthService extends DbService
                 return false;
             }
         }
-        
-            
+
+
         $user = new User($this->w);
         $user->login = $contact->email;
         $user->is_external = 1;
@@ -204,6 +216,16 @@ class AuthService extends DbService
     public function getContacts()
     {
         return $this->getObjects('Contact', ['is_deleted' => 0]);
+    }
+
+    /**
+     * Returns an array of titles from the lookup table.
+     *
+     * @return array[Lookup]
+     */
+    public function getTitles() : array
+    {
+        return $this->w->Lookup->getLookupByType("title");
     }
 
     public function getContact($contact_id)
