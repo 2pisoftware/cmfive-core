@@ -5,7 +5,7 @@ class LookupService extends DbService
 
     public function getLookups()
     {
-        return $this->getObjects("Lookup", array("is_deleted" => 0));
+        return $this->getObjects("Lookup", ["is_deleted" => 0]);
     }
 
     public function getLookup($id)
@@ -15,14 +15,14 @@ class LookupService extends DbService
 
     public function getLookupByType($type)
     {
-        return $this->getObjects("Lookup", array("type" => $type, "is_deleted" => 0));
+        return $this->getObjects("Lookup", ["type" => $type, "is_deleted" => 0]);
     }
 
     public function getLookupByTypeAndCode($type, $code)
     {
-        return $this->getObjects("Lookup", array("type" => $type, "code" => $code, "is_deleted" => 0));
+        return $this->getObjects("Lookup", ["type" => $type, "code" => $code, "is_deleted" => 0]);
     }
-    
+
     public function lookupForSelect($w, $type)
     {
         $select = [];
