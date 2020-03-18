@@ -125,7 +125,7 @@ $w->setLayout("layout")
                         </label>
                         <br>
                         <br>
-                        <input class="button tiny" type="submit" value="Update Password" style="font-size: 0.8rem;" @click="updatePassword" :disabled="is_loading">
+                        <input class="button tiny" type="submit" value="Update Password" style="font-size: 0.8rem;" @click.prevent="updatePassword" :disabled="is_loading">
                     </form>
                 </div>
                 <div class="small-12 medium-6 columns end">
@@ -150,7 +150,7 @@ $w->setLayout("layout")
                                 </label>
                                 <br>
                                 <br>
-                                <button class="tiny success" @click="confirmMfaCode" :disabled="is_loading">Confirm Code</button>
+                                <button class="tiny success" @click.prevent="confirmMfaCode" :disabled="is_loading">Confirm Code</button>
                                 <button class="tiny info" @click.prevent="cancel">Cancel</button>
                             </form>
                         </div>

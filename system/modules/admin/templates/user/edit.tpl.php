@@ -128,7 +128,7 @@
                             ?>
                         </label>
                         <br>
-                        <input class="button tiny" type="submit" value="Update" style="font-size: 0.8rem;" @click="updateSecurityDetails" :disabled="is_loading">
+                        <input class="button tiny" type="submit" value="Update" style="font-size: 0.8rem;" @click.prevent="updateSecurityDetails" :disabled="is_loading">
                     </form>
                 </div>
                 <div class="small-12 medium-6 large-4 columns">
@@ -152,7 +152,7 @@
                         </label>
                         <br>
                         <br>
-                        <input class="button tiny" type="submit" value="Update Password" style="font-size: 0.8rem;" @click="updatePassword" :disabled="is_loading">
+                        <input class="button tiny" type="submit" value="Update Password" style="font-size: 0.8rem;" @click.prevent="updatePassword" :disabled="is_loading">
                     </form>
                 </div>
                 <div class="small-12 medium-6 large-4 columns end">
@@ -189,7 +189,7 @@
             <div class="row-fluid body panel clearfix">
                 <h3>Groups</h3>
                 <ul>
-                    <li vin user.groups">
+                    <li v-for="group in user.groups">
                         <a :href="group.url" target="_blank">{{ group.title }}</a>
                     </li>
                 </ul>
