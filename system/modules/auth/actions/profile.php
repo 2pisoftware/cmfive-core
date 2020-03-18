@@ -2,6 +2,8 @@
 
 function profile_GET(Web &$w)
 {
+    VueComponentRegister::registerComponent("autocomplete", new VueComponent("autocomplete", "/system/templates/vue-components/form/elements/autocomplete.vue.js", "/system/templates/vue-components/form/elements/autocomplete.vue.css"));
+
     $user = $w->Auth->user();
     if (empty($user)) {
         $w->error("Unable to find User");
@@ -13,9 +15,8 @@ function profile_GET(Web &$w)
     }
 
     $titles_array = [];
-    $titles = $w->Auth->getTitles();
 
-    foreach ($titles as $title) {
+    foreach ($w->Auth->getTitles() as $title) {
         $titles_array[] = [
             "id" => $title->id,
             "name" => $title->title,
@@ -46,6 +47,4 @@ function profile_GET(Web &$w)
     ];
 
     $w->ctx("user", $user_details);
-
-    VueComponentRegister::registerComponent("autocomplete", new VueComponent("autocomplete", "/system/templates/vue-components/form/elements/autocomplete.vue.js", "/system/templates/vue-components/form/elements/autocomplete.vue.css"));
 }

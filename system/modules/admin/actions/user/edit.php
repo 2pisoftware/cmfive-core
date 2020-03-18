@@ -2,6 +2,8 @@
 
 function edit_GET(Web $w)
 {
+    VueComponentRegister::registerComponent("autocomplete", new VueComponent("autocomplete", "/system/templates/vue-components/form/elements/autocomplete.vue.js", "/system/templates/vue-components/form/elements/autocomplete.vue.css"));
+
     $redirect_url = "/admin/users";
 
     list($user_id) = $w->pathMatch("id");
@@ -33,9 +35,8 @@ function edit_GET(Web $w)
     }
 
     $titles_array = [];
-    $titles = $w->Auth->getTitles();
 
-    foreach ($titles as $title) {
+    foreach ($w->Auth->getTitles() as $title) {
         $titles_array[] = [
             "id" => $title->id,
             "name" => $title->title,
@@ -70,6 +71,4 @@ function edit_GET(Web $w)
     ];
 
     $w->ctx("user", $user_details);
-
-    VueComponentRegister::registerComponent("autocomplete", new VueComponent("autocomplete", "/system/templates/vue-components/form/elements/autocomplete.vue.js", "/system/templates/vue-components/form/elements/autocomplete.vue.css"));
 }

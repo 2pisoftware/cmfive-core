@@ -202,8 +202,8 @@ class AuthService extends DbService
                 return false;
             }
         }
-        
-            
+
+
         $user = new User($this->w);
         $user->login = $contact->email;
         $user->is_external = 1;
@@ -225,7 +225,7 @@ class AuthService extends DbService
      */
     public function getTitles() : array
     {
-        return $this->getObjects("lookup", ["type" => "title"]);
+        return $this->w->Lookup->getLookupByType("title");
     }
 
     public function getContact($contact_id)

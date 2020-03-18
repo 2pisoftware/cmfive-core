@@ -6,71 +6,82 @@
                 <div class="row-fluid body panel clearfix">
                     <div class="small-12 medium-6 large-6 columns">
                         <h3>Personal</h3>
-                        <label for="title">Title</label>
-                        <autocomplete :list="user.account.titles" v-model="user.account.title"></autocomplete>
-                        <label for="firstname">First Name</label>
-                        <?php
-                        echo (new \Html\Form\InputField([
-                            "id" => "firstname",
-                        ]))->setAttribute("v-model", "user.account.firstname")->__toString();
-                        ?>
-                        <label for="lastname">Last Name</label>
-                        <?php
-                        echo (new \Html\Form\InputField([
-                            "id" => "lastname",
-                        ]))->setAttribute("v-model", "user.account.lastname")->__toString();
-                        ?>
-                        <label for="othername">Other Name</label>
-                        <?php
-                        echo (new \Html\Form\InputField([
-                            "id" => "othername",
-                        ]))->setAttribute("v-model", "user.account.othername")->__toString();
-                        ?>
-                        <label for="language">Language</label>
-                        <?php
-                        echo (new \Html\Form\Select([
-                            "id" => "language",
-                        ]))->setOptions([])->__toString();
-                        ?>
+                        <label>Title
+                            <autocomplete :list="user.account.titles" v-model="user.account.title"></autocomplete>
+                        </label>
+                        <label>First Name
+                            <?php
+                            echo (new \Html\Form\InputField([
+                                "id|name" => "firstname",
+                            ]))->setAttribute("v-model", "user.account.firstname");
+                            ?>
+                        </label>
+                        <label>Last Name
+                            <?php
+                            echo (new \Html\Form\InputField([
+                                "id|name" => "lastname",
+                            ]))->setAttribute("v-model", "user.account.lastname");
+                            ?>
+                        </label>
+                        <label>Other Name
+                            <?php
+                            echo (new \Html\Form\InputField([
+                                "id|name" => "othername",
+                            ]))->setAttribute("v-model", "user.account.othername");
+                            ?>
+                        </label>
+                        <label>Language
+                            <?php
+                            echo (new \Html\Form\Select([
+                                "id|name" => "language",
+                            ]))->setOptions([]);
+                            ?>
+                        </label>
                     </div>
                     <div class="small-12 medium-6 large-6 columns">
                         <h3>Contact</h3>
-                        <label for="homephone">Home Phone</label>
-                        <?php
-                        echo (new \Html\Form\InputField\Tel([
-                            "id" => "homephone",
-                        ]))->setAttribute("v-model", "user.account.homephone")->__toString();
-                        ?>
-                        <label for="workphone">Work Phone</label>
-                        <?php
-                        echo (new \Html\Form\InputField\Tel([
-                            "id" => "workphone",
-                        ]))->setAttribute("v-model", "user.account.workphone")->__toString();
-                        ?>
-                        <label for="mobile">Mobile</label>
-                        <?php
-                        echo (new \Html\Form\InputField\Tel([
-                            "id" => "mobile",
-                        ]))->setAttribute("v-model", "user.account.mobile")->__toString();
-                        ?>
-                        <label for="priv_mobile">Private Mobile</label>
-                        <?php
-                        echo (new \Html\Form\InputField\Tel([
-                            "id" => "priv_mobile",
-                        ]))->setAttribute("v-model", "user.account.priv_mobile")->__toString();
-                        ?>
-                        <label for="fax">Fax</label>
-                        <?php
-                        echo (new \Html\Form\InputField([
-                            "id" => "fax",
-                        ]))->setAttribute("v-model", "user.account.fax")->__toString();
-                        ?>
-                        <label for="email">Email Address</label>
-                        <?php
-                        echo (new \Html\Form\InputField\Email([
-                            "id" => "email",
-                        ]))->setAttribute("v-model", "user.account.email")->__toString();
-                        ?>
+                        <label>Home Phone
+                            <?php
+                            echo (new \Html\Form\InputField\Tel([
+                                "id|name" => "homephone",
+                            ]))->setAttribute("v-model", "user.account.homephone");
+                            ?>
+                        </label>
+                        <label>Work Phone
+                            <?php
+                            echo (new \Html\Form\InputField\Tel([
+                                "id|name" => "workphone",
+                            ]))->setAttribute("v-model", "user.account.workphone");
+                            ?>
+                        </label>
+                        <label>Mobile
+                            <?php
+                            echo (new \Html\Form\InputField\Tel([
+                                "id|name" => "mobile",
+                            ]))->setAttribute("v-model", "user.account.mobile");
+                            ?>
+                        </label>
+                        <label>Private Mobile
+                            <?php
+                            echo (new \Html\Form\InputField\Tel([
+                                "id|name" => "priv_mobile",
+                            ]))->setAttribute("v-model", "user.account.priv_mobile");
+                            ?>
+                        </label>
+                        <label>Fax
+                            <?php
+                            echo (new \Html\Form\InputField([
+                                "id|name" => "fax",
+                            ]))->setAttribute("v-model", "user.account.fax");
+                            ?>
+                        </label>
+                        <label>Email Address
+                            <?php
+                            echo (new \Html\Form\InputField\Email([
+                                "id|name" => "email",
+                            ]))->setAttribute("v-model", "user.account.email");
+                            ?>
+                        </label>
                     </div>
                     <div class="small-12 columns">
                         <br>
@@ -84,34 +95,38 @@
                 <div class="small-12 medium-6 large-4 columns">
                     <h3>General</h3>
                     <form>
-                        <label for="login">Login</label>
-                        <?php
-                        echo (new \Html\Form\InputField([
-                            "id" => "login",
-                            "required" => true,
-                        ]))->setAttribute("v-model", "user.security.login")->__toString();
-                        ?>
-                        <label for="admin">Admin</label>
-                        <?php
-                        echo (new \Html\Form\InputField\Checkbox([
-                            "id" => "admin",
-                            "class" => "",
-                        ]))->setAttribute("v-model", "user.security.is_admin")->__toString();
-                        ?>
-                        <label for="active">Active</label>
-                        <?php
-                        echo (new \Html\Form\InputField\Checkbox([
-                            "id" => "active",
-                            "class" => "",
-                        ]))->setAttribute("v-model", "user.security.is_active")->__toString();
-                        ?>
-                        <label for="external">External</label>
-                        <?php
-                        echo (new \Html\Form\InputField\Checkbox([
-                            "id" => "external",
-                            "class" => "",
-                        ]))->setAttribute("v-model", "user.security.is_external")->__toString();
-                        ?>
+                        <label>Login
+                            <?php
+                            echo (new \Html\Form\InputField([
+                                "id|name" => "login",
+                                "required" => true,
+                            ]))->setAttribute("v-model", "user.security.login");
+                            ?>
+                        </label>
+                        <label>Admin
+                            <?php
+                            echo (new \Html\Form\InputField\Checkbox([
+                                "id|name" => "admin",
+                                "class" => "",
+                            ]))->setAttribute("v-model", "user.security.is_admin");
+                            ?>
+                        </label>
+                        <label>Active
+                            <?php
+                            echo (new \Html\Form\InputField\Checkbox([
+                                "id|name" => "active",
+                                "class" => "",
+                            ]))->setAttribute("v-model", "user.security.is_active");
+                            ?>
+                        </label>
+                        <label>External
+                            <?php
+                            echo (new \Html\Form\InputField\Checkbox([
+                                "id|name" => "external",
+                                "class" => "",
+                            ]))->setAttribute("v-model", "user.security.is_external");
+                            ?>
+                        </label>
                         <br>
                         <input class="button tiny" type="submit" value="Update" style="font-size: 0.8rem;" @click="updateSecurityDetails" :disabled="is_loading">
                     </form>
@@ -119,20 +134,22 @@
                 <div class="small-12 medium-6 large-4 columns">
                     <h3>Update Password</h3>
                     <form>
-                        <label for="password">New Password</label>
-                        <?php
-                        echo (new \Html\Form\InputField\Password([
-                            "id" => "password",
-                            "required" => true,
-                        ]))->setAttribute("v-model", "user.security.new_password")->__toString();
-                        ?>
-                        <label for="repeatpassword">Repeat New Password</label>
-                        <?php
-                        echo (new \Html\Form\InputField\Password([
-                            "id" => "repeatpassword",
-                            "required" => true,
-                        ]))->setAttribute("v-model", "user.security.repeat_new_password")->__toString();
-                        ?>
+                        <label>New Password
+                            <?php
+                            echo (new \Html\Form\InputField\Password([
+                                "id|name" => "password",
+                                "required" => true,
+                            ]))->setAttribute("v-model", "user.security.new_password");
+                            ?>
+                        </label>
+                        <label>Repeat New Password
+                            <?php
+                            echo (new \Html\Form\InputField\Password([
+                                "id|name" => "repeatpassword",
+                                "required" => true,
+                            ]))->setAttribute("v-model", "user.security.repeat_new_password");
+                            ?>
+                        </label>
                         <br>
                         <br>
                         <input class="button tiny" type="submit" value="Update Password" style="font-size: 0.8rem;" @click="updatePassword" :disabled="is_loading">
@@ -150,17 +167,18 @@
                             <img v-if="show_qr_code" :src="mfa_qr_code_url" width="250" height="250">
                             <button v-else class="tiny" @click="show_qr_code = true">Show QR Code</button>
                             <form>
-                                <label for="code">Code</label>
-                                <?php
-                                echo (new \Html\Form\InputField([
-                                    "id" => "code",
-                                    "required" => true,
-                                ]))->setAttribute("v-model", "mfa_code")->__toString();
-                                ?>
+                                <label>Code
+                                    <?php
+                                    echo (new \Html\Form\InputField([
+                                        "id|name" => "code",
+                                        "required" => true,
+                                    ]))->setAttribute("v-model", "mfa_code");
+                                    ?>
+                                </label>
                                 <br>
                                 <br>
-                                <button class="tiny success" @click="confirmMfaCode" :disabled="is_loading">Confirm Code</button>
-                                <button class="tiny info" @click="cancel">Cancel</button>
+                                <button class="tiny success" @click.prevent="confirmMfaCode" :disabled="is_loading">Confirm Code</button>
+                                <button class="tiny info" @click.prevent="cancel">Cancel</button>
                             </form>
                         </div>
                     </div>
@@ -171,7 +189,7 @@
             <div class="row-fluid body panel clearfix">
                 <h3>Groups</h3>
                 <ul>
-                    <li v-for="group in user.groups">
+                    <li vin user.groups">
                         <a :href="group.url" target="_blank">{{ group.title }}</a>
                     </li>
                 </ul>
@@ -309,9 +327,7 @@
                     _this.is_loading = false;
                 });
             },
-            confirmMfaCode: function(e) {
-                e.preventDefault();
-
+            confirmMfaCode: function() {
                 var _this = this;
                 _this.mfa_code = _this.mfa_code.trim();
 
@@ -370,8 +386,7 @@
                     _this.is_loading = false;
                 });
             },
-            cancel: function(e) {
-                e.preventDefault();
+            cancel: function() {
                 this.mfa_qr_code_url = null;
                 this.show_qr_code = false;
             }
