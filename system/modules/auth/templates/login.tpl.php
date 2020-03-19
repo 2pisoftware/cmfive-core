@@ -1,4 +1,4 @@
-<div id="app">
+<div v-cloak id="app">
     <div v-if="is_mfa_enabled">
         <form @submit.prevent="executeLogin">
             <?php
