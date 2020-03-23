@@ -196,7 +196,11 @@ class FormService extends DbService
             $application_forms = $this->getObjects('FormApplicationMapping', ['application_id' => $object->id, 'is_deleted' => 0]);
             if (!empty($application_forms)) {
                 foreach ($application_forms as $application_form) {
-                    $forms[] = $application_form->getForm();
+                    $form = $application_form->getForm();
+
+                    if (!empty($form)) {
+                        $forms[] = $form;
+                    }
                 }
             }
         }

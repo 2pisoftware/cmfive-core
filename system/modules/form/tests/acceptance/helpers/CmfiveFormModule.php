@@ -26,7 +26,6 @@ class CmfiveFormModule extends \Codeception\Module
         $I->click('Save');
     }
 
-
     public function deleteForm($I, $name)
     {
         $I->clickCmfiveNavbar($I, 'Form', 'Forms');

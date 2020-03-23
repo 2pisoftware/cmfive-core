@@ -1,15 +1,12 @@
 <?php
 
-
 class FormModuleCest
 {
-    // private $reportTitle = "Rhetoric Generator";
-    // private $reportFeed = "PullRhetoric";
-
     public function testForm($I)
     {
         $I->wantTo('Verify that forms can be created/edited with data entered via applications');
         $I->loginAsAdmin($I);
+
         $I->createForm($I, 'Test Form Proto', 'For Test Purposes');
         $I->editForm($I, 'Test Form Proto', 'Test Form', 'For Ongoing Purposes');
         $I->clickCmfiveNavbar($I, 'Form', 'Forms');
@@ -23,6 +20,7 @@ class FormModuleCest
         $I->see("Active: Yes");
         $I->attachApplicationForm($I, 'Test Application', 'Test Form');
         $I->wait(2);
+
         // adding & populating fields:
         // should be delegated to detailed support in helper module!
         $I->addFormField($I, "Test Form", "Name", "nm1", "Text");

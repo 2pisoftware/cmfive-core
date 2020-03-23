@@ -194,7 +194,7 @@ function save_form_POST(Web $w)
         $mapping->application_id = $application_id;
         $mapping->form_id = $form_id;
 
-        if ($_POST["type"] === "single") {
+        if (array_key_exists("type", $_POST) && $_POST["type"] === "single") {
             $mapping->is_singleton = true;
         }
 
