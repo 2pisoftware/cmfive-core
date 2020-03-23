@@ -188,11 +188,11 @@
             function(result) {
                 if (initialChange == false) {
                     $('#task_type').parent().html(result[0]);
+                    $('#task_type').val('');
                     $('#priority').parent().html(result[1]);
                     $('#assignee_id').parent().html(result[2]);
                     $('#status').html(result[4])
                 }
-                initialChange = true;
                 $('#tasktext').html(result[3]);
                 $("#tasktext").fadeIn();
 

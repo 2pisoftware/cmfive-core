@@ -82,18 +82,6 @@ class FormService extends DbService
     }
 
     /**
-     * Get an array structure describing the form for use with
-     * Html:multiColForm
-     *
-     * @return  array[]
-     */
-    public function buildForm(FormInstance $form_instance, Form $form)
-    {
-        $form_structure = $form_instance->getEditForm($form);
-        return $form_structure;
-    }
-
-    /**
      * get form mappings for form id.
      *
      * @return array[]

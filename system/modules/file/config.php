@@ -6,11 +6,12 @@ Config::set('file', [
     'fileroot' => dirname(__FILE__) . '/../uploads',
     'topmenu' => false,
     "dependencies" => [
-        "knplabs/gaufrette" => "0.4.*@dev",
-        "aws/aws-sdk-php" => "3.29.*"
+        "knplabs/gaufrette" => "~0.8",
+        "aws/aws-sdk-php" => "~3.69"
     ],
     'hooks' => [
-        'admin'
+        'admin',
+        'core_web'
     ],
     'adapters' => [
         'local' => [

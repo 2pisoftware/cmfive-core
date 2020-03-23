@@ -1,29 +1,15 @@
 <?php
-
-/*
- * Use of comparison:
- *
- * class Job:
- *
- * function getComments()
-  {
-  $commArray = $this->w->Operations->getOps("OpsComment",array('obj_id'=>$this->id));
-
-  usort($commArray, array("AComment","cmp_obj"));
-
-
-  return $commArray;
-  }
-
- * */
+/**
+ * Comments can be made on various objects
+ */
 class Comment extends DbObject
 {
     public $id;
-    public $obj_table;   // varchar
+    public $obj_table; // varchar
     public $obj_id;
-    public $comment;     // text
+    public $comment; // text
     public $is_internal; // 1 - is_internal - will be displayed only for internal roles ; Default is 0.
-    public $is_system;   // 1 - is system generated comment (on attachment Upload/Delete); Default is 0.
+    public $is_system; // 1 - is system generated comment (on attachment Upload/Delete); Default is 0.
 
     public $creator_id;
     public $dt_created;
@@ -34,11 +20,11 @@ class Comment extends DbObject
     public static $_db_table = "comment";
     public $_restrictable;
 
-    /*
+    /**
      * Output Example:
      * webforum.jpg File deleted. Description: Image of something.
      * By serg_admin-Manager Ops Manager,18/02/2011 03:10 pm
-     * */
+     */
     public function __toString()
     {
         $str = $this->comment;
@@ -50,7 +36,7 @@ class Comment extends DbObject
         return $str;
     }
 
-    /*
+    /**
      * get object for comment thread
      * return object
      */
@@ -68,9 +54,9 @@ class Comment extends DbObject
         }
     }
 
-    /*
+    /**
      * New comments go First !
-     * */
+     */
     public static function cmp_obj($a, $b)
     {
         if ($a->dt_created == $b->dt_created) {

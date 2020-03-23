@@ -26,7 +26,7 @@ class Select extends \Html\Form\FormElement
     public $options = [];
 
     static $_excludeFromOutput = [
-        "options"
+        "options",
     ];
 
     /**
@@ -64,18 +64,24 @@ class Select extends \Html\Form\FormElement
      * 2. An array of DbObjects
      * 3. An array with (at least) "label" and "value" keys
      * 4. The old select style, an indexed array with key 0 as the label, and
-     *    key 1 as the option value
+     *        key 1 as the option value
      * 5. A string, this will be used for both the option value and label so
-     *    use caution!
+     *        use caution!
      *
      * If the given option doesn't match one of the above use cases then it
      * will be ignored.
      *
-     * @param Array $options
+     * @param array $options
+     * @param bool $omit_deleted
+     *
      * @return \Html\Form\Select this
      */
-    public function setOptions($options = [])
+    public function setOptions($options = [], $omit_default = false)
     {
+        if (!$omit_default) {
+            array_push($this->options, new Option(['label' => '-- Select --', 'value' => '']));
+        }
+
         if (!is_null($options) && is_array($options) && count($options) > 0) {
             foreach ($options as $option) {
                 // Check for \Html\Form\Option
@@ -84,7 +90,7 @@ class Select extends \Html\Form\FormElement
                 } elseif (is_a($option, "DbObject")) {
                     // Check for DbObject
                     array_push($this->options, new Option(["value" => $option->getSelectOptionValue(), "label" => $option->getSelectOptionTitle()]));
-                } elseif (count($option) >= 2) {
+                } elseif (is_array($option) && count($option) >= 2) {
                     // Check for standard Option format
                     if (array_key_exists("label", $option) && array_key_exists("value", $option)) {
                         array_push($this->options, new Option($option));

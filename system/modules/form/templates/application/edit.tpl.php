@@ -1,5 +1,5 @@
 <style>
-    #form-application-<?php echo $application->id; ?>__vue-instance tr>td>a {
+    #form-application-<?php echo $application->id; ?>__vue-instance tr > td > a {
         margin-bottom: 0px;
     }
 </style>
@@ -11,7 +11,7 @@
     </div>
     <form style='margin-top: 0px;' v-on:submit='saveApplication()'>
         <form-row label="Title">
-            <input type="text" v-model='application.title' v-on:keyup.prevent='form_changed = true' v-bind:value="application.title" />
+            <input type="text" v-model='application.title' v-on:keyup.prevent='form_changed = true' />
         </form-row>
         <form-row label="Description">
             <textarea v-model='application.description' v-on:keyup.prevent='form_changed = true'>{{ application.description }}</textarea>
@@ -28,20 +28,14 @@
         </form-row>
     </form>
 
-    <hr />
+    <hr/>
 
     <div class='row-fluid'>
         <div class='small-12 medium-6 columns'>
             <h3>Members <button class='button tiny right' v-on:click='editApplicationMember()'>Add member</button></h3>
             <loading-indicator :show="loading_members"></loading-indicator>
             <table style='width: 100%;' v-show='!loading_members'>
-                <thead>
-                    <tr>
-                        <th>User</th>
-                        <th>Role</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
+                <thead><tr><th>User</th><th>Role</th><th>Actions</th></tr></thead>
                 <tbody>
                     <tr v-if='application_members.length' v-for='(member, index) in application_members'>
                         <td>{{ member.name }}</td>
@@ -51,9 +45,7 @@
                             <a class='button tiny warning' v-on:click='deleteApplicationMember(member)'>Delete</a>
                         </td>
                     </tr>
-                    <tr v-if='!application_members.length'>
-                        <td colspan="3">No members found</td>
-                    </tr>
+                    <tr v-if='!application_members.length'><td colspan="3">No members found</td></tr>
                 </tbody>
             </table>
         </div>
@@ -61,24 +53,17 @@
             <h3>Attached Forms <button class='button tiny right' v-on:click='editApplicationForm()'>Attach form</button></h3>
             <loading-indicator :show="loading_forms"></loading-indicator>
             <table style='width: 100%;' v-show='!loading_forms'>
-                <thead>
-                    <tr>
-                        <th>Form</th>
-                        <th># saved rows</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
+                <thead><tr><th>Form</th><th># saved rows</th><th>Actions</th></tr></thead>
                 <tbody>
                     <tr v-if='application_forms.length' v-for='form in application_forms'>
                         <td>{{ form.title }}</td>
                         <td><span v-if="form.no_instances">{{ form.no_instances }}</span><span v-else>0</span></td>
                         <td>
+                            <!-- <a class='button tiny' v-on:click='editApplicationForm(form)'>Edit</a> -->
                             <a class='button tiny warning' v-on:click='deleteApplicationForm(form)'>Delete</a>
                         </td>
                     </tr>
-                    <tr v-if='!application_forms.length'>
-                        <td colspan="3">No forms found</td>
-                    </tr>
+                    <tr v-if='!application_forms.length'><td colspan="3">No forms found</td></tr>
                 </tbody>
             </table>
         </div>
@@ -90,15 +75,9 @@
             <form-row label="Form">
                 <select v-model='active_form.id'>
                     <option v-for="form in available_forms" :value="form.id">{{ form.title }}</option>
-                </select><br><br>
-                <label>
-                    <input type="radio" name="type" value="single" v-model="active_form.type"> Single
-                </label>
-                <label>
-                    <input type="radio" name="type" value="multiple" v-model="active_form.type"> Multiple
-                </label>
+                </select>
             </form-row>
-            <br />
+            <br/>
             <form-row>
                 <button v-on:click.prevent='saveApplicationForm()' class='button tiny'>Save</button>
                 <button v-on:click.prevent='resetActiveForm()' class='button tiny secondary right'>Cancel</button>
@@ -119,7 +98,7 @@
                     </option>
                 </select>
             </form-row>
-            <br />
+            <br/>
             <form-row>
                 <button v-on:click.prevent='saveApplicationMember()' class='button tiny'>Save</button>
                 <button v-on:click.prevent='resetActiveMember()' class='button tiny secondary right'>Cancel</button>
@@ -138,6 +117,7 @@
 
 <script src='/system/templates/vue-components/form/form-row.vue.js'></script>
 <script>
+
     var form_application_vue_instance = new Vue({
         el: '#form-application-<?php echo $application->id; ?>__vue-instance',
         data: {
@@ -150,28 +130,13 @@
             loading_members: true,
             loading_forms: true,
 
-            available_forms: <?php echo json_encode(array_map(function ($available_form) {
-                                    return ['id' => $available_form->id, 'title' => $available_form->title];
-                                }, $available_forms ?: [])); ?>,
+            available_forms: <?php echo json_encode(array_map(function($available_form) {return ['id' => $available_form->id, 'title' => $available_form->title];}, $available_forms ? : [])); ?>,
             member_role_options: <?php echo json_encode(FormApplicationMember::$_roles, true); ?>,
-            active_member: {
-                id: '',
-                member_user_id: '',
-                name: '',
-                role: '',
-                application_id: '<?php echo $application->id; ?>'
-            },
-            active_form: {
-                id: '',
-                title: '',
-                application_id: '<?php echo $application->id; ?>',
-                type: '',
-            },
+            active_member: {id: '', member_user_id: '', name: '', role: '', application_id: '<?php echo $application->id; ?>'},
+            active_form: {id: '', title: '',application_id: '<?php echo $application->id; ?>'},
             user_list: <?php echo json_encode(array_map(function ($user) {
-                            return ['id' => $user->id, 'name' => $user->getFullName()];
-                        }, array_filter($w->Auth->getUsers(), function ($user) {
-                            return !empty($user->id) && $user->is_active == 1 && $user->is_deleted == 0;
-                        })), true); ?>
+                    return ['id' => $user->id, 'name' => $user->getFullName()];
+                }, array_filter($w->Auth->getUsers(), function($user) {return !empty($user->id) && $user->is_active == 1 && $user->is_deleted == 0;})), true); ?>
         },
         methods: {
             setSelectedValue: function(selectedValue) {
@@ -231,9 +196,10 @@
             },
             editApplicationForm: function(form_index) {
                 if (form_index !== undefined && ((this.application_forms.length - 1) >= form_index)) {
-                    this.active_form.id = this.application_forms[form_index].id;
-                    this.active_form.title = this.application_forms[form_index].title;
-                }
+                      // this.active_form = Vue.util.extend({}, this.application_forms[form_index]);
+                      this.active_form.id = this.application_forms[form_index].id;
+                      this.active_form.title = this.application_forms[form_index].title;
+                  }
                 $('#form_application_form_modal').foundation('reveal', 'open');
             },
             deleteApplicationForm: function(form) {
@@ -246,15 +212,9 @@
             },
             editApplicationMember: function(member_index) {
                 if (member_index !== undefined && ((this.application_members.length - 1) >= member_index)) {
-                    this.active_member = Vue.util.extend({}, this.application_members[member_index]);
+                      this.active_member = Vue.util.extend({}, this.application_members[member_index]);
                 } else {
-                    this.active_member = {
-                        id: '',
-                        member_user_id: '',
-                        name: '',
-                        role: '',
-                        application_id: '<?php echo $application->id; ?>'
-                    };
+                    this.active_member = {id: '', member_user_id: '', name: '', role: '', application_id: '<?php echo $application->id; ?>'};
                 }
                 $('#form_application_member_modal').foundation('reveal', 'open');
             },
@@ -283,22 +243,12 @@
                 }
             },
             resetActiveMember: function() {
-                this.active_member = {
-                    id: '',
-                    member_user_id: '',
-                    name: '',
-                    role: '',
-                    application_id: '<?php echo $application->id; ?>'
-                };
+                this.active_member = {id: '', member_user_id: '', name: '', role: '', application_id: '<?php echo $application->id; ?>'};
 
                 $('#form_application_member_modal').foundation('reveal', 'close');
             },
             resetActiveForm: function() {
-                this.active_form = {
-                    id: '',
-                    title: '',
-                    application_id: '<?php echo $application->id; ?>'
-                };
+                this.active_form = {id: '', title: '', application_id: '<?php echo $application->id; ?>'};
 
                 $('#form_application_form_modal').foundation('reveal', 'close');
             },
@@ -321,4 +271,5 @@
             this.getApplicationForms();
         }
     });
+
 </script>

@@ -86,30 +86,36 @@ class Config
             $value = &self::$shadow_register;
         }
 
-        $i = 0;
-        // Loop through each key, exploded_key will always be an array so no need to check if false
-        while (array_key_exists($i, $exploded_key) && array_key_exists($exploded_key[$i], $value)) {
-            $value = &$value[$exploded_key[$i]];
-            $i++;
+        if (!empty($exploded_key)) {
+            $i = 0;
+            // Loop through each key
+            while (isset($exploded_key[$i]) && isset($value[$exploded_key[$i]])) {
+                $value = &$value[$exploded_key[$i]];
+                $i++;
+            }
+            if (self::$_use_sandbox !== true) {
+                if ($i !== count($exploded_key)) {
+                    self::$_config_cache[$key] = null;
+                } else {
+                    self::$_config_cache[$key] = &$value;
+                }
+                return self::$_config_cache[$key] ?? $default;
+            } else {
+                if ($i !== count($exploded_key)) {
+                    self::$_shadow_config_cache[$key] = null;
+                } else {
+                    self::$_shadow_config_cache[$key] = &$value;
+                }
+                return self::$_shadow_config_cache[$key] ?? $default;
+            }
         }
+
         if (self::$_use_sandbox !== true) {
-            // If $i doesn't match the count it means the key wasn't found in the Config register
-            if ($i !== count($exploded_key)) {
-                // We can set the cache key here to the default since it wont be written to the file cache
-                // unless Config::get is used anywhere in a module's config.php
-                self::$_config_cache[$key] = $default;
-            } else {
-                self::$_config_cache[$key] = &$value;
-            }
-            return self::$_config_cache[$key];
+            self::$_config_cache[$key] = null;
         } else {
-            if ($i !== count($exploded_key)) {
-                self::$_shadow_config_cache[$key] = $default;
-            } else {
-                self::$_shadow_config_cache[$key] = &$value;
-            }
-            return self::$_shadow_config_cache[$key];
+            self::$_shadow_config_cache[$key] = null;
         }
+        return !is_null($default) ? $default : null;
     }
 
     /**
