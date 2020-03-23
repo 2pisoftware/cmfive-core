@@ -6,48 +6,54 @@ use \Html\Form\Select as Select;
 function taskAjaxSelectbyTaskGroup_ALL(Web $w)
 {
     $p = $w->pathMatch("taskgroup_id");
-    $taskgroup = $w->Task->getTaskGroup($p['taskgroup_id']);
+    $task_group = $w->Task->getTaskGroup($p['taskgroup_id']);
 
-    if (empty($taskgroup->id)) {
+    if (empty($task_group->id)) {
         return;
     }
 
-    $tasktypes = ($taskgroup != "") ? $w->Task->getTaskTypes($taskgroup->task_group_type) : array();
-    $priority = ($taskgroup != "") ? $w->Task->getTaskPriority($taskgroup->task_group_type) : array();
-    $members = ($taskgroup != "") ? $w->Task->getMembersBeAssigned($taskgroup->id) : array();
+    $task_types = !empty($task_group) ? $w->Task->getTaskTypes($task_group->task_group_type) : [];
+    $priority = !empty($task_group) ? $w->Task->getTaskPriority($task_group->task_group_type) : [];
+    $members = !empty($task_group) ? $w->Task->getMembersBeAssigned($task_group->id) : [];
     sort($members);
-    $typetitle = ($taskgroup != "") ? $taskgroup->getTypeTitle() : "";
-    $typedesc = ($taskgroup != "") ? $taskgroup->getTypeDescription() : "";
+    $type_title = !empty($task_group) ? $task_group->getTypeTitle() : "";
+    $type_desc = !empty($task_group) ? $task_group->getTypeDescription() : "";
 
     // if user cannot assign tasks in this group, leave 'first_assignee' blank for owner/member to delegate
-    $members = ($taskgroup->getCanIAssign()) ? $members : array(array("Default", ""));
-
-    // create dropdowns loaded with respective data
-    //$ttype = Html::select("task_type",$tasktypes,null);
-    //$ttype = Html::select("task_type",$tasktypes,$taskgroup->default_task_type);
+    $members = ($task_group->getCanIAssign()) ? $members : [["Default", ""]];
 
     $ttype = "Task Type <small>Required</small>" . (new Select())
         ->setName("task_type")
         ->setId("task_type")
-        ->setOptions($tasktypes)
-        ->setSelectedOption($taskgroup->default_task_type)
+        ->setOptions($task_types)
+        ->setSelectedOption($task_group->default_task_type)
         ->setRequired('required')->__toString();
-    //$prior = Html::select("priority",$priority,null);
-    $prior = Html::select("priority", $priority, $taskgroup->default_priority);
-    //$mem = Html::select("assignee_id",$members,null); // first_
-    array_unshift($members, array("Unassigned", "unassigned"));
-    $mem = Html::select("assignee_id", $members, (empty($taskgroup->default_assignee_id)) ? "unassigned" : $taskgroup->default_assignee_id); // first_
 
-    $taskgroup_link = $taskgroup->isOwner($w->Auth->user()) ? "<a href=\"" . $w->localUrl("task-group/viewmembergroup/" . $taskgroup->id) . "\">" . $taskgroup->title . "</a>" : $taskgroup->title;
-    $tasktext = "<table style='width: 100%;'>" .
+    $prior = Html::select("priority", $priority, $task_group->default_priority);
+    array_unshift($members, ["Unassigned", "unassigned"]);
+
+    $assigned_to = (new \Html\Form\Select([
+        "id|name" => "assignee_id",
+        "required" => true,
+        "disabled" => !empty($task_group) && $task_group->getCanIAssign() ? null : "disabled",
+    ]))->setOptions($members, true);
+
+    if (!empty($task_group->default_assignee_id)) {
+        $assigned_to->setSelectedOption($task_group->default_assignee_id);
+    }
+
+    $mem = "<label>Assigned To" . $assigned_to . "</label>";
+
+    $taskgroup_link = $task_group->isOwner($w->Auth->user()) ? "<a href=\"" . $w->localUrl("task-group/viewmembergroup/" . $task_group->id) . "\">" . $task_group->title . "</a>" : $task_group->title;
+    $task_text = "<table style='width: 100%;'>" .
         "<tr><td class=section colspan=2>Task Group Description</td></tr>" .
         "<tr><td><b>Task Group</td><td>" . $taskgroup_link . "</td></tr>" .
-        "<tr><td><b>Task Type</b></td><td>" . $typetitle . "</td></tr>" .
-        "<tr valign=top><td><b>Description</b></td><td>" . $typedesc . "</td></tr>" .
+        "<tr><td><b>Task Type</b></td><td>" . $type_title . "</td></tr>" .
+        "<tr valign=top><td><b>Description</b></td><td>" . $type_desc . "</td></tr>" .
         "</table>";
 
     // return as array of arrays
-    $result = array($ttype, $prior, $mem, $tasktext, Html::select("status", $taskgroup->getTypeStatus(), null, null, null, null));
+    $result = [$ttype, $prior, $mem, $task_text, Html::select("status", $task_group->getTypeStatus(), null, null, null, null)];
 
     $w->setLayout(null);
     $w->out(json_encode($result));

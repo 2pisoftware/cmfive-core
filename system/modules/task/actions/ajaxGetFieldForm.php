@@ -18,9 +18,13 @@ function ajaxGetFieldForm_ALL(Web $w)
         return;
     }
 
-    $task = null;
-    if (!empty($p['task_id'])) {
-        $task = $w->Task->getTask($p['task_id']);
+    if (empty($p["task_id"])) {
+        return;
+    }
+
+    $task = $w->Task->getTask($p['task_id']);
+    if (empty($task)) {
+        return;
     }
 
     $task_type_form = $task_type->getFieldFormArray($task_group, $task);
