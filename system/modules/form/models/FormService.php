@@ -18,7 +18,7 @@ class FormService extends DbService
     /**
      * Load a form by id
      *
-     * @param  Mixed $id
+     * @param  mixed $id
      * @return Form|null
      */
     public function getForm($id)
@@ -29,7 +29,7 @@ class FormService extends DbService
     /**
      * Load a form field by id
      *
-     * @param  Mixed $id
+     * @param  mixed $id
      * @return FormField|null
      */
     public function getFormField($id)
@@ -40,7 +40,7 @@ class FormService extends DbService
     /**
      * Load a form instance by id
      *
-     * @param  Mixed $id
+     * @param  mixed $id
      * @return FormInstance|null
      */
     public function getFormInstance($id)
@@ -51,7 +51,7 @@ class FormService extends DbService
     /**
      * Returns a form value by id
      *
-     * @param  Mixed $id
+     * @param  mixed $id
      * @return FormValue|null
      */
     public function getFormValue($id)
@@ -62,7 +62,7 @@ class FormService extends DbService
     /**
      * Returns a form event by id
      *
-     * @param  Mixed $id
+     * @param  mixed $id
      * @return FormEvent|null
      */
     public function getFormEvent($id)
@@ -73,7 +73,7 @@ class FormService extends DbService
     /**
      * Returns a form event processor by id
      *
-     * @param  Mixed $id
+     * @param  mixed $id
      * @return FormEvent|null
      */
     public function getEventProcessor($id)
@@ -82,9 +82,20 @@ class FormService extends DbService
     }
 
     /**
+     * Get an array structure describing the form for use with Html:multiColForm
+     *
+     * @return array
+     */
+    public function buildForm(FormInstance $form_instance, Form $form)
+    {
+        $form_structure = $form_instance->getEditForm($form);
+        return $form_structure;
+    }
+
+    /**
      * get form mappings for form id.
      *
-     * @return array[]
+     * @return array
      */
     public function getFormMappingsForForm($form_id)
     {
@@ -117,10 +128,10 @@ class FormService extends DbService
      * Gets a FormMapping that is mapped to the $form & $object parameters.
      *
      * @param Form $form
-     * @param String $object
+     * @param string $object
      * @return FormMapping
      */
-    public function getFormMapping(Form $form, String $object)
+    public function getFormMapping(Form $form, string $object)
     {
         return $this->getObject("FormMapping", ["form_id" => $form->id, "object" => $object]);
     }
@@ -129,7 +140,7 @@ class FormService extends DbService
      * Gets a FormApplicationMapping that is mapped to the $form & $object parameters.
      *
      * @param Form $form
-     * @param String $object
+     * @param string $object
      * @return FormApplicationMapping
      */
     public function getFormApplicationMapping(Form $form, DbObject $object)
@@ -447,12 +458,12 @@ class FormService extends DbService
 
     /**
      * Returns a parsed list of available event processors
-     * @return Array list
+     * @return array list
      */
     public function getEventProcessorList()
     {
         // Get Modules => Processor list
-        $list = array();
+        $list = [];
         foreach ($this->w->modules() as $module) {
             $processors = Config::get("{$module}.form_event_processors");
             if (!empty($processors)) {
@@ -570,9 +581,9 @@ class FormService extends DbService
      * Submenu navigation for Forms
      *
      * @param  Web    $w
-     * @param  String $title
-     * @param  Array $prenav
-     * @return Array
+     * @param  string $title
+     * @param  array $prenav
+     * @return array
      */
     public function navigation(Web $w, $title = null, $prenav = null)
     {
@@ -580,7 +591,7 @@ class FormService extends DbService
             $w->ctx("title", $title);
         }
 
-        $nav = $prenav ? $prenav : array();
+        $nav = $prenav ? $prenav : [];
         if ($w->Auth->loggedIn()) {
             $w->menuLink("form-application", "Applications", $nav);
             $w->menuLink("form", "Forms", $nav);
