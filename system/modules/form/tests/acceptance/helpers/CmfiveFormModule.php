@@ -45,7 +45,7 @@ class CmfiveFormModule extends \Codeception\Module
         $I->click("//button[contains(text(),'Create App')]");
         $I->fillField("//label[contains(text(),'Title')]//input", $name);
         $I->fillField("//label[contains(text(),'Description')]//textarea", $description);
-        $I->click("//div[@class='switch']"); //selectOption('#is_active' ,1);
+        $I->click("//div[@class='switch']");
         $I->wait(1);
         $I->click('Save');
     }

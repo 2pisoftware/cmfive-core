@@ -98,9 +98,9 @@
                                     }
 
                                     echo "<h3>$mapping_name</h3>";
-                                    echo "<label>" . Html::radio("none", $mapping_name, $type, "none") . " None</label>";
-                                    echo "<label>" . Html::radio("single", $mapping_name, $type, "single") . " Single</label>";
-                                    echo "<label>" . Html::radio("multiple", $mapping_name, $type, "multiple") . " Multiple</label>";
+                                    echo "<label>" . Html::radio(strtolower($mapping_name) . "_none", $mapping_name, $type, "none") . " None</label>";
+                                    echo "<label>" . Html::radio(strtolower($mapping_name) . "_single", $mapping_name, $type, "single") . " Single</label>";
+                                    echo "<label>" . Html::radio(strtolower($mapping_name) . "_multiple", $mapping_name, $type, "multiple") . " Multiple</label>";
                                 }
                             }
                             ?>
@@ -108,7 +108,7 @@
                     </div>
                     <div class="row-fluid clearfix">
                         <div class="small-12 columns">
-                            <button class="button">Save</button>
+                            <button id="save" class="button">Save</button>
                         </div>
                     </div>
                 </form>
