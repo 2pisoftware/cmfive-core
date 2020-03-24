@@ -6,7 +6,7 @@ Config::set('auth', array(
     'path' => 'system/modules',
     'topmenu' => false,
     'access_hint' => 'Forgot password?',
-	'hooks' => [
-		'admin'
-	]
+    'hooks' => [
+        'admin'
+    ]
 ));

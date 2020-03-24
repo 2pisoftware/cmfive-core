@@ -7,7 +7,7 @@ class AuthService extends DbService
     public $_rest_user = null;
     private static $_cache = [];
 
-    public function login($login, $password, $client_timezone, $skip_session = false)
+    public function login($login, $password, $client_timezone, $skip_session = false, $mfa_code = "")
     {
         $credentials['login'] = $login;
         $credentials['password'] = $password;
@@ -46,6 +46,11 @@ class AuthService extends DbService
 
             if ($user->is_external == 1) {
                 $this->w->Log->info('cmfive user is external: ' . $login);
+                return null;
+            }
+
+            if ($user->is_mfa_enabled && !$user->checkMfaCode($mfa_code)) {
+                $this->w->Log->setLogger("AUTH")->warning("User attempted to login with invalid MFA code");
                 return null;
             }
         }
@@ -98,7 +103,8 @@ class AuthService extends DbService
         $this->w->session('user_id', $user->id);
     }
 
-    public function _web_init() {
+    public function _web_init()
+    {
         $this->_loadRoles();
     }
 
@@ -107,6 +113,12 @@ class AuthService extends DbService
         return $this->w->session('user_id');
     }
 
+    /**
+     * Returns a User from the passed login parameter.
+     *
+     * @param string $login
+     * @return User
+     */
     public function getUserForLogin($login)
     {
         $user = $this->db->get("user")->where("login", $login)->and("is_deleted", 0)->fetch_row();
@@ -147,6 +159,51 @@ class AuthService extends DbService
             return $user->id;
         }
 
+        // Check that we dont already have an external user account, but not linked to the contact
+        $user = $this->getUserForLogin($contact->email);
+        // If there is an existing user account
+        if (!empty($user->id)) {
+            if ($user->is_external == 1) {
+                $existing_user_contact = $user->getContact();
+
+                // Merge both contact objects together
+                $merge_object_property = function (&$source, &$destination, $property) {
+                    if (property_exists($source, $property) && property_exists($destination, $property)) {
+                        if (empty($destination->$property)) {
+                            $destination->$property = $source->$property;
+                        }
+                    }
+                };
+                $merge_object_property($existing_user_contact, $contact, "firstname");
+                $merge_object_property($existing_user_contact, $contact, "lastname");
+                $merge_object_property($existing_user_contact, $contact, "othername");
+                $merge_object_property($existing_user_contact, $contact, "title_lookup_id");
+                $merge_object_property($existing_user_contact, $contact, "homephone");
+                $merge_object_property($existing_user_contact, $contact, "workphone");
+                $merge_object_property($existing_user_contact, $contact, "mobile");
+                $merge_object_property($existing_user_contact, $contact, "priv_mobile");
+                $merge_object_property($existing_user_contact, $contact, "fax");
+                $merge_object_property($existing_user_contact, $contact, "email");
+
+                // Update contact reference for user
+                if ($contact->update()) {
+                    $user->contact_id = $contact->id;
+                    $user->update();
+
+                    // Delete one of them
+                    $existing_user_contact->delete();
+
+                    return $user->id;
+                }
+
+                $this->w->Log->setLogger("AUTH")->error("Could not merge duplicate external contacts");
+                return false;
+            } else {
+                return false;
+            }
+        }
+
+
         $user = new User($this->w);
         $user->login = $contact->email;
         $user->is_external = 1;
@@ -159,6 +216,16 @@ class AuthService extends DbService
     public function getContacts()
     {
         return $this->getObjects('Contact', ['is_deleted' => 0]);
+    }
+
+    /**
+     * Returns an array of titles from the lookup table.
+     *
+     * @return array[Lookup]
+     */
+    public function getTitles() : array
+    {
+        return $this->w->Lookup->getLookupByType("title");
     }
 
     public function getContact($contact_id)

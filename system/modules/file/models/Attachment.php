@@ -1,17 +1,20 @@
 <?php
 
+/**
+ * Use of variables created with define should be phased out in favour of public const property equivalent of an object.
+ * These will deprecated and removed in a future version of Cmfive.
+ * This will help with avoiding clashing variable names.
+ */
 define('CACHE_PATH', 'cache');
 define('IMAGE_PATH', 'image');
 
-use Gaufrette\Filesystem;
 use Gaufrette\File as File;
-use Gaufrette\Adapter\Local as LocalAdapter;
-use Gaufrette\Adapter\InMemory as InMemoryAdapter;
-use Gaufrette\Adapter\AwsS3 as AwsS3;
-use Aws\S3\S3Client as S3Client;
 
 class Attachment extends DbObject
 {
+    public const CACHE_PATH = "cache";
+    public const IMAGE_PATH = "image";
+    public const TEMP_PATH = "temp";
 
     public $parent_table;
     public $parent_id;
@@ -31,7 +34,7 @@ class Attachment extends DbObject
     public $dt_viewing_window; // dt of access to list attachments. checked against config file.docx_viewing_window_duration to bypass authentication.
 
     /**
-     * Used by the task_attachment_attachment_added_task hook to skip the Attachement added notification if true
+     * Used by the task_attachment_attachment_added_task hook to skip the Attachment added notification if true
      * @var boolean
      */
     public $_skip_added_notification;
@@ -115,7 +118,7 @@ class Attachment extends DbObject
         if ($this->isImage()) {
             return WEBROOT . "/file/atthumb/" . $this->id;
         }
-        return null; // WEBROOT . "/img/document.jpg";
+        return null;
     }
 
     /**
@@ -134,7 +137,7 @@ class Attachment extends DbObject
 
     public function getCodeTypeTitle()
     {
-        $t = $this->w->Auth->getObject('AttachmentType', array('code' => $this->type_code, 'table_name' => $this->parent_table));
+        $t = $this->w->Auth->getObject('AttachmentType', ['code' => $this->type_code, 'table_name' => $this->parent_table]);
 
         if ($t) {
             return $t->title;
@@ -146,7 +149,7 @@ class Attachment extends DbObject
     public function getDocumentEmbedHtml($width = '1024', $height = '724')
     {
         $view_url = $this->getViewUrl();
-        if ($this->isDocument() && $this->adapter == 'local') {
+        if ($this->isDocument()) {
             if (stripos($this->filename, '.docx') || stripos($this->filename, '.doc')) {
                 $view_url = substr($view_url, 0, 1) == '/' ? substr($view_url, 1) : $view_url;
                 return Html::embedDocument($this->w->localUrl() . $view_url, $width, $height, 'page-width', true);
@@ -191,10 +194,14 @@ class Attachment extends DbObject
      * The local adapter for e.g. needs an absolute reference, this absolute
      * prefix isn't needed when using S3 buckets
      *
-     * @return <String> filepath
+     * @return string
      */
     public function getFilePath()
     {
+        if (file_exists(ROOT_PATH . "/" . Attachment::CACHE_PATH . "/". Attachment::TEMP_PATH . "/" . FileService::getCacheRuntimePath() . "/" . $this->id . "/" . $this->dt_created . "/" . $this->filename)) {
+            return ROOT_PATH . "/" . Attachment::CACHE_PATH . "/". Attachment::TEMP_PATH . "/" . FileService::getCacheRuntimePath() . "/" . $this->id . "/" . $this->dt_created;
+        }
+
         $path = dirname($this->fullpath);
 
         switch ($this->adapter) {
@@ -227,7 +234,8 @@ class Attachment extends DbObject
 
     /**
      * Returns attachment mimetype
-     * @return <String> mimetype
+     *
+     * @return string mimetype
      */
     public function getMimetype()
     {
@@ -235,22 +243,57 @@ class Attachment extends DbObject
     }
 
     /**
-     * Retuns Gaufrette File instance (of the attached file)
+     * Returns Gaufrette File instance (of the attached file)
+     *
      * @return \Gaufrette\File
      */
     public function getFile()
     {
-        return new \Gaufrette\File($this->filename, $this->getFilesystem());
+        $cache_directory = ROOT_PATH . "/" . Attachment::CACHE_PATH . "/" . Attachment::TEMP_PATH . "/" . FileService::getCacheRuntimePath() . "/" . $this->id . "/" . $this->dt_created;
+        $cached_file_path = $cache_directory . "/" . $this->filename;
+
+        if (file_exists($cached_file_path)) {
+            return new File($this->filename, $this->w->File->getSpecificFilesystem("local", $cache_directory));
+        }
+
+        return new File($this->filename, $this->getFilesystem());
     }
 
     /**
      * Returns attached file content
-     * @return <string> content
+     *
+     * @return string content
      */
-    public function getContent()
+    public function getContent($cache_locally = false)
     {
         $file = $this->getFile();
-        return $file->exists() ? $file->getContent() : "";
+        if (empty($file) || !$file->exists()) {
+            return "";
+        }
+
+        $cache_directory = ROOT_PATH . "/" . Attachment::CACHE_PATH . "/" . Attachment::TEMP_PATH . "/" . FileService::getCacheRuntimePath() . "/" . $this->id . "/" . $this->dt_created;
+        $cache_file_path = $cache_directory . "/" . $this->filename;
+
+        if ($this->adapter === "local" || !$cache_locally || file_exists($cache_file_path)) {
+            return $file->getContent();
+        }
+
+        if (!file_exists($cache_directory)) {
+            try {
+                mkdir($cache_directory, 0771, true);
+            } catch (Exception $e) {
+                $this->w->Log->setLogger("FILE")->error("Failed to execute 'mkdir': " . $e->getMessage());
+            }
+        }
+
+        try {
+            file_put_contents($cache_file_path, $file->getContent());
+            return $file->getContent();
+        } catch (Exception $e) {
+            $this->w->Log->setLogger("FILE")->error("Failed to execute 'file_put_contents': " . $e->getMessage());
+        }
+
+        return "";
     }
 
     /**
@@ -267,9 +310,14 @@ class Attachment extends DbObject
      */
     public function moveToAdapter($adapter = "local", $delete_after_move = false)
     {
-        // Get content of file
-        $content = $this->getContent();
-        $current_file = $this->getFile();
+        try {
+            // Get content of file
+            $content = $this->getContent();
+            $current_file = $this->getFile();
+        } catch (InvalidArgumentException $e) {
+            $this->w->Log->setLogger("FILE")->error("Attachment's {id: $this->id} file does not exist at path: $this->fullpath");
+            return;
+        }
 
         $this->adapter = $adapter;
 
@@ -303,7 +351,7 @@ class Attachment extends DbObject
      */
     public function getThumbnailCachePath()
     {
-        return ROOT_PATH . '/' . CACHE_PATH . '/' . $this->fullpath;
+        return ROOT_PATH . '/' . Attachment::CACHE_PATH . '/' . $this->fullpath;
     }
 
     /**
@@ -319,7 +367,7 @@ class Attachment extends DbObject
             return null;
         }
 
-        return ROOT_PATH . "/" . CACHE_PATH . "/" . IMAGE_PATH . "/" . $path_info["dirname"] . "/" . $path_info["filename"] . ".jpg";
+        return ROOT_PATH . "/" . Attachment::CACHE_PATH . "/" . Attachment::IMAGE_PATH . "/" . $path_info["dirname"] . "/" . $path_info["filename"] . ".jpg";
     }
 
     /**
@@ -357,9 +405,8 @@ class Attachment extends DbObject
             return false;
         }
 
-        $replace_empty = array("..", "'", '"', ",", "\\", "/");
-        $replace_underscore = array(" ", "&", "+", "$", "?", "|", "%", "@", "#", "(", ")", "{", "}", "[", "]", ",", ";", ":");
-
+        $replace_empty = ["..", "'", '"', ",", "\\", "/"];
+        $replace_underscore = [" ", "&", "+", "$", "?", "|", "%", "@", "#", "(", ")", "{", "}", "[", "]", ",", ";", ":"];
 
         if (!empty($_POST[$requestkey]) && empty($_FILES[$requestkey])) {
             $filename = str_replace($replace_underscore, "_", str_replace($replace_empty, "", $_POST[$requestkey]));

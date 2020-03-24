@@ -10,33 +10,36 @@
 // integrating Tasks with Cmfive modules and leveraging the existing functionality of modules
 // Such files are loaded by TaskService->_loadTaskFiles()
 ////////////////////////////////////////////////////
-////		TaskGroupType						////
+////        TaskGroupType                       ////
 ////////////////////////////////////////////////////
 
 /**
  * A Todo task group.
  * all properties are defined in the config.php
- * 
+ *
  * @author careck
  *
  */
-class TaskGroupType_TaskTodo extends TaskGroupType {
+class TaskGroupType_TaskTodo extends TaskGroupType
+{
 }
 
 ////////////////////////////////////////////////
-////		TaskType						////
+////           TaskType                     ////
 ////////////////////////////////////////////////
 
-class TaskType_Todo extends TaskType {
+class TaskType_Todo extends TaskType
+{
 
-    function getTaskTypeTitle() {
+    public function getTaskTypeTitle()
+    {
         return "Todo Item";
     }
 
-    function getTaskTypeDescription() {
+    public function getTaskTypeDescription()
+    {
         return "Use this to assign any task.";
     }
-
 }
 
 /**
@@ -46,46 +49,53 @@ class TaskType_Todo extends TaskType {
  * @author careck
  *
  */
-class TaskGroupType_SoftwareDevelopment extends TaskGroupType {
+class TaskGroupType_SoftwareDevelopment extends TaskGroupType
+{
 }
 
 /**
- * 
+ *
  * Generic Programming Ticket
- * 
+ *
  * Modules can be added via the Lookup table:
  * Type = "<TaskGroupTitle> Modules"
- * 
+ *
  * @author admin
  *
  */
-class TaskType_ProgrammingTicket extends TaskType {
+class TaskType_ProgrammingTicket extends TaskType
+{
 
-    function getCanTaskGroupReopen() {
+    public function getCanTaskGroupReopen()
+    {
         return true;
     }
 
-    function getTaskTypeTitle() {
+    public function getTaskTypeTitle()
+    {
         return "Dev Ticket";
     }
 
-    function getTaskTypeDescription() {
+    public function getTaskTypeDescription()
+    {
         return "Use this to report any issue or feature request.";
     }
 
-    function getFieldFormArray(TaskGroup $taskgroup, Task $task = null) {
+    public function getFieldFormArray(TaskGroup $taskgroup, Task $task = null)
+    {
         $taskdata = null;
         if (!empty($task)) {
             $taskdata = $this->w->Task->getTaskData($task->id);
         }
-        return array(
-            array($this->getTaskTypeTitle(), "section"),
-            array("Ticket Type", "select", "b_or_f", $this->getTaskDataValueForKey($taskdata, "b_or_f"), array("Issue", "Feature", "Task")),
-            array("Identifier", "hidden", "ident", $this->getTaskDataValueForKey($taskdata, "ident")),
-        );
+        return [
+            [$this->getTaskTypeTitle(), "section"],
+            ["Ticket Type", "select", "b_or_f", $this->getTaskDataValueForKey($taskdata, "b_or_f"), ["Issue", "Feature", "Task"]],
+            ["Identifier", "hidden", "ident", $this->getTaskDataValueForKey($taskdata, "ident")],
+        ];
     }
 
-    private function getTaskDataValueForKey($taskdata, $key) {
+    private function getTaskDataValueForKey($taskdata, $key)
+    {
         if (empty($taskdata) || empty($key)) {
             return null;
         }
@@ -101,14 +111,13 @@ class TaskType_ProgrammingTicket extends TaskType {
         }
     }
 
-    function on_before_insert(Task $task) {
+    public function on_before_insert(Task $task)
+    {
         // Get REQUEST object instead
         if (!empty($_REQUEST["b_or_f"]) && ($_REQUEST["b_or_f"] == 'Issue' || $_REQUEST["b_or_f"] == 'Task')) {
             $task->status = "Todo";
         }
     }
-
-
 }
 
 /**
@@ -116,8 +125,8 @@ class TaskType_ProgrammingTicket extends TaskType {
  *
  * @author Adam Buckley <adam@2pisoftware.com>
  */
-class TaskGroupType_CmfiveSupport extends TaskGroupType {
-
+class TaskGroupType_CmfiveSupport extends TaskGroupType
+{
 }
 
 /**
@@ -125,18 +134,20 @@ class TaskGroupType_CmfiveSupport extends TaskGroupType {
  *
  * @author Adam Buckley <adam@2pisoftware.com>
  */
-class TaskType_CmfiveTicket extends TaskType {
+class TaskType_CmfiveTicket extends TaskType
+{
 
-    function getFieldFormArray(\TaskGroup $taskgroup, \Task $task = null) {
+    public function getFieldFormArray(\TaskGroup $taskgroup, \Task $task = null)
+    {
         return [];
     }
-    
-    function displayExtraButtons(\Task $task) {
-        
+
+    public function displayExtraButtons(\Task $task)
+    {
     }
 
-    function displayExtraDetails(\Task $task) {
+    public function displayExtraDetails(\Task $task)
+    {
         return [];
     }
-    
 }
