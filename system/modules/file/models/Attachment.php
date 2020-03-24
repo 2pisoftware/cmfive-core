@@ -149,7 +149,7 @@ class Attachment extends DbObject
     public function getDocumentEmbedHtml($width = '1024', $height = '724')
     {
         $view_url = $this->getViewUrl();
-        if ($this->isDocument() && $this->adapter == 'local') {
+        if ($this->isDocument()) {
             if (stripos($this->filename, '.docx') || stripos($this->filename, '.doc')) {
                 $view_url = substr($view_url, 0, 1) == '/' ? substr($view_url, 1) : $view_url;
                 return Html::embedDocument($this->w->localUrl() . $view_url, $width, $height, 'page-width', true);
@@ -198,8 +198,8 @@ class Attachment extends DbObject
      */
     public function getFilePath()
     {
-        if (file_exists(ROOT_PATH . "/" . Attachment::CACHE_PATH . "/". Attachment::TEMP_PATH . "/" . $this->id . "/" . $this->dt_created . "/" . $this->filename)) {
-            return ROOT_PATH . "/" . Attachment::CACHE_PATH . "/". Attachment::TEMP_PATH . "/" . $this->id . "/" . $this->dt_created;
+        if (file_exists(ROOT_PATH . "/" . Attachment::CACHE_PATH . "/". Attachment::TEMP_PATH . "/" . FileService::getCacheRuntimePath() . "/" . $this->id . "/" . $this->dt_created . "/" . $this->filename)) {
+            return ROOT_PATH . "/" . Attachment::CACHE_PATH . "/". Attachment::TEMP_PATH . "/" . FileService::getCacheRuntimePath() . "/" . $this->id . "/" . $this->dt_created;
         }
 
         $path = dirname($this->fullpath);
@@ -249,7 +249,7 @@ class Attachment extends DbObject
      */
     public function getFile()
     {
-        $cache_directory = ROOT_PATH . "/" . Attachment::CACHE_PATH . "/" . Attachment::TEMP_PATH . "/" . $this->id . "/" . $this->dt_created;
+        $cache_directory = ROOT_PATH . "/" . Attachment::CACHE_PATH . "/" . Attachment::TEMP_PATH . "/" . FileService::getCacheRuntimePath() . "/" . $this->id . "/" . $this->dt_created;
         $cached_file_path = $cache_directory . "/" . $this->filename;
 
         if (file_exists($cached_file_path)) {
@@ -264,23 +264,23 @@ class Attachment extends DbObject
      *
      * @return string content
      */
-    public function getContent($cache_locally = true)
+    public function getContent($cache_locally = false)
     {
         $file = $this->getFile();
         if (empty($file) || !$file->exists()) {
             return "";
         }
 
-        $cache_directory_path = ROOT_PATH . "/" . Attachment::CACHE_PATH . "/" . Attachment::TEMP_PATH . "/" . $this->id . "/" . $this->dt_created;
-        $cache_file_path = $cache_directory_path . "/" . $this->filename;
+        $cache_directory = ROOT_PATH . "/" . Attachment::CACHE_PATH . "/" . Attachment::TEMP_PATH . "/" . FileService::getCacheRuntimePath() . "/" . $this->id . "/" . $this->dt_created;
+        $cache_file_path = $cache_directory . "/" . $this->filename;
 
         if ($this->adapter === "local" || !$cache_locally || file_exists($cache_file_path)) {
             return $file->getContent();
         }
 
-        if (!file_exists($cache_directory_path)) {
+        if (!file_exists($cache_directory)) {
             try {
-                mkdir($cache_directory_path, 0774, true);
+                mkdir($cache_directory, 0771, true);
             } catch (Exception $e) {
                 $this->w->Log->setLogger("FILE")->error("Failed to execute 'mkdir': " . $e->getMessage());
             }
@@ -310,9 +310,14 @@ class Attachment extends DbObject
      */
     public function moveToAdapter($adapter = "local", $delete_after_move = false)
     {
-        // Get content of file
-        $content = $this->getContent();
-        $current_file = $this->getFile();
+        try {
+            // Get content of file
+            $content = $this->getContent();
+            $current_file = $this->getFile();
+        } catch (InvalidArgumentException $e) {
+            $this->w->Log->setLogger("FILE")->error("Attachment's {id: $this->id} file does not exist at path: $this->fullpath");
+            return;
+        }
 
         $this->adapter = $adapter;
 
