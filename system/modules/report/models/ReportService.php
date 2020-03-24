@@ -394,9 +394,6 @@ class ReportService extends DbService
     // export a recordset as CSV
     public function exportcsv($rows, $title)
     {
-        // require the necessary library
-        require_once "parsecsv/parsecsv.lib.php";
-
         // set filename
         $filename = str_replace(" ", "_", $title) . "_" . date("Y.m.d-H.i") . ".csv";
 
@@ -431,7 +428,7 @@ class ReportService extends DbService
                     unset($arr);
                 }
 
-                $csv = new parseCSV(null,null,null,[]);
+                $csv = new ParseCsv\Csv();
                 $csv->output_filename = $filename;
                 // ignore lib wrapper csv->output, to keep control over header re-sends!
                 $this->w->out($csv->unparse($row, $hds, null, null, null));
