@@ -47,11 +47,9 @@ class CmfiveAdminModule extends \Codeception\Module
         $I->clickCmfiveNavbar($I, 'Admin', 'List Users');
         $rowIndex = $I->findTableRowMatching(1, $user);
         $I->click('Edit', 'tbody tr:nth-child(' . $rowIndex . ')');
-        $I->see('Administration - Edit User - ' . $user);
         $I->fillForm($data);
-        $I->click('.savebutton');
-        $I->wait(1);
-        $I->see('User ' . $user . ' updated.');
+        $I->click('Update');
+        $I->waitForText("Account details updated");
     }
 
     public function editLookup($I, $lookup, $data)

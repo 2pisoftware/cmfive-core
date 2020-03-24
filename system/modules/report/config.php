@@ -6,7 +6,7 @@ Config::set('report', array(
     'path' => 'system/modules',
     "dependencies" => array(
         "tecnickcom/tcpdf" => "~6.2",
-        "michaelsharman/parsecsv" => "~0.4"
+        "parsecsv/php-parsecsv" => "1.2.0"
     ),
     '__password' => 'maybeconsiderchangingthis',
 	'topmenu' => true,

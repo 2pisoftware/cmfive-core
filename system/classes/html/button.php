@@ -3,7 +3,7 @@
 /**
  * \Html\button class for creating buttons
  * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button
- * 
+ *
  * @author Adam Buckley <adam.buckley90@gmail.com>
  */
 class button {
@@ -27,11 +27,11 @@ class button {
     public $newtab = false;
     public $href;
     public $onclick;
-    
+
     public static function factory() {
         return new \Html\button();
     }
-    
+
     public function __set($property, $value) {
 //        echo $property . " " . $value;
         if (method_exists($this, $property)) {
@@ -86,97 +86,97 @@ class button {
         $buffer .= (">{$this->text}</button>");
         return $buffer;
     }
- 
+
     public function autofocus($autofocus) {
         $this->autofocus = (boolean) $autofocus;
         return $this;
     }
-    
+
     public function disabled($disabled) {
         $this->disabled = (boolean) $disabled;
         return $this;
-    }    
-    
+    }
+
     public function form($form) {
         $this->form = $form;
         return $this;
     }
-    
+
     public function formaction($formaction) {
         $this->formaction = $formaction;
         return $this;
     }
-    
+
     public function formenctype($formenctype) {
         $this->formenctype = $formenctype;
         return $this;
     }
-    
+
     public function formmethod($formmethod) {
         $this->formmethod = $formmethod;
         return $this;
     }
-    
+
     public function formnovalidate($formnovalidate) {
         $this->formnovalidate = $formnovalidate;
         return $this;
     }
-    
+
     public function formtarget($formtarget) {
         $this->formtarget = $formtarget;
         return $this;
     }
-    
+
     public function id($id) {
         $this->id = $id;
         return $this;
     }
-    
+
     public function js($js) {
         $this->js = $js;
         return $this;
     }
-        
+
     public function setClass($class) {
         $this->_class .= $class;
         return $this;
     }
-    
+
     public function name($name) {
         $this->name = $name;
         return $this;
     }
-    
+
     public function onclick($onclick) {
         $this->onclick = $onclick;
         return $this;
     }
-    
+
     public function type($type) {
         $this->type = $type;
         return $this;
     }
-    
+
     public function text($text) {
         $this->text = $text;
         return $this;
     }
-    
+
     public function value($value) {
         $this->value = $value;
         return $this;
     }
-    
+
     public function confirm($confirm) {
         $this->confirm = $confirm;
         return $this;
     }
-    
+
     public function newtab($newtab) {
         $this->newtab = (boolean) $newtab;
         return $this;
     }
-    
+
     public function href($href) {
         $this->href = $href;
         return $this;

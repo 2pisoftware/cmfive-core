@@ -1,5 +1,7 @@
 <?php
 
+use Sonata\GoogleAuthenticator\GoogleAuthenticator;
+
 /**
  * User object
  *
@@ -27,14 +29,37 @@ class User extends DbObject
     public $_modifiable;
     public $language;
     public $is_password_invalid;
+    public $is_mfa_enabled;
+    public $mfa_secret;
 
+    /**
+     * Checks if the passed password matches the stored password when hashed.
+     *
+     * @deprecated v3.0.0
+     *
+     * @param string $password
+     *
+     * @return bool
+     */
     public function checkPassword($password)
     {
-        if (empty($this->password) || /*empty($this->password_salt) ||*/ empty($password)) {
+        if (empty($this->password) || empty($password)) {
             return false;
         }
 
-        return $this->password == $this->encryptPassword($password);
+        return password_verify($password, $this->password);
+    }
+
+    /**
+     * Check if the passed MFA code is correct.
+     *
+     * @param string $mfa_code
+     *
+     * @return bool
+     */
+    public function checkMfaCode(string $mfa_code) : bool
+    {
+        return (new GoogleAuthenticator())->checkCode($this->mfa_secret, $mfa_code);
     }
 
     /**
