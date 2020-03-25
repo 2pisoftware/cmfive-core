@@ -31,21 +31,21 @@ class HttpTransport implements GenericTransport
         ]);
     }
 
-    public function send($to, $replyto, $subject, $body, $cc = null, $bcc = null, $attachments = [], $headers = [])
+    public function send($to, $reply_to, $subject, $body, $cc = null, $bcc = null, $attachments = [], $headers = [])
     {
         $send_uri = Config::get("email.send_uri");
         if (empty($send_uri)) {
-            $this->w->Log->error("Failed to send mail to: $to, from: $replyto, about: $subject: email.send_uri not set in config");
+            $this->w->Log->error("Failed to send mail to: $to, from: $reply_to, about: $subject: email.send_uri not set in config");
             return;
         }
 
         if (empty($to) || strlen($to) === 0) {
-            $this->w->Log->error("Failed to send mail to: $to, from: $replyto, about: $subject: no recipients");
+            $this->w->Log->error("Failed to send mail to: $to, from: $reply_to, about: $subject: no recipients");
             return;
         }
 
         if ($this->transport === null) {
-            $this->w->Log->error("Failed to send mail to: $to, from: $replyto, about: $subject: no email transport defined");
+            $this->w->Log->error("Failed to send mail to: $to, from: $reply_to, about: $subject: no email transport defined");
             return;
         }
 
@@ -99,7 +99,7 @@ class HttpTransport implements GenericTransport
             "to" => is_array($to) ? $to : [$to],
             "cc" => is_array($cc) ? $cc : [$cc],
             "bcc" => is_array($bcc) ? $bcc : [$bcc],
-            "reply_to" => $replyto,
+            "reply_to" => $reply_to,
             "subject" => $subject,
             "body" => $body,
             "body_content_type" => "text/html",
@@ -120,7 +120,7 @@ class HttpTransport implements GenericTransport
                 throw new Exception("unexpected status code returned: {$response->getStatusCode()}");
             }
         } catch (Exception $e) {
-            $this->w->Log->error("Failed to send mail to: $to, from: $replyto, about: $subject: {$e->getMessage()}");
+            $this->w->Log->error("Failed to send mail to: $to, from: $reply_to, about: $subject: {$e->getMessage()}");
         }
     }
 }
