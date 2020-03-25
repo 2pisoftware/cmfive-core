@@ -8,7 +8,6 @@ class ReportModuleCest
 
     public function testReport($I)
     {
-
         $I->wantTo('Verify that reports can use templates, connections and feeds');
         $I->loginAsAdmin($I);
         $I->createReport($I, $this->reportTitle, 'Admin');
@@ -44,6 +43,8 @@ class ReportModuleCest
         $I->runReportTemplate($I, $this->reportTitle, 'Test Template');
         $I->See('2pi');
         $I->See('Pedigree');
+
+        $I->duplicateReport($I, $this->reportTitle);
 
         // Test the report forms - including new multicolform layout
         $report_name = "Test Report";
