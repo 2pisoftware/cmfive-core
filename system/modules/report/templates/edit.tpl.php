@@ -10,7 +10,7 @@
     </div>
     <div class="tab-body">
         <div id="report" class="clearfix">
-            <?php echo $btnrun . $duplicate_button . $report_form; ?>
+            <?php echo ($btnrun ?? "") . ($duplicate_button ?? "") . $report_form; ?>
         </div>
         <?php if (!empty($report->id)) : ?>
             <div id="code" class="clearfix">
@@ -57,7 +57,7 @@
         } else {
             $("#category").attr('disabled', 'disabled');
         }
-        
+
         $("#category").html(option_string);
     });
 

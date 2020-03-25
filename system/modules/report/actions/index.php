@@ -17,7 +17,7 @@ function index_ALL(Web &$w)
     $where = '';
     if (empty($reset)) {
         if (!empty($module)) {
-			$where .= " and r.module = " . $w->db->quote($module);
+            $where .= " and r.module = " . $w->db->quote($module);
             $w->ctx("reqModule", $module);
         }
     }
@@ -27,16 +27,19 @@ function index_ALL(Web &$w)
 
     // set headings based on role: 'user' sees only approved reports and no approval status
     $line = ($w->Auth->user()->hasAnyRole("report_editor", "report_admin")) ?
-        array(array("Title", "Module", "Description", "")) : array(array("Title", "Module", "Description", ""));
+        [["Title", "Module", "Description", ""]] : [["Title", "Module", "Description", ""]];
 
     // if i am a member of a list of reports, lets display them
     if ($reports) {
         foreach ($reports as $rep) {
             $member = $w->Report->getReportMember($rep->id, $who);
 
+            $edit_button = "";
+            $duplicate_button = "";
+
             // editor & admin get EDIT button
             if ((!empty($member->role) && $member->role == "EDITOR") || ($w->Auth->user()->hasRole("report_admin"))) {
-                $btnedit = Html::b($w->localUrl("/report/edit/" . $rep->id), "Edit");
+                $edit_button = Html::b($w->localUrl("/report/edit/" . $rep->id), "Edit");
                 $duplicate_button = Html::b($w->localUrl("/report/duplicate/{$rep->id}"), "Duplicate");
             }
 
@@ -50,32 +53,32 @@ function index_ALL(Web &$w)
             // if 'report user' only list approved reports with no approval status flag
             if (($w->Auth->user()->hasRole("report_user")) && (!$w->Auth->user()->hasRole("report_editor")) && (!$w->Auth->user()->hasRole("report_admin"))) {
                 if ($rep->is_approved == "1") {
-                    $line[] = array(
+                    $line[] = [
                         Html::a($w->localUrl("/report/runreport/" . $rep->id), $rep->title),
                         ucfirst($rep->module),
                         $rep->description,
-                        (!empty($btnedit) ? $btnedit : "")
-                    );
+                        (!empty($edit_button) ? $edit_button : "")
+                    ];
                 }
             } else {
                 // if editor or admin, list all active reports of which i have membership and show approval status and buttons
-                $line[] = array(
+                $line[] = [
                     Html::a($w->localUrl("/report/runreport/" . $rep->id), $rep->title),
                     ucfirst($rep->module),
                     $rep->description,
-                    $btnedit . $duplicate_button . $btndelete,
-                );
+                    $edit_button . $duplicate_button . $btndelete,
+                ];
             }
         }
     } else {
         // i am not a member of any reports
-        $line[] = array("You have no available reports", "", "", "", "", "", "");
+        $line[] = ["You have no available reports", "", "", "", "", "", ""];
     }
 
     // populate search dropdowns
     $modules = $w->Report->getModules();
     $w->ctx("modules", $modules);
-    $type = array();
+    $type = [];
     $w->ctx("type", Html::select("type", $type));
 
     // display list of reports, if any
