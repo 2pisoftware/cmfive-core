@@ -18,7 +18,7 @@ class FormApplicationMapping extends DbObject
      */
     public function getForm()
     {
-        return $this->getObject("Form", $this->form_id);
+        return $this->getObject("Form", ["id" => $this->form_id]);
     }
 
     public function getApplication()

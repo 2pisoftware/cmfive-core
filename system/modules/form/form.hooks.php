@@ -31,14 +31,14 @@ function form_core_template_tab_content(Web $w, $params)
     $forms_list = "";
 
     $form_mappings = $w->Form->getFormMappingsForObject($params['object']);
-    $form_application_mapping = null;
+    $form_application_mappings = null;
 
     if ($params['object'] instanceof FormApplication) {
-        $form_application_mapping = $w->Form->getFormApplicationMappingsForObject($params['object']);
+        $form_application_mappings = $w->Form->getFormApplicationMappingsForObject($params['object']);
     }
 
-    if (!empty($form_application_mapping)) {
-        $form_mappings[] = $form_application_mapping;
+    if (!empty($form_application_mappings)) {
+        $form_mappings = array_merge($form_mappings, $form_application_mappings);
     }
 
     foreach ($form_mappings ?? [] as $form_mapping) {
