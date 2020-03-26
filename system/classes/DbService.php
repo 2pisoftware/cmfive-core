@@ -273,14 +273,14 @@ class DbService
             // was $this->_db->where($where, false); , prior to FPDO update onto PHP7.2
             $this->_db->where($where);
         }
-        
+
         // Default is deleted checks to 0
         $columns = $o->getDbTableColumnNames();
-        
+
         if (!$includeDeleted && (property_exists(get_class($o), "is_deleted") || (in_array("is_deleted", $columns)))) {
             $this->_db->where('is_deleted', 0);
         }
-        
+
         // Ordering
         if (!empty($order_by)) {
             $this->_db->order_by($order_by);
@@ -300,7 +300,7 @@ class DbService
         $result = $this->_db->fetch_all();
         if ($result) {
             $objects = $this->getObjectsFromRows($class, $result, true);
-            
+
             if ($objects) {
                 // store the complete list
                 if ($cache_list && !isset(self::$_cache2[$class][$key])) {

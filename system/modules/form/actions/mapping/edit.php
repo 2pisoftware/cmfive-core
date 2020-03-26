@@ -1,36 +1,78 @@
 <?php
 
-function edit_POST(Web $w) {
-	
-	$form_id = $w->request("form_id");
-	
-	// Load current mappings
-	$current_mappings = $w->Form->getObjects("FormMapping", ["form_id" => $form_id, "is_deleted" => 0]);
-	
-	// Cross reference them with ones that have been posted
-	if (!empty($current_mappings)) {
-		foreach($current_mappings as $mapping) {
-			if(!array_key_exists($mapping->object, $_POST)) {
-				// Hard delete because we dont really need to track soft deleted
-				// But option is there in case we ever want to
-				$mapping->delete(true);
-			} else {
-				// Insert
-				 unset($_POST[$mapping->object]);
-			}
-		}
-	}
-	
-	// Save new additions
-	if (!empty($_POST)) {
-		foreach($_POST as $to_map => $value) {
-			$new_mapping = new FormMapping($w);
-			$new_mapping->form_id = $form_id;
-			$new_mapping->object = $to_map;
-			$new_mapping->insert();
-		}
-	}
-	
-	
-	$w->msg("Form mappings updated", "/form/show/" . $form_id . "#mapping");
+function edit_POST(Web $w)
+{
+    $form_id = $w->request("form_id");
+    $current_mappings = $w->Form->getObjects("FormMapping", ["form_id" => $form_id, "is_deleted" => 0]) ?? [];
+
+    foreach ($_POST as $key => $value) {
+        switch ($value) {
+            case "none":
+                foreach ($current_mappings as $current_mapping) {
+                    if ($key === $current_mapping->object) {
+                        $current_mapping->delete(true);
+                    }
+                }
+                break;
+            case "single":
+                $was_mapping_found = false;
+
+                foreach ($current_mappings as $current_mapping) {
+                    if ($key === $current_mapping->object) {
+                        $was_mapping_found = true;
+                        $current_mapping->is_singleton = true;
+
+                        if (!$current_mapping->update()) {
+                            $w->Log->setLogger("FORM")->error("Failed to update FormMapping with id: {$current_mapping->id}");
+                        }
+                    }
+                }
+
+                if ($was_mapping_found) {
+                    break;
+                }
+
+                $new_mapping = new FormMapping($w);
+                $new_mapping->form_id = $form_id;
+                $new_mapping->object = $key;
+                $new_mapping->is_singleton = true;
+
+                if (!$new_mapping->insert()) {
+                    $w->Log->setLogger("FORM")->error("Failed to create new FormMapping for Form with id: {$form_id}");
+                }
+                break;
+            case "multiple":
+                $was_mapping_found = false;
+
+                foreach ($current_mappings as $current_mapping) {
+                    if ($key === $current_mapping->object) {
+                        $was_mapping_found = true;
+                        $current_mapping->is_singleton = false;
+
+                        if (!$current_mapping->update()) {
+                            $w->Log->setLogger("FORM")->error("Failed to update FormMapping with id: {$current_mapping->id}");
+                        }
+                    }
+                }
+
+                if ($was_mapping_found) {
+                    break;
+                }
+
+                $new_mapping = new FormMapping($w);
+                $new_mapping->form_id = $form_id;
+                $new_mapping->object = $key;
+                $new_mapping->is_singleton = false;
+
+                if (!$new_mapping->insert()) {
+                    $w->Log->setLogger("FORM")->error("Failed to create new FormMapping for Form with id: {$form_id}");
+                }
+                break;
+            default:
+                $w->Log->setLogger("FORM")->error("Unknown mapping type: {$value}, no action taken");
+                break;
+        }
+    }
+
+    $w->msg("Form mappings updated", "/form/show/" . $form_id . "#mapping");
 }
