@@ -516,6 +516,9 @@ class FormService extends DbService
                     // Trigger update to allow the modifyForPersistance to take care of attachment uploads
                     $instance_value->update();
                     unset($file_values[$field->technical_name]);
+                } elseif ($field->type === "boolean") {
+                    $instance_value->value = "0";
+                    $instance_value->update();
                 } else {
                     $instance_value->delete();
                 }
