@@ -2,8 +2,7 @@
 
 class Report extends DbObject
 {
-
-    public $title; // report title
+    public $title;   // report title
     public $module; // module report pertains to
     public $category; // category of report given by Lookup
     public $description; // description of report
@@ -203,6 +202,7 @@ class Report extends DbObject
                         switch ($type) {
                             case "autocomplete":
                                 $minValue = 3;
+                                // Fallthrough.
                             case "select":
                                 if ($sql != "") {
                                     // if sql exists, check SQL is valid
@@ -299,7 +299,6 @@ class Report extends DbObject
                             if (($name != SESSION_NAME) && ($name != "format")) {
                                 $crumbs[0][] = $value;
                             }
-
                         }
 
                         // if our SQL is still intact ...
@@ -413,5 +412,4 @@ class Report extends DbObject
 
         return $return;
     }
-
 }
