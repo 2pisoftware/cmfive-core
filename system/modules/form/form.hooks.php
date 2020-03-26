@@ -14,7 +14,7 @@ function form_core_template_tab_headers(Web $w, $object)
             $form_mapping = $w->Form->getFormMapping($form, get_class($object)) ?? $w->Form->getFormApplicationMapping($form, $object);
 
             if ($form->is_deleted == 0) {
-                $tabHeaders[] = "<a href='#" . toSlug($form->title) . "'>$form->title" . (!empty($form_mapping) && $form_mapping->is_singleton ? "" : "<span class='secondary round label cmfive__tab-label'>" .  $form->countFormInstancesForObject($object) . "</span>") . "</a>";
+                $tabHeaders[] = "<a href='#" . toSlug($form->title) . "'>$form->title" . " <span class='secondary round label cmfive__tab-label'>" .  $form->countFormInstancesForObject($object) . "</span></a>";
             }
         }
         return implode("", $tabHeaders);

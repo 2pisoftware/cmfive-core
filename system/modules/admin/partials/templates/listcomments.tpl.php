@@ -16,7 +16,7 @@ if ($w->auth->hasRole('comment')) {
         // Loop comments is responsible for listing all of the comments given
             // It then calls displaycomment which prints and individual comment?>
         <div id="<?php echo $internal_only === true ? 'internal' : 'external'; ?>_comments_container">
-            <?php echo $w->partial("loopcomments", array("object" => $comments, "redirect" => $redirect, 'internal_only' => (isset($internal_only) ? $internal_only : false), 'external_only' => (isset($external_only) ? $external_only : false)), "admin"); ?>
+            <?php echo $w->partial("loopcomments", ["object" => $comments, "redirect" => $redirect, 'internal_only' => (isset($internal_only) ? $internal_only : false), 'external_only' => (isset($external_only) ? $external_only : false)], "admin"); ?>
         </div>
 
         <?php CSRF::regenerate(); ?>

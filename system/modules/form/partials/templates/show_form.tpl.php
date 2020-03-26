@@ -1,7 +1,7 @@
 <?php
 
-if (empty($table)) {
-    return;
-}
+echo $edit_button;
 
-echo $edit_button . $table;
+if (!empty($table)) {
+    echo $table;
+}

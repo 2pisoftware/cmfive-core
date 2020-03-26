@@ -26,9 +26,7 @@
         </div>
     </div>
     <div class="additional_details" v-show="!loading_metadata">
-        <!-- <div class='large-12 columns'> -->
         <div v-if='!selectedTypeIsVueComponent()' v-html="metadata_form_html"></div>
-        <!-- <metadata-autocomplete v-if='selected_type == "autocomplete"'></metadata-autocomplete> -->
         <?php
         echo VueComponentRegister::getComponent('metadata-select')->display([
             "v-if" => 'selected_type == "select" || selected_type == "autocomplete"', ':default-value' => 'metadata'
@@ -37,8 +35,6 @@
             "v-if" => 'selected_type == "subform"', ':forms' => 'form_list', ':default-value' => 'metadata'
         ]);
         ?>
-        <!-- <metadata-subform v-if='selected_type == "subform"' :forms="form_list" :default-value="metadata"></metadata-subform> -->
-        <!-- </div> -->
     </div>
     <loading-indicator :show="loading_metadata"></loading-indicator>
     <div class="row">
@@ -60,12 +56,8 @@
             selected_type: '<?php echo $field->type; ?>',
             types: <?php echo json_encode(FormField::getFieldTypes()); ?>,
             loading_metadata: false,
-            metadata: <?php echo json_encode(array_map(function ($metadata) {
-                            return $metadata->toArray();
-                      }, $field->getMetadata() ?: [])); ?>,
-            form_list: <?php echo json_encode(array_map(function ($form) {
-                            return $form->toArray();
-                       }, $w->Form->getForms() ?: [])); ?>,
+            metadata: <?php echo json_encode(array_map(function ($metadata) { return $metadata->toArray(); }, $field->getMetadata() ?: [])); ?>,
+            form_list: <?php echo json_encode(array_map(function ($form) { return $form->toArray(); }, $w->Form->getForms() ?: [])); ?>,
             metadata_form: ''
         },
         computed: {

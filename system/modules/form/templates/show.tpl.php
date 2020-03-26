@@ -87,15 +87,7 @@
                             if (!empty($mapping_names)) {
                                 foreach ($mapping_names as $mapping_name) {
                                     $mapping = $w->Form->getFormMapping($form, $mapping_name);
-                                    $type = "";
-
-                                    if (empty($mapping)) {
-                                        $type = "none";
-                                    } elseif ($mapping->is_singleton) {
-                                        $type = "single";
-                                    } else {
-                                        $type = "multiple";
-                                    }
+                                    $type = empty($mapping) ? "none" : $mapping->getMappingType();
 
                                     echo "<h3>$mapping_name</h3>";
                                     echo "<label>" . Html::radio(strtolower($mapping_name) . "_none", $mapping_name, $type, "none") . " None</label>";
@@ -108,7 +100,7 @@
                     </div>
                     <div class="row-fluid clearfix">
                         <div class="small-12 columns">
-                            <button id="save" class="button">Save</button>
+                            <button id="form_mapping_save" class="button">Save</button>
                         </div>
                     </div>
                 </form>

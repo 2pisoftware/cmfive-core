@@ -121,7 +121,7 @@ class FormService extends DbService
      */
     public function getFormApplicationMappingsForObject(FormApplication $object)
     {
-        return $this->getObject("FormApplicationMapping", ["application_id" => $object->id]);
+        return $this->getObjects("FormApplicationMapping", ["application_id" => $object->id]);
     }
 
     /**

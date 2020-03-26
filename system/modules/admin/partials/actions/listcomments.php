@@ -1,5 +1,7 @@
 <?php
 
+namespace System\Modules\Admin;
+
 function listcomments(\Web $w, $params)
 {
     $object = $params['object'];

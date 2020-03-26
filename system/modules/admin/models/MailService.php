@@ -27,10 +27,10 @@ class MailService extends DbService
      * @param string $body
      * @param string $cc (optional)
      * @param string $bcc (optional)
-     * @param Array $attachments (optional)
+     * @param array $attachments (optional)
      * @return int
      */
-    public function sendMail($to, $replyto, $subject, $body, $cc = null, $bcc = null, $attachments = array(), $headers = [])
+    public function sendMail($to, $replyto, $subject, $body, $cc = null, $bcc = null, $attachments = [], $headers = [])
     {
         $this->w->Log->setLogger(MailService::$logger)->info("Sending email to " . $to);
         if (!empty($this->transport)) {
@@ -88,19 +88,19 @@ class MailService extends DbService
 
     /**
      *
-     * @param Integer $batch_id
-     * @param Integer $number number of queued emails to return
+     * @param int $batch_id
+     * @param int $number number of queued emails to return
      * @return array of EmailQueue ids
      */
     public function getNextEmailsForBatch($batch_id, $number)
     {
-        return $this->_db->sql('SELECT id FROM mail_queue WHERE batch_id = ' . $batch_id . ' AND is_deleted = 0 ORDER BY dt_created LIMIT ' . $number)->fetch_all();
+        return $this->_db->get('mail_queue')->select()->select('id')->where('batch_id', $batch_id)->and('is_deleted', 0)->orderBy('dt_created asc')->limit($number)->fetchAll();
     }
 
     /**
      *
-     * @param Integer $email_id
-     * @return obj MailQueue
+     * @param int $email_id
+     * @return MailQueue
      */
     public function getQueueObjForId($email_id)
     {

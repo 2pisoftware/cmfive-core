@@ -45,6 +45,6 @@ function show_form_wizard(\Web $w, $params)
     $w->ctx("fields", $form_fields_array);
     $w->ctx("object_class", $object_class);
     $w->ctx("object_id", $object_id);
-    $w->ctx("success_message", $params["success_message"]);
-    $w->ctx("failure_message", $params["failure_message"]);
+    $w->ctx("success_message", array_key_exists("success_message", $params) ? $params["success_message"] : "");
+    $w->ctx("failure_message", array_key_exists("failure_message", $params) ? $params["failure_message"] : "");
 }

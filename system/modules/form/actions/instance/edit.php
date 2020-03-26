@@ -38,6 +38,7 @@ function edit_POST(Web $w)
     $object_class = $w->request("object_class");
     $object_id = $w->request("object_id");
     $form = null;
+
     if (empty($form_id) && empty($p['id'])) {
         $w->msg("Form instance data missing");
         return;
@@ -48,17 +49,12 @@ function edit_POST(Web $w)
         unset($_POST[CSRF::getTokenID()]);
     }
 
-    try {
-        $form_instance = $w->Form->saveForm($form_id, $_POST, $_FILES, $p['id'], $object_class, $object_id);
+    $form_instance = $w->Form->saveForm($form_id, $_POST, $_FILES, $p['id'], $object_class, $object_id);
 
-        if (empty($p["id"])) {
-            $w->callHook("form", "after_create_form", $form_instance);
-        }
-    } catch (Exception $e) {
-        echo "<pre>";
-        var_dump($e);
-        die;
+    if (empty($p["id"])) {
+        $w->callHook("form", "after_create_form", $form_instance);
     }
+
     $form = $form_instance->getForm();
 
     $w->msg($form->title . (!empty($p['id']) ? " updated" : " created"), $redirect_url . "#" . toSlug($form->title));

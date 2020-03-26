@@ -20,4 +20,14 @@ class FormMapping extends DbObject
     {
         return $this->getObject("Form", $this->form_id);
     }
+
+    /**
+     * Returns the mapping type as a string.
+     *
+     * @return string
+     */
+    public function getMappingType() : string
+    {
+        return $this->is_singleton ? "single" : "multiple";
+    }
 }

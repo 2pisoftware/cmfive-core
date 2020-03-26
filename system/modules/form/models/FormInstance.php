@@ -80,15 +80,15 @@ class FormInstance extends DbObject
         return $fields;
     }
 
-    //returns array of values from sql view
+    /**
+     * Returns an array of values from an SQL view.
+     *
+     * @deprecated v3.0.0
+     * @return array
+     */
     public function getValuesArray()
     {
-        $view_name = str_replace(' ', '_', $this->getForm()->title) . '_view';
-        $query = "SELECT * FROM "
-            . $view_name
-            . " WHERE  instance_id = "
-            . $this->id;
-        return $this->w->db->query($query)->fetch(PDO::FETCH_ASSOC);
+        return $this->_db->get(str_replace(' ', '_', $this->getForm()->title) . '_view')->where("instance_id", $this->id)->fetchAll();
     }
 
     /**
@@ -174,13 +174,13 @@ class FormInstance extends DbObject
         if (!empty($form_fields)) {
             foreach ($form_fields as $field) {
                 if (!empty($formValueCollated[$field->id])) {
-                    $form_structure[] = array($formValueCollated[$field->id]->getFormRow());
+                    $form_structure[] = [$formValueCollated[$field->id]->getFormRow()];
                 } else {
-                    $form_structure[] = array($field->getFormRow());
+                    $form_structure[] = [$field->getFormRow()];
                 }
             }
         }
-        return array($form->title => $form_structure);
+        return [$form->title => $form_structure];
     }
 
     public function delete($force = false)

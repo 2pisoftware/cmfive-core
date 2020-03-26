@@ -156,12 +156,6 @@ class DbService
 
         if (is_scalar($idOrWhere)) {
             $this->_db->get($table)->where($o->getDbColumnName('id'), $idOrWhere);
-
-            $columns = $o->getDbTableColumnNames();
-
-            if (!$includeDeleted && (property_exists(get_class($o), "is_deleted") || (in_array("is_deleted", $columns)))) {
-                $this->_db->where('is_deleted', 0);
-            }
         } elseif (is_array($idOrWhere)) {
             if (is_complete_associative_array($idOrWhere)) {
                 $this->_db->get($table)->where($idOrWhere);

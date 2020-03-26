@@ -52,7 +52,7 @@ class FormModuleCest
 
         $I->click("Mapping");
         $I->click("#task_single");
-        $I->click("#save");
+        $I->click("#form_mapping_save");
         $I->deleteForm($I, "Test Form Proto");
     }
 
