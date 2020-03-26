@@ -131,9 +131,9 @@ class DbObject extends DbService
     }
 
     private function establishEncryptionModel() {
-        
-        $this->_systemEncrypt = 'SSLencrypt'; 
-        $this->_systemDecrypt = 'SSLdecrypt'; 
+
+        $this->_systemEncrypt = 'SSLencrypt';
+        $this->_systemDecrypt = 'SSLdecrypt';
 
                 $encryption_key = Config::get('system.encryption.key',null);
                 //$encryption_iv = Config::get('system.encryption.iv',null);

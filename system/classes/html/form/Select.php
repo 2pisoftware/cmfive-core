@@ -1,4 +1,6 @@
-<?php namespace Html\Form;
+<?php
+
+namespace Html\Form;
 
 /**
  * Class representation of a select field - HTML5 only
