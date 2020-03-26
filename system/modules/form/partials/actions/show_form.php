@@ -17,7 +17,7 @@ function show_form(\Web $w, $params)
 
     // If there happens to be more than once FormInstance show the most recent one.
     if (!empty($form_instances) && count($form_instances) > 0) {
-        $form_instance = $form_instances[count($form_instances) - 1];
+        $form_instance = array_pop($form_instances);
     }
 
     $table_rows = [];

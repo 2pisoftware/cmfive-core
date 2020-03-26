@@ -211,4 +211,64 @@ class Form extends DbObject
     {
         return "/form/show/" . $this->id;
     }
+
+    /**
+     * Checks if this object can be listed.
+     *
+     * @param User $user
+     * @return bool
+     */
+    public function canList(User $user) : bool
+    {
+        if (!parent::canList($user) || $this->is_deleted) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Checks if this object can be viewed.
+     *
+     * @param User $user
+     * @return bool
+     */
+    public function canView(User $user) : bool
+    {
+        if (!parent::canView($user) || $this->is_deleted) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Checks if this object can be edited.
+     *
+     * @param User $user
+     * @return bool
+     */
+    public function canEdit(User $user) : bool
+    {
+        if (!parent::canEdit($user) || $this->is_deleted) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Checks if this object can be deleted.
+     *
+     * @param User $user
+     * @return bool
+     */
+    public function canDelete(User $user) : bool
+    {
+        if (!parent::canDelete($user) || $this->is_deleted) {
+            return false;
+        }
+
+        return true;
+    }
 }

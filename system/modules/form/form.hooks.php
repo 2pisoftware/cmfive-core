@@ -43,7 +43,7 @@ function form_core_template_tab_content(Web $w, $params)
 
     foreach ($form_mappings ?? [] as $form_mapping) {
         $form = $form_mapping->getForm();
-        if (empty($form)) {
+        if (empty($form) || !$form->canList($w->Auth->user())) {
             continue;
         }
 
