@@ -83,6 +83,7 @@ class FormInstance extends DbObject
     /**
      * Returns an array of values from an SQL view.
      *
+     * @deprecated v3.0.0
      * @return array
      */
     public function getValuesArray()
