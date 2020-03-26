@@ -26,8 +26,7 @@ function index_ALL(Web &$w)
     $reports = $w->Report->getReportsbyUserWhere($who, $where);
 
     // set headings based on role: 'user' sees only approved reports and no approval status
-    $line = ($w->Auth->user()->hasAnyRole("report_editor", "report_admin")) ?
-        [["Title", "Module", "Description", ""]] : [["Title", "Module", "Description", ""]];
+    $line = [["Title", "Module", "Description", ""]];
 
     // if i am a member of a list of reports, lets display them
     if ($reports) {
