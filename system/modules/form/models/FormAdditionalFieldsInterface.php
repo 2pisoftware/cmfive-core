@@ -102,8 +102,8 @@ class FormAdditionalFieldsInterface extends FormFieldInterface
 
                 return $output;
             case "subform":
-                return Html::box('/form-field/manage_subform/' . $form_value->id . '?display_only=1', 'View ' . $field->name, false, false, null, null, null, null, 'block-link') .
-                    Html::a('/form-field/manage_subform/' . $form_value->id, 'Manage ' . $field->name, null, 'block-link', null, "_blank");
+                return Html::box("/form-field/manage_subform/$form_value->id?display_only=1", "View $field->name", true, false, null, null, null, null, 'block-link') .
+                    Html::b("/form-field/manage_subform/$form_value->id", "Manage $field->name", null, null, true);
 
                 break;
             case "boolean":
