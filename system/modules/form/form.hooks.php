@@ -50,7 +50,8 @@ function form_core_template_tab_content(Web $w, $params)
         $forms_list .= '<div id="' . toSlug($form->title) . '">' . $w->partial($form_mapping->is_singleton ? "show_form" : "listform", [
             "form" => $form,
             "redirect_url" => $params['redirect_url'],
-            'object' => $params['object']
+            'object' => $params['object'],
+            "display_only" => false,
         ], "form") . '</div>';
     }
 
