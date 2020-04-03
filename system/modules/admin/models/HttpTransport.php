@@ -2,6 +2,7 @@
 
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
+use Aws\Sqs\SqsClient;
 
 class HttpTransport implements GenericTransport
 {
@@ -33,6 +34,12 @@ class HttpTransport implements GenericTransport
 
     public function send($to, $reply_to, $subject, $body, $cc = null, $bcc = null, $attachments = [], $headers = [])
     {
+        $client = SqsClient::factory([
+            "profile" => "",
+            "region" => "",
+        ]);
+
+
         $send_uri = Config::get("email.send_uri");
         if (empty($send_uri)) {
             $this->w->Log->error("Failed to send mail to: $to, from: $reply_to, about: $subject: email.send_uri not set in config");

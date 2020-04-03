@@ -48,5 +48,12 @@ Config::set('admin', [
             'region'    => 'ap-southeast-2',
             'version'   => 'latest',
         ]
-    ]
+    ],
+    "mail" => [
+        "http" => [
+            "mode" => "production",
+            "profile" => "",
+            "region" => "",
+        ],
+    ],
 ]);
