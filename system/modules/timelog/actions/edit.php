@@ -119,5 +119,8 @@ function edit_POST(Web $w) {
 	// Save comment
 	$timelog->setComment($_POST['description']);
 
+	// All changes are in, allow other systems response	
+    $w->callHook('timelog', 'edit_completion', $timelog);
+
 	$w->msg("<div id='saved_record_id' data-id='".$timelog->id."' >Timelog saved</div>", (!empty($redirect) ? $redirect . "#timelog" : "/timelog"));
 }

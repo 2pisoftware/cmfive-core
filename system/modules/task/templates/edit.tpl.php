@@ -7,6 +7,11 @@
         </blockquote>
     </div>
 <?php endif; ?>
+
+<?php if (!empty($taskbanners)) : ?>
+    <?php echo $taskbanners; ?>
+<?php endif; ?>
+
 <div class="tabs">
     <div class="tab-head">
         <a href="#details">Task Details</a>

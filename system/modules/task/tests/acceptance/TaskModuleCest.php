@@ -49,7 +49,7 @@ class TaskModuleCest
         ]);
         $I->click('Duplicate Task');
         $I->wait(3);
-        $I->see('Task duplicated');
+        $I->waitForText('Task duplicated', 6);
         $I->see('testTasks_test task -Copy');
         $I->editTask($I, 'testTasks_test task -Copy', ['status' => 'Wip']);
         $I->wait(3);

@@ -184,6 +184,28 @@ function edit_GET($w)
 
         $w->ctx("tasknotify", Html::multiColForm($form, $w->localUrl("/task/updateusertasknotify/" . $task->id), "POST"));
     }
+
+    ///////////////////
+    // Top Banners   //
+    ///////////////////
+
+    $banners = $w->callHook('task', 'banner_requirements', $task);
+    // success , warning , info , alert , secondary
+    // dismissable : true / false
+    // eg: $banners[] = ["message" => "HELLO" , "dismiss" => true , "style" => "info"];
+
+    $taskbanners = "";
+    foreach ($banners as $banner) {
+        if (isset($banner["message"])) {
+            $taskbanners .= "<div data-alert class='alert-box "
+            .($banner["style"] ?? "secondary")."'>"
+            .$banner["message"]
+            .((isset($banner["dismiss"])&&$banner["dismiss"])?"<a href='#' class='close'>&times;</a>":"")
+            ."</div>";
+        }
+    }
+    $w->ctx("taskbanners", $taskbanners);
+
 }
 
 function edit_POST($w)
