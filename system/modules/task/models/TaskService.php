@@ -872,6 +872,7 @@ class TaskService extends DbService
             $arr['guest']['creator'] = 1;
             $arr['member']['creator'] = 1;
             $arr['member']['assignee'] = 1;
+            $arr['member']['other'] = 1;
             $arr['owner']['creator'] = 1;
             $arr['owner']['assignee'] = 1;
             $arr['owner']['other'] = 1;
