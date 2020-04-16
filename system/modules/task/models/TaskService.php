@@ -933,8 +933,7 @@ class TaskService extends DbService
         if (empty($users) || !is_array($users)) {
             $users = [];
         }
-        //var_dump($users);
-        //die;
+        
         $us = (object) array_merge($me, $creator, $users);
 
         if (empty($us)) {
@@ -956,8 +955,11 @@ class TaskService extends DbService
             // determine current user's 'type' for this task
             $assignee = ($task->assignee_id == $i->user_id);
             $creator = ($creator_id == $i->user_id);
-            $owner = $this->getIsOwner($task->task_group_id, $i->user_id);
-            $member = $this->getIsMember($task->task_group_id, $i->user_id);
+            
+            if ($this->getIsOwner($task->task_group_id, $i->user_id) || $this->getIsMember($task->task_group_id, $i->user_id))
+            {
+                $user = true;
+            }
 
             // this user may be any or all of the 'types'
             // need to check each 'type' for a notification
@@ -968,7 +970,7 @@ class TaskService extends DbService
             if (!empty($creator)) {
                 $types[] = "creator";
             }
-            if (!empty($owner) || !empty($member)) {
+            if (!empty($user)) {
                 $types[] = "other";
             }
           
