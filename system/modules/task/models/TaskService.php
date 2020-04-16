@@ -627,6 +627,11 @@ class TaskService extends DbService
         return $this->getObjects("TaskGroupMember", ["task_group_id" => $id, "role" => "OWNER", "is_active" => 1]);
     }
 
+    public function getTaskGroupMembers($id)
+    {
+        return $this->getObjects("TaskGroupMember", ["task_group_id" => $id, "role" => "MEMBER", "is_active" => 1]);
+    }
+
     public function getTaskGroupUsers($id)
     {
         return $this->getObjects("TaskGroupMember", ["task_group_id" => $id, "is_active" => 1]);
@@ -640,6 +645,19 @@ class TaskService extends DbService
         if ($owners) {
             foreach ($owners as $owner) {
                 if ($owner->user_id == $user_id) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public function getIsMember($task_group_id, $user_id)
+    {
+        $members = $this->getTaskGroupMembers($task_group_id);
+        if ($members) {
+            foreach ($members as $member) {
+                if ($member->user_id == $user_id) {
                     return true;
                 }
             }
@@ -915,6 +933,8 @@ class TaskService extends DbService
         if (empty($users) || !is_array($users)) {
             $users = [];
         }
+        //var_dump($users);
+        //die;
         $us = (object) array_merge($me, $creator, $users);
 
         if (empty($us)) {
@@ -937,6 +957,7 @@ class TaskService extends DbService
             $assignee = ($task->assignee_id == $i->user_id);
             $creator = ($creator_id == $i->user_id);
             $owner = $this->getIsOwner($task->task_group_id, $i->user_id);
+            $member = $this->getIsMember($task->task_group_id, $i->user_id);
 
             // this user may be any or all of the 'types'
             // need to check each 'type' for a notification
@@ -948,7 +969,10 @@ class TaskService extends DbService
                 $types[] = "creator";
             }
             if (!empty($owner)) {
-                $types[] = "other";
+                $types[] = "owner";
+            }
+            if (!empty($member)) {
+                $types[] = "member";
             }
 
             // if they have a type ... look for notifications
@@ -994,6 +1018,7 @@ class TaskService extends DbService
             }
             unset($types);
         }
+        $funk = $notifyUsers;
         return $notifyUsers;
     }
 
