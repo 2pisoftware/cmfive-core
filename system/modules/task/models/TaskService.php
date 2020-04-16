@@ -968,12 +968,10 @@ class TaskService extends DbService
             if (!empty($creator)) {
                 $types[] = "creator";
             }
-            if (!empty($owner)) {
-                $types[] = "owner";
+            if (!empty($owner) || !empty($member)) {
+                $types[] = "other";
             }
-            if (!empty($member)) {
-                $types[] = "member";
-            }
+          
 
             // if they have a type ... look for notifications
             if (!empty($types)) {
