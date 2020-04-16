@@ -930,7 +930,11 @@ class TaskService extends DbService
             // determine current user's 'type' for this task
             $assignee = ($task->assignee_id == $i->user_id);
             $creator = ($creator_id == $i->user_id);
-            $owner = $this->getIsOwner($task->task_group_id, $i->user_id);
+            if ($this->getIsOwner($task->task_group_id, $i->user_id) || $this->getIsMember($task->task_group_id, $i->user_id))
+            {
+                $user = true;
+            }
+           
 
             // this user may be any or all of the 'types'
             // need to check each 'type' for a notification
@@ -941,7 +945,7 @@ class TaskService extends DbService
             if (!empty($creator)) {
                 $types[] = "creator";
             }
-            if (!empty($owner)) {
+            if (!empty($user)) {
                 $types[] = "other";
             }
 
