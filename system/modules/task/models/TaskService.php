@@ -627,6 +627,11 @@ class TaskService extends DbService
         return $this->getObjects("TaskGroupMember", ["task_group_id" => $id, "role" => "OWNER", "is_active" => 1]);
     }
 
+    public function getTaskGroupUsers($id)
+    {
+        return $this->getObjects("TaskGroupMember", ["task_group_id" => $id, "is_active" => 1]);
+    }
+
     // determine if a given user is an owner of a task group.
     // input: task group ID & user ID
     public function getIsOwner($task_group_id, $user_id)
@@ -903,13 +908,14 @@ class TaskService extends DbService
         // Notify assignee too
         $creator = [$this->getMemberGroupById($task->task_group_id, $creator_id), !empty($task->assignee_id) ? $this->getMemberGroupById($task->task_group_id, $task->assignee_id) : null];
         // get member object(s) for task group owner(s)
-        $owners = $this->getTaskGroupOwners($task->task_group_id);
+
+        $users = $this->getTaskGroupUsers($task->task_group_id);
 
         // us is everyone
-        if (empty($owners) || !is_array($owners)) {
-            $owners = [];
+        if (empty($users) || !is_array($users)) {
+            $users = [];
         }
-        $us = (object) array_merge($me, $creator, $owners);
+        $us = (object) array_merge($me, $creator, $users);
 
         if (empty($us)) {
             return [];
