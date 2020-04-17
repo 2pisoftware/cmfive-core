@@ -73,6 +73,31 @@ class Task extends DbObject
         }
     }
 
+    public function addTaskGroupAsSubscribers()
+    {
+        $taskgroup = $this->getTaskGroup();
+            if (!empty($taskgroup->id)) {
+                // If automatic subscribe is ticked, assign all members as subscribers
+                if ($taskgroup->shouldAutomaticallySubscribe()) {
+                    $members = $taskgroup->getMembers();
+                    if (!empty($members)) {
+                        foreach ($members as $member) {
+                            $member_user = $this->w->Auth->getUser($member->user_id);
+
+                            if (!empty($member_user->id)) {
+                                $this->addSubscriber($member_user);
+                            }
+                        }
+                    }
+                    // Else only assign the assignee and creator
+                } else {
+                    $creator_id = $this->getTaskCreatorId();
+                    $this->addSubscriber($this->w->Auth->getUser($creator_id));
+                    $this->addSubscriber($this->w->Auth->getUser($this->assignee_id));
+                }
+            }
+    }
+
     /**
      * Adds task type and task data to the index
      *
@@ -606,7 +631,7 @@ class Task extends DbObject
             }
 
             // Add all taskgroup members as subscribers
-            $taskgroup = $this->getTaskGroup();
+            /*$taskgroup = $this->getTaskGroup();
             if (!empty($taskgroup->id)) {
                 // If automatic subscribe is ticked, assign all members as subscribers
                 if ($taskgroup->shouldAutomaticallySubscribe()) {
@@ -626,7 +651,7 @@ class Task extends DbObject
                     $this->addSubscriber($this->w->Auth->getUser($creator_id));
                     $this->addSubscriber($this->w->Auth->getUser($this->assignee_id));
                 }
-            }
+            }*/
 
             $this->commitTransaction();
         } catch (Exception $ex) {

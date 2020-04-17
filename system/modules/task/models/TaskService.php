@@ -838,7 +838,7 @@ class TaskService extends DbService
      *
      * @return TaskGroup
      */
-    public function createTaskGroup($type, $title, $description, $default_assignee_id, $can_assign = "OWNER", $can_view = "OWNER", $can_create = "OWNER", $is_active = 1, $is_deleted = 0, $default_task_type = null, $default_priority = null, $is_automatic_subscription = false)
+    public function createTaskGroup($type, $title, $description, $default_assignee_id, $can_assign = "OWNER", $can_view = "OWNER", $can_create = "OWNER", $is_active = 1, $is_deleted = 0, $default_task_type = null, $default_priority = null, $is_automatic_subscription = true)
     {
         // title should be unique!
         $taskgroup = $this->getTaskGroupByUniqueTitle($title);
@@ -911,6 +911,8 @@ class TaskService extends DbService
 
     public function getNotifyUsersForTask($task, $event)
     {
+        
+
         if (empty($task)) {
             return [];
         }
@@ -943,8 +945,14 @@ class TaskService extends DbService
 
         $notifyUsers = [];
 
+        $subs = $task->getSubscribers();
+        foreach ($subs as $sub)
+        {
+            $notifyUsers[$sub->user_id] = $sub->user_id;
+        }
+
         // foreach relavent member
-        foreach ($us as $i) {
+        /*foreach ($us as $i) {
             if (empty($i)) {
                 continue;
             }
@@ -1018,8 +1026,8 @@ class TaskService extends DbService
                 }
             }
             unset($types);
-        }
-        $funk = $notifyUsers;
+        }*/
+        
         return $notifyUsers;
     }
 

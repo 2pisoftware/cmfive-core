@@ -65,6 +65,7 @@ function task_core_dbobject_after_insert_Task(Web $w, $task)
 {
     $w->Log->setLogger("TASK")->debug("task_core_dbobject_after_insert_Task");
     if (!$task->_skip_creation_notification) {
+        $task->addTaskGroupAsSubscribers();
         $w->Task->sendCreationNotificationForTask($task);
     } else {
         $w->Log->setLogger("TASK")->debug("Task creation notification skipped because _skip_creation_notification was set on the task object");
