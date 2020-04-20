@@ -189,13 +189,13 @@ function edit_GET($w)
     // Top Banners   //
     ///////////////////
 
-    $banners = $w->callHook('task', 'banner_requirements', $task);
+    $banners = $w->callHook('task', 'extra_messages', $task);
     // success , warning , info , alert , secondary
     // dismissable : true / false
     // eg: $banners[] = ["message" => "HELLO" , "dismiss" => true , "style" => "info"];
 
     $taskbanners = "";
-    foreach ($banners as $banner) {
+    foreach ($banners ?? [] as $banner) {
         if (isset($banner["message"])) {
             $taskbanners .= "<div data-alert class='alert-box "
             .($banner["style"] ?? "secondary")."'>"
