@@ -40,7 +40,7 @@ function deletetaskgroup_GET(Web &$w) {
 	// if is_active is set to '0', display 'Yes', else display 'No'
 	$isactive = $taskgroup->is_active == "1" ? "Yes" : "No";
 
-	if (count($taskgroup->getActiveTasks()) !== 0) {
+	if (count($taskgroup->getUnclosedTasks()) !== 0) {
 		$w->out("<div class='row-fluid panel'>To be able to delete a task group, please ensure there are no active tasks</div>");
 		return;
 	}
