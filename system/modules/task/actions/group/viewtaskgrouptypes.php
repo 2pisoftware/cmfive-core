@@ -60,7 +60,7 @@ function viewtaskgrouptypes_ALL(Web $w) {
 			array("Description","textarea","description",null,"26","6"),
 			array("Default Task Type","select","default_task_type",null,null),
 			array("Default Priority","select","default_priority",null,null),
-			array('Automatic Subscription', 'checkbox', 'is_automatic_subscription',  1)
+			array('Automatic Subscription', 'checkbox', 'is_automatic_subscription', TaskGroup::$_DEFAULT_AUTOMATIC_SUBSCRIPTION)
 			//array("Default Assignee","select","default_assignee_id",null,$assignees),
 	),$w->localUrl("/task-group/createtaskgroup"),"POST","Save");
 
