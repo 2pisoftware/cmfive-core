@@ -627,16 +627,6 @@ class TaskService extends DbService
         return $this->getObjects("TaskGroupMember", ["task_group_id" => $id, "role" => "OWNER", "is_active" => 1]);
     }
 
-    public function getTaskGroupMembers($id)
-    {
-        return $this->getObjects("TaskGroupMember", ["task_group_id" => $id, "role" => "MEMBER", "is_active" => 1]);
-    }
-
-    public function getTaskGroupUsers($id)
-    {
-        return $this->getObjects("TaskGroupMember", ["task_group_id" => $id, "is_active" => 1]);
-    }
-
     // determine if a given user is an owner of a task group.
     // input: task group ID & user ID
     public function getIsOwner($task_group_id, $user_id)
@@ -645,19 +635,6 @@ class TaskService extends DbService
         if ($owners) {
             foreach ($owners as $owner) {
                 if ($owner->user_id == $user_id) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    public function getIsMember($task_group_id, $user_id)
-    {
-        $members = $this->getTaskGroupMembers($task_group_id);
-        if ($members) {
-            foreach ($members as $member) {
-                if ($member->user_id == $user_id) {
                     return true;
                 }
             }

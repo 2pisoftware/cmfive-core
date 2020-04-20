@@ -630,29 +630,6 @@ class Task extends DbObject
                 $tg_type->on_after_insert($this);
             }
 
-            // Add all taskgroup members as subscribers
-            /*$taskgroup = $this->getTaskGroup();
-            if (!empty($taskgroup->id)) {
-                // If automatic subscribe is ticked, assign all members as subscribers
-                if ($taskgroup->shouldAutomaticallySubscribe()) {
-                    $members = $taskgroup->getMembers();
-                    if (!empty($members)) {
-                        foreach ($members as $member) {
-                            $member_user = $this->w->Auth->getUser($member->user_id);
-
-                            if (!empty($member_user->id)) {
-                                $this->addSubscriber($member_user);
-                            }
-                        }
-                    }
-                    // Else only assign the assignee and creator
-                } else {
-                    $creator_id = $this->getTaskCreatorId();
-                    $this->addSubscriber($this->w->Auth->getUser($creator_id));
-                    $this->addSubscriber($this->w->Auth->getUser($this->assignee_id));
-                }
-            }*/
-
             $this->commitTransaction();
         } catch (Exception $ex) {
             $this->Log->error("Inserting Task: " . $ex->getMessage());
