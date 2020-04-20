@@ -917,6 +917,7 @@ class TaskService extends DbService
             return [];
         }
 
+        /*
         $me = [];
         // This may be called from cron
         if (!empty($_SESSION['user_id'])) {
@@ -943,16 +944,8 @@ class TaskService extends DbService
             return [];
         }
 
-        $notifyUsers = [];
-
-        $subs = $task->getSubscribers();
-        foreach ($subs as $sub)
-        {
-            $notifyUsers[$sub->user_id] = $sub->user_id;
-        }
-
         // foreach relavent member
-        /*foreach ($us as $i) {
+        foreach ($us as $i) {
             if (empty($i)) {
                 continue;
             }
@@ -1027,6 +1020,14 @@ class TaskService extends DbService
             }
             unset($types);
         }*/
+
+        $notifyUsers = [];
+
+        $subs = $task->getSubscribers();
+        foreach ($subs as $sub)
+        {
+            $notifyUsers[$sub->user_id] = $sub->user_id;
+        }
         
         return $notifyUsers;
     }
