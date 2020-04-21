@@ -1,46 +1,62 @@
 <?php
 
-function manage_subform_GET(Web $w) {
-	
-	list($id) = $w->pathMatch('id');
+function manage_subform_GET(Web $w)
+{
+    list($form_value_id) = $w->pathMatch('id');
 
-	if (empty($id)) {
-		$w->ctx('error_message', 'No ID given');
-	}
+    if (empty($form_value_id)) {
+        $w->ctx('error_message', 'No ID given');
+    }
 
-	$form_value = $w->Form->getFormValue($id);
-	if (empty($form_value->id)) {
-		$w->ctx('error_message', 'Subform not found');
-	}
+    $form_value = $w->Form->getFormValue($form_value_id);
+    if (empty($form_value->id)) {
+        $w->ctx('error_message', 'Subform not found');
+    }
 
-	// Check that value is a subform
-	$field = $form_value->getFormField();
-	if ($field->type !== "subform") {
-		// Handle issue with non subform
-	}
+    // Check that value is a subform
+    $field = $form_value->getFormField();
+    if ($field->type !== "subform") {
+        $w->out("Subform not found");
+        return;
+    }
 
-	$metadata = $field->getMetadata();
-	if (empty($metadata)) {
-		// Handle issue with missing metadata
-		$w->out("Subform not found");
-		return;
-	}
+    // Check that metadata is found.
+    $metadata = $field->getMetadata();
+    if (empty($metadata)) {
+        $w->out("Subform not found");
+        return;
+    }
 
-	$subform = null;
-	foreach($metadata as  $metadata_row) {
-		if ($metadata_row->meta_key === "associated_form") {
-			$subform = $w->Form->getForm($metadata_row->meta_value);
-		}
-	}
+    $subform = null;
+    foreach ($metadata as $metadata_row) {
+        if ($metadata_row->meta_key === "associated_form") {
+            $subform = $w->Form->getForm($metadata_row->meta_value);
+        }
+    }
 
+    // Check that subform is found.
+    if (empty($subform)) {
+        $w->out("Subform not found");
+        return;
+    }
 
-	if (empty($subform)) {
-		// Handle issue with missing form
-		$w->out("Subform not found");
-		return;
-	}
+    $is_singleton = false;
+    $form_instance = $form_value->getFormInstance();
 
-	$w->ctx('subform', $subform);
-	$w->ctx("form_value", $form_value);
-	$w->ctx('display_only', !!$w->request('display_only'));
+    // Check if the Form has a singleton mapping.
+    if (!empty($form_instance)) {
+        $form = $form_instance->getForm();
+
+        if (!empty($form)) {
+            $form_mapping = $w->Form->getFormMapping($form, $form_instance->object_class);
+            if (!empty($form_mapping) && $form_mapping->is_singleton) {
+                $is_singleton = true;
+            }
+        }
+    }
+
+    $w->ctx('subform', $subform);
+    $w->ctx("form_value", $form_value);
+    $w->ctx('display_only', !!$w->request('display_only'));
+    $w->ctx("is_singleton", $is_singleton);
 }

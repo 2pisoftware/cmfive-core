@@ -40,7 +40,7 @@ function deletetaskgroup_GET(Web &$w) {
 	// if is_active is set to '0', display 'Yes', else display 'No'
 	$isactive = $taskgroup->is_active == "1" ? "Yes" : "No";
 
-	if (count($taskgroup->getTasks()) !== 0) {
+	if (count($taskgroup->getUnclosedTasks()) !== 0) {
 		$w->out("<div class='row-fluid panel'>To be able to delete a task group, please ensure there are no active tasks</div>");
 		return;
 	}
@@ -93,6 +93,7 @@ function updategroupnotify_POST(Web &$w) {
 	$arr['guest']['creator'] = $_REQUEST['guest_creator'] ? $_REQUEST['guest_creator'] : "0"; 
 	$arr['member']['creator'] = $_REQUEST['member_creator'] ? $_REQUEST['member_creator'] : "0"; 
 	$arr['member']['assignee'] = $_REQUEST['member_assignee'] ? $_REQUEST['member_assignee'] : "0"; 
+	$arr['member']['assignee'] = $_REQUEST['member_other'] ? $_REQUEST['member_other'] : "0"; 
 	$arr['owner']['creator'] = $_REQUEST['owner_creator'] ? $_REQUEST['owner_creator'] : "0"; 
 	$arr['owner']['assignee'] = $_REQUEST['owner_assignee'] ? $_REQUEST['owner_assignee'] : "0"; 
 	$arr['owner']['other'] = $_REQUEST['owner_other'] ? $_REQUEST['owner_other'] : "0"; 

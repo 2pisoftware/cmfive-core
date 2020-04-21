@@ -1,4 +1,6 @@
-<?php namespace System\Modules\Admin;
+<?php
+
+namespace System\Modules\Admin;
 
 function listcomments(\Web $w, $params)
 {
