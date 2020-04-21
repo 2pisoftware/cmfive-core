@@ -23,16 +23,8 @@
             <a href="#external_comments">External Comments <span class='label secondary round cmfive__tab-label cmfive__count-external_comment_section'></span></a>
             <a href="#attachments">Attachments <span class='label secondary round cmfive__tab-label cmfive__count-attachment'></span></a>
 
-            <!-- <?php if ($task->getCanINotify()) : ?>
-            <a href="#notification">Notifications</a>
-            <?php endif; ?>
-            <?php
-            $tab_headers = $w->callHook('core_template', 'tab_headers', $task);
-            if (!empty($tab_headers)) {
-                echo implode('', $tab_headers);
-            }
-            ?>
-        <?php endif; ?> -->
+            
+        <?php endif; ?>
     </div>
     <div class="tab-body">
         <div id="details" class="clearfix">
@@ -149,14 +141,7 @@
             <div id="attachments">
                 <?php echo $w->partial("listattachments", array("object" => $task, "redirect" => "task/edit/{$task->id}#attachments"), "file"); ?>
             </div>
-            <!-- <?php if ($task->getCanINotify()) : ?>
-                <div id="notification" class="clearfix">
-                    <div class="row small-12">
-                        <h4>If you do not set notifications for this Task then the default settings for this Task group will be used</h4>
-                    </div>
-                    <?php echo $tasknotify; ?>
-                </div>
-            <?php endif; ?> -->
+            
             <?php
             $tab_content = $w->callHook('core_template', 'tab_content', ['object' => $task, 'redirect_url' => '/task/edit/' . $task->id]);
             if (!empty($tab_content)) {
