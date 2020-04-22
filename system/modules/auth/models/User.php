@@ -160,7 +160,7 @@ class User extends DbObject
      */
     public function inGroup(User $group)
     {
-        $groupmembers = $this->Auth->getGroupMembers($group->id, null);
+        $groupmembers = AuthService::getInstance($this->w)->getGroupMembers($group->id, null);
 
         if ($groupmembers) {
             foreach ($groupmembers as $member) {
@@ -168,7 +168,7 @@ class User extends DbObject
                     return true;
                 }
 
-                $usr = $this->Auth->getUser($member->user_id);
+                $usr = AuthService::getInstance($this->w)->getUser($member->user_id);
                 if (!empty($usr) && $usr->is_group == 1 && $this->inGroup($usr)) {
                     return true;
                 }
@@ -235,7 +235,7 @@ class User extends DbObject
     public function getRoles($force = false)
     {
         if ($this->is_admin) {
-            return $this->Auth->getAllRoles();
+            return AuthService::getInstance($this->w)->getAllRoles();
         }
         if (!$this->_roles || $force) {
             $this->_roles = array();

@@ -5,7 +5,7 @@ function resetpassword_GET(Web $w)
     $email = $w->request('email'); // email
     $token = $w->request('token'); // token
 
-    $user = $w->Auth->getUserForToken($token); //this->getObject("User", array("password_reset_token", $token));
+    $user = AuthService::getInstance($w)->getUserForToken($token); //this->getObject("User", array("password_reset_token", $token));
     $validData = false;
     if (!empty($user->id)) {
         // Check that the password reset hasn't expired
@@ -47,7 +47,7 @@ function resetpassword_POST(Web $w)
         return;
     }
 
-    $user = $w->Auth->getUserForToken($token); //getObject("User", array("password_reset_token", $token));
+    $user = AuthService::getInstance($w)->getUserForToken($token); //getObject("User", array("password_reset_token", $token));
     $validData = false;
     if (!empty($user->id)) {
         // Check that the password reset hasn't expired
@@ -65,7 +65,7 @@ function resetpassword_POST(Web $w)
                 $user->update(true);
 
                 // Precautionary logout
-                if ($w->Auth->loggedIn()) {
+                if (AuthService::getInstance($w)->loggedIn()) {
                     $w->sessionDestroy();
                 }
 

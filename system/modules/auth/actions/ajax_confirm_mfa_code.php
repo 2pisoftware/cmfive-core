@@ -12,7 +12,7 @@ function ajax_confirm_mfa_code_POST(Web $w)
         return;
     }
 
-    $user = $w->Auth->getUser($request_data["id"]);
+    $user = AuthService::getInstance($w)->getUser($request_data["id"]);
     if (empty($user)) {
         $w->out((new AxiosResponse())->setErrorResponse("Unable to find user", null));
         return;

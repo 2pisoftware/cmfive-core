@@ -13,7 +13,7 @@ function ajax_get_mfa_qr_code_GET(Web $w)
         return;
     }
 
-    $user = $w->Auth->getUser($user_id);
+    $user = AuthService::getInstance($w)->getUser($user_id);
     if (empty($user)) {
         $w->out((new AxiosResponse())->setErrorResponse("Unable to find user", null));
         return;

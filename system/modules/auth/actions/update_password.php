@@ -17,7 +17,7 @@ function update_password_POST(Web $w)
         $w->error("Password and Confirm Password do not match", "/auth/update_password");
     }
 
-    $user = $w->Auth->user();
+    $user = AuthService::getInstance($w)->user();
     if (empty($user)) {
         $w->error("Not logged in", "/auth/login");
     }
