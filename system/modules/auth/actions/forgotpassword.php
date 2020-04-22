@@ -2,8 +2,8 @@
 
 function forgotpassword_GET(Web $w) {
     // Check if logged in already
-    $user = $w->Auth->user();
-    if ($w->Auth->loggedIn() && $w->Auth->allowed($user->redirect_url)) {
+    $user = AuthService::getInstance($w)->user();
+    if (AuthService::getInstance($w)->loggedIn() && AuthService::getInstance($w)->allowed($user->redirect_url)) {
         $w->redirect($w->localUrl(!empty($user->redirect_url) ? $user->redirect_url : "/main"));
     }
     // $loginform = Html::form(array(
@@ -22,7 +22,7 @@ function forgotpassword_POST(Web $w) {
     }
 
     $login = $w->request("login");
-    $user = $w->Auth->getUserForLogin($login);
+    $user = AuthService::getInstance($w)->getUserForLogin($login);
     $responseString = "If this account exists then a password reset email has been just sent to the associated email address.";
 
     // For someone trying to gain access to a system, this is one of the

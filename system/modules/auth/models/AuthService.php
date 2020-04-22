@@ -108,6 +108,11 @@ class AuthService extends DbService
         $this->_loadRoles();
     }
 
+    /**
+     * Returns a user ID if they are logged in
+     * 
+     * @return mixed|null a user ID
+     */
     public function loggedIn()
     {
         return $this->w->session('user_id');
