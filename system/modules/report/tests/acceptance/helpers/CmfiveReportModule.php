@@ -11,6 +11,21 @@ class CmfiveReportModule extends \Codeception\Module
         $I->click('Save');
     }
 
+    /**
+     * Duplicates a report using $report_name.
+     *
+     * @param CmfiveUI $I
+     * @param string $report_name
+     * @return void
+     */
+    public function duplicateReport($I, $report_name)
+    {
+        $I->amOnPage("/report/index");
+        $I->click("Duplicate", "tbody tr:nth-child(" . $I->findTableRowMatching(1, $report_name) . ")");
+        $I->amOnPage("/report/index");
+        $I->see($report_name . " - Copy");
+    }
+
     public function defineReportSQL($I, $name, $SQL)
     {
         $I->wait(1);
@@ -61,11 +76,8 @@ class CmfiveReportModule extends \Codeception\Module
     public function requestReportWithData($I, $name, $data = [])
     {
         $I->clickCmfiveNavbar($I, 'Report', 'Report Dashboard');
-        // $I->wait(1);
         $I->click('Edit', 'tbody tr:nth-child(' . $I->findTableRowMatching(1, $name) . ')');
-        // $I->wait(1);
         $I->click("//div[@id='report']/button");
-        // Add code to fill in data
         $I->fillForm($data);
         $I->click('form > .row:last-child > button:first-child');
     }

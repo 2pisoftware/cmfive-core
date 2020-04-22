@@ -77,6 +77,11 @@ class TaskGroup extends DbObject
         return !!$this->is_automatic_subscription;
     }
 
+    public function getUnclosedTasks()
+    {
+        return $this->getObjects("Task", ['task_group_id' => $this->id, 'is_deleted' => 0, 'is_closed' => 0]);
+    }
+
     public function getTasks()
     {
         return $this->getObjects("Task", ['task_group_id' => $this->id, 'is_deleted' => 0]);

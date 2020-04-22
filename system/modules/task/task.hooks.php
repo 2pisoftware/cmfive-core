@@ -64,6 +64,7 @@ function task_timelog_type_options_for_Task(Web $w, $object)
 function task_core_dbobject_after_insert_Task(Web $w, $task)
 {
     $w->Log->setLogger("TASK")->debug("task_core_dbobject_after_insert_Task");
+    $task->addTaskGroupAsSubscribers();
     if (!$task->_skip_creation_notification) {
         $w->Task->sendCreationNotificationForTask($task);
     } else {

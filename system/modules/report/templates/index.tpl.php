@@ -1,4 +1,3 @@
-<?php //echo Html::filter("Search Reports", array(array("Modules", "select", "module", !empty($reqModule) ? $reqModule : null, $modules)), "/report/index", "POST", "Search Reports", "leadFilter", null); ?>
 <?php echo $viewreports; ?>
 
 <script>
@@ -13,7 +12,7 @@
         });
     });
 
-    $.ajaxSetup ({
+    $.ajaxSetup({
         cache: false
     });
 
@@ -24,7 +23,7 @@
         $("select[id='module']").trigger("change");
     });
 
-    var cat_url = "/report/reportAjaxModuletoCategory?id="; 
+    var cat_url = "/report/reportAjaxModuletoCategory?id=";
     $("select[id='module']").on("change", function() {
         $.getJSON(cat_url + $(this).val(), function(result) {
             $('#category').parent().html(result);
@@ -35,13 +34,12 @@
         });
     });
 
-    var type_url = "/report/reportAjaxCategorytoType?id="; 
+    var type_url = "/report/reportAjaxCategorytoType?id=";
     $("select[id='category']").on("change", function() {
         $.getJSON(type_url + $(this).val() + "_" + $("select[id='module']").val(), function(result) {
             $('#type').parent().html(result);
             if (resetFlag)
                 $("select#type").val("<?php echo !empty($reqType) ? $reqType : ""; ?>");
-            }
-        );
+        });
     });
 </script>

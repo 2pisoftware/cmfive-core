@@ -643,7 +643,9 @@ class Web
                 // I.e. on Windows by default tries to save to C:\Temp
                 session_save_path(STORAGE_PATH . DIRECTORY_SEPARATOR . "session");
 
-                session_set_cookie_params(0, '/', $_SERVER['HTTP_HOST'], true, true);
+                if (Config::get("system.environment") !== "development")  {
+                    session_set_cookie_params(0, '/', $_SERVER['HTTP_HOST'], true, true);
+                }
                 session_start();
             } catch (Exception $e) {
                 $this->Log->info("Error starting session " . $e->getMessage());
