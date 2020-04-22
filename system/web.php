@@ -951,17 +951,20 @@ class Web
      * Returns a service class instance that matches the name given,
      * E.g. $w->Inbox->... would return an InboxService class instance.
      *
-     * @param <String> $name
-     * @return <Object>
+     * @deprecated v3.6
+     * @param string $name
+     * @return mixed|null
      */
-    public function __get($name) {
+    public function __get($name)
+    {
         return $this->service($name);
     }
 
     /**
      * Connect to the database
      */
-    public function initDB() {
+    public function initDB()
+    {
         try {
             $this->db = new DbPDO(Config::get("database"), Config::get("search.stopword_override"));
         } catch (Exception $ex) {
@@ -977,7 +980,8 @@ class Web
      * @param string $key
      * @return mixed
      */
-    function moduleConf($module, $key) {
+    public function moduleConf($module, $key)
+    {
         return Config::get("{$module}.{$key}");
     }
 
@@ -1087,23 +1091,23 @@ class Web
         }
     }
 
-	/**
-	 * Check for CSRF token and that we have a valid request method
-	 *
-	 * @throws CSRFException
-	 *
-	 * @return void
-	 */
-	public function validateCSRF() {
-		if (Config::get("system.csrf.enabled") == true && !CSRF::isValid($this->_requestMethod)) {
-			if (!CSRF::inHistory()) {
-				@$this->service('log')->error("System: CSRF Detected from " . $this->requestIpAddress());
-				throw new CSRFException("Cross site request forgery detected. Your IP has been logged");
-			} else {
-				$this->msg("Duplicate form submission detected, make sure you only click buttons once");
-			}
-		}
-	}
+    /**
+     * Check for CSRF token and that we have a valid request method
+     *
+     * @throws CSRFException
+     *
+     * @return void
+     */
+    public function validateCSRF() {
+        if (Config::get("system.csrf.enabled") == true && !CSRF::isValid($this->_requestMethod)) {
+            if (!CSRF::inHistory()) {
+                @$this->service('log')->error("System: CSRF Detected from " . $this->requestIpAddress());
+                throw new CSRFException("Cross site request forgery detected. Your IP has been logged");
+            } else {
+                $this->msg("Duplicate form submission detected, make sure you only click buttons once");
+            }
+        }
+    }
 
     /**
      * reads the /actions folder inside a module
@@ -1548,37 +1552,19 @@ class Web
      * defined in a model.php inside
      * as module.
      *
-     * @param <type> $name
-     * @return <type>
+     * @deprecated v3.6
+     * @param string $name
+     * @return mixed|null
      */
-    function service($name) {
+    public function service($name) {
         // Check if the module if active or not
         // This function will need to reject service calls when the active flag is false
         // To do this we need to check the config for the module housing the service call
         // As the service may not be the module, see Log in Main
-        $name = ucfirst($name);
-        if (!key_exists($name, $this->_services)) {
-            $cname = $name . "Service";
+        $name = ucfirst($name) . "Service";
 
-            // Checks if class exists and that the module active flag is true
-            if ($this->isClassActive($cname)) {
-                $s = new $cname($this);
-                // initialise
-                if (method_exists($s, "_web_init")) {
-                    $s->_web_init();
-                     } else {
-                    if (method_exists($s, "__init")) {
-                        $this->Log->error($cname.": exposing __init does not conform to PHP 7.2");
-                        $s->__init();
-                        }
-                    }
-                $this->_services[$name] = &$s;
-            } else {
-                return null;
-            }
-        }
-
-        return $this->_services[$name];
+        // Checks if class exists and that the module active flag is true
+        return $this->isClassActive($name) ? $name::getInstance($this) : null;
     }
 
     /**

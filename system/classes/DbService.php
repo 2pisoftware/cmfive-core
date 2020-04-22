@@ -18,9 +18,9 @@ class DbService
      *
      * @var <type>
      */
-    private static $_cache = array(); // used for single objects
-    public static $_cache2 = array(); // used for lists of objects
-    public static $_select_cache = array();
+    private static $_cache = []; // used for single objects
+    public static $_cache2 = []; // used for lists of objects
+    public static $_select_cache = [];
 
     /**
      * This variable keeps track of active transactions
@@ -29,6 +29,13 @@ class DbService
      */
     public static $_active_trx = false;
 
+    /**
+     * Magic get implementation to pass to Web, returns a {$name}Service singleton
+     *
+     * @deprecated v3.6
+     * @param string
+     * @return mixed|null
+     */
     public function __get($name)
     {
         return $this->w->$name;
@@ -47,8 +54,12 @@ class DbService
 
         if ($instance === null) {
             $instance = new $class($w);
-        }
 
+            if (method_exists($instance, "_web_init")) {
+                $instance->_web_init();
+            }
+        }
+        
         return $instance;
     }
 
@@ -127,8 +138,8 @@ class DbService
      */
     public function clearCache()
     {
-        self::$_cache = array();
-        self::$_cache2 = array();
+        self::$_cache = [];
+        self::$_cache2 = [];
     }
 
     /**
@@ -215,7 +226,7 @@ class DbService
     {
         $this->_db->clearSelect();
         if (!isset(self::$_select_cache[$class])) {
-            self::$_select_cache[$class] = array();
+            self::$_select_cache[$class] = [];
         }
         if (!empty(self::$_select_cache[$class][$table])) {
             $this->_db->select(self::$_select_cache[$class][$table]);
@@ -223,7 +234,7 @@ class DbService
         }
         // Move date conversion to SQL.
         // Automatically converts keys with different database values
-        $parts = array();
+        $parts = [];
         foreach ($object->getDbTableColumnNames() as $k) {
             if (0 === strpos($k, 'dt_') || 0 === strpos($k, 'd_')) { //  || 0 === strpos($k, 't_')
                 // This is MySQL specific!
@@ -374,7 +385,7 @@ class DbService
 
     public function getObjectsFromRows($class, $rows, $from_db = false)
     {
-        $list = array();
+        $list = [];
         if (!empty($class) && !empty($rows) && class_exists($class)) {
             foreach ($rows as &$row) {
                 $list[] = $this->getObjectFromRow($class, $row, $from_db);
