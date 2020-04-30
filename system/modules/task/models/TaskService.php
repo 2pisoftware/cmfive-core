@@ -476,7 +476,7 @@ class TaskService extends DbService
         $where .= " and t.is_deleted = 0 and g.is_active = 1 and g.is_deleted = 0";
 
         // check that task group is active and not deleted
-        $rows = $this->_db->sql("SELECT t.* from " . Task::$_db_table . " as t inner join " . ObjectModification::$_db_table . " as o on t.id = o.object_id inner join " . TaskGroup::$_db_table . " as g on t.task_group_id = g.id where o.creator_id = " . $id . " and o.table_name = '" . Task::$_db_table . "' " . $where . " order by t.id")->fetch_all();
+        $rows = $this->_db->sql("SELECT t.* from " . Task::$_db_table . " as t inner join " . ObjectModification::$_db_table . " as o on t.id = o.object_id inner join " . TaskGroup::$_db_table . " as g on t.task_group_id = g.id where o.creator_id = " . $this->_db->quote($id) . " and o.table_name = '" . Task::$_db_table . "' " . $this->_db->quote($where) . " order by t.id")->fetch_all();
         $rows = $this->fillObjects("Task", $rows);
         return $rows;
     }
@@ -513,7 +513,7 @@ class TaskService extends DbService
         $where .= " and date_format(c.dt_modified,'%Y-%m-%d') >= '" . $this->date2db($from) . "' and date_format(c.dt_modified,'%Y-%m-%d') <= '" . $this->date2db($to) . "'";
 
         // get and return tasks
-        $rows = $this->_db->sql("SELECT t.id, t.title, t.task_group_id, c.comment, c.creator_id, c.dt_modified from " . Task::$_db_table . " as t inner join " . TaskComment::$_db_table . " as c on t.id = c.obj_id and c.obj_table = '" . Task::$_db_table . "' inner join " . TaskGroup::$_db_table . " as g on t.task_group_id = g.id " . $where . " order by c.dt_modified desc")->fetch_all();
+        $rows = $this->_db->sql("SELECT t.id, t.title, t.task_group_id, c.comment, c.creator_id, c.dt_modified from " . Task::$_db_table . " as t inner join " . TaskComment::$_db_table . " as c on t.id = c.obj_id and c.obj_table = '" . Task::$_db_table . "' inner join " . TaskGroup::$_db_table . " as g on t.task_group_id = g.id " . $this->_db->quote($where) . " order by c.dt_modified desc")->fetch_all();
         return $rows;
     }
 
@@ -888,8 +888,6 @@ class TaskService extends DbService
 
     public function getNotifyUsersForTask($task, $event)
     {
-        
-
         if (empty($task)) {
             return [];
         }
@@ -1001,8 +999,12 @@ class TaskService extends DbService
         $notifyUsers = [];
 
         $subs = $task->getSubscribers();
-        foreach ($subs as $sub)
-        {
+        foreach ($subs as $sub) {
+            $user = $sub->getUser();
+            if ($user->is_external == 1) {
+                continue;
+            }
+
             $notifyUsers[$sub->user_id] = $sub->user_id;
         }
         

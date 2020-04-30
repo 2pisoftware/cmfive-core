@@ -1,7 +1,6 @@
 <?php
 
-Config::set('report', array(
-    'version' => '0.8.0',
+Config::set('report', [
     'active' => true,
     'path' => 'system/modules',
     "dependencies" => array(
@@ -13,4 +12,11 @@ Config::set('report', array(
     'hooks' => [
         'admin',
     ],
-));
+    'database' => [
+        'hostname'  => '',
+        'username'  => '',
+        'password'  => '',
+        'database'  => '',
+        'driver'    => ''
+    ]
+]);

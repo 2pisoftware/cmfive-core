@@ -327,7 +327,7 @@ class AuthService extends DbService
      *
      * @return array of strings
      */
-    public function getAllRoles()
+    public function getAllRoles() : array
     {
         $this->_loadRoles();
         if (!$this->_roles) {

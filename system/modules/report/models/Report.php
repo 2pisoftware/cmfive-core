@@ -14,6 +14,29 @@ class Report extends DbObject
     public $_modifiable; // employ the modifiable aspect
     public static $_db_table = "report";
 
+    /**
+     * Returns a DbPDO connection persistent for the whole requestw
+     *
+     * @return DbPDO|null 
+     */
+    public function getReadOnlyDbConnection()
+    {
+        static $connection = null;
+
+        if (!empty($connection)) {
+            return $connection;
+        }
+
+        $config = Config::get('report.database');
+
+        if ($config === null || empty($config['database']) || empty($config['username']) || empty($config['password'])) {
+            return null;
+        }
+
+        $connection = new DbPDO($config);
+        return $connection;
+    }
+
     public function getTemplates()
     {
         return $this->getObjects("ReportTemplate", array("report_id" => $this->id, "is_deleted" => 0));
@@ -46,7 +69,7 @@ class Report extends DbObject
     public function getDb()
     {
         if (empty($this->report_connection_id)) {
-            return $this->_db;
+            return $this->getReadOnlyDbConnection();
         } else {
             $dbc = $this->getObject("ReportConnection", $this->report_connection_id);
             if (!empty($dbc)) {
@@ -280,8 +303,8 @@ class Report extends DbObject
                         $sql = trim($sql);
 
                         // determine type of SQL statement, eg. select, insert, etc.
-                        $arrsql = preg_split("/\s+/", $sql);
-                        $action = strtolower($arrsql[0]);
+                        $sql_action = preg_split("/\s+/", $sql);
+                        $action = strtolower($sql_action[0]);
 
                         $crumbs = array(array());
                         // each form element should correspond to a field in our SQL where clause ... substitute
@@ -358,7 +381,7 @@ class Report extends DbObject
                                     try {
                                         $this->startTransaction();
                                         $rows = $this->Report->getExefromSQL($sql, $this->getDb());
-                                        $this->commitTransaction();
+                                        $this->rollbackTransaction();
                                         $line = array(array("SUCCESS", "SQL has completed successfully"));
                                     } catch (Exception $e) {
                                         // SQL returns errors so clean up and return error
@@ -393,23 +416,13 @@ class Report extends DbObject
     // given a report SQL statement, return recordset
     private function getRowsfromSQL($sql)
     {
-        if (!empty($this->report_connection_id)) {
-            $connection = $this->getDb();
-            $return = $connection->query($sql)->fetchAll();
-        } else {
-            $return = $this->_db->sql($sql)->fetch_all(PDO::FETCH_BOTH);
-        }
+        $connection = $this->getDb();
 
-        if (!empty($return)) {
-            foreach ($return as $key => $val) {
-                foreach ($val as $k => $v) {
-                    if (is_int($k)) {
-                        unset($return[$key][$k]);
-                    }
-                }
-            }
+        if (!empty($connection)) {
+            return $connection->query($sql)->fetchAll(PDO::FETCH_ASSOC);
         }
-
-        return $return;
+        
+        LogService::getInstance($this->w)->error("No database connection details found for report");
+        return null;
     }
 }
