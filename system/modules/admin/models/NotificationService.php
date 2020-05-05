@@ -80,7 +80,9 @@ class NotificationService extends DbService
             // Callback should return an instance of NotificationCallback
             $data = $callback($recipient_user, [], []);
 
-            $this->send($subject, $module, $template_name, $sending_user, $data->recipient_user, $data->template_data, $data->attachments);
+            if (is_a($data, "NotificationCallback")) {
+                $this->send($subject, $module, $template_name, $sending_user, $data->recipient_user, $data->template_data, $data->attachments);
+            }
         }
     }
 

@@ -18,7 +18,12 @@
             <a href="#external_comments">External Comments <span class='label secondary round cmfive__tab-label cmfive__count-external_comment_section'></span></a>
             <a href="#attachments">Attachments <span class='label secondary round cmfive__tab-label cmfive__count-attachment'></span></a>
 
-            
+            <?php
+            $tab_headers = $w->callHook('core_template', 'tab_headers', $task);
+            if (!empty($tab_headers)) {
+                echo implode('', $tab_headers);
+            }
+            ?>
         <?php endif; ?>
     </div>
     <div class="tab-body">
