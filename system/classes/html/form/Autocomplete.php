@@ -12,7 +12,7 @@ class Autocomplete extends \Html\Form\FormElement {
 	use \Html\GlobalAttributes;
 
 	// A prefix for the autocomplete text field
-	public static $_prefix = "acp_";
+	public static $_prefix = 'acp_';
 
 	public $minlength = 3;
 	public $name;
@@ -23,8 +23,8 @@ class Autocomplete extends \Html\Form\FormElement {
 	public $readonly;
 
 	public static $_excludeFromOutput = [
-		"id", "name", "required", "value", "minlength", "class", "style",
-		"options", "_prefix", "label", "source", "title"
+		'id', 'name', 'required', 'value', 'minlength', 'class', 'style',
+		'options', '_prefix', 'label', 'source', 'title'
 	];
 
 	/**
@@ -199,31 +199,31 @@ class Autocomplete extends \Html\Form\FormElement {
 
 		$prefix = static::$_prefix;
 
-		$displayValue = !empty($this->title) ? $this->title : $this->value;
+		$displayValue = htmlentities(!empty($this->title) ? $this->title : $this->value, ENT_QUOTES);
 
 		return <<<BUFFER
-<input type="text" style="display: none;" id="{$this->id}"  name="{$this->name}" value="{$this->value}" {$attribute_buffer} />
+<input type='text' style='display: none;' id='{$this->id}'  name='{$this->name}' value='{$this->value}' {$attribute_buffer} />
 <div class='acp_container'>
-	<input type="text" id="{$prefix}{$this->id}" name="{$prefix}{$this->name}" value="{$displayValue}" class="{$this->class}" style="{$this->style}" {$required} {$readonly} />
-	<div class="circle"></div>
-	<img class="center_image" width="40px" height="40px" src="/system/templates/img/cmfive_V_logo.png" />
+	<input type='text' id='{$prefix}{$this->id}' name='{$prefix}{$this->name}' value='{$displayValue}' class='{$this->class}' style='{$this->style}' {$required} {$readonly} />
+	<div class='circle'></div>
+	<img class='center_image' width='40px' height='40px' src='/system/templates/img/cmfive_V_logo.png' />
 </div>
 <script type='text/javascript'>
 	$(document).ready(function() {
-		$("#{$prefix}{$this->id}").keyup(function(e){
+		$('#{$prefix}{$this->id}').keyup(function(e){
 			if (e.which != 13) {
-				$("#{$this->id}").val("");
+				$('#{$this->id}').val('');
 			}
 		});
 
 		var using_source = {$using_source};
-		$("#{$prefix}{$this->id}").autocomplete({
+		$('#{$prefix}{$this->id}').autocomplete({
 			minLength: {$this->minlength},
 			source: {$source},
 			select: function(event,ui) {
 				event.preventDefault();
-				$("#{$this->id}").val(using_source ? ui.item.value : ui.item.id);
-				$("#{$prefix}{$this->id}").val(ui.item.label);
+				$('#{$this->id}').val(using_source ? ui.item.value : ui.item.id);
+				$('#{$prefix}{$this->id}').val(ui.item.label);
 				selectAutocompleteCallback(event, ui);
 			},
 			search: function() {
