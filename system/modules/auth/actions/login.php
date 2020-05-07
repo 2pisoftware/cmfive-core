@@ -3,8 +3,8 @@
 function login_GET(Web $w)
 {
     // Check if logged in already
-    $user = $w->Auth->user();
-    if ($w->Auth->loggedIn() && $w->Auth->allowed($user->redirect_url)) {
+    $user = AuthService::getInstance($w)->user();
+    if (AuthService::getInstance($w)->loggedIn() && AuthService::getInstance($w)->allowed($user->redirect_url)) {
         $w->redirect($w->localUrl(!empty($user->redirect_url) ? $user->redirect_url : "/main"));
     }
 
@@ -21,7 +21,7 @@ function login_GET(Web $w)
     CmfiveScriptComponentRegister::registerComponent("AxiosJS", new CmfiveScriptComponent("/system/templates/js/axios.min.js"));
 }
 
-function login_POST(Web &$w)
+function login_POST(Web $w)
 {
     $w->setLayout(null);
 
@@ -38,7 +38,7 @@ function login_POST(Web &$w)
         $w->error("Please enter your login and password", "/auth/login");
     }
 
-    $user = $w->Auth->getUserForLogin($login);
+    $user = AuthService::getInstance($w)->getUserForLogin($login);
     if (empty($user)) {
         $w->out((new AxiosResponse())->setErrorResponse("Incorrect login details", null));
         return;
@@ -49,7 +49,7 @@ function login_POST(Web &$w)
         return;
     }
 
-    $user = $w->Auth->login($login, $password, "Australia/Sydney", false, $mfa_code);
+    $user = AuthService::getInstance($w)->login($login, $password, "Australia/Sydney", false, $mfa_code);
     if (empty($user)) {
         $w->out((new AxiosResponse())->setErrorResponse("Incorrect login details", null));
         return;
