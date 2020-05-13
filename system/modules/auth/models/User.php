@@ -180,19 +180,19 @@ class User extends DbObject
     {
         $contact = $this->getContact();
 
-        if ($contact) {
-            $name = $contact->getFirstName();
+        if (!empty($contact->id)) {
+            return $contact->getFirstName();
         }
-        return $name;
+        return '';
     }
 
     public function getSurname()
     {
         $contact = $this->getContact();
-        if ($contact) {
-            $name = $contact->getSurname();
+        if (!empty($contact->id)) {
+            return $contact->getSurname();
         }
-        return $name;
+        return '';
     }
 
     public function getFullName()
