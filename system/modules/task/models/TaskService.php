@@ -374,8 +374,6 @@ class TaskService extends DbService
             $template_data['action_url'] = $this->w->localUrl('/task/edit/' . $task->id);
             $template_data['logo_url'] = Config::get('main.application_logo');
 
-            $this->w->Log->debug("Logo: " . $template_data['logo_url']);
-
             $template_data['fields'] = [
                 "Assigned to" => !empty($task->assignee_id) ? $task->getAssignee()->getFullName() : '',
                 "Type" => $task->getTypeTitle(),
