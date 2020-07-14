@@ -67,9 +67,8 @@ class Comment extends DbObject
 
     public function insert($force_validation = true)
     {
-        parent::insert($force_validation);
-
-        // Call Hook
+        $result = parent::insert($force_validation);
         $this->w->callHook("comment", "comment_added_" . $this->obj_table, $this);
+        return $result;
     }
 }

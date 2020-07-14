@@ -184,6 +184,28 @@ function edit_GET($w)
 
         $w->ctx("tasknotify", Html::multiColForm($form, $w->localUrl("/task/updateusertasknotify/" . $task->id), "POST"));
     }
+
+    ///////////////////
+    // Top Banners   //
+    ///////////////////
+
+    $banners = $w->callHook('task', 'extra_messages', $task);
+    // success , warning , info , alert , secondary
+    // dismissable : true / false
+    // eg: $banners[] = ["message" => "HELLO" , "dismiss" => true , "style" => "info"];
+
+    $taskbanners = "";
+    foreach ($banners ?? [] as $banner) {
+        if (isset($banner["message"])) {
+            $taskbanners .= "<div data-alert class='alert-box "
+            .($banner["style"] ?? "secondary")."'>"
+            .$banner["message"]
+            .((isset($banner["dismiss"])&&$banner["dismiss"])?"<a href='#' class='close'>&times;</a>":"")
+            ."</div>";
+        }
+    }
+    $w->ctx("taskbanners", $taskbanners);
+
 }
 
 function edit_POST($w)
@@ -256,13 +278,12 @@ function edit_POST($w)
         $user = $w->Auth->getUser($task->assignee_id);
         $contact = !empty($user->id) ? $user->getContact() : $w->Auth->user()->getContact();
 
-        $messageObject = Swift_Message::newInstance();
+        $messageObject = new Swift_Message("Invite to: " . $task->title);
         $messageObject->setTo([$contact->email]);
-        $messageObject->setSubject("Invite to: " . $task->title)
-            ->setFrom($w->Auth->user()->getContact()->email);
+        $messageObject->setFrom($w->Auth->user()->getContact()->email);
 
-        $messageObject->addPart("Your iCal is attached<br/><br/><a href='http://www.google.com/calendar/event?action=TEMPLATE&text={$task->title}
-            &dates=" . date("Ymd", strtotime(str_replace('/', '-', $task->dt_due))) . "/" . date("Ymd", strtotime(str_replace('/', '-', $task->dt_due))) .
+        $messageObject->addPart("Your iCal is attached<br/><br/><a href='http://www.google.com/calendar/event?action=TEMPLATE&text={$task->title}" .
+            "&dates=" . date("Ymd", strtotime(str_replace('/', '-', $task->dt_due))) . "/" . date("Ymd", strtotime(str_replace('/', '-', $task->dt_due))) .
             "&details=" . htmlentities($task->description) .
             "&trp=false target='_blank' rel='nofollow'>Add to Google calendar</a><br/><br/>View the Task at: " . $task->toLink(null, null, $user), "text/html");
 
@@ -271,25 +292,12 @@ function edit_POST($w)
 
         file_put_contents(FILE_ROOT . "invite.ics", $data);
 
-        $ics_attachment = Swift_Attachment::newInstance()
-            ->setBody(trim($ics_content), "application/ics; name=\"invite.ics\"")
-            ->setEncoder(Swift_Encoding::get7BitEncoding());
-        $headers = $ics_attachment->getHeaders();
-        $content_type_header = $headers->get("Content-Type");
-        $content_type_header->setValue("application/ics; name=\"invite.ics\"");
-        $content_type_header->setParameters([
-            'charset' => 'UTF-8',
-            'method' => 'REQUEST'
-        ]);
-
-        $content_disposition_header = $headers->get("Content-Disposition");
-        $content_disposition_header->setValue("attachment; filename=\"invite.ics\"");
-
+        $ics_attachment = new Swift_Attachment(trim($ics_content), "invite.ics", "application/ics");
         $messageObject->attach($ics_attachment);
 
         $email_layer = Config::get('email.layer');
         $swiftmailer_transport = new SwiftMailerTransport($w, $email_layer);
-        $mailObject = Swift_Mailer::newInstance($swiftmailer_transport->getTransport($email_layer));
+        $mailObject = new Swift_Mailer($swiftmailer_transport->getTransport($email_layer));
         $mailObject->send($messageObject);
 
         unlink(FILE_ROOT . "invite.ics");

@@ -1,20 +1,18 @@
 <?php
 
-function forgotpassword_GET(Web $w) {
+function forgotpassword_GET(Web $w)
+{
     // Check if logged in already
-    $user = $w->Auth->user();
-    if ($w->Auth->loggedIn() && $w->Auth->allowed($user->redirect_url)) {
+    $user = AuthService::getInstance($w)->user();
+    if (AuthService::getInstance($w)->loggedIn() && AuthService::getInstance($w)->allowed($user->redirect_url)) {
         $w->redirect($w->localUrl(!empty($user->redirect_url) ? $user->redirect_url : "/main"));
     }
-    // $loginform = Html::form(array(
-    // array("Reset Password","section"),
-    // array("Your Login","text","login"),
-    // ),$w->localUrl("auth/forgotpassword"),"POST","Reset");
-    // $w->out($loginform);	
+
     $w->ctx("pagetitle", "Forgot Password");
 }
 
-function forgotpassword_POST(Web $w) {
+function forgotpassword_POST(Web $w)
+{
     $support_email = Config::get('main.company_support_email');
     if (empty($support_email)) {
         $w->Log->error("Cannot send recovery email. This site has not been configured with a default email address. Th project config needs a main.company_support_email record.");
@@ -22,7 +20,7 @@ function forgotpassword_POST(Web $w) {
     }
 
     $login = $w->request("login");
-    $user = $w->Auth->getUserForLogin($login);
+    $user = AuthService::getInstance($w)->getUserForLogin($login);
     $responseString = "If this account exists then a password reset email has been just sent to the associated email address.";
 
     // For someone trying to gain access to a system, this is one of the
@@ -34,18 +32,16 @@ function forgotpassword_POST(Web $w) {
     }
     $user_contact = $user->getContact();
 
-    // Generate password reset token 
-    // We can use the cstrong to check that a cryptographically secure token was generated
-    $token = sha1(openssl_random_pseudo_bytes(40, $cstrong));
-    $user->password_reset_token = $token;
+    // Generate password reset token
+    $user->password_reset_token = bin2hex(random_bytes(16));
     $user->dt_password_reset_at = time();
     $user->update();
 
     // Send email
     $message = "Hello {$user->getFullName()},\n<br/>";
     $message .= "Please go to this link to reset your password:<br/>\n";
-    $message .= "<a href=\"http://" . $_SERVER["HTTP_HOST"] . "/auth/resetpassword?email={$user_contact->email}&token=$token\">http://"
-            . $_SERVER["HTTP_HOST"] . "/auth/resetpassword?email={$user_contact->email}&token=$token</a>\n<br/>You have 24 hours to reset your password.<br/><br/>";
+    $message .= "<a href=\"http://" . $_SERVER["HTTP_HOST"] . "/auth/resetpassword?email={$user_contact->email}&token={$user->password_reset_token}\">http://"
+        . $_SERVER["HTTP_HOST"] . "/auth/resetpassword?token={$user->password_reset_token}</a>\n<br/>You have 24 hours to reset your password.<br/><br/>";
     $message .= "Thank you,\n<br/>cmfive support";
 
     $result = $w->Mail->sendMail($user_contact->email, $support_email, Config::get("main.application_name") . " password reset", $message);
@@ -54,6 +50,4 @@ function forgotpassword_POST(Web $w) {
     } else {
         $w->error("There was a problem sending an email, check your settings.", "/auth/login");
     }
-
-    // explain
 }

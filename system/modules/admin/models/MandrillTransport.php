@@ -26,7 +26,7 @@ class MandrillTransport implements GenericTransport
         }
     }
 
-    public function send($to, $replyto, $subject, $body, $cc = null, $bcc = null, $attachments = [])
+    public function send($to, $replyto, $subject, $body, $cc = null, $bcc = null, $attachments = array())
     {
         if (!empty($to) && strlen($to) > 0) {
             try {
@@ -36,44 +36,44 @@ class MandrillTransport implements GenericTransport
                 }
 
                 // Create message structure
-                $message = [
+                $message = array(
                     'html' => $body,
                     'subject' => $subject,
-                    'headers' => ['Reply-To' => $replyto],
+                    'headers' => array('Reply-To' => $replyto),
                     'auto_text' => true,
-                    'to' => [],
-                    'attachments' => []
-                ];
+                    'to' => array(),
+                    'attachments' => array()
+                );
 
                 // Set 'to' field
                 if (is_scalar($to)) {
                     // If scalar, look for ',' meaning multiple recipients given as a string
                     if (strpos($to, ",") !== false) {
                         foreach (array_map("trim", explode(',', $to)) as $to_email) {
-                            $message['to'][] = [
+                            $message['to'][] = array(
                                 'email' => $to_email,
                                 'name' => $to_email,
                                 'type' => 'to'
-                            ];
+                            );
                         }
                     } else {
                         // Assume only one value given (as string)
-                        $message['to'] = [
-                            [
+                        $message['to'] = array(
+                            array(
                                 'email' => $to,
                                 'name' => $to,
                                 'type' => 'to'
-                            ]
-                        ];
+                            )
+                        );
                     }
                 } elseif (is_array($to)) {
                     // If to given as array, assume its in the form of [email => recipient name]
                     foreach ($to as $to_email => $to_name) {
-                        $message['to'][] = [
+                        $message['to'][] = array(
                             'email' => $to_email,
                             'name' => $to_name,
                             'type' => 'to'
-                        ];
+                        );
                     }
                 } else {
                     // If we get here then no acceptible format was given, log and return
@@ -108,18 +108,18 @@ class MandrillTransport implements GenericTransport
                             $finfo = finfo_open(FILEINFO_MIME_TYPE);
 
                             if ($file = file_exists($attachment)) {
-                                $message['attachments'][] = [
+                                $message['attachments'][] = array(
                                     'type' => finfo_file($finfo, $attachment),
                                     'name' => basename($attachment),
                                     'content' => file_get_contents($attachment)
-                                ];
+                                );
                             } else {
                                 // Assume the string given is the contents of a file
-                                $message['attachments'][] = [
+                                $message['attachments'][] = array(
                                     'type' => $finfo->buffer($attachment),
                                     'name' => 'attachment',
                                     'content' => $attachment
-                                ];
+                                );
                             }
                         } else {
                             // Assume its in the required mandrill format

@@ -30,7 +30,7 @@
                     <label class="small-12 columns">Module
                         <?php echo (new \Html\Form\Select([
                             "id|name"            => "object_class",
-                            "selected_option"    => $timelog->object_class ?: $tracking_class ?: key(reset($select_indexes)),
+                            "selected_option"    => $timelog->object_class ?: $tracking_class ?: (empty($select_indexes)?null:$select_indexes[0][1]),
                             "options"            => $select_indexes
                         ])); ?>
                     </label>
@@ -39,7 +39,7 @@
                     <label class="small-12 columns">Search
                         <small>Required</small>
                         <?php
-                        $usable_class = !empty($timelog->object_class) ? $timelog->object_class : (!empty($tracking_class) ? $tracking_class : (key(reset($select_indexes))));
+                        $usable_class = !empty($timelog->object_class) ? $timelog->object_class : (!empty($tracking_class) ? $tracking_class : (empty($select_indexes)?null:$select_indexes[0][1]));
                         $where_clause = [];
                         if (!empty($usable_class)) {
                             if (in_array('is_deleted', (new $usable_class($w))->getDbTableColumnNames())) {

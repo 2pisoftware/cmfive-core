@@ -53,14 +53,14 @@ class Contact extends DbObject
 
     public function getTitle()
     {
-        $title_lookup = $this->w->Admin->getLookupbyId($this->title_lookup_id);
+        $title_lookup = AdminService::getInstance($this->w)->getLookupbyId($this->title_lookup_id);
         return !empty($title_lookup) ? $title_lookup->title : '';
     }
 
     public function setTitle($title)
     {
         if (!empty($title)) {
-            $title_lookup = $this->w->Admin->getLookupByTypeCode('title', $title);
+            $title_lookup = AdminService::getInstance($this->w)->getLookupByTypeCode('title', $title);
             if (empty($title_lookup)) {
                 $title_lookup = new Lookup($this->w);
                 $title_lookup->fill(['type' => 'title', 'code' => $title, 'title' => $title]);
@@ -85,9 +85,9 @@ class Contact extends DbObject
 
     public function printSearchTitle()
     {
-        $buf = $this->getFullName();
-        return $buf;
+        return $this->getFullName();
     }
+
     public function printSearchListing()
     {
         $buf = "";

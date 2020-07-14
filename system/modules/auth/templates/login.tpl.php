@@ -75,7 +75,7 @@
             }
         },
         methods: {
-            executeLogin() {
+            executeLogin: function() {
                 var _this = this;
 
                 if (_this.is_loading) {
@@ -106,7 +106,7 @@
                     _this.is_loading = false;
                 });
             },
-            back() {
+            back: function() {
                 this.is_mfa_enabled = false;
                 this.mfa_code = null;
             }

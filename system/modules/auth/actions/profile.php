@@ -4,7 +4,7 @@ function profile_GET(Web &$w)
 {
     VueComponentRegister::registerComponent("autocomplete", new VueComponent("autocomplete", "/system/templates/vue-components/form/elements/autocomplete.vue.js", "/system/templates/vue-components/form/elements/autocomplete.vue.css"));
 
-    $user = $w->Auth->user();
+    $user = AuthService::getInstance($w)->user();
     if (empty($user)) {
         $w->error("Unable to find User");
     }
@@ -16,7 +16,7 @@ function profile_GET(Web &$w)
 
     $titles_array = [];
 
-    foreach ($w->Auth->getTitles() as $title) {
+    foreach (AuthService::getInstance($w)->getTitles() as $title) {
         $titles_array[] = [
             "id" => $title->id,
             "name" => $title->title,

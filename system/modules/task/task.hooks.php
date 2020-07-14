@@ -64,6 +64,7 @@ function task_timelog_type_options_for_Task(Web $w, $object)
 function task_core_dbobject_after_insert_Task(Web $w, $task)
 {
     $w->Log->setLogger("TASK")->debug("task_core_dbobject_after_insert_Task");
+    $task->addTaskGroupAsSubscribers();
     if (!$task->_skip_creation_notification) {
         $w->Task->sendCreationNotificationForTask($task);
     } else {
@@ -90,7 +91,7 @@ function task_core_dbobject_after_update_Task(Web $w, $task)
 
     $w->Notification->sendToAllWithCallback($subject, "task", "notification_email", $w->Auth->user(), $users_to_notify, function ($user, $existing_template_data) use ($task, $w) {
         if ($user->is_external) {
-            return false;
+            return null;
         }
 
         $template_data = $existing_template_data;
@@ -145,6 +146,9 @@ function task_attachment_attachment_added_task(Web $w, $attachment)
         $subject = "Task - " . $task->title . ' [' . $task->id . ']: ' . $attachment->getHumanReadableAttributeName(TASK_NOTIFICATION_TASK_DOCUMENTS);
 
         $w->Notification->sendToAllWithCallback($subject, "task", "notification_email", $w->Auth->user(), $users_to_notify, function ($user, $existing_template_data) use ($task, $w) {
+            if ($user->is_external) {
+                return null;
+            }
 
             $template_data = $existing_template_data;
             $template_data['status'] = "[{$task->id}] New attachment";

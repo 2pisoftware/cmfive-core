@@ -1,4 +1,6 @@
-<?php namespace Html\Form;
+<?php
+
+namespace Html\Form;
 
 /**
  * Class representation of a select field - HTML5 only
@@ -34,7 +36,7 @@ class Select extends \Html\Form\FormElement
      *
      * @param array $fields
      */
-    public function __construct($fields = array())
+    public function __construct($fields = [])
     {
         // Check for options being set
         if (array_key_exists('options', $fields)) {

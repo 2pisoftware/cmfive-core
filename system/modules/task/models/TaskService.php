@@ -374,8 +374,6 @@ class TaskService extends DbService
             $template_data['action_url'] = $this->w->localUrl('/task/edit/' . $task->id);
             $template_data['logo_url'] = Config::get('main.application_logo');
 
-            $this->w->Log->debug("Logo: " . $template_data['logo_url']);
-
             $template_data['fields'] = [
                 "Assigned to" => !empty($task->assignee_id) ? $task->getAssignee()->getFullName() : '',
                 "Type" => $task->getTypeTitle(),
@@ -815,7 +813,7 @@ class TaskService extends DbService
      *
      * @return TaskGroup
      */
-    public function createTaskGroup($type, $title, $description, $default_assignee_id, $can_assign = "OWNER", $can_view = "OWNER", $can_create = "OWNER", $is_active = 1, $is_deleted = 0, $default_task_type = null, $default_priority = null, $is_automatic_subscription = false)
+    public function createTaskGroup($type, $title, $description, $default_assignee_id, $can_assign = "OWNER", $can_view = "OWNER", $can_create = "OWNER", $is_active = 1, $is_deleted = 0, $default_task_type = null, $default_priority = null, $is_automatic_subscription = true)
     {
         // title should be unique!
         $taskgroup = $this->getTaskGroupByUniqueTitle($title);
@@ -849,6 +847,7 @@ class TaskService extends DbService
             $arr['guest']['creator'] = 1;
             $arr['member']['creator'] = 1;
             $arr['member']['assignee'] = 1;
+            $arr['member']['other'] = 1;
             $arr['owner']['creator'] = 1;
             $arr['owner']['assignee'] = 1;
             $arr['owner']['other'] = 1;
@@ -887,10 +886,13 @@ class TaskService extends DbService
 
     public function getNotifyUsersForTask($task, $event)
     {
+        
+
         if (empty($task)) {
             return [];
         }
 
+        /*
         $me = [];
         // This may be called from cron
         if (!empty($_SESSION['user_id'])) {
@@ -903,19 +905,19 @@ class TaskService extends DbService
         // Notify assignee too
         $creator = [$this->getMemberGroupById($task->task_group_id, $creator_id), !empty($task->assignee_id) ? $this->getMemberGroupById($task->task_group_id, $task->assignee_id) : null];
         // get member object(s) for task group owner(s)
-        $owners = $this->getTaskGroupOwners($task->task_group_id);
+
+        $users = $this->getTaskGroupUsers($task->task_group_id);
 
         // us is everyone
-        if (empty($owners) || !is_array($owners)) {
-            $owners = [];
+        if (empty($users) || !is_array($users)) {
+            $users = [];
         }
-        $us = (object) array_merge($me, $creator, $owners);
+        
+        $us = (object) array_merge($me, $creator, $users);
 
         if (empty($us)) {
             return [];
         }
-
-        $notifyUsers = [];
 
         // foreach relavent member
         foreach ($us as $i) {
@@ -930,7 +932,11 @@ class TaskService extends DbService
             // determine current user's 'type' for this task
             $assignee = ($task->assignee_id == $i->user_id);
             $creator = ($creator_id == $i->user_id);
-            $owner = $this->getIsOwner($task->task_group_id, $i->user_id);
+            
+            if ($this->getIsOwner($task->task_group_id, $i->user_id) || $this->getIsMember($task->task_group_id, $i->user_id))
+            {
+                $user = true;
+            }
 
             // this user may be any or all of the 'types'
             // need to check each 'type' for a notification
@@ -941,9 +947,10 @@ class TaskService extends DbService
             if (!empty($creator)) {
                 $types[] = "creator";
             }
-            if (!empty($owner)) {
+            if (!empty($user)) {
                 $types[] = "other";
             }
+          
 
             // if they have a type ... look for notifications
             if (!empty($types)) {
@@ -987,7 +994,16 @@ class TaskService extends DbService
                 }
             }
             unset($types);
+        }*/
+
+        $notifyUsers = [];
+
+        $subs = $task->getSubscribers();
+        foreach ($subs as $sub)
+        {
+            $notifyUsers[$sub->user_id] = $sub->user_id;
         }
+        
         return $notifyUsers;
     }
 

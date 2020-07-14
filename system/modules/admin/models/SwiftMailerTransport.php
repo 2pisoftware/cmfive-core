@@ -32,30 +32,16 @@ class SwiftMailerTransport implements GenericTransport
                 $username = Config::get('email.username');
                 $password = Config::get('email.password');
 
-                if (method_exists('Swift_SmtpTransport', 'newInstance')) {
-                    return Swift_SmtpTransport::newInstance($host, $port, $encryption)
-                        ->setUsername($username)
-                        ->setPassword($password);
-                } else {
-                    return (new Swift_SmtpTransport($host, $port, $encryption))
-                        ->setUsername($username)
-                        ->setPassword($password);
-                }
+                return (new Swift_SmtpTransport($host, $port, $encryption))
+                    ->setUsername($username)
+                    ->setPassword($password);
                 break;
             case "sendmail":
                 $command = Config::get('email.command');
                 if (!empty($command)) {
-                    if (method_exists('Swift_SendmailTransport', 'newInstance')) {
-                        return Swift_SendmailTransport::newInstance($command);
-                    } else {
-                        return new Swift_SendmailTransport($command);
-                    }
+                    return new Swift_SendmailTransport($command);
                 } else {
-                    if (method_exists('Swift_SendmailTransport', 'newInstance')) {
-                        return Swift_SendmailTransport::newInstance();
-                    } else {
-                        return new Swift_SendmailTransport();
-                    }
+                    return new Swift_SendmailTransport();
                 }
                 break;
             default:
@@ -71,12 +57,8 @@ class SwiftMailerTransport implements GenericTransport
                     return;
                 }
 
-                $mailer = null;
-                if (method_exists('Swift_Mailer', 'newInstance')) {
-                    $mailer = Swift_Mailer::newInstance($this->transport);
-                } else {
-                    $mailer = new Swift_Mailer($this->transport);
-                }
+                $mailer = new Swift_Mailer($this->transport);
+                
                 // To, cc, bcc need to be given as arrays when sending to more than one person
                 // Ie you separate them by a comma, this will split them into arrays as expected by Swift
                 if (strpos($to, ",") !== false) {
@@ -84,13 +66,7 @@ class SwiftMailerTransport implements GenericTransport
                 }
 
                 // Create message
-                $message = null;
-                if (method_exists('Swift_Message', 'newInstance')) {
-                    $message = Swift_Message::newInstance($subject);
-                } else {
-                    $message = new Swift_Message($subject);
-                }
-
+                $message = new Swift_Message($subject);
                 $message->setFrom($replyto)
                     ->setTo($to)->setBody($body)
                     ->addPart($body, 'text/html');
