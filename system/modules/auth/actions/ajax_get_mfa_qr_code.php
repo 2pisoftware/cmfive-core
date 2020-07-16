@@ -20,7 +20,7 @@ function ajax_get_mfa_qr_code_GET(Web $w)
     }
 
     $user->mfa_secret = (new GoogleAuthenticator())->generateSecret();
-    $qr_code = GoogleQrUrl::generate(str_replace(" ", "", $user->getFullName()), $user->mfa_secret, str_ireplace(" ", "", Config::get("main.application_name", "Cmfive")));
+    $qr_code = GoogleQrUrl::generate(str_replace(" ", "", $user->getFullName()), $user->mfa_secret, str_replace(" ", "", Config::get("main.application_name", "Cmfive")));
 
     if (!$user->update()) {
         $w->out((new AxiosResponse())->setErrorResponse("Failed to update generate MFA code", null));
