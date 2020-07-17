@@ -10,7 +10,7 @@ Config::set('channels', array(
     	'TestProcessor'
     ),
     "dependencies" => array(
-        "zendframework/zend-mail" => "2.8.0",
-        "zendframework/zend-serializer" => "2.8.0"
+        "zendframework/zend-mail" => "~2.9",
+        "zendframework/zend-serializer" => "~2.9"
     )
 ));

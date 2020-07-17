@@ -1,80 +1,90 @@
 <?php
 
-class ReportService extends DbService {
-    static private $tables;
-    
-    public function getReport($id) {
+class ReportService extends DbService
+{
+    private static $tables;
+
+    public function getReport($id)
+    {
         return $this->getObject("Report", $id);
     }
-    
-    public function getReports() {
+
+    public function getReports()
+    {
         return $this->getObjects("Report", array("is_deleted" => 0));
     }
-    
-    
-    
+
+    public function getReportByModuleAndCategory($module, $category) {
+        return $this->getObject('Report', ['module' => $module, 'category' => $category, 'is_deleted' => 0]);
+    }
+
     // return list of members attached to a report for given report ID
-    function getReportMembers($id) {
+    public function getReportMembers($id)
+    {
         return $this->getObjects("ReportMember", array("report_id" => $id, "is_deleted" => 0));
     }
 
     // return member for given report ID and user id
-    function getReportMember($id, $uid) {
+    public function getReportMember($id, $uid)
+    {
         return $this->getObject("ReportMember", array("report_id" => $id, "user_id" => $uid, "is_deleted" => 0));
     }
-    
+
     // Helper function to decide whether or not a user has access to a given report
-    function canUserEditReport($report, $member) {
+    public function canUserEditReport($report, $member)
+    {
         // First, is logged in user a system admin
         if ($this->w->Auth->user()->is_admin == 1) {
             return true;
         }
-        
+
         // Check if logged in user is report_admin
         if ($this->w->Auth->user()->hasRole("report_admin")) {
             return true;
         }
-        
-		if (empty($report->id) || empty($member->id)) {
+
+        if (empty($report->id) || empty($member->id)) {
             return false;
         }
-        
+
         // Then check if the user has report_editor role
         if (!$this->w->Auth->user()->hasRole("report_editor")) {
             return false;
         }
-        
+
         // Check that the member given is for the given report
         if ($report->id !== $member->report_id) {
             // Log this event
             $this->w->Log->error("Wrong member given for report (In ReportService, line: " . __LINE__ . ")");
             return false;
         }
-        
+
         // User is report_editor, check if this report is theirs or that they have edit access
         if ($member->role === "OWNER" or $member->role === "EDITOR") {
             return true;
         }
-        
+
         return false;
     }
-    
-    
+
     /**
      * Returns array of connection objects
-     * 
+     *
      * @return Array connections
      */
-    public function getConnections() {
+    public function getConnections()
+    {
         return $this->getObjects("ReportConnection", array("is_deleted" => "0"));
     }
 
-    public function getConnection($id) {
+    public function getConnection($id)
+    {
         return $this->getObject("ReportConnection", array("id" => $id, "is_deleted" => "0"));
     }
-    
+
     // function to sort lists by date schedule
-    static function sortBySchedule($a, $b) {
+    public static function sortBySchedule($a, $b)
+    {
         if ($a->dt_schedule == $b->dt_schedule) {
             return 0;
         }
@@ -82,92 +92,98 @@ class ReportService extends DbService {
     }
 
     // get list of modules for Html::select
-    function getModules() {
+    public function getModules()
+    {
         $modules = $this->w->modules();
-        if ($modules) {
-            foreach ($modules as $f) {
-                $modules2[] = array(ucfirst($f), $f);
-            }
-            sort($modules2);
-            return $modules2;
+        $parsed_modules = [];
+        foreach ($modules ?? [] as $module) {
+            $parsed_modules[] = [ucfirst($module), $module];
         }
+        sort($parsed_modules);
+        return $parsed_modules;
     }
 
     // static list of group permissions
-    function getReportPermissions() {
+    public function getReportPermissions()
+    {
         return array("USER", "EDITOR");
     }
-    
+
     // return a report given its ID
-    function getReportInfo($id) {
+    public function getReportInfo($id)
+    {
         return $this->getObject("Report", array("id" => $id));
     }
 
     // return list of feeds
-    function getFeeds() {
+    public function getFeeds()
+    {
         return $this->getObjects("ReportFeed", array("is_deleted" => 0));
     }
 
     // return a feed given its id
-    function getFeedInfobyId($id) {
+    public function getFeedInfobyId($id)
+    {
         return $this->getObject("ReportFeed", array("id" => $id, "is_deleted" => 0));
     }
 
     // return a feed given its report id
-    function getFeedInfobyReportId($id) {
+    public function getFeedInfobyReportId($id)
+    {
         return $this->getObject("ReportFeed", array("report_id" => $id, "is_deleted" => 0));
     }
 
     // return a feed given its key
-    function getFeedInfobyKey($key) {
-        return $this->getObject("ReportFeed", array("key" => $key, "is_deleted" => 0));
+    public function getFeedInfobyKey($key)
+    {
+        return $this->getObject("ReportFeed", array("report_key" => $key, "is_deleted" => 0));
     }
 
     // return list of APPROVED and NOT DELETED report IDs for a given a user ID and a where clause
-    function getReportsbyUserWhere($id, $where) {
-		
-		// Clause for admin user
-		if ($this->w->Auth->user()->is_admin == '1' || $this->w->Auth->user()->hasRole("report_admin")) {
-			return $this->getReports();
-		}
-		
+    public function getReportsbyUserWhere($id, $where)
+    {
+
+        // Clause for admin user
+        if ($this->w->Auth->user()->hasRole("report_admin")) {
+            return $this->getReports();
+        }
+
         // need to get reports for me and my groups
         // me
-        $myid[] = $id;
+        $myid = [$id];
 
         // need to check all groups given group member could be a group
         $groups = $this->w->Auth->getGroups();
 
-        if ($groups) {
-            foreach ($groups as $group) {
-                $flg = $this->w->Auth->user()->inGroup($group);
-                if ($flg)
-                    $myid[$group->id] = $group->id;
+        foreach ($groups ?? [] as $group) {
+            if ($this->w->Auth->user()->inGroup($group)) {
+                $myid[$group->id] = $group->id;
             }
         }
+
         // list of IDs to check for report membership, my ID and my group IDs
         $theid = implode(",", $myid);
-        
+
         // the sql statement below return duplicate reports if they have multiple members
-        
+
         /*
         $results = $this->_db->get("report")->select("report.*")
-                    ->leftJoin("report_member on report_member.report_id = report.id")
-                    ->where("report_member.user_id", $myid)->where($where)
-                    ->where("report.is_deleted", 0)->where("report_member.is_deleted", 0)
-                    ->order_by("report.is_approved desc, report.title")->fetch_all();
-        */
-        
+        ->leftJoin("report_member on report_member.report_id = report.id")
+        ->where("report_member.user_id", $myid)->where($where)
+        ->where("report.is_deleted", 0)->where("report_member.is_deleted", 0)
+        ->order_by("report.is_approved desc, report.title")->fetch_all();
+         */
+
         // this sql below statement may not be as nifty as the above .. but it works!
-        
-        $rows = $this->_db->sql("SELECT distinct r.* from " . ReportMember::$_db_table . " as m inner join " . 
-                Report::$_db_table . " as r on m.report_id = r.id where m.user_id in (" . $theid . ") " . $where . 
-                " and r.is_deleted = 0 order by r.is_approved desc,r.title")->fetch_all();
+        $rows = $this->_db->sql("SELECT distinct r.* from " . ReportMember::$_db_table . " as m inner join " .
+            Report::$_db_table . " as r on m.report_id = r.id where m.user_id in (" . $theid . ") " . $where .
+            " and r.is_deleted = 0 order by r.is_approved desc,r.title")->fetch_all();
         return $this->fillObjects("Report", $rows);
     }
 
     // return list of APPROVED and NOT DELETED report IDs for a given a user ID as member
-    function getReportsbyUserId($id) {
+    public function getReportsbyUserId($id)
+    {
         // need to get reports for me and my groups
         // me
         $myid[] = $id;
@@ -179,22 +195,23 @@ class ReportService extends DbService {
             foreach ($groups as $group) {
                 if ($this->w->Auth->user()->inGroup($group)) {
                     $myid[$group->id] = $group->id;
-				}
+                }
             }
         }
         // list of IDs to check for report membership, my ID and my group IDs
-//        $id = implode(",", $myid);
+        //        $id = implode(",", $myid);
         $results = $this->_db->get("report_member")->select("report.*")
-                    ->leftJoin("report on report_member.report_id = report.id")
-                    ->where("report_member.user_id", $myid)
-                    ->where("report.is_deleted", 0)->where("report_member.is_deleted", 0)
-                    ->order_by("report.is_approved desc, report.title")->fetch_all();
+            ->leftJoin("report on report_member.report_id = report.id")
+            ->where("report_member.user_id", $myid)
+            ->where("report.is_deleted", 0)->where("report_member.is_deleted", 0)
+            ->order_by("report.is_approved desc, report.title")->fetch_all();
 //        $rows = $this->_db->sql("SELECT distinct m.report_id from " . ReportMember::$_db_table . " as m inner join " . Report::$_db_table . " as r on m.report_id = r.id where m.user_id in (" . $id . ") and r.is_deleted = 0 and m.is_deleted = 0 order by r.is_approved desc,r.title")->fetch_all();
         return $this->fillObjects("ReportMember", $results);
     }
 
     // return list of APPROVED and NOT DELETED report IDs for a given a user ID and Module
-    function getReportsbyModuleId() {
+    public function getReportsbyModuleId()
+    {
         // need to get reports for me and my groups
         // me
         $myid[] = $this->w->session('user_id');
@@ -205,8 +222,10 @@ class ReportService extends DbService {
         if ($groups) {
             foreach ($groups as $group) {
                 $flg = $this->w->Auth->user()->inGroup($group);
-                if ($flg)
+                if ($flg) {
                     $myid[$group->id] = $group->id;
+                }
+
             }
         }
         // list of IDs to check for report membership, my ID and my group IDs
@@ -214,16 +233,17 @@ class ReportService extends DbService {
         $module = $this->w->currentModule();
 
         $results = $this->_db->get("report_member")->select("report.*")
-                    ->leftJoin("report on report_member.report_id = report.id")
-                    ->where("report_member.user_id", $myid)->where("report.module", $module)
-                    ->where("report.is_deleted", 0)->where("report_member.is_deleted", 0)
-                    ->order_by("report.is_approved desc, report.title")->fetch_all();
+            ->leftJoin("report on report_member.report_id = report.id")
+            ->where("report_member.user_id", $myid)->where("report.module", $module)
+            ->where("report.is_deleted", 0)->where("report_member.is_deleted", 0)
+            ->order_by("report.is_approved desc, report.title")->fetch_all();
         // $rows = $this->_db->sql("SELECT distinct r.id,r.title from " . ReportMember::$_db_table . " as m inner join " . Report::$_db_table . " as r on m.report_id = r.id where m.user_id in (" . $id . ") and r.module = '" . $module . "' and r.is_deleted = 0 and m.is_deleted = 0 order by r.is_approved desc,r.title")->fetch_all();
         return $this->fillObjects("Report", $results);
     }
 
     // return menu links of APPROVED and NOT DELETED report IDs for a given a user ID as member
-    function getReportsforNav() {
+    public function getReportsforNav()
+    {
         $repts = array();
         $reports = $this->getReportsbyModuleId();
 
@@ -235,16 +255,17 @@ class ReportService extends DbService {
         return $repts;
     }
 
-
     // return a users full name given their user ID
-    function getUserById($id) {
+    public function getUserById($id)
+    {
         $u = $this->w->Auth->getUser($id);
         return $u ? $u->getFullName() : "";
     }
 
     // for parameter dropdowns, run SQL statement and return an array(value,title) for display
     // DANGEROUS
-    function getFormDatafromSQL($sql, $connection = null) {
+    public function getFormDatafromSQL($sql, $connection = null)
+    {
         if (!empty($connection)) {
             $rows = $connection->query($sql)->fetchAll();
         } else {
@@ -261,7 +282,8 @@ class ReportService extends DbService {
 
     // given a report SQL statement, return recordset
     // DANGEROUS
-    function getExefromSQL($sql, $connection = null) {
+    public function getExefromSQL($sql, $connection = null)
+    {
         if (!empty($connection)) {
             return $connection->query($sql)->execute();
         } else {
@@ -270,7 +292,8 @@ class ReportService extends DbService {
     }
 
     // convert dd/mm/yyyy date to yyy-mm-dd for SQL statements
-    function date2db($date) {
+    public function date2db($date)
+    {
         if ($date) {
             list($d, $m, $y) = preg_split("/\/|-|\./", $date);
             return $y . "-" . $m . "-" . $d;
@@ -278,38 +301,40 @@ class ReportService extends DbService {
     }
 
     // return all tables in the DB for display
-    function getAllDBTables() {
+    public function getAllDBTables()
+    {
         $dbtbl = array();
-        foreach($this->_db->_query("show tables")->fetchAll(PDO::FETCH_NUM) as $table) {
+        foreach ($this->_db->_query("show tables")->fetchAll(PDO::FETCH_NUM) as $table) {
             $dbtbl[] = $table[0];
         }
         ReportService::$tables = $dbtbl;
 //        $sql = "show tables in " . $this->_db->getDatabase();
-//        $tbls = $this->_db->sql($sql)->fetch_all();
+        //        $tbls = $this->_db->sql($sql)->fetch_all();
 
 //        if ($tbls) {
-//            foreach ($tbls as $tbl) {
-//                $dbtbl[] = array($tbl['Tables_in_' . $this->_db->getDatabase()], $tbl['Tables_in_' . $this->_db->getDatabase()]);
-//            }
-//        }
+        //            foreach ($tbls as $tbl) {
+        //                $dbtbl[] = array($tbl['Tables_in_' . $this->_db->getDatabase()], $tbl['Tables_in_' . $this->_db->getDatabase()]);
+        //            }
+        //        }
         return $dbtbl;
     }
 
     // return array of fields/type in a given table
-    function getFieldsinTable($table) {
+    public function getFieldsinTable($table)
+    {
         $output = "";
-        
+
         if (empty(ReportService::$tables)) {
             $this->getAllDBTables();
         }
-        
+
         // Check that the table actually exists, reduces chance for SQL injection
         if (!in_array(strtolower($table), ReportService::$tables)) {
             return "";
         }
-        
+
         if ($table != "") {
-            
+
             $sql = "show columns in " . $table;
             $fields = $this->_db->sql($sql)->fetch_all();
 
@@ -322,13 +347,14 @@ class ReportService extends DbService {
                 $output .= "</table>";
             }
         }
-        
+
         return $output;
     }
 
-    function getSQLStatementType($report_code) {
+    public function getSQLStatementType($report_code)
+    {
         // return our list of SQL statements
-        //		preg_match_all("/@@[a-zA-Z0-9_\s\|,;\(\)\{\}<>\/\-='\.@:%\+\*\$]*?@@/",preg_replace("/\n/"," ",$report_code), $arrsql);
+        //        preg_match_all("/@@[a-zA-Z0-9_\s\|,;\(\)\{\}<>\/\-='\.@:%\+\*\$]*?@@/",preg_replace("/\n/"," ",$report_code), $arrsql);
         preg_match_all("/@@.*?@@/", preg_replace("/\n/", " ", $report_code), $arrsql);
 
         // if we have statements, continue ...
@@ -355,7 +381,8 @@ class ReportService extends DbService {
     }
 
     // create an array of available report output formats for inclusion in the parameters form
-    function selectReportFormat() {
+    public function selectReportFormat()
+    {
         $arr = array();
         $arr[] = array("Web Page", "html");
         $arr[] = array("Comma Delimited File", "csv");
@@ -365,10 +392,8 @@ class ReportService extends DbService {
     }
 
     // export a recordset as CSV
-    function exportcsv($rows, $title) {
-        // require the necessary library
-        require_once("parsecsv/parsecsv.lib.php");
-
+    public function exportcsv($rows, $title)
+    {
         // set filename
         $filename = str_replace(" ", "_", $title) . "_" . date("Y.m.d-H.i") . ".csv";
 
@@ -380,7 +405,7 @@ class ReportService extends DbService {
                 $title = array_shift($row);
                 $hds = array_shift($row);
                 $hvals = array_values($hds);
-
+                
                 // find key of any links
                 foreach ($hvals as $h) {
                     if (stripos($h, "_link")) {
@@ -403,34 +428,39 @@ class ReportService extends DbService {
                     unset($arr);
                 }
 
-                $csv = new parseCSV();
-                $this->w->out($csv->output($filename, $row, $hds));
+                $csv = new ParseCsv\Csv();
+                $csv->output_filename = $filename;
+                // ignore lib wrapper csv->output, to keep control over header re-sends!
+                $this->w->out($csv->unparse($row, $hds, null, null, null));
+                // can't use this way without commenting out header section, which composer won't like
+                // $this->w->out($csv->output($filename, $row, $hds));
                 unset($ukey);
-            }
+            } 
             $this->w->sendHeader("Content-type", "application/csv");
             $this->w->sendHeader("Content-Disposition", "attachment; filename=" . $filename);
-            $this->w->setLayout(null);
+            $this->w->setLayout(null); 
         }
     }
 
     // export a recordset as PDF
-    function exportpdf($rows, $title, $report_template = null) {
+    public function exportpdf($rows, $title, $report_template = null)
+    {
         $filename = str_replace(" ", "_", $title) . "_" . date("Y.m.d-H.i") . ".pdf";
 
-        // using TCPDF so grab includes
-        require_once('tcpdf/tcpdf.php');
+        // using TCPDF, but sourcing from Composer
+        //require_once('tcpdf/tcpdf.php');
 
         // instantiate and set parameters
         $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
         $pdf->SetCreator(PDF_CREATOR);
         $pdf->SetTitle($title);
-        $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-        $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+        $pdf->setHeaderFont(array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+        $pdf->setFooterFont(array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
         $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
         $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
         $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
         $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
-        $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+        $pdf->SetAutoPageBreak(true, PDF_MARGIN_BOTTOM);
         $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
         //$pdf->setLanguageArray($l);
         // no header, set font and create a page
@@ -443,61 +473,61 @@ class ReportService extends DbService {
         $pdf->writeHTMLCell(0, 10, 60, 15, $hd, 0, 1, 0, true);
         $created = date("d/m/Y g:i a");
         $pdf->writeHTMLCell(0, 10, 60, 25, $created, 0, 1, 0, true);
-		
+
         // display recordset
-		
-		
+
         if (!empty($rows)) {
-			if (empty($report_template)) {
-				foreach ($rows as $row) {
-					//throw away the first line which list the form parameters
-					$crumbs = array_shift($row);
-					$title = array_shift($row);
-					$hds = array_shift($row);
-					$hds = array_values($hds);
+            if (empty($report_template)) {
+                foreach ($rows as $row) {
+                    //throw away the first line which list the form parameters
+                    $crumbs = array_shift($row);
+                    $title = array_shift($row);
+                    $hds = array_shift($row);
+                    $hds = array_values($hds);
 
-					$results = "<h3>" . $title . "</h3>";
-					$results .= "<table cellpadding=2 cellspacing=2 border=0 width=100%>\n";
-					foreach ($row as $r) {
-						$i = 0;
-						foreach ($r as $field) {
-							if (!stripos($hds[$i], "_link")) {
-								$results .= "<tr><td width=20%>" . $hds[$i] . "</td><td>" . $field . "</td></tr>\n";
-							}
-							$i++;
-						}
-						$results .= "<tr><td colspan=2><hr /></td></tr>\n";
-					}
-					$results .= "</table><p>";
-					$pdf->writeHTML($results, true, false, true, false);
-				}
-			} else {
-				$templatedata = array();
-				foreach($rows as $row) {
-					$crumbs = array_shift($row);
-					$title = array_shift($row);
-					$hds = array_shift($row);
-					$hds = array_values($hds);
+                    $results = "<h3>" . $title . "</h3>";
+                    $results .= "<table cellpadding=2 cellspacing=2 border=0 width=100%>\n";
+                    foreach ($row as $r) {
+                        $i = 0;
+                        foreach ($r as $field) {
+                            if (!stripos($hds[$i], "_link")) {
+                                $results .= "<tr><td width=20%>" . $hds[$i] . "</td><td>" . $field . "</td></tr>\n";
+                            }
+                            $i++;
+                        }
+                        $results .= "<tr><td colspan=2><hr /></td></tr>\n";
+                    }
+                    $results .= "</table><p>";
+                    $pdf->writeHTML($results, true, false, true, false);
+                }
+            } else {
+                $templatedata = array();
+                foreach ($rows as $row) {
+                    $crumbs = array_shift($row);
+                    $title = array_shift($row);
+                    $hds = array_shift($row);
+                    $hds = array_values($hds);
 
-					$templatedata[] = array("title" => $title, "headers" => $hds, "results" => $row);
-				}
+                    $templatedata[] = array("title" => $title, "headers" => $hds, "results" => $row);
+                }
 
-				if (!empty($report_template) && !empty($templatedata)) {
-					$results = $this->w->Template->render(
-							$report_template->template_id,
-							array("data" => $templatedata, "w" => $this->w, "POST" => $_POST));     
+                if (!empty($report_template) && !empty($templatedata)) {
+                    $results = $this->w->Template->render(
+                        $report_template->template_id,
+                        array("data" => $templatedata, "w" => $this->w, "POST" => $_POST));
 
-					$pdf->writeHTML($results, true, false, true, false);
-				}
-			}
-		}
+                    $pdf->writeHTML($results, true, false, true, false);
+                }
+            }
+        }
 
         // set for 'open/save as...' dialog
         $pdf->Output($filename, 'D');
     }
 
     // export a recordset as XML
-    function exportxml($rows, $title) {
+    public function exportxml($rows, $title)
+    {
         $filename = str_replace(" ", "_", $title) . "_" . date("Y.m.d-H.i") . ".xml";
 
         $this->w->out("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
@@ -539,7 +569,8 @@ class ReportService extends DbService {
     }
 
     // function to substitute special terms
-    function putSpecialSQL($sql) {
+    public function putSpecialSQL($sql)
+    {
         if ($sql != "") {
             $special = array();
             $replace = array();
@@ -566,7 +597,8 @@ class ReportService extends DbService {
     }
 
     // function to check syntax of report SQL statememnt
-    function getcheckSQL($sql, PDO $connection = null) {
+    public function getcheckSQL($sql, PDO $connection = null)
+    {
         // checking for rows will return false if no data is returned, even if SQL is ok
         // so let's just run the statement and try to catch any exceptions otherwise SQL runs ok
         try {
@@ -594,12 +626,14 @@ class ReportService extends DbService {
         }
     }
 
-    public function getReportTemplate($id) {
+    public function getReportTemplate($id)
+    {
         return $this->getObject("ReportTemplate", $id);
     }
-    
+
     // build the Report navigation
-    public function navigation(Web $w, $title = null, $nav = null) {
+    public function navigation(Web $w, $title = null, $nav = null)
+    {
         if (!empty($title)) {
             $w->ctx("title", $title);
         }

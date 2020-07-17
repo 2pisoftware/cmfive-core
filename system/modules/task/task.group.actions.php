@@ -5,55 +5,7 @@
 ////////////////////////////////////////////
 
 
-// display an editable form showing attributes of a task group
-function viewtaskgroup_GET(Web &$w) {
-	$p = $w->pathMatch("id");
-	// return task group details given a task group ID
-	$group_details = $w->Task->getTaskGroup($p['id']);
 
-	if (!empty($group_details)) {
-		History::add("Taskgroup: ".$group_details->title, null, $group_details);
-	}
-	// if is_active is set to '0', display 'Yes', else display 'No'
-	$isactive = $group_details->is_active == "1" ? "Yes" : "No";
-
-	// set Is Task Active, Is Task Deleted dropdowns for display
-	$is_active = array(array("Yes","1"), array("No","0"));
-	$is_deleted = array(array("Yes","1"), array("No","0"));
-	
-	// get generic task group permissions
-	$arrassign = $w->Task->getTaskGroupPermissions();
-	// unset 'ALL' given all can never assign a task
-	unset($arrassign[0]);
-
-        // Get list of possible task types and priorities adn assignees
-        $tasktypes = $w->Task->getTaskTypes($group_details->task_group_type);
-        $priorities = $w->Task->getTaskPriority($group_details->task_group_type);
-        $assignees = $w->Task->getMembersInGroup($p['id']);
-        array_unshift($assignees,array("Unassigned","unassigned")); 
-        // No default assignee means it is unassigned
-        $default_assignee = (empty($group_details->default_assignee_id)) ? "unassigned" : $group_details->default_assignee_id;
-	
-	// build form displaying current attributes from database
-	$f = Html::form(array(
-			array("Task Group Details", "section"),
-			array("Task Group Type", "static", "task_group_type", $group_details->getTypeTitle()),
-			array("Title", "text", "title", $group_details->title),
-			array("Who Can Assign", "select", "can_assign", $group_details->can_assign, $arrassign),
-			array("Who Can View", "select", "can_view", $group_details->can_view, $w->Task->getTaskGroupPermissions()),
-			array("Who Can Create", "select", "can_create", $group_details->can_create, $w->Task->getTaskGroupPermissions()),
-			array("Is Active", "select", "is_active", $group_details->is_active, $is_active),
-			array("Description", "textarea", "description", $group_details->description, "26", "6"),
-			array("Default Task Type", "select", "default_task_type", $group_details->default_task_type, $tasktypes),
-			array("Default Priority", "select", "default_priority", $group_details->default_priority, $priorities),
-			array("Default Assignee", "select", "default_assignee_id", $default_assignee, $assignees),
-			array('Automatic Subscription', 'checkbox', 'is_automatic_subscription', $group_details->is_automatic_subscription)
-			), $w->localUrl("/task-group/updatetaskgroup/" . $group_details->id), "POST", "Update");
-
-	// display form
-	$w->setLayout(null);
-	$w->ctx("viewgroup",$f);
-}
 
 function createtaskgroup_POST(Web &$w) {
     $taskgroup = $w->Task->createTaskGroup(
@@ -64,7 +16,7 @@ function createtaskgroup_POST(Web &$w) {
         $w->request('can_assign'),
         $w->request('can_view'),
         $w->request('can_create'),
-        $w->request('is_active'),
+        1,
         $w->request('is_deleted'),
         $w->request('default_task_type'),
         $w->request('default_priority'),
@@ -75,57 +27,7 @@ function createtaskgroup_POST(Web &$w) {
     $w->msg("<div id='saved_record_id' data-id='".$taskgroup->id."' >Task Group ".$taskgroup->title." added</div>", "/task-group/viewmembergroup/".$taskgroup->id."#members");
 }
 
-function updatetaskgroup_POST(Web &$w) {
-	$p = $w->pathMatch("id");
-	// get details of task group being edited
-	$group_details = $w->Task->getTaskGroup($p['id']);
 
-	// if group exists, update the details
-	if ($group_details) {
-		$group_details->fill($_REQUEST);
-		$group_details->is_automatic_subscription = !empty($w->request('is_automatic_subscription'));
-		$response = $group_details->update();
-
-                // Check the validation
-                if ($response !== true) {
-                    $w->errorMessage($group_details, "Taskgroup", $response, true, "/task-group/viewmembergroup/".$p['id']."#members");
-                }                
-
-		// if a default assignee is set (other than unassigned), return their membership object for this group
-                $default_assignee_id = $_REQUEST['default_assignee_id'];
-		if (!empty($default_assignee_id) && $default_assignee_id != "unassigned") {
-			$mem = $w->Task->getMemberGroupById($group_details->id, $_REQUEST['default_assignee_id']);
-		
-			// populate an array with the required details for updating
-			// if the person is already a member we will maintain their current role
-			// otherwise we will make them the group owner. we also make them active in case they had been previously removed from the group
-			$arrdb = array();
-			$arrdb['task_group_id'] = $group_details->id;
-			$arrdb['user_id'] = $_REQUEST['default_assignee_id'];
-			$arrdb['role'] = $mem->role ? $mem->role : "OWNER";
-			$arrdb['priority'] = 1;
-			$arrdb['is_active'] = 1;
-			
-			// if they don't exist, create the membership entry, otherwise update their current entry
-			if (!$mem) {
-				$mem = new TaskGroupMember($w);
-				$mem->fill($arrdb);
-				$mem->insert();
-				}
-			else {
-				$mem->fill($arrdb);
-				$mem->update();
-				}
-			}
-		
-		// return with message
-		$w->msg("Task Group " . $group_details->title . " updated.","/task-group/viewmembergroup/".$group_details->id);
-	}
-	else {
-		// if group somehow no longer exists, say as much
-		$w->msg("Group: " . $_REQUEST['title'] . " no longer exists?","/task-group/viewtaskgroups/".$group_details->task_group_type);
-	}
-}
 
 function deletetaskgroup_GET(Web &$w) {
 	$w->setLayout(null);
@@ -138,7 +40,7 @@ function deletetaskgroup_GET(Web &$w) {
 	// if is_active is set to '0', display 'Yes', else display 'No'
 	$isactive = $taskgroup->is_active == "1" ? "Yes" : "No";
 
-	if (count($taskgroup->getTasks()) !== 0) {
+	if (count($taskgroup->getUnclosedTasks()) !== 0) {
 		$w->out("<div class='row-fluid panel'>To be able to delete a task group, please ensure there are no active tasks</div>");
 		return;
 	}
@@ -191,6 +93,7 @@ function updategroupnotify_POST(Web &$w) {
 	$arr['guest']['creator'] = $_REQUEST['guest_creator'] ? $_REQUEST['guest_creator'] : "0"; 
 	$arr['member']['creator'] = $_REQUEST['member_creator'] ? $_REQUEST['member_creator'] : "0"; 
 	$arr['member']['assignee'] = $_REQUEST['member_assignee'] ? $_REQUEST['member_assignee'] : "0"; 
+	$arr['member']['assignee'] = $_REQUEST['member_other'] ? $_REQUEST['member_other'] : "0"; 
 	$arr['owner']['creator'] = $_REQUEST['owner_creator'] ? $_REQUEST['owner_creator'] : "0"; 
 	$arr['owner']['assignee'] = $_REQUEST['owner_assignee'] ? $_REQUEST['owner_assignee'] : "0"; 
 	$arr['owner']['other'] = $_REQUEST['owner_other'] ? $_REQUEST['owner_other'] : "0"; 

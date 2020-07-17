@@ -1,159 +1,129 @@
 <?php
 
-function comment_GET(Web $w){
-    $p = $w->pathMatch("comment_id", "tablename", "object_id");
-    $internal_only = intval($w->request('internal_only', 0));
-    $redirect_url = $w->request('redirect_url', $w->localUrl($_SERVER["REQUEST_URI"]));
+function comment_GET(Web $w)
+{
+    $p = $w->pathMatch("comment_id", "object_class", "object_id");
+    $is_internal_only = intval($w->request("internal_only", 0));
+    $has_notification_selection = $w->request("has_notification_selection", 1);
 
     $comment_id = intval($p["comment_id"]);
     $comment = $comment_id > 0 ? $w->Comment->getComment($comment_id) : new Comment($w);
-    if ($comment === null){
-        $comment = new Comment($w);
+
+    $is_restricted = false;
+    $is_parent_restricted = false;
+
+    // Setup for comment notifications.
+    $parent_object_class_name = $p["object_class"];
+    $parent_object_id = $p["object_id"];
+    $root_object = null;
+    $parent_comment = null;
+
+    if (strtolower($parent_object_class_name) == "comment") {
+        $parent_comment = $w->Comment->getComment($p["object_id"]);
+        if (!empty($parent_comment)) {
+            $root_object = $parent_comment->getParentObject();
+        }
+
+        if ($parent_comment->isRestricted()) {
+            $is_parent_restricted = true;
+        }
+    } else {
+        $root_object = $w->Comment->getObject(str_replace(" ", "", ucwords(str_replace("_", " ", $parent_object_class_name))), $parent_object_id);
     }
-    
-    $help =<<<EOF
-//italics//
-**bold**
-    		
-* bullet list
-* second item
-** subitem
-    
-# numbered list
-# second item
-## sub item
-    
-[[URL|linkname]]
-    
-== Large Heading
-=== Medium Heading
-==== Small Heading
-    
-Horizontal Line:
----
-EOF;
-    
-    //setup for comment notifications
-    $top_table_name = $p['tablename'];
-    $top_id = $p['object_id'];
-    if ($top_table_name == 'comment') {
-        $topObject = $w->Comment->getComment($p['object_id'])->getParentObject();
-        $top_table_name = $topObject->getDbTableName();
-        $top_id = $topObject->id;
+
+    if ($is_parent_restricted || (!empty($comment->id) && $comment->isRestricted())) {
+        $is_restricted = true;
     }
-    
-    $form = [
-        'Comment'=> [
-            [
-                array("", "textarea", "comment", $comment->comment, 100, 15, false)
-            ]
-        ],
-        'Help'=> [
-            [
-                array("", "textarea", "-help",$help, 100, 5, false)
-            ],
-            [
-                array("", "hidden", "redirect_url", $w->request("redirect_url"))
-            ]
-        ]
-    ];
-    
-    if (!$p["comment_id"]) {
-        //call hook for notification select
-        $get_recipients = $w->callHook('comment', 'get_notification_recipients_' . $top_table_name, ['object_id' => $top_id, 'internal_only' => $internal_only === 1 ? true : false]);
-        //add checkboxes to the form for each notification recipient 
-        if (!empty($get_recipients)) {
-            $unique_recipients = [];
-            foreach($get_recipients as $recipients) {
-                foreach ($recipients as $user_id => $is_notify) {
-                    if(!array_key_exists($user_id, $unique_recipients)){
-                        $unique_recipients[$user_id] = $is_notify;
-                    } else {
-                        if ($is_notify != $unique_recipients[$user_id]) {
-                            $unique_recipients[$user_id] = 1;
-                        }
-                    }
-                }
-            }
 
-            $form["Notifications"] = [
-                [
-                    array("", "hidden", "is_notifications", 1)
-                ]
-            ];
-            $parts = array_chunk($unique_recipients, 4, true);
+    $get_recipients = $w->callHook("comment", "get_notification_recipients_" . $root_object->getDbTableName(), ["object_id" => $root_object->id, "internal_only" => $is_internal_only === 1 ? true : false]);
 
-            foreach ($parts as $key => $row) {
-                $form['Notifications'][$key + 1] = [];
+    $notify_recipients = [];
 
-                foreach ($row as $user_id => $is_notify) {
-                    $user = $w->Auth->getUser($user_id);
-                    if (!empty($user)) {
-                        $form['Notifications'][$key + 1][] = array($user->getFullName() . ($user->is_external == 1 ? ' (external)' : ''), 'checkbox', 'recipient_' . $user->id, $is_notify);
+    // Add checkboxes to the form for each notification recipient.
+    if (!empty($get_recipients)) {
+        foreach ($get_recipients as $recipients) {
+            foreach ($recipients as $user_id => $is_notify) {
+                if (!array_key_exists($user_id, $notify_recipients)) {
+                    $notify_recipients[$user_id] = ["is_notify" => $is_notify];
+                } else {
+                    if ($is_notify != $notify_recipients[$user_id]) {
+                        $notify_recipients[$user_id] = ["is_notify" => true];
                     }
                 }
             }
         }
     }
-    
-    // return the comment for display and edit
-    $w->setLayout(null);
-    
-    $w->out(Html::MultiColForm($form, $w->localUrl("/admin/comment/{$comment_id}/{$p["tablename"]}/{$p["object_id"]}?internal_only=" . $internal_only) . "&redirect_url=" . $redirect_url, "POST", "Save"));
-    $w->out('<script>$("form").submit(function(event) {toggleModalLoading();});</script>');
-    
-    
-}
 
-function comment_POST(Web $w){
-    $p = $w->pathMatch("comment_id", "tablename","object_id");
-    $comment_id = intval($p["comment_id"]);
-    $internal_only = intval($w->request('internal_only', 0));
+    $viewers = [];
 
-    $comment = $w->Comment->getComment($comment_id);
-    $is_new = false;
-    if ($comment === null){
-        $comment = new Comment($w);
-        $is_new = true;
-    }
-    
-    $comment->obj_table = $p["tablename"];
-    $comment->obj_id = $p["object_id"];
-    $comment->comment = strip_tags($w->request("comment"));
-    
-    // Only set the internal flag on new comments
-    if ($is_new === true) {
-        $comment->is_internal = $internal_only;
-    }
-    $comment->insertOrUpdate();
-    
-    //handle notifications
-    $top_table_name = $p['tablename'];
-    $top_id = $p['object_id'];
-    if ($top_table_name == 'comment') {
-        $topObject = $w->Comment->getComment($p['object_id'])->getParentObject();
-        $top_table_name = $topObject->getDbTableName();
-        $top_id = $topObject->id;
-    }
-    if($w->request("is_notifications")) {        
-        $recipients = [];        
-        foreach($_POST as $key=>$value) {
-            //keys of interest are formatted 'recipient_{user_id}'
-            $exp_key = explode('_',$key);
-            if ($exp_key[0] == 'recipient') {
-                $recipients[] = $exp_key[1];
-            }            
-        }        
-        $results = $w->callHook('comment', 'send_notification_recipients_' . $top_table_name,['object_id'=>$top_id, 'recipients'=>$recipients, 'commentor_id'=>$w->auth->loggedIn(),'comment'=>$comment, 'is_new'=>$is_new]);
-    
-        
-    }
-    
-    $redirectUrl = $w->request("redirect_url");
+    if (!empty($root_object) && $is_internal_only) {
+        $users = $w->Auth->getUsers();
 
-    if (!empty($redirectUrl)){
-        $w->msg("Comment saved", urldecode($redirectUrl));
+        foreach (empty($users) ? [] : $users as $user) {
+            $link = $w->Main->getObject("RestrictedObjectUserLink", ["object_id" => $comment->id, "user_id" => $user->id, "type" => "viewer"]);
+
+            if ($root_object->canView($user)) {
+                if (!empty($parent_comment) && !$parent_comment->canView($user)) {
+                    continue;
+                }
+                $is_notify = false;
+
+                foreach ($notify_recipients as $key => $notify_recipient) {
+                    if ($key == $user->id && !$is_restricted && $w->Auth->user()->id != $user->id) {
+                        $is_notify = true;
+                    }
+                }
+
+                $viewers[] = [
+                    "id" => $user->id,
+                    "name" => $user->getFullName(),
+                    "can_view" => (!empty($link) || $user->id === $w->Auth->user()->id) ? true : false,
+                    "is_notify" => $is_notify,
+                    "is_original_notify" => $is_notify,
+                ];
+            }
+        }
     } else {
-        $w->msg("Comment saved", $w->localUrl($_SERVER["REQUEST_URI"]));
+        $users = $w->Admin->getObjects("User");
+        $notify_recipients[$w->Auth->user()->id] = false;
+
+        foreach (empty($users) ? [] : $users as $user) {
+            foreach ($notify_recipients as $key => $notify_recipient) {
+                if ($key == $user->id && !$is_restricted) {
+                    $viewers[] = [
+                        "id" => $user->id,
+                        "name" => $user->getFullName() . ($user->is_external ? " (EXTERNAL)" : ""),
+                        "can_view" => true,
+                        "is_notify" => $w->Auth->user()->id != $user->id ? true : false,
+                        "is_original_notify" => empty($is_notify) ? null : $is_notify,
+                    ];
+                }
+            }
+        }
     }
+
+    usort($viewers, function ($a, $b) {
+        return strcmp($a["name"], $b["name"]);
+    });
+
+    $user = $w->Auth->user();
+    $new_owner = [
+        "id" => $user->id,
+        "name" => $user->getFullName(),
+    ];
+
+    // make sure line breaks are escaped for correct processing in js
+    $w->ctx("comment", addcslashes($comment->comment, "\n\""));
+
+    $w->ctx("comment_id", $p["comment_id"] == "{0}" ? "0" : $p["comment_id"]);
+    $w->ctx("viewers", json_encode($viewers));
+    $w->ctx("top_object_class_name", strtolower(preg_replace('/(?<=\\w)(?=[A-Z])/', "_$1", $parent_object_class_name)));
+    $w->ctx("top_object_id", $parent_object_id);
+    $w->ctx("new_owner", json_encode($new_owner));
+    $w->ctx("is_new_comment", empty($p["comment_id"]) || $p["comment_id"] == 0 ? "true" : "false");
+    $w->ctx("is_internal_only", $is_internal_only);
+    $w->ctx("has_notification_selection", $has_notification_selection);
+    $w->ctx("is_restricted", json_encode($is_restricted));
+    $w->ctx("is_parent_restricted", json_encode($is_parent_restricted));
+    $w->ctx("can_restrict", property_exists($comment, '_restrictable') && $is_internal_only && $w->Auth->user()->hasRole("restrict") ? "true" : "false");
 }

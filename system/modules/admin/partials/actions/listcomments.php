@@ -1,26 +1,40 @@
-<?php namespace System\Modules\Admin;
+<?php
 
-function listcomments(\Web $w, $params) {
+namespace System\Modules\Admin;
+
+function listcomments(\Web $w, $params)
+{
     $object = $params['object'];
     $redirect = $params['redirect'];
     $internal_only = array_key_exists('internal_only', $params) ? $params['internal_only'] : true;
     $external_only = $internal_only === true ? false : array_key_exists('external_only', $params) ? $params['external_only'] : false;
-    
-    $w->ctx("comments", $w->Comment->getCommentsForTable($object->getDbTableName(), $object->id, $internal_only, $external_only));
+    $has_notification_selection = array_key_exists('has_notification_selection', $params) ? $params["has_notification_selection"] : true;
+
+
+    $comments = $w->Comment->getCommentsForTable($object->getDbTableName(), $object->id, $internal_only, $external_only);
+    $user = $w->Auth->user();
+    foreach (empty($comments) ? [] : $comments as $key => $comment) {
+        if (!$comment->canView($user)) {
+            unset($comments[$key]);
+        }
+    }
+
+    $w->ctx("comments", $comments);
     $w->ctx("internal_only", $internal_only);
     $w->ctx("external_only", $external_only);
     $w->ctx("redirect", $redirect);
     $w->ctx("object", $object);
+    $w->ctx("has_notification_selection", $has_notification_selection);
 
     //get recipients for comment notifications
     $get_recipients = $w->callHook('comment', 'get_notification_recipients_' . $object->getDbTableName(), ['object_id' => $object->id, 'internal_only' => $internal_only]);
-    //add checkboxes to the form for each notification recipient    
+    //add checkboxes to the form for each notification recipient
     $recipients_form_html = '';
     if (!empty($get_recipients)) {
         $unique_recipients = [];
-        foreach($get_recipients as $recipients) {
+        foreach ($get_recipients as $recipients) {
             foreach ($recipients as $user_id => $is_notify) {
-                if(!array_key_exists($user_id, $unique_recipients)){
+                if (!array_key_exists($user_id, $unique_recipients)) {
                     $unique_recipients[$user_id] = $is_notify;
                 } else {
                     if ($is_notify != $unique_recipients[$user_id]) {
@@ -35,20 +49,19 @@ function listcomments(\Web $w, $params) {
             $user = $w->Auth->getUser($user_id);
             if (!empty($user)) {
                 if ($internal_only === true && $user->is_external == 0) {
-                    $recipients_form_html .= '<li><label classs="small-12 columns">' . addcslashes($user->getFullName(),'\'') . ' <input type="checkbox" name="recipient_' . $user->id . '" value="1" ';
-                    $recipients_form_html .= $user->id != $w->auth->loggedIn() && $is_notify == 1 ? 'checked="checked"' : ''; 
+                    $recipients_form_html .= '<li><label classs="small-12 columns">' . addcslashes($user->getFullName(), '\'') . ' <input type="checkbox" name="recipient_' . $user->id . '" value="1" ';
+                    $recipients_form_html .= $user->id != $w->auth->loggedIn() && $is_notify == 1 ? 'checked="checked"' : '';
                     $recipients_form_html .= 'id="recipient_' . $user_id . '" class=""></label></li>';
                 } else {
                     if ($internal_only === false) {
-                        $recipients_form_html .= '<li><label class="small-12 columns">' . addcslashes($user->getFullName(),'\'') . ($user->is_external == 1 ? ' (external)' : '') . ' <input type="checkbox" name="recipient_' . $user->id . '" value="1" ';
-                        $recipients_form_html .= $user->id != $w->auth->loggedIn() && $is_notify == 1 ? 'checked="checked"' : ''; 
+                        $recipients_form_html .= '<li><label class="small-12 columns">' . addcslashes($user->getFullName(), '\'') . ($user->is_external == 1 ? ' (external)' : '') . ' <input type="checkbox" name="recipient_' . $user->id . '" value="1" ';
+                        $recipients_form_html .= $user->id != $w->auth->loggedIn() && $is_notify == 1 ? 'checked="checked"' : '';
                         $recipients_form_html .= 'id="recipient_' . $user_id . '" class=""></label></li>';
                     }
-                }                    
+                }
             }
         }
-        $recipients_form_html .= '</ul></div>';  
+        $recipients_form_html .= '</ul></div>';
     }
     $w->ctx('recipients_html', $recipients_form_html);
 }
-

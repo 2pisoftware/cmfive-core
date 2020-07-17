@@ -1,7 +1,5 @@
 <?php
 
-use Carbon\Carbon;
-
 if ($w->auth->hasRole('comment')) {
     if (!isset($internal_only)) {
         $internal_only = false;
@@ -10,14 +8,15 @@ if ($w->auth->hasRole('comment')) {
     // /admin/comment/[COMMENT_ID]/[TABLE_NAME]/[OBJECT_ID]?redirect_url=[REDIRECT_URL]
     // Its a bit farfetched but provides us with a standard commenting interface
     // Dont need to worry about urlencoding the redirect url
-    echo Html::box("/admin/comment/0/{$object->getDbTablename()}/{$object->id}?redirect_url=" . urlencode($redirect) . "&internal_only=" . ($internal_only === true ? '1' : '0'), "Add Comment", true);
-    
+    echo Html::box("/admin/comment/0/" . get_class($object) . "/{$object->id}?redirect_url=" . urlencode($redirect) . "&internal_only=" . ($internal_only === true ? '1' : '0') . "&has_notification_selection=" . ($has_notification_selection ? '1' : '0'), "Add Comment", true);
+
+
     if (!empty($comments)) :
         // Now that we have comments on comments, I decided to change the partial structure
         // Loop comments is responsible for listing all of the comments given
             // It then calls displaycomment which prints and individual comment?>
         <div id="<?php echo $internal_only === true ? 'internal' : 'external'; ?>_comments_container">
-            <?php echo $w->partial("loopcomments", array("object" => $comments, "redirect" => $redirect, 'internal_only' => (isset($internal_only) ? $internal_only : false), 'external_only' => (isset($external_only) ? $external_only : false)), "admin"); ?>
+            <?php echo $w->partial("loopcomments", ["object" => $comments, "redirect" => $redirect, 'internal_only' => (isset($internal_only) ? $internal_only : false), 'external_only' => (isset($external_only) ? $external_only : false)], "admin"); ?>
         </div>
 
         <?php CSRF::regenerate(); ?>
@@ -78,19 +77,19 @@ if ($w->auth->hasRole('comment')) {
             },
             comment_reply_clicked: function(element) {
                 console.log("Loading reply form");
-                
+
                 $("#<?php echo $internal_only === true ? 'internal' : 'external'; ?>_comments_container a.comment_reply").each(function() {
-                   $(this).hide(); 
+                   $(this).hide();
                 });
 
                 var closest = element.closest('.medium-11').siblings('.medium-1').first();
                 var comment_section = element.closest(".comment_section");
                 var comment_id = comment_section.attr('id').substr(comment_section.attr('id').indexOf('_') + 1);
-                
+
                 var replyForm = $('<div></div>').addClass('comment_section')
                     .append($('<div></div>').addClass('comment_body clearfix')
                         .append($('<div></div>').addClass('medium-1 column')
-                            .append($('<img/>').addClass('comment_avatar').attr('src', 'http://www.gravatar.com/avatar/<?php echo md5(strtolower(trim(@$w->Auth->user()->getContact()->email))); ?>?d=identicon')))
+                            .append($('<img/>').addClass('comment_avatar').attr('src', 'https://www.gravatar.com/avatar/<?php echo md5(strtolower(trim(@$w->Auth->user()->getContact()->email))); ?>?d=identicon')))
                         .append($('<div></div>').addClass('medium-11 columns')
                             .append($('<form></form>').attr({id: 'comment_reply_form'})
                                 .append($('<input>').attr({
@@ -115,7 +114,7 @@ if ($w->auth->hasRole('comment')) {
                     );
 
                 comment_section.append(replyForm);
-                
+
                 $("#textarea_comment").focus();
 
                 $('#comment_reply_form').submit(function() {
@@ -124,14 +123,14 @@ if ($w->auth->hasRole('comment')) {
                     var notification_users = [];
                     if ($('#is_notifications').length != 0) {
                         notification_users.push('parentObject_' + '<?php echo $object->getDbTableName(); ?>' + '_' + '<?php echo $object->id; ?>');
-                        $('#<?php echo $internal_only ? 'internal' : 'external';?>_notifications_list > ul > li > label').each(function () {                        
-                            var notification = $('input', this);                     
+                        $('#<?php echo $internal_only ? 'internal' : 'external';?>_notifications_list > ul > li > label').each(function () {
+                            var notification = $('input', this);
                             if (notification.is(':checked')) {
                                 notification_users.push(notification.attr('name'));
-                            }                                                                       
+                            }
                         });
                     }
-                    
+
                     $.ajax({
                         url  : '/admin/ajaxSaveComment/' + comment_id + "?internal_only=<?php echo $internal_only; ?>",
                         type : 'POST',
@@ -150,20 +149,20 @@ if ($w->auth->hasRole('comment')) {
 
                 return false;
             }
-        } 
+        }
 
         $(document).ready(function() {
             _<?php echo $internal_only === true ? 'internal' : 'external'; ?>.applyColours(false);
 
             $("#<?php echo $internal_only === true ? 'internal' : 'external'; ?>_comments_container .comment_body").click(function() {
-                $(this).siblings().slideToggle(200); 
+                $(this).siblings().slideToggle(200);
             });
 
             $('#<?php echo $internal_only === true ? 'internal' : 'external'; ?>_comments_container a.comment_reply').unbind('click');
             $("#<?php echo $internal_only === true ? 'internal' : 'external'; ?>_comments_container a.comment_reply").click(function(e) {
                 return _<?php echo $internal_only === true ? 'internal' : 'external'; ?>.comment_reply_clicked($(this));
             });
-            
+
             <?php if (!empty($_GET['scroll_comment_id']) && is_numeric($_GET['scroll_comment_id'])) : ?>
                 // Scroll to comment
                 $('html, body').animate({
@@ -172,7 +171,7 @@ if ($w->auth->hasRole('comment')) {
             <?php endif; ?>
         });
 
-        
+
     </script>
     <?php endif;
 } else {

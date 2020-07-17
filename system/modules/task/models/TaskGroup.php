@@ -1,18 +1,18 @@
 <?php
 
 /**
- * 
+ *
  * A Task group defines the type of tasks which can be
  * assigned to this group, as well as the people who
  * participate in this group.
- * 
+ *
  * @author carsten
  *
  */
-class TaskGroup extends DbObject {
+class TaskGroup extends DbObject
+{
+    static $_DEFAULT_AUTOMATIC_SUBSCRIPTION = false;
 
-	static $_DEFAULT_AUTOMATIC_SUBSCRIPTION = false;
-	
     public $title;   // not null
     public $can_assign;  // ALL, GUEST, MEMBER, OWNER
     public $can_view;   // ALL, GUEST, MEMBER, OWNER
@@ -24,76 +24,118 @@ class TaskGroup extends DbObject {
     public $default_task_type;   // can be null
     public $default_priority;    // can be null
     public $task_group_type; // php class name of concrete TaskGroupType implementation
-	public $is_automatic_subscription;
+    public $is_automatic_subscription;
     public $_modifiable;
-    
-    
-    public $_validation = array(
-        "title" => array("required"),
-        "can_assign" => array("required"),
-        "can_view" => array("required"),
-        "can_create" => array("required"),
-        "is_active" => array("required"),
-        "task_group_type" => array("required"),
-    );
-    
+
+
+    public static $_validation = [
+        "title" => ["required"],
+        "can_assign" => ["required"],
+        "can_view" => ["required"],
+        "can_create" => ["required"],
+        "is_active" => ["required"],
+        "task_group_type" => ["required"],
+    ];
+
     public static $_db_table = "task_group";
 
-    public function getMembers() {
+    /**
+     * To ensure task_group_notify objects are also copied, set $saveToDb to true
+     *
+     * @param boolean $saveToDb default false
+     * @return TaskGroup
+     */
+    public function copy($saveToDb = false)
+    {
+        $new_taskgroup = parent::copy($saveToDb);
+
+        if (!!$saveToDb) {
+            foreach ($this->getTaskGroupNotify() ?: [] as $notify) {
+                $new_notify = $notify->copy(false);
+                $new_notify->task_group_id = $new_taskgroup->id;
+                $new_notify->insert();
+            }
+        } else {
+            $this->w->Log->setLogger('TASK')->warn('$saveToDb is false, skipping copy of task group notify objects');
+        }
+
+        return $new_taskgroup;
+    }
+
+    public function getTaskGroupNotify()
+    {
+        return $this->getObjects('TaskGroupNotify', ['task_group_id' => $this->id]);
+    }
+
+    public function getMembers()
+    {
         return $this->getObjects("TaskGroupMember", ['task_group_id' => $this->id]);
     }
 
-	public function shouldAutomaticallySubscribe() {
-		return !!$this->is_automatic_subscription;
-	}
-	
-    public function getTasks() {
+    public function shouldAutomaticallySubscribe()
+    {
+        return !!$this->is_automatic_subscription;
+    }
+
+    public function getUnclosedTasks()
+    {
+        return $this->getObjects("Task", ['task_group_id' => $this->id, 'is_deleted' => 0, 'is_closed' => 0]);
+    }
+
+    public function getTasks()
+    {
         return $this->getObjects("Task", ['task_group_id' => $this->id, 'is_deleted' => 0]);
     }
 
-    public function canList(\User $user) {
+    public function canList(\User $user)
+    {
         return $this->getCanIView();
     }
-    
-    public function canView(\User $user) {
+
+    public function canView(\User $user)
+    {
         return $this->getCanIView();
     }
-    
+
     // Only owner of taskgroup or admin can edit
-    public function canEdit(\User $user) {
+    public function canEdit(\User $user)
+    {
         if ($this->Auth->user()->is_admin == 1) {
             return true;
         }
-        
+
         return $this->isOwner($user);
     }
-	
+
     // Only owner of taskgroup or admin can delete
-    public function canDelete(\User $user) {
+    public function canDelete(\User $user)
+    {
         if ($this->Auth->user()->is_admin == 1) {
             return true;
         }
-        
+
         return $this->isOwner($user);
     }
-	
-	public function delete($force = false) {
-		$tasks = $this->getTasks();
-		if (!empty($tasks)) {
-			foreach($tasks as $task) {
-				$task->delete($force);
-			}
-		}
-		
-		parent::delete($force);
-	}
-    
+
+    public function delete($force = false)
+    {
+        $tasks = $this->getTasks();
+        if (!empty($tasks)) {
+            foreach ($tasks as $task) {
+                $task->delete($force);
+            }
+        }
+
+        parent::delete($force);
+    }
+
     // get my member object. compare my role with group role required to view task group
-    function getCanIView() {
+    public function getCanIView()
+    {
         if ($this->Auth->user()->is_admin == 1) {
             return true;
         }
-        
+
         $me = $this->Task->getMemberGroupById($this->id, $this->Auth->user()->id);
         if (empty($me)) {
             return false;
@@ -102,11 +144,12 @@ class TaskGroup extends DbObject {
     }
 
     // get my member object. compare my role with group role required to create tasks in this group
-    function getCanICreate() {
+    public function getCanICreate()
+    {
         if ($this->Auth->user()->is_admin == 1) {
             return true;
         }
-        
+
         $me = $this->Task->getMemberGroupById($this->id, $this->w->Auth->user()->id);
         if (empty($me)) {
             return false;
@@ -115,11 +158,12 @@ class TaskGroup extends DbObject {
     }
 
     // get my member object. compare my role with group role required to assign tasks in this group
-    function getCanIAssign() {
+    public function getCanIAssign()
+    {
         if ($this->Auth->user()->is_admin == 1) {
             return true;
         }
-        
+
         $me = $this->Task->getMemberGroupById($this->id, $this->w->Auth->user()->id);
         if (empty($me)) {
             return false;
@@ -128,76 +172,91 @@ class TaskGroup extends DbObject {
     }
 
     // get task group title given task group type
-    function getTypeTitle() {
+    public function getTypeTitle()
+    {
         $c = $this->Task->getTaskGroupTypeObject($this->task_group_type);
         return $c ? $c->getTaskGroupTypeTitle() : null;
     }
 
     // get task group description given task group type
-    function getTypeDescription() {
+    public function getTypeDescription()
+    {
         $c = $this->Task->getTaskGroupTypeObject($this->task_group_type);
         return $c ? $c->getTaskGroupTypeDescription() : null;
     }
 
     // get fullname of default assignee for this task group
-    function getDefaultAssigneeName() {
+    public function getDefaultAssigneeName()
+    {
         $assign = $this->Auth->getUser($this->default_assignee_id);
         return $assign ? $assign->getFullName() : "";
     }
-    
-    public function getSelectOptionTitle() {
+
+    public function getSelectOptionTitle()
+    {
         return $this->title;
     }
 
-    public function getSelectOptionValue() {
+    public function getSelectOptionValue()
+    {
         return $this->id;
     }
-    
+
     /**
      * Check if a given status is a "closing" status
-     * 
+     *
      * @param unknown $status
      */
-    public function isStatusClosed($status) {
-    	$stats = $this->getStatus();
-    	foreach ($stats as $sa) {
-    		if ($sa[0]==$status) return $sa[1];
-    	}
-    	return false;
+    public function isStatusClosed($status)
+    {
+        $stats = $this->getStatus();
+        foreach ($stats as $sa) {
+            if ($sa[0] == $status) {
+                return $sa[1];
+            }
+        }
+        return false;
     }
-    
+
     // Task replacement functions
-    public function getTypes() {
+    public function getTypes()
+    {
         return $this->Task->getTaskTypes($this);
     }
-    
-    public function getTypeStatus() {
+
+    public function getTypeStatus()
+    {
         return $this->Task->getTaskTypeStatus($this->task_group_type);
     }
-    
-    public function getTaskGroupTypeObject() {
+
+    public function getTaskGroupTypeObject()
+    {
         return $this->Task->getTaskGroupTypeObject($this->task_group_type);
     }
-    
-    public function getTaskReopen() {
+
+    public function getTaskReopen()
+    {
         return $this->Task->getCanTaskReopen($this->task_group_type);
     }
-    
-    public function getStatus() {
+
+    public function getStatus()
+    {
         return $this->Task->getTaskStatus($this->task_group_type);
     }
-    
-    public function getPriority() {
+
+    public function getPriority()
+    {
         return $this->Task->getTaskPriority($this->task_group_type);
     }
-    
+
     /**
      * Return true if the user is a member of the taskgroup with a role of "OWNER"
-     * 
+     *
      * @param User $user
      * @return boolean
      */
-    public function isOwner(User $user) {
+    public function isOwner(User $user)
+    {
         return null != $this->getObject("TaskGroupMember", array("task_group_id" => $this->id, "is_active" => 1, "user_id" => $user->id, "role" => "OWNER"));
     }
 }

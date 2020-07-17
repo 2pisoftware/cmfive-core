@@ -1,0 +1,31 @@
+
+$segment-background-colour: #f8f9fb;
+$segment-header-colour: #fffdff;
+$segment-header-background-colour: #adbfcb;
+$segment-border-colour: #d8dde1;
+
+div.html-segment {
+	display: block;
+	background-color: $segment-background-colour;
+	border-left: 1px solid $segment-border-colour;
+	border-right: 1px solid $segment-border-colour;
+
+	&:first-child {
+		border-top: 1px solid $segment-border-colour;
+		margin-top: 41px;
+	}
+
+	&:last-child {
+		border-bottom: 1px solid $segment-border-colour;
+	}
+
+	div.segment-header {
+		padding: 9px 15px;
+		color: $segment-header-colour;
+		background-color: $segment-header-background-colour;
+	}
+
+	div.segment-content {
+		padding: 9px 15px;
+	}
+}

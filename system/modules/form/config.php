@@ -17,5 +17,8 @@ Config::set('form', [
 	],
 	'components' => [
 		'metadata-subform' => ['/system/modules/form/assets/js/metadata-subform.vue.js']
+	],
+	'form_event_processors' => [
+		'EmailNotificationEventProcessor'
 	]
 ]);

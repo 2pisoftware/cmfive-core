@@ -9,11 +9,12 @@
  * @return boolean
  ****************************************/
 function role_file_upload_allowed(Web $w,$path) {
-		return $w->checkUrl($path, "file", null, "index") || 
+		return $w->checkUrl($path, "file", null, "index") ||
 			$w->checkUrl($path, "file", null, "attach") ||
 			$w->checkUrl($path, "file", null, "new") ||
 			$w->checkUrl($path, "file", null, "edit") ||
-			$w->checkUrl($path, "file", null, "delete");
+			$w->checkUrl($path, "file", null, "delete") ||
+			$w->checkUrl($path, "file", "attachment", "ajaxAddAttachment");
 }
 /*****************************************
  * Check if the user with the file_download role is allowed access to this path

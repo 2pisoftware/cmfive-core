@@ -1,12 +1,14 @@
 <?php
 
 Config::set('admin', array(
-    'version' => '0.8.0',
     'active' => true,
     'path' => 'system/modules',
     'topmenu' => true,
     'audit_ignore' => array("index"),
-    'hooks' => array('core_dbobject','core_web'),
+    'hooks' => array(
+        'core_dbobject',
+        'core_web'
+    ),
     'printing' => array(
         'command' => array(
             'unix' => 'lpr -P $printername $filename',
@@ -17,21 +19,40 @@ Config::set('admin', array(
         'output' => 'sql',
         'command' => array(
             'unix' => 'mysqldump -u $username -p\'$password\' $dbname | gzip > $filename.gz',
-            // 'windows' => 'J:\\xampp\\mysql\\bin\\mysqldump.exe -u $username -p$password $dbname > $filename'
+            'windows' => 'C:\\Ampps\\mysql\\bin\\mysqldump.exe -u $username -p$password $dbname > $filename'
         )
-		// Example to back up off site (only dropbox support currently)
-		// 'backuplocations' => ['dropbox' => ['key' => '<KEY>', 'secret' => '<SECRET>']]
     ),
     "dependencies" => array(
-        "swiftmailer/swiftmailer" => "5.4.*",
+        //"swiftmailer/swiftmailer" => "5.4.*",
+        "swiftmailer/swiftmailer" => "~6.2",
         "twig/twig" => "2.4.*",
         "nesbot/carbon" => "1.22.1",
 		"robmorgan/phinx" => "0.8.*",
-		"sendgrid/sendgrid" => "~5.5"
+		"sendgrid/sendgrid" => "~5.5",
+        "softark/creole" => "~1.2",
+        "monolog/monolog" => "^1.22",
+		"aws/aws-sdk-php" => "^3.24",
+		"aws/aws-php-sns-message-validator" => "^1.1",
+		"maxbanton/cwh" => "^1.0"
     ),
     "bulkemail"=> array(
         "number_per_cron" => 5,
         //set user to authenticate attachments for emails
         "auth_user" => null
-    )
+    ),
+    'logging' => [
+        'target' => 'file',         // Can be 'file' or 'aws' (cloudwatch)
+        'retention_period' => 30,   // In number of days
+        'cloudwatch' => [
+            'group_name' => 'cmfive-app-logs',
+            'stream_name_app' => 'CmfiveApp',
+            'region'    => 'ap-southeast-2',
+            'version'   => 'latest',
+            // 'credentials' => [
+            //     'key'       => '<your aws key>',
+            //     'secret'    => '<your aws secret>',
+            //     'token'     => ''    // Token is optional
+            //]
+        ]
+    ]
 ));

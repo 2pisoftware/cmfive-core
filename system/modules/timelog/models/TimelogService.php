@@ -2,15 +2,15 @@
 
 /**
  * This service class aids in the registration and usage of timelog objects
- * 
+ *
  * @author Adam Buckley <adam@2pisoftware.com>
  */
 class TimelogService extends DbService {
     private $_trackObject = null;
-    
+
 	/**
 	 * Returns all time logs for a given user
-	 * 
+	 *
 	 * @param User $user
 	 * @param boolean $includeDeleted
 	 * @return Timelog
@@ -19,37 +19,37 @@ class TimelogService extends DbService {
         if ($user === null) {
             $user = $this->w->Auth->user();
         }
-        
+
         $where = ['user_id' => $user->id];
         if (!$includeDeleted) {
             $where['is_deleted'] = 0;
         }
-        
+
         return $this->getObjects("Timelog", $where, false, true, "dt_start DESC", ($page - 1) * $page_size, $page_size);
     }
-	
+
 	public function countTotalTimelogsForUser(User $user = null, $includeDeleted = false) {
         if ($user === null) {
             $user = $this->w->Auth->user();
         }
-        
+
         $where = ['user_id' => $user->id];
         if (!$includeDeleted) {
             $where['is_deleted'] = 0;
         }
-        
+
         return $this->db->get("timelog")->where($where)->count();
     }
-	
+
 	public function getTimelogsForObject($object) {
 		if (!empty($object->id)) {
 			return $this->getObjects("Timelog", ["object_class" => get_class($object), "object_id" => $object->id, "is_deleted" => 0]);
 		}
 	}
-	
+
 	/**
 	 * Returns number of timelogs for a given object
-	 * 
+	 *
 	 * @param DbObject $object
 	 * @return int
 	 */
@@ -60,13 +60,13 @@ class TimelogService extends DbService {
 		}
 		return 0;
 	}
-	
+
 	public function getTimelogsForObjectByClassAndId($object_class, $object_id) {
 		if (!empty($object_class) || !empty($object_id)) {
 			return $this->getObjects("Timelog", ["object_class" => $object_class, "object_id" => $object_id, "is_deleted" => 0], false, true, "dt_start ASC");
 		}
 	}
-	
+
 	public function countTimelogsForUserAndObject($user, $object) {
 		if (!empty($user) && !empty($object) && is_a($object, 'DbObject')) {
 			return $this->w->db->get('timelog')->where('user_id', $user->id)
@@ -76,47 +76,47 @@ class TimelogService extends DbService {
 		}
 		return 0;
 	}
-	
+
 	/**
 	 * Returns all non deleted timelogs
-	 * 
+	 *
 	 * @return Array<Timelog>
 	 */
     public function getTimelogs() {
         return $this->getObjects("Timelog", ["is_deleted" => 0]);
     }
-    
+
     public function getTimelog($id) {
         return $this->getObject("Timelog", $id);
     }
-    
+
     public function getActiveTimeLogForUser() {
         return $this->getObject("Timelog", ["is_deleted" => 0, "dt_end" => null, "user_id" => $this->w->Auth->user()->id]);
     }
-    
+
     public function hasActiveLog() {
 		$timelog = $this->getActiveTimeLogForUser();
         return !empty($timelog);
     }
-    
+
     public function hasTrackingObject() {
         return !empty($this->_trackObject);
     }
-    
+
     public function registerTrackingObject($object) {
         $this->_trackObject = $object;
     }
-    
+
     public function getTrackingObject() {
         return $this->_trackObject;
     }
-    
+
 	public function getTrackingObjectClass() {
 		if ($this->hasTrackingObject()) {
 			return get_class($this->_trackObject);
 		}
 	}
-	
+
     public function getJSTrackingObject() {
         if ($this->hasTrackingObject()) {
             $class = new stdClass();
@@ -130,7 +130,7 @@ class TimelogService extends DbService {
         // Check if tracking object set or existing timelog is running
         return ($this->w->Auth->user()->hasRole("timelog_user") && ($this->hasTrackingObject() || $this->hasActiveLog()));
     }
-    
+
     /**
      * returns a list of objects to which you can attach timelogs
      * @return type array
@@ -141,7 +141,7 @@ class TimelogService extends DbService {
         $modules = array_filter(Config::keys() ? : [], function($module) {
 			return Config::get("$module.active") === true;
 		});
-	
+
 		if (!empty($modules)) {
 			foreach ($modules as $key => $module) {
 				$timelog = Config::get("$module.timelog");
@@ -164,9 +164,10 @@ class TimelogService extends DbService {
 
         $nav = $nav ? : array();
 
-		$trackingObject = $w->Timelog->getTrackingObject();
-		
+        $trackingObject = $w->Timelog->getTrackingObject();
+
         if ($w->Auth->loggedIn()) {
+            $w->menuLink("timelog/index", "Timelog Dashboard", $nav);
             $w->menuBox("timelog/edit" . (!empty($trackingObject) && !empty($trackingObject->id) ? "?class=" . get_class($trackingObject) . "&id=" . $trackingObject->id : ''), "Add Timelog", $nav);
         }
 

@@ -28,16 +28,18 @@ class ChannelProcessor extends DbObject {
 
     /**
      * Gets new messages that have not been processed at all
-     * @return [type] [description]
+     * @return array new message objects
      */
     public function getNewMessages() {
         $messages = $this->getUnprocessedMessages();
-
-        $processor_id = $this->id;
-        return array_filter($messages, function($message) use ($processor_id) {
-            $status = $message->getStatus($processor_id);
-            return empty($status->id);
-        });
+        if (!empty($messages)) {
+            $processor_id = $this->id;
+            return array_filter($messages, function($message) use ($processor_id) {
+                $status = $message->getStatus($processor_id);
+                return empty($status->id);
+            });
+        }
+        return [];
     }
 
     public function getFailedMessages() {
