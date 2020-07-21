@@ -18,6 +18,7 @@
                 echo (new \Html\Form\InputField([
                     "id|name" => "mfa_code",
                     "placeholder" => "Your code",
+                    "autofocus" => true,
                     "required" => true,
                 ]))->setAttribute("v-model", "mfa_code");
                 ?>
