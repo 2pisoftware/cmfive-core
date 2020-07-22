@@ -94,7 +94,7 @@
                     new Toast("Failed to upload file").show();
                     console.log(error);
                 }).finally(function() {
-
+                    toggleModalLoading();
                 });
             }
         }

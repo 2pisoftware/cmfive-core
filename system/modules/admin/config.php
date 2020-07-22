@@ -51,9 +51,13 @@ Config::set('admin', [
     ],
     "mail" => [
         "http" => [
-            "mode" => "production",
-            "profile" => "",
+            "credentials" => [
+                "key" => "",
+                "secret" => "",
+            ],
+            "queue_url" => "",
             "region" => "",
+            "version" => "",
         ],
     ],
 ]);

@@ -58,7 +58,7 @@ class SwiftMailerTransport implements GenericTransport
                 }
 
                 $mailer = new Swift_Mailer($this->transport);
-                
+
                 // To, cc, bcc need to be given as arrays when sending to more than one person
                 // Ie you separate them by a comma, this will split them into arrays as expected by Swift
                 if (strpos($to, ",") !== false) {

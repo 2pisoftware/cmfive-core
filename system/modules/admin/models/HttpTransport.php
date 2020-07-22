@@ -1,13 +1,11 @@
 <?php
 
 use GuzzleHttp\Client;
-use GuzzleHttp\RequestOptions;
 use Aws\Sqs\SqsClient;
 
 class HttpTransport implements GenericTransport
 {
     private $w;
-    private $transport;
 
     public function __construct($w, $layer)
     {
@@ -32,27 +30,63 @@ class HttpTransport implements GenericTransport
         ]);
     }
 
+    /**
+     * Send email data to SQS. Currently all attachments have to be stored in S3 to avoid breaking changes to
+     * this method's API.
+     *
+     * @param string $to
+     * @param string $reply_to
+     * @param string $subject
+     * @param string $body
+     * @param string|null $cc
+     * @param string|null $bcc
+     * @param array $attachments
+     * @param array $headers
+     *
+     * @return void
+     */
     public function send($to, $reply_to, $subject, $body, $cc = null, $bcc = null, $attachments = [], $headers = [])
     {
-        $client = SqsClient::factory([
-            "profile" => "",
-            "region" => "",
-        ]);
+        $client = null;
 
+        $region = Config::get("admin.mail.http.region");
+        if (empty($region)) {
+            $this->w->Log->error("Failed to send mail to: admin.mail.http.region not set in config");
+            return;
+        }
 
-        $send_uri = Config::get("email.send_uri");
-        if (empty($send_uri)) {
-            $this->w->Log->error("Failed to send mail to: $to, from: $reply_to, about: $subject: email.send_uri not set in config");
+        // TODO: Handle production.
+        if (Config::get("system.environment") === "development") {
+            $credentials = Config::get("admin.mail.http.credentials");
+            if (empty($credentials)) {
+                $this->w->Log->error("Failed to send mail to: admin.mail.http.credentials not set in config");
+                return;
+            }
+
+            $client = new SqsClient([
+                "credentials" => [
+                    "key" => $credentials["key"],
+                    "secret" => $credentials["secret"],
+                ],
+                "region" => $region,
+                "version" => "2012-11-05",
+            ]);
+        } else {
+            $client = new SqsClient([
+                "profile" => "defualt",
+                "region" => $region,
+                "version" => "2012-11-05",
+            ]);
+        }
+
+        $queue_url = Config::get("admin.mail.http.queue_url");
+        if (empty($queue_url)) {
+            $this->w->Log->error("Failed to send mail to: $to, from: $reply_to, about: $subject: admin.mail.http.queue_url not set in config");
             return;
         }
 
         if (empty($to) || strlen($to) === 0) {
             $this->w->Log->error("Failed to send mail to: $to, from: $reply_to, about: $subject: no recipients");
-            return;
-        }
-
-        if ($this->transport === null) {
-            $this->w->Log->error("Failed to send mail to: $to, from: $reply_to, about: $subject: no email transport defined");
             return;
         }
 
@@ -68,6 +102,10 @@ class HttpTransport implements GenericTransport
             $bcc = array_map("trim", explode(",", $bcc));
         }
 
+        if (strpos($reply_to, ",") !== false) {
+            $reply_to = array_map("trim", explode(",", $reply_to));
+        }
+
         if (empty($cc)) {
             $cc = [];
         }
@@ -76,58 +114,46 @@ class HttpTransport implements GenericTransport
             $bcc = [];
         }
 
-        $attachment_files = [];
-
-        foreach ($attachments as $attachment) {
-            if (!file_exists($attachment)) {
-                continue;
-            }
-
-            $file_contents = file_get_contents($attachment);
-            if ($file_contents === false) {
-                $this->w->Log->setLogger("MAIL")->error("Unable to get contents from attachment: $attachment");
-                continue;
-            }
-
-            $attachment_file = [
-                "filename" => basename($attachment),
-                "data" => file_get_contents($attachment),
-                "inline" => false,
-            ];
-
-            $attachment_files[] = $attachment_file;
+        if (empty($reply_to)) {
+            $reply_to = [];
         }
 
-        $request_body = [
-            "from" => [
-                "Name" => "",
-                "Address" => "",
-            ],
+        $body_content_type = null;
+
+        foreach ($headers as $key => $value) {
+            if ($key === "Content-Type") {
+                $body_content_type = $value;
+                unset($headers[$key]);
+            }
+        }
+
+        $attachmentsWithTypes = [];
+
+        // Assume all types are S3. Currently HttpTransport requires attachments
+        // to be in S3 to avoid breaking changes to this method's API.
+        foreach ($attachments as $attachment) {
+            $attachmentsWithTypes[] = [
+                "path" => Config::get("file.adapters.s3.bucket") . "/" . $attachment,
+                "type" => "s3",
+            ];
+        }
+
+        $message_body = [
             "to" => is_array($to) ? $to : [$to],
             "cc" => is_array($cc) ? $cc : [$cc],
             "bcc" => is_array($bcc) ? $bcc : [$bcc],
-            "reply_to" => $reply_to,
+            "reply_to" => is_array($reply_to) ? $reply_to : [$reply_to],
+            "from" => is_array($reply_to) && count($reply_to) > 1 ? $reply_to[0] : $reply_to,
             "subject" => $subject,
             "body" => $body,
-            "body_content_type" => "text/html",
+            "body_content_type" => $body_content_type,
             "headers" => $headers,
-            "attachments" => $attachment_files,
+            "attachments" => $attachmentsWithTypes,
         ];
 
-        try {
-            $response = $this->transport->request("POST", $send_uri, [
-                RequestOptions::HEADERS => [
-                    "content-type" => "application/json",
-                    "x-api-key" => Config::get("email.api_key"),
-                ],
-                RequestOptions::BODY => json_encode($request_body),
-            ]);
-
-            if ($response->getStatusCode() != 200 && $response->getStatusCode() != 202) {
-                throw new Exception("unexpected status code returned: {$response->getStatusCode()}");
-            }
-        } catch (Exception $e) {
-            $this->w->Log->error("Failed to send mail to: $to, from: $reply_to, about: $subject: {$e->getMessage()}");
-        }
+        $client->sendMessage([
+            "QueueUrl" => $queue_url,
+            "MessageBody" => json_encode($message_body),
+        ]);
     }
 }
