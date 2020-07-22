@@ -54,7 +54,7 @@ Config::set('email.transports', [
     'smtp' => 'SwiftMailerTransport',
     'swiftmailer' => 'SwiftMailerTransport',
     'sendmail' => 'SwiftMailerTransport',
-    'http' => 'HttpTransport',
+    'aws' => 'AwsTransport',
 ]);
 
 Config::set('system.gc_maxlifetime', 21600);
