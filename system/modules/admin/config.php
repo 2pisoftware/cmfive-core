@@ -50,7 +50,7 @@ Config::set('admin', [
         ]
     ],
     "mail" => [
-        "http" => [
+        "aws" => [
             "credentials" => [
                 "key" => "",
                 "secret" => "",

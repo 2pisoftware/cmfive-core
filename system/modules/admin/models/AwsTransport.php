@@ -3,7 +3,7 @@
 use GuzzleHttp\Client;
 use Aws\Sqs\SqsClient;
 
-class HttpTransport implements GenericTransport
+class AwsTransport implements GenericTransport
 {
     private $w;
 
