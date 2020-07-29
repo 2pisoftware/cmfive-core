@@ -2,12 +2,15 @@
 
 class Insight
 {
+    private $name;
+    private $description;
 
-    function getFilters() {
-
+    function getFilters()
+    {
     }
 
-   function run() {
-
+    function run()
+    {
     }
 }
+?>
