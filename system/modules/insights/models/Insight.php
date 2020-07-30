@@ -2,15 +2,14 @@
 
 class Insight
 {
-    private $name;
-    private $description;
+    public $name;
+    public $description;
 
-    function getFilters()
+    public function getFilters()
     {
     }
 
-    function run()
+    public function run()
     {
     }
 }
-?>
