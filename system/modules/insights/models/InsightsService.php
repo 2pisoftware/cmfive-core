@@ -45,7 +45,11 @@ class InsightsService extends Insight
 
                               $insight_class = preg_replace('/.php$/', '', $insight_class);
                               if (class_exists($insight_class)) {
-                                  $insight = (new $insight_class(1))->setWeb($this->w);
+                                  $insights = (new $insight_class(1))->setWeb($this->w);
+                                  $availableInsights[$insight][$insight_path . DS . $file] = [
+                                    $insights->description(),
+                                    'pretext' => $insights->preText(),
+                                    'posttext' => $insights->postText()];
                               }
                             }
                         }
