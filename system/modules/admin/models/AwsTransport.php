@@ -1,6 +1,5 @@
 <?php
 
-use GuzzleHttp\Client;
 use Aws\Sqs\SqsClient;
 
 class AwsTransport implements GenericTransport
@@ -19,15 +18,34 @@ class AwsTransport implements GenericTransport
             return $this->transport;
         }
 
-        $base_uri = Config::get("email.base_uri");
-        if (empty($base_uri)) {
+        $region = Config::get("admin.mail.aws.region");
+        if (empty($region)) {
+            $this->w->Log->error("Failed to send mail to: admin.mail.aws.region not set in config");
             return;
         }
 
-        return new Client([
-            "base_uri" => $base_uri,
-            "timeout" => 5,
-        ]);
+
+        if (Config::get("system.environment") === "development") {
+            $credentials = Config::get("admin.mail.aws.credentials");
+            if (empty($credentials)) {
+                $this->w->Log->error("Failed to send mail to: admin.mail.aws.credentials not set in config");
+                return;
+            }
+
+            return new SqsClient([
+                "credentials" => [
+                    "key" => $credentials["key"],
+                    "secret" => $credentials["secret"],
+                ],
+                "region" => $region,
+                "version" => "2012-11-05",
+            ]);
+        } else {
+            return new SqsClient([
+                "region" => $region,
+                "version" => "2012-11-05",
+            ]);
+        }
     }
 
     /**
@@ -47,41 +65,11 @@ class AwsTransport implements GenericTransport
      */
     public function send($to, $reply_to, $subject, $body, $cc = null, $bcc = null, $attachments = [], $headers = [])
     {
-        $client = null;
+        $client = $this->getTransport(null);
 
-        $region = Config::get("admin.mail.http.region");
-        if (empty($region)) {
-            $this->w->Log->error("Failed to send mail to: admin.mail.http.region not set in config");
-            return;
-        }
-
-        // TODO: Handle production.
-        if (Config::get("system.environment") === "development") {
-            $credentials = Config::get("admin.mail.http.credentials");
-            if (empty($credentials)) {
-                $this->w->Log->error("Failed to send mail to: admin.mail.http.credentials not set in config");
-                return;
-            }
-
-            $client = new SqsClient([
-                "credentials" => [
-                    "key" => $credentials["key"],
-                    "secret" => $credentials["secret"],
-                ],
-                "region" => $region,
-                "version" => "2012-11-05",
-            ]);
-        } else {
-            $client = new SqsClient([
-                "profile" => "defualt",
-                "region" => $region,
-                "version" => "2012-11-05",
-            ]);
-        }
-
-        $queue_url = Config::get("admin.mail.http.queue_url");
+        $queue_url = Config::get("admin.mail.aws.queue_url");
         if (empty($queue_url)) {
-            $this->w->Log->error("Failed to send mail to: $to, from: $reply_to, about: $subject: admin.mail.http.queue_url not set in config");
+            $this->w->Log->error("Failed to send mail to: $to, from: $reply_to, about: $subject: admin.mail.aws.queue_url not set in config");
             return;
         }
 
@@ -129,7 +117,7 @@ class AwsTransport implements GenericTransport
 
         $attachmentsWithTypes = [];
 
-        // Assume all types are S3. Currently HttpTransport requires attachments
+        // Assume all types are S3. Currently AwsTransport requires attachments
         // to be in S3 to avoid breaking changes to this method's API.
         foreach ($attachments as $attachment) {
             $attachmentsWithTypes[] = [
