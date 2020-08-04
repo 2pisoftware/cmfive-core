@@ -10,7 +10,7 @@ function index_ALL(Web $w)
 
 
     // access service functions using the Web $w object and the module name
-    $insights = $w->Insights->getAllInsights();
+    $insights = $w->Insights->getAllInsights('all');
 
     // build the table array adding the headers and the row data
     $table = [];
