@@ -1,5 +1,6 @@
 <?php
 
+defined('DS') || define('DS', DIRECTORY_SEPARATOR);
 defined('SYSTEM_MODULE_DIRECTORY') || define('SYSTEM_MODULE_DIRECTORY', 'system' . DS . 'modules');
 defined('MODELS_DIRECTORY') || define('MODELS_DIRECTORY', 'models');
 
