@@ -320,7 +320,7 @@ class FileService extends DbService
             });
         }
 
-        foreach ($attachments as $attachment) {
+        foreach ($attachments ?? [] as $attachment) {
             $file_path = $attachment->getFilePath();
 
             if ($file_path[strlen($file_path) - 1] !== '/') {
@@ -496,7 +496,7 @@ class FileService extends DbService
 
         $att->mimetype = $mime_type;
         $att->insert();
-        // $att->update();
+
         return $att->id;
     }
 
