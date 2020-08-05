@@ -1,6 +1,7 @@
 <?php
 
 defined('DS') || define('DS', DIRECTORY_SEPARATOR);
+defined('PROJECT_MODULE_DIRECTORY') || define('PROJECT_MODULE_DIRECTORY', 'modules');
 defined('SYSTEM_MODULE_DIRECTORY') || define('SYSTEM_MODULE_DIRECTORY', 'system' . DS . 'modules');
 defined('MODELS_DIRECTORY') || define('MODELS_DIRECTORY', 'models');
 
@@ -28,7 +29,7 @@ class InsightsService extends DbService
         $availableInsights = [];
 
         // Check insights folder
-        $module_path = PROJECT_MODULE_DIRECTORY . DS . $insight . DS . MIGRATION_DIRECTORY;
+        $module_path = PROJECT_MODULE_DIRECTORY . DS . $insight . DS . MODELS_DIRECTORY;
         $system_module_path = SYSTEM_MODULE_DIRECTORY . DS . $insight . DS . MODELS_DIRECTORY;
         var_dump($system_module_path); die;
         $insight_paths = [$module_path, $system_module_path];
