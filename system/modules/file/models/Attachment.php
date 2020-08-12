@@ -16,6 +16,9 @@ class Attachment extends DbObject
     public const IMAGE_PATH = "image";
     public const TEMP_PATH = "temp";
 
+    public const ADAPTER_LOCAL = "local";
+    public const ADAPTER_S3 = "s3";
+
     public $parent_table;
     public $parent_id;
     public $dt_created; // datetime
