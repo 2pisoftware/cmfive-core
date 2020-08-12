@@ -1,6 +1,6 @@
 <?php
 
-class Insight
+class InsightBaseClass
 {
     public $name;
     public $description;

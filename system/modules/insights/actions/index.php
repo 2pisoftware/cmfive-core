@@ -6,7 +6,7 @@ function index_ALL(Web $w)
 
 
 
-    $w->Log->error("Insights this is a test");
+    LogService::getInstance($w)->setLogger("INSIGHTS")->info("This is an INSIGHTS.INFO message");
 
 
     // access service functions using the Web $w object and the module name
@@ -28,5 +28,6 @@ function index_ALL(Web $w)
     }
 
     //send the table to the template using ctx
-    $w->ctx('insightsTable', Html::table($table, '#', '#', $tableHeaders));
+    //$w->ctx('insightsTable', Html::table($table, '#', '#', $tableHeaders));
+    ctxService::getInstance($w)->('insightsTable', Html::table($table, '#', '#', $tableHeaders))
 }

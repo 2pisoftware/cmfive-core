@@ -42,21 +42,24 @@ class InsightsService extends DbService
                       if (!is_dir($file) && $file{
                           0} !== '.') {
                           $classname = explode('.',$file);
-                            var_dump($classname); die;
-                            Create instance of class
-                            $insightspath = $insight_path . DS . $file;
-                            if (file_exists(ROOT_PATH . DS . $insightspath)) {
-                                include_once ROOT_PATH . DS . $insightspath;
+                            var_dump($classname);
+                            //check if file is an insight
+                            //if insight add to arry. If not insight skip
+                            //if (insight($classname[0])) {
+                            //Create instance of class
+                            // $insightspath = $insight_path . DS . $file;
+                            // if (file_exists(ROOT_PATH . DS . $insightspath)) {
+                            //     include_once ROOT_PATH . DS . $insightspath;
 
-                                $insight_class = preg_replace('/.php$/', '', $insight_class);
-                                if (class_exists($insight_class)) {
-                                    $insights = (new $insight_class(1))->setWeb($this->w);
-                                    $availableInsights[$insight][$insight_path . DS . $file] = [
-                                      $insights->description(),
-                                      'pretext' => $insights->preText(),
-                                      'posttext' => $insights->postText()];
-                                }
-                              }
+                            //     $insight_class = preg_replace('/.php$/', '', $insight_class);
+                            //     if (class_exists($insight_class)) {
+                            //         $insights = (new $insight_class(1))->setWeb($this->w);
+                            //         $availableInsights[$insight][$insight_path . DS . $file] = [
+                            //           $insights->description(),
+                            //           'pretext' => $insights->preText(),
+                            //           'posttext' => $insights->postText()];
+                            //     }
+                            //   }
                           }
                       }
                   }
