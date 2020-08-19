@@ -29,5 +29,4 @@ function index_ALL(Web $w)
 
     //send the table to the template using ctx
     //$w->ctx('insightsTable', Html::table($table, '#', '#', $tableHeaders));
-    ctxService::getInstance($w)->('insightsTable', Html::table($table, '#', '#', $tableHeaders))
 }

@@ -45,7 +45,10 @@ class InsightsService extends DbService
                             var_dump($classname);
                             //check if file is an insight
                             //if insight add to arry. If not insight skip
-                            //if (insight($classname[0])) {
+                            //if (insight($classname[1])) {
+                                //if ($this->isInstalled($classname[1])) {
+                                    //$mig = $this->getInsightByClassname($classname[1]);
+                                    //$availableInsights[$insight]
                             //Create instance of class
                             // $insightspath = $insight_path . DS . $file;
                             // if (file_exists(ROOT_PATH . DS . $insightspath)) {
