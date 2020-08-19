@@ -5,7 +5,7 @@ defined('PROJECT_MODULE_DIRECTORY') || define('PROJECT_MODULE_DIRECTORY', 'modul
 defined('SYSTEM_MODULE_DIRECTORY') || define('SYSTEM_MODULE_DIRECTORY', 'system' . DS . 'modules');
 defined('MODELS_DIRECTORY') || define('MODELS_DIRECTORY', 'models');
 
-class InsightsService extends DbService
+class InsightService extends DbService
 {
     // returns all insights reports instances
     public function GetAllInsights($module)
