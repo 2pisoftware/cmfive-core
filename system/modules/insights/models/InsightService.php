@@ -69,4 +69,9 @@ class InsightService extends DbService
               }
                               return $availableInsights;
     }
+
+    public function getStringContainingInsight($classname)
+    {
+        return $this->getObject('Insight', ['classname' => $classname]);
+    }
 }
