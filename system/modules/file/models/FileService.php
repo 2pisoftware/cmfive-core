@@ -53,6 +53,7 @@ class FileService extends DbService
     /**
      * Return the path adjusted to the currently active adapter.
      *
+     * @deprecated v3.6
      * @param string file path
      *
      * @return string resulting file path
@@ -408,7 +409,7 @@ class FileService extends DbService
      *
      * @param mixed $id attachment ID
      *
-     * @return Attachment
+     * @return Attachment|null
      */
     public function getAttachment($id)
     {

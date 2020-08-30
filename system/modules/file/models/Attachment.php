@@ -21,20 +21,21 @@ class Attachment extends DbObject
 
     public $parent_table;
     public $parent_id;
-    public $dt_created; // datetime
-    public $dt_modified; // datetime
-    public $modifier_user_id; // bigint
-    public $filename; // publicchar(255)
-    public $mimetype; // publicchar(255)
-    public $title; // publicchar(255)
-    public $description; // text
-    public $fullpath; // publicchar(255)
-    public $is_deleted; // tinyint 0/1
+    public $dt_created;
+    public $dt_modified;
+    public $modifier_user_id;
+    public $filename;
+    public $mimetype;
+    public $title;
+    public $description;
+    public $fullpath;
+    public $is_deleted;
     public $type_code; // this is a type of attachment, eg. Receipt of Deposit, PO Variation, Sitephoto, etc.
     public $adapter;
     public $is_public;
     public $_restrictable;
     public $dt_viewing_window; // dt of access to list attachments. checked against config file.docx_viewing_window_duration to bypass authentication.
+    public $skip_path_prefix;
 
     /**
      * Used by the task_attachment_attachment_added_task hook to skip the Attachment added notification if true
@@ -54,9 +55,14 @@ class Attachment extends DbObject
         $this->fullpath = str_replace(FILE_ROOT, "", $this->fullpath);
         // Get mimetype
         if (empty($this->mimetype)) {
-            $this->mimetype = $this->w->getMimetype($this->fullpath);
+            switch ($this->adapter) {
+                case "local":
+                    $this->mimetype = $this->w->getMimetype($this->fullpath);
+                    break;
+                default:
+                    $this->mimetype = $this->w->getMimetypeFromString($this->getContent());
+            }
         }
-
 
         $this->is_deleted = 0;
         parent::insert($force_validation);
@@ -199,7 +205,7 @@ class Attachment extends DbObject
      *
      * @return string
      */
-    public function getFilePath()
+    public function getFilePath(): string
     {
         if (file_exists(ROOT_PATH . "/" . Attachment::CACHE_PATH . "/". Attachment::TEMP_PATH . "/" . FileService::getCacheRuntimePath() . "/" . $this->id . "/" . $this->dt_created . "/" . $this->filename)) {
             return ROOT_PATH . "/" . Attachment::CACHE_PATH . "/". Attachment::TEMP_PATH . "/" . FileService::getCacheRuntimePath() . "/" . $this->id . "/" . $this->dt_created;
@@ -209,11 +215,19 @@ class Attachment extends DbObject
 
         switch ($this->adapter) {
             case "s3":
+                if ($this->skip_path_prefix) {
+                    return $path;
+                }
+
                 if (strpos($path, "uploads/") === false) {
                     return "uploads/" . $path;
                 }
                 return $path;
             default:
+                if ($this->skip_path_prefix) {
+                    return $path;
+                }
+
                 if (strpos($path, FILE_ROOT . "attachments/") !== false) {
                     return $path;
                 }
@@ -230,7 +244,7 @@ class Attachment extends DbObject
      *
      * @return \Gaufrette\Filesystem
      */
-    public function getFilesystem()
+    public function getFilesystem(): \Gaufrette\Filesystem
     {
         return $this->File->getSpecificFilesystem($this->adapter, $this->getFilePath());
     }
@@ -240,7 +254,7 @@ class Attachment extends DbObject
      *
      * @return string mimetype
      */
-    public function getMimetype()
+    public function getMimetype(): string
     {
         return $this->mimetype;
     }
@@ -250,7 +264,7 @@ class Attachment extends DbObject
      *
      * @return \Gaufrette\File
      */
-    public function getFile()
+    public function getFile(): \Gaufrette\File
     {
         $cache_directory = ROOT_PATH . "/" . Attachment::CACHE_PATH . "/" . Attachment::TEMP_PATH . "/" . FileService::getCacheRuntimePath() . "/" . $this->id . "/" . $this->dt_created;
         $cached_file_path = $cache_directory . "/" . $this->filename;
@@ -267,7 +281,7 @@ class Attachment extends DbObject
      *
      * @return string content
      */
-    public function getContent($cache_locally = false)
+    public function getContent($cache_locally = false): string
     {
         $file = $this->getFile();
         if (empty($file) || !$file->exists()) {
