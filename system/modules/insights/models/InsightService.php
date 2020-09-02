@@ -8,17 +8,17 @@ defined('MODELS_DIRECTORY') || define('MODELS_DIRECTORY', 'models');
 class InsightService extends DbService
 {
     // returns all insights reports instances
-    public function GetAllInsights($module)
+    public function GetAllInsights($insights)
     {
         $availableInsights = [];
 
         // Read insights directory for all insights
-        if ($module === 'all') {
+        if ($insights === 'all') {
             foreach ($this->w->modules() as $insight) {
                 $availableInsights += $this->getInsightsForModule($insight);
             }
         } else {
-            $availableInsights = $this->getInsightsForModule($module);
+            $availableInsights = $this->getInsightsForModule($insights);
         }
 
         return $availableInsights;
@@ -52,7 +52,7 @@ class InsightService extends DbService
                             if (file_exists(ROOT_PATH . DS . $insightspath)) {
                                 include_once ROOT_PATH . DS . $insightspath;
                                 if (class_exists($classname[0])) {
-                                    $insight = new $classname[0]($w);
+                                    $insight = new $classname[0]($this->w);
                                     $availableInsights[$module][] = $insight;
                                 }
                             }
