@@ -7,12 +7,12 @@ defined('MODELS_DIRECTORY') || define('MODELS_DIRECTORY', 'models');
 
 class InsightService extends DbService
 {
-    // returns all insights reports instances
+    // returns all insight instances
     public function GetAllInsights($insights)
     {
         $availableInsights = [];
 
-        // Read insights directory for all insights
+        // Read module directory for all insights
         if ($insights === 'all') {
             foreach ($this->w->modules() as $insight) {
                 $availableInsights += $this->getInsightsForModule($insight);
@@ -24,14 +24,16 @@ class InsightService extends DbService
         return $availableInsights;
     }
 
+    // Find Insight models in each folder
     public function getInsightsForModule($module)
     {
         $availableInsights = [];
 
-        // Check insights folder
+        // Check modules folder
         $module_path = PROJECT_MODULE_DIRECTORY . DS . $module . DS . MODELS_DIRECTORY;
         $system_module_path = SYSTEM_MODULE_DIRECTORY . DS . $module . DS . MODELS_DIRECTORY;
         $insight_paths = [$module_path, $system_module_path];
+        // Check if module contains file with Insight in the name
         if (empty($availableInsights[$module])) {
             $availableInsights[$module] = [];
         }
@@ -64,8 +66,10 @@ class InsightService extends DbService
         return $availableInsights;
     }
 
+    // Create string for Insight model
     public function getStringContainingInsight($classname)
     {
+        //Return files with name Insight
         return $this->getObject('Insight', ['classname' => $classname]);
     }
 }
