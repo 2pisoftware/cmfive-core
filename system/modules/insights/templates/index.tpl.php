@@ -1,1 +1,1 @@
-<?php echo $itemTable; ?>
+<?php echo $insightTable; ?>
