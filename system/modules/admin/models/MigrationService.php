@@ -8,46 +8,47 @@ defined('SEED_MIGRATION_DIRECTORY') || define('SEED_MIGRATION_DIRECTORY', MIGRAT
 
 class MigrationService extends DbService
 {
-	public static $_installed = []; 
-	public $_NEXT_BATCH;
-	
-	public function getAvailableMigrations($module_name) {
-		$_this = $this;
-		set_error_handler(function($errno, $errstr, $errfile, $errline, $errcontext) use ($_this) {
-			if (!(error_reporting() & $errno)) {
-				return;
-			}
-			
-			if ($errno === E_USER_ERROR) {
-				// Check if error contains a db error message
-				if (strpos($errstr, "does not exist in the database") !== FALSE) {
-					$this->w->Log->error("Error table not found. Running initial migration. [" . $errstr . "]");
-					// Run the admin migrations to install the migration table (the normal cause of this error)
-					$_this->installInitialMigration();
-					
-					// Reload the page unless migrations are from CLI
-					if ( array_key_exists('REQUEST_METHOD', $_SERVER) ) {
-						$_this->w->redirect($_SERVER["REQUEST_URI"]);
-						}
-				}
-			}
-		});
-		
-		$availableMigrations = [];
-		
-		// Read all modules directories for any migrations that need to run
-		if ($module_name === 'all') {
-			foreach($this->w->modules() as $module) {
-				$availableMigrations += $this->getMigrationsForModule($module);
-			}
-		} else {
-			$availableMigrations = $this->getMigrationsForModule($module_name);
-		}
-		
-		// restore_error_handler();
-		
-		return $availableMigrations;
-	}
+    public static $_installed = [];
+    public $_NEXT_BATCH;
+
+    public function getAvailableMigrations($module_name)
+    {
+        $_this = $this;
+        set_error_handler(function ($errno, $errstr, $errfile, $errline, $errcontext) use ($_this) {
+            if (!(error_reporting() & $errno)) {
+                return;
+            }
+
+            if ($errno === E_USER_ERROR) {
+                // Check if error contains a db error message
+                if (strpos($errstr, "does not exist in the database") !== false) {
+                    LogService::getInstance($this->w)->error("Error table not found. Running initial migration. [" . $errstr . "]");
+                    // Run the admin migrations to install the migration table (the normal cause of this error)
+                    $_this->installInitialMigration();
+
+                    // Reload the page unless migrations are from CLI
+                    if (array_key_exists('REQUEST_METHOD', $_SERVER)) {
+                        $_this->w->redirect($_SERVER["REQUEST_URI"]);
+                    }
+                }
+            }
+        });
+
+        $availableMigrations = [];
+
+        // Read all modules directories for any migrations that need to run
+        if ($module_name === 'all') {
+            foreach ($this->w->modules() as $module) {
+                $availableMigrations += $this->getMigrationsForModule($module);
+            }
+        } else {
+            $availableMigrations = $this->getMigrationsForModule($module_name);
+        }
+
+        // restore_error_handler();
+
+        return $availableMigrations;
+    }
 
     public function getMigrationsForModule($module)
     {
@@ -65,8 +66,7 @@ class MigrationService extends DbService
         foreach ($migration_paths as $migration_path) {
             if (is_dir(ROOT_PATH . DS . $migration_path)) {
                 foreach (scandir(ROOT_PATH . DS . $migration_path) as $file) {
-                    if (!is_dir($file) && $file{
-                        0} !== '.') {
+                    if (!is_dir($file) && $file[0] !== '.') {
                         $classname = explode('.', str_replace('-', '.', $file));
                         if (!empty($classname[1])) {
                             if ($this->isInstalled($classname[1])) {
@@ -93,13 +93,14 @@ class MigrationService extends DbService
                                             'timestamp' => $classname[0],
                                             'description' => $migration->description(),
                                             'pretext' => $migration->preText(),
-                                            'posttext' => $migration->postText()];
+                                            'posttext' => $migration->postText()
+                                        ];
                                     }
                                 }
                             }
                         }
                     } else {
-                        $this->w->Log->error("Migration '" . $file . "' does not conform to naming convention");
+                        LogService::getInstance($this->w)->error("Migration '" . $file . "' does not conform to naming convention");
                     }
                 }
             }
@@ -186,9 +187,10 @@ class MigrationService extends DbService
         $data = <<<MIGRATION
 <?php
 
-class {$classname} extends CmfiveMigration {
-
-    public function up() {
+class {$classname} extends CmfiveMigration
+{
+    public function up()
+    {
         // UP
         \$column = parent::Column();
         \$column->setName('id')
@@ -197,7 +199,8 @@ class {$classname} extends CmfiveMigration {
 
     }
 
-    public function down() {
+    public function down()
+    {
         // DOWN
     }
 
@@ -238,7 +241,7 @@ MIGRATION;
         //if no migrations have run run initial migrations
         $this->w->db->setMigrationMode(true);
         if (!in_array('migration', $this->w->db->getAvailableTables()) || $this->w->db->get('migration')->select()->count() == 0) {
-            $this->w->Log->setLogger("MIGRATION")->info("initial migration not run. Running initial migration");
+            LogService::getInstance($this->w)->setLogger("MIGRATION")->info("initial migration not run. Running initial migration");
             $this->installInitialMigration();
             $alreadyRunMigrations = $this->getInstalledMigrations($module);
         }
@@ -312,7 +315,7 @@ MIGRATION;
 
                         // Class name must match filename after timestamp and hyphen
                         if (class_exists($migration['class_name'])) {
-                            $this->w->Log->setLogger("MIGRATION")->info("Running migration: " . $migration['class_name']);
+                            LogService::getInstance($this->w)->setLogger("MIGRATION")->info("Running migration: " . $migration['class_name']);
 
                             try {
                                 $this->w->db->startTransaction();
@@ -330,7 +333,7 @@ MIGRATION;
                                         $pathData = pathinfo($migration_path);
                                         $messageurl = "/admin-migration/migrationmessage?module=" . $module . "&filename=" . $pathData['filename'] . "&migmodule=" . $_module . "&migfilename=" . $_filename . "&path=" . $migration_path . "&prevpage=" . $prevpage;
 
-                                        $batchedMigrations = array();
+                                        $batchedMigrations = [];
                                         foreach ($availableMigrations as $avmigration) {
                                             // If the avmigration array has elements in it that means it's part of the current batch
                                             if (count($avmigration) > 0) {
@@ -389,11 +392,11 @@ MIGRATION;
                                 $runMigrations++;
 
                                 $this->w->db->commitTransaction();
-                                $this->w->Log->setLogger("MIGRATION")->info("Migration has run");
+                                LogService::getInstance($this->w)->setLogger("MIGRATION")->info("Migration has run");
                             } catch (Exception $e) {
                                 $this->w->db->rollbackTransaction();
                                 $this->w->out("Error with a migration: " . $e->getMessage() . "<br/>More info: " . var_export($e));
-                                $this->w->Log->setLogger("MIGRATION")->error("Error with a migration: " . $e->getMessage());
+                                LogService::getInstance($this->w)->setLogger("MIGRATION")->error("Error with a migration: " . $e->getMessage());
 
                                 // Skip current modules migrations
                                 break;
@@ -491,7 +494,7 @@ MIGRATION;
 
                         // Class name must match filename after timestamp and hyphen
                         if (class_exists($migration['classname'])) {
-                            $this->w->Log->setLogger("MIGRATION")->info("Rolling back migration: " . $migration['id']);
+                            LogService::getInstance($this->w)->setLogger("MIGRATION")->info("Rolling back migration: " . $migration['id']);
 
                             // Run migration UP
                             $migration_class = new $migration['classname'](1);
@@ -503,7 +506,7 @@ MIGRATION;
                             $migration_object = $this->getObjectFromRow("Migration", $migration);
                             $migration_object->delete();
 
-                            $this->w->Log->setLogger("MIGRATION")->info("Migration has rolled back");
+                            LogService::getInstance($this->w)->setLogger("MIGRATION")->info("Migration has rolled back");
                         }
                     }
                 }
@@ -515,7 +518,7 @@ MIGRATION;
                 return count($migrations_to_rollback) . ' migration' . (count($migrations_to_rollback) == 1 ? ' has' : 's have') . ' rolled back';
             } catch (Exception $e) {
                 $this->w->out("Error with a migration: " . $e->getMessage());
-                $this->w->Log->setLogger("MIGRATION")->error("Error with a migration: " . $e->getMessage());
+                LogService::getInstance($this->w)->setLogger("MIGRATION")->error("Error with a migration: " . $e->getMessage());
                 $this->w->db->rollbackTransaction();
             }
         }
@@ -559,7 +562,7 @@ MIGRATION;
 
                 // Class name must match filename after timestamp and hyphen
                 if (class_exists($migration)) {
-                    $this->w->Log->setLogger("MIGRATION")->info("Running migration: " . $migration);
+                    LogService::getInstance($this->w)->setLogger("MIGRATION")->info("Running migration: " . $migration);
 
                     // Run migration UP
                     $migration_class = new $migration(1);
@@ -579,7 +582,7 @@ MIGRATION;
                     $migration_object->creator_id = 1;
                     $migration_object->insert();
 
-                    $this->w->Log->setLogger("MIGRATION")->info("Initial migration has run");
+                    LogService::getInstance($this->w)->setLogger("MIGRATION")->info("Initial migration has run");
 
                     $count++;
                 }
@@ -617,13 +620,12 @@ MIGRATION;
         foreach ($migration_paths as $migration_path) {
             if (is_dir(ROOT_PATH . DS . $migration_path)) {
                 foreach (scandir(ROOT_PATH . DS . $migration_path) as $file) {
-                    if (!is_dir($file) && $file{
-                        0} !== '.') {
+                    if (!is_dir($file) && $file[0] !== '.') {
                         $classname = explode('.', str_replace('-', '.', $file));
                         if (!empty($classname[0])) {
                             $availableMigrations[$module][$migration_path . DS . $file] = $classname[0];
                         } else {
-                            $this->w->Log->error("Migration '" . $file . "' in " . $module . " does not conform to naming convention");
+                            LogService::getInstance($this->w)->error("Migration '" . $file . "' in " . $module . " does not conform to naming convention");
                         }
                     }
                 }
@@ -659,12 +661,13 @@ MIGRATION;
         $data = <<<MIGRATION
 <?php
 
-class {$name} extends CmfiveSeedMigration {
-
+class {$name} extends CmfiveSeedMigration
+{
     public \$name = "{$name}";
     public \$description = "<Enter description here>";
 
-    public function seed() {
+    public function seed()
+    {
 
     }
 

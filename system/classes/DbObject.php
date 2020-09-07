@@ -75,13 +75,16 @@ class DbObject extends DbService
 {
 
     public $id;
-    private static $_object_vars = array();
-    private static $_columns = array();
+    private static $_object_vars = [];
+    private static $_columns = [];
     private $_class;
     public $__use_auditing = true;
 
     private $_systemEncrypt = null;
     private $_systemDecrypt = null;
+
+    //This is list is depreciated, it has been left here for backwards compatability
+    static $_stopwords = "about above across after again against all almost alone along already also although always among and any anybody anyone anything anywhere are area areas around ask asked asking asks away back backed backing backs became because become becomes been before began behind being beings best better between big both but came can cannot case cases certain certainly clear clearly come could did differ different differently does done down downed downing downs during each early either end ended ending ends enough even evenly ever every everybody everyone everything everywhere face faces fact facts far felt few find finds first for four from full fully further furthered furthering furthers gave general generally get gets give given gives going good goods got great greater greatest group grouped grouping groups had has have having her here herself high higher highest him himself his how however important interest interested interesting interests into its itself just keep keeps kind knew know known knows large largely last later latest least less let lets like likely long longer longest made make making man many may member members men might more most mostly mrs much must myself necessary need needed needing needs never new newer newest next nobody non noone not nothing now nowhere number numbers off often old older oldest once one only open opened opening opens order ordered ordering orders other others our out over part parted parting parts per perhaps place places point pointed pointing points possible present presented presenting presents problem problems put puts quite rather really right room rooms said same saw say says second seconds see seem seemed seeming seems sees several shall she should show showed showing shows side sides since small smaller smallest some somebody someone something somewhere state states still such sure take taken than that the their them then there therefore these they thing things think thinks this those though thought thoughts three through thus today together too took toward turn turned turning turns two under until upon use used uses very want wanted wanting wants was way ways well wells went were what when where whether which while who whole whose why will with within without work worked working works would year years yet you young younger youngest your yours";
 
     /**
      * Constructor
@@ -130,19 +133,18 @@ class DbObject extends DbService
         }
     }
 
-    private function establishEncryptionModel() {
-
+    private function establishEncryptionModel()
+    {
         $this->_systemEncrypt = 'SSLencrypt';
         $this->_systemDecrypt = 'SSLdecrypt';
 
-                $encryption_key = Config::get('system.encryption.key',null);
-                //$encryption_iv = Config::get('system.encryption.iv',null);
+        $encryption_key = Config::get('system.encryption.key', null);
 
-                if (empty($encryption_key)) { // || empty($encryption_iv)) {
-                    $err = 'Encryption key is not set';
-                    $this->w->Log->error($err);
-                    throw new Exception($err);
-                }
+        if (empty($encryption_key)) {
+            $err = 'Encryption key is not set';
+            $this->w->Log->error($err);
+            throw new Exception($err);
+        }
     }
 
     /**
@@ -179,11 +181,25 @@ class DbObject extends DbService
     }
 
     /**
-     *
-     * intermediate method to facilitate transition from
+     * Intermediate method to facilitate transition from
      * selectTitle to getSelectOptionTitle
+     *
+     * Will be removed in cmfive v4.x
+     *
+     * @deprecated v3.6.13
      */
     public function _selectOptionTitle()
+    {
+        return $this->getSelectOptionTitle();
+    }
+
+    /**
+     * Used by the Html::select() function to display this object in
+     * a select list. Should also be used by other similar functions.
+     *
+     * @return string
+     */
+    public function getSelectOptionTitle(): string
     {
         $title = $this->getSelectOptionValue();
         if (property_exists(get_class($this), "title")) {
@@ -192,15 +208,6 @@ class DbObject extends DbService
             $title = $this->name;
         }
         return $title;
-    }
-
-    /**
-     * is used by the Html::select() function to display this object in
-     * a select list. Could also be used by other similar functions.
-     */
-    public function getSelectOptionTitle()
-    {
-        return $this->_selectOptionTitle(); // only until all references are resolved
     }
 
     /**
@@ -214,26 +221,41 @@ class DbObject extends DbService
     }
 
     /**
-     * used by the search display function to print a title with a
+     * Used by the search display function to print a title with a
      * possible link for this item in the list of results.
+     *
+     * Intended use is to be overriden in DbObject subclasses to
+     * enable a more human readable search title.
+     *
+     * @return string
      */
-    public function printSearchTitle()
+    public function printSearchTitle(): string
     {
         return get_class($this) . "[" . $this->id . "]";
     }
 
     /**
-     * used by the search display function to print more information
+     * Used by the search display function to print more information
      * about this item in the list of search results.
+     *
+     * Intended use is to be overriden in DbObject subclasses to
+     * enable a more human readable search listing.
+     *
+     * @return string
      */
-    public function printSearchListing()
+    public function printSearchListing(): string
     {
         return get_class($this) . "[" . $this->id . "]";
     }
 
     /**
-     * used by the search display function to print a url for viewing details
+     * Used by the search display function to print a url for viewing details
      * about this item.
+     *
+     * Intended use is to be overriden in DbObject subclasses to
+     * enable a more human readable search url.
+     *
+     * @return string|null
      */
     public function printSearchUrl()
     {
@@ -241,13 +263,14 @@ class DbObject extends DbService
     }
 
     /**
-     * print a view link to this object
+     * Prints a link to this object. This function considers user access.
      *
-     * @param string $class
-     * @param string $target
+     * @param string|null $class
+     * @param string|null $target
+     * @param string|null $user
      * @return string
      */
-    public function toLink($class = null, $target = null, $user = null)
+    public function toLink($class = null, $target = null, $user = null): string
     {
         if (empty($user)) {
             $user = $this->w->Auth->user();
@@ -265,7 +288,7 @@ class DbObject extends DbService
      * @param User $user
      * @return boolean
      */
-    public function canList(User $user)
+    public function canList(User $user): bool
     {
         if (property_exists($this, "_restrictable") && $this->isRestricted()) {
             $owner = $this->getObject("RestrictedObjectUserLink", ["object_id" => $this->id, "user_id" => $user->id, "type" => "owner"]);
@@ -291,7 +314,7 @@ class DbObject extends DbService
      * @param User $user
      * @return boolean
      */
-    public function canView(User $user)
+    public function canView(User $user): bool
     {
         if (property_exists($this, "_restrictable") && $this->isRestricted()) {
             $owner = $this->getObject("RestrictedObjectUserLink", ["object_id" => $this->id, "user_id" => $user->id, "type" => "owner"]);
@@ -317,7 +340,7 @@ class DbObject extends DbService
      * @param User $user
      * @return boolean
      */
-    public function canEdit(User $user)
+    public function canEdit(User $user): bool
     {
         if (property_exists($this, "_restrictable") && $this->isRestricted()) {
             $owner = $this->getObject("RestrictedObjectUserLink", ["object_id" => $this->id, "user_id" => $user->id, "type" => "owner"]);
@@ -343,7 +366,7 @@ class DbObject extends DbService
      * @param User $user
      * @return boolean
      */
-    public function canDelete(User $user)
+    public function canDelete(User $user): bool
     {
         if (property_exists($this, "_restrictable") && $this->isRestricted()) {
             $owner = $this->getObject("RestrictedObjectUserLink", ["object_id" => $this->id, "user_id" => $user->id, "type" => "owner"]);
@@ -368,7 +391,7 @@ class DbObject extends DbService
      *
      * @return boolean
      */
-    public function isRestricted()
+    public function isRestricted(): bool
     {
         $links = $this->w->db->get("restricted_object_user_link")
             ->select()
@@ -407,10 +430,10 @@ class DbObject extends DbService
             return self::$_object_vars[$this->_class];
         }
         // build cache of filtered object vars
-        self::$_object_vars[$this->_class] = array();
+        self::$_object_vars[$this->_class] = [];
         foreach (get_object_vars($this) as $k => $v) {
             // ignore volatile vars and web
-            if ('_' !== $k{0} && 'w' !== $k) {
+            if ('_' !== $k[0] && 'w' !== $k) {
                 self::$_object_vars[$this->_class][] = $k;
             }
         }
@@ -422,6 +445,7 @@ class DbObject extends DbService
      * variable of this object.
      *
      * @param array $row
+     * @param bool $convert
      */
     public function fill($row, $convert = false)
     {
@@ -451,11 +475,9 @@ class DbObject extends DbService
     {
         $newObject = clone $this;
 
-        $toClear = array("id", "creator_id", "modifier_id", "dt_created", "dt_modified", "is_deleted");
-
-        foreach ($toClear as $tc) {
-            if (property_exists($newObject, $tc)) {
-                $newObject->$tc = null;
+        foreach (["id", "creator_id", "modifier_id", "dt_created", "dt_modified", "is_deleted"] as $to_clear) {
+            if (property_exists($newObject, $to_clear)) {
+                $newObject->$to_clear = null;
             }
         }
 
@@ -475,7 +497,7 @@ class DbObject extends DbService
      */
     public function toArray()
     {
-        $arr = array();
+        $arr = [];
         foreach ($this->getObjectVars() as $k) {
             $arr[$k] = $this->$k;
         }
@@ -669,9 +691,9 @@ class DbObject extends DbService
                 }
             }
 
-            $data = array();
+            $data = [];
             foreach (get_object_vars($this) as $k => $v) {
-                if ($k{0} != "_" && $k != "w" && $v !== null) {
+                if ($k[0] != "_" && $k != "w" && $v !== null) {
                     $dbk = $this->getDbColumnName($k);
                     if (strpos($k, "dt_") === 0) {
                         if ($v) {
@@ -726,7 +748,7 @@ class DbObject extends DbService
             // store this id in the context for hooks etc.
             $inserts = $this->w->ctx('db_inserts');
             if (!$inserts) {
-                $inserts = array();
+                $inserts = [];
             }
             $inserts[get_class($this)][] = $this->id;
             $this->w->ctx('db_inserts', $inserts);
@@ -796,9 +818,9 @@ class DbObject extends DbService
 
             $this->validateBoolianProperties();
 
-            $data = array();
+            $data = [];
             foreach (get_object_vars($this) as $k => $v) {
-                if ($k{0} != "_" && $k != "w") { // ignore volatile vars
+                if ($k[0] != "_" && $k != "w") { // ignore volatile vars
                     $dbk = $this->getDbColumnName($k);
 
                     // call update conversions
@@ -841,7 +863,7 @@ class DbObject extends DbService
             // store this id in the context for hooks
             $updates = $this->w->ctx('db_updates');
             if (!$updates) {
-                $updates = array();
+                $updates = [];
             }
             $updates[get_class($this)][] = $this->id;
             $this->w->ctx('db_updates', $updates);
@@ -892,7 +914,7 @@ class DbObject extends DbService
             // store this id in the context for listeners
             $deletes = $this->w->ctx('db_deletes');
             if (!$deletes) {
-                $deletes = array();
+                $deletes = [];
             }
             $deletes[get_class($this)][] = $this->id;
             $this->w->ctx('db_deletes', $deletes);
@@ -951,14 +973,14 @@ class DbObject extends DbService
             }
             return self::$_columns[$this->_class]; //$this->_db->prepare("DESCRIBE tablename")->execute()->fetchAll(PDO::FETCH_COLUMN);
         }
-        self::$_columns[$this->_class][] = array();
-        return array();
+        self::$_columns[$this->_class][] = [];
+        return [];
     }
 
     public function getHumanReadableAttributeName($attribute)
     {
         // Remove magic markers (d_, dt_, etc)
-        $replace_magic = array("d_", "dt_", "t_");
+        $replace_magic = ["d_", "dt_", "t_"];
         foreach ($replace_magic as $rm) {
             if (substr($attribute, 0, strlen($rm)) == $rm) {
                 $attribute = substr($attribute, strlen($rm));
@@ -968,7 +990,7 @@ class DbObject extends DbService
         }
 
         // Remove underscores and " Id"
-        $attribute = str_ireplace(array("_", " id"), array(" ", ""), $attribute);
+        $attribute = str_ireplace(["_", " id"], [" ", ""], $attribute);
 
         // Capitalise all
         $attribute = ucwords(trim($attribute));
@@ -986,12 +1008,25 @@ class DbObject extends DbService
         return $attr;
     }
 
-    public function _tn()
+    /**
+     * Shorthand function for getDbTableName()
+     *
+     * @return string
+     * @deprecated v3.6.13
+     */
+    public function _tn(): string
     {
         return $this->getDbTableName();
     }
 
-    public function _cn($attr)
+    /**
+     * Shorthand function for getDbColumnName()
+     *
+     * @param string $attr
+     * @return string
+     * @deprecated v3.6.13
+     */
+    public function _cn($attr): string
     {
         return $this->getDbColumnName($attr);
     }
@@ -1002,7 +1037,7 @@ class DbObject extends DbService
      *
      * @return User
      */
-    public function getCreator()
+    public function getCreator(): User
     {
         if ($this->_modifiable) {
             return $this->_modifiable->getCreator();
@@ -1019,7 +1054,7 @@ class DbObject extends DbService
      *
      * @return User
      */
-    public function getModifier()
+    public function getModifier(): User
     {
         if ($this->_modifiable) {
             return $this->_modifiable->getModifier();
@@ -1034,13 +1069,14 @@ class DbObject extends DbService
      * Override this function if you want to add custom content
      * to the search index for this object.
      *
-     * DO NOT CALL $this->getIndexContent() within this function
-     * or you will create an endless loop which will destroy the universe!
+     * DO NOT CALL @see{$this->getIndexContent} within this function
+     * or you will create an infinite loop
      *
-     * @return String
+     * @return string
      */
-    public function addToIndex()
+    public function addToIndex(): string
     {
+        return '';
     }
 
     /**
@@ -1048,9 +1084,9 @@ class DbObject extends DbService
      * to the search index for this object.
      *
      *
-     * @return Bool
+     * @return bool
      */
-    public function shouldAddToSearch()
+    public function shouldAddToSearch(): bool
     {
         return true;
     }
@@ -1058,9 +1094,7 @@ class DbObject extends DbService
     // a list of english words that need not be searched against
     // and thus do not need to be stored in an index
 
-    //This is list is depreciated, it has been left here for backwards compatability
-    static $_stopwords = "about above across after again against all almost alone along already also although always among and any anybody anyone anything anywhere are area areas around ask asked asking asks away back backed backing backs became because become becomes been before began behind being beings best better between big both but came can cannot case cases certain certainly clear clearly come could did differ different differently does done down downed downing downs during each early either end ended ending ends enough even evenly ever every everybody everyone everything everywhere face faces fact facts far felt few find finds first for four from full fully further furthered furthering furthers gave general generally get gets give given gives going good goods got great greater greatest group grouped grouping groups had has have having her here herself high higher highest him himself his how however important interest interested interesting interests into its itself just keep keeps kind knew know known knows large largely last later latest least less let lets like likely long longer longest made make making man many may member members men might more most mostly mrs much must myself necessary need needed needing needs never new newer newest next nobody non noone not nothing now nowhere number numbers off often old older oldest once one only open opened opening opens order ordered ordering orders other others our out over part parted parting parts per perhaps place places point pointed pointing points possible present presented presenting presents problem problems put puts quite rather really right room rooms said same saw say says second seconds see seem seemed seeming seems sees several shall she should show showed showing shows side sides since small smaller smallest some somebody someone something somewhere state states still such sure take taken than that the their them then there therefore these they thing things think thinks this those though thought thoughts three through thus today together too took toward turn turned turning turns two under until upon use used uses very want wanted wanting wants was way ways well wells went were what when where whether which while who whole whose why will with within without work worked working works would year years yet you young younger youngest your yours";
-
+    
     /**
      * Consolidate all object fields into one big search friendly string.
      *
@@ -1071,10 +1105,10 @@ class DbObject extends DbService
 
         // -------------- concatenate all object fields ---------------------
         $str = "";
-        $exclude = array("dt_created", "dt_modified", "w");
+        $exclude = ["dt_created", "dt_modified", "w"];
 
         foreach (get_object_vars($this) as $k => $v) {
-            if ($k{0} != "_" // ignore volatile vars
+            if ($k[0] != "_" // ignore volatile vars
                  && (!property_exists($this, "_exclude_index") // ignore properties that should be excluded
                      || !in_array($k, $this->_exclude_index)) && stripos($k, "_id") === false && !in_array($k, $exclude)
             ) {
@@ -1181,7 +1215,7 @@ class DbObject extends DbService
                 return $this->$prop_string;
             }
         } elseif (property_exists($this, $prop_lookup) && $this->$prop_lookup) {
-            return $this->getObjects("Lookup", array("type" => $this->$prop_lookup, "is_deleted" => 0));
+            return $this->getObjects("Lookup", ["type" => $this->$prop_lookup, "is_deleted" => 0]);
         } elseif (property_exists($this, $prop_class) && $this->$prop_class) {
             if (property_exists($this, $prop_filter) && $this->$prop_filter) {
                 return $this->getObjects($this->$prop_class, $this->$prop_filter, true);
@@ -1205,11 +1239,11 @@ class DbObject extends DbService
 
         // Get table columns
         $table_columns = get_object_vars($this);
-        $response = array(
-            "valid" => array(),
-            "invalid" => array(),
+        $response = [
+            "valid" => [],
+            "invalid" => [],
             "success" => false,
-        );
+        ];
 
         // Get validation rules that may be declared static
         $validation_rules = null;
@@ -1297,7 +1331,7 @@ class DbObject extends DbService
                             $rule = $rule . '/';
                         }
 
-                        if (!filter_var($this->$vr_key, FILTER_VALIDATE_REGEXP, array('regexp' => $rule))) {
+                        if (!filter_var($this->$vr_key, FILTER_VALIDATE_REGEXP, ['regexp' => $rule])) {
                             $response["invalid"]["$vr_key"][] = "Invalid";
                         } else {
                             $response["valid"][] = $vr_key;
@@ -1316,7 +1350,6 @@ class DbObject extends DbService
 
         return $response;
 
-        // die(); // debugging only
         // if validation fails return to invoked page with errors... how to transport them though?
         // this function is called deep in code so the initiator of the update or insert function may not know what's
         // going on ... redirecting away to another page from here is ... rude.
@@ -1324,7 +1357,7 @@ class DbObject extends DbService
         // - update or insert just fail but send an exception containing the invalid messages
         // - caller should call validate BEFORE update / insert to react to messages in a UI fashion (eg. redisplay form with message, etc)
         //         if (count($response["invalid"]) > 0){
-        //             $_SESSION["errors"] = $response["invalid"]; // <-- GENIUS!... hopefully that works
+        //             $_SESSION["errors"] = $response["invalid"];
         //             $this->w->redirect($this->w->localUrl($_SERVER["REDIRECT_URL"]));
         //         }
     }
@@ -1365,20 +1398,22 @@ class DbObject extends DbService
         return $v;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->printSearchTitle();
     }
 
-    //loops through properties ensuring boolians are either 'true' or 'false'
+    /**
+     * Loops through properties beginning with 'is_' ensuring the values are truthy
+     *
+     * @return void
+     */
     public function validateBoolianProperties()
     {
         foreach (get_object_vars($this) as $k => $v) {
-            if ($k{0} != "_" && $k != "w") { // ignore volatile vars
+            if ($k[0] != "_" && $k != "w") { // ignore volatile vars
                 if (substr($k, 0, 3) === 'is_') {
-                    //echo $k; echo '<br>';
                     $this->$k = $v ? 1 : 0;
-                    //echo $this->$k; echo '<br>';
                 }
             }
         }
