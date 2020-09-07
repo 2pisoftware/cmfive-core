@@ -184,7 +184,7 @@ class DbObject extends DbService
      * Intermediate method to facilitate transition from
      * selectTitle to getSelectOptionTitle
      *
-     * Will be removed in cmfive v4.x
+     * Will be removed in cmfive v5.x
      *
      * @deprecated v3.6.13
      */
@@ -199,7 +199,7 @@ class DbObject extends DbService
      *
      * @return string
      */
-    public function getSelectOptionTitle(): string
+    public function getSelectOptionTitle()
     {
         $title = $this->getSelectOptionValue();
         if (property_exists(get_class($this), "title")) {
@@ -229,7 +229,7 @@ class DbObject extends DbService
      *
      * @return string
      */
-    public function printSearchTitle(): string
+    public function printSearchTitle()
     {
         return get_class($this) . "[" . $this->id . "]";
     }
@@ -243,7 +243,7 @@ class DbObject extends DbService
      *
      * @return string
      */
-    public function printSearchListing(): string
+    public function printSearchListing()
     {
         return get_class($this) . "[" . $this->id . "]";
     }
@@ -270,7 +270,7 @@ class DbObject extends DbService
      * @param string|null $user
      * @return string
      */
-    public function toLink($class = null, $target = null, $user = null): string
+    public function toLink($class = null, $target = null, $user = null)
     {
         if (empty($user)) {
             $user = $this->w->Auth->user();
@@ -288,7 +288,7 @@ class DbObject extends DbService
      * @param User $user
      * @return boolean
      */
-    public function canList(User $user): bool
+    public function canList(User $user)
     {
         if (property_exists($this, "_restrictable") && $this->isRestricted()) {
             $owner = $this->getObject("RestrictedObjectUserLink", ["object_id" => $this->id, "user_id" => $user->id, "type" => "owner"]);
@@ -314,7 +314,7 @@ class DbObject extends DbService
      * @param User $user
      * @return boolean
      */
-    public function canView(User $user): bool
+    public function canView(User $user)
     {
         if (property_exists($this, "_restrictable") && $this->isRestricted()) {
             $owner = $this->getObject("RestrictedObjectUserLink", ["object_id" => $this->id, "user_id" => $user->id, "type" => "owner"]);
@@ -340,7 +340,7 @@ class DbObject extends DbService
      * @param User $user
      * @return boolean
      */
-    public function canEdit(User $user): bool
+    public function canEdit(User $user)
     {
         if (property_exists($this, "_restrictable") && $this->isRestricted()) {
             $owner = $this->getObject("RestrictedObjectUserLink", ["object_id" => $this->id, "user_id" => $user->id, "type" => "owner"]);
@@ -366,7 +366,7 @@ class DbObject extends DbService
      * @param User $user
      * @return boolean
      */
-    public function canDelete(User $user): bool
+    public function canDelete(User $user)
     {
         if (property_exists($this, "_restrictable") && $this->isRestricted()) {
             $owner = $this->getObject("RestrictedObjectUserLink", ["object_id" => $this->id, "user_id" => $user->id, "type" => "owner"]);
@@ -391,7 +391,7 @@ class DbObject extends DbService
      *
      * @return boolean
      */
-    public function isRestricted(): bool
+    public function isRestricted()
     {
         $links = $this->w->db->get("restricted_object_user_link")
             ->select()
@@ -1014,7 +1014,7 @@ class DbObject extends DbService
      * @return string
      * @deprecated v3.6.13
      */
-    public function _tn(): string
+    public function _tn()
     {
         return $this->getDbTableName();
     }
@@ -1026,7 +1026,7 @@ class DbObject extends DbService
      * @return string
      * @deprecated v3.6.13
      */
-    public function _cn($attr): string
+    public function _cn($attr)
     {
         return $this->getDbColumnName($attr);
     }
@@ -1037,7 +1037,7 @@ class DbObject extends DbService
      *
      * @return User
      */
-    public function getCreator(): User
+    public function getCreator()
     {
         if ($this->_modifiable) {
             return $this->_modifiable->getCreator();
@@ -1054,7 +1054,7 @@ class DbObject extends DbService
      *
      * @return User
      */
-    public function getModifier(): User
+    public function getModifier()
     {
         if ($this->_modifiable) {
             return $this->_modifiable->getModifier();
@@ -1074,9 +1074,9 @@ class DbObject extends DbService
      *
      * @return string
      */
-    public function addToIndex(): string
+    public function addToIndex()
     {
-        return '';
+        
     }
 
     /**
@@ -1086,7 +1086,7 @@ class DbObject extends DbService
      *
      * @return bool
      */
-    public function shouldAddToSearch(): bool
+    public function shouldAddToSearch()
     {
         return true;
     }
@@ -1398,7 +1398,7 @@ class DbObject extends DbService
         return $v;
     }
 
-    public function __toString(): string
+    public function __toString()
     {
         return $this->printSearchTitle();
     }

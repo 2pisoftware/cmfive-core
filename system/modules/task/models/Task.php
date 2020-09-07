@@ -29,12 +29,12 @@ class Task extends DbObject
     public $_searchable;
     public $rate; //rate used for calculating invoice values
     public $is_active;
-    public static $_validation = array(
-        "title" => array('required'),
-        "task_group_id" => array('required'),
-        "status" => array('required'),
-        "task_type" => array('required'),
-    );
+    public static $_validation = [
+        "title" => ['required'],
+        "task_group_id" => ['required'],
+        "status" => ['required'],
+        "task_type" => ['required'],
+    ];
     public static $_db_table = "task";
 
     /**
@@ -76,26 +76,26 @@ class Task extends DbObject
     public function addTaskGroupAsSubscribers()
     {
         $taskgroup = $this->getTaskGroup();
-            if (!empty($taskgroup->id)) {
-                // If automatic subscribe is ticked, assign all members as subscribers
-                if ($taskgroup->shouldAutomaticallySubscribe()) {
-                    $members = $taskgroup->getMembers();
-                    if (!empty($members)) {
-                        foreach ($members as $member) {
-                            $member_user = $this->w->Auth->getUser($member->user_id);
+        if (!empty($taskgroup->id)) {
+            // If automatic subscribe is ticked, assign all members as subscribers
+            if ($taskgroup->shouldAutomaticallySubscribe()) {
+                $members = $taskgroup->getMembers();
+                if (!empty($members)) {
+                    foreach ($members as $member) {
+                        $member_user = $this->w->Auth->getUser($member->user_id);
 
-                            if (!empty($member_user->id)) {
-                                $this->addSubscriber($member_user);
-                            }
+                        if (!empty($member_user->id)) {
+                            $this->addSubscriber($member_user);
                         }
                     }
-                    // Else only assign the assignee and creator
-                } else {
-                    $creator_id = $this->getTaskCreatorId();
-                    $this->addSubscriber($this->w->Auth->getUser($creator_id));
-                    $this->addSubscriber($this->w->Auth->getUser($this->assignee_id));
                 }
+                // Else only assign the assignee and creator
+            } else {
+                $creator_id = $this->getTaskCreatorId();
+                $this->addSubscriber($this->w->Auth->getUser($creator_id));
+                $this->addSubscriber($this->w->Auth->getUser($this->assignee_id));
             }
+        }
     }
 
     /**
@@ -171,7 +171,7 @@ class Task extends DbObject
     public function getDataValue($key)
     {
         if ($this->id) {
-            $c = $this->Task->getObject("TaskData", array("task_id" => $this->id, "data_key" => $key));
+            $c = $this->Task->getObject("TaskData", ["task_id" => $this->id, "data_key" => $key]);
             if ($c) {
                 return $c->value;
             }
@@ -188,7 +188,7 @@ class Task extends DbObject
     public function setDataValue($key, $value)
     {
         if ($this->id) {
-            $c = $this->Task->getObject("TaskData", array("task_id" => $this->id, "data_key" => $key));
+            $c = $this->Task->getObject("TaskData", ["task_id" => $this->id, "data_key" => $key]);
             if ($c) {
                 $c->value = $value;
                 $c->update();
@@ -348,7 +348,7 @@ class Task extends DbObject
     // return the ID of the task creator given a task ID
     public function getTaskCreatorId()
     {
-        $c = $this->Task->getObject("ObjectModification", array("object_id" => $this->id, "table_name" => $this->getDbTableName()));
+        $c = $this->Task->getObject("ObjectModification", ["object_id" => $this->id, "table_name" => $this->getDbTableName()]);
         return $c ? $c->creator_id : "";
     }
 
@@ -358,7 +358,7 @@ class Task extends DbObject
         // I've moved the creator_id to tasks but this is for backwards compatability
         $creator = null;
         if (empty($this->creator_id)) {
-            $c = $this->Task->getObject("ObjectModification", array("object_id" => $this->id, "table_name" => $this->getDbTableName()));
+            $c = $this->Task->getObject("ObjectModification", ["object_id" => $this->id, "table_name" => $this->getDbTableName()]);
             if (!empty($c->creator_id)) {
                 $creator = $this->Auth->getUser($c->creator_id);
             }
@@ -433,8 +433,7 @@ class Task extends DbObject
         if (empty($id)) {
             $id = $this->id;
         }
-        return $this->getObjects("timelog", array("object_class" => "Task", "object_id" => $id, "is_deleted" => 0));
-
+        return $this->getObjects("timelog", ["object_class" => "Task", "object_id" => $id, "is_deleted" => 0]);
     }
 
     // return list of task time log entries, sort by start date
@@ -443,7 +442,7 @@ class Task extends DbObject
         $timelog = $this->getTimeLogEntries($this->id);
 
         if ($timelog) {
-            usort($timelog, array("TaskService", "sortByStarted"));
+            usort($timelog, ["TaskService", "sortByStarted"]);
         }
 
         return $timelog;
@@ -547,7 +546,6 @@ class Task extends DbObject
 
             $tg = $this->getTaskGroup();
             if (!empty($tg)) {
-
                 if ($this->isStatusClosed()) {
                     $this->is_closed = 1;
                     // check dt_completed and set if empty
@@ -843,7 +841,7 @@ END:VCALENDAR";
                     return true;
                 });
             }
-            $pluck = array();
+            $pluck = [];
             foreach ($attachments as $attachment) {
                 $file_path = $attachment->getFilePath();
                 if ($file_path[strlen($file_path) - 1] !== '/') {
@@ -853,7 +851,6 @@ END:VCALENDAR";
             }
             return $pluck;
         }
-        return array();
+        return [];
     }
-
 }
