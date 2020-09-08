@@ -23,9 +23,9 @@ function index_ALL(Web $w)
         foreach ($insights as $insights) {
             $row = [];
             // add values to the row in the same order as the table headers
-            $row[] = $insights->public_name;
+            $row[] = $insights->name;
             $row[] = $insights->module;
-            $row[] = $insights->public_description;
+            $row[] = $insights->description;
             // the actions column is used to hold buttons that link to actions per insight. Note the insight id is added to the href on these buttons.
             $actions = [];
             $row[] = implode('',$actions);
