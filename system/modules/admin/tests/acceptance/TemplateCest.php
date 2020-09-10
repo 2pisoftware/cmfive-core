@@ -1,4 +1,4 @@
-<?php
+ <?php
 
 class TemplateCest
 {
@@ -31,6 +31,6 @@ class TemplateCest
         $I->see('Template Saved');
         $I->demoTemplate($I, 'Test Template');
         $I->wait(2);
-        $I->see("2pi Software");
+        $I->see("Fake Company");
     }
 }
