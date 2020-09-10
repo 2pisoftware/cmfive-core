@@ -4,10 +4,10 @@ function atfile_GET(Web &$w)
     $w->setLayout(null);
     list($id) = $w->pathMatch();
 
-    $attachment = $w->File->getAttachment($id);
+    $attachment = FileService::getInstance($w)->getAttachment($id);
     if (!empty($attachment) && $attachment->exists()) {
         //check if no user logged in, is attachment public
-        if (!$w->auth->loggedIn() && !($attachment->is_public || $attachment->checkViewingWindow())) {
+        if (!AuthService::getInstance($w)->loggedIn() && !($attachment->is_public || $attachment->checkViewingWindow())) {
             return;
         }
         $attachment->displayContent();
