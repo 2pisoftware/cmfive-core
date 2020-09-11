@@ -28,6 +28,7 @@ function index_ALL(Web $w)
             $row[] = $insights->description;
             // the actions column is used to hold buttons that link to actions per insight. Note the insight id is added to the href on these buttons.
             $actions = [];
+            $actions[] = Html::b('/insights/viewInsight/' . $insights->id,'View this insight');
             $row[] = implode('', $actions);
             $table[] = $row;
         }
