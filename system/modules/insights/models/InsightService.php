@@ -8,7 +8,7 @@ defined('MODELS_DIRECTORY') || define('MODELS_DIRECTORY', 'models');
 class InsightService extends DbService
 {
     // returns all insight instances
-    public function GetAllInsights($insights)
+    public function getAllInsights($insights)
     {
         $availableInsights = [];
 
