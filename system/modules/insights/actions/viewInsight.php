@@ -1,6 +1,6 @@
 <?php
 
-function viewInsight_GET(Web $w) {
+function viewInsight_POST(Web $w) {
     
     // now we need to fetch the correct insight
     // we will use pathMatch to retrieve an insight id from the url.
@@ -17,7 +17,7 @@ function viewInsight_GET(Web $w) {
     $tableHeaders = ['Name', 'Module', 'Description', 'Actions'];
     // We now need to change the value for each column to reflect the values of the insight we are viewing only. 
     if (!empty($p['id'])) {
-        $getUrl = '/insights/viewInsight/' . $insights->id;
+        $postUrl = '/insights/viewInsight/' . $insights->id;
     } 
         foreach ($insights as $insights) {
             $row = [];
