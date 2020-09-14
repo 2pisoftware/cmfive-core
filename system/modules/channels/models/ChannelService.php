@@ -8,7 +8,7 @@ class ChannelService extends DbService
      */
     public function getChannels()
     {
-        $where = array("is_deleted" => 0);
+        $where = ["is_deleted" => 0];
         return $this->getObjects("Channel", $where);
     }
 
@@ -27,7 +27,7 @@ class ChannelService extends DbService
      */
     public function getEmailChannel($channel_id)
     {
-        $where = array('is_deleted' => 0, "channel_id" => $channel_id);
+        $where = ['is_deleted' => 0, "channel_id" => $channel_id];
         return $this->getObject('EmailChannelOption', $where);
     }
 
@@ -37,7 +37,7 @@ class ChannelService extends DbService
      */
     public function getWebChannel($channel_id)
     {
-        $where = array('is_deleted' => 0, "channel_id" => $channel_id);
+        $where = ['is_deleted' => 0, "channel_id" => $channel_id];
         return $this->getObject('WebChannelOption', $where);
     }
 
@@ -47,7 +47,7 @@ class ChannelService extends DbService
      */
     public function getEmailChannels()
     {
-        $where = array('is_deleted' => 0);
+        $where = ['is_deleted' => 0];
         return $this->getObjects('EmailChannelOption', $where);
     }
 
@@ -57,7 +57,7 @@ class ChannelService extends DbService
      */
     public function getWebChannels()
     {
-        $where = array('is_deleted' => 0);
+        $where = ['is_deleted' => 0];
         return $this->getObjects('WebChannelOption', $where);
     }
 
@@ -84,13 +84,13 @@ class ChannelService extends DbService
         if (empty($channel_id)) {
             return null;
         }
-        $where = array("is_deleted" => 0, "channel_id" => $channel_id);
+        $where = ["is_deleted" => 0, "channel_id" => $channel_id];
         return $this->getObjects("ChannelProcessor", $where);
     }
 
     public function getAllProcessors()
     {
-        return $this->getObjects("ChannelProcessor", array("is_deleted" => 0));
+        return $this->getObjects("ChannelProcessor", ["is_deleted" => 0]);
     }
 
     /**
@@ -99,7 +99,7 @@ class ChannelService extends DbService
      */
     public function getProcessor($id)
     {
-        $where = array("is_deleted" => 0, "id" => $id);
+        $where = ["is_deleted" => 0, "id" => $id];
         return $this->getObject("ChannelProcessor", $where);
     }
 
@@ -110,7 +110,7 @@ class ChannelService extends DbService
     public function getProcessorList()
     {
         // Get Modules => Processor list
-        $list = array();
+        $list = [];
         foreach ($this->w->modules() as $module) {
             $processors = Config::get("{$module}.processors");
             if (!empty($processors)) {
@@ -125,7 +125,7 @@ class ChannelService extends DbService
 
     public function getMessages($channel_id = null, $include_deleted = false)
     {
-        $where = array();
+        $where = [];
         if ($include_deleted === false) {
             $where["is_deleted"] = 0;
         }
@@ -162,7 +162,7 @@ class ChannelService extends DbService
 
     public function getMessageStatus($message_id, $processor_id = null)
     {
-        $where = array("message_id" => $message_id);
+        $where = ["message_id" => $message_id];
         if (!empty($processor_id)) {
             $where["processor_id"] = $processor_id;
         }
@@ -172,7 +172,7 @@ class ChannelService extends DbService
 
     public function getMessageStatuses($message_id)
     {
-        $where = array("message_id" => $message_id);
+        $where = ["message_id" => $message_id];
         return $this->getObjects("ChannelMessageStatus", $where);
     }
 
@@ -205,7 +205,7 @@ class ChannelService extends DbService
         }
 
         // Fill objects accordingly
-        $failed_message_objects = array();
+        $failed_message_objects = [];
         if (!empty($failed_messages)) {
             $failed_message_objects = $this->fillObjects("ChannelMessage", $failed_messages);
             foreach ($failed_message_objects as &$fmo) {
@@ -221,7 +221,7 @@ class ChannelService extends DbService
 
         // Get new messages
         $new_messages = $this->_db->sql("select channel_message.* from channel_message left join channel_message_status on channel_message.id = channel_message_status.message_id where channel_message_status.id IS NULL")->fetch_all();
-        $new_message_objects = array();
+        $new_message_objects = [];
         if (!empty($new_messages)) {
             $new_message_objects = $this->fillObjects("ChannelMessage", $new_messages);
         }
@@ -244,7 +244,7 @@ class ChannelService extends DbService
         if ($title) {
             $w->ctx("title", $title);
         }
-        $nav = $prenav ? $prenav : array();
+        $nav = $prenav ? $prenav : [];
         if ($w->Auth->loggedIn()) {
             $w->menuLink("channels/listchannels", "List Channels", $nav);
             $w->menuLink("channels/listprocessors", "List Processors", $nav);
