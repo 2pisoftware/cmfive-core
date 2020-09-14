@@ -1,17 +1,16 @@
 <?php
 
-function listmessagestatuses_ALL(Web $w) {
+function listmessagestatuses_ALL(Web $w)
+{
+    $p = $w->pathMatch("id");
+    $id = $p["id"];
+    ChannelsService::getInstance($w)->navigation($w, "Message Statuses");
 
-	$p = $w->pathMatch("id");
-	$id = $p["id"];
-	$w->Channels->navigation($w, "Message Statuses");
+    if (!$id) {
+        $w->error("Message ID not found", "/channels/listmessages");
+    }
 
-	if (!$id) {
-		$w->error("Message ID not found", "/channels/listmessages");
-	}
+    $messagestatuses = ChannelService::getInstance($w)->getMessageStatuses($id);
 
-	$messagestatuses = $w->Channel->getMessageStatuses($id);
-
-	$w->ctx("statuses", $messagestatuses);
-
+    $w->ctx("statuses", $messagestatuses);
 }

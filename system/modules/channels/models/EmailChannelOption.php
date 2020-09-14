@@ -149,7 +149,7 @@ class EmailChannelOption extends DbObject
     public function getChannel()
     {
         if (!empty($this->channel_id)) {
-            return $this->w->Channel->getChannel($this->channel_id);
+            return ChannelService::getInstance($this->w)->getChannel($this->channel_id);
         }
         return null;
     }
@@ -190,19 +190,19 @@ class EmailChannelOption extends DbObject
         $filter_arr[] = "UNSEEN";
 
         // Connect and fetch emails
-        $this->w->Log->setLogger('EmailChannel')->info("Connecting to mail server");
+        LogService::getInstance($this->w)->setLogger('EmailChannel')->info("Connecting to mail server");
         list($connected, $mail) = $this->connectToMail();
 
         if ($connected) {
-            $this->w->Log->setLogger('EmailChannel')->info("Getting messages with filter: " . json_encode($filter_arr));
+            LogService::getInstance($this->w)->setLogger('EmailChannel')->info("Getting messages with filter: " . json_encode($filter_arr));
             $results = $mail->protocol->search($filter_arr);
 
             if (!empty($results)) {
-                $this->w->Log->setLogger('EmailChannel')->info("Found " . count($results) . " messages, looping through");
+                LogService::getInstance($this->w)->setLogger('EmailChannel')->info("Found " . count($results) . " messages, looping through");
 
                 foreach ($results as $index => $messagenum) {
                     $i = $index + 1;
-                    $this->w->Log->setLogger('EmailChannel')->debug("Reading message {$i}");
+                    LogService::getInstance($this->w)->setLogger('EmailChannel')->debug("Reading message {$i}");
                     $message = $mail->getMessage($messagenum);
 
                     /**create a regular zend_mail_message to use toString()
@@ -308,7 +308,7 @@ class EmailChannelOption extends DbObject
                                         $name = trim($name, '"');
                                         $name = trim($name, "'");
 
-                                        $this->w->File->saveFileContent(
+                                        FileService::getInstance($this->w)->saveFileContent(
                                             $channel_message,
                                             ($transferEncoding == "base64" ? base64_decode(trim($part->__toString())) : trim($part->__toString())),
                                             $name,
@@ -317,7 +317,7 @@ class EmailChannelOption extends DbObject
                                         );
                                 }
                             } catch (Zend_Mail_Exception $e) {
-                                $this->w->Log->setLogger('EmailChannel')->error("Zend_Mail_Exception {$e}");
+                                LogService::getInstance($this->w)->setLogger('EmailChannel')->error("Zend_Mail_Exception {$e}");
                             }
                         }
                     } else {
@@ -343,11 +343,11 @@ class EmailChannelOption extends DbObject
                                 break;
                         }
                     }
-                    $this->w->File->saveFileContent($channel_message, serialize($email), "email.txt", "channel_email_raw", "text/plain", 'serialized EmailStructure object | NOT SENT TO CLIENT');
-                    $this->w->File->saveFileContent($channel_message, $rawmessage, "rawemail.txt", "channel_email_raw", "text/plain", "raw email message | NOT SENT TO CLIENT");
+                    FileService::getInstance($this->w)->saveFileContent($channel_message, serialize($email), "email.txt", "channel_email_raw", "text/plain", 'serialized EmailStructure object | NOT SENT TO CLIENT');
+                    FileService::getInstance($this->w)->saveFileContent($channel_message, $rawmessage, "rawemail.txt", "channel_email_raw", "text/plain", "raw email message | NOT SENT TO CLIENT");
                 }
             } else {
-                $this->w->Log->setLogger('EmailChannel')->info("No new messages found");
+                LogService::getInstance($this->w)->setLogger('EmailChannel')->info("No new messages found");
             }
         }
     }

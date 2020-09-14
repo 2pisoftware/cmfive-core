@@ -1,5 +1,6 @@
 <?php
 
-function index_ALL(Web $w) {
-	$w->Channels->navigation($w, "Channels");
+function index_ALL(Web $w)
+{
+    ChannelsService::getInstance($w)->navigation($w, "Channels");
 }
