@@ -2,5 +2,5 @@ Options All -Indexes
 
 <Files ~ "\.php$">
     Order allow,deny
-    Deny from all
+    Require all denied
 </Files>
