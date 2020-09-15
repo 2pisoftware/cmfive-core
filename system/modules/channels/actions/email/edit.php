@@ -5,13 +5,13 @@ function edit_GET(Web $w)
     $p = $w->pathMatch("id");
     $channel_id = $p["id"];
 
-    $w->Channels->navigation($w, $channel_id ? "Edit" : "Add" . " an Email Channel");
+    ChannelsService::getInstance($w)->navigation($w, $channel_id ? "Edit" : "Add" . " an Email Channel");
 
     // Get channel and form
-    $channel_object = $channel_id ? $w->Channel->getChannel($channel_id) : new Channel($w);
+    $channel_object = $channel_id ? ChannelService::getInstance($w)->getChannel($channel_id) : new Channel($w);
     $form = $channel_object->getForm();
 
-    $email_channel = $channel_id ? $w->Channel->getEmailChannel($channel_id) : new EmailChannelOption($w);
+    $email_channel = $channel_id ? ChannelService::getInstance($w)->getEmailChannel($channel_id) : new EmailChannelOption($w);
 
     // Decrypt username and password
     $email_channel->decrypt();
@@ -76,14 +76,14 @@ function edit_POST(Web $w)
 {
     $p = $w->pathMatch("id");
     $channel_id = $p["id"];
-    $channel_object = $channel_id ? $w->Channel->getChannel($channel_id) : new Channel($w);
+    $channel_object = $channel_id ? ChannelService::getInstance($w)->getChannel($channel_id) : new Channel($w);
     $channel_object->fill($_POST);
     $channel_object->is_active = isset($_POST['is_active']) ? 1 : 0;
     $channel_object->notify_user_id = isset($_POST["notify_user_id"]) ? intval($_POST["notify_user_id"]) : null;
     $channel_object->do_processing = isset($_POST['do_processing']) ? 1 : 0;
     $channel_object->insertOrUpdate();
 
-    $email_channel = $channel_id ? $w->Channel->getEmailChannel($channel_id) : new EmailChannelOption($w);
+    $email_channel = $channel_id ? ChannelService::getInstance($w)->getEmailChannel($channel_id) : new EmailChannelOption($w);
     $email_channel->fill($_POST);
     $email_channel->use_auth = isset($_POST['use_auth']) ? 1 : 0;
     $email_channel->verify_peer = isset($_POST['verify_peer']) ? 1 : 0;

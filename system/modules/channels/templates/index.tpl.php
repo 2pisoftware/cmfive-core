@@ -1,1 +1,1 @@
-<?php echo $w->partial("listwidgets", array("module" => $w->_module), "main"); ?>
+<?php echo $w->partial("listwidgets", ["module" => $w->_module], "main");

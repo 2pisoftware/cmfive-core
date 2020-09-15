@@ -5,11 +5,11 @@ function edit_GET(Web $w)
     $p = $w->pathMatch("id");
     $processor_id = $p["id"];
 
-    $w->Channels->navigation($w, $processor_id ? "Edit" : "Add" . " a Processor");
+    ChannelsService::getInstance($w)->navigation($w, $processor_id ? "Edit" : "Add" . " a Processor");
 
     // Get channel and form
-    $processor = $processor_id ? $w->Channel->getProcessor($processor_id) : new ChannelProcessor($w);
-    $processor_list = $w->Channel->getProcessorList();
+    $processor = $processor_id ? ChannelService::getInstance($w)->getProcessor($processor_id) : new ChannelProcessor($w);
+    $processor_list = ChannelService::getInstance($w)->getProcessorList();
 
     $form = [
         "Processor" => [
@@ -17,7 +17,7 @@ function edit_GET(Web $w)
                 ["Name", "text", "name", $processor->name]
             ],
             [
-                ["Channel", "select", "channel_id", $processor->channel_id, $w->Channel->getChannels()]
+                ["Channel", "select", "channel_id", $processor->channel_id, ChannelService::getInstance($w)->getChannels()]
             ],
             [
                 ["Processor Class", "select", "processor_class", $processor->module . '.' . $processor->class, $processor_list]
@@ -55,7 +55,7 @@ function edit_POST(Web $w)
         exit();
     }
 
-    $processor_object = $processor_id ? $w->Channel->getProcessor($processor_id) : new ChannelProcessor($w);
+    $processor_object = $processor_id ? ChannelService::getInstance($w)->getProcessor($processor_id) : new ChannelProcessor($w);
     $processor_object->fill($_POST);
     $processor_object->channel_id = $w->request("channel_id");
     $processor_object->module = $processor_expl[0];
