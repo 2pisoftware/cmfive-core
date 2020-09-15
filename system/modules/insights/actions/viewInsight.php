@@ -1,6 +1,7 @@
 <?php
 
-function viewInsight_POST(Web $w) {
+function viewInsight_GET(Web $w) {
+    [$insight_class] = $w->pathMatch("insight_class");    // $insight_class will contain whatever you put after the slash following the action name
     
     // now we need to fetch the correct insight
     // we will use pathMatch to retrieve an insight id from the url.
