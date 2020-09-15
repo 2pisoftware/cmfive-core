@@ -20,15 +20,15 @@ function index_ALL(Web $w)
     $table = [];
     $tableHeaders = ['Name', 'Module', 'Description', 'Actions'];
     if (!empty($insights)) {
-        foreach ($insights as $insights) {
+        foreach ($insights as $insight) {
             $row = [];
             // add values to the row in the same order as the table headers
-            $row[] = $insights->name;
-            $row[] = $insights->module;
-            $row[] = $insights->description;
+            $row[] = $insight->name;
+            $row[] = $insight->module;
+            $row[] = $insight->description;
             // the actions column is used to hold buttons that link to actions per insight. Note the insight id is added to the href on these buttons.
             $actions = [];
-            $actions[] = Html::b('/insights/viewInsight/' . $insights->id,'View this insight');
+            $actions[] = Html::b('/insights/viewInsight/' . $insight->id,'View this insight');
             $row[] = implode('', $actions);
             $table[] = $row;
         }
