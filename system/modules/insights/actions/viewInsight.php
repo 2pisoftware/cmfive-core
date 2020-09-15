@@ -1,23 +1,20 @@
 <?php
 
 function viewInsight_GET(Web $w) {
-    [$insight_class] = $w->pathMatch("insight_class");    // $insight_class will contain whatever you put after the slash following the action name
-    
     // now we need to fetch the correct insight
-    // we will use pathMatch to retrieve an insight id from the url.
-    $p = $w->pathMatch('id');
-    // if the id exists we will retrieve the data for that insight otherwise we will return an error. 
-    $insights = !empty($p['id']) ? InsightSerive::getInstance($w)->getInsightForId($p['id']);
+    // we will use pathMatch to retrieve an insight name from the url.
+    [$insight_class] = $w->pathMatch("insight_class");    // $insight_class will contain whatever you put after the slash following the action name
+    // if the insight name exists we will retrieve the data for that insight
 
     //add a title to the action
     // change the title to reflect viewing insight
-    $w->ctx('title', !empty($p['id']) ? 'View Insight';
+    $w->ctx('title', !empty($p['insight_class']) ? 'View Insight';
 
     // build the table array adding the headers and the row data
     $table = [];
     $tableHeaders = ['Name', 'Module', 'Description', 'Actions'];
     // We now need to change the value for each column to reflect the values of the insight we are viewing only. 
-    if (!empty($p['id'])) {
+    if (!empty($p['insight_class'])) {
         $postUrl = '/insights/viewInsight/' . $insights->id;
     } 
         foreach ($insights as $insights) {
