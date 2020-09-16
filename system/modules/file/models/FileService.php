@@ -299,34 +299,42 @@ class FileService extends DbService
     public function getAttachmentsFileList($objectOrTable, $id = null, $type_code_blacklist = [])
     {
         $attachments = $this->getAttachments($objectOrTable, $id);
-        if (!empty($attachments)) {
-            foreach ($attachments as $key => $attachment) {
-                if ($attachment->isRestricted()) {
-                    unset($attachments[$key]);
+        if (empty($attachments)) {
+            return [];
+        }
+
+        foreach ($attachments as $key => $attachment) {
+            if ($attachment->isRestricted()) {
+                unset($attachments[$key]);
+            }
+        }
+
+        $pluck = [];
+
+        if (!empty($type_code_blacklist)) {
+            $attachments = array_filter($attachments, function ($attachment) use ($type_code_blacklist) {
+                if (in_array($attachment->type_code, $type_code_blacklist)) {
+                    return false;
                 }
+                return true;
+            });
+        }
+
+        foreach ($attachments ?? [] as $attachment) {
+            $file_path = $attachment->getFilePath();
+
+            if ($file_path[strlen($file_path) - 1] !== '/') {
+                $file_path .= '/';
             }
 
-            $pluck = [];
-            if (!empty($type_code_blacklist)) {
-                $attachments = array_filter($attachments, function ($attachment) use ($type_code_blacklist) {
-                    if (in_array($attachment->type_code, $type_code_blacklist)) {
-                        return false;
-                    }
-                    return true;
-                });
-            }
-            foreach ($attachments as $attachment) {
-                $file_path = $attachment->getFilePath();
-
-                if ($file_path[strlen($file_path) - 1] !== '/') {
-                    $file_path .= '/';
-                }
-
+            if ($attachment->adapter === "s3") {
+                $pluck[] = Config::get("file.adapters.s3.options.directory") . "/" . $attachment->fullpath;
+            } else {
                 $pluck[] = realpath($file_path . $attachment->filename);
             }
-            return $pluck;
         }
-        return [];
+
+        return $pluck;
     }
 
     /**
@@ -347,8 +355,6 @@ class FileService extends DbService
             $id = $objectOrTable->id;
         }
         if (!empty($table) && !empty($id)) {
-            // $rows = $this->_db->get("attachment")->where("parent_table", $table)->and("parent_id", $id)->and("is_deleted", 0)->fetch_all();
-            // return $this->fillObjects("Attachment", $rows);
             return $this->getObjects('Attachment', ['parent_table' => $table, 'parent_id' => $id, 'is_deleted' => 0]);
         }
         return null;
@@ -456,12 +462,11 @@ class FileService extends DbService
         $att->description = $description;
         $att->type_code = $type_code;
         $att->is_public = $is_public;
-        $att->insert();
 
         $filesystemPath = "attachments/" . $parentObject->getDbTableName() . '/' . date('Y/m/d') . '/' . $parentObject->id . '/';
         $filesystem = $this->getFilesystem($this->getFilePath($filesystemPath));
         if (empty($filesystem)) {
-            $this->w->Log->setLogger("FILE_SERVICE")->error("Cannot save file, no filesystem returned");
+            LogService::getInstance($this->w)->setLogger("FILE_SERVICE")->error("Cannot save file, no filesystem returned");
             return null;
         }
 
@@ -490,7 +495,8 @@ class FileService extends DbService
         }
 
         $att->mimetype = $mime_type;
-        $att->update();
+        $att->insert();
+
         return $att->id;
     }
 

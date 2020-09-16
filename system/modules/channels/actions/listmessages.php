@@ -1,17 +1,17 @@
 <?php
 
-function listmessages_GET(Web $w) {
-	$w->Channels->navigation($w, "Messages list");
+function listmessages_GET(Web $w)
+{
+    ChannelsService::getInstance($w)->navigation($w, "Messages list");
 
-	$p = $w->pathMatch("id");
-	$channel_id = $p["id"];
+    $p = $w->pathMatch("id");
+    $channel_id = $p["id"];
 
-	$messages = $w->Channel->getMessages($channel_id);
+    $messages = ChannelService::getInstance($w)->getMessages($channel_id);
 
-	$w->ctx("messages", $messages);
+    $w->ctx("messages", $messages);
 
-	if ($channel_id) {
-		$w->ctx("channel_id", $channel_id);
-	}
-
+    if ($channel_id) {
+        $w->ctx("channel_id", $channel_id);
+    }
 }
