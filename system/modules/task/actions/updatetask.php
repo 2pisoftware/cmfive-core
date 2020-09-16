@@ -33,7 +33,7 @@ function updatetask_POST(Web &$w) {
 
 
 		// update the task
-		$task->fill($_POST);
+		$task->fill($_POST, true, true);
 
 		$task->update();
 

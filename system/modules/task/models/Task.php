@@ -6,7 +6,7 @@
 class Task extends DbObject
 {
     public $parent_id; // Parent Task ID.
-    public $title; // not null
+    protected $title; // not null
     public $task_group_id; // can be null!
     public $status; // text
     public $priority; // text
@@ -126,8 +126,20 @@ class Task extends DbObject
         if ($name === "_taskgroup") {
             $this->_taskgroup = $this->getTaskGroup();
             return $this->_taskgroup;
-        } else {
+        }
+        if ($name === "title") {
+            return htmlentities($this->title);
+        }
             return parent::__get($name);
+            
+    }
+
+    public function __set($name, $value) {
+        if ($name === "_taskgroup") {
+            $this->_taskgroup = $value;
+        }
+        if ($name === "title") {
+             $this->title = html_entity_decode($value);
         }
     }
 

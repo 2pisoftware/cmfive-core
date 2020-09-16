@@ -195,7 +195,7 @@ function edit_POST($w)
         $taskdata = $w->Task->getTaskData($p['id']);
     }
 
-    $task->fill($_POST['edit']);
+    $task->fill($_POST['edit'], true, true);
 
     $task->assignee_id = intval($_POST['edit']['assignee_id']);
 

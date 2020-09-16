@@ -62,7 +62,7 @@ function createtask_POST(Web &$w) {
 
 	// insert Task into database
 	$task = new Task($w);
-	$task->fill($arr_req);
+	$task->fill($arr_req, true, true);
 
 	$task->insert();
 

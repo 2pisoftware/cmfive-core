@@ -387,8 +387,11 @@ class DbObject extends DbService
      * @param mixed $v
      * @return mixed
      */
-    public function readConvert($k, $v)
+    public function readConvert($k, $v, $entityDecode)
     {
+        if($entityDecode) {
+            $v = html_entity_decode($v);
+        }
         if (strpos($k, "dt_") === 0) {
             if (!empty($v)) {
                 return $this->dt2Time($v);
@@ -423,11 +426,11 @@ class DbObject extends DbService
      *
      * @param array $row
      */
-    public function fill($row, $convert = false)
+    public function fill($row, $convert = false, $entityDecode = false)
     {
         foreach ($this->getObjectVars() as $k) {
             if (array_key_exists($k, $row)) {
-                $this->$k = ($convert ? $this->readConvert($k, $row[$k]) : $row[$k]);
+                $this->$k = ($convert ? $this->readConvert($k, $row[$k], $entityDecode) : $row[$k]);
             }
         }
         if (!empty($row["creator_id"]) && empty($this->creator_id)) {
