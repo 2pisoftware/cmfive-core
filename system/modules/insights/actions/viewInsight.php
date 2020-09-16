@@ -5,32 +5,15 @@ function viewInsight_GET(Web $w) {
     // we will use pathMatch to retrieve an insight name from the url.
     [$insight_class] = $w->pathMatch("insight_class");    // $insight_class will contain whatever you put after the slash following the action name
     // if the insight name exists we will retrieve the data for that insight
+    //var_dump (class_exists($insight_class));
+    //var_dump (class_implements($insight_class));
+    //die();
+    if (empty($insight_class)||!class_exists($insight_class) || !is_subclass_of($insight_class, "InsightBaseClass")) {
+      $w->error('Insight does not exist', '/insights');
+    }
 
     //add a title to the action
     // change the title to reflect viewing insight
-    $w->ctx('title', !empty($p['insight_class']) ? 'View Insight';
-
-    // build the table array adding the headers and the row data
-    $table = [];
-    $tableHeaders = ['Name', 'Module', 'Description', 'Actions'];
-    // We now need to change the value for each column to reflect the values of the insight we are viewing only. 
-    if (!empty($p['insight_class'])) {
-        $postUrl = '/insights/viewInsight/' . $insights->id;
-    } 
-        foreach ($insights as $insights) {
-            $row = [];
-            // add values to the row in the same order as the table headers
-            $row[] = $insights->name;
-            $row[] = $insights->module;
-            $row[] = $insights->description;
-            // the actions column is used to hold buttons that link to actions per insight. Note the insight id is added to the href on these buttons.
-            $actions = [];
-            $row[] = implode('', $actions);
-            $table[] = $row;
-        }
-    }
-
-    //send the table to the template using ctx
-    $w->ctx('insightTable', Html::table($table, 'insight_table', 'tablesorter', $tableHeaders));
+    $w->ctx('title', 'View Insight');
 }
 ?>    

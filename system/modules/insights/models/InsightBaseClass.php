@@ -1,16 +1,12 @@
 <?php
 
-class InsightBaseClass
+abstract class InsightBaseClass
 {
     public $name;
     public $module;
     public $description;
 
-    public function getFilters()
-    {
-    }
+    abstract public function getFilters();
 
-    public function run()
-    {
-    }
+    abstract public function run();
 }
