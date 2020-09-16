@@ -48,7 +48,7 @@ class InsightService extends DbService
                         //check if file is an insight
                         //if insight add to arry. If not insight skip
                         if (strpos($classname[0], 'Insight') !== false && $classname[0] !== "InsightBaseClass" && $classname[0] !== "InsightService") {
-                            echo "Found insights class; " . $classname[0] . " <br>";
+                            //echo "Found insights class; " . $classname[0] . " <br>";
                             //Create instance of class
                             $insightspath = $insight_path . DS . $file;
                             if (file_exists(ROOT_PATH . DS . $insightspath)) {

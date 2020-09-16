@@ -14,7 +14,7 @@ function index_ALL(Web $w)
 
     // access service functions using the Web $w object and the module name
     $modules = InsightService::getInstance($w)->getAllInsights('all');
-    var_dump($modules);
+    //var_dump($modules);
 
     // build the table array adding the headers and the row data
     $table = [];
