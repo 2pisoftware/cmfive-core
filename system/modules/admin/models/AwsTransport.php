@@ -73,6 +73,12 @@ class AwsTransport implements GenericTransport
             return;
         }
 
+        $from_arn = Config::get("admin.mail.aws.from_arn");
+        if (empty($from_arn)) {
+            LogService::getInstance($this->w)->error("Failed to send mail to: $to, from: $reply_to, about: $subject: admin.mail.aws.from_arn not set in config");
+            return;
+        }
+
         if (empty($to) || strlen($to) === 0) {
             $this->w->Log->error("Failed to send mail to: $to, from: $reply_to, about: $subject: no recipients");
             return;
@@ -137,6 +143,7 @@ class AwsTransport implements GenericTransport
             "body_content_type" => $body_content_type,
             "headers" => $headers,
             "attachments" => $attachmentsWithTypes,
+            "from_arn" => $from_arn,
         ];
 
         $client->sendMessage([
