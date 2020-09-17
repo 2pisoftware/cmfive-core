@@ -358,7 +358,7 @@ class Html
             $readonly = "";
 
             // handle disabled fields
-            if ($name[0] == '-') {
+            if ($name !== null && $name[0] == '-') {
                 $name = substr($name, 1);
                 $readonly = " readonly='true' ";
             }
@@ -996,7 +996,7 @@ class Html
         if (!$valarray || !sizeof($valarray)) {
             return null;
         }
-        $error = array();
+        $error = [];
         if ($values == null) {
             $values = $_REQUEST;
         }
@@ -1347,7 +1347,7 @@ class Html
         return $buffer;
     }
 
-    public static function listGrid($data, $buttons = array(), $perRow = 2)
+    public static function listGrid($data, $buttons = [], $perRow = 2)
     {
         if (!is_array($data)) {
             return;
@@ -1408,7 +1408,7 @@ class Html
         return $buffer;
     }
 
-    public static function breadcrumbs($data = array(), $w = null)
+    public static function breadcrumbs($data = [], $w = null)
     {
         if (!empty($data)) {
             $buffer = "<ul class='breadcrumbs'>";
