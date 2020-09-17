@@ -21,8 +21,8 @@ class CmfiveAdminModule extends \Codeception\Module
     {
         $I->clickCmfiveNavbar($I, 'Admin', 'List Users');
         $I->click('Add New User');
-        $I->waitForElement('input#login');
-        $I->wait(1);
+        $I->waitForElement('#login');
+        $I->waitForElement("//button[contains(@class,'savebutton')]");
         $I->fillForm(
             [
                 'login' => $username,
@@ -41,6 +41,8 @@ class CmfiveAdminModule extends \Codeception\Module
             $I->click('#check_' . $permission);
         }
         $I->click('Save');
+        $I->waitForElement("//div[@class='tab-head'][a[@href='#internal'] and a[@href='#external']]", 2);
+        $I->waitForElement("//div[contains(@class,'alert-box')]", 2);
         $I->see('User ' . $username . ' added');
     }
 

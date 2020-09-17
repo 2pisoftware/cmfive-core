@@ -28,23 +28,23 @@ class NotificationService extends DbService
 
         foreach ($usable_methods as $method) {
             // Need to add template method type
-            $template = $this->w->Template->findTemplate($module, $template_name);
+            $template = TemplateService::getInstance($this->w)->findTemplate($module, $template_name);
             if (empty($template->id)) {
-                $this->w->Log->setLogger("NOTIFICATION")->error("Template {$template_name} for module {$module} not found");
+                LogService::getInstance($this->w)->setLogger("NOTIFICATION")->error("Template {$template_name} for module {$module} not found");
             }
 
-            $output = $this->w->Template->render($template, $template_data);
+            $output = TemplateService::getInstance($this->w)->render($template, $template_data);
 
             switch ($method) {
                 case NotificationService::TYPE_INBOX:
                     if (Config::get('inbox.active') === true) {
-                        $this->w->Inbox->addMessage($subject, $output, $recipient_user->id, null, null, false);
+                        InboxService::getInstance($this->w)->addMessage($subject, $output, $recipient_user->id, null, null, false);
                     }
                     break;
 
                 case NotificationService::TYPE_EMAIL:
                 default:
-                    $this->w->Mail->sendMail(
+                    MailService::getInstance($this->w)->sendMail(
                         $recipient_user->getContact()->email,
                         ($recipient_user->is_external || empty($sending_user->id)) ? Config::get('main.company_support_email') : $sending_user->getContact()->email,
                         $subject,

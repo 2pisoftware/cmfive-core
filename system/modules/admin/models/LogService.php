@@ -1,7 +1,5 @@
 <?php
 
-use Aws\AwsClientInterface;
-use Aws\Credentials\CredentialsInterface;
 use Aws\CloudWatchLogs\CloudWatchLogsClient;
 use Maxbanton\Cwh\Handler\CloudWatch;
 use Monolog\Logger as Logger;
@@ -81,7 +79,16 @@ class LogService extends \DbService
         switch (Config::get('admin.logging.target', 'file')) {
             case 'aws':
                 try {
-                    $cw_client = new CloudWatchLogsClient(Config::get('admin.logging.cloudwatch'));
+                    $args = [
+                        "region" => Config::get("admin.logging.cloudwatch.region"),
+                        "version" => Config::get("admin.logging.cloudwatch.version"),
+                    ];
+
+                    if (Config::get("system.environment", ENVIRONMENT_PRODUCTION) === ENVIRONMENT_DEVELOPMENT) {
+                        $args["credentials"] = Config::get("admin.logging.cloudwatch.credentials");
+                    }
+
+                    $cw_client = new CloudWatchLogsClient($args);
 
                     // Log group name, will be created if none
                     $cw_group_name = Config::get('admin.logging.cloudwatch.group_name', 'cmfive-app-logs');

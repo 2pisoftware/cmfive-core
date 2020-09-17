@@ -1,7 +1,7 @@
 <?php
 
-Config::set('channels', array(
-	'version' => '0.8.0',
+Config::set('channels', [
+    'version' => '0.8.0',
     'active' => true,
     'path' => 'system/modules',
     'topmenu' => true,

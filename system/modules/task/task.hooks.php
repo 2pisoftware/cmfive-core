@@ -134,18 +134,18 @@ function task_core_dbobject_after_update_Task(Web $w, $task)
 
 function task_attachment_attachment_added_task(Web $w, $attachment)
 {
-    $w->Log->setLogger("TASK")->debug("task_attachment_attachment_added_task");
+    LogService::getInstance($w)->setLogger("TASK")->debug("task_attachment_attachment_added_task");
     if (!$attachment->_skip_added_notification) {
-        $task = $w->Task->getTask($attachment->parent_id);
+        $task = TaskService::getInstance($w)->getTask($attachment->parent_id);
 
         if (empty($task->id)) {
             return;
         }
 
-        $users_to_notify = $w->Task->getNotifyUsersForTask($task, TASK_NOTIFICATION_TASK_DOCUMENTS);
+        $users_to_notify = TaskService::getInstance($w)->getNotifyUsersForTask($task, TASK_NOTIFICATION_TASK_DOCUMENTS);
         $subject = "Task - " . $task->title . ' [' . $task->id . ']: ' . $attachment->getHumanReadableAttributeName(TASK_NOTIFICATION_TASK_DOCUMENTS);
 
-        $w->Notification->sendToAllWithCallback($subject, "task", "notification_email", $w->Auth->user(), $users_to_notify, function ($user, $existing_template_data) use ($task, $w) {
+        NotificationService::getInstance($w)->sendToAllWithCallback($subject, "task", "notification_email", AuthService::getInstance($w)->user(), $users_to_notify, function ($user, $existing_template_data) use ($task, $w) {
             if ($user->is_external) {
                 return null;
             }
@@ -175,7 +175,7 @@ function task_attachment_attachment_added_task(Web $w, $attachment)
 
             // Get additional details
             if ($user->is_external == 0) {
-                $additional_details = $w->Task->getNotificationAdditionalDetails($task);
+                $additional_details = TaskService::getInstance($w)->getNotificationAdditionalDetails($task);
                 if (!empty($additional_details)) {
                     $template_data['footer'] .= $additional_details;
                 }
@@ -190,10 +190,10 @@ function task_attachment_attachment_added_task(Web $w, $attachment)
             } else {
                 $template_data['fields']["Assigned to"] = "No one";
             }
-            return new NotificationCallback($user, $template_data, $w->file->getAttachmentsFileList($task, null, ['channel_email_raw']));
+            return new NotificationCallback($user, $template_data, FileService::getInstance($w)->getAttachmentsFileList($task, null, ['channel_email_raw']));
         });
     } else {
-        $w->Log->setLogger("TASK")->debug("Task Attachment added notification skipped because _skip_added_notification was set on the attachment object");
+        LogService::getInstance($w)->setLogger("TASK")->debug("Task Attachment added notification skipped because _skip_added_notification was set on the attachment object");
     }
 }
 

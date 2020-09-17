@@ -182,8 +182,9 @@ class CmfiveTaskModule extends \Codeception\Module
         // workaround below
         $I->executeJS("$('#acp_task_group_id').autocomplete('search', '{$taskGroup}')");
         $I->click($taskGroup);
-        $I->wait(1);
+        $I->wait(4);
         // ends here, more investigation needed to make it a function or figure out the reason can't use fillField.
+        // works better with wait on context switch to iframe in filler?
         $I->fillForm([
             'select:task_type' => !empty($data['task_type']) ? $data['task_type'] : '',
             'title' => $task,
