@@ -85,10 +85,7 @@ class LogService extends \DbService
                     ];
 
                     if (Config::get("system.environment", ENVIRONMENT_PRODUCTION) === ENVIRONMENT_DEVELOPMENT) {
-                        $args["credentials"] = [
-                            "key" => Config::get("admin.logging.cloudwatch.credentials.key"),
-                            "secret" => Config::get("admin.logging.cloudwatch.credentials.secret"),
-                        ];
+                        $args["credentials"] = Config::get("admin.logging.cloudwatch.credentials");
                     }
 
                     $cw_client = new CloudWatchLogsClient($args);

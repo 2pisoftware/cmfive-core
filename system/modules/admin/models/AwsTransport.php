@@ -20,32 +20,29 @@ class AwsTransport implements GenericTransport
 
         $region = Config::get("admin.mail.aws.region");
         if (empty($region)) {
-            $this->w->Log->error("Failed to send mail to: admin.mail.aws.region not set in config");
+            LogService::getInstance($this->w)->error("Failed to send mail to: admin.mail.aws.region not set in config");
             return;
         }
 
+        $args = [
+            "region" => $region,
+            "version" => "2012-11-05",
+        ];
 
         if (Config::get("system.environment", ENVIRONMENT_PRODUCTION) === ENVIRONMENT_DEVELOPMENT) {
             $credentials = Config::get("admin.mail.aws.credentials");
             if (empty($credentials)) {
-                $this->w->Log->error("Failed to send mail to: admin.mail.aws.credentials not set in config");
+                LogService::getInstance($this->w)->error("Failed to send mail to: admin.mail.aws.credentials not set in config");
                 return;
             }
 
-            return new SqsClient([
-                "credentials" => [
-                    "key" => $credentials["key"],
-                    "secret" => $credentials["secret"],
-                ],
-                "region" => $region,
-                "version" => "2012-11-05",
-            ]);
-        } else {
-            return new SqsClient([
-                "region" => $region,
-                "version" => "2012-11-05",
-            ]);
+            $args["credentials"] = [
+                "key" => $credentials["key"],
+                "secret" => $credentials["secret"],
+            ];
         }
+
+        return new SqsClient($args);
     }
 
     /**
@@ -69,12 +66,12 @@ class AwsTransport implements GenericTransport
 
         $queue_url = Config::get("admin.mail.aws.queue_url");
         if (empty($queue_url)) {
-            $this->w->Log->error("Failed to send mail to: $to, from: $reply_to, about: $subject: admin.mail.aws.queue_url not set in config");
+            LogService::getInstance($this->w)->error("Failed to send mail to: $to, from: $reply_to, about: $subject: admin.mail.aws.queue_url not set in config");
             return;
         }
 
         if (empty($to) || strlen($to) === 0) {
-            $this->w->Log->error("Failed to send mail to: $to, from: $reply_to, about: $subject: no recipients");
+            LogService::getInstance($this->w)->error("Failed to send mail to: $to, from: $reply_to, about: $subject: no recipients");
             return;
         }
 
