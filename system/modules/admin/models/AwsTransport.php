@@ -25,7 +25,7 @@ class AwsTransport implements GenericTransport
         }
 
 
-        if (Config::get("system.environment") === "development") {
+        if (Config::get("system.environment", ENVIRONMENT_PRODUCTION) === ENVIRONMENT_DEVELOPMENT) {
             $credentials = Config::get("admin.mail.aws.credentials");
             if (empty($credentials)) {
                 $this->w->Log->error("Failed to send mail to: admin.mail.aws.credentials not set in config");
