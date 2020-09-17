@@ -1,13 +1,13 @@
 <?php
 
-/** 
- * holds email batch data for bulk emails 
+/**
+ * holds email batch data for bulk emails
  *
  * @author IsaacLynnah <isaac@2pisoftware.com> Aug 2016
  */
+class MailBatch extends DbObject
+{
 
-class MailBatch extends DbObject {
-    
     public $status;
     public $details;
     public $dt_started;
@@ -23,21 +23,20 @@ class MailBatch extends DbObject {
     public $is_self;
     public $extra_data;
     public $number_sent;
-    
-    
+
     // standard system properties
-	
     public $is_deleted; // <-- is_ = tinyint 0/1 for false/true
     public $dt_created; // <-- dt_ = datetime values
     public $dt_modified;
     public $modifier_id; // <-- foreign key to user table
     public $creator_id; // <-- foreign key to user table
-	
+
     //notify user on completion
-    function completed() {
+    public function completed()
+    {
         $this->dt_finished = time();
         $subject = 'Batch: ' . $this->subject . ". Has been completed";
-        $message = '<p><b>Email batch completed @:</b> ' . date("y/m/d H:i:s",$this->dt_finished) . "<p>";
+        $message = '<p><b>Email batch completed @:</b> ' . date("y/m/d H:i:s", $this->dt_finished) . "<p>";
         $message .= "<p><b>Number of emails sent:</b> " . $this->number_sent . "</p>";
         $message .= "<p><b>Bulk send details:</b> ";
         if (empty($this->details)) {
@@ -47,21 +46,15 @@ class MailBatch extends DbObject {
         }
         $message .= "</p>";
         $this->w->Mail->sendMail(
-            $this->w->auth->getUser($this->user_to_notify)->getContact()->email, 
+            $this->w->auth->getUser($this->user_to_notify)->getContact()->email,
             Config::get('main.company_support_email'),
-            $subject, 
-            $message, 
-            null, 
-            null, 
+            $subject,
+            $message,
+            null,
+            null,
             null
         );
         $this->status = 'Completed';
         $this->update();
     }
-    
-//    function insert($force_validation = true) {
-//        $this->status = 'New';
-//        parent::insert($force_validation);
-//    }
-    
 }

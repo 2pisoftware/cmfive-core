@@ -43,6 +43,7 @@ class CmfiveTimelogModule extends \Codeception\Module
         $I->fillForm(['date:date_start' => strtotime($date)]);
         $I->fillField('#time_start', $start_time);
         $I->fillField('#time_end', $end_time);
+        $I->fillForm(['select:object_class' => "Task"]);
         $tagTask = explode('- ', $task)[1];
         $I->executeJS("$('#acp_search').autocomplete('search', '$tagTask')");
         $I->waitForText($task);
@@ -65,6 +66,7 @@ class CmfiveTimelogModule extends \Codeception\Module
         $I->clickCmfiveNavbar($I, "Timelog", "Timelog");
         $I->click($task_name);
         $I->click("Time Log");
+        $I->wait(1);
         $I->click("Edit");
         $I->waitForElement("#timelog_edit_form");
         $I->fillForm(["date:date_start" => strtotime($date)]);

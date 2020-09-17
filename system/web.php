@@ -5,6 +5,9 @@ if (!headers_sent()) {
 }
 
 //========== Constants =====================================
+const ENVIRONMENT_DEVELOPMENT = "development";
+const ENVIRONMENT_PRODUCTION = "production";
+
 defined("DS") || define("DS", DIRECTORY_SEPARATOR);
 
 define("ROOT_PATH", str_replace("\\", "/", getcwd()));
@@ -31,7 +34,7 @@ require_once __DIR__ . "/classes/History.php";
 // Load system Composer autoloader
 if (file_exists(ROOT_PATH . "/composer/vendor/autoload.php")) {
     require ROOT_PATH . "/composer/vendor/autoload.php";
-} else if (file_exists(SYSTEM_PATH . "/composer/vendor/autoload.php")) {
+} elseif (file_exists(SYSTEM_PATH . "/composer/vendor/autoload.php")) {
     require SYSTEM_PATH . "/composer/vendor/autoload.php";
 }
 
