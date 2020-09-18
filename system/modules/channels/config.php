@@ -6,11 +6,11 @@ Config::set('channels', [
     'path' => 'system/modules',
     'topmenu' => true,
     '__password' => 'maybeconsiderchangingthis',
-    'processors' => array(
-    	'TestProcessor'
-    ),
-    "dependencies" => array(
+    'processors' => [
+        'TestProcessor'
+    ],
+    "dependencies" => [
         "laminas/laminas-mail" => "~2.9",
         "laminas/laminas-serializer" => "~2.9"
-    )
-));
+    ]
+]);
