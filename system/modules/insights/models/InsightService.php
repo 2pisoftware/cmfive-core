@@ -6,6 +6,7 @@ defined('SYSTEM_MODULE_DIRECTORY') || define('SYSTEM_MODULE_DIRECTORY', 'system'
 defined('MODELS_DIRECTORY') || define('MODELS_DIRECTORY', 'models');
 
 class InsightService extends DbService
+
 {
     // returns all insight instances
     public function getAllInsights($insights)
@@ -73,3 +74,4 @@ class InsightService extends DbService
         return $this->getObject('Insight', ['classname' => $classname]);
     }
 }
+?>
