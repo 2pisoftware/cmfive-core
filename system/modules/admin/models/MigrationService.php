@@ -98,9 +98,9 @@ class MigrationService extends DbService
                                     }
                                 }
                             }
+                        } else {
+                            LogService::getInstance($this->w)->error("Migration '" . $file . "' does not conform to naming convention");
                         }
-                    } else {
-                        LogService::getInstance($this->w)->error("Migration '" . $file . "' does not conform to naming convention");
                     }
                 }
             }
