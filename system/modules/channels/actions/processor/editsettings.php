@@ -1,6 +1,7 @@
 <?php
 
-function editsettings_GET(Web $w) {
+function editsettings_GET(Web $w)
+{
     $w->setLayout(null);
     $p = $w->pathMatch("id");
     $id = $p["id"];
@@ -9,7 +10,7 @@ function editsettings_GET(Web $w) {
         $w->error("Missing parameter in request", "/channels/listprocessors");
     }
 
-    $processor = $w->Channel->getProcessor($id);
+    $processor = ChannelService::getInstance($w)->getProcessor($id);
     if (empty($processor->id)) {
         $w->error("Invalid processor ID", "/channels/listprocessors");
     }
@@ -30,7 +31,8 @@ function editsettings_GET(Web $w) {
     }
 }
 
-function editsettings_POST(Web $w) {
+function editsettings_POST(Web $w)
+{
     $w->setLayout(null);
     $p = $w->pathMatch("id");
     $id = $p["id"];
@@ -45,7 +47,7 @@ function editsettings_POST(Web $w) {
         unset($post[CSRF::getTokenID()]);
     }
 
-    $processor = $w->Channel->getProcessor($id);
+    $processor = ChannelService::getInstance($w)->getProcessor($id);
     if (empty($processor->id)) {
         $w->error("Invalid processor ID", "/channels/listprocessors");
     }

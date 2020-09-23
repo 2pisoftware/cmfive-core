@@ -25,20 +25,20 @@ class Channel extends DbObject
 
     public function read($markAsProcessed = true)
     {
-        $channelImpl = $this->Channel->getChildChannel($this->id);
+        $channelImpl = ChannelService::getInstance($this->w)->getChildChannel($this->id);
         if (!empty($channelImpl)) {
             $channelImpl->read();
         }
         if ($this->do_processing) {
             // Run processors
-            $processors = $this->w->Channel->getProcessors($this->id);
+            $processors = ChannelService::getInstance($this->w)->getProcessors($this->id);
             if (!empty($processors)) {
                 foreach ($processors as $processor) {
                     $processor_class = $processor->retrieveProcessor();
                     $processor_class->process($processor);
                 }
                 if ($markAsProcessed) {
-                    $this->Channel->markMessagesAsProcessed($this->id);
+                    ChannelService::getInstance($this->w)->markMessagesAsProcessed($this->id);
                 }
             }
         }
@@ -46,6 +46,6 @@ class Channel extends DbObject
 
     public function getNotifyUser()
     {
-        return $this->Auth->getUser($this->notify_user_id);
+        return AuthService::getInstance($this->w)->getUser($this->notify_user_id);
     }
 }

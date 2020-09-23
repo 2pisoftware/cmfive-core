@@ -2,11 +2,11 @@
 
 function listchannels_GET(Web $w)
 {
-    $w->Channels->navigation($w, "Channels List");
+    ChannelsService::getInstance($w)->navigation($w, "Channels List");
 
     // Get known channel types: email and web
-    $email_channels = $w->Channel->getEmailChannels() ?? [];
-    $web_channels = $w->Channel->getWebChannels() ?? [];
+    $email_channels = ChannelService::getInstance($w)->getEmailChannels() ?? [];
+    $web_channels = ChannelService::getInstance($w)->getWebChannels() ?? [];
 
     $w->ctx("channels", array_merge($email_channels, $web_channels));
 }

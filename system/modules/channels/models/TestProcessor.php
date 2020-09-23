@@ -26,7 +26,7 @@ class TestProcessor extends ProcessorType
             return;
         }
 
-        $messages = $processor->w->Channel->getMessages($processor->channel_id);
+        $messages = ChannelService::getInstance($processor->w)->getMessages($processor->channel_id);
         if (!empty($messages)) {
             foreach ($messages as $message) {
                 if ($message->is_processed == 0) {

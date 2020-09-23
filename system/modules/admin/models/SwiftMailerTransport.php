@@ -48,7 +48,7 @@ class SwiftMailerTransport implements GenericTransport
         }
     }
 
-    public function send($to, $replyto, $subject, $body, $cc = null, $bcc = null, $attachments = array(), $headers = [])
+    public function send($to, $replyto, $subject, $body, $cc = null, $bcc = null, $attachments = [], $headers = [])
     {
         if (!empty($to) && strlen($to) > 0) {
             try {
@@ -58,7 +58,7 @@ class SwiftMailerTransport implements GenericTransport
                 }
 
                 $mailer = new Swift_Mailer($this->transport);
-                
+
                 // To, cc, bcc need to be given as arrays when sending to more than one person
                 // Ie you separate them by a comma, this will split them into arrays as expected by Swift
                 if (strpos($to, ",") !== false) {
@@ -74,7 +74,7 @@ class SwiftMailerTransport implements GenericTransport
                 if (is_array($replyto)) {
                     $message->setReplyTo($replyto);
                 } else {
-                    $message->setReplyTo(array($replyto));
+                    $message->setReplyTo([$replyto]);
                 }
                 if (!empty($cc)) {
                     if (strpos($cc, ",") !== false) {

@@ -1,6 +1,7 @@
 <?php
 
-class ChannelProcessor extends DbObject {
+class ChannelProcessor extends DbObject
+{
 
     public $name;
     public $class;
@@ -9,11 +10,13 @@ class ChannelProcessor extends DbObject {
     public $settings; // Was filter_settings, not sure why
     public $channel_id;
 
-    public function getChannel() {
-        return $this->w->Channel->getChannel($this->channel_id);
+    public function getChannel()
+    {
+        return ChannelService::getInstance($this->w)->getChannel($this->channel_id);
     }
 
-    public function retrieveProcessor() {
+    public function retrieveProcessor()
+    {
         try {
             $processor = new $this->class($this->w);
             return $processor;
@@ -22,7 +25,8 @@ class ChannelProcessor extends DbObject {
         }
     }
 
-    public function getUnprocessedMessages() {
+    public function getUnprocessedMessages()
+    {
         return $this->getObjects('ChannelMessage', ['channel_id' => $this->channel_id, 'is_processed' => 0, 'is_deleted' => 0]);
     }
 
@@ -30,11 +34,12 @@ class ChannelProcessor extends DbObject {
      * Gets new messages that have not been processed at all
      * @return array new message objects
      */
-    public function getNewMessages() {
+    public function getNewMessages()
+    {
         $messages = $this->getUnprocessedMessages();
         if (!empty($messages)) {
             $processor_id = $this->id;
-            return array_filter($messages, function($message) use ($processor_id) {
+            return array_filter($messages, function ($message) use ($processor_id) {
                 $status = $message->getStatus($processor_id);
                 return empty($status->id);
             });
@@ -42,26 +47,27 @@ class ChannelProcessor extends DbObject {
         return [];
     }
 
-    public function getFailedMessages() {
+    public function getFailedMessages()
+    {
         $messages = $this->getUnprocessedMessages();
 
         $processor_id = $this->id;
-        return array_filter($messages ? : [], function($message) use ($processor_id) {
+        return array_filter($messages ?: [], function ($message) use ($processor_id) {
             $status = $message->getStatus($processor_id);
 
             return !empty($status->id) && $status->is_successful != 1;
         });
     }
 
-    public function getNewOrFailedMessages() {
+    public function getNewOrFailedMessages()
+    {
         $messages = $this->getUnprocessedMessages();
 
         $processor_id = $this->id;
-        return array_filter($messages ? : [], function($message) use ($processor_id) {
+        return array_filter($messages ?: [], function ($message) use ($processor_id) {
             $status = $message->getStatus($processor_id);
 
             return empty($status->id) || (!empty($status->id) && $status->is_successful != 1);
         });
     }
-
 }

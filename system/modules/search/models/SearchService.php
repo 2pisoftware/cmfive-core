@@ -104,6 +104,9 @@ class SearchService extends DbService
         // Replace sequences of spaces with one space
         $str = preg_replace('/  +/', ' ', $str);
 
+        // Fixed crash caused by extra spaces
+        $str = trim($str);
+
         // Now, default to AND searching, that means we prefix every word with a '+' unless 'OR' is specified, then we leave it
         // And add a '-' if an occurence of 'NOT' is found
         $str_array = explode(' ', $str);
