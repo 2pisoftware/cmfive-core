@@ -73,6 +73,12 @@ class AwsTransport implements GenericTransport
             return;
         }
 
+        $from = Config::get("main.company_support_email");
+        if (empty($from)) {
+            $this->w->Log->error("Failed to send mail to: $to, from: $reply_to, about: $subject: main.company_support_email not set in config");
+            return;
+        }
+
         if (empty($to) || strlen($to) === 0) {
             $this->w->Log->error("Failed to send mail to: $to, from: $reply_to, about: $subject: no recipients");
             return;
@@ -131,7 +137,7 @@ class AwsTransport implements GenericTransport
             "cc" => is_array($cc) ? $cc : [$cc],
             "bcc" => is_array($bcc) ? $bcc : [$bcc],
             "reply_to" => is_array($reply_to) ? $reply_to : [$reply_to],
-            "from" => is_array($reply_to) && count($reply_to) > 1 ? $reply_to[0] : $reply_to,
+            "from" => $from,
             "subject" => $subject,
             "body" => $body,
             "body_content_type" => $body_content_type,
