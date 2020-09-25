@@ -39,10 +39,9 @@ function task_timelog_type_options_for_Task(Web $w, $object)
     return [(new \Html\Form\Select([
         "name" => "time_type",
         "id" => "time_type",
-        "options" => $time_types,
         "label" => "Task time",
         "required" => $required,
-    ]))->setSelectedOption($object->time_type)];
+    ]))->setOptions($time_types, true)->setSelectedOption($object->time_type)];
 }
 
 /**
@@ -280,7 +279,7 @@ function task_comment_send_notification_recipients_task(Web $w, $params)
 
         $template_data['can_view_task'] = $user->is_external ? false : true;
 
-        $template_data['footer'] .= $w->partial("displaycomment", array("object" => $params['comment'], "displayOnly" => true, 'redirect' => '/inbox', "is_outgoing" => true), "admin");
+        $template_data['footer'] .= $w->partial("displaycomment", ["object" => $params['comment'], "displayOnly" => true, 'redirect' => '/inbox', "is_outgoing" => true], "admin");
 
         // Get additional details
         if ($user->is_external == 0) {
