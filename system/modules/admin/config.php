@@ -48,7 +48,8 @@ Config::set('admin', [
             'region'    => 'ap-southeast-2',
             'version'   => 'latest',
         ],
-        "level" => \Monolog\Logger::DEBUG,
+        // This value comes from \Monolog\Logger::DEBUG constant.
+        "level" => 100,
     ],
     "mail" => [
         "aws" => [
