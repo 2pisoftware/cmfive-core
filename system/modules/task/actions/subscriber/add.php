@@ -61,7 +61,6 @@ function add_GET(Web $w)
 
 function add_POST(Web $w)
 {
-
     $w->setLayout(null);
     list($task_id) = $w->pathMatch();
 
@@ -75,6 +74,8 @@ function add_POST(Web $w)
     }
 
     if (!empty($_POST['contact'])) {
+       
+
         $contact = $w->Auth->getContact(intval($_POST['contact']));
         if (empty($contact->id)) {
             $w->error('Contact not found', '/task/edit/' . $task->id);
@@ -83,11 +84,20 @@ function add_POST(Web $w)
         $user_id = $w->Auth->createExernalUserForContact($contact->id);
 
         if ($task->addSubscriber($w->auth->getUser($user_id))) {
+            $w->callHook(
+                'comment',
+                'subscriber_notification',
+                [
+                    'task_id' => $task->id,
+                    'user_id' => $user_id
+                ]
+        );
             $w->msg('Contact subscribed', '/task/edit/' . $task->id);
         } else {
             $w->msg('This contact is already a subscriber for this task', '/task/edit/' . $task->id);
-        }
+        } 
     } else {
+        $w->Log->setLogger("TASK")->debug("doe doe doe doe");
         $firstname = $w->request("firstname");
         $lastname = $w->request('lastname');
         $email = $w->request('email');
@@ -107,7 +117,6 @@ function add_POST(Web $w)
         $user_id = $w->Auth->createExernalUserForContact($contact->id);
 
         $task->addSubscriber($w->Auth->getUser($user_id));
-
         $w->msg('New contact subscribed', '/task/edit/' . $task->id);
     }
 }
