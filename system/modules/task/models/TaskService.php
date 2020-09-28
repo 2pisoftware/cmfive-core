@@ -420,7 +420,7 @@ class TaskService extends DbService
 
         $this->w->Notification->sendToAllWithCallback($subject, "task", "notification_email", $this->w->Auth->user(), $users_to_notify, function ($user, $existing_template_data) use ($task) {
             $template_data = $existing_template_data;
-            $template_data['status'] = "You've been added as a subscriber to [{$task->id}]{$task->title}";
+            $template_data['status'] = "You've been added as a subscriber to: [{$task->id}]{$task->title}";
             $template_data['footer'] = $task->description;
             $template_data['action_url'] = $this->w->localUrl('/task/edit/' . $task->id);
             $template_data['logo_url'] = Config::get('main.application_logo');
