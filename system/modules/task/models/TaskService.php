@@ -415,7 +415,7 @@ class TaskService extends DbService
 
     public function sendSubscribeNotificationForTask($task, $user)
     {
-        $subject = "Added as subscriber to " . "[" . $task->id . "]: " . $task->title;
+        $subject = "Added as subscriber to: [" . $task->id . "] " . $task->title;
         $users_to_notify = [$user->id => $user->id];
 
         $this->w->Notification->sendToAllWithCallback($subject, "task", "notification_email", $this->w->Auth->user(), $users_to_notify, function ($user, $existing_template_data) use ($task) {
