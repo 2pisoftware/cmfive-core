@@ -460,9 +460,6 @@ class TaskService extends DbService
                 $template_data['fields']["Assigned to"] = "No one";
             }
 
-            //var_dump(new NotificationCallback($user, $template_data, $this->w->file->getAttachmentsFileList($task, null, ['channel_email_raw'])));
-            //die;
-
             return new NotificationCallback($user, $template_data, $this->w->file->getAttachmentsFileList($task, null, ['channel_email_raw']));
         });
     }
