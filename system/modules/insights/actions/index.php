@@ -31,7 +31,7 @@ function index_ALL(Web $w)
                 // the actions column is used to hold buttons that link to actions per insight. Note the insight id is added to the href on these buttons.
                 $actions = [];
                 $actions[] = Html::b('/insights/viewInsight/' . Get_class($insight),'View');
-                $actions[] = Html::b('/insights/manageMemebers/' . Get_class($insight),'Manage Insight Memebers');
+                $actions[] = Html::b('/insights/manageMembers?insight_class=' . Get_class($insight),'Manage Members');
                 $row[] = implode('', $actions);
                 $table[] = $row;
               }

@@ -73,5 +73,6 @@ class InsightService extends DbService
         //Return files with name Insight
         return $this->getObject('Insight', ['classname' => $classname]);
     }
+
 }
 ?>

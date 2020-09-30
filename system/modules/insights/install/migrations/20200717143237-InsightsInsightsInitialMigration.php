@@ -11,8 +11,8 @@ class InsightsInsightsInitialMigration extends CmfiveMigration
             ->setType('biginteger')
             ->setIdentity(true);
 
-        if (!$this->hasTable("insights_members")) { //it can be helpful to check that the table name is not used
-            $this->table("insights_members", [ // table names should be appended with 'ModuleName_'
+        if (!$this->hasTable("insight_members")) { //it can be helpful to check that the table name is not used
+            $this->table("insight_members", [ // table names should be appended with 'ModuleName_'
                 "id" => false,
                 "primary_key" => "id"
             ])->addColumn($column) // add the id column
@@ -28,7 +28,7 @@ class InsightsInsightsInitialMigration extends CmfiveMigration
     public function down()
     {
         // DOWN
-        $this->hasTable('insights_members') ? $this->dropTable('insights_members') : null;
+        $this->hasTable('insight_members') ? $this->dropTable('insight_members') : null;
     }
 
     public function preText()
