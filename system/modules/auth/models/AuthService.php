@@ -16,10 +16,10 @@ class AuthService extends DbService
         if (!empty($hook_results)) {
             foreach ($hook_results as $module => $user) {
                 if (!empty($user)) {
-                    $this->w->Log->info($user->getFullName() . " authenticated via " . $module . " prelogin hook");
+                    LogService::getInstance($this->w)->info($user->getFullName() . " authenticated via " . $module . " prelogin hook");
                     break;
                 } else {
-                    $this->w->Log->info('prelogin hook did not provide authentication: ' . $login);
+                    LogService::getInstance($this->w)->info('prelogin hook did not provide authentication: ' . $login);
                 }
             }
         }
@@ -27,40 +27,40 @@ class AuthService extends DbService
         if (empty($user)) {
             $user = $this->getUserForLogin($login);
             if (empty($user)) {
-                $this->w->Log->info('cmfive user does not exist: ' . $login);
+                LogService::getInstance($this->w)->info('cmfive user does not exist: ' . $login);
                 return null;
             }
 
             // If the User's password salt is empty use password_verify because the salt is built into the password, otherwise use the depreicated way.
             if (empty($user->password_salt)) {
                 if (!password_verify($password, $user->password)) {
-                    $this->w->Log->info('cmfive pasword mismatch for username: ' . $login);
+                    LogService::getInstance($this->w)->info('cmfive pasword mismatch for username: ' . $login);
                     return null;
                 }
             } else {
                 if ($user->encryptPassword($password) !== $user->password) {
-                    $this->w->Log->info('cmfive pasword mismatch for username: ' . $login);
+                    LogService::getInstance($this->w)->info('cmfive pasword mismatch for username: ' . $login);
                     return null;
                 }
             }
 
             if ($user->is_external == 1) {
-                $this->w->Log->info('cmfive user is external: ' . $login);
+                LogService::getInstance($this->w)->info('cmfive user is external: ' . $login);
                 return null;
             }
 
             if ($user->is_mfa_enabled && !$user->checkMfaCode($mfa_code)) {
-                $this->w->Log->setLogger("AUTH")->warning("User attempted to login with invalid MFA code");
+                LogService::getInstance($this->w)->setLogger("AUTH")->warning("User attempted to login with invalid MFA code");
                 return null;
             }
         }
 
         // Check if the User's password hash is depricated and update if so.
         if ($user->updatePasswordHash($password)) {
-            $this->w->Log->info("User with ID: " . $user->id . " password hash was updated");
+            LogService::getInstance($this->w)->info("User with ID: " . $user->id . " password hash was updated");
         }
 
-        $this->w->Log->info("User logged in: " . $user->getFullName());
+        LogService::getInstance($this->w)->info("User logged in: " . $user->getFullName());
         //allow post login hook to do whatever
         $hook_results = $this->w->callHook("auth", "postlogin", $user);
         $user->updateLastLogin();
@@ -110,7 +110,7 @@ class AuthService extends DbService
 
     /**
      * Returns a user ID if they are logged in
-     * 
+     *
      * @return mixed|null a user ID
      */
     public function loggedIn()
@@ -132,7 +132,7 @@ class AuthService extends DbService
 
     public function getUserForToken($token)
     {
-        return $this->getObject("User", array("password_reset_token" => $token));
+        return $this->getObject("User", ["password_reset_token" => $token]);
     }
 
     public function setRestUser($user)
@@ -201,7 +201,7 @@ class AuthService extends DbService
                     return $user->id;
                 }
 
-                $this->w->Log->setLogger("AUTH")->error("Could not merge duplicate external contacts");
+                LogService::getInstance($this->w)->setLogger("AUTH")->error("Could not merge duplicate external contacts");
                 return false;
             } else {
                 return false;
@@ -230,7 +230,7 @@ class AuthService extends DbService
      */
     public function getTitles() : array
     {
-        return $this->w->Lookup->getLookupByType("title");
+        return LookupService::getInstance($this->w)->getLookupByType("title");
     }
 
     public function getContact($contact_id)
@@ -302,7 +302,7 @@ class AuthService extends DbService
             // Get the username
             $username = explode('\\', $_SERVER["AUTH_USER"]);
             $username = end($username);
-            $this->w->Log->debug("Passthrough Username: " . $username);
+            LogService::getInstance($this->w)->debug("Passthrough Username: " . $username);
 
             //this hook returns $hook_results[$module][0]=$user or null.
             $hook_results = $this->w->callHook("auth", "get_user_for_passthrough", $username);
@@ -331,7 +331,7 @@ class AuthService extends DbService
     {
         $this->_loadRoles();
         if (!$this->_roles) {
-            $roles = array();
+            $roles = [];
 
             $funcs = get_defined_functions();
             foreach ($funcs['user'] as $f) {
@@ -395,7 +395,7 @@ class AuthService extends DbService
 
     public function getUserForContact($cid)
     {
-        return $this->getObject("User", array("contact_id" => $cid));
+        return $this->getObject("User", ["contact_id" => $cid]);
     }
 
     public function getUsersForRole($role)
@@ -417,7 +417,7 @@ class AuthService extends DbService
 
     public function getGroups()
     {
-        $rows = $this->_db->get("user")->where(array('is_active' => 1, 'is_deleted' => 0, 'is_group' => 1))->fetch_all();
+        $rows = $this->_db->get("user")->where(['is_active' => 1, 'is_deleted' => 0, 'is_group' => 1])->fetch_all();
 
         if ($rows) {
             $objects = $this->fillObjects("User", $rows);
@@ -457,7 +457,7 @@ class AuthService extends DbService
 
     public function getRoleForLoginUser($group_id, $user_id)
     {
-        $groupMember = $this->getObject("GroupUser", array('group_id' => $group_id, 'user_id' => $user_id));
+        $groupMember = $this->getObject("GroupUser", ['group_id' => $group_id, 'user_id' => $user_id]);
 
         if ($groupMember) {
             return $groupMember->role;

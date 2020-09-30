@@ -20,7 +20,7 @@ class Timelog extends DbObject
         "object_class" => ['required'],
         "object_id" => ['required'],
         "dt_start" => ['required'],
-        // "time_type" => ['required'],
+        "user_id" => ["required"],
     ];
 
     public function isRunning()
@@ -100,7 +100,7 @@ class Timelog extends DbObject
     public function getComment()
     {
         if ($this->id) {
-            $comments = $this->w->Comment->getCommentsForTable($this, $this->id);
+            $comments = CommentService::getInstance($this->w)->getCommentsForTable($this, $this->id);
             return !empty($comments[0]->id) ? $comments[0] : new Comment($this->w);
         }
         return null;
@@ -115,7 +115,7 @@ class Timelog extends DbObject
                 $comment_object->comment = $comment;
                 $comment_object->update();
             } else {
-                $this->w->Comment->addComment($this, $comment);
+                CommentService::getInstance($this->w)->addComment($this, $comment);
             }
         }
     }
@@ -139,7 +139,7 @@ class Timelog extends DbObject
         $this->object_id = $object->id;
 
         $this->dt_start = !empty($start_time) ? $start_time : time();
-        $this->user_id = $this->w->Auth->user()->id;
+        $this->user_id = AuthService::getInstance($this->w)->user()->id;
         $this->insert(false);
 
         return true;
@@ -151,25 +151,6 @@ class Timelog extends DbObject
             $this->dt_end = time();
             $this->update();
         }
-    }
-
-    public function insert($force_validation = true)
-    {
-        // If user is admin try and set the user_id to the given one from the timelog form
-        if ($this->w->Auth->user()->is_admin) {
-            $this->user_id = !empty($_POST['user_id']) ? intval($_POST['user_id']) : $this->w->Auth->user()->id;
-        }
-
-        parent::insert($force_validation);
-    }
-
-    public function update($force_null_values = false, $force_validation = true)
-    {
-        if ($this->w->Auth->user()->is_admin) {
-            $this->user_id = !empty($_POST['user_id']) ? intval($_POST['user_id']) : $this->w->Auth->user()->id;
-        }
-
-        parent::update($force_null_values, $force_validation);
     }
 
     public function canDelete(User $user)
@@ -189,10 +170,10 @@ class Timelog extends DbObject
             return true;
         }
         // user is an owner of the taskgroup
-        $object = $this->w->Timelog->getObject($this->object_class, $this->object_id);
+        $object = TimelogService::getInstance($this->w)->getObject($this->object_class, $this->object_id);
         if (get_class($object) == 'Task') {
             if (!empty($object->task_group_id)) {
-                $task_group = $this->w->Task->getObject('TaskGroup', $object->task_group_id);
+                $task_group = TaskService::getInstance($this->w)->getObject('TaskGroup', $object->task_group_id);
                 if ($task_group->isOwner($user)) {
                     return true;
                 }
