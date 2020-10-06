@@ -27,9 +27,9 @@ function add_GET(Web $w)
             [[(new \Html\Form\Autocomplete())->setLabel('Contact')
                     ->setId('contact')
                     ->setName('contact')
-                    ->setOptions($contacts, function ($contact) {
-                        $user = $contact->getUser();
-                        return $contact->getFullName() . ' - ' . $contact->email . (empty($user->id) || $user->is_external == 1 ? ' (external)' : '');
+                    ->setOptions($contacts, function ($contacts) {
+                        $user = $contacts->getUser();
+                        return $contacts->getFullName() . ' - ' . $contacts->email . (empty($user->id) || $user->is_external == 1 ? ' (external)' : '');
                     }),
             ]],
         ],
@@ -78,6 +78,15 @@ function add_POST(Web $w)
         $contact = $w->Auth->getContact(intval($_POST['contact']));
         if (empty($contact->id)) {
             $w->error('Contact not found', '/task/edit/' . $task->id);
+        }
+
+        if (!empty($contact->getUser())) {
+            $w->error('No user found for contact', '/task/edit/' . $task->id);
+            $w->Log->SetLogger("Contact id:" . $contact->id . ", residing in system without corrosponding user object"); 
+        }
+
+        if (!$task->canView($contact->getUser())) {
+            $w->error('Insufficient view permissions for user. Consider adding them to the relevant task group.', '/task/edit/' . $task->id);
         }
 
         $user_id = $w->Auth->createExernalUserForContact($contact->id);
