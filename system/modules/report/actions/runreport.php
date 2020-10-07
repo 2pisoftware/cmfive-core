@@ -13,8 +13,7 @@ function runreport_ALL(Web &$w)
     if (!empty($p['id'])) {
         // get member
         $member = $w->Report->getReportMember($p['id'], $w->session('user_id'));
-        if (!empty($member))
-        {
+        if (!empty($member)) {
             // get the relevant report
             $rep = $w->Report->getReportInfo($p['id']);
 
@@ -37,7 +36,7 @@ function runreport_ALL(Web &$w)
                     } else {
                         $section_key = 0;
                     }
-                    $form_function = !empty($form[$section_key][0]) && is_array($form[$section_key][0]) ? 'multiColForm': 'form';
+                    $form_function = !empty($form[$section_key][0]) && is_array($form[$section_key][0]) ? 'multiColForm' : 'form';
 
                     // if there is a form display it, otherwise say as much
                     if ($form) {
