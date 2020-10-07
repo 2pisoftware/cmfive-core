@@ -81,12 +81,11 @@ function add_POST(Web $w)
         }
 
         if (!empty($contact->getUser())) {
-            $w->error('No user found for contact', '/task/edit/' . $task->id);
-            $w->Log->SetLogger("Contact id:" . $contact->id . ", residing in system without corrosponding user object"); 
-        }
-
-        if (!$task->canView($contact->getUser())) {
-            $w->error('Insufficient view permissions for user. Consider adding them to the relevant task group.', '/task/edit/' . $task->id);
+            if (!$contact->getUser()->is_external) {
+                if (!$task->canView($contact->getUser())) {
+                    $w->error('Insufficient view permissions for user. Consider adding them to the relevant task group.', '/task/edit/' . $task->id);
+                }
+            }
         }
 
         $user_id = $w->Auth->createExernalUserForContact($contact->id);
