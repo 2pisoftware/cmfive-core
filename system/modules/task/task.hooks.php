@@ -325,7 +325,6 @@ function task_core_dbobject_after_update_TaskGroup(Web $w, $object)
         foreach ($tasks as $task) {
             //Check if user is subscribed to the task & can no longer view it
             if ($task->isUserSubscribed($user->id) && !$task->canView($user)) {
-
                 //If so, remove subscription
                 TaskService::getInstance($w)->getSubscriberForUserAndTask($user->id, $task->id)->delete();
             }    
