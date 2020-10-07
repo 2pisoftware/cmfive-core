@@ -2,7 +2,7 @@
 
 function manageMembers_ALL(Web $w) {
     
-    $w->ctx("title", "Manage Memebers");
+    $w->ctx("title", "Manage Members");
 
     $insight_class = $w->request('insight_class');
     //var_dump($insight_class);
