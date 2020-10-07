@@ -56,7 +56,10 @@ class InsightService extends DbService
                                 include_once ROOT_PATH . DS . $insightspath;
                                 if (class_exists($classname[0])) {
                                     $insight = new $classname[0]($this->w);
-                                    $availableInsights[$module][] = $insight;
+                                    //is_subclass_of ( mixed $object , string $class_name [, bool $allow_string = TRUE ] ) : bool
+                                    if (is_subclass_of($insight, 'InsightBaseClass')){
+                                        $availableInsights[$module][] = $insight;
+                                    }
                                 }
                             }
                         }
@@ -74,5 +77,22 @@ class InsightService extends DbService
         return $this->getObject('Insight', ['classname' => $classname]);
     }
 
+    //Members service functions
+    public function getAllMembersForInsightClass($classname = null){
+        if (empty($classname)){
+            $this->w->error('No insight class name provided');
+        }
+        return $this->getObjects('InsightMembers', ['is_deleted'=>0,'insight_class_name'=>$classname]);
+    }
+      
+    public function getUserMembershipForInsight($classname = null, $user_id = null){
+        if (empty($classname)){
+            $this->w->error('No insight class name provided');
+        }
+        if  (empty($user_id)){
+            $this->w->error('No user provided');
+        }
+        $insight_member = $this->getObject('InsightMembers',['is_deleted' => 0,'insight_class_name' => $classname, 'user_id' => $user_id]);
+        return $insight_member->type;
+    }
 }
-?>
