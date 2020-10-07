@@ -1,21 +1,9 @@
 <?php
-class InsightMembers extends InsightBaseClass
+class InsightMembers extends DbObject
 {
 
-  public $name = "Insight Memebers Class";
-  Public $description = "Display settings for different membership types";
+  public $insight_class_name;
+  public $user_id;
+  public $type;
 
-  public function getFilters(Web $w): array{
-    if $memberType = 'admin'{
-        return TaskService::getInstance($w)->getAllMembersForInsightClass
-    };
-    else{
-        return TastService::getInstance($w)->getUserMembershipForInsight
-    };
-
-  public function run(Web $w, array $params = []): array{
-    echo $insight_members;
-  }
 }
-
-?>
