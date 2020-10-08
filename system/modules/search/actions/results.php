@@ -36,21 +36,32 @@ function results_GET(Web $w)
 
                 foreach ($filter_results as $class => $objects) {
                     // Transform class into readable text
-                    $t_class = preg_replace('/(?<=\\w)(?=[A-Z])/', " $1", $class);
-                    $buffer .= "<div class='row search-class'><h4 style='padding-top: 10px; font-weight: lighter;'>{$t_class}</h4>";
-
+                    $canDisplay = true;
                     if (!empty($objects)) {
                         foreach ($objects as $object) {
                             if ($object->canList($w->Auth->user())) {
+                                
                                 $buffer .= '<div class="panel search-result">';
                                 if ($object->canView($w->Auth->user())) {
                                     $buffer .= "<a class=row search-title href=" . $w->localUrl($object->printSearchUrl()) . ">{$object->printSearchTitle()}</a>"
                                         . "<div class=row search-listing>{$object->printSearchListing()}</div>";
                                 } else {
+                                    $canDisplay = false;
                                     $buffer .= "<div class=small-12 columns search-title>{$object->printSearchTitle()}</div><div class=row search-listing>(restricted)</div>";
-                                }
+                                } 
                                 $buffer .= "</div>";
-                            }
+                            } else {
+                                $canDisplay = false;
+                           }
+                        }
+
+                        if ($canDisplay == false) {
+                            $buffer .= "Insufficient permissions";
+                        } else {
+                            $t_class = preg_replace('/(?<=\\w)(?=[A-Z])/', " $1", $class);
+                            $header = "<div class='row search-class'><h4 style='padding-top: 10px; font-weight: lighter;'>{$t_class}</h4>"; 
+
+                            $buffer = $header . $buffer;
                         }
                     }
                     $buffer .= "</div>";
