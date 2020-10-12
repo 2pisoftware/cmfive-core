@@ -134,8 +134,8 @@ function task_core_dbobject_after_update_Task(Web $w, $task)
 
 function task_task_subscriber_notification(Web $w, $params)
 {
-    $task = $w->Task->GetTask($params["task_id"]);
-    $user = $w->Auth->GetUser($params["user_id"]);
+    $task = TaskService::getInstance($w)->getTask($params["task_id"]);
+    $user = AuthService::getInstance($w)->getUser($params["user_id"]);
     
     TaskService::getInstance($w)->sendSubscribeNotificationForTask($task, $user);
 }
