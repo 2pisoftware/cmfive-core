@@ -51,7 +51,7 @@ function admin_core_web_before(Web $w): void
 
 function admin_core_dbobject_after_update_Contact(Web $w, Contact $contact): void
 {
-    $user = $contact->GetUser();
+    $user = $contact->getUser();
     if (!empty($user)) {
         if ($user->is_external == 1) {
             $user->login = $contact->email;
