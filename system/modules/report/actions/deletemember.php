@@ -8,11 +8,11 @@ function deletemember_GET(Web &$w)
 
     if ($member) {
         // build a static form displaying members details for confirmation of delete
-        $f = Html::form(array(
-            array("Confirm Delete Member", "section"),
-            array("", "hidden", "is_deleted", "1"),
-            array("Name", "static", "name", $w->Report->getUserById($member->user_id)),
-        ), $w->localUrl("/report/deletemember/" . $member->report_id . "/" . $member->user_id), "POST", " Delete ");
+        $f = Html::form([
+            ["Confirm Delete Member", "section"],
+            ["", "hidden", "is_deleted", "1"],
+            ["Name", "static", "name", $w->Report->getUserById($member->user_id)],
+        ], $w->localUrl("/report/deletemember/" . $member->report_id . "/" . $member->user_id), "POST", " Delete ");
     } else {
         $f = "No such member?";
     }
