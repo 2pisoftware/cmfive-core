@@ -443,7 +443,7 @@ class TaskService extends DbService
         }
 
         // if number of user role is >= number of requesite level, then allow
-        if (!empty($permission_array[$role]) && !is_null($permission_array[$required_permission])) {
+        if (!empty($permission_array[$role]) && array_key_exists($required_permission, $permission_array)) {
             if ($permission_array[$role] >= $permission_array[$required_permission]) {
                 return true;
             }
