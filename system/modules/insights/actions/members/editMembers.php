@@ -31,7 +31,7 @@ function editMembers_GET(Web &$w) {
 
 	// sending the form to the 'out' function bypasses the template. 
 	$w->out(Html::form($addMemberForm, 'insights-members/editMembers'));
-    outService::getInstance($w)->(Html::form($addMemberForm, 'insights-memebers/editMemebers'));
+    outService::getInstance($w)->(Html::form($addMemberForm, 'insights-members/editMembers'));
 
 }
 
