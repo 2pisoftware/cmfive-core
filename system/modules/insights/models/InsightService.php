@@ -78,13 +78,15 @@ class InsightService extends DbService
     }
 
     //Members service functions
+    //finding memebers for a specific insight
     public function getAllMembersForInsightClass($classname = null){
         if (empty($classname)){
             $this->w->error('No insight class name provided');
         }
         return $this->getObjects('InsightMembers', ['is_deleted'=>0,'insight_class_name'=>$classname]);
     }
-      
+     
+    //Checking users mebership against insight
     public function getUserMembershipForInsight($classname = null, $user_id = null){
         if (empty($classname)){
             $this->w->error('No insight class name provided');
