@@ -97,4 +97,15 @@ class InsightService extends DbService
         $insight_member = $this->getObject('InsightMembers',['is_deleted' => 0,'insight_class_name' => $classname, 'user_id' => $user_id]);
         return $insight_member->type;
     }
+
+    // static list of group permissions
+    public function getInsightPermissions()
+    {
+        return array("OWNER", "MEMBER");
+    }
+
+    //returns single insight member matching the given id
+    public function getMemberForId() {
+        return $this->GetObject('insightMember',$id);
+    }
 }
