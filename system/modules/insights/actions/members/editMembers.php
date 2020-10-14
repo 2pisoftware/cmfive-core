@@ -9,8 +9,8 @@ function editMembers_GET(Web &$w) {
 	$insight_class = $w->request('insight_class');
 
 	// get the list of report editors and admins
-	$members1 = $w->Auth->getUserMembershipForInsight("insight_owner");
-	$members2 = $w->Auth->getUserMembershipForInsight("insight_member");
+	$members1 = $w->Auth->getUsers("insight_owner");
+	$members2 = $w->Auth->getUsers("insight_member");
 	// merge into single array
 	$members12 = array_merge($members1, $members2);
 
@@ -31,8 +31,6 @@ function editMembers_GET(Web &$w) {
 
 	// sending the form to the 'out' function bypasses the template. 
 	$w->out(Html::form($addMemberForm, 'insights-members/editMembers'));
-    outService::getInstance($w)->(Html::form($addMemberForm, 'insights-members/editMembers'));
-
 }
 
 	function editMembers_POST(Web $w) {
