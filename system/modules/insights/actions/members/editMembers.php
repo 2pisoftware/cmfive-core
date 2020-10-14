@@ -30,7 +30,7 @@ function editMembers_GET(Web &$w) {
 	);
 
 	// sending the form to the 'out' function bypasses the template. 
-	$w->out(Html::form($addMemberForm, 'insights-members/editMembers'));
+	$w->out(Html::form($addMemberForm, 'insights-manageMembers'));
 }
 
 function editMembers_POST(Web $w) {
@@ -45,5 +45,5 @@ function editMembers_POST(Web $w) {
 	$member->insertOrUpdate();
 	
 	// the msg (message) function redirects with a message box
-	$w->msg('Member Permissions Saved', '/insights/manageMembers');
+	$w->msg('Member Permissions Saved', '/insights/manageMembers'.$insight_class['insight_class']);
 }
