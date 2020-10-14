@@ -79,6 +79,11 @@ function add_POST(Web $w)
             $w->error('Contact not found', '/task/edit/' . $task->id);
         }
 
+        $user = $contact->getUser();
+        if (!empty($user) && !$user->is_external && !$task->canView($user)) {
+            $w->error('Insufficient view permissions for user. Consider adding them to the relevant task group.', '/task/edit/' . $task->id);
+        }
+
         $user_id = $w->Auth->createExernalUserForContact($contact->id);
 
         if ($task->addSubscriber(AuthService::getInstance($w)->getUser($user_id))) {

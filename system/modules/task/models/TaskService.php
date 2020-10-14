@@ -10,6 +10,11 @@ class TaskService extends DbService
         return $this->getObject("TaskSubscriber", $subscriber_id);
     }
 
+    public function getSubscriberForUserAndTask($user_id, $task_id)
+    {
+        return $this->getObject("TaskSubscriber", ["is_deleted" => 0, "user_id" => $user_id, "task_id" => $task_id]);
+    }
+
     public function getTaskGroupDetailsForUser()
     {
         $user_id = $this->w->Auth->user()->id;
@@ -489,7 +494,7 @@ class TaskService extends DbService
         }
 
         // if number of user role is >= number of requesite level, then allow
-        if (!empty($permission_array[$role]) && !empty($permission_array[$required_permission])) {
+        if (!empty($permission_array[$role]) && array_key_exists($required_permission, $permission_array)) {
             if ($permission_array[$role] >= $permission_array[$required_permission]) {
                 return true;
             }
