@@ -139,7 +139,8 @@ $w->setLayout("layout")
                         <div v-if="mfa_qr_code_url !== null">
                             <div v-if="show_qr_code">
                                 <img :src="mfa_qr_code_url" width="250" height="250">
-                                <label style="margin-top: 4px;">{{ mfa_secret }}</label>
+                                <label style="margin-top: 4px;">Can't scan the code? Add it manually.</label>
+                                <label>{{ mfa_secret }}</label>
                             </div>
                             <button v-else class="tiny" @click="show_qr_code = true">Show QR Code</button>
                             <form>
