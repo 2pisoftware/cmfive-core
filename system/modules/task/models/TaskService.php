@@ -418,6 +418,57 @@ class TaskService extends DbService
         });
     }
 
+    public function sendSubscribeNotificationForTask($task, $user)
+    {
+        $subject = "Added as subscriber to: [" . $task->id . "] " . $task->title;
+        $users_to_notify = [$user->id => $user->id];
+
+        $this->w->Notification->sendToAllWithCallback($subject, "task", "notification_email", $this->w->Auth->user(), $users_to_notify, function ($user, $existing_template_data) use ($task) {
+            $template_data = $existing_template_data;
+            $template_data['status'] = "You've been added as a subscriber to: [{$task->id}]{$task->title}";
+            $template_data['footer'] = $task->description;
+            $template_data['action_url'] = $this->w->localUrl('/task/edit/' . $task->id);
+            $template_data['logo_url'] = Config::get('main.application_logo');
+
+            $template_data['fields'] = [
+                "Assigned to" => !empty($task->assignee_id) ? $task->getAssignee()->getFullName() : '',
+                "Type" => $task->getTypeTitle(),
+                "Title" => $task->title,
+                "Due" => !empty($task->dt_due) ? date('d-m-Y', strtotime(str_replace('/', '-', $task->dt_due))) : '',
+                "Status" => $task->status,
+                "Priority" => $task->isUrgent() ? "<b style='color: orange;'>{$task->priority}</b>" : $task->priority,
+            ];
+
+            if ($user->is_external) {
+                $template_data['fields']['Due'] = '';
+                $template_data['fields']['Priority'] = '';
+                $template_data['fields']['Status'] = '';
+            }
+
+            $template_data['can_view_task'] = $user->is_external == 0;
+
+            // Get additional details
+            if ($user->is_external == 0) {
+                $additional_details = $this->w->Task->getNotificationAdditionalDetails($task);
+                if (!empty($additional_details)) {
+                    $template_data['footer'] .= $additional_details;
+                }
+            }
+
+            if (!empty($task->assignee_id)) {
+                if ($user->id == $task->assignee_id) {
+                    $template_data['fields']["Assigned to"] = "You (" . $task->getAssignee()->getFullName() . ")";
+                } else {
+                    $template_data['fields']["Assigned to"] = !empty($task->assignee_id) ? $task->getAssignee()->getFullName() : '';
+                }
+            } else {
+                $template_data['fields']["Assigned to"] = "No one";
+            }
+
+            return new NotificationCallback($user, $template_data, $this->w->file->getAttachmentsFileList($task, null, ['channel_email_raw']));
+        });
+    }
+
     // static list of group permissions for can_view, can_assign, can_create
     public function getTaskGroupPermissions()
     {

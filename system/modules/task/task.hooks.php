@@ -131,6 +131,14 @@ function task_core_dbobject_after_update_Task(Web $w, $task)
     });
 }
 
+function task_task_subscriber_notification(Web $w, $params)
+{
+    $task = TaskService::getInstance($w)->getTask($params["task_id"]);
+    $user = AuthService::getInstance($w)->getUser($params["user_id"]);
+    
+    TaskService::getInstance($w)->sendSubscribeNotificationForTask($task, $user);
+}
+
 function task_attachment_attachment_added_task(Web $w, $attachment)
 {
     LogService::getInstance($w)->setLogger("TASK")->debug("task_attachment_attachment_added_task");

@@ -61,7 +61,6 @@ function add_GET(Web $w)
 
 function add_POST(Web $w)
 {
-
     $w->setLayout(null);
     list($task_id) = $w->pathMatch();
 
@@ -87,7 +86,15 @@ function add_POST(Web $w)
 
         $user_id = $w->Auth->createExernalUserForContact($contact->id);
 
-        if ($task->addSubscriber($w->auth->getUser($user_id))) {
+        if ($task->addSubscriber(AuthService::getInstance($w)->getUser($user_id))) {
+            $w->callHook(
+                'task',
+                'subscriber_notification',
+                [
+                    'task_id' => $task->id,
+                    'user_id' => $user_id
+                ]
+            );
             $w->msg('Contact subscribed', '/task/edit/' . $task->id);
         } else {
             $w->msg('This contact is already a subscriber for this task', '/task/edit/' . $task->id);
@@ -112,7 +119,6 @@ function add_POST(Web $w)
         $user_id = $w->Auth->createExernalUserForContact($contact->id);
 
         $task->addSubscriber($w->Auth->getUser($user_id));
-
         $w->msg('New contact subscribed', '/task/edit/' . $task->id);
     }
 }
