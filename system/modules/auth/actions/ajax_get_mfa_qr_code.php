@@ -27,5 +27,5 @@ function ajax_get_mfa_qr_code_GET(Web $w)
         return;
     }
 
-    $w->out((new AxiosResponse())->setSuccessfulResponse("User details updated", ["qr_code" => $qr_code]));
+    $w->out((new AxiosResponse())->setSuccessfulResponse("User details updated", ["qr_code" => $qr_code, "mfa_secret" => chunk_split($user->mfa_secret, 4, " ")]));
 }
