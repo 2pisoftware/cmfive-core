@@ -33,10 +33,6 @@ function report_core_web_after(Web $w)
     }
 
     $config = Config::get("report.database");
-    if (empty($config)) {
-        return;
-    }
-
     if (empty($config) || empty($config['database']) || empty($config['username']) || empty($config['password'])) {
         $w->ctx("error", "Report database connection not setup in config");
     }
