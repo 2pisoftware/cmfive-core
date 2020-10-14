@@ -37,4 +37,3 @@ function manageMembers_ALL(Web $w) {
 }
 
 
-?>
