@@ -33,17 +33,17 @@ function editMembers_GET(Web &$w) {
 	$w->out(Html::form($addMemberForm, 'insights-members/editMembers'));
 }
 
-	function editMembers_POST(Web $w) {
+function editMembers_POST(Web $w) {
 
-		//create a new memebr for insight
-		$member = new InsightMembers($w);
+	//create a new memebr for insight
+	$member = new InsightMembers($w);
 
-		//use the fill function to fill input field data into properties with matching names
-		$member->fill($_POST);
+	//use the fill function to fill input field data into properties with matching names
+	$member->fill($_POST);
 	
-		// function for saving to database
-		$member->insertOrUpdate();
+	// function for saving to database
+	$member->insertOrUpdate();
 	
-		// the msg (message) function redirects with a message box
-		$w->msg('Member Permissions Saved', '/insights/manageMembers');
-	}
+	// the msg (message) function redirects with a message box
+	$w->msg('Member Permissions Saved', '/insights/manageMembers');
+}
