@@ -141,12 +141,8 @@ class InboxService extends DbService {
 
     function getDelMessageCount() {
         $user_id = $this->w->Auth->user()->id;
-        $count = $this->_db->get('inbox')->where("is_deleted", 1)->where("user_id", $user_id)
+        return $this->_db->get('inbox')->where("is_deleted", 1)->where("user_id", $user_id)
                     ->where("del_forever", 0)->count();
-//        $sql = "SELECT COUNT(*) FROM `inbox` WHERE is_deleted = 1 AND user_id = " . $user . " AND del_forever = 0";
-//        $result = $this->_db->sql($sql)->fetch_row();
-//        $result ? $result = $result['COUNT(*)'] : $result = 0;
-        return $count;
     }
 
     function getNewMessageCount() {
@@ -180,16 +176,11 @@ class InboxService extends DbService {
         $new_count = $this->_db->get('inbox')->where("is_deleted", 0)->where("is_new", 1)
                                 ->where("is_archived", 1)->where("user_id", $user_id)
                                 ->where("del_forever", 0)->count();
-        //$sql = "SELECT COUNT(*) FROM `inbox` WHERE is_deleted = 0 AND is_new = 1 AND is_archived = 1 AND user_id = " . $user . " AND del_forever = 0";
-//        $newarch = $this->_db->sql($sql)->fetch_row();
-//        $newarch ? $newarch = $newarch['COUNT(*)'] : $newarch = 0;
+     
         $arch_count = $this->_db->get('inbox')->where("is_deleted", 0)->where("is_new", 0)
                                 ->where("is_archived", 1)->where("user_id", $user_id)
                                 ->where("del_forever", 0)->count();
-//        $sql = "SELECT COUNT(*) FROM `inbox` WHERE is_deleted = 0 AND is_new = 0 AND is_archived = 1 AND user_id = " . $user . " AND del_forever = 0";
-//        $arch = $this->_db->sql($sql)->fetch_row();
-//        $arch ? $arch = $arch['COUNT(*)'] : $arch = 0;
-//        $total = ($newarch * 1) + ($arch * 1);
+
         return ($new_count + $arch_count);
     }
 
@@ -226,12 +217,8 @@ class InboxService extends DbService {
     }
     
     function markAllMessagesRead() {
-        $user_id = $this->Auth->user()->id;
         return $this->_db->update("inbox", array("is_new" => 0, "dt_read" => formatDate(time(), "Y-m-d H:i:s")))
-                ->where("user_id", $user_id)->where("is_new", 1)->execute();
-//        return $this->_db->update("inbox", array("is_new" => 0, "dt_read" => time()))
-//                ->where("user_id", $user_id)->where("is_new", 1)->execute();
-//        return $this->_db->sql("update inbox set is_new = 0, dt_read = NOW() where user_id = $user_id and is_new = 1")->execute();
+                ->where("user_id", $this->Auth->user()->id)->where("is_new", 1)->execute();
     }
 
     public function navigation(Web $w, $title = null, $nav = null) {

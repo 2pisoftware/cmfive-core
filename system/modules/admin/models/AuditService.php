@@ -92,7 +92,7 @@ class AuditService extends DbService
     public function getLoggedInUsers($idleMinutes = 10)
     {
         $users = array();
-        $stmt = "SELECT distinct creator_id FROM audit where timediff(now(), dt_created) < '00:" . $idleMinutes . ":00' and creator_id > 0";
+        $stmt = "SELECT distinct creator_id FROM audit where timediff(now(), dt_created) < '00:" . $this->_db->quote($idleMinutes) . ":00' and creator_id > 0";
         $res = $this->_db->sql($stmt)->fetch_all();
         if ($res && sizeof($res)) {
             foreach ($res as $row) {
