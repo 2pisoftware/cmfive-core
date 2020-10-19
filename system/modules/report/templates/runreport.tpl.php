@@ -1,7 +1,7 @@
 
 <div style="width:400px">
-	<?php echo $rep->description; ?><p>
-    <?php echo $report; ?>
+	<?php echo (!empty($rep)) ? $rep->description : "No Report for user"; ?>
+    <?php echo (!empty($report)) ? $report : "" ?>
 </div>		
 
 

@@ -39,10 +39,9 @@ function task_timelog_type_options_for_Task(Web $w, $object)
     return [(new \Html\Form\Select([
         "name" => "time_type",
         "id" => "time_type",
-        "options" => $time_types,
         "label" => "Task time",
         "required" => $required,
-    ]))->setSelectedOption($object->time_type)];
+    ]))->setOptions($time_types, true)->setSelectedOption($object->time_type)];
 }
 
 /**
@@ -132,20 +131,28 @@ function task_core_dbobject_after_update_Task(Web $w, $task)
     });
 }
 
+function task_task_subscriber_notification(Web $w, $params)
+{
+    $task = TaskService::getInstance($w)->getTask($params["task_id"]);
+    $user = AuthService::getInstance($w)->getUser($params["user_id"]);
+    
+    TaskService::getInstance($w)->sendSubscribeNotificationForTask($task, $user);
+}
+
 function task_attachment_attachment_added_task(Web $w, $attachment)
 {
-    $w->Log->setLogger("TASK")->debug("task_attachment_attachment_added_task");
+    LogService::getInstance($w)->setLogger("TASK")->debug("task_attachment_attachment_added_task");
     if (!$attachment->_skip_added_notification) {
-        $task = $w->Task->getTask($attachment->parent_id);
+        $task = TaskService::getInstance($w)->getTask($attachment->parent_id);
 
         if (empty($task->id)) {
             return;
         }
 
-        $users_to_notify = $w->Task->getNotifyUsersForTask($task, TASK_NOTIFICATION_TASK_DOCUMENTS);
+        $users_to_notify = TaskService::getInstance($w)->getNotifyUsersForTask($task, TASK_NOTIFICATION_TASK_DOCUMENTS);
         $subject = "Task - " . $task->title . ' [' . $task->id . ']: ' . $attachment->getHumanReadableAttributeName(TASK_NOTIFICATION_TASK_DOCUMENTS);
 
-        $w->Notification->sendToAllWithCallback($subject, "task", "notification_email", $w->Auth->user(), $users_to_notify, function ($user, $existing_template_data) use ($task, $w) {
+        NotificationService::getInstance($w)->sendToAllWithCallback($subject, "task", "notification_email", AuthService::getInstance($w)->user(), $users_to_notify, function ($user, $existing_template_data) use ($task, $w) {
             if ($user->is_external) {
                 return null;
             }
@@ -175,7 +182,7 @@ function task_attachment_attachment_added_task(Web $w, $attachment)
 
             // Get additional details
             if ($user->is_external == 0) {
-                $additional_details = $w->Task->getNotificationAdditionalDetails($task);
+                $additional_details = TaskService::getInstance($w)->getNotificationAdditionalDetails($task);
                 if (!empty($additional_details)) {
                     $template_data['footer'] .= $additional_details;
                 }
@@ -190,10 +197,10 @@ function task_attachment_attachment_added_task(Web $w, $attachment)
             } else {
                 $template_data['fields']["Assigned to"] = "No one";
             }
-            return new NotificationCallback($user, $template_data, $w->file->getAttachmentsFileList($task, null, ['channel_email_raw']));
+            return new NotificationCallback($user, $template_data, FileService::getInstance($w)->getAttachmentsFileList($task, null, ['channel_email_raw']));
         });
     } else {
-        $w->Log->setLogger("TASK")->debug("Task Attachment added notification skipped because _skip_added_notification was set on the attachment object");
+        LogService::getInstance($w)->setLogger("TASK")->debug("Task Attachment added notification skipped because _skip_added_notification was set on the attachment object");
     }
 }
 
@@ -280,7 +287,7 @@ function task_comment_send_notification_recipients_task(Web $w, $params)
 
         $template_data['can_view_task'] = $user->is_external ? false : true;
 
-        $template_data['footer'] .= $w->partial("displaycomment", array("object" => $params['comment'], "displayOnly" => true, 'redirect' => '/inbox', "is_outgoing" => true), "admin");
+        $template_data['footer'] .= $w->partial("displaycomment", ["object" => $params['comment'], "displayOnly" => true, 'redirect' => '/inbox', "is_outgoing" => true], "admin");
 
         // Get additional details
         if ($user->is_external == 0) {
@@ -317,4 +324,20 @@ function task_core_dbobject_after_update_TaskGroup(Web $w, $object)
             }
         }
     }
+
+    //Remove any subscribed users if they no longer have the sufficient view task permissions
+    $members = $object->getMembers();
+    foreach ($members as $member) {
+        $user = AuthService::getInstance($w)->getUser($member->user_id);
+        $tasks = $object->getTasks();
+        foreach ($tasks as $task) {
+            //Check if user is subscribed to the task & can no longer view it
+            if ($task->isUserSubscribed($user->id) && !$task->canView($user)) {
+                //If so, remove subscription
+                TaskService::getInstance($w)->getSubscriberForUserAndTask($user->id, $task->id)->delete();
+            }    
+        } 
+    }
+
+
 }

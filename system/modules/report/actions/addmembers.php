@@ -1,29 +1,29 @@
 <?php
 // provide form by which to add members to a report
-function addmembers_GET(Web &$w) {
-	$p = $w->pathMatch("id");
+function addmembers_GET(Web &$w)
+{
+    $p = $w->pathMatch("id");
 
-	// get the list of report editors and admins
-	$members1 = $w->Auth->getUsersForRole("report_editor");
-	$members2 = $w->Auth->getUsersForRole("report_user");
-	// merge into single array
-	$members12 = array_merge($members1, $members2);
+    $editors = $w->Auth->getUsersForRole("report_editor");
+    $users = $w->Auth->getUsersForRole("report_user");
 
-	// strip the dumplicates. dealing with an object so no quick solution
-	$members = array();
-	foreach ($members12 as $member) {
-		if (!in_array($member, $members, true)) {
-			$members[] = $member;
-		}
-	}
+    $possibleMembers = array_unique(array_merge($users, $editors));
+    $currentReportMembers = $w->Report->getReportMembers($p["id"]);
+    $currentMembers = [];
 
-	// build form
-	$addUserForm = array(
-	array("","hidden", "report_id",$p['id']),
-	array("Add Member","select","member",null,$members),
-	array("With Role","select","role","",$w->Report->getReportPermissions()),
-	);
+    for ($i = 0; $i <= count($currentReportMembers) - 1; $i++) {
+        $currentMembers[] = AuthService::getInstance($w)->getUser($currentReportMembers[$i]->user_id);
+    }
 
-	$w->setLayout(null);
-	$w->ctx("addmembers",Html::form($addUserForm,$w->localUrl("/report/updatemembers/"),"POST"," Submit "));
+    $members = array_diff($possibleMembers, $currentMembers);
+
+    // build form
+    $addUserForm = array(
+        array("", "hidden", "report_id", $p['id']),
+        array("Add Member", "select", "member", null, $members),
+        array("With Role", "select", "role", "", $w->Report->getReportPermissions()),
+    );
+
+    $w->setLayout(null);
+    $w->ctx("addmembers", Html::form($addUserForm, $w->localUrl("/report/updatemembers/"), "POST", " Submit "));
 }

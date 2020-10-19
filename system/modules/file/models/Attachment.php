@@ -299,7 +299,7 @@ class Attachment extends DbObject
             try {
                 mkdir($cache_directory, 0771, true);
             } catch (Exception $e) {
-                $this->w->Log->setLogger("FILE")->error("Failed to execute 'mkdir': " . $e->getMessage());
+                LogService::getInstance($this->w)->setLogger("FILE")->error("Failed to execute 'mkdir': " . $e->getMessage());
             }
         }
 
@@ -307,7 +307,7 @@ class Attachment extends DbObject
             file_put_contents($cache_file_path, $file->getContent());
             return $file->getContent();
         } catch (Exception $e) {
-            $this->w->Log->setLogger("FILE")->error("Failed to execute 'file_put_contents': " . $e->getMessage());
+            LogService::getInstance($this->w)->setLogger("FILE")->error("Failed to execute 'file_put_contents': " . $e->getMessage());
         }
 
         return "";

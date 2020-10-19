@@ -10,6 +10,11 @@ class TaskService extends DbService
         return $this->getObject("TaskSubscriber", $subscriber_id);
     }
 
+    public function getSubscriberForUserAndTask($user_id, $task_id)
+    {
+        return $this->getObject("TaskSubscriber", ["is_deleted" => 0, "user_id" => $user_id, "task_id" => $task_id]);
+    }
+
     public function getTaskGroupDetailsForUser()
     {
         $user_id = $this->w->Auth->user()->id;
@@ -413,6 +418,57 @@ class TaskService extends DbService
         });
     }
 
+    public function sendSubscribeNotificationForTask($task, $user)
+    {
+        $subject = "Added as subscriber to: [" . $task->id . "] " . $task->title;
+        $users_to_notify = [$user->id => $user->id];
+
+        $this->w->Notification->sendToAllWithCallback($subject, "task", "notification_email", $this->w->Auth->user(), $users_to_notify, function ($user, $existing_template_data) use ($task) {
+            $template_data = $existing_template_data;
+            $template_data['status'] = "You've been added as a subscriber to: [{$task->id}]{$task->title}";
+            $template_data['footer'] = $task->description;
+            $template_data['action_url'] = $this->w->localUrl('/task/edit/' . $task->id);
+            $template_data['logo_url'] = Config::get('main.application_logo');
+
+            $template_data['fields'] = [
+                "Assigned to" => !empty($task->assignee_id) ? $task->getAssignee()->getFullName() : '',
+                "Type" => $task->getTypeTitle(),
+                "Title" => $task->title,
+                "Due" => !empty($task->dt_due) ? date('d-m-Y', strtotime(str_replace('/', '-', $task->dt_due))) : '',
+                "Status" => $task->status,
+                "Priority" => $task->isUrgent() ? "<b style='color: orange;'>{$task->priority}</b>" : $task->priority,
+            ];
+
+            if ($user->is_external) {
+                $template_data['fields']['Due'] = '';
+                $template_data['fields']['Priority'] = '';
+                $template_data['fields']['Status'] = '';
+            }
+
+            $template_data['can_view_task'] = $user->is_external == 0;
+
+            // Get additional details
+            if ($user->is_external == 0) {
+                $additional_details = $this->w->Task->getNotificationAdditionalDetails($task);
+                if (!empty($additional_details)) {
+                    $template_data['footer'] .= $additional_details;
+                }
+            }
+
+            if (!empty($task->assignee_id)) {
+                if ($user->id == $task->assignee_id) {
+                    $template_data['fields']["Assigned to"] = "You (" . $task->getAssignee()->getFullName() . ")";
+                } else {
+                    $template_data['fields']["Assigned to"] = !empty($task->assignee_id) ? $task->getAssignee()->getFullName() : '';
+                }
+            } else {
+                $template_data['fields']["Assigned to"] = "No one";
+            }
+
+            return new NotificationCallback($user, $template_data, $this->w->file->getAttachmentsFileList($task, null, ['channel_email_raw']));
+        });
+    }
+
     // static list of group permissions for can_view, can_assign, can_create
     public function getTaskGroupPermissions()
     {
@@ -438,7 +494,7 @@ class TaskService extends DbService
         }
 
         // if number of user role is >= number of requesite level, then allow
-        if (!empty($permission_array[$role]) && !empty($permission_array[$required_permission])) {
+        if (!empty($permission_array[$role]) && array_key_exists($required_permission, $permission_array)) {
             if ($permission_array[$role] >= $permission_array[$required_permission]) {
                 return true;
             }
@@ -464,6 +520,7 @@ class TaskService extends DbService
     // required to join with modifiable aspect to determine task creator
     public function getCreatorTasks($id, $clause = null)
     {
+        $where = '';
         if (is_array($clause)) {
             foreach ($clause as $name => $value) {
                 $where .= "and t." . $name . " = '" . $value . "' ";
@@ -474,7 +531,7 @@ class TaskService extends DbService
         $where .= " and t.is_deleted = 0 and g.is_active = 1 and g.is_deleted = 0";
 
         // check that task group is active and not deleted
-        $rows = $this->_db->sql("SELECT t.* from " . Task::$_db_table . " as t inner join " . ObjectModification::$_db_table . " as o on t.id = o.object_id inner join " . TaskGroup::$_db_table . " as g on t.task_group_id = g.id where o.creator_id = " . $id . " and o.table_name = '" . Task::$_db_table . "' " . $where . " order by t.id")->fetch_all();
+        $rows = $this->_db->sql("SELECT t.* from " . Task::$_db_table . " as t inner join " . ObjectModification::$_db_table . " as o on t.id = o.object_id inner join " . TaskGroup::$_db_table . " as g on t.task_group_id = g.id where o.creator_id = " . $this->_db->quote($id) . " and o.table_name = '" . Task::$_db_table . "' " . $this->_db->quote($where) . " order by t.id")->fetch_all();
         $rows = $this->fillObjects("Task", $rows);
         return $rows;
     }
@@ -511,7 +568,7 @@ class TaskService extends DbService
         $where .= " and date_format(c.dt_modified,'%Y-%m-%d') >= '" . $this->date2db($from) . "' and date_format(c.dt_modified,'%Y-%m-%d') <= '" . $this->date2db($to) . "'";
 
         // get and return tasks
-        $rows = $this->_db->sql("SELECT t.id, t.title, t.task_group_id, c.comment, c.creator_id, c.dt_modified from " . Task::$_db_table . " as t inner join " . TaskComment::$_db_table . " as c on t.id = c.obj_id and c.obj_table = '" . Task::$_db_table . "' inner join " . TaskGroup::$_db_table . " as g on t.task_group_id = g.id " . $where . " order by c.dt_modified desc")->fetch_all();
+        $rows = $this->_db->sql("SELECT t.id, t.title, t.task_group_id, c.comment, c.creator_id, c.dt_modified from " . Task::$_db_table . " as t inner join " . TaskComment::$_db_table . " as c on t.id = c.obj_id and c.obj_table = '" . Task::$_db_table . "' inner join " . TaskGroup::$_db_table . " as g on t.task_group_id = g.id " . $this->_db->quote($where) . " order by c.dt_modified desc")->fetch_all();
         return $rows;
     }
 
@@ -886,8 +943,6 @@ class TaskService extends DbService
 
     public function getNotifyUsersForTask($task, $event)
     {
-        
-
         if (empty($task)) {
             return [];
         }
@@ -999,8 +1054,12 @@ class TaskService extends DbService
         $notifyUsers = [];
 
         $subs = $task->getSubscribers();
-        foreach ($subs as $sub)
-        {
+        foreach ($subs as $sub) {
+            $user = $sub->getUser();
+            if ($user->is_external == 1) {
+                continue;
+            }
+
             $notifyUsers[$sub->user_id] = $sub->user_id;
         }
         

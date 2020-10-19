@@ -1,7 +1,15 @@
 <?php if (!empty($messages)) : ?>
-
     <table class="tablesorter">
-        <thead><tr><th>ID</th><th>Type</th><th>Channel</th><th>Failed Processes</th><th>Time recieved</th><th>Actions</th></tr></thead>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Type</th>
+                <th>Channel</th>
+                <th>Failed Processes</th>
+                <th>Time recieved</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
         <tbody>
             <?php foreach ($messages as $m) : ?>
                 <?php $channel = $m->getChannel(); ?>
@@ -17,8 +25,6 @@
         </tbody>
     </table>
 
-<?php else: ?>
-
+<?php else : ?>
     <p>No messages found.</p>
-
 <?php endif; ?>
