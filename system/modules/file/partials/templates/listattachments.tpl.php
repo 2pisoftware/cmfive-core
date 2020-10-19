@@ -45,7 +45,7 @@
 <div class="enable_drop_attachments" data-object="<?php echo get_class($object); ?>" data-id="<?php echo $object->id; ?>" style="display:none;"></div>
 
 <?php
-if ($w->Auth->user()->hasRole("file_upload")) {
+if (AuthService::getInstance($w)->user()->hasRole("file_upload")) {
     echo Html::box("/file/new/" . get_class($object) . "/{$object->id}?redirect_url=" . urlencode($redirect), "Attach a File", true);
 }
 
@@ -56,11 +56,11 @@ if (!empty($attachments)) : ?>
     <?php foreach ($attachments as $attachment) : ?>
         <?php
         if ($attachment->isImage() || $attachment->isDocument()) :
-            if (!$attachment->canView($w->Auth->user())) {
+            if (!$attachment->canView(AuthService::getInstance($w)->user())) {
                 continue;
             }
 
-            $owner = $w->Restrictable->getOwner($attachment);
+            $owner = RestrictableService::getInstance($w)->getOwner($attachment);
             ?>
             <li>
                 <div class="image-container attachment text-center">
@@ -70,14 +70,14 @@ if (!empty($attachments)) : ?>
                         </div>
                         <div class="row-fluid">
                             <?php
-                            if (empty($owner) || $owner->id === $w->Auth->user()->id) {
+                            if (empty($owner) || $owner->id === AuthService::getInstance($w)->user()->id) {
                                 echo Html::box("/file/edit/" . $attachment->id . "?redirect_url=" . urlencode($redirect), "Edit", true, null, null, null, null, null, "button expand secondary");
                             }
                             ?>
                     </div>
                         <div class="row-fluid">
                             <?php
-                            if (empty($owner) || $owner->id === $w->Auth->user()->id) {
+                            if (empty($owner) || $owner->id === AuthService::getInstance($w)->user()->id) {
                                 echo  Html::b("/file/delete/" . $attachment->id . "?redirect_url=" . urlencode($redirect), "Delete", "Are you sure you want to delete this attachment?", null, false, "expand alert ");
                             }
                             ?>
@@ -158,7 +158,7 @@ if (!empty($notImages)) : ?>
                     <td><?php echo $att->description; ?></td>
                     <td>
                         <?php
-                        $owner = $w->Restrictable->getOwner($att);
+                        $owner = RestrictableService::getInstance($w)->getOwner($att);
                         if (!empty($owner)) {
                             $contact = $owner->getContact();
                             echo empty($contact) ? "" : $contact->getFullname();
@@ -167,7 +167,7 @@ if (!empty($notImages)) : ?>
                     </td>
                     <td>
                     <?php
-                    if (empty($owner) || $owner->id === $w->Auth->user()->id) {
+                    if (empty($owner) || $owner->id === AuthService::getInstance($w)->user()->id) {
                         echo Html::abox("/file/edit/" . $att->id . "?redirect_url=" . urlencode($redirect), "Edit", true, null, null, null, null, null, "button expand secondary");
                         echo Html::ab(WEBROOT . "/file/atdel/" . $att->id . "/" . (str_replace("/", "+", $redirect)), "Delete", "alert", null, "Do you want to delete this attachment?");
                     }
