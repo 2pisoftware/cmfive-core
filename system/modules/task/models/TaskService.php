@@ -520,6 +520,7 @@ class TaskService extends DbService
     // required to join with modifiable aspect to determine task creator
     public function getCreatorTasks($id, $clause = null)
     {
+        $where = '';
         if (is_array($clause)) {
             foreach ($clause as $name => $value) {
                 $where .= "and t." . $name . " = '" . $value . "' ";
