@@ -24,13 +24,13 @@ function editMembers_GET(Web &$w) {
 
 	// build form
 	$addMemberForm = array(
-	array("","hidden", "insight_class", $insight_class),
-	array("Add Member","select","member",null,$members),
-	array("With Role","select","role","",$w->Insight->getInsightPermissions()),
+	array("","hidden", "insight_class_name", $insight_class),
+	array("Add Member","select","user_id",null,$members),
+	array("With Role","select","type","",$w->Insight->getInsightPermissions()),
 	);
 
 	// sending the form to the 'out' function bypasses the template. 
-	$w->out(Html::form($addMemberForm, 'insights-manageMembers'));
+	$w->out(Html::form($addMemberForm, '/insights-members/editMembers'));
 }
 
 function editMembers_POST(Web $w) {
@@ -45,5 +45,5 @@ function editMembers_POST(Web $w) {
 	$member->insertOrUpdate();
 	
 	// the msg (message) function redirects with a message box
-	$w->msg('Member Permissions Saved', '/insights/manageMembers'.$insight_class['insight_class']);
+	$w->msg('Member Permissions Saved', '/insights/manageMembers?insight_class='.$member->insight_class_name);
 }

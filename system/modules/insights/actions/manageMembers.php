@@ -9,7 +9,7 @@ function manageMembers_ALL(Web $w) {
       //die;
       
     // access service functions using the Web $w object and the module name
-    $memeberList = InsightService::getInstance($w)->getAllMembersForInsightClass($insight_class);
+    $memberList = InsightService::getInstance($w)->getAllMembersForInsightClass($insight_class);
     //var_dump($modules);
 
     // build the table array adding the headers and the row data
@@ -21,7 +21,7 @@ function manageMembers_ALL(Web $w) {
             // add values to the row in the same order as the table headers
             $row[] = $member->user_id;
             $row[] = $member->recieves_emails;
-            $row[] = $member->user_role;
+            $row[] = $member->type;
             // the actions column is used to hold buttons that link to actions per item. Note the item id is added to the href on these buttons.
             $actions = [];
             $actions[] = Html::b('/insights-members/edit/' . $member->insight_class,'Edit');
