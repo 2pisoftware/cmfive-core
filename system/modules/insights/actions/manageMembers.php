@@ -2,12 +2,13 @@
 
 function manageMembers_ALL(Web $w) {
     
-    $w->ctx("title", "Manage Members");
 
     $insight_class = $w->request('insight_class');
     //var_dump($insight_class);
       //die;
       
+      $w->ctx("title", "Manage Members");
+
     // access service functions using the Web $w object and the module name
     $memberList = InsightService::getInstance($w)->getAllMembersForInsightClass($insight_class);
     //var_dump($modules);

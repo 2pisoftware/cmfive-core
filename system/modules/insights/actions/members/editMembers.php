@@ -8,15 +8,12 @@ function editMembers_GET(Web &$w) {
 	//retrieve correct insight to add new member to
 	$insight_class = $w->request('insight_class');
 
-	// get the list of report editors and admins
-	$members1 = $w->Auth->getUsers("insight_owner");
-	$members2 = $w->Auth->getUsers("insight_member");
-	// merge into single array
-	$members12 = array_merge($members1, $members2);
+	// get the list of users that can be added to the insight
+	$memberstoadd = AuthService::getInstance($w)->getUsers("insight_member");
 
 	// strip the dumplicates. dealing with an object so no quick solution
 	$members = array();
-	foreach ($members12 as $member) {
+	foreach ($memberstoadd as $member) {
 		if (!in_array($member, $members, true)) {
 			$members[] = $member;
 		}
