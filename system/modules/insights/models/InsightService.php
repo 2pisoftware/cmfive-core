@@ -108,4 +108,14 @@ class InsightService extends DbService
     public function getMemberForId() {
         return $this->GetObject('insightMember',$id);
     }
+
+    //Check if user is memebr of an insight class
+    public function isMember() {
+        $insight_class = $w->request('insight_class');
+        foreach ($user_id) {
+            if ($insight_class === 'insight_class_name') {
+                return true;
+            }
+        }
+    }
 }

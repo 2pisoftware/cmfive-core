@@ -17,6 +17,9 @@ function editMembers_GET(Web &$w) {
 		if (!in_array($member, $members, true)) {
 			$members[] = $member;
 		}
+		if (isMember->$member = true) {
+			return null;
+		}
 	}
 
 	// build form
