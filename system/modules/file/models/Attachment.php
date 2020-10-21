@@ -112,7 +112,7 @@ class Attachment extends DbObject
     public function getImg()
     {
         if ($this->isImage()) {
-            return $this->File->getImg($this->fullpath);
+            return FileService::getInstance($this->w)->getImg($this->fullpath);
         }
     }
 
@@ -136,17 +136,17 @@ class Attachment extends DbObject
      */
     public function getThumb()
     {
-        return Html::box($this->File->getDownloadUrl($this->fullpath), $this->File->getThumbImg($this->fullpath));
+        return Html::box(FileService::getInstance($this->w)->getDownloadUrl($this->fullpath), FileService::getInstance($this->w)->getThumbImg($this->fullpath));
     }
 
     public function getDownloadUrl()
     {
-        return $this->File->getDownloadUrl($this->fullpath);
+        return FileService::getInstance($this->w)->getDownloadUrl($this->fullpath);
     }
 
     public function getCodeTypeTitle()
     {
-        $t = $this->w->Auth->getObject('AttachmentType', ['code' => $this->type_code, 'table_name' => $this->parent_table]);
+        $t = AuthService::getInstance($this->w)->getObject('AttachmentType', ['code' => $this->type_code, 'table_name' => $this->parent_table]);
 
         if ($t) {
             return $t->title;
@@ -246,7 +246,7 @@ class Attachment extends DbObject
      */
     public function getFilesystem(): \Gaufrette\Filesystem
     {
-        return $this->File->getSpecificFilesystem($this->adapter, $this->getFilePath());
+        return FileService::getInstance($this->w)->getSpecificFilesystem($this->adapter, $this->getFilePath());
     }
 
     /**
@@ -270,7 +270,7 @@ class Attachment extends DbObject
         $cached_file_path = $cache_directory . "/" . $this->filename;
 
         if (file_exists($cached_file_path)) {
-            return new File($this->filename, $this->w->File->getSpecificFilesystem("local", $cache_directory));
+            return new File($this->filename, FileService::getInstance($this->w)->File->getSpecificFilesystem("local", $cache_directory));
         }
 
         return new File($this->filename, $this->getFilesystem());
@@ -332,7 +332,7 @@ class Attachment extends DbObject
             $content = $this->getContent();
             $current_file = $this->getFile();
         } catch (InvalidArgumentException $e) {
-            $this->w->Log->setLogger("FILE")->error("Attachment's {id: $this->id} file does not exist at path: $this->fullpath");
+            LogService::getInstance($this->w)->setLogger("FILE")->error("Attachment's {id: $this->id} file does not exist at path: $this->fullpath");
             return;
         }
 
@@ -347,7 +347,7 @@ class Attachment extends DbObject
             try {
                 $current_file->delete();
             } catch (RuntimeException $ex) {
-                $this->w->Log->setLogger("FILE")->error("Cannot delete file: " . $ex->getMessage());
+                LogService::getInstance($this->w)->setLogger("FILE")->error("Cannot delete file: " . $ex->getMessage());
             }
         }
 
@@ -434,15 +434,15 @@ class Attachment extends DbObject
         $this->filename = $filename;
 
         $filesystemPath = "attachments/" . $this->parent_table . '/' . date('Y/m/d') . '/' . $this->parent_id . '/';
-        $filesystem = $this->w->file->getFilesystem($this->w->file->getFilePath($filesystemPath));
+        $filesystem = FileService::getInstance($this->w)->file->getFilesystem(FileService::getInstance($this->w)->file->getFilePath($filesystemPath));
         if (empty($filesystem)) {
-            $this->w->Log->setLogger("FILE_SERVICE")->error("Cannot save file, no filesystem returned");
+            LogService::getInstance($this->w)->setLogger("FILE_SERVICE")->error("Cannot save file, no filesystem returned");
             return null;
         }
 
         $file = new File($filename, $filesystem);
 
-        $this->adapter = $this->w->file->getActiveAdapter();
+        $this->adapter = FileService::getInstance($this->w)->file->getActiveAdapter();
         $this->fullpath = str_replace(FILE_ROOT, "", $filesystemPath . $filename);
 
         //Check for posted content
@@ -537,7 +537,7 @@ class Attachment extends DbObject
                 $original_image = imagecreatefromgif($full_file_path);
                 break;
             default:
-                $this->w->Log->setLogger("FILE")->error("Unable to convert image with mime type " . $image_info["mime"] . " to JPEG");
+                LogService::getInstance($this->w)->setLogger("FILE")->error("Unable to convert image with mime type " . $image_info["mime"] . " to JPEG");
                 return false;
         }
 

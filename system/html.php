@@ -1052,28 +1052,45 @@ class Html
         return $buf;
     }
 
-    public static function paginatedElements(
-        $header,
-        $data,
-        $page,
-        $page_size,
-        $total_results,
-        $base_url,
-        $sort = null,
-        $sort_direction = 'asc',
-        $page_query_param = "page",
-        $pagesize_query_param = "page_size",
-        $total_results_query_param = "total_results",
-        $sort_query_param = "sort",
-        $sort_direction_param = "sort_direction"
-    ) {
-        // Build URL for pagination
+    /**
+     * Paginated list will build the required HTML to create a paginated list. $list_items is an array
+     * of strings containing the HTML to be wrapped into the <li></li> tags.
+     *
+     * @param array $list_items
+     * @param integer $page
+     * @param integer $page_size
+     * @param integer $total_results
+     * @param string $base_url
+     * @param string|null $sort
+     * @param string $sort_direction
+     * @param string $page_query_param
+     * @param string $pagesize_query_param
+     * @param string $total_results_query_param
+     * @param string $sort_query_param
+     * @param string $sort_direction_param
+     * @return string
+     */
+    public static function paginatedList(
+        array $list_items,
+        int $page,
+        int $page_size,
+        int $total_results,
+        string $base_url,
+        ?string $sort = null,
+        string $sort_direction = "asc",
+        string $page_query_param = "page",
+        string $pagesize_query_param = "page_size",
+        string $total_results_query_param = "total_results",
+        string $sort_query_param = "sort",
+        string $sort_direction_param = "sort_direction"
+    ) : string {
+        // Build URL for pagination.
         $url_parsed = parse_url($base_url);
-        $url_string = $url_parsed['path'];
-        $url_string .= (empty($url_parsed['query']) ? "?" : '?' . $url_parsed['query'] . '&') . $sort_query_param . '=' . $sort . '&' . $sort_direction_param . '=' . $sort_direction;
-        $url_string .= (!empty($url_parsed['fragment']) ? '#' . $url_parsed['fragment'] : '');
+        $url_string = $url_parsed["path"];
+        $url_string .= (empty($url_parsed["query"]) ? "?" : "?" . $url_parsed["query"] . "&") . $sort_query_param . "=" . $sort . "&" . $sort_direction_param . "=" . $sort_direction;
+        $url_string .= (!empty($url_parsed["fragment"]) ? "#" . $url_parsed["fragment"] : "");
 
-        // Generate the table
+        // Generate the table.
         $num_results = $total_results;
         if ($page_size > 0) {
             $num_results = ceil($total_results / $page_size);
@@ -1083,14 +1100,14 @@ class Html
             return '<div class="row-fluid clearfix"><div class="small-12 medium-6 small-text-center medium-text-left columns" style="margin: 5px 0px;">No results found</div></div>';
         }
 
-        $count_items = count($data);
+        $count_items = count($list_items);
         $starting_item = (($page - 1) * $page_size) + 1;
         $buffer = '<div class="row-fluid clearfix">'
             . '<div class="small-12 medium-6 small-text-center medium-text-left columns" style="margin-top: 5px;">Showing ' . $starting_item . ' - ' . ($starting_item + $count_items - 1) . ' of ' . $total_results . '</div>'
             . '<div class="small-12 medium-6 columns">';
         if ($num_results > 0) {
             $buffer .= '<div class="row-fluid clearfix"><span class="small-3 medium-6 columns small-text-center medium-text-right" style="margin-top: 5px;">Page:</span><select onchange="location = this.value;" class="small-9 medium-6 columns right">';
-            // Build URL for dropdown pagination
+            // Build URL for dropdown pagination.
             $dropdown_url_string = $url_parsed['path'];
             $dropdown_url_string .= (empty($url_parsed['query']) ? "?" : '?' . $url_parsed['query'] . '&') . $sort_query_param . '=' . $sort . '&' . $sort_direction_param . '=' . $sort_direction;
 
@@ -1100,50 +1117,14 @@ class Html
             $buffer .= '</select></div>';
         }
         $buffer .= "</div></div>"
-            . "<div data-alert class='show-for-small alert-box'>This is a responsive table, pan left to right to view data.</div>"
-            . "<div class='row-fluid clearfix table-responsive'>"
-            . "<table class='small-12'>";
-        if (!empty($header) && is_array($header)) {
-            // Print table header
-            $buffer .= "<thead><tr>";
-            foreach ($header as $title) {
-                // Build optional sort url
-                $sort_asc_string = '';
-                $sort_desc_string = '';
-                if (is_array($title)) {
-                    $sort_direction_asc_query = "{$sort_query_param}={$title[0]}&{$sort_direction_param}=asc";
-                    $sort_direction_desc_query = "{$sort_query_param}={$title[0]}&{$sort_direction_param}=desc";
+            . "<ul class='small-block-grid-1 medium-block-grid-2 large-block-grid-6'>";
 
-                    $sort_asc_string = $url_parsed['path'] . (empty($url_parsed['query']) ? '?' : '?' . $url_parsed['query'] . '&') . $sort_direction_asc_query . (!empty($url_parsed['fragment']) ? '#' . $url_parsed['fragment'] : '');
-                    $sort_desc_string = $url_parsed['path'] . (empty($url_parsed['query']) ? '?' : '?' . $url_parsed['query'] . '&') . $sort_direction_desc_query . (!empty($url_parsed['fragment']) ? '#' . $url_parsed['fragment'] : '');
-                }
-                $buffer .= '<th' . (is_array($title) && $title[0] === $sort ? ' class="sorted_column"' : '') . '>' . (is_array($title) ? '<a href="' . ($title[0] === $sort && $sort_direction === 'asc' ? $sort_desc_string : $sort_asc_string) . '">' . $title[1] . '</a>' : $title)
-                    . (is_array($title) ? '<div class="right">'
-                        . ($title[0] !== $sort || ($title[0] === $sort && $sort_direction !== 'asc') ? '<a class="sort-ascending" href="' . $sort_asc_string . '"><i class="fi-play sort-icons "></i></a>' : '')
-                        . ($title[0] !== $sort || ($title[0] === $sort && $sort_direction !== 'desc') ? '<a class="sort-descending" href="' . $sort_desc_string . '"><i class="fi-play sort-icons"></i></a>' : '')
-                        . '</div></th>' : '');
-            }
-            $buffer .= "</tr></thead>";
+        foreach ($list_items as $list_item) {
+            $buffer .= "<li>$list_item</li>";
         }
-
-        // Print table body
-        if (!empty($data) && is_array($data)) {
-            $buffer .= "<tbody>";
-            foreach ($data as $key => $row) {
-                $buffer .= '<tr data-id="' . $key . '">';
-                foreach ($row as $column) {
-                    if (is_array($column)) {
-                        $buffer .= '<td class="' . $column[1] . '">' . $column[0] . '</td>';
-                    } else {
-                        $buffer .= "<td>{$column}</td>";
-                    }
-                }
-                $buffer .= "</tr>";
-            }
-            $buffer .= "</tbody>";
-        }
-        $buffer .= "</table></div>";
+        $buffer .= "</ul>";
         $buffer .= '<div class="pagination-centered">' . Html::pagination($page, $num_results, $page_size, $total_results, $url_string, $page_query_param, $pagesize_query_param, $total_results_query_param) . '</div>';
+
         return $buffer;
     }
 
