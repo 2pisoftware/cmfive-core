@@ -249,6 +249,31 @@ class Config
     {
         self::$register = json_decode($string, true);
     }
+
+    public static function extendFromJson($string)
+    {
+        self::merge(json_decode($string, true), self::$register);
+    }
+
+    private static function merge($source, &$target)
+    {
+        // highly nested arrays may cause a stack overflow
+        if (!is_array($source)) {
+            return;
+        }
+
+        foreach ($source as $key => $value) {
+            if (array_key_exists($key, $target)) {
+                if (is_array($value)) {
+                    self::merge($source[$key], $target[$key]);
+                } else {
+                    $target[$key] = $value;
+                }
+            } else {
+                $target[$key] = $source[$key];
+            }
+        }
+    }
 }
 
 /**
