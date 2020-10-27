@@ -30,9 +30,14 @@ function editMembers_GET(Web &$w) {
 	// build form
 	$addMemberForm = array(
 	array("","hidden", "insight_class_name", $insight_class_name),
-	//We need to change the form data to reflect the member being edited
-	array("Add Member","select","user_id",null,$member->id),
-	array("With Role","select","type",$member->type,$w->Insight->getInsightPermissions()),
+	if ($member = !empty($p['id'])) {
+		array("Add Member","select","user_id",null,$users),
+		array("With Role","select","type","",$w->Insight->getInsightPermissions()),
+	};
+	else {
+	array("Add Member","select","user_id",$member->id),
+	array("With Role","select","type",$member->type),
+	};
 	);
 
 	//if we are editing an existing meber we need to send the id to the post method
