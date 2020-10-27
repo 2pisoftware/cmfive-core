@@ -176,7 +176,7 @@ class ReportService extends DbService
 
         // this sql below statement may not be as nifty as the above .. but it works!
         $rows = $this->_db->sql("SELECT distinct r.* from " . ReportMember::$_db_table . " as m inner join " .
-            Report::$_db_table . " as r on m.report_id = r.id where m.user_id in (" . $theid . ") " . $where .
+            Report::$_db_table . " as r on m.report_id = r.id where m.user_id in (" . $this->_db->quote($theid) . ") " . (!empty($where) ? $this->_db->quote($where) : '') .
             " and r.is_deleted = 0 order by r.is_approved desc,r.title")->fetch_all();
         return $this->fillObjects("Report", $rows);
     }
@@ -205,7 +205,6 @@ class ReportService extends DbService
             ->where("report_member.user_id", $myid)
             ->where("report.is_deleted", 0)->where("report_member.is_deleted", 0)
             ->order_by("report.is_approved desc, report.title")->fetch_all();
-//        $rows = $this->_db->sql("SELECT distinct m.report_id from " . ReportMember::$_db_table . " as m inner join " . Report::$_db_table . " as r on m.report_id = r.id where m.user_id in (" . $id . ") and r.is_deleted = 0 and m.is_deleted = 0 order by r.is_approved desc,r.title")->fetch_all();
         return $this->fillObjects("ReportMember", $results);
     }
 
@@ -237,7 +236,7 @@ class ReportService extends DbService
             ->where("report_member.user_id", $myid)->where("report.module", $module)
             ->where("report.is_deleted", 0)->where("report_member.is_deleted", 0)
             ->order_by("report.is_approved desc, report.title")->fetch_all();
-        // $rows = $this->_db->sql("SELECT distinct r.id,r.title from " . ReportMember::$_db_table . " as m inner join " . Report::$_db_table . " as r on m.report_id = r.id where m.user_id in (" . $id . ") and r.module = '" . $module . "' and r.is_deleted = 0 and m.is_deleted = 0 order by r.is_approved desc,r.title")->fetch_all();
+
         return $this->fillObjects("Report", $results);
     }
 
@@ -264,31 +263,24 @@ class ReportService extends DbService
 
     // for parameter dropdowns, run SQL statement and return an array(value,title) for display
     // DANGEROUS
-    public function getFormDatafromSQL($sql, $connection = null)
+    public function getFormDatafromSQL($sql, $connection)
     {
-        if (!empty($connection)) {
-            $rows = $connection->query($sql)->fetchAll();
-        } else {
-            $rows = $this->_db->sql($sql)->fetch_all();
-        }
+        $rows = $connection->query(trim($sql))->fetchAll();
+        
+        $arr = [];
         if ($rows) {
             foreach ($rows as $row) {
-                $arr[] = array($row['title'], $row['value']);
+                $arr[] = [$row['title'], $row['value']];
             }
-            return $arr;
         }
-        return null;
+        return $arr;
     }
 
     // given a report SQL statement, return recordset
     // DANGEROUS
     public function getExefromSQL($sql, $connection = null)
     {
-        if (!empty($connection)) {
-            return $connection->query($sql)->execute();
-        } else {
-            return $this->_db->sql($sql)->execute();
-        }
+        return $connection->query($sql)->execute();
     }
 
     // convert dd/mm/yyyy date to yyy-mm-dd for SQL statements
@@ -308,14 +300,7 @@ class ReportService extends DbService
             $dbtbl[] = $table[0];
         }
         ReportService::$tables = $dbtbl;
-//        $sql = "show tables in " . $this->_db->getDatabase();
-        //        $tbls = $this->_db->sql($sql)->fetch_all();
-
-//        if ($tbls) {
-        //            foreach ($tbls as $tbl) {
-        //                $dbtbl[] = array($tbl['Tables_in_' . $this->_db->getDatabase()], $tbl['Tables_in_' . $this->_db->getDatabase()]);
-        //            }
-        //        }
+        
         return $dbtbl;
     }
 
@@ -334,13 +319,10 @@ class ReportService extends DbService
         }
 
         if ($table != "") {
-
-            $sql = "show columns in " . $table;
-            $fields = $this->_db->sql($sql)->fetch_all();
+            $fields = $this->_db->sql("show columns in " . $this->_db->quote($table))->fetch_all();
 
             if ($fields) {
-                $output = "<table>";
-                $output .= "<tr><td><b>Field</b></td><td><b>Type</b></td></tr>";
+                $output = "<table><tr><td><b>Field</b></td><td><b>Type</b></td></tr>";
                 foreach ($fields as $field) {
                     $output .= "<tr><td>" . $field['Field'] . "</td><td>" . $field['Type'] . "</td></tr>";
                 }
@@ -354,7 +336,6 @@ class ReportService extends DbService
     public function getSQLStatementType($report_code)
     {
         // return our list of SQL statements
-        //        preg_match_all("/@@[a-zA-Z0-9_\s\|,;\(\)\{\}<>\/\-='\.@:%\+\*\$]*?@@/",preg_replace("/\n/"," ",$report_code), $arrsql);
         preg_match_all("/@@.*?@@/", preg_replace("/\n/", " ", $report_code), $arrsql);
 
         // if we have statements, continue ...
@@ -371,10 +352,7 @@ class ReportService extends DbService
                     }
                 }
             }
-            $action = rtrim($action, ", ");
-
-            // return comma delimited string of actions of SQL for display only
-            return $action;
+            return rtrim($action, ", ");
         } else {
             return "No action Found";
         }
@@ -383,12 +361,14 @@ class ReportService extends DbService
     // create an array of available report output formats for inclusion in the parameters form
     public function selectReportFormat()
     {
-        $arr = array();
-        $arr[] = array("Web Page", "html");
-        $arr[] = array("Comma Delimited File", "csv");
-        $arr[] = array("PDF File", "pdf");
-        $arr[] = array("XML", "xml");
-        return array(array("Format", "select", "format", null, $arr));
+        $arr = [
+            ["Web Page", "html"],
+            ["Comma Delimited File", "csv"],
+            ["PDF File", "pdf"],
+            ["XML", "xml"],
+        ];
+
+        return [["Format", "select", "format", null, $arr]];
     }
 
     // export a recordset as CSV
@@ -597,32 +577,18 @@ class ReportService extends DbService
     }
 
     // function to check syntax of report SQL statememnt
-    public function getcheckSQL($sql, PDO $connection = null)
+    public function getcheckSQL($sql, PDO $connection)
     {
         // checking for rows will return false if no data is returned, even if SQL is ok
         // so let's just run the statement and try to catch any exceptions otherwise SQL runs ok
         try {
-            if (empty($connection)) {
-                $this->startTransaction();
-                $rows = $this->getExefromSQL($sql);
-                $this->rollbackTransaction();
-                return true;
-            } else {
-                $connection->beginTransaction();
-                $rows = $connection->query($sql)->execute();
-                $connection->rollBack();
-                return true;
-            }
+            $connection->beginTransaction();
+            $rows = $connection->query($sql)->execute();
+            $connection->rollBack();
+            return true;
         } catch (Exception $e) {
-            $this->Log->error($e->getMessage());
-            // SQL returns errors so clean up and return false
-            if (empty($connection)) {
-                $this->rollbackTransaction();
-                return false;
-            } else {
-                $connection->rollBack();
-                return false;
-            }
+            $connection->rollBack();
+            return false;
         }
     }
 

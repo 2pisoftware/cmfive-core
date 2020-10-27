@@ -131,6 +131,14 @@ function task_core_dbobject_after_update_Task(Web $w, $task)
     });
 }
 
+function task_task_subscriber_notification(Web $w, $params)
+{
+    $task = TaskService::getInstance($w)->getTask($params["task_id"]);
+    $user = AuthService::getInstance($w)->getUser($params["user_id"]);
+    
+    TaskService::getInstance($w)->sendSubscribeNotificationForTask($task, $user);
+}
+
 function task_attachment_attachment_added_task(Web $w, $attachment)
 {
     LogService::getInstance($w)->setLogger("TASK")->debug("task_attachment_attachment_added_task");
@@ -316,4 +324,20 @@ function task_core_dbobject_after_update_TaskGroup(Web $w, $object)
             }
         }
     }
+
+    //Remove any subscribed users if they no longer have the sufficient view task permissions
+    $members = $object->getMembers();
+    foreach ($members as $member) {
+        $user = AuthService::getInstance($w)->getUser($member->user_id);
+        $tasks = $object->getTasks();
+        foreach ($tasks as $task) {
+            //Check if user is subscribed to the task & can no longer view it
+            if ($task->isUserSubscribed($user->id) && !$task->canView($user)) {
+                //If so, remove subscription
+                TaskService::getInstance($w)->getSubscriberForUserAndTask($user->id, $task->id)->delete();
+            }    
+        } 
+    }
+
+
 }
