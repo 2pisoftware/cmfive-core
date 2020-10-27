@@ -6,26 +6,25 @@ function editMembers_GET(Web &$w) {
 	$w->ctx('title', 'Add member');
 
 	//retrieve correct insight to add new member to
-	$insight_class = $w->request('insight_class');
+	$insight_class_name = $w->request('insight_class');
 
 	// get the list of users that can be added to the insight
-	$memberstoadd = AuthService::getInstance($w)->getUsers("insight_member");
+	$userstoadd = AuthService::getInstance($w)->getUsers();
 
 	// strip the dumplicates. dealing with an object so no quick solution
-	$members = array();
-	foreach ($memberstoadd as $member) {
-		if (!in_array($member, $members, true)) {
-			$members[] = $member;
-		}
-		if (isMember->$member = true) {
-			return null;
+	$users = array();
+	foreach ($userstoadd as $user) {
+		if (!in_array($user, $users, true)) {
+			if (!InsightService::getInstance($w)->IsMember($insight_class_name, $user->id)){
+				$users[] = $user;
+			}
 		}
 	}
 
 	// build form
 	$addMemberForm = array(
-	array("","hidden", "insight_class_name", $insight_class),
-	array("Add Member","select","user_id",null,$members),
+	array("","hidden", "insight_class_name", $insight_class_name),
+	array("Add Member","select","user_id",null,$users),
 	array("With Role","select","type","",$w->Insight->getInsightPermissions()),
 	);
 

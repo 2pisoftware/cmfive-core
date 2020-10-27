@@ -104,18 +104,12 @@ class InsightService extends DbService
         return array("OWNER", "MEMBER");
     }
 
-    //returns single insight member matching the given id
-    public function getMemberForId() {
-        return $this->GetObject('insightMember',$id);
-    }
-
-    //Check if user is memebr of an insight class
-    public function isMember() {
-        $insight_class = $w->request('insight_class');
-        foreach ($user_id) {
-            if ($insight_class === 'insight_class_name') {
-                return true;
-            }
+    public function IsMember($insight_class_name, $user_id) 
+    {
+        $member = $this->getObject('InsightMembers',['is_deleted' => 0,'insight_class_name' => $insight_class_name, 'user_id' => $user_id]);
+        if (empty ($member)){
+            return false;
         }
+        return true;
     }
 }
