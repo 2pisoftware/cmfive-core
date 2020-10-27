@@ -26,7 +26,7 @@ function manageMembers_ALL(Web $w) {
             // the actions column is used to hold buttons that link to actions per item. Note the item id is added to the href on these buttons.
             $actions = [];
             $actions[] = Html::b('/insights-members/editMembers/' . $member->insight_class,'Edit');
-            $actions[] = Html::b('/insights-members/delete/' . $member->insight_class, 'Delete', 'Are you sure you want to delete this member?');
+            $actions[] = Html::b('/insights-members/deleteMembers/' . $member->insight_class, 'Delete', 'Are you sure you want to delete this member?');
             $row[] = implode('',$actions);
             $table[] = $row;
         }
