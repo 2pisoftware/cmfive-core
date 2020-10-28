@@ -15,7 +15,8 @@ Config::set('task', array(
         'comment',
         'attachment',
 		'timelog',
-		'admin'
+		'admin',
+		'task'
     ),
     'ical' => array(
         'send' => false

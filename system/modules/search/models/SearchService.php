@@ -26,7 +26,7 @@ class SearchService extends DbService
         $indexes = $this->getIndexes();
         if (!empty($index) && in_array($index, $indexes)) {
             // first delete all entries in the index table for this index
-            $sql = "DELETE FROM object_index WHERE class_name = '{$index}'";
+            $sql = "DELETE FROM object_index WHERE class_name = '{$this->_db->quote($index)}'";
             $this->_db->sql($sql)->execute();
 
             $objects = $this->getObjects($index, array("is_deleted" => 0));
@@ -40,8 +40,7 @@ class SearchService extends DbService
     public function reindexAll()
     {
         // delete all index entries
-        $sql = "DELETE FROM object_index";
-        $this->_db->sql($sql)->execute();
+        $this->_db->sql("DELETE FROM object_index")->execute();
 
         // go over each index and reindex
         foreach ($this->getIndexes() as $index) {

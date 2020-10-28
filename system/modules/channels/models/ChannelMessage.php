@@ -1,6 +1,7 @@
 <?php
 
-class ChannelMessage extends DbObject {
+class ChannelMessage extends DbObject
+{
     public $dt_created;
     public $channel_id;
     public $message_type;
@@ -9,14 +10,16 @@ class ChannelMessage extends DbObject {
 
     // public $is_processed;
 
-    public function getChannel() {
-        return $this->w->Channel->getChannel($this->channel_id);
+    public function getChannel()
+    {
+        return ChannelService::getInstance($this->w)->getChannel($this->channel_id);
     }
 
-    public function getData() {
-        $attachments = $this->w->File->getAttachments($this, $this->id);
+    public function getData()
+    {
+        $attachments = FileService::getInstance($this->w)->getAttachments($this, $this->id);
         if (!empty($attachments)) {
-            foreach($attachments as $attachment) {
+            foreach ($attachments as $attachment) {
                 // return the serialised email object
                 if ($attachment->filename == "email.txt") {
                     return $attachment->getContent();
@@ -27,18 +30,19 @@ class ChannelMessage extends DbObject {
         return null;
     }
 
-    public function getStatus($processor_id) {
-        return $this->w->Channel->getMessageStatus($this->id, $processor_id);
+    public function getStatus($processor_id)
+    {
+        return ChannelService::getInstance($this->w)->getMessageStatus($this->id, $processor_id);
     }
 
-    public function getFailedProcesses() {
+    public function getFailedProcesses()
+    {
         $resultset = $this->w->db->get("channel_message_status")
-                ->where("message_id", $this->id)
-                ->where("is_successful", 0);
+            ->where("message_id", $this->id)
+            ->where("is_successful", 0);
         if (!empty($resultset)) {
             return $resultset->count();
         }
         return 0;
     }
-
 }

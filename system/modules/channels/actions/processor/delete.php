@@ -6,7 +6,7 @@ function delete_GET(Web $w)
     $id = $p["id"];
 
     if ($id) {
-        $processor = $w->Channel->getProcessor($id);
+        $processor = ChannelService::getInstance($w)->getProcessor($id);
         $processor->delete();
 
         $w->msg("Processor deleted", "/channels/listprocessors");

@@ -164,7 +164,11 @@
                         <button v-if="!user.security.is_mfa_enabled && mfa_qr_code_url === null" class="tiny success" @click="getMfaQrCode" :disabled="is_loading">Enable</button>
                         <button v-if="user.security.is_mfa_enabled" class="tiny alert" @click="disableMfa" :disabled="is_loading">Disable</button>
                         <div v-if="mfa_qr_code_url !== null">
-                            <img v-if="show_qr_code" :src="mfa_qr_code_url" width="250" height="250">
+                            <div v-if="show_qr_code">
+                                <img :src="mfa_qr_code_url" width="250" height="250">
+                                <label style="margin-top: 4px;">Can't scan the code? Add it manually.</label>
+                                <label>{{ mfa_secret }}</label>
+                            </div>
                             <button v-else class="tiny" @click="show_qr_code = true">Show QR Code</button>
                             <form>
                                 <label>Code
@@ -204,6 +208,7 @@
             return {
                 user: <?php echo json_encode($user); ?>,
                 mfa_code: "",
+                mfa_secret: "",
                 mfa_qr_code_url: null,
                 show_qr_code: false,
                 is_confirming_code: false,
@@ -320,6 +325,7 @@
                     }
 
                     _this.mfa_qr_code_url = response.data.qr_code;
+                    _this.mfa_secret = response.data.mfa_secret;
                 }).catch(function(error) {
                     new Toast("Failed to fetch QR Code").show();
                     console.log(error);
@@ -347,6 +353,7 @@
                     }
 
                     _this.mfa_qr_code_url = null;
+                    _this.mfa_secret = null;
                     _this.user.security.is_mfa_enabled = true;
                     new Toast("2FA enabled").show();
                 }).catch(function(error) {
