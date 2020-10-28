@@ -29,14 +29,14 @@ function editMembers_GET(Web &$w) {
 
 	// build form
 	$addMemberForm = array(
-	array("","hidden", "insight_class_name", $insight_class_name),
-	if !empty($p['id']) {
-		array("Add Member","select","user_id",null,$users);
-	};
-	else {
-		AuthService::getInstance($w)->getUser($member->user_id)->getContact()->getFullName();
-	}
-	array("With Role","select","type",$member->type,$w->Insight->getInsightPermissions());
+	    array("","hidden", "insight_class_name", $insight_class_name),
+	    if !empty($p['id']) {
+		    array("Add Member","select","user_id",null,$users);
+	    };
+	    else {
+		    AuthService::getInstance($w)->getUser($member->user_id)->getContact()->getFullName();
+	    }
+	    array("With Role","select","type",$member->type,$w->Insight->getInsightPermissions());
 	);
 
 	//if we are editing an existing meber we need to send the id to the post method
