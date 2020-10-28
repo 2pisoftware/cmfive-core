@@ -2,47 +2,50 @@
 
 use Gaufrette\Filesystem;
 use Gaufrette\Adapter\Local as LocalAdapter;
-		
-function ajax_backupdatabase_GET(Web $w) {
-	if ($w->Auth->user() != null && $w->Auth->user()->is_admin  == 1) {
-		$datestamp = date("Y-m-d-H-i");
-		$filedir = ROOT_PATH . "/cache/";
 
-		$backupformat = Config::get('admin.database.output');
-		$filename = "$datestamp.$backupformat";
-		$command = NULL;
+function ajax_backupdatabase_GET(Web $w)
+{
+    if (AuthService::getInstance($w)->user() === null || !AuthService::getInstance($w)->user()->is_admin) {
+        return;
+    }
 
-		if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-			$command = Config::get('admin.database.command.windows');
-		} else {
-			$command = Config::get('admin.database.command.unix');
-		}
+    $datestamp = date("Y-m-d-H-i");
+    $filedir = ROOT_PATH . "/cache/";
 
-		if (!empty($command)) {
-			$command = str_replace(['$username', '$password', '$dbname', '$filename'], [Config::get('database.username'), Config::get('database.password'), Config::get('database.database'), $filedir.$filename], $command);
-			echo $command;
-			echo shell_exec($command);
+    $backupformat = Config::get('admin.database.output');
+    $filename = "$datestamp.$backupformat";
+    $command = null;
 
-			if (file_exists($filedir . $filename)) {
-				// First, you need a filesystem adapter
-				$adapter = new LocalAdapter($filedir);
-				$filesystem = new Filesystem($adapter);
+    if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+        $command = Config::get('admin.database.command.windows');
+    } else {
+        $command = Config::get('admin.database.command.unix');
+    }
 
-				header('Content-Description: File Transfer');
-				header("Content-Type: " . $filesystem->mimeType($filename));
-				header('Content-Disposition: attachment; filename="' . basename($filedir . $filename) . '"');
-				header('Expires: 0');
-				header('Cache-Control: must-revalidate');
-				header('Pragma: public');
-				header("Content-Length: " . $filesystem->size($filename));
+    if (!empty($command)) {
+        $command = str_replace(['$username', '$password', '$dbname', '$filename'], [Config::get('database.username'), Config::get('database.password'), Config::get('database.database'), $filedir . $filename], $command);
+        echo $command;
+        echo shell_exec($command);
 
-				echo readfile($filedir . $filename);
+        if (file_exists($filedir . $filename)) {
+            // First, you need a filesystem adapter
+            $adapter = new LocalAdapter($filedir);
+            $filesystem = new Filesystem($adapter);
 
-				$filesystem->delete($filename);
-				exit;
-			}
-		} else {
-			$w->out("Could not find backup command");
-		}
-	}
+            header('Content-Description: File Transfer');
+            header("Content-Type: " . $filesystem->mimeType($filename));
+            header('Content-Disposition: attachment; filename="' . basename($filedir . $filename) . '"');
+            header('Expires: 0');
+            header('Cache-Control: must-revalidate');
+            header('Pragma: public');
+            header("Content-Length: " . $filesystem->size($filename));
+
+            echo readfile($filedir . $filename);
+
+            $filesystem->delete($filename);
+            exit;
+        }
+    } else {
+        $w->out("Could not find backup command");
+    }
 }
