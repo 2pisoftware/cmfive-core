@@ -47,7 +47,7 @@ function users_GET(Web &$w)
                 [$external_user->is_active ? "Yes" : "No", true],
                 [$w->Admin->time2Dt($external_user->dt_created), true],
                 [empty($internal_user->dt_lastlogin) ? "" : $w->Admin->time2Dt($internal_user->dt_lastlogin), true],
-                Html::b("/admin/useredit/" . $external_user->id, "Edit", null, "button tiny editbutton") .
+                Html::b("/admin-user/edit/" . $external_user->id, "Edit", null, "button tiny editbutton") .
                 Html::b("/admin/permissionedit/" . $external_user->id, "Permissions", null, "button tiny permissionsbutton") .
                 Html::b("/admin-user/remove/" . $external_user->id, "Remove", null, "button tiny deletebutton", false, "alert")
             ];

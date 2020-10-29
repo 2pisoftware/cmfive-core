@@ -47,7 +47,9 @@ Config::set('admin', [
             'stream_name_app' => 'CmfiveApp',
             'region'    => 'ap-southeast-2',
             'version'   => 'latest',
-        ]
+        ],
+        // This value comes from \Monolog\Logger::DEBUG constant.
+        "level" => 100,
     ],
     "mail" => [
         "aws" => [

@@ -2,26 +2,24 @@
 
 function edit_GET(Web $w)
 {
-
     $p = $w->pathMatch("id");
 
     if (!empty($p['id'])) {
-        $timelog = $w->Timelog->getTimelog($p['id']);
+        $timelog = TimelogService::getInstance($w)->getTimelog($p['id']);
         if (empty($timelog)) {
             $w->msg("Timelog not found", "/timelog");
         }
-        if (!$timelog->canEdit($w->Auth->user())) {
+        if (!$timelog->canEdit(AuthService::getInstance($w)->user())) {
             $w->msg("You cannot edit this Timelog", "/timelog");
         }
     } else {
         $timelog = new Timelog($w);
     }
 
-
     $w->ctx("timelog", $timelog);
     $w->ctx('redirect', $w->request("redirect", ''));
 
-    $indexes = $w->timelog->getLoggableObjects();
+    $indexes = TimelogService::getInstance($w)->getLoggableObjects();
     $select_indexes = [];
     if (!empty($indexes)) {
         foreach ($indexes as $friendly_name => $search_name) {
@@ -43,7 +41,7 @@ function edit_GET(Web $w)
         }
     }
 
-    $object = $w->Timelog->getObject($timelog->object_class ?: $tracking_class, $timelog->object_id ?: $tracking_id);
+    $object = TimelogService::getInstance($w)->getObject($timelog->object_class ?: $tracking_class, $timelog->object_id ?: $tracking_id);
     $w->ctx("object", $object);
     // Hook relies on knowing the timelogs time_type record, but also the object, so we give the time_type to object
     if (!empty($object->id) && !empty($timelog->id)) {
@@ -61,6 +59,14 @@ function edit_GET(Web $w)
         }
     }
     $w->ctx("form", $form);
+
+    if (AuthService::getInstance($w)->user()->is_admin) {
+        $users = AuthService::getInstance($w)->getUsers();
+        usort($users, function ($a, $b) {
+            return strcmp($a->getContact()->getFullName(), $b->getContact()->getFullName());
+        });
+        $w->ctx("options", $users);
+    }
 }
 
 function edit_POST(Web $w)
@@ -68,7 +74,7 @@ function edit_POST(Web $w)
     $p = $w->pathMatch("id");
     $redirect = $w->request("redirect", '');
 
-    $timelog = !empty($p['id']) ? $w->Timelog->getTimelog($p['id']) : new Timelog($w);
+    $timelog = !empty($p['id']) ? TimelogService::getInstance($w)->getTimelog($p['id']) : new Timelog($w);
 
     // Get and save timelog
     if (empty($_POST['object_class']) || empty($_POST['object_id'])) {
@@ -84,7 +90,7 @@ function edit_POST(Web $w)
     try {
         $time_object = new DateTime(str_replace('/', '-', $_POST['date_start']) . ' ' . $_POST['time_start']);
     } catch (Exception $e) {
-        $w->Log->setLogger("TIMELOG")->error($e->getMessage() . " in " . $e->getFile() . " on line " . $e->getLine());
+        LogService::getInstance($w)->setLogger("TIMELOG")->error($e->getMessage() . " in " . $e->getFile() . " on line " . $e->getLine());
         $w->error('Invalid start date or time', $redirect ?: '/timelog');
     }
 
@@ -99,7 +105,7 @@ function edit_POST(Web $w)
             $end_time_object = new DateTime(str_replace('/', '-', $_POST['date_start']) . ' ' . $_POST['time_end']);
             $timelog->dt_end = $end_time_object->format('Y-m-d H:i:s');
         } catch (Exception $e) {
-            $w->Log->setLogger("TIMELOG")->error($e->getMessage() . " in " . $e->getFile() . " on line " . $e->getLine());
+            LogService::getInstance($w)->setLogger("TIMELOG")->error($e->getMessage() . " in " . $e->getFile() . " on line " . $e->getLine());
             $w->error('Invalid start date or time', $redirect ?: '/timelog');
         }
     } else {

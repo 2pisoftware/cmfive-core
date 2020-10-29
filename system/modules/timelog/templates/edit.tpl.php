@@ -10,16 +10,14 @@
                 <li>
                     <label class="small-12 columns">Assigned User
                         <small>Required</small>
-                        <?php if ($w->Auth->user()->is_admin) {
-                            echo (new \Html\Form\Autocomplete([
+                        <?php if (AuthService::getInstance($w)->user()->is_admin && !empty($options)) {
+                            echo (new \Html\Form\Select([
                                 "id|name"    => "user_id",
-                                "title"        => empty($timelog->id) ? $w->Auth->user()->getFullName() : (!empty($timelog->user_id) ? $w->Auth->getUser($timelog->user_id)->getFullName() : null),
-                                "value"        => empty($timelog->id) ? $w->Auth->user()->id : (!empty($timelog->user_id) ? $timelog->user_id : null)
-                            ]))->setOptions($w->Auth->getUsers());
+                            ]))->setOptions($options, true)->setSelectedOption(empty($timelog->id) ? AuthService::getInstance($w)->user()->id : (!empty($timelog->user_id) ? $timelog->user_id : null));
                         } else {
                             echo (new \Html\Form\InputField\Hidden([
                                 "name"        => "user_id",
-                                "value"        => empty($timelog->id) ? $w->Auth->user()->id : $timelog->user_id
+                                "value"        => empty($timelog->id) ? AuthService::getInstance($w)->user()->id : $timelog->user_id
                             ]));
                         } ?>
                     </label>
@@ -52,7 +50,7 @@
                             "title"            => !empty($object) ? $object->getSelectOptionTitle() : null,
                             "value"            => !empty($timelog->object_id) ? $timelog->object_id : $tracking_id,
                             "required"        => "true"
-                        ]))->setOptions(!empty($usable_class) ? $w->Timelog->getObjects($usable_class, $where) : ''); ?>
+                        ]))->setOptions(!empty($usable_class) ? TimelogService::getInstance($w)->getObjects($usable_class, $where) : ''); ?>
                     </label>
                 </li>
                 <?php echo (new \Html\Form\InputField(["type" => "hidden", "id|name" => "object_id", "value" => $timelog->object_id ?: $tracking_id])); ?>

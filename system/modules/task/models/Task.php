@@ -82,7 +82,7 @@ class Task extends DbObject
                 $members = $taskgroup->getMembers();
                 if (!empty($members)) {
                     foreach ($members as $member) {
-                        $member_user = $this->w->Auth->getUser($member->user_id);
+                        $member_user = AuthService::getInstance($this->w)->getUser($member->user_id);
 
                         if (!empty($member_user->id)) {
                             $this->addSubscriber($member_user);
@@ -92,8 +92,8 @@ class Task extends DbObject
                 // Else only assign the assignee and creator
             } else {
                 $creator_id = $this->getTaskCreatorId();
-                $this->addSubscriber($this->w->Auth->getUser($creator_id));
-                $this->addSubscriber($this->w->Auth->getUser($this->assignee_id));
+                $this->addSubscriber(AuthService::getInstance($this->w)->getUser($creator_id));
+                $this->addSubscriber(AuthService::getInstance($this->w)->getUser($this->assignee_id));
             }
         }
     }
@@ -133,7 +133,7 @@ class Task extends DbObject
 
     public function isUrgent()
     {
-        $taskgroup_type_object = $this->w->Task->getTaskGroupTypeObject($this->_taskgroup->task_group_type);
+        $taskgroup_type_object = TaskService::getInstance($this->w)->getTaskGroupTypeObject($this->_taskgroup->task_group_type);
         if (!empty($taskgroup_type_object->id)) {
             return $taskgroup_type_object->isUrgentPriority($this->priority);
         } else {
@@ -206,7 +206,7 @@ class Task extends DbObject
     public function getCanIView(User $user = null)
     {
         if (empty($user)) {
-            $user = $this->w->Auth->user();
+            $user = AuthService::getInstance($this->w)->user();
         }
 
         if (empty($user->id)) {
@@ -245,7 +245,7 @@ class Task extends DbObject
      */
     public function canISetRate()
     {
-        $user = $this->w->auth->User();
+        $user = AuthService::getInstance($this->w)->User();
         $taskgroup = $this->getTaskGroup();
         if (!empty($taskgroup) && !empty($user)) {
             if ($user->is_admin == 1 || $taskgroup->isOwner($user)) {
@@ -336,10 +336,10 @@ class Task extends DbObject
             return true;
         }
 
-        $logged_in_user_id = $this->w->Auth->user()->id;
+        $logged_in_user_id = AuthService::getInstance($this->w)->user()->id;
         $me = $this->Task->getMemberGroupById($this->task_group_id, $logged_in_user_id);
 
-        if (($logged_in_user_id == $this->assignee_id) || ($logged_in_user_id == $this->getTaskCreatorId()) || (!empty($me->role) && $this->w->Task->getMyPerms($me->role, "OWNER"))) {
+        if (($logged_in_user_id == $this->assignee_id) || ($logged_in_user_id == $this->getTaskCreatorId()) || (!empty($me->role) && TaskService::getInstance($this->w)->getMyPerms($me->role, "OWNER"))) {
             return true;
         }
         return false;
@@ -411,7 +411,7 @@ class Task extends DbObject
         }
 
         if (!empty($this->_taskgroup->id)) {
-            $statlist = $this->_taskgroup->getStatus(); //Task->getTaskStatus($this->w->Task->getTaskGroupTypeById($this->task_group_id));
+            $statlist = $this->_taskgroup->getStatus();
             if ($statlist) {
                 foreach ($statlist as $stat) {
                     $status[$stat[0]] = $stat[1];
@@ -424,7 +424,7 @@ class Task extends DbObject
     // return the task priorities as array given a task group ID
     public function getTaskGroupPriority()
     {
-        return (!empty($this->_taskgroup->id) ? $this->_taskgroup->getPriority() : null); //Task->getTaskPriority($this->w->Task->getTaskGroupTypeById($this->task_group_id));
+        return (!empty($this->_taskgroup->id) ? $this->_taskgroup->getPriority() : null);
     }
 
     // return list of time log entries for a task given task ID
@@ -504,7 +504,7 @@ class Task extends DbObject
     public function toLink($class = null, $target = null, $user = null)
     {
         if (empty($user)) {
-            $user = $this->w->Auth->user();
+            $user = AuthService::getInstance($this->w)->user();
         }
         if ($this->canView($user)) {
             return Html::a($this->w->localUrl($this->printSearchUrl()), (!empty($this->title) ? htmlentities($this->title) : 'Task [' . $this->id . ']'), null, $class, null, $target);
@@ -568,7 +568,7 @@ class Task extends DbObject
 
             //check if assigned
             if (!empty($this->assignee_id)) {
-                $user = $this->w->Auth->getUser($this->assignee_id);
+                $user = AuthService::getInstance($this->w)->getUser($this->assignee_id);
                 if (!empty($user->id)) {
                     // is assigned, check dt fields
                     if (empty($this->dt_assigned)) {
@@ -656,7 +656,7 @@ class Task extends DbObject
 
         //check if assigned and update dt fields
         if (!empty($this->assignee_id)) {
-            $user = $this->w->Auth->getUser($this->assignee_id);
+            $user = AuthService::getInstance($this->w)->getUser($this->assignee_id);
             if (!empty($user->id)) {
                 // is assigned, check dt fields
                 if (empty($this->dt_assigned) || $this->assignee_id != $this->__old['assignee_id']) {
@@ -715,7 +715,7 @@ class Task extends DbObject
 
             //if not 'unassigned' add user to subscribers
             //check user exists
-            $user = $this->w->auth->getUser($this->assignee_id);
+            $user = AuthService::getInstance($this->w)->getUser($this->assignee_id);
             $this->addSubscriber($user);
 
             $this->commitTransaction();
@@ -831,7 +831,7 @@ END:VCALENDAR";
 
     public function getAttachmentsFileList($include_channel_email_raw = false)
     {
-        $attachments = $this->w->File->getAttachments($this);
+        $attachments = FileService::getInstance($this->w)->getAttachments($this);
         if (!empty($attachments)) {
             if (!$include_channel_email_raw) {
                 $attachments = array_filter($attachments, function ($attachment) {

@@ -95,7 +95,7 @@ class LogService extends \DbService
 
                     // Instance ID as log stream name
                     $cw_stream_name_app = Config::get('admin.logging.cloudwatch.stream_name_app', "CmfiveApp");
-                    $cw_handler = new CloudWatch($cw_client, $cw_group_name, $cw_stream_name_app, $this->retention_period, 10000);
+                    $cw_handler = new CloudWatch($cw_client, $cw_group_name, $cw_stream_name_app, $this->retention_period, 10000, [], Config::get("admin.logging.level", Logger::DEBUG));
 
                     $cw_handler->setFormatter($this->formatter);
                     $this->loggers[$name]->pushHandler($cw_handler);
@@ -111,7 +111,7 @@ class LogService extends \DbService
                 } else {
                     $filename = STORAGE_PATH . "/log/{$name}.log";
                 }
-                $handler = new RotatingFileHandler($filename, $this->retention_period);
+                $handler = new RotatingFileHandler($filename, $this->retention_period, Config::get("admin.logging.level", Logger::DEBUG));
                 $handler->setFormatter($this->formatter);
                 $this->loggers[$name]->pushHandler($handler);
         }
