@@ -36,8 +36,6 @@ function editMembers_GET(Web &$w) {
 	// );
 	// else
 	// AuthService::getInstance($w)->getUser($member->user_id)->getContact()->getFullName();
-
-
 	$addMemberForm = array(
         array("","hidden", "insight_class_name", $insight_class_name)
 		);
