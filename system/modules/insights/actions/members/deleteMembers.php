@@ -1,6 +1,6 @@
 <?php
 
-function delete_ALL(Web $w) {
+function deleteMembers_ALL(Web $w) {
 
     //retrieve correct insight to delete member from and redirect to
 	$insight_class_name = $w->request('insight_class');
