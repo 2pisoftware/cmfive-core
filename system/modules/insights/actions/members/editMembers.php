@@ -6,7 +6,7 @@ function editMembers_GET(Web &$w) {
 	//We will use pathmatch to retrieve a member id from the yrl
 	$p = $w->pathMatch('id');
 	//if the id exists we will retrieve the data for that member. Otherwise we will add a new member
-	$member = !empty($p['id']) ? InsightService::getInstance($w)->getMemeberForId($p['id']) : new InsightMembers($w);
+	$member = !empty($p['id']) ? InsightService::getInstance($w)->getMemberForId($p['id']) : new InsightMembers($w);
 
 	//action title for adding new memeber and editing existing memeber
 	$w->ctx('title', !empty($p['id']) ? 'Edit member' : 'Add new member');
@@ -28,16 +28,25 @@ function editMembers_GET(Web &$w) {
 	}
 
 	// build form
+	// if (!empty($p['id'])) {
+	// $addMemberForm = array(
+	//     array("","hidden", "insight_class_name", $insight_class_name);
+	// 	array("Add Member","select","user_id",null,$users);
+	//     array("With Role","select","type",$member->type,$w->Insight->getInsightPermissions());
+	// );
+	// else
+	// AuthService::getInstance($w)->getUser($member->user_id)->getContact()->getFullName();
+
+
 	$addMemberForm = array(
-	    array("","hidden", "insight_class_name", $insight_class_name),
-	    if !empty($p['id']) {
-		    array("Add Member","select","user_id",null,$users);
-	    };
-	    else {
-		    AuthService::getInstance($w)->getUser($member->user_id)->getContact()->getFullName();
-	    }
-	    array("With Role","select","type",$member->type,$w->Insight->getInsightPermissions());
-	);
+        array("","hidden", "insight_class_name", $insight_class_name)
+		);
+        if (empty($p['id'])) {
+            $addMemberForm[] = array("Add Member","select","user_id",null,$users);
+        } else {
+            $addMemberForm[] = array("Add member", "text", "-user_id", AuthService::getInstance($w)->getUser($member->user_id)->getContact()->getFullName());
+        }
+    	$addMemberForm[] =  array("With Role","select","type",$member->type,$w->Insight->getInsightPermissions());
 
 	//if we are editing an existing meber we need to send the id to the post method
 	if (!empty($p['id'])) {
@@ -47,7 +56,7 @@ function editMembers_GET(Web &$w) {
 	}
 
 	// sending the form to the 'out' function bypasses the template. 
-	$w->out(Html::multiColForm($addMemberForm, $postUrl));
+	$w->out(Html::multiColForm([(empty($p['id']) ? "Add new member" : "Edit member") => [$addMemberForm]], $postUrl));
 }
 
 function editMembers_POST(Web $w) {

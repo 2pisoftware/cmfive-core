@@ -116,6 +116,6 @@ class InsightService extends DbService
 
     //retrieve a specific member matching the id given number
     public function GetMemberForId($id) {
-        return $this->GetObject('Insight Members',$id);
+        return $this->GetObject('InsightMembers',$id);
     }
 }
