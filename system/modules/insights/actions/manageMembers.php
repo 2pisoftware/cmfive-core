@@ -10,8 +10,11 @@ function manageMembers_ALL(Web $w) {
     //define member id for edit and delete buttons
     $p = $w->pathMatch('id');
     $member = InsightService::getInstance($w)->GetMemberForId($p['id']);
-      
-    $w->ctx("title", "Manage Members");
+    $insight = InsightService::getInstance($w)->getInsightInstance($insight_class);
+    if (empty($insight)) {
+        $w->error('Insight does not exist', '/insights');
+    }
+    $w->ctx("title", "Manage Members for $insight->name");
 
     // access service functions using the Web $w object and the module name
     $memberList = InsightService::getInstance($w)->getAllMembersForInsightClass($insight_class);
@@ -29,7 +32,7 @@ function manageMembers_ALL(Web $w) {
             $row[] = $member->type;
             // the actions column is used to hold buttons that link to actions per item. Note the item id is added to the href on these buttons.
             $actions = [];
-            $actions[] = Html::b("/insights-members/editMembers/$member->id?" . $member->insight_class,'Edit');
+            $actions[] = Html::box("/insights-members/editMembers/$member->id?" . $member->insight_class,'Edit', true);
             $actions[] = Html::b("/insights-members/deleteMembers/$member->id?" . $member->insight_class, 'Delete', 'Are you sure you want to delete this member?');
             $row[] = implode('',$actions);
             $table[] = $row;

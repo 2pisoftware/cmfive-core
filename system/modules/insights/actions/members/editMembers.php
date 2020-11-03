@@ -8,11 +8,13 @@ function editMembers_GET(Web &$w) {
 	//if the id exists we will retrieve the data for that member. Otherwise we will add a new member
 	$member = !empty($p['id']) ? InsightService::getInstance($w)->getMemberForId($p['id']) : new InsightMembers($w);
 
-	//action title for adding new memeber and editing existing memeber
-	$w->ctx('title', !empty($p['id']) ? 'Edit member' : 'Add new member');
-
 	//retrieve correct insight to add new member to
-	$insight_class_name = $w->request('insight_class');
+	$insight_class_name = !empty($member->id) ? $member->insight_class_name : $w->request('insight_class');
+
+	//action title for adding new memeber and editing existing memeber
+	$insight = InsightService::getInstance($w)->getInsightInstance($insight_class_name);
+	$w->ctx('title', (!empty($p['id']) ? 'Edit member' : 'Add new member') . " for $insight->name");
+
 
 	// get the list of users that can be added to the insight
 	$userstoadd = AuthService::getInstance($w)->getUsers();
@@ -54,7 +56,7 @@ function editMembers_GET(Web &$w) {
 	}
 
 	// sending the form to the 'out' function bypasses the template. 
-	$w->out(Html::multiColForm([(empty($p['id']) ? "Add new member" : "Edit member") => [$addMemberForm]], $postUrl));
+	$w->out(Html::multiColForm([(empty($p['id']) ? "Add new member" : "Edit member") . " for $insight->name" => [$addMemberForm]], $postUrl));
 }
 
 function editMembers_POST(Web $w) {
@@ -64,7 +66,13 @@ function editMembers_POST(Web $w) {
 	$member = !empty($p['id']) ? InsightService::getInstance($w)->GetMemberForId($p['id']) : new InsightMembers($w);
 
 	//use the fill function to fill input field data into properties with matching names
-	$member->fill($_POST);
+	if (empty($member->id)) {
+		$member->fill($_POST);
+	}
+	else {
+		$member->type = $w->request('type');
+	}
+	
 	
 	// function for saving to database
 	$member->insertOrUpdate();
