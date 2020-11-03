@@ -50,7 +50,7 @@ function editMembers_GET(Web &$w) {
 	if (!empty($p['id'])) {
 		$postUrl = '/insights-members/editMembers/' . $member->id;
 	} else {
-		$postUrl = '/insights-members/editmembers';
+		$postUrl = '/insights-members/editMembers';
 	}
 
 	// sending the form to the 'out' function bypasses the template. 
