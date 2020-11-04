@@ -9,11 +9,11 @@ class TaskgroupUserInsight extends InsightBaseClass
     public function getFilters(Web $w): array
 
     {
-        return [
+        return ["Select User" =>[
             [
                 ["Users", "select", "users", null, AuthService::getInstance($w)->getUsers()]
             ]
-        ];
+        ]];
     }
 
     //Displays insights for selected member

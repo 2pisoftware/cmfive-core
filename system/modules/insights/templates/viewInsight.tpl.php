@@ -1,9 +1,9 @@
-<div class="tabs">
+<!-- <div class="tabs">
     <div class="tab-head">
-        <?php if (!empty($insight_class)) : ?>
+        <?php //if (!empty($insight_class)) : ?>
             <a href="#templates">Templates</a>
             <a href="#members">Members</a>
-        <?php endif;?>
+        <?php //endif;?>
         <a href="#database">View Database</a>
     </div>
     <div class="tab-body">
@@ -16,11 +16,14 @@
                 twig statement in your template to do this:</p>
                 <pre>{{dump(data)}}</pre>
                 <p></p>
-                <?php echo Html::box("/insight-templates/edit/{$insight_class}", "Add Template", true); ?>
-                <?php echo !empty($insight_templates_table) ? $insight_templates_table : ""; ?>
+                <?php //echo Html::box("/insight-templates/edit/{$insight_class}", "Add Template", true); ?>
+                <?php //echo !empty($insight_templates_table) ? $insight_templates_table : ""; ?>
             </div>
             <div id="members" style="display: none;" class="clearfix">
-                <?php echo Html::box("/report/addmembers/" . $report->id, " Add New Members ", true) ?>
-                <?php echo $viewmembers; ?>
-            </div>
-        <?php endif;?>
+                <?php //echo Html::box("/report/addmembers/" . $report->id, " Add New Members ", true) ?>
+                <?php //echo $viewmembers; ?>
+            </div>-->
+        <?php //endif;?>
+        
+<?php echo $filterForm;
+?>
