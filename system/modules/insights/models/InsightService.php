@@ -54,12 +54,11 @@ class InsightService extends DbService
                             $insightspath = $insight_path . DS . $file;
                             if (file_exists(ROOT_PATH . DS . $insightspath)) {
                                 include_once ROOT_PATH . DS . $insightspath;
-                                if (class_exists($classname[0])) {
+                                if (class_exists($classname[0]) && (is_subclass_of($insight, 'InsightBaseClass'))) {
                                     $insight = new $classname[0]($this->w);
                                     //is_subclass_of ( mixed $object , string $class_name [, bool $allow_string = TRUE ] ) : bool
-                                    if (is_subclass_of($insight, 'InsightBaseClass')){
                                         $availableInsights[$module][] = $insight;
-                                    }
+                                    
                                 }
                             }
                         }
@@ -119,12 +118,11 @@ class InsightService extends DbService
         return $this->GetObject('InsightMembers',$id);
     }
 
-    public function getInsightInstance(string $insight_class)
-                    
-{
-   if (!empty($insight_class) && class_exists($insight_class) && is_subclass_of($insight_class, "InsightBaseClass")) {
-      return new $insight_class();
-   }
+    public function getInsightInstance(string $insight_class): InsightBaseClass               
+    {
+    if (!empty($insight_class) && class_exists($insight_class) && is_subclass_of($insight_class, "InsightBaseClass")) {
+        return new $insight_class();
+    }
    return null;
-}
+    }
 }

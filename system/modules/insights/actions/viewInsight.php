@@ -18,7 +18,7 @@ function viewInsight_GET(Web $w) {
       $w->error('Insight does not exist', '/insights');
     }
     //var_dump($insight->getFilters($w));
-    $w->ctx('filterForm',html::multiColForm($insight->getfilters($w)," ", "GET", "Run"));
+    $w->ctx('filterForm',html::multiColForm($insight->getfilters($w),"/insights/runInsight", "GET", "Run"));
    
 }
 
