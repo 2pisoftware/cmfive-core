@@ -558,10 +558,12 @@ class ReportService extends DbService
             // get user roles
             $usr = $this->w->Auth->user();
             $roles = '';
-            foreach ($usr->getRoles() as $role) {
-                $roles .= "'" . $role . "',";
-            }
+            if (!empty($usr)) {
+                foreach ($usr->getRoles() as $role) {
+                    $roles .= "'" . $role . "',";
+                }
             $roles = rtrim($roles, ",");
+            }
 
             // $special must be in terms of a regexp for preg_match
             $special[0] = "/\{\{current_user_id\}\}/";
