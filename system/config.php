@@ -57,6 +57,13 @@ Config::set('email.transports', [
     'aws' => 'AwsTransport',
 ]);
 
+Config::set('email.transport.switches', [
+    // set to true if multiple domains &/or discreet users will break 'replyto' of transport
+    'always_from_company' => false,
+    // set to true = preserve+show discreet 'replyto' address in email body, in case of above
+    'append_from_in_body' => false,
+]);
+
 Config::set('system.gc_maxlifetime', 21600);
 
 Config::set('system.environment', 'development');

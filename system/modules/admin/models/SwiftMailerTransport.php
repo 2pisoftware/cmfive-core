@@ -66,6 +66,17 @@ class SwiftMailerTransport implements GenericTransport
                 }
 
                 // Create message
+                $switches = Config::get('email.transport.switches');
+                $fromCompany = Config::get("main.company_support_email");
+                $caller = $replyto;
+
+                if ($switches['always_from_company']) {
+                    $replyto = $fromCompany;
+                }
+                if ($switches['append_from_in_body']) {
+                    $body .= "<br><br><span>{$caller}</span><br>";
+                }
+
                 $message = new Swift_Message($subject);
                 $message->setFrom($replyto)
                     ->setTo($to)->setBody($body)
@@ -105,7 +116,7 @@ class SwiftMailerTransport implements GenericTransport
                         $message->getHeaders()->addTextHeader($header, $value);
                     }
                 }
-                $this->w->Log->setLogger(MailService::$logger)->info("Sending email to {$to} from {$replyto} with {$subject} (" . count($attachments) . " attachments)");
+                $this->w->Log->setLogger(MailService::$logger)->info("Sending email to {$to} from {$replyto} by {$caller} with {$subject} (" . count($attachments) . " attachments)");
                 $mailer_status = $mailer->send($message, $failures);
                 if (!empty($failures)) {
                     $this->w->Log->setLogger(MailService::$logger)->error("Failed to send email: " . serialize($failures));
