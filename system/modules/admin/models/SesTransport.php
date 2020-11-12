@@ -5,7 +5,7 @@
  *
  * @author Adam Buckley <adam@2pisoftware.com>
  */
-class SwiftMailerTransport implements GenericTransport
+class SesTransport implements GenericTransport
 {
     private $w;
     private $transport;
@@ -23,8 +23,7 @@ class SwiftMailerTransport implements GenericTransport
         }
 
         switch (strtolower($layer)) {
-            case "smtp":
-            case "swiftmailer":
+            case "ses":
                 $host = Config::get('email.host');
                 $port = Config::get('email.port');
                 $encryption = Config::get('email.encryption', Config::get('email.auth') == true ? 'ssl' : null);
@@ -32,17 +31,16 @@ class SwiftMailerTransport implements GenericTransport
                 $username = Config::get('email.username');
                 $password = Config::get('email.password');
 
-                return (new Swift_SmtpTransport($host, $port, $encryption))
+                $transportObject = new Swift_SmtpTransport($host, $port, $encryption);
+
+                // in case we don't have these details, don't assert
+                // (assume IAM etc will resolve)
+                if (!empty($username) && !empty($password)) {
+                    $transportObject
                     ->setUsername($username)
                     ->setPassword($password);
-                break;
-            case "sendmail":
-                $command = Config::get('email.command');
-                if (!empty($command)) {
-                    return new Swift_SendmailTransport($command);
-                } else {
-                    return new Swift_SendmailTransport();
                 }
+                return ($transportObject);
                 break;
             default:
         }
@@ -67,7 +65,13 @@ class SwiftMailerTransport implements GenericTransport
 
                 // Create message
                 $message = new Swift_Message($subject);
-                $message->setFrom($replyto)
+                $fromCompany = Config::get("main.company_support_email");
+                if (empty($fromCompany)) {
+                    $this->w->Log->error("Failed to send mail to: {$to}, from: {$replyto}, about: {$subject}: main.company_support_email not set in config");
+                    return;
+                }
+
+                $message->setFrom($fromCompany)
                     ->setTo($to)->setBody($body)
                     ->addPart($body, 'text/html');
 
