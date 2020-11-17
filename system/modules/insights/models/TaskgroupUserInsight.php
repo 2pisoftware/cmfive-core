@@ -20,7 +20,9 @@ class TaskgroupUserInsight extends InsightBaseClass
     public function run(Web $w, $parameters = []): array
 
     {
-        return TaskService::getInstance($w)->getTaskGroupsForMember($parameters['users']);
+        $results = [];
+        $results[] = new InsightReportInterface('Test Title', ['column 1', 'column 2'], [['data 1', 'data 2'], ['data 1', 'data 2']]);
+        return $results;
     }
 }
 ?>

@@ -14,3 +14,5 @@ class InsightReportInterface
         $this->data = $data;
     }
 }
+
+
