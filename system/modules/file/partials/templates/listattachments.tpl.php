@@ -4,7 +4,6 @@ if (AuthService::getInstance($w)->user()->hasRole("file_upload")) {
     echo Html::box("/file/new/" . get_class($object) . "/{$object->id}?redirect_url=" . urlencode($redirect), "Attach a File", true);
 }
 ?>
-<br/><br/>
 <div id="image_attachment_list">
     <?php echo Html::paginatedList(
         $list_items,
