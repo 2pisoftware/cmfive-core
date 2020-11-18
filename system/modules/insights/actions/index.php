@@ -17,6 +17,8 @@
   //}
 //}
 //need something like code below. Finds each instance of logged in users id in Members Table and checks for an insight_class_name and displays corresponing information about that class. Then checks type in members table for that row and displays buttons accordingly.
+//getUser
+//$user = $SESSION['user_id'];
 //foreach ($user_id) {
   //if (insight_class_name = (! empty)){
     //echo $insight->name, $name, $insight->xmlrpc_parse_method_description
