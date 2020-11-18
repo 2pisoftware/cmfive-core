@@ -280,7 +280,7 @@ function edit_POST($w)
 
         $messageObject = new Swift_Message("Invite to: " . $task->title);
         $messageObject->setTo([$contact->email]);
-        $messageObject->setReplyTo([$w->Auth->user()->getContact()->email])
+        $messageObject->setReplyTo([AuthService::getInstance($w)->user()->getContact()->email])
         ->setFrom(Config::get("main.company_support_email"));
 
         $messageObject->addPart("Your iCal is attached<br/><br/><a href='http://www.google.com/calendar/event?action=TEMPLATE&text={$task->title}" .
