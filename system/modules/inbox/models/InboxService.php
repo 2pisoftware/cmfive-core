@@ -47,6 +47,7 @@ class InboxService extends DbService {
     }
 
     function sendMail($to, $cc, $bcc, $from, $replyto, $subject, $message) {
+        $this->w->Log->info("Inbox service is asserting retired mail system");
         $mailconf = Config::get('inbox.phpmailer');//$this->w->moduleConf("inbox", "phpmailer");
 
         if ($mailconf) {
