@@ -250,6 +250,12 @@ class Config
         self::$register = json_decode($string, true);
     }
 
+    /**
+     * Extends the config by loading in additional JSON data using the $string parameter.
+     *
+     * @param string $string
+     * @return void
+     */
     public static function extendFromJson($string)
     {
         // validate
