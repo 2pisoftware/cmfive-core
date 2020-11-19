@@ -27,7 +27,16 @@ class ReportService extends DbService
     // return member for given report ID and user id
     public function getReportMember($id, $uid)
     {
-        return $this->getObject("ReportMember", array("report_id" => $id, "user_id" => $uid, "is_deleted" => 0));
+        $conferred = [];
+        $conferred[] = $this->getObject("ReportMember", ["report_id" => $id, "user_id" => $uid, "is_deleted" => 0]);
+        $groups = AuthService::getInstance($this->w)->getGroups();
+
+        foreach ($groups ?? [] as $group) {
+            if (AuthService::getInstance($this->w)->getUser($uid)->inGroup($group)) {
+                $conferred[] = $this->getObject("ReportMember", ["report_id" => $id, "user_id" => $group->id, "is_deleted" => 0]);
+            }
+        }
+        return end($conferred);
     }
 
     // Helper function to decide whether or not a user has access to a given report
@@ -163,29 +172,8 @@ class ReportService extends DbService
 
         // list of IDs to check for report membership, my ID and my group IDs
         $theid = implode(",", $myid);
-        
-        // adapt if we were given raw SQL!
-        if (!is_array($where)) {
-            // assume we only check a single equality/pair
-            $spec = explode("=", $where);
-            // anything else will be turned to mush
-            $column = explode(" ", trim($spec[0]));
-            $column = explode(".", end($column));
-            $match = trim(end($spec));
-            $match = str_replace("'", "", $match);
-            $where = [
-                end($column) => $match
-            ];
-        }
-        $filter="";
-        // enforce literal quoted match as r.[columnName] = 'something'
-        foreach ($where as $term => $check) {
-            if (!empty($check)) {
-                $tmp=explode(".", $term);
-                $term=trim(end($tmp));
-                $filter .= " and r.".$term." = ".$this->_db->quote($check)." ";
-            }
-        } //var_dump($filter);
+      
+        $filter = $this->unitaryWhereToAndClause($where);
 
         // the sql statement below return duplicate reports if they have multiple members
 
@@ -206,6 +194,38 @@ class ReportService extends DbService
         return $this->fillObjects("Report", $rows);
     }
 
+     public function unitaryWhereToAndClause($where) {
+           
+        // adapt if we were given raw SQL!
+        if (!is_array($where)) {
+            // assume we only check a single equality/pair
+            $spec = explode("=", $where);
+            // anything else will be turned to mush
+            $column = explode(" ", trim($spec[0]));
+            $column = explode(".", end($column));
+            $match = trim(end($spec));
+            $match = str_replace("'", "", $match);
+            $where = [
+                end($column) => $match
+            ];
+        }
+        $filter="";
+        // enforce literal quoted match as r.[columnName] = 'something'
+        foreach ($where as $term => $check) {
+            if (!empty($check)) {
+                $tmp=explode(".", $term);
+                $term=trim(end($tmp));
+                $tmp=explode(" ", $term);
+                $term=trim(end($tmp));
+                $check = str_replace("'", "", $check);
+                $term = str_replace("'", "", $term);
+                $term = str_replace("--", "", $term);
+                $term = str_replace(";", "", $term);
+                $filter .= " and r.".$term." = ".$this->_db->quote($check)." ";
+            }
+        } 
+        return $filter;
+     }
     // return list of APPROVED and NOT DELETED report IDs for a given a user ID as member
     public function getReportsbyUserId($id)
     {
