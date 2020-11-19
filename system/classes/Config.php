@@ -252,11 +252,18 @@ class Config
 
     public static function extendFromJson($string)
     {
-        if (!isset($string)) { return; }             
-        $source = json_decode($string, true);
-        if (empty($source)) { return; }
+        // validate
+        if (empty($string)) {
+            return;
+        }
         
-        self::merge($source, self::$register);        
+        // decode
+        $source = json_decode($string, true);
+        if (empty($source)) {
+            return;
+        }
+        
+        self::merge($source, self::$register);
     }
 
     private static function merge($source, &$target)
