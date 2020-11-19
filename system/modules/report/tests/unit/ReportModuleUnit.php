@@ -82,22 +82,7 @@ class ReportModuleUnit extends TestCase //\Codeception\Test\Unit
             $terms = explode(" ",trim($terms[1]));
             $this->assertEquals(count($terms),1);
 
-           // $this->assertSame($and, " and r.dog = 'cat' ");
         }
 
-
-        // $try = [
-        //     ["dog" => "cat"],
-        //     ["reportingthing.dog" => "cat"],
-        //     ["'dog'" => "'cat'"],
-        //     ["'dog'" => "cat"],
-        //     ["dog" => "'cat'"],
-
-        // ];
-        // foreach ($try as $sqli) {
-        //     $and = $serve->unitaryWhereToAndClause($sqli);
-        //     echo $and."\n";
-        //     $this->assertSame($and, " and r.dog = 'cat' ");
-        // }
     }
 }
