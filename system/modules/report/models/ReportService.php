@@ -36,6 +36,7 @@ class ReportService extends DbService
                 $conferred[] = $this->getObject("ReportMember", ["report_id" => $id, "user_id" => $group->id, "is_deleted" => 0]);
             }
         }
+        $conferred = array_filter($conferred);
         return end($conferred);
     }
 
@@ -159,7 +160,7 @@ class ReportService extends DbService
 
         // need to get reports for me and my groups
         // me
-        $myid[] = $this->_db->quote($id);
+        $myid = [$this->_db->quote($id)];
 
         // need to check all groups given group member could be a group
         $groups = AuthService::getInstance($this->w)->getGroups();
@@ -194,8 +195,15 @@ class ReportService extends DbService
         return $this->fillObjects("Report", $rows);
     }
 
-     public function unitaryWhereToAndClause($where) {
-           
+    /**
+     * unitary approach to form an 'and' clause for 'where' from text or key values
+     *
+     * @param string $where
+     * @param array $where
+     * @return string
+     */
+    public function unitaryWhereToAndClause($where)
+    {
         // adapt if we were given raw SQL!
         if (!is_array($where)) {
             // assume we only check a single equality/pair
@@ -223,9 +231,9 @@ class ReportService extends DbService
                 $term = str_replace(";", "", $term);
                 $filter .= " and r.".$term." = ".$this->_db->quote($check)." ";
             }
-        } 
+        }
         return $filter;
-     }
+    }
     // return list of APPROVED and NOT DELETED report IDs for a given a user ID as member
     public function getReportsbyUserId($id)
     {
