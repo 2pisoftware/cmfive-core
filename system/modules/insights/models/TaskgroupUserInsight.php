@@ -25,4 +25,3 @@ class TaskgroupUserInsight extends InsightBaseClass
         return $results;
     }
 }
-?>
