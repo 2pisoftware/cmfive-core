@@ -106,6 +106,9 @@ class InsightService extends DbService
     //check if user is a member of an insight
     public function IsMember($insight_class_name, $user_id) 
     {
+        if(AuthService::getInstance($this->w)->getUser($user_id)->hasRole("insights_admin")){
+            return true;
+        }
         $member = $this->getObject('InsightMembers',['is_deleted' => 0,'insight_class_name' => $insight_class_name, 'user_id' => $user_id]);
         if (empty ($member)){
             return false;

@@ -18,12 +18,16 @@ function editMembers_GET(Web &$w) {
 
 	// get the list of users that can be added to the insight
 	$userstoadd = AuthService::getInstance($w)->getUsers();
+	$members = $insight->getMembers($w);
 
 	// strip the dumplicates. dealing with an object so no quick solution
 	$users = array();
 	foreach ($userstoadd as $user) {
 		if (!in_array($user, $users, true)) {
-			if (!InsightService::getInstance($w)->IsMember($insight_class_name, $user->id)){
+			//if (!InsightService::getInstance($w)->IsMember($insight_class_name, $user->id)){
+			//var_dump(array_search($user->id, array_column($members, 'user_id')));
+			//die;
+			if (array_search($user->id, array_column($members, 'user_id')) ===FALSE){
 				$users[] = $user;
 			}
 		}
