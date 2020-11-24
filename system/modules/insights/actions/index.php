@@ -58,7 +58,7 @@ function index_ALL(Web $w)
         foreach ($modules as $name=>$module) {
             if (!empty($module)) {
               foreach ($module as $insight){
-                if (IsMember = true) {
+                if (InsightService::getInstance($w)->IsMember(Get_class($insight), $user_id)) {
                   $row = [];
                   // add values to the row in the same order as the table headers
                   $row[] = $insight->name;
