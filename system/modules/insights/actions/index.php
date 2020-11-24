@@ -44,6 +44,8 @@ function index_ALL(Web $w)
     LogService::getInstance($w)->setLogger("INSIGHTS")->debug("This is an INSIGHTS.INFO message");
     LogService::getInstance($w)->setLogger("INSIGHTS")->warn("This is an INSIGHTS.INFO message");
 
+    //get userId for logged in user
+    $user_id =   AuthService::getInstance($w)->user()->id;
 
     // access service functions using the Web $w object and the module name
     $modules = InsightService::getInstance($w)->getAllInsights('all');
@@ -56,17 +58,19 @@ function index_ALL(Web $w)
         foreach ($modules as $name=>$module) {
             if (!empty($module)) {
               foreach ($module as $insight){
-                $row = [];
-                // add values to the row in the same order as the table headers
-                $row[] = $insight->name;
-                $row[] = $name;
-                $row[] = $insight->description;
-                // the actions column is used to hold buttons that link to actions per insight. Note the insight id is added to the href on these buttons.
-                $actions = [];
-                $actions[] = Html::b('/insights/viewInsight/' . Get_class($insight),'View');
-                $actions[] = Html::b('/insights/manageMembers?insight_class=' . Get_class($insight),'Manage Members');
-                $row[] = implode('', $actions);
-                $table[] = $row;
+                if (IsMember = true) {
+                  $row = [];
+                  // add values to the row in the same order as the table headers
+                  $row[] = $insight->name;
+                  $row[] = $name;
+                  $row[] = $insight->description;
+                  // the actions column is used to hold buttons that link to actions per insight. Note the insight id is added to the href on these buttons.
+                  $actions = [];
+                  $actions[] = Html::b('/insights/viewInsight/' . Get_class($insight),'View');
+                  $actions[] = Html::b('/insights/manageMembers?insight_class=' . Get_class($insight),'Manage Members');
+                  $row[] = implode('', $actions);
+                  $table[] = $row;
+                }
               }
           }
       }
