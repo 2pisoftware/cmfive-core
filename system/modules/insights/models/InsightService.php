@@ -129,4 +129,15 @@ class InsightService extends DbService
    return null;
     }
 
+    public function isInsightOwner($insight_class_name, $user_id, $type) {
+        if(AuthService::getInstance($this->w)->getUser($user_id)->hasRole("insights_admin")){
+            return true;
+        }
+        $insight_member = $this->getObject('InsightMembers',['is_deleted' => 0,'insight_class_name' => $insight_class_name, 'user_id' => $user_id, 'type' => $type]);
+        if ($insight_member = 'OWNER'){
+            return true;
+        }
+        return false;
+    }
+
 }
