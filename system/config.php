@@ -51,6 +51,7 @@ Config::set('system.csrf', [
 ]);
 
 Config::set('email.transports', [
+    'ses' => 'SesTransport',
     'smtp' => 'SwiftMailerTransport',
     'swiftmailer' => 'SwiftMailerTransport',
     'sendmail' => 'SwiftMailerTransport',
