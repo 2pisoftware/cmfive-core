@@ -33,6 +33,8 @@
     //}
 //}
 
+use function PHPSTORM_META\type;
+
 function index_ALL(Web $w)
 {
     $w->ctx("title", "Insights List");
@@ -46,6 +48,8 @@ function index_ALL(Web $w)
 
     //get userId for logged in user
     $user_id =   AuthService::getInstance($w)->user()->id;
+    //var_dump($user_id);
+    //die;
 
     // access service functions using the Web $w object and the module name
     $modules = InsightService::getInstance($w)->getAllInsights('all');
@@ -67,7 +71,10 @@ function index_ALL(Web $w)
                   // the actions column is used to hold buttons that link to actions per insight. Note the insight id is added to the href on these buttons.
                   $actions = [];
                   $actions[] = Html::b('/insights/viewInsight/' . Get_class($insight),'View');
-                  $actions[] = Html::b('/insights/manageMembers?insight_class=' . Get_class($insight),'Manage Members');
+                  if(
+                    InsightService::getInstance($w)->isInsightOwner($user_id, get_class($insight))) {
+                      $actions[] = Html::b('/insights/manageMembers?insight_class=' . Get_class($insight),'Manage Members');
+                    }
                   $row[] = implode('', $actions);
                   $table[] = $row;
                 }

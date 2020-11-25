@@ -94,6 +94,9 @@ class InsightService extends DbService
             $this->w->error('No user provided');
         }
         $insight_member = $this->getObject('InsightMembers',['is_deleted' => 0,'insight_class_name' => $classname, 'user_id' => $user_id]);
+        if (empty($insight_member)) {
+            return null;
+        }
         return $insight_member->type;
     }
 
@@ -106,7 +109,8 @@ class InsightService extends DbService
     //check if user is a member of an insight
     public function IsMember($insight_class_name, $user_id) 
     {
-        if(AuthService::getInstance($this->w)->getUser($user_id)->hasRole("insights_admin")){
+
+        if(AuthService::getInstance($this->w)->getUser($user_id)->hasRole('insights_admin')){
             return true;
         }
         $member = $this->getObject('InsightMembers',['is_deleted' => 0,'insight_class_name' => $insight_class_name, 'user_id' => $user_id]);
@@ -129,15 +133,13 @@ class InsightService extends DbService
    return null;
     }
 
-    public function isInsightOwner($insight_class_name, $user_id, $type) {
-        if(AuthService::getInstance($this->w)->getUser($user_id)->hasRole("insights_admin")){
+    public function isInsightOwner($user_id, $insight_class) {
+        if(AuthService::getInstance($this->w)->getUser($user_id)->hasRole('insights_admin')){
             return true;
         }
-        $insight_member = $this->getObject('InsightMembers',['is_deleted' => 0,'insight_class_name' => $insight_class_name, 'user_id' => $user_id, 'type' => $type]);
-        if ($insight_member = 'OWNER'){
+        if (InsightService::getInstance($this->w)->getUserMembershipForInsight($insight_class, $user_id) == "OWNER") {
             return true;
-        }
-        return false;
+        } 
     }
 
 }
