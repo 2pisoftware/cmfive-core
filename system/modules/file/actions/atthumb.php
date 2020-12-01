@@ -14,7 +14,6 @@ function atthumb_GET(Web &$w)
         // Check if theres a cached thumbnail
         if ($attachment->hasCachedThumbnail()) {
             // Display cached version
-            // $w->Log->debug("Serving cached thumbnail: " . $attachment->getThumbnailCachePath());
             echo file_get_contents($attachment->getThumbnailCachePath());
         } else {
             // Generate thumbnail and cache

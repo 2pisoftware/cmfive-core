@@ -38,6 +38,22 @@ class Attachment extends DbObject
     public $skip_path_prefix;
 
     /**
+     * EXIF image data that is captured from image Attachments. This property is lazily loaded
+     * and therefore may be null. Use Attachment::getImageExifData() to load and fetch the data.
+     *
+     * @var string
+     */
+    public $exif_data;
+
+    /**
+     * XMP image data that is catpured from image Attachments. This property is lazily loaded
+     * and therefore may be null. Use Attachment::getImageXmpData() to load and fetch the data.
+     *
+     * @var string
+     */
+    public $xmp_data;
+
+    /**
      * Used by the task_attachment_attachment_added_task hook to skip the Attachment added notification if true
      * @var boolean
      */
@@ -580,5 +596,81 @@ class Attachment extends DbObject
             }
         }
         return false;
+    }
+
+    /**
+     * Returns the image Attachment's EXIF data. If the exif_data property is not set the Attachment will
+     * attempt to scrape it from the file. This method will only work on images.
+     *
+     * @return string|null
+     */
+    public function getImageExifData(): ?string
+    {
+        if (!$this->isImage()) {
+            return null;
+        }
+
+        if (!empty($this->exif_data)) {
+            return $this->exif_data;
+        }
+
+        $image_data = $this->getContent(true);
+
+        // Because 'exif_read_data' throws a warning and not an exception when an unsupported image type is given we
+        // have to set our own error handler temporarily to elevate the warning to an exception. The catch statement
+        // will then pick it up and it can be handled.
+        try {
+            set_error_handler(function ($errno, $errmsg, $filename, $linenum, $vars) {
+                if ($errno === E_WARNING) {
+                    throw new Exception("Warning triggered, elevating to exception, errmsg: $errmsg, filename: $filename, linenum: $linenum");
+                }
+            });
+
+            $this->exif_data = json_encode(exif_read_data("data://$this->mimetype;base64," . base64_encode($image_data)));
+        } catch (Throwable $t) {
+            LogService::getInstance($this->w)->setLogger("FILE")->error("Failed to read exif data: {$t->getMessage()}");
+            return null;
+        } finally {
+            restore_error_handler();
+        }
+
+        if (!$this->update()) {
+            LogService::getInstance($this->w)->setLogger("FILE")->error("Failed to update Attachment in the database");
+            return null;
+        }
+
+        return $this->exif_data;
+    }
+
+    /**
+     * Return the image Attachment's XMP data. IF the xmp_data property is not set the Attachment will
+     * attempt to scrape it from the file. This method will only work on images.
+     *
+     * @return string|null
+     */
+    public function getImageXmpData(): ?string
+    {
+        if (!$this->isImage()) {
+            return null;
+        }
+
+        if (!empty($this->xmp_data)) {
+            return $this->xmp_data;
+        }
+
+        $image_data = $this->getContent(true);
+
+        // Find where the XMP data starts and ends, then pull that substring out.
+        $xmp_data_start = strpos($image_data, "<x:xmpmeta");
+        $xmp_data_end = strpos($image_data, "</x:xmpmeta>");
+        $xmp_length = $xmp_data_end - $xmp_data_start;
+        $this->xmp_data = substr($image_data, $xmp_data_start, $xmp_length + 12);
+
+        if (!$this->update()) {
+            LogService::getInstance($this->w)->setLogger("FILE")->error("Failed to update Attachment in the database");
+            return null;
+        }
+
+        return $this->xmp_data;
     }
 }
