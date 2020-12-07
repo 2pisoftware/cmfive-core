@@ -10,7 +10,7 @@ if (AuthService::getInstance($w)->user()->hasRole("file_upload")) {
         $page,
         $page_size,
         FileService::getInstance($w)->countAttachments($object),
-        "/cpu-upload/uploadedit/$object->id#attachments",
+        $redirect,
         null,
         "asc",
         "attachment__page",
