@@ -27,6 +27,10 @@ function exereport_ALL(Web &$w) {
     if (!empty($p['id'])) {
         // get member
         $member = $w->Report->getReportMember($p['id'], $w->session('user_id'));
+        if (empty($member)) {
+            $w->ctx("showreport", "No Report for user");
+            return;
+        }
 
         // get the relevant report
         $rep = $w->Report->getReportInfo($p['id']);
