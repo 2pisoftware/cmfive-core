@@ -59,7 +59,7 @@ class DbService
                 $instance->_web_init();
             }
         }
-        
+
         return $instance;
     }
 
@@ -203,11 +203,11 @@ class DbService
         }
 
         if (!empty($order_by)) {
-            $this->_db->order_by($order_by);
+            $this->_db->orderBy($order_by);
         }
 
         $this->buildSelect($o, $table, $class);
-        $result = $this->_db->fetch_row();
+        $result = $this->_db->fetchRow();
 
         if ($result) {
             $obj = $this->getObjectFromRow($class, $result, true);
@@ -236,7 +236,7 @@ class DbService
         // Automatically converts keys with different database values
         $parts = [];
         foreach ($object->getDbTableColumnNames() as $k) {
-            if (0 === strpos($k, 'dt_') || 0 === strpos($k, 'd_')) { //  || 0 === strpos($k, 't_')
+            if (0 === strpos($k, 'dt_') || 0 === strpos($k, 'd_')) {
                 // This is MySQL specific!
                 $parts[] = "UNIX_TIMESTAMP($table.`" . $object->getDbColumnName($k) . "`) AS `$k`";
             } elseif ($k != $object->getDbColumnName($k)) {
@@ -312,7 +312,7 @@ class DbService
 
         // Ordering
         if (!empty($order_by)) {
-            $this->_db->order_by($order_by);
+            $this->_db->orderBy($order_by);
         }
 
         // Offset
