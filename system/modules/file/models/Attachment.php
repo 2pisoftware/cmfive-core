@@ -21,20 +21,37 @@ class Attachment extends DbObject
 
     public $parent_table;
     public $parent_id;
-    public $dt_created; // datetime
-    public $dt_modified; // datetime
-    public $modifier_user_id; // bigint
-    public $filename; // publicchar(255)
-    public $mimetype; // publicchar(255)
-    public $title; // publicchar(255)
-    public $description; // text
-    public $fullpath; // publicchar(255)
-    public $is_deleted; // tinyint 0/1
+    public $dt_created;
+    public $dt_modified;
+    public $modifier_user_id;
+    public $filename;
+    public $mimetype;
+    public $title;
+    public $description;
+    public $fullpath;
+    public $is_deleted;
     public $type_code; // this is a type of attachment, eg. Receipt of Deposit, PO Variation, Sitephoto, etc.
     public $adapter;
     public $is_public;
     public $_restrictable;
     public $dt_viewing_window; // dt of access to list attachments. checked against config file.docx_viewing_window_duration to bypass authentication.
+    public $skip_path_prefix;
+
+    /**
+     * EXIF image data that is captured from image Attachments. This property is lazily loaded
+     * and therefore may be null. Use Attachment::getImageExifData() to load and fetch the data.
+     *
+     * @var string
+     */
+    public $exif_data;
+
+    /**
+     * XMP image data that is catpured from image Attachments. This property is lazily loaded
+     * and therefore may be null. Use Attachment::getImageXmpData() to load and fetch the data.
+     *
+     * @var string
+     */
+    public $xmp_data;
 
     /**
      * Used by the task_attachment_attachment_added_task hook to skip the Attachment added notification if true
@@ -54,9 +71,14 @@ class Attachment extends DbObject
         $this->fullpath = str_replace(FILE_ROOT, "", $this->fullpath);
         // Get mimetype
         if (empty($this->mimetype)) {
-            $this->mimetype = $this->w->getMimetype($this->fullpath);
+            switch ($this->adapter) {
+                case "local":
+                    $this->mimetype = $this->w->getMimetype($this->fullpath);
+                    break;
+                default:
+                    $this->mimetype = $this->w->getMimetypeFromString($this->getContent());
+            }
         }
-
 
         $this->is_deleted = 0;
         parent::insert($force_validation);
@@ -106,7 +128,7 @@ class Attachment extends DbObject
     public function getImg()
     {
         if ($this->isImage()) {
-            return $this->File->getImg($this->fullpath);
+            return FileService::getInstance($this->w)->getImg($this->fullpath);
         }
     }
 
@@ -130,17 +152,17 @@ class Attachment extends DbObject
      */
     public function getThumb()
     {
-        return Html::box($this->File->getDownloadUrl($this->fullpath), $this->File->getThumbImg($this->fullpath));
+        return Html::box(FileService::getInstance($this->w)->getDownloadUrl($this->fullpath), FileService::getInstance($this->w)->getThumbImg($this->fullpath));
     }
 
     public function getDownloadUrl()
     {
-        return $this->File->getDownloadUrl($this->fullpath);
+        return FileService::getInstance($this->w)->getDownloadUrl($this->fullpath);
     }
 
     public function getCodeTypeTitle()
     {
-        $t = $this->w->Auth->getObject('AttachmentType', ['code' => $this->type_code, 'table_name' => $this->parent_table]);
+        $t = AuthService::getInstance($this->w)->getObject('AttachmentType', ['code' => $this->type_code, 'table_name' => $this->parent_table]);
 
         if ($t) {
             return $t->title;
@@ -199,7 +221,7 @@ class Attachment extends DbObject
      *
      * @return string
      */
-    public function getFilePath()
+    public function getFilePath(): string
     {
         if (file_exists(ROOT_PATH . "/" . Attachment::CACHE_PATH . "/". Attachment::TEMP_PATH . "/" . FileService::getCacheRuntimePath() . "/" . $this->id . "/" . $this->dt_created . "/" . $this->filename)) {
             return ROOT_PATH . "/" . Attachment::CACHE_PATH . "/". Attachment::TEMP_PATH . "/" . FileService::getCacheRuntimePath() . "/" . $this->id . "/" . $this->dt_created;
@@ -209,11 +231,19 @@ class Attachment extends DbObject
 
         switch ($this->adapter) {
             case "s3":
+                if ($this->skip_path_prefix) {
+                    return $path;
+                }
+
                 if (strpos($path, "uploads/") === false) {
                     return "uploads/" . $path;
                 }
                 return $path;
             default:
+                if ($this->skip_path_prefix) {
+                    return $path;
+                }
+
                 if (strpos($path, FILE_ROOT . "attachments/") !== false) {
                     return $path;
                 }
@@ -230,9 +260,9 @@ class Attachment extends DbObject
      *
      * @return \Gaufrette\Filesystem
      */
-    public function getFilesystem()
+    public function getFilesystem(): \Gaufrette\Filesystem
     {
-        return $this->File->getSpecificFilesystem($this->adapter, $this->getFilePath());
+        return FileService::getInstance($this->w)->getSpecificFilesystem($this->adapter, $this->getFilePath());
     }
 
     /**
@@ -240,7 +270,7 @@ class Attachment extends DbObject
      *
      * @return string mimetype
      */
-    public function getMimetype()
+    public function getMimetype(): string
     {
         return $this->mimetype;
     }
@@ -250,13 +280,13 @@ class Attachment extends DbObject
      *
      * @return \Gaufrette\File
      */
-    public function getFile()
+    public function getFile(): \Gaufrette\File
     {
         $cache_directory = ROOT_PATH . "/" . Attachment::CACHE_PATH . "/" . Attachment::TEMP_PATH . "/" . FileService::getCacheRuntimePath() . "/" . $this->id . "/" . $this->dt_created;
         $cached_file_path = $cache_directory . "/" . $this->filename;
 
         if (file_exists($cached_file_path)) {
-            return new File($this->filename, $this->w->File->getSpecificFilesystem("local", $cache_directory));
+            return new File($this->filename, FileService::getInstance($this->w)->File->getSpecificFilesystem("local", $cache_directory));
         }
 
         return new File($this->filename, $this->getFilesystem());
@@ -267,7 +297,7 @@ class Attachment extends DbObject
      *
      * @return string content
      */
-    public function getContent($cache_locally = false)
+    public function getContent($cache_locally = false): string
     {
         $file = $this->getFile();
         if (empty($file) || !$file->exists()) {
@@ -318,7 +348,7 @@ class Attachment extends DbObject
             $content = $this->getContent();
             $current_file = $this->getFile();
         } catch (InvalidArgumentException $e) {
-            $this->w->Log->setLogger("FILE")->error("Attachment's {id: $this->id} file does not exist at path: $this->fullpath");
+            LogService::getInstance($this->w)->setLogger("FILE")->error("Attachment's {id: $this->id} file does not exist at path: $this->fullpath");
             return;
         }
 
@@ -333,7 +363,7 @@ class Attachment extends DbObject
             try {
                 $current_file->delete();
             } catch (RuntimeException $ex) {
-                $this->w->Log->setLogger("FILE")->error("Cannot delete file: " . $ex->getMessage());
+                LogService::getInstance($this->w)->setLogger("FILE")->error("Cannot delete file: " . $ex->getMessage());
             }
         }
 
@@ -420,15 +450,15 @@ class Attachment extends DbObject
         $this->filename = $filename;
 
         $filesystemPath = "attachments/" . $this->parent_table . '/' . date('Y/m/d') . '/' . $this->parent_id . '/';
-        $filesystem = $this->w->file->getFilesystem($this->w->file->getFilePath($filesystemPath));
+        $filesystem = FileService::getInstance($this->w)->file->getFilesystem(FileService::getInstance($this->w)->file->getFilePath($filesystemPath));
         if (empty($filesystem)) {
-            $this->w->Log->setLogger("FILE_SERVICE")->error("Cannot save file, no filesystem returned");
+            LogService::getInstance($this->w)->setLogger("FILE_SERVICE")->error("Cannot save file, no filesystem returned");
             return null;
         }
 
         $file = new File($filename, $filesystem);
 
-        $this->adapter = $this->w->file->getActiveAdapter();
+        $this->adapter = FileService::getInstance($this->w)->file->getActiveAdapter();
         $this->fullpath = str_replace(FILE_ROOT, "", $filesystemPath . $filename);
 
         //Check for posted content
@@ -523,7 +553,7 @@ class Attachment extends DbObject
                 $original_image = imagecreatefromgif($full_file_path);
                 break;
             default:
-                $this->w->Log->setLogger("FILE")->error("Unable to convert image with mime type " . $image_info["mime"] . " to JPEG");
+                LogService::getInstance($this->w)->setLogger("FILE")->error("Unable to convert image with mime type " . $image_info["mime"] . " to JPEG");
                 return false;
         }
 
@@ -566,5 +596,81 @@ class Attachment extends DbObject
             }
         }
         return false;
+    }
+
+    /**
+     * Returns the image Attachment's EXIF data. If the exif_data property is not set the Attachment will
+     * attempt to scrape it from the file. This method will only work on images.
+     *
+     * @return string|null
+     */
+    public function getImageExifData(): ?string
+    {
+        if (!$this->isImage()) {
+            return null;
+        }
+
+        if (!empty($this->exif_data)) {
+            return $this->exif_data;
+        }
+
+        $image_data = $this->getContent(true);
+
+        // Because 'exif_read_data' throws a warning and not an exception when an unsupported image type is given we
+        // have to set our own error handler temporarily to elevate the warning to an exception. The catch statement
+        // will then pick it up and it can be handled.
+        try {
+            set_error_handler(function ($errno, $errmsg, $filename, $linenum, $vars) {
+                if ($errno === E_WARNING) {
+                    throw new Exception("Warning triggered, elevating to exception, errmsg: $errmsg, filename: $filename, linenum: $linenum");
+                }
+            });
+
+            $this->exif_data = json_encode(exif_read_data("data://$this->mimetype;base64," . base64_encode($image_data)));
+        } catch (Throwable $t) {
+            LogService::getInstance($this->w)->setLogger("FILE")->error("Failed to read exif data: {$t->getMessage()}");
+            return null;
+        } finally {
+            restore_error_handler();
+        }
+
+        if (!$this->update()) {
+            LogService::getInstance($this->w)->setLogger("FILE")->error("Failed to update Attachment in the database");
+            return null;
+        }
+
+        return $this->exif_data;
+    }
+
+    /**
+     * Return the image Attachment's XMP data. IF the xmp_data property is not set the Attachment will
+     * attempt to scrape it from the file. This method will only work on images.
+     *
+     * @return string|null
+     */
+    public function getImageXmpData(): ?string
+    {
+        if (!$this->isImage()) {
+            return null;
+        }
+
+        if (!empty($this->xmp_data)) {
+            return $this->xmp_data;
+        }
+
+        $image_data = $this->getContent(true);
+
+        // Find where the XMP data starts and ends, then pull that substring out.
+        $xmp_data_start = strpos($image_data, "<x:xmpmeta");
+        $xmp_data_end = strpos($image_data, "</x:xmpmeta>");
+        $xmp_length = $xmp_data_end - $xmp_data_start;
+        $this->xmp_data = substr($image_data, $xmp_data_start, $xmp_length + 12);
+
+        if (!$this->update()) {
+            LogService::getInstance($this->w)->setLogger("FILE")->error("Failed to update Attachment in the database");
+            return null;
+        }
+
+        return $this->xmp_data;
     }
 }
