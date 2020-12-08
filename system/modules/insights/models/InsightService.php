@@ -16,7 +16,7 @@ class InsightService extends DbService
         // Read module directory for all insights
         if ($insights === 'all') {
             foreach ($this->w->modules() as $insight) {
-                $availableInsights += $this->getInsightsForModule($insight);
+                $availableInsights += $this->getInsightsForModule($insight)
             }
         } else {
             $availableInsights = $this->getInsightsForModule($insights);
