@@ -249,6 +249,48 @@ class Config
     {
         self::$register = json_decode($string, true);
     }
+
+    /**
+     * Extends the config by loading in additional JSON data using the $string parameter.
+     *
+     * @param string $string
+     * @return void
+     */
+    public static function extendFromJson($string)
+    {
+        // validate
+        if (empty($string)) {
+            return;
+        }
+        
+        // decode
+        $source = json_decode($string, true);
+        if (empty($source)) {
+            return;
+        }
+        
+        self::merge($source, self::$register);
+    }
+
+    private static function merge($source, &$target)
+    {
+        // highly nested arrays may cause a stack overflow
+        if (!is_array($source)) {
+            return;
+        }
+
+        foreach ($source as $key => $value) {
+            if (array_key_exists($key, $target)) {
+                if (is_array($value)) {
+                    self::merge($source[$key], $target[$key]);
+                } else {
+                    $target[$key] = $value;
+                }
+            } else {
+                $target[$key] = $source[$key];
+            }
+        }
+    }
 }
 
 /**

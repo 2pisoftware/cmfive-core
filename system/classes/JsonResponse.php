@@ -7,31 +7,62 @@ class JsonResponse
     public $message = '';
     public $data = [];
 
+    /**
+     * Sets status code that will be set in the header
+     *
+     * @param integer $status
+     * @return self
+     */
     public function setStatus(int $status)
     {
         $this->status = $status;
         return $this;
     }
 
+    /**
+     * Sets whether or not the request was successful
+     *
+     * @param boolean $success
+     * @return self
+     */
     public function setSuccess(bool $success)
     {
         $this->success = $success;
         return $this;
     }
 
-    public function setMessage(string $message)
+    /**
+     * Sets message to be sent to the client
+     *
+     * @param string $message
+     * @return self
+     */
+    public function setMessage(?string $message)
     {
         $this->message = $message;
         return $this;
     }
 
+    /**
+     * Sets data to be sent to the client
+     *
+     * @param mixed $data
+     * @return self
+     */
     public function setData($data)
     {
         $this->data = $data;
         return $this;
     }
 
-    public function setSuccessfulResponse($message, $data)
+    /**
+     * Shorthand function for creating a successful response
+     *
+     * @param string $message
+     * @param mixed $data
+     * @return self
+     */
+    public function setSuccessfulResponse(?string $message, $data)
     {
         $this->status = 200;
         $this->success = true;
@@ -40,7 +71,13 @@ class JsonResponse
         return $this;
     }
 
-    public function setMissingResponse($message)
+    /**
+     * Shorthand function for creating a not found (404) response
+     *
+     * @param string $message
+     * @return self
+     */
+    public function setNotFoundResponse(?string $message)
     {
         $this->status = 404;
         $this->success = false;
@@ -49,7 +86,26 @@ class JsonResponse
         return $this;
     }
 
-    public function setErrorResponse($message, $data)
+    /**
+     * Shorthand function for creating a not found (404) response
+     *
+     * @deprecated v3.6.13
+     * @param string $message
+     * @return self
+     */
+    public function setMissingResponse(?string $message)
+    {
+        return $this->setNotFoundResponse($message);
+    }
+
+    /**
+     * Shorthand function for creating a server error response
+     *
+     * @param string $message
+     * @param mixed $data
+     * @return self
+     */
+    public function setErrorResponse(?string $message, $data)
     {
         $this->status = 500;
         $this->success = false;
@@ -58,8 +114,14 @@ class JsonResponse
         return $this;
     }
 
-    public function __toString()
+    /**
+     * Converts class into a json encoded response
+     *
+     * @return string
+     */
+    public function __toString(): string
     {
+        header('Content-Type: application/json');
         http_response_code($this->status);
 
         return json_encode($this);
