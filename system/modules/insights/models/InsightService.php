@@ -15,8 +15,8 @@ class InsightService extends DbService
 
         // Read module directory for all insights
         if ($insights === 'all') {
-            foreach ($this->w->modules() as $insight) {
-                $availableInsights += $this->getInsightsForModule($insight)
+            foreach ($this->w->modules() as $module) {
+                $availableInsights += $this->getInsightsForModule($module);
             }
         } else {
             $availableInsights = $this->getInsightsForModule($insights);
@@ -127,10 +127,10 @@ class InsightService extends DbService
 
     public function getInsightInstance(string $insight_class): InsightBaseClass               
     {
-    if (!empty($insight_class) && class_exists($insight_class) && is_subclass_of($insight_class, "InsightBaseClass")) {
-        return new $insight_class();
-    }
-   return null;
+        if (!empty($insight_class) && class_exists($insight_class) && is_subclass_of($insight_class, "InsightBaseClass")) {
+            return new $insight_class();
+        }
+        return null;
     }
 
     public function isInsightOwner($user_id, $insight_class) {
@@ -141,7 +141,7 @@ class InsightService extends DbService
             return true;
         } 
     }
-    public function getUserSelectOptions() {
-    return ($this->_db->sql("select u.id as value, concat(c.firstname,' ',c.lastname) as title from user u, contact c where u.contact_id = c.id order by title")->fetch_all());
-    }
+    // public function getUserSelectOptions() {
+    // return ($this->_db->sql("select u.id as value, concat(c.firstname,' ',c.lastname) as title from user u, contact c where u.contact_id = c.id order by title")->fetchAll());
+    // }
 }
