@@ -13,7 +13,7 @@ if (AuthService::getInstance($w)->user()->hasRole("file_upload")) {
         $redirect,
         null,
         "asc",
-        "attachment__page",
+        "attachment__{$object->id}__page",
         "attachment__page-size"
     ); ?>
 </div>

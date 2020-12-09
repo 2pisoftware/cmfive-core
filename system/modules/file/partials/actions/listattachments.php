@@ -4,13 +4,13 @@ namespace System\Modules\File;
 
 function listattachments(\Web $w, $params)
 {
-    $page = $w->sessionOrRequest("attachment__page", 1);
+    $object = $params["object"];
+    $redirect = $params["redirect"];
+
+    $page = $w->sessionOrRequest("attachment__{$object->id}__page", 1);
     $page_size = 6;
     $w->ctx("page", $page);
     $w->ctx("page_size", $page_size);
-
-    $object = $params["object"];
-    $redirect = $params["redirect"];
 
     $attachments = \FileService::getInstance($w)->getAttachments($object, !empty($object->id) ? $object->id : null, $page, $page_size);
     $list_items = [];
