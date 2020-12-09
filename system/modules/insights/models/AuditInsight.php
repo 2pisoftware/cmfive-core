@@ -14,8 +14,11 @@ class AuditInsight extends InsightBaseClass
        $actionSelectOptions = $this->_db->sql("select distinct action as value, concat(module,'/',action) as title from audit order by title")->fetch_all();
 
        return [
-            ["dt_form","date", "Date From (required)"];
-            ["Users", "select", "users", null, AuthService::getInstance($w)->getUsers()]
+            ["dt_from", "date", "Date From (required)", $this->_db->sql(a.dt_created >= '{{dt_from}} 00:00:00')]
+            ["dt_to", "date", "Date To (required)", $this->_db->sql(and a.dt_created <= '{{dt_to}} 23:59:59')]
+            ["Users", "select", "users", null, AuthService::getInstance($w)->getUsers()];
+            ["module", "select", "Module", $moduleSelectOptions]
+
        ]
     }
 //     [[dt_from||date||Date From]]
