@@ -53,6 +53,7 @@ class FileService extends DbService
     /**
      * Return the path adjusted to the currently active adapter.
      *
+     * @deprecated v3.6
      * @param string file path
      *
      * @return string resulting file path
@@ -359,24 +360,30 @@ class FileService extends DbService
     /**
      * Lookup the attachments for a given object
      *
-     * @param mixed $objectOrTable
+     * @param mixed $object_or_table
      * @param mixed $id
+     * @param int|null $page
+     * @param int|null $page_size
      *
-     * @return array
+     * @return array[Attachment]
      */
-    public function getAttachments($objectOrTable, $id = null)
+    public function getAttachments($object_or_table, $id = null, ?int $page = null, ?int $page_size = null) : array
     {
-        $table = '';
-        if (is_scalar($objectOrTable)) {
-            $table = $objectOrTable;
-        } elseif (is_a($objectOrTable, "DbObject")) {
-            $table = $objectOrTable->getDbTableName();
-            $id = $objectOrTable->id;
+        $table = "";
+
+        if (is_scalar($object_or_table)) {
+            $table = $object_or_table;
+        } elseif (is_a($object_or_table, "DbObject")) {
+            $table = $object_or_table->getDbTableName();
+            $id = $object_or_table->id;
         }
-        if (!empty($table) && !empty($id)) {
-            return $this->getObjects('Attachment', ['parent_table' => $table, 'parent_id' => $id, 'is_deleted' => 0]);
-        }
-        return null;
+
+        return $this->getObjectsFromRows("Attachment", $this->_db->get("attachment")
+            ->where("parent_table", $table)
+            ->and("parent_id", $id)
+            ->and("is_deleted", 0)
+            ->paginate($page, $page_size)
+            ->fetchAll());
     }
 
     public function getAttachmentsForAdapter($adapter)
@@ -389,18 +396,18 @@ class FileService extends DbService
     /**
      * Counts attachments for a given object/table and id
      *
-     * @param mixed $objectOrTable
-     * @param int (option) $id
+     * @param mixed $object_or_table
+     * @param int $id
      *
      * @return int
      */
-    public function countAttachments($objectOrTable, $id = null)
+    public function countAttachments($object_or_table, $id = null)
     {
-        if (is_scalar($objectOrTable)) {
-            $table = $objectOrTable;
-        } elseif (is_a($objectOrTable, "DbObject")) {
-            $table = $objectOrTable->getDbTableName();
-            $id = $objectOrTable->id;
+        if (is_scalar($object_or_table)) {
+            $table = $object_or_table;
+        } elseif (is_a($object_or_table, "DbObject")) {
+            $table = $object_or_table->getDbTableName();
+            $id = $object_or_table->id;
         }
 
         if ($table && $id) {
@@ -433,7 +440,7 @@ class FileService extends DbService
      *
      * @param mixed $id attachment ID
      *
-     * @return Attachment
+     * @return Attachment|null
      */
     public function getAttachment($id)
     {

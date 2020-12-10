@@ -6,7 +6,12 @@
  */
 class AxiosResponse extends JsonResponse
 {
-    public function __toString()
+    /**
+     * Converts class into a json encoded response for the Axios AJAX library
+     *
+     * @return string
+     */
+    public function __toString(): string
     {
         http_response_code($this->status);
 

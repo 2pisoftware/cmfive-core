@@ -4,7 +4,7 @@ function atimage_GET(Web $w)
 {
     list($id) = $w->pathMatch();
 
-    $attachment = $w->File->getAttachment($id);
+    $attachment = FileService::getInstance($w)->getAttachment($id);
     if (empty($attachment) || !$attachment->exists() || !$attachment->isImage()) {
         header("HTTP/1.1 404 Not Found");
         return;
