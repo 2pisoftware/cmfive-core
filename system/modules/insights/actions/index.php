@@ -33,7 +33,7 @@
     //}
 //}
 
-use function PHPSTORM_META\type;
+//use function PHPSTORM_META\type;
 
 function index_ALL(Web $w)
 {
