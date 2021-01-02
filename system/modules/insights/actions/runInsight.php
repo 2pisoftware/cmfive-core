@@ -20,6 +20,6 @@ function runInsight_GET(Web $w)
   //catch any fatal errors
   catch (Error $e) {
     echo "Error caught: " . $e->getMessage();
-    LogService::getInstance($w)->setLogger("INSIGHTS")->error("Error occurred. Cannot run insight" . $e->getMessage());
+    LogService::getInstance($w)->setLogger("INSIGHTS")->error("Error occurred. Cannot run insight $p" . $e->getMessage());
   }
 }
