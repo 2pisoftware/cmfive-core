@@ -1,4 +1,5 @@
 <?php
+/**@author Alice Hutley <alice@2pisoftware.com> */
 
 function deleteMembers_ALL(Web $w) {
 

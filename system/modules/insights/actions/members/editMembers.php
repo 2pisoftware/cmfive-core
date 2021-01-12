@@ -1,4 +1,6 @@
 <?php
+/**@author Alice Hutley <alice@2pisoftware.com> */
+
 // provide form by which to add members to an insight
 function editMembers_GET(Web &$w) {
 

@@ -1,4 +1,5 @@
 <?php
+/**@author Alice Hutley <alice@2pisoftware.com> */
 
 defined('DS') || define('DS', DIRECTORY_SEPARATOR);
 defined('PROJECT_MODULE_DIRECTORY') || define('PROJECT_MODULE_DIRECTORY', 'modules');
