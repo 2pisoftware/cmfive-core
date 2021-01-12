@@ -12,7 +12,7 @@ class AuditInsight extends InsightBaseClass
     {
         $moduleSelectOptions = $w->db->query("select distinct module as value, module as title from audit order by module asc")->fetchAll();
         $actionSelectOptions = $w->db->query("select distinct concat(module,'/',action) as title, action as value from audit order by title")->fetchAll();
-        var_dump($actionSelectOptions);
+        //var_dump($actionSelectOptions);
         //die;
 
         return [
@@ -47,10 +47,12 @@ class AuditInsight extends InsightBaseClass
     // [[action||select||Action||select distinct action as value, concat(module,'/',action) as title from audit order by title]]
 
 
-    //Displays insights for selected member
+    //Displays insights for selections made in the above "Options"
     public function run(Web $w, $parameters = []): array
 
     {
-        return [];
+        $results = [];
+        $results[] = new InsightReportInterface('Audit Report', ['Date', 'User', 'Module', 'URL', 'Class', 'Action', 'DB Id'], [[]]);
+        return $results;
     }
 }
