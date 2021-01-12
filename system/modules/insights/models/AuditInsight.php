@@ -51,8 +51,51 @@ class AuditInsight extends InsightBaseClass
     public function run(Web $w, $parameters = []): array
 
     {
+        //var_dump($parameters);
+        //die;
         $results = [];
-        $results[] = new InsightReportInterface('Audit Report', ['Date', 'User', 'Module', 'URL', 'Class', 'Action', 'DB Id'], [[]]);
+        $data = $w->db->query("select 
+        a.dt_created as Date, 
+        concat(c.firstname,' ',c.lastname) as User,  
+        a.module as Module,
+        a.path as Url,
+        a.db_class as 'Class',
+        a.db_action as 'Action',
+        a.db_id as 'DB Id'
+        
+        from audit a
+        
+        left join user u on u.id = a.creator_id
+        left join contact c on c.id = u.contact_id
+        
+        where 
+        a.dt_created >= '" . $parameters['dt_from'] . " 00:00:00' 
+        and a.dt_created <= '" . $parameters['dt_to'] . " 23:59:59' 
+        and ('" . $parameters['module'] . "' = '' or a.module = '" . $parameters['module'] . "')
+        and ('" . $parameters['action'] . "' = '' or a.action = '" . $parameters['action'] . "') 
+        and ('" . $parameters['user_id'] . "' = '' or a.creator_id = '" . $parameters['user_id'] . "')
+        ")   //sql query goes here
+        $results[] = new InsightReportInterface('Audit Report', ['Date', 'User', 'Module', 'URL', 'Class', 'Action', 'DB Id'], $data);
         return $results;
     }
 }
+//select 
+// a.dt_created as Date, 
+// concat(c.firstname,' ',c.lastname) as User,  
+// a.module as Module,
+// a.path as Url,
+// a.db_class as 'Class',
+// a.db_action as 'Action',
+// a.db_id as 'DB Id'
+
+// from audit a
+
+// left join user u on u.id = a.creator_id
+// left join contact c on c.id = u.contact_id
+
+// where 
+// a.dt_created >= '{{dt_from}} 00:00:00' 
+// and a.dt_created <= '{{dt_to}} 23:59:59' 
+// and ('{{module}}' = '' or a.module = '{{module}}')
+// and ('{{action}}' = '' or a.action = '{{action}}') 
+// and ('{{user_id}}' = '' or a.creator_id = '{{user_id}}')
