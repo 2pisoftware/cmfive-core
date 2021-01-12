@@ -1,39 +1,4 @@
 <?php
-//$tbl_name = "insight_members"//Table name for data needed to check below.
-//session_start();
-//if (match_found_in_database()) {
-  //$_SESSION['loggedin'] = true;
-  //$_SESSION['user_id'] = $user_id; // $username coming from the form, such as $_POST['username']
-                                      // something like this is optional, of course
-  //foreach ($user_id) {
-    //add code for checking insight_class_name and type in daatabse for each entry of user_id of logged in user.
-  //}
-//}
-//if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] == true) {
-  //foreach ($insight_class_name) {
-    //code for checking database for entries of logged in users_id against each insight_class_name
-    //if insight_class-name matches user_id for logged in user, echo $name and $description and $module of insight class for that insight class. Then check type in same row against user_id and insight_class_name.
-    //if type = MEMBER display View button. If type = OWNER display View and Manage Memebers buttons.
-  //}
-//}
-//need something like code below. Finds each instance of logged in users id in Members Table and checks for an insight_class_name and displays corresponing information about that class. Then checks type in members table for that row and displays buttons accordingly.
-//getUser
-//$user = $SESSION['user_id'];
-//foreach ($user_id) {
-  //if (insight_class_name = (! empty)){
-    //echo $insight->name, $name, $insight->xmlrpc_parse_method_description
-    //else skip
-  //}
-  //if (insight_class_name = (! empty)){
-    //if (type = MEMBER) {
-      //echo $actions view
-    //}
-    //else {
-      //echo $actions view, $actions Manage Members
-    //}
-//}
-
-//use function PHPSTORM_META\type;
 
 function index_ALL(Web $w)
 {
