@@ -16,10 +16,10 @@ class InsightService extends DbService
         // Read module directory for all insights
         if ($insights === 'all') {
             foreach ($this->w->modules() as $module) {
-                $availableInsights += $this->getInsightsForModule($module);
+                $availableInsights[$module] = $this->getInsightsForModule($module);
             }
         } else {
-            $availableInsights = $this->getInsightsForModule($insights);
+            $availableInsights[$insights] = $this->getInsightsForModule($insights);
         }
 
         return $availableInsights;
@@ -35,9 +35,9 @@ class InsightService extends DbService
         $system_module_path = SYSTEM_MODULE_DIRECTORY . DS . $module . DS . MODELS_DIRECTORY;
         $insight_paths = [$module_path, $system_module_path];
         // Check if module contains file with Insight in the name
-        if (empty($availableInsights[$module])) {
-            $availableInsights[$module] = [];
-        }
+        //if (empty($availableInsights[$module])) {
+            //$availableInsights[$module] = [];
+        //}
 
         foreach ($insight_paths as $insight_path) {
             if (is_dir(ROOT_PATH . DS . $insight_path)) {
@@ -57,7 +57,7 @@ class InsightService extends DbService
                                 if (class_exists($classname[0]) && is_subclass_of($classname[0], 'InsightBaseClass')) {
                                     $insight = new $classname[0]($this->w);
                                     //is_subclass_of ( mixed $object , string $class_name [, bool $allow_string = TRUE ] ) : bool
-                                        $availableInsights[$module][] = $insight;
+                                        $availableInsights[] = $insight;
                                     
                                 }
                             }
