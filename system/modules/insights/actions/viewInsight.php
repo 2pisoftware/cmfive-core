@@ -11,14 +11,17 @@ function viewInsight_GET(Web $w) {
     //var_dump (class_implements($insight_class));
     //die();
 
-    //add a title to the action
-    // change the title to reflect viewing insight
-    $w->ctx('title', "View Insight for $insight_class");
+    
 
     $insight = InsightService::getInstance($w)->getInsightInstance($insight_class);
     if (empty($insight)){
       $w->error('Insight does not exist', '/insights');
     }
+
+    //add a title to the action
+    // change the title to reflect viewing insight
+    $w->ctx('title', "View Insight for " . $insight->name);
+
     //var_dump($insight->getFilters($w));
     $w->ctx('filterForm',html::multiColForm($insight->getfilters($w),"/insights/runInsight/" . $insight_class, "GET", "Run"));
    
