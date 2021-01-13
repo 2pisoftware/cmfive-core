@@ -70,11 +70,13 @@ class AuditInsight extends InsightBaseClass
         
         where 
         a.dt_created >= '" . $parameters['dt_from'] . " 00:00:00' 
-        and a.dt_created <= '" . $parameters['dt_to'] . " 23:59:59' 
+        and a.dt_created <= '" . $parameters['dt_to'] . " 23:59:59'
+        and ('" . $parameters['user_id'] . "' = '' or a.creator_id = '" . $parameters['user_id'] . "') 
         and ('" . $parameters['module'] . "' = '' or a.module = '" . $parameters['module'] . "')
         and ('" . $parameters['action'] . "' = '' or a.action = '" . $parameters['action'] . "') 
-        and ('" . $parameters['user_id'] . "' = '' or a.creator_id = '" . $parameters['user_id'] . "')
-        ")   //sql query goes here
+        ")->fetchAll();   //sql query goes here
+        //var_dump($data);
+        //die;
         $results[] = new InsightReportInterface('Audit Report', ['Date', 'User', 'Module', 'URL', 'Class', 'Action', 'DB Id'], $data);
         return $results;
     }
