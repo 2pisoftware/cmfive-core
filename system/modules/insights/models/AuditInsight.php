@@ -69,15 +69,20 @@ class AuditInsight extends InsightBaseClass
         left join contact c on c.id = u.contact_id
         
         where 
-        a.dt_created >= '" . $parameters['dt_from'] . " 00:00:00' 
-        and a.dt_created <= '" . $parameters['dt_to'] . " 23:59:59'
+        a.dt_created >= '" . InsightService::getInstance($w)->date2db($parameters['dt_from']) . " 00:00:00' 
+        and a.dt_created <= '" . InsightService::getInstance($w)->date2db($parameters['dt_to']) . " 23:59:59'
         and ('" . $parameters['user_id'] . "' = '' or a.creator_id = '" . $parameters['user_id'] . "') 
         and ('" . $parameters['module'] . "' = '' or a.module = '" . $parameters['module'] . "')
         and ('" . $parameters['action'] . "' = '' or a.action = '" . $parameters['action'] . "') 
-        ")->fetchAll();   //sql query goes here
+        ")->fetchAll(PDO::FETCH_ASSOC);   //sql query goes here
         //var_dump($data);
         //die;
-        $results[] = new InsightReportInterface('Audit Report', ['Date', 'User', 'Module', 'URL', 'Class', 'Action', 'DB Id'], $data);
+        if (!$data) {
+             $results[] = new InsightReportInterface('Audit Report', ['Results'], [['No data returned for selections']]);
+         } else {
+            $results[] = new InsightReportInterface('Audit Report', ['Date', 'User', 'Module', 'URL', 'Class', 'Action', 'DB Id'], $data);
+            //var_dump($results);
+         }
         return $results;
     }
 }
