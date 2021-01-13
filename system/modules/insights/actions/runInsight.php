@@ -17,7 +17,7 @@ function runInsight_GET(Web $w)
   try {
   //retrieve correct insight to delete member from and redirect to
     foreach ($run_data as $data) {
-      $w->out('<h3>' . $data->title . " for " . $p['insight_class'] . '</h3>');
+      $w->out('<h3>' . $data->title . " for " . $insight->name . '</h3>');
       $w->out(Html::table($data->data, null, "tablesorter", $data->header));
     }
   } 
