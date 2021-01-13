@@ -145,4 +145,13 @@ class InsightService extends DbService
     // public function getUserSelectOptions() {
     // return ($this->_db->sql("select u.id as value, concat(c.firstname,' ',c.lastname) as title from user u, contact c where u.contact_id = c.id order by title")->fetchAll());
     // }
+
+    // convert dd/mm/yyyy date to yyy-mm-dd for SQL statements
+    public function date2db($date)
+    {
+        if ($date) {
+            list($d, $m, $y) = preg_split("/\/|-|\./", $date);
+            return $y . "-" . $m . "-" . $d;
+        }
+    }
 }
