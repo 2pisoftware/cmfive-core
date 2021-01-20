@@ -7,7 +7,7 @@ class AuditInsight extends InsightBaseClass
     public $description = "Shows audit information";
 
     //Displays Filters to select user
-    public function getFilters(Web $w): array
+    public function getFilters(Web $w, $parameters = []): array
 
     {
         $moduleSelectOptions = $w->db->query("select distinct module as value, module as title from audit order by module asc")->fetchAll();
@@ -19,18 +19,18 @@ class AuditInsight extends InsightBaseClass
             "Options" => [
                 [
                     [
-                        "Date From (required)", "date", "dt_from", null //$this->_db->sql(a.dt_created >= '{{dt_from}} 00:00:00')
+                        "Date From (required)", "date", "dt_from", array_key_exists('dt_from', $parameters) ? $parameters['dt_from'] : null //$this->_db->sql(a.dt_created >= '{{dt_from}} 00:00:00')
                     ],
                     [
-                        "Date To (required)", "date", "dt_to", null //$this->_db->sql(and a.dt_created <= '{{dt_to}} 23:59:59')
+                        "Date To (required)", "date", "dt_to", array_key_exists('dt_to', $parameters) ? $parameters['dt_to'] : null //$this->_db->sql(and a.dt_created <= '{{dt_to}} 23:59:59')
                     ],
                 ],
                 [
-                    ["Users (optional)", "select", "user_id", null, AuthService::getInstance($w)->getUsers()],
+                    ["Users (optional)", "select", "user_id", array_key_exists('user_id', $parameters) ? $parameters['user_id'] : null, AuthService::getInstance($w)->getUsers()],
                 ],
                 [
-                    ["Module (optional)", "select", "module", null, $moduleSelectOptions],
-                    ["Action (optional)", "select", "action", null, $actionSelectOptions],
+                    ["Module (optional)", "select", "module", array_key_exists('module', $parameters) ? $parameters['module'] : null, $moduleSelectOptions],
+                    ["Action (optional)", "select", "action", array_key_exists('action', $parameters) ? $parameters['action'] : null, $actionSelectOptions],
                 ]
             ]
 

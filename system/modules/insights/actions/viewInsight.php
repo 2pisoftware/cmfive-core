@@ -10,7 +10,8 @@ function viewInsight_GET(Web $w) {
     //var_dump (class_exists($insight_class));
     //var_dump (class_implements($insight_class));
     //die();
-
+    //var_dump($_REQUEST);
+    //die;
     
 
     $insight = InsightService::getInstance($w)->getInsightInstance($insight_class);
@@ -23,7 +24,7 @@ function viewInsight_GET(Web $w) {
     $w->ctx('title', "View Insight for " . $insight->name);
 
     //var_dump($insight->getFilters($w));
-    $w->ctx('filterForm',html::multiColForm($insight->getfilters($w),"/insights/runInsight/" . $insight_class, "GET", "Run"));
+    $w->ctx('filterForm',html::multiColForm($insight->getfilters($w, $_REQUEST),"/insights/runInsight/" . $insight_class, "GET", "Run"));
    
 }
 

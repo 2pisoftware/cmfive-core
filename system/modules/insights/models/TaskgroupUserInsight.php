@@ -6,7 +6,7 @@ class TaskgroupUserInsight extends InsightBaseClass
     public $description = "Displays taskgroups associated with a chosen user";
 
     //Displays Filters to select user
-    public function getFilters(Web $w): array
+    public function getFilters(Web $w, $parameters = []): array
 
     {
         return ["Select User" =>[

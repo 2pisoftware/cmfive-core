@@ -8,7 +8,7 @@ abstract class InsightBaseClass
     public $module;
     public $description;
 
-    abstract public function getFilters(Web $w): array;
+    abstract public function getFilters(Web $w, array $params = []): array;
 
     abstract public function run(Web $w, array $params = []): array;
 

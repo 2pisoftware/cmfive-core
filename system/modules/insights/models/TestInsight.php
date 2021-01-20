@@ -7,7 +7,7 @@ class TestInsight extends InsightBaseClass
     public $description = "Test model for insights";
 
     //Displays Filters to select user
-    public function getFilters(Web $w): array
+    public function getFilters(Web $w, $parameters = []): array
 
     {
         return ["Select User" =>[
