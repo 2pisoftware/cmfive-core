@@ -15,17 +15,5 @@ try {
       LogService::getInstance($w)->setLogger("INSIGHTS")->error("Error occurred. Cannot run insight $p" . $e->getMessage());
     }
 
-
-
-//     $arrreq = array();
-//     // prepare export buttons for display if format = html
-//     foreach (array_merge($_GET, $_POST) as $name => $value) {
-//         $arrreq[] = $name . "=" . urlencode($value);
-// $viewurl = "/insights/viewInsight/" . $p['id'] . "/?" . implode("&", $arrreq);
-// $repurl = "/report/exereport/" . $p['id'] . "?";
-// $strREQ = $arrreq ? implode("&", $arrreq) : "";
-// $urlcsv = $repurl . $strREQ . "&format=csv";
-// $btncsv = Html::b($urlcsv, "Export as CSV");
-// $urlxml = $repurl . $strREQ . "&format=xml";
-// $btnxml = Html::b($urlxml, "Export as XML");
-// $btnpdf = Html::b($repurl . $strREQ . "&format=pdf", "Export as PDF");
+//$run_data should have the data returned according to the parameters. We need buttons retrieving that data, and converting it to the required formats for exporting.
+//echo Html::b($run_data)
