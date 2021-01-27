@@ -14,6 +14,7 @@ try {
       echo "Error caught: " . $e->getMessage();
       LogService::getInstance($w)->setLogger("INSIGHTS")->error("Error occurred. Cannot run insight $p" . $e->getMessage());
     }
+    var_dump($run_data);
 
 //$run_data should have the data returned according to the parameters. We need buttons retrieving that data, and converting it to the required formats for exporting.
 //echo Html::b($run_data)

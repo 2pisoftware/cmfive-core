@@ -50,4 +50,13 @@ public function exportcsv($rows, $title)
     }
 }
 
-$filename = $insight_name . date('Y.m.d-H.i') . ".csv"
+
+$insight = InsightService::getInstance($w)->getInsightInstance($p['insight_class']);
+$run_data = $insight->run($w, $_GET);
+
+//Clicking the button will trigger this action.
+$filename = $insight_name . date('Y.m.d-H.i') . ".csv";
+//$run_data doesn't include the parameters in its dataset
+if(!empty($run_data)) {
+    $run_data = array_values($run_data);
+}
