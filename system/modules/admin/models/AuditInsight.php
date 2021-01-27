@@ -86,6 +86,7 @@ class AuditInsight extends InsightBaseClass
         return $results;
     }
 }
+// from AuditService public function addAuditLogEntry($blacklist = null) or public function addDbAuditLogEntry($action, $class, $id) for this block
 //select 
 // a.dt_created as Date, 
 // concat(c.firstname,' ',c.lastname) as User,  
@@ -97,9 +98,11 @@ class AuditInsight extends InsightBaseClass
 
 // from audit a
 
+//  from AuditService public function getLoggedInUsers($idleMinutes = 10) might be Useful for this block
 // left join user u on u.id = a.creator_id
 // left join contact c on c.id = u.contact_id
 
+//  form AuditService public function getLoggedUsers() and public function getLoggedModules() and public function getLoggedActions() for last three paramters in this block
 // where 
 // a.dt_created >= '{{dt_from}} 00:00:00' 
 // and a.dt_created <= '{{dt_to}} 23:59:59' 
