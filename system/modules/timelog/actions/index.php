@@ -5,18 +5,18 @@ define('TIMELOG_DEFAULT_PAGE_SIZE', 20);
 
 function index_GET(Web $w) {
     $page = $w->request("p", TIMELOG_DEFAULT_PAGE);
-    $pagesize = $w->request("ps", TIMELOG_DEFAULT_PAGE_SIZE);
+    $page_size = $w->request("ps", TIMELOG_DEFAULT_PAGE_SIZE);
     
     //Get days in their 10 day groupings
-    $daysWithTimelogs = TimelogService::getInstance($w)->DaysForTimelogs($w->Auth->user());
+    $days_with_timelogs = TimelogService::getInstance($w)->daysForTimelogs($w->Auth->user());
     //Get the day group corrosponding to the current page
-    $pageBracket = $daysWithTimelogs[$page - 1];
+    $page_bracket = $days_with_timelogs[$page - 1];
     //Get timelogs to display that belong to the corrosponding 10 days
-    $timelog = TimelogService::getInstance($w)->getTimelogsForUser($w->Auth->user(), false, $pageBracket[count($pageBracket) - 1], $pageBracket[0]);
+    $timelog = TimelogService::getInstance($w)->getTimelogsForUser($w->Auth->user(), false, $page_bracket[count($page_bracket) - 1], $page_bracket[0]);
 
-    $totalresults = TimelogService::getInstance($w)->countTotalTimelogsForUser($w->Auth->user(), false);
+    $total_results = TimelogService::getInstance($w)->countTotalTimelogsForUser($w->Auth->user(), false);
 
-    $w->ctx('pagination', Html::pagination($page, (count($daysWithTimelogs)), $pagesize, ($totalresults), '/timelog'));
+    $w->ctx('pagination', Html::pagination($page, (count($days_with_timelogs)), $page_size, ($total_results), '/timelog'));
     
     $time_entry_objects = [];
 

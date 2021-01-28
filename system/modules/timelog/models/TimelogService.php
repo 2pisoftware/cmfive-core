@@ -15,37 +15,37 @@ class TimelogService extends DbService {
      * @param boolean $includeDeleted
      * @return Timelog
      */
-    public function getTimelogsForUser(User $user = null, $includeDeleted = false, $timeStart = null, $timeEnd = null) {
+    public function getTimelogsForUser(User $user = null, $include_deleted = false, $time_start = null, $time_end = null) {
        
         if ($user === null) {
             $user = $this->w->Auth->user();
         }
 
         $where = ['user_id' => $user->id];
-        if (!$includeDeleted) {
+        if (!$include_deleted) {
             $where['is_deleted'] = 0;
         }
 
-        if (!empty($timeStart) && !empty($timeEnd)) {
-            $bracketStart = $timeStart->dt_start;
-            $startCondition = date('Y-m-d H:i:s', $bracketStart);
-            $where['dt_start >= ?'] = $startCondition;
+        if (!empty($time_start) && !empty($time_end)) {
+            $bracket_start = $time_start->dt_start;
+            $start_condition = date('Y-m-d H:i:s', $bracket_start);
+            $where['dt_start >= ?'] = $start_condition;
             
-            $bracketEnd = $timeEnd->dt_end;
-            $endCondition = date('Y-m-d H:i:s', $bracketEnd);
-            $where['dt_start <= ?'] = $endCondition;
+            $bracket_end = $time_end->dt_end;
+            $end_condition = date('Y-m-d H:i:s', $bracket_end);
+            $where['dt_start <= ?'] = $end_condition;
         }
 
         return $this->getObjects("Timelog", $where, false, true, "dt_start DESC", null, 100);
     }
 
-    public function countTotalTimelogsForUser(User $user = null, $includeDeleted = false) {
+    public function countTotalTimelogsForUser(User $user = null, $include_deleted = false) {
         if ($user === null) {
             $user = $this->w->Auth->user();
         }
 
         $where = ['user_id' => $user->id];
-        if (!$includeDeleted) {
+        if (!$include_deleted) {
             $where['is_deleted'] = 0;
         }
 
@@ -175,11 +175,11 @@ class TimelogService extends DbService {
 
         $nav = $nav ? : array();
 
-        $trackingObject = $w->Timelog->getTrackingObject();
+        $tracking_object = $w->Timelog->getTrackingObject();
 
         if ($w->Auth->loggedIn()) {
             $w->menuLink("timelog/index", "Timelog Dashboard", $nav);
-            $w->menuBox("timelog/edit" . (!empty($trackingObject) && !empty($trackingObject->id) ? "?class=" . get_class($trackingObject) . "&id=" . $trackingObject->id : ''), "Add Timelog", $nav);
+            $w->menuBox("timelog/edit" . (!empty($tracking_object) && !empty($tracking_object->id) ? "?class=" . get_class($tracking_object) . "&id=" . $tracking_object->id : ''), "Add Timelog", $nav);
         }
 
         $w->ctx("navigation", $nav);
@@ -189,32 +189,32 @@ class TimelogService extends DbService {
     //Returns an array of timelogs in groups of 10 days
     public function daysForTimelogs($user) {
         $timelogs = $this->timelog->getTimelogsForUser($user);
-        $previousTimelog = null;
-        $currentTimelog = null;
+        $previous_timelog = null;
+        $current_timelog = null;
 
-        $daysWithLogs = [];
+        $days_with_logs = [];
         $i = 0;
-        $subsetCount = -1;
+        $subset_count = -1;
 
         foreach ($timelogs as $timelog) {
-            $currentTimelog = $timelog;
-            if ($previousTimelog != null) {
-                $date = $currentTimelog->dt_start;
-                $previousDate = $previousTimelog->dt_start;
+            $current_timelog = $timelog;
+            if ($previous_timelog != null) {
+                $date = $current_timelog->dt_start;
+                $previous_date = $previous_timelog->dt_start;
 
-                $result = date('d', $date) === date('d', $previousDate);
+                $result = date('d', $date) === date('d', $previous_date);
 
                 if ($result == false) {
                     if ($i % 10 == 0) {
-                        $subsetCount += 1;
+                        $subset_count += 1;
                     }
 
-                    $daysWithLogs[$subsetCount][] = $timelog;
+                    $days_with_logs[$subset_count][] = $timelog;
                     $i += 1;
                 }
             }
-            $previousTimelog = $currentTimelog;
+            $previous_timelog = $current_timelog;
         }
-        return $daysWithLogs;
+        return $days_with_logs;
     }
 }
