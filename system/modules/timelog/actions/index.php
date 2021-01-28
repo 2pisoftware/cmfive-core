@@ -7,20 +7,22 @@ function index_GET(Web $w) {
     $page = $w->request("p", TIMELOG_DEFAULT_PAGE);
     $pagesize = $w->request("ps", TIMELOG_DEFAULT_PAGE_SIZE);
     
-	// Get paged timelogs
-    $timelog = $w->Timelog->getTimelogsForUser($w->Auth->user(), false, $page, $pagesize);
-    $totalresults = $w->Timelog->countTotalTimelogsForUser($w->Auth->user(), false);
+    $daysWithTimelogs = TimelogService::getInstance($w)->DaysForTimelogs($w->Auth->user());
+    $pageBracket = $daysWithTimelogs[$page - 1];
+    $timelog = TimelogService::getInstance($w)->getTimelogsForUser($w->Auth->user(), false, $pageBracket[count($pageBracket) - 1], $pageBracket[0]);
 
-    $w->ctx('pagination', Html::pagination($page, (ceil($totalresults / $pagesize)), $pagesize, $totalresults, '/timelog'));
+    $totalresults = TimelogService::getInstance($w)->countTotalTimelogsForUser($w->Auth->user(), false);
+
+    $w->ctx('pagination', Html::pagination($page, (count($daysWithTimelogs)), $pagesize, ($totalresults), '/timelog'));
     
-    $time_entry_objects = array();
-	
+    $time_entry_objects = [];
+
     if (!empty($timelog)) {
-        foreach($timelog as $time_entry) {
+        foreach ($timelog as $time_entry) {
             
             $entry_date = date('d/m', $time_entry->dt_start);
             if (empty($time_entry_objects[$entry_date])) {
-                $time_entry_objects[$entry_date] = array('entries' => array(), "total" => 0);
+                $time_entry_objects[$entry_date] = ['entries' => [], "total" => 0];
             }
 
             $time_entry_objects[$entry_date]['total'] += $time_entry->getDuration();

@@ -8,14 +8,15 @@
 class TimelogService extends DbService {
     private $_trackObject = null;
 
-	/**
-	 * Returns all time logs for a given user
-	 *
-	 * @param User $user
-	 * @param boolean $includeDeleted
-	 * @return Timelog
-	 */
-    public function getTimelogsForUser(User $user = null, $includeDeleted = false, $page = 1, $page_size = 20) {
+    /**
+     * Returns all time logs for a given user
+     *
+     * @param User $user
+     * @param boolean $includeDeleted
+     * @return Timelog
+     */
+    public function getTimelogsForUser(User $user = null, $includeDeleted = false, $timeStart = null, $timeEnd = null) {
+       
         if ($user === null) {
             $user = $this->w->Auth->user();
         }
@@ -25,10 +26,20 @@ class TimelogService extends DbService {
             $where['is_deleted'] = 0;
         }
 
-        return $this->getObjects("Timelog", $where, false, true, "dt_start DESC", ($page - 1) * $page_size, $page_size);
+        if (!empty($timeStart) && !empty($timeEnd)) {
+            $bracketStart = $timeStart->dt_start;
+            $startCondition = date('Y-m-d H:i:s', $bracketStart);
+            $where['dt_start >= ?'] = $startCondition;
+            
+            $bracketEnd = $timeEnd->dt_end;
+            $endCondition = date('Y-m-d H:i:s', $bracketEnd);
+            $where['dt_start <= ?'] = $endCondition;
+        }
+
+        return $this->getObjects("Timelog", $where, false, true, "dt_start DESC", null, 100);
     }
 
-	public function countTotalTimelogsForUser(User $user = null, $includeDeleted = false) {
+    public function countTotalTimelogsForUser(User $user = null, $includeDeleted = false) {
         if ($user === null) {
             $user = $this->w->Auth->user();
         }
@@ -41,47 +52,47 @@ class TimelogService extends DbService {
         return $this->db->get("timelog")->where($where)->count();
     }
 
-	public function getTimelogsForObject($object) {
-		if (!empty($object->id)) {
-			return $this->getObjects("Timelog", ["object_class" => get_class($object), "object_id" => $object->id, "is_deleted" => 0]);
-		}
-	}
+    public function getTimelogsForObject($object) {
+        if (!empty($object->id)) {
+            return $this->getObjects("Timelog", ["object_class" => get_class($object), "object_id" => $object->id, "is_deleted" => 0]);
+        }
+    }
 
-	/**
-	 * Returns number of timelogs for a given object
-	 *
-	 * @param DbObject $object
-	 * @return int
-	 */
-	public function countTimelogsForObject($object) {
-		if (!empty($object->id)) {
-			return $this->w->db->get('timelog')->where("object_class", get_class($object))->where("object_id", $object->id)
-						->where('is_deleted', 0)->count();
-		}
-		return 0;
-	}
+    /**
+     * Returns number of timelogs for a given object
+     *
+     * @param DbObject $object
+     * @return int
+     */
+    public function countTimelogsForObject($object) {
+        if (!empty($object->id)) {
+            return $this->w->db->get('timelog')->where("object_class", get_class($object))->where("object_id", $object->id)
+                        ->where('is_deleted', 0)->count();
+        }
+        return 0;
+    }
 
-	public function getTimelogsForObjectByClassAndId($object_class, $object_id) {
-		if (!empty($object_class) || !empty($object_id)) {
-			return $this->getObjects("Timelog", ["object_class" => $object_class, "object_id" => $object_id, "is_deleted" => 0], false, true, "dt_start ASC");
-		}
-	}
+    public function getTimelogsForObjectByClassAndId($object_class, $object_id) {
+        if (!empty($object_class) || !empty($object_id)) {
+            return $this->getObjects("Timelog", ["object_class" => $object_class, "object_id" => $object_id, "is_deleted" => 0], false, true, "dt_start ASC");
+        }
+    }
 
-	public function countTimelogsForUserAndObject($user, $object) {
-		if (!empty($user) && !empty($object) && is_a($object, 'DbObject')) {
-			return $this->w->db->get('timelog')->where('user_id', $user->id)
-					->where("object_class", get_class($object))
-					->where("object_id", $object->id)
-					->where('is_deleted', 0)->count();
-		}
-		return 0;
-	}
+    public function countTimelogsForUserAndObject($user, $object) {
+        if (!empty($user) && !empty($object) && is_a($object, 'DbObject')) {
+            return $this->w->db->get('timelog')->where('user_id', $user->id)
+                    ->where("object_class", get_class($object))
+                    ->where("object_id", $object->id)
+                    ->where('is_deleted', 0)->count();
+        }
+        return 0;
+    }
 
-	/**
-	 * Returns all non deleted timelogs
-	 *
-	 * @return Array<Timelog>
-	 */
+    /**
+     * Returns all non deleted timelogs
+     *
+     * @return Array<Timelog>
+     */
     public function getTimelogs() {
         return $this->getObjects("Timelog", ["is_deleted" => 0]);
     }
@@ -95,7 +106,7 @@ class TimelogService extends DbService {
     }
 
     public function hasActiveLog() {
-		$timelog = $this->getActiveTimeLogForUser();
+        $timelog = $this->getActiveTimeLogForUser();
         return !empty($timelog);
     }
 
@@ -111,11 +122,11 @@ class TimelogService extends DbService {
         return $this->_trackObject;
     }
 
-	public function getTrackingObjectClass() {
-		if ($this->hasTrackingObject()) {
-			return get_class($this->_trackObject);
-		}
-	}
+    public function getTrackingObjectClass() {
+        if ($this->hasTrackingObject()) {
+            return get_class($this->_trackObject);
+        }
+    }
 
     public function getJSTrackingObject() {
         if ($this->hasTrackingObject()) {
@@ -139,21 +150,21 @@ class TimelogService extends DbService {
         //get a list of all active modules
         $objects = [];
         $modules = array_filter(Config::keys() ? : [], function($module) {
-			return Config::get("$module.active") === true;
-		});
+            return Config::get("$module.active") === true;
+        });
 
-		if (!empty($modules)) {
-			foreach ($modules as $key => $module) {
-				$timelog = Config::get("$module.timelog");
-				//check module config for timelog enabled objects
-				if ($timelog !== null && is_array($timelog)) {
-					foreach ($timelog as $value) {
-						$objects[$value] = $value;
-					}
-				}
+        if (!empty($modules)) {
+            foreach ($modules as $key => $module) {
+                $timelog = Config::get("$module.timelog");
+                //check module config for timelog enabled objects
+                if ($timelog !== null && is_array($timelog)) {
+                    foreach ($timelog as $value) {
+                        $objects[$value] = $value;
+                    }
+                }
 
-			}
-		}
+            }
+        }
         return $objects;
     }
 
@@ -173,5 +184,36 @@ class TimelogService extends DbService {
 
         $w->ctx("navigation", $nav);
         return $nav;
+    }
+
+    public function daysForTimelogs($user) {
+        $timelogs = $this->timelog->getTimelogsForUser($user);
+        $previousTimelog = null;
+        $currentTimelog = null;
+
+        $daysWithLogs = [];
+        $i = 0;
+        $subsetCount = -1;
+
+        foreach ($timelogs as $timelog) {
+            $currentTimelog = $timelog;
+            if ($previousTimelog != null) {
+                $date = $currentTimelog->dt_start;
+                $previousDate = $previousTimelog->dt_start;
+
+                $result = date('d', $date) === date('d', $previousDate);
+
+                if ($result == false) {
+                    if ($i % 10 == 0) {
+                        $subsetCount += 1;
+                    }
+
+                    $daysWithLogs[$subsetCount][] = $timelog;
+                    $i += 1;
+                }
+            }
+            $previousTimelog = $currentTimelog;
+        }
+        return $daysWithLogs;
     }
 }
