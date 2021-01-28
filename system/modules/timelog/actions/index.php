@@ -7,8 +7,11 @@ function index_GET(Web $w) {
     $page = $w->request("p", TIMELOG_DEFAULT_PAGE);
     $pagesize = $w->request("ps", TIMELOG_DEFAULT_PAGE_SIZE);
     
+    //Get days in their 10 day groupings
     $daysWithTimelogs = TimelogService::getInstance($w)->DaysForTimelogs($w->Auth->user());
+    //Get the day group corrosponding to the current page
     $pageBracket = $daysWithTimelogs[$page - 1];
+    //Get timelogs to display that belong to the corrosponding 10 days
     $timelog = TimelogService::getInstance($w)->getTimelogsForUser($w->Auth->user(), false, $pageBracket[count($pageBracket) - 1], $pageBracket[0]);
 
     $totalresults = TimelogService::getInstance($w)->countTotalTimelogsForUser($w->Auth->user(), false);

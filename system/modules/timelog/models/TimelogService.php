@@ -186,6 +186,7 @@ class TimelogService extends DbService {
         return $nav;
     }
 
+    //Returns an array of timelogs in groups of 10 days
     public function daysForTimelogs($user) {
         $timelogs = $this->timelog->getTimelogsForUser($user);
         $previousTimelog = null;
