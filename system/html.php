@@ -1599,4 +1599,15 @@ UPLOAD;
 
         return "<div data-alert class='alert-box {$type}'>{$msg}<a href='#' class='close'>&times;</a></div>";
     }
+
+    /**
+     * Strips all HTML tags that aren't in the allow list.
+     *
+     * @param string $s
+     * @return string
+     */
+    public static function sanitise(string $string): string
+    {
+        return strip_tags($string, "<a><blockquote><em><div><h1><h2><h3><h4><h5><h6><li><ol><p><strong><s><u><ul>");
+    }
 }
