@@ -103,4 +103,11 @@ class AuditService extends DbService
         }
         return $users;
     }
+
+    public function getAudits($dt_to = null, $dt_from = null,) {
+        //build where array
+
+
+        return $this->getObjects('Audit', $where);
+    }
 }
