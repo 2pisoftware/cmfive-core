@@ -54,7 +54,7 @@ class AuditInsight extends InsightBaseClass
         //var_dump($parameters);
         //die;
         $results = [];
-        $data = $w->db->query("select 
+        $oldformatdata = $w->db->query("select 
         a.dt_created as Date, 
         concat(c.firstname,' ',c.lastname) as User,  
         a.module as Module,
@@ -75,12 +75,22 @@ class AuditInsight extends InsightBaseClass
         and ('" . $parameters['module'] . "' = '' or a.module = '" . $parameters['module'] . "')
         and ('" . $parameters['action'] . "' = '' or a.action = '" . $parameters['action'] . "') 
         ")->fetchAll(PDO::FETCH_ASSOC);   //sql query goes here
-        //var_dump($data);
+        var_dump($oldformatdata);
         //die;
+
+        //below service is referred to as $where in subsequent notes in this block for purpose of examples
+        $data = AuditService::getInstance($w)->getAudits(($parameters['dt_from']), ($parameters['dt_to']), ($parameters['user_id']), ($parameters['module']), ($parameters['action']));
+        //$data = json_decode(json_encode($where), true);
+        //$data = (array)$where;
+
         if (!$data) {
              $results[] = new InsightReportInterface('Audit Report', ['Results'], [['No data returned for selections']]);
          } else {
-            $results[] = new InsightReportInterface('Audit Report', ['Date', 'User', 'Module', 'URL', 'Class', 'Action', 'DB Id'], $data);
+             // convert $data from list of objects to array of values
+            $convertedData = [];
+
+
+            $results[] = new InsightReportInterface('Audit Report', ['Date', 'User', 'Module', 'URL', 'Class', 'Action', 'DB Id'], $convertedData);
             //var_dump($results);
          }
         return $results;
