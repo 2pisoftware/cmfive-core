@@ -104,10 +104,41 @@ class AuditService extends DbService
         return $users;
     }
 
-    public function getAudits($dt_to = null, $dt_from = null,) {
+    public function getAudits($dt_from = null, $dt_to = null, $user_id = null, $module = null, $action = null)
+    {
         //build where array
+        $where = [];
+        if (!empty($user_id)) {
+            $where['creator_id'] = $user_id;
+        }
+        if (!empty($module)) {
+            $where['module'] = $module;
+        }
+        if (!empty($action)) {
+            $where['action'] = $action;
+        }
+        var_dump($where);
+        $results = $this->getObjects('Audit', $where);
+        var_dump($results);
 
-
-        return $this->getObjects('Audit', $where);
+        //filter results by date
+        $filteredResults = [];
+        //convert dates to and from to DD-MM-YYYY HH:ii:ss format. Name $formatdt_from and $formatdt_to
+        //Convert dates to and from to timestamp
+        // $from = DateTime::createFromFormat('d-m-Y H:i:s', $formatdt_from);
+        // if ($from === false) {
+        //     die(LogService::getInstance($w)->setLogger("Admin")->error("formatdt_from failed in AuditService"));
+        // } else {
+        //     $tsFrom = $from->getTimestamp();
+        // }
+        // $to = DateTime::createFromFormat('d-m-Y H:i:s', $formatdt_to);
+        // if ($to === false) {
+        //     die(LogService::getInstance($w)->setLogger("Admin")->error("formatdt_to failed in AuditService"));
+        // } else {
+        //     $tsTo = $to->getTimestamp();
+        // }
+        //then check the date created ($dt_created) for each result against the two from dates
+        foreach ($results as $result) {
+        }
     }
 }
