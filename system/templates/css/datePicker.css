@@ -154,3 +154,6 @@ div.dp-popup td.disabled {
 .ui-timepicker-div dl dt{ font-size: 0.9em; height: 25px; }
 .ui-timepicker-div dl dd{ font-size: 0.9em; margin: -25px 0 10px 65px; }
 .ui-timepicker-div td { font-size: 0.9em; }
+
+/* fix datepicker from being obscured by a task field */
+.ui-datepicker{z-index: 10 !important};
