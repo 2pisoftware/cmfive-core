@@ -88,8 +88,10 @@ class AuditInsight extends InsightBaseClass
          } else {
              // convert $data from list of objects to array of values
             $convertedData = [];
-
-
+                foreach ($data as $datarow){
+                    
+                }
+            var_dump($convertedData); //This should be identical to $oldformatdata
             $results[] = new InsightReportInterface('Audit Report', ['Date', 'User', 'Module', 'URL', 'Class', 'Action', 'DB Id'], $convertedData);
             //var_dump($results);
          }

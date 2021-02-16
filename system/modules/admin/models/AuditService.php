@@ -119,26 +119,45 @@ class AuditService extends DbService
         }
         var_dump($where);
         $results = $this->getObjects('Audit', $where);
-        var_dump($results);
+        //var_dump($dt_from);
 
         //filter results by date
         $filteredResults = [];
         //convert dates to and from to DD-MM-YYYY HH:ii:ss format. Name $formatdt_from and $formatdt_to
         //Convert dates to and from to timestamp
-        // $from = DateTime::createFromFormat('!d-m-Y H:i:s', $formatdt_from);
-        // if ($from === false) {
-        //     die(LogService::getInstance($w)->setLogger("Admin")->error("formatdt_from failed in AuditService"));
-        // } else {
-        //     $tsFrom = $from->getTimestamp();
-        // }
-        // $to = DateTime::createFromFormat('!d-m-Y H:i:s', $formatdt_to);
-        // if ($to === false) {
-        //     die(LogService::getInstance($w)->setLogger("Admin")->error("formatdt_to failed in AuditService"));
-        // } else {
-        //     $tsTo = $to->getTimestamp();
-        // }
-        //then check the date created ($dt_created) for each result against the two from dates
-        foreach ($results as $result) {
+        if (!empty($dt_from) || !empty($dt_to)) {
+            $from = null;
+            $to=null;
+            if (!empty($dt_from)) {
+                $from = DateTime::createFromFormat('d/m/Y H:i:s', $dt_from . ' 00:00:00');
+                $tsFrom = $from->getTimestamp();
+            }
+            if (!empty($dt_to)) {
+                $to = DateTime::createFromFormat('d/m/Y H:i:s', $dt_to . ' 23:59:59');
+                $tsTo = $to->getTimestamp();
+            }
+            foreach ($results as $result) {
+                if (!empty($tsFrom) && !empty($tsTo)){
+                    if ($result->dt_created >= $tsFrom && $result->dt_created <= $tsTo){
+                        $filteredResults[] = $result;
+                    }
+                }
+                elseif (!empty($tsFrom)) {
+                    if ($result->dt_created >= $tsFrom){
+                        $filteredResults[] = $result;
+                    }
+                }
+                elseif (!empty($tsTo)) {
+                    if ($result->dt_created <= $tsTo){
+                        $filteredResults[] = $result;
+                    }
+                }
+            }
         }
+        else {
+            $filteredResults = $results;
+        }
+        var_dump($filteredResults);
+        return $filteredResults;
     }
 }
