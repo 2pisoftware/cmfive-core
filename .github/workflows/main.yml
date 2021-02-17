@@ -27,8 +27,9 @@ jobs:
       # Build cmfive containers
       - name: Build cmfive
         run: |
+          cd cmfive-boilerplate
           cp config.example.php config.php
-          cd "$GITHUB_WORKSPACE/.build/setup"
+          cd .build/setup
           python3 -m venv venv;
           source venv/bin/activate;
           pip install -r requirements.txt;
