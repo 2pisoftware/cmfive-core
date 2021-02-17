@@ -33,14 +33,14 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-composer-
 
-#       - name: Cache pip
-#         uses: actions/cache@v2
-#         with:
-#           # npm cache files are stored in `~/.npm` on Linux/macOS
-#           path: .build/setup/venv/lib
-#           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-#           restore-keys: |
-#             ${{ runner.os }}-pip-
+      - name: Cache pip
+        uses: actions/cache@v2
+        with:
+          # npm cache files are stored in `~/.npm` on Linux/macOS
+          path: .build/setup/venv/lib
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
 
       # Build cmfive containers
       - name: Build cmfive
