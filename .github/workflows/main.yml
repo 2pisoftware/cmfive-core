@@ -27,7 +27,9 @@ jobs:
       # Build cmfive containers
       - name: Build cmfive
         run: |
-          cd $GITHUB_WORKSPACE/cmfive-boilerplate
+          ls -la
+          cd $GITHUB_WORKSPACE
+          ls -la
           cp config.example.php config.php
           cd .build/setup
           python3 -m venv venv;
