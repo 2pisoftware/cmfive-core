@@ -113,16 +113,9 @@ class Web
         $this->_hooks = [];
 
         $this->checkStorageDirectory();
-
-        // if using IIS then value is "off" for non ssl requests
-        $sHttps = array_key_exists('HTTPS', $_SERVER) ? $_SERVER['HTTPS'] : '';
-        $sHttpHost = array_key_exists('HTTP_HOST', $_SERVER) ? $_SERVER['HTTP_HOST'] : '';
-
-        if (empty($sHttps) || $sHttps == "off") {
-            $this->_webroot = "http://" . $sHttpHost;
-        } else {
-            $this->_webroot = "https://" . $sHttpHost;
-        }
+                
+        // look at using schema independent url's with '//' notation - test using Apache/Nginx
+        $this->_webroot = $this->getUrlSchema() . $this->getHostname();
 
         $this->_actionMethod = null;
 
@@ -152,6 +145,34 @@ class Web
         }
 
         clearstatcache();
+    }
+
+    private function getUrlSchema()
+    {
+        $sHttps = $this->getRequestHeader('HTTPS', 'off');
+        $sHttpXproto = $this->getRequestHeader('HTTP_X_FORWARDED_PROTO');
+        $sHttpXssl = $this->getRequestHeader('HTTP_X_FORWARDED_SSL');
+
+        // if using IIS then value is "off" for non ssl requests
+        if ( (strtolower($sHttps) !== "off") || (strtolower($sHttpXproto) == "https") || (strtolower($sHttpXssl) == "on") )
+        {
+            return "https://";
+        }
+        return "http://";              
+    }
+
+    private function getHostname()
+    {
+        return $this->getRequestHeader('HTTP_HOST');
+    }
+
+    private function getRequestHeader($header, $default='')
+    {
+        if (array_key_exists($header, $_SERVER) && !empty($_SERVER[$header] ) )
+        {
+            return $_SERVER[$header];
+        }
+        return $default;
     }
 
     private function checkStorageDirectory()
