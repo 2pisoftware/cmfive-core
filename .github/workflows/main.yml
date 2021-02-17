@@ -52,7 +52,7 @@ jobs:
           pip3 install -r requirements.txt;
           python3 install.py provision-test;
           docker start selenium314
-          cd test/.install
+          cd ../../test/.install
           ./install.sh
       - name: Test cmfive
         run: |
