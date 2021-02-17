@@ -41,7 +41,15 @@ jobs:
           key: ${{ runner.os }}-pip2-${{ hashFiles('**/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip2-
-
+            
+      - uses: satackey/action-docker-layer-caching@v0.0.11
+        # Ignore the failure of a step and avoid terminating the job.
+        continue-on-error: true
+        with:
+          key: ${{ runner.os }}-cmfive-build-cache-${{ hashFiles('.build/environment/test/Dockerfile') }}
+          restore-keys: |
+            ${{ runner.os }}-cmfive-build-cache-
+            
       # Build cmfive containers
       - name: Build cmfive
         run: |
@@ -52,7 +60,7 @@ jobs:
           pip3 install -r requirements.txt;
           python3 install.py provision-test;
           docker start selenium314
-          
+      
       - name: Test cmfive
         run: |
           docker exec nginx-php7.2 php cmfive.php testDB setup
