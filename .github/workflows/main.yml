@@ -40,7 +40,7 @@ jobs:
           path: .build/setup/venv/lib
           key: ${{ runner.os }}-pip1-${{ hashFiles('**/requirements.txt') }}
           restore-keys: |
-            ${{ runner.os }}-pip-
+            ${{ runner.os }}-pip1-
 
       # Build cmfive containers
       - name: Build cmfive
