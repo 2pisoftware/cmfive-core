@@ -63,13 +63,13 @@ jobs:
       
       - name: Test cmfive
         run: |
-          docker exec nginx-php7.2 php cmfive.php testDB setup
-          docker exec -it nginx-php7.2 php cmfive.php tests unit all
+          docker exec nginx-php7.2 bash -c "php cmfive.php testDB setup; exit $?"
+          docker exec -it nginx-php7.2 bash -c "hp cmfive.php tests unit all; exit $?"
           if [ $? -gt 0 ]; then
             echo "Unit tests failed"
             exit 1
           fi
-          docker exec -it nginx-php7.2 php cmfive.php tests run '' silent
+          docker exec -it nginx-php7.2 bash -c "php cmfive.php tests run '' silent; exit $?"
           if [ $? -gt 0 ]; then
             echo "Acceptance tests failed"
             exit 1
