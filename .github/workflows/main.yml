@@ -57,4 +57,12 @@ jobs:
         run: |
           docker exec nginx-php7.2 php cmfive.php testDB setup
           docker exec nginx-php7.2 php cmfive.php tests unit all
+          if [ $? -gt 0 ]; then
+            echo "Unit tests failed"
+            exit 1
+          fi
           docker exec nginx-php7.2 php cmfive.php tests run '' silent
+          if [ $? -gt 0 ]; then
+            echo "Acceptance tests failed"
+            exit 1
+          fi
