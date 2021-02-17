@@ -46,9 +46,7 @@ jobs:
       - name: Build cmfive
         run: |
           cp config.php.example config.php
-          cd test/.install
-          ./install.sh
-          cd ../../.build/setup
+          cd .build/setup
           python3 -m venv venv;
           source venv/bin/activate;
           pip3 install -r requirements.txt;
