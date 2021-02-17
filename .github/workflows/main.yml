@@ -22,7 +22,7 @@ jobs:
       - uses: actions/checkout@v2
         with:
           repository: '2pisoftware/cmfive-boilerplate'
-          ref: 'refs/branch/feature/cicd'
+          ref: 'feature/cicd'
 
       # Build cmfive containers
       - name: Build cmfive
