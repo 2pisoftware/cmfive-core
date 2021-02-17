@@ -21,7 +21,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          repository: 'https://github.com/2pisoftware/cmfive-boilerplate'
+          repository: '2pisoftware/cmfive-boilerplate'
           ref: 'refs/branch/feature/cicd'
 
       # Build cmfive containers
