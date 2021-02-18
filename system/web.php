@@ -154,11 +154,10 @@ class Web
         $sHttpXssl = $this->getRequestHeader('HTTP_X_FORWARDED_SSL');
 
         // if using IIS then value is "off" for non ssl requests
-        if ( (strtolower($sHttps) !== "off") || (strtolower($sHttpXproto) == "https") || (strtolower($sHttpXssl) == "on") )
-        {
+        if ((strtolower($sHttps) !== "off") || (strtolower($sHttpXproto) == "https") || (strtolower($sHttpXssl) == "on")) {
             return "https://";
         }
-        return "http://";              
+        return "http://";
     }
 
     private function getHostname()
@@ -166,10 +165,9 @@ class Web
         return $this->getRequestHeader('HTTP_HOST');
     }
 
-    private function getRequestHeader($header, $default='')
+    private function getRequestHeader($header, $default = '')
     {
-        if (array_key_exists($header, $_SERVER) && !empty($_SERVER[$header] ) )
-        {
+        if (array_key_exists($header, $_SERVER) && !empty($_SERVER[$header])) {
             return $_SERVER[$header];
         }
         return $default;
