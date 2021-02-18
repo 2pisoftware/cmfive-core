@@ -41,14 +41,17 @@ jobs:
           key: ${{ runner.os }}-pip2-${{ hashFiles('**/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip2-
-            
-      - uses: satackey/action-docker-layer-caching@v0.0.11
-        # Ignore the failure of a step and avoid terminating the job.
-        continue-on-error: true
+      
+      - name: Cache docker
+        uses: actions/cache@v2
         with:
-          key: ${{ runner.os }}-cmfive-build-cache-${{ hashFiles('.build/environment/test/Dockerfile') }}
-          restore-keys: |
-            ${{ runner.os }}-cmfive-build-cache-
+          path: /tmp/docker-registry
+          key: docker-registry-${{ hashFiles('.build/environment/test/Dockerfile') }}
+      - run: docker run -d -p 5000:5000 --restart=always --name registry -v /tmp/docker-registry:/var/lib/registry registry:2 && npx wait-on tcp:5000
+      - run: docker pull localhost:5000/cmfive || true
+      - run: docker build ./.build/environment/test/ -t cmfive --cache-from=localhost:5000/cmfive
+      - run: docker tag cmfive localhost:5000/cmfive && docker push localhost:5000/cmfive || true
+        if: steps.cache.outputs.cache-hit != 'true'
             
       # Build cmfive containers
       - name: Build cmfive
