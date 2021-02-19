@@ -28,10 +28,10 @@ jobs:
         uses: actions/cache@v2
         with:
           # npm cache files are stored in `~/.npm` on Linux/macOS
-          path: system/composer
+          path: composer/cache
           key: ${{ runner.os }}-composer-${{ hashFiles('system/composer.json') }}
-          restore-keys: |
-            ${{ runner.os }}-composer-
+#           restore-keys: |
+#             ${{ runner.os }}-composer-
 
       - name: Cache pip
         uses: actions/cache@v2
@@ -39,8 +39,8 @@ jobs:
           # npm cache files are stored in `~/.npm` on Linux/macOS
           path: .build/setup/venv
           key: ${{ runner.os }}-pip2-${{ hashFiles('.build/setup/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip2-
+#           restore-keys: |
+#             ${{ runner.os }}-pip2-
       
       - name: Cache docker
         uses: actions/cache@v1
