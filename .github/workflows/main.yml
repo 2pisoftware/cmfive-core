@@ -61,7 +61,12 @@ jobs:
           python3 -m venv venv;
           source venv/bin/activate;
           pip3 install -r requirements.txt;
-          python3 install.py provision-test;
+          python3 install.py provision-test --cmfive_core_ref=${GITHUB_REF#ref/head} --mysql_verison=8.0.12;
+          cd ../../composer/vendor/2pisoftware/cmfive-core
+          git checkout $GITHUB_SHA;
+          cd ../../../../
+          docker exec nginx-php7.2 bash -c "php cmfive.php install core"
+          docker exec nginx-php7.2 bash -c "php cmfive.php install migrations"
           docker start selenium314
       
       - name: Test cmfive
