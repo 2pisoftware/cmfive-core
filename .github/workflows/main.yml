@@ -33,17 +33,17 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-composer-
 
-      - name: Cache pip
-        uses: actions/cache@v2
-        with:
-          # npm cache files are stored in `~/.npm` on Linux/macOS
-          path: .build/setup/venv
-          key: ${{ runner.os }}-pip2-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip2-
+#       - name: Cache pip
+#         uses: actions/cache@v2
+#         with:
+#           # npm cache files are stored in `~/.npm` on Linux/macOS
+#           path: .build/setup/venv
+#           key: ${{ runner.os }}-pip2-${{ hashFiles('**/requirements.txt') }}
+#           restore-keys: |
+#             ${{ runner.os }}-pip2-
       
       - name: Cache docker
-        uses: actions/cache@v2
+        uses: actions/cache@v1
         with:
           path: /tmp/docker-registry
           key: docker-registry-${{ hashFiles('.build/environment/test/Dockerfile') }}
