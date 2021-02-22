@@ -19,11 +19,11 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      - name: info
-        run: |
-          echo "REF: ${GITHUB_REF#refs/}";
-          env;
-          exit 1;
+#       - name: info
+#         run: |
+#           echo "REF: ${GITHUB_REF#refs/}";
+#           env;
+#           exit 1;
           
       - uses: actions/checkout@v2
         with:
@@ -67,7 +67,7 @@ jobs:
           python3 -m venv venv;
           source venv/bin/activate;
           pip3 install -r requirements.txt;
-          python3 install.py provision-test --cmfive_core_ref ${GITHUB_REF#refs/}
+          python3 install.py provision-test --cmfive_core_ref ${GITHUB_HEAD_REF} --verbose debug
           docker start selenium314
       
       - name: Test cmfive
