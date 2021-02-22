@@ -57,7 +57,6 @@ jobs:
       - name: Build cmfive
         run: |
           cp config.php.example config.php
-          echo "Config::set('report.database' => ['hostname' => 'mysql-5.7', 'username' => 'cmfive_test', 'password' => 'cmfive_test', 'database' => 'cmfive_test', 'driver' => 'mysql']);" >> config.php
           cd .build/setup
           python3 -m venv venv;
           source venv/bin/activate;
@@ -67,7 +66,7 @@ jobs:
       
       - name: Test cmfive
         run: |
-          cat config.php
+          echo "Config::set('report.database' => ['hostname' => 'mysql-5.7', 'username' => 'cmfive_test', 'password' => 'cmfive_test', 'database' => 'cmfive_test', 'driver' => 'mysql']);" >> config.php
           docker exec nginx-php7.2 bash -c "php cmfive.php cmfive help; exit \$?"
           docker exec nginx-php7.2 bash -c "php cmfive.php testDB setup; exit \$?"
           docker exec nginx-php7.2 bash -c "php cmfive.php tests unit all; exit \$?"
