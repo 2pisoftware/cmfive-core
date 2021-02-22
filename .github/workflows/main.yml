@@ -67,6 +67,7 @@ jobs:
       
       - name: Test cmfive
         run: |
+          cat config.php
           docker exec nginx-php7.2 bash -c "php cmfive.php cmfive help; exit \$?"
           docker exec nginx-php7.2 bash -c "php cmfive.php testDB setup; exit \$?"
           docker exec nginx-php7.2 bash -c "php cmfive.php tests unit all; exit \$?"
