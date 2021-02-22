@@ -33,20 +33,14 @@ jobs:
       - name: Cache composer output
         uses: actions/cache@v2
         with:
-          # npm cache files are stored in `~/.npm` on Linux/macOS
           path: composer/cache
           key: ${{ runner.os }}-composer-${{ hashFiles('system/composer.json') }}
-#           restore-keys: |
-#             ${{ runner.os }}-composer-
 
       - name: Cache pip
         uses: actions/cache@v2
         with:
-          # npm cache files are stored in `~/.npm` on Linux/macOS
           path: .build/setup/venv
           key: ${{ runner.os }}-pip2-${{ hashFiles('.build/setup/requirements.txt') }}
-#           restore-keys: |
-#             ${{ runner.os }}-pip2-
       
       - name: Cache docker
         uses: actions/cache@v1
@@ -67,7 +61,7 @@ jobs:
           python3 -m venv venv;
           source venv/bin/activate;
           pip3 install -r requirements.txt;
-          python3 install.py provision-test --cmfive_core_ref ${GITHUB_HEAD_REF} --verbose debug
+          python3 install.py provision-test --verbose debug --cmfive_core_ref ${GITHUB_HEAD_REF}
           docker start selenium314
       
       - name: Test cmfive
