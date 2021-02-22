@@ -22,6 +22,7 @@ jobs:
       - name: info
         run: |
           echo "REF: ${GITHUB_REF#refs/}";
+          env;
           exit 1;
           
       - uses: actions/checkout@v2
