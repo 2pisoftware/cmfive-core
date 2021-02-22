@@ -19,10 +19,10 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-#       - name: info
-#         run: |
-#           echo "REF: ${GITHUB_REF}";
-#           exit 1;
+      - name: info
+        run: |
+          echo "REF: ${GITHUB_REF#refs/}";
+          exit 1;
           
       - uses: actions/checkout@v2
         with:
