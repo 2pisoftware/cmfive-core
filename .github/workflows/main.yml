@@ -77,6 +77,7 @@ jobs:
             echo "Acceptance tests failed"
           fi
       - name: Test results
+        if: ${{ failure() }} || ${{ success() }}
         uses: actions/upload-artifact@v2
         with:
           name: test-output
