@@ -18,6 +18,7 @@ class CmfiveChannelsModule extends \Codeception\Module
     {
         $I->click("Add Web Channel");
         $I->waitForElement("#channelform");
+        $I->wait(1);
         $I->fillField("#name", $channel_name);
         $is_active ? $I->checkOption("#is_active") : $I->uncheckOption("#is_active");
         $do_processing ? $I->checkOption("#do_processing") : $I->uncheckOption("#do_processing");
@@ -54,6 +55,7 @@ class CmfiveChannelsModule extends \Codeception\Module
     {
         $I->click("Add Email Channel");
         $I->waitForElement("#channelform");
+        $I->wait(1);
         $I->fillField("#name", $channel_name);
         $is_active ? $I->checkOption("#is_active") : $I->uncheckOption("#is_active");
         $do_processing ? $I->checkOption("#do_processing") : $I->uncheckOption("#do_processing");
