@@ -12,8 +12,24 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  build:
+  phplint:
+    name: PHP Lint
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: michaelw90/PHP-Lint@master
+  php-codesniffer:
+    name: PHP CS
+    runs-on: ubuntu-latest
+    # You may pin to the exact commit or the version.
+    # uses: pipeline-components/php-codesniffer@e3341450afba37fab4275b31f041646a26b2da9d
+    steps:
+    - name: Codesniffer
+      uses: pipeline-components/php-codesniffer@v0.12.3
+      with:
+        # Additional options
+        options: -s -p --colors --extensions=php --runtime-set testVersion 7.2
+  run_test:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
