@@ -22,3 +22,4 @@ jobs:
           close-pr-label: stale-closed
           days-before-stale: ${{ secrets.OPEN_DAYS }}
           days-before-close: ${{ secrets.STALE_DAYS }}
+          days-before-issue-close: -1
