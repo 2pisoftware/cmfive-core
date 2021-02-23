@@ -18,13 +18,7 @@ jobs:
     runs-on: ubuntu-latest
 
     # Steps represent a sequence of tasks that will be executed as part of the job
-    steps:
-#       - name: info
-#         run: |
-#           echo "REF: ${GITHUB_REF#refs/}";
-#           env;
-#           exit 1;
-          
+    steps:          
       - uses: actions/checkout@v2
         with:
           repository: '2pisoftware/cmfive-boilerplate'
