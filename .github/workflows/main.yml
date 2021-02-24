@@ -63,6 +63,8 @@ jobs:
       # Build cmfive containers
       - name: Build cmfive
         run: |
+          env
+          exit 1
           cp config.php.example config.php
           cd .build/setup
           python3 -m venv venv;
