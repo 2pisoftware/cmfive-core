@@ -47,13 +47,15 @@
     <h2 id="firstModalTitle" style="font-weight: lighter; text-align: center; border-bottom: 1px solid #777;"><?php echo $attachment->title; ?></h2>
     <p style="text-align: center;"><?php echo $attachment->description; ?></p>
     <div class="row-fluid">
-        <div class="small-4 columns">
+        <div class="column small-12 medium-<?php echo $attachment->isImage() ? '4' : '6'; ?>">
             <a href="/file/atfile/<?php echo $attachment->id; ?>" target="_blank" class="button expand" onclick="$('#attachment_modal_<?php echo $attachment->id; ?>').foundation('reveal', 'close');">Open in new tab</a>
         </div>
-        <div class="small-4 columns">
-            <a href="/file-image/metadata/<?php echo $attachment->id; ?>" target="_blank" class="button expand" onclick="$('#attachment_modal_<?php echo $attachment->id; ?>').foundation('reveal', 'close');">View metadata</a>
-        </div>
-        <div class='small-4 columns'>
+        <?php if ($attachment->isImage()) { ?>
+            <div class="column small-12 medium-4">
+                <a href="/file-image/metadata/<?php echo $attachment->id; ?>" target="_blank" class="button expand" onclick="$('#attachment_modal_<?php echo $attachment->id; ?>').foundation('reveal', 'close');">View metadata</a>
+            </div>
+        <?php } ?>
+        <div class="column small-12 medium-<?php echo $attachment->isImage() ? '4' : '6'; ?>">
             <a class="button expand secondary" onclick="$('#attachment_modal_<?php echo $attachment->id; ?>').foundation('reveal', 'close');" aria-label="Close">Close</a>
         </div>
     </div>
