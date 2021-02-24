@@ -1,0 +1,171 @@
+# This is a basic workflow to help you get started with Actions
+name: CI
+
+on:
+  push:
+    branches: [ develop, master ]
+  pull_request:
+    branches: [ develop, master ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  php-codesniffer:
+    name: PHP CS
+    runs-on: ubuntu-latest
+    # You may pin to the exact commit or the version.
+    # uses: pipeline-components/php-codesniffer@e3341450afba37fab4275b31f041646a26b2da9d
+    steps:
+    - name: Get phpcs
+      run: wget https://raw.githubusercontent.com/2pisoftware/cmfive-boilerplate/master/phpcs.xml
+    - name: Codesniffer
+      uses: pipeline-components/php-codesniffer@v0.12.3
+      with:
+        # Additional options
+        options: -s -p --colors --extensions=php --runtime-set testVersion 7.2
+  run_test:
+    name: Unit/Acceptance tests
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    needs: [php-codesniffer]
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          repository: '2pisoftware/cmfive-boilerplate'
+          ref: 'feature/cicd'
+
+      # - name: Cache composer output
+      #   uses: actions/cache@v2
+      #   with:
+      #     path: composer/cache
+      #     key: ${{ runner.os }}-composer-${{ hashFiles('system/composer.json') }}
+
+      # - name: Cache pip
+      #   uses: actions/cache@v2
+      #   with:
+      #     path: .build/setup/venv
+      #     key: ${{ runner.os }}-pip2-${{ hashFiles('.build/setup/requirements.txt') }}
+
+      # - name: Cache docker
+      #   uses: actions/cache@v1
+      #   with:
+      #     path: /tmp/docker-registry
+      #     key: docker-registry-${{ hashFiles('.build/environment/test/Dockerfile') }}
+      # - run: docker run -d -p 5000:5000 --restart=always --name registry -v /tmp/docker-registry:/var/lib/registry registry:2 && npx wait-on tcp:5000
+      # - run: docker pull localhost:5000/cmfive || true
+      # - run: docker build ./.build/environment/test/ -t cmfive --cache-from=localhost:5000/cmfive
+      # - run: docker tag cmfive localhost:5000/cmfive && docker push localhost:5000/cmfive || true
+      #   if: steps.cache.outputs.cache-hit != 'true'
+
+      # Build cmfive containers
+      - name: Build cmfive
+        run: |
+          cp config.php.example config.php
+          cd .build/setup
+          python3 -m venv venv;
+          source venv/bin/activate;
+          pip3 install -r requirements.txt;
+          python3 install.py --verbose debug provision-test --cmfive_core_ref ${GITHUB_HEAD_REF}
+          docker start selenium314
+
+      - name: Test cmfive
+        run: |
+          echo "Config::set('report.database', ['hostname' => 'mysql-5.7', 'username' => 'cmfive_test', 'password' => 'cmfive_test', 'database' => 'cmfive_test', 'driver' => 'mysql']);" >> config.php
+          echo "Config::set('core_template.foundation.reveal.animation_speed', 0);" >> config.php
+          echo "Config::set('core_template.foundation.reveal.animation', 'none');" >> config.php
+          docker exec nginx-php7.2 bash -c "php cmfive.php cmfive help; exit \$?"
+          docker exec nginx-php7.2 bash -c "php cmfive.php testDB setup; exit \$?"
+      - name: "Run admin module tests"
+        run: |
+          docker exec nginx-php7.2 bash -c "php cmfive.php tests module admin silent; exit \$?"
+          if [ $? -gt 0 ]; then
+            echo "Admin module tests failed"
+          fi
+      - name: "Run auth module tests"
+        run: |
+          docker exec nginx-php7.2 bash -c "php cmfive.php tests module auth silent; exit \$?"
+          if [ $? -gt 0 ]; then
+            echo "Auth module tests failed"
+          fi
+      - name: "Run channels module tests"
+        run: |
+          docker exec nginx-php7.2 bash -c "php cmfive.php tests module channels silent; exit \$?"
+          if [ $? -gt 0 ]; then
+            echo "Channels module tests failed"
+          fi
+      - name: "Run favorite module tests"
+        run: |
+          docker exec nginx-php7.2 bash -c "php cmfive.php tests module favorite silent; exit \$?"
+          if [ $? -gt 0 ]; then
+            echo "Favorite module tests failed"
+          fi
+      - name: "Run file module tests"
+        run: |
+          docker exec nginx-php7.2 bash -c "php cmfive.php tests module file silent; exit \$?"
+          if [ $? -gt 0 ]; then
+            echo "File module tests failed"
+          fi
+      - name: "Run form module tests"
+        run: |
+          docker exec nginx-php7.2 bash -c "php cmfive.php tests module form silent; exit \$?"
+          if [ $? -gt 0 ]; then
+            echo "Form module tests failed"
+          fi
+      - name: "Run help module tests"
+        run: |
+          docker exec nginx-php7.2 bash -c "php cmfive.php tests module help silent; exit \$?"
+          if [ $? -gt 0 ]; then
+            echo "Help module tests failed"
+          fi
+      - name: "Run inbox module tests"
+        run: |
+          docker exec nginx-php7.2 bash -c "php cmfive.php tests module inbox silent; exit \$?"
+          if [ $? -gt 0 ]; then
+            echo "Inbox module tests failed"
+          fi
+      - name: "Run main module tests"
+        run: |
+          docker exec nginx-php7.2 bash -c "php cmfive.php tests module main silent; exit \$?"
+          if [ $? -gt 0 ]; then
+            echo "Main module tests failed"
+          fi
+      - name: "Run report module tests"
+        run: |
+          docker exec nginx-php7.2 bash -c "php cmfive.php tests module report silent; exit \$?"
+          if [ $? -gt 0 ]; then
+            echo "Report module tests failed"
+          fi
+      - name: "Run search module tests"
+        run: |
+          docker exec nginx-php7.2 bash -c "php cmfive.php tests module search silent; exit \$?"
+          if [ $? -gt 0 ]; then
+            echo "Search module tests failed"
+          fi
+      - name: "Run tag module tests"
+        run: |
+          docker exec nginx-php7.2 bash -c "php cmfive.php tests module tag silent; exit \$?"
+          if [ $? -gt 0 ]; then
+            echo "Tag module tests failed"
+          fi
+      - name: "Run task module tests"
+        run: |
+          docker exec nginx-php7.2 bash -c "php cmfive.php tests module task silent; exit \$?"
+          if [ $? -gt 0 ]; then
+            echo "Task module tests failed"
+          fi
+      - name: "Run timelog module tests"
+        run: |
+          docker exec nginx-php7.2 bash -c "php cmfive.php tests module timelog silent; exit \$?"
+          if [ $? -gt 0 ]; then
+            echo "Timelog module tests failed"
+          fi
+      - name: Test results
+        if: ${{ failure() }} || ${{ success() }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: test-output
+          path: test/Codeception/tests/_output/
+          retention-days: 5
