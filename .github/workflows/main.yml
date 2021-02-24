@@ -63,14 +63,12 @@ jobs:
       # Build cmfive containers
       - name: Build cmfive
         run: |
-          env
-          exit 1
           cp config.php.example config.php
           cd .build/setup
           python3 -m venv venv;
           source venv/bin/activate;
           pip3 install -r requirements.txt;
-          python3 install.py --verbose debug provision-test --cmfive_core_ref ${GITHUB_HEAD_REF}
+          python3 install.py --verbose debug provision-test --cmfive_core_ref ${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}
           docker start selenium314
 
       - name: Test cmfive
