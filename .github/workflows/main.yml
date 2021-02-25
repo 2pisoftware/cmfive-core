@@ -1,4 +1,3 @@
-# This is a basic workflow to help you get started with Actions
 name: CI
 
 on:
@@ -7,60 +6,52 @@ on:
   pull_request:
     branches: [ develop, master ]
 
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   php-codesniffer:
     name: PHP CS
     runs-on: ubuntu-latest
-    # You may pin to the exact commit or the version.
-    # uses: pipeline-components/php-codesniffer@e3341450afba37fab4275b31f041646a26b2da9d
     steps:
     - name: Get phpcs
       run: wget https://raw.githubusercontent.com/2pisoftware/cmfive-boilerplate/master/phpcs.xml
     - name: Codesniffer
       uses: pipeline-components/php-codesniffer@v0.12.3
       with:
-        # Additional options
         options: -s -p --colors --extensions=php --runtime-set testVersion 7.2
   run_test:
     name: Unit/Acceptance tests
-    # The type of runner that the job will run on
     runs-on: ubuntu-latest
     needs: [php-codesniffer]
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - uses: actions/checkout@v2
         with:
           repository: '2pisoftware/cmfive-boilerplate'
           ref: 'feature/cicd'
 
-      # - name: Cache composer output
-      #   uses: actions/cache@v2
-      #   with:
-      #     path: composer/cache
-      #     key: ${{ runner.os }}-composer-${{ hashFiles('system/composer.json') }}
+      - name: Cache composer output
+        uses: actions/cache@v2
+        with:
+          path: composer/cache
+          key: ${{ runner.os }}-composer-${{ hashFiles('system/composer.json') }}
 
-      # - name: Cache pip
-      #   uses: actions/cache@v2
-      #   with:
-      #     path: .build/setup/venv
-      #     key: ${{ runner.os }}-pip2-${{ hashFiles('.build/setup/requirements.txt') }}
+      - name: Cache pip
+        uses: actions/cache@v2
+        with:
+          path: .build/setup/venv
+          key: ${{ runner.os }}-pip2-${{ hashFiles('.build/setup/requirements.txt') }}
 
-      # - name: Cache docker
-      #   uses: actions/cache@v1
-      #   with:
-      #     path: /tmp/docker-registry
-      #     key: docker-registry-${{ hashFiles('.build/environment/test/Dockerfile') }}
-      # - run: docker run -d -p 5000:5000 --restart=always --name registry -v /tmp/docker-registry:/var/lib/registry registry:2 && npx wait-on tcp:5000
-      # - run: docker pull localhost:5000/cmfive || true
-      # - run: docker build ./.build/environment/test/ -t cmfive --cache-from=localhost:5000/cmfive
-      # - run: docker tag cmfive localhost:5000/cmfive && docker push localhost:5000/cmfive || true
-      #   if: steps.cache.outputs.cache-hit != 'true'
+      - name: Cache docker
+        uses: actions/cache@v1
+        with:
+          path: /tmp/docker-registry
+          key: docker-registry-${{ hashFiles('.build/environment/test/Dockerfile') }}
+      - run: docker run -d -p 5000:5000 --restart=always --name registry -v /tmp/docker-registry:/var/lib/registry registry:2 && npx wait-on tcp:5000
+      - run: docker pull localhost:5000/cmfive || true
+      - run: docker build ./.build/environment/test/ -t cmfive --cache-from=localhost:5000/cmfive
+      - run: docker tag cmfive localhost:5000/cmfive && docker push localhost:5000/cmfive || true
+        if: steps.cache.outputs.cache-hit != 'true'
 
-      # Build cmfive containers
       - name: Build cmfive
         run: |
           cp config.php.example config.php
