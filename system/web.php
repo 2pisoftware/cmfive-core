@@ -81,7 +81,6 @@ class Web
     public $db;
     public $_isFrontend = false;
     public $_isPortal = false;
-    public $_is_installing = false;
     public $_is_head_request = false;
     public $_languageModulesLoaded = [];
     public $currentLocale = '';
@@ -113,7 +112,7 @@ class Web
         $this->_hooks = [];
 
         $this->checkStorageDirectory();
-                
+
         // look at using schema independent url's with '//' notation - test using Apache/Nginx
         $this->_webroot = $this->getUrlSchema() . $this->getHostname();
 
@@ -125,10 +124,6 @@ class Web
 
         defined("WEBROOT") || define("WEBROOT", $this->_webroot);
 
-        // conditions to start the installer - must be running from web browser
-        if (array_key_exists('REQUEST_URI', $_SERVER)) {
-            $this->_is_installing = !file_exists(ROOT_PATH . "/config.php") || strpos($_SERVER['REQUEST_URI'], '/install') === 0;
-        }
         $this->loadConfigurationFiles();
 
         // If a domain whitelist has been set then implement it and forbid any request that does not match a domain given
@@ -138,10 +133,6 @@ class Web
                 $this->header('HTTP/1.0 403 Forbidden');
                 exit();
             }
-        }
-
-        if ($this->_is_installing) {
-            $this->install();
         }
 
         clearstatcache();
@@ -455,11 +446,8 @@ class Web
 
     public function initLocale()
     {
-        if (!$this->_is_installing) {
-            $user = $this->Auth->user();
-        } else {
-            $user = null;
-        }
+        $user = $this->Auth->user();
+
         // default language
         $language = Config::get('system.language');
         // per user language s
@@ -546,52 +534,6 @@ class Web
     }
 
     /**
-     * Called to install cmfive only if pre-determined that installation
-     * is needed due to a lack of config file
-     * Sometimes the config file is cached and cmfive's cache must be cleared
-     * to trigger installation
-     */
-    public function install()
-    {
-        $this->_is_installing = true;
-
-        // config file exists
-        if (is_file(ROOT_PATH . '/config.php')) {
-            $this->setLayout('install-exists-layout');
-            $this->start(false);
-            exit();
-        }
-
-        // clear config cache
-        if (is_file(ROOT_PATH . '/cache/config.cache')) {
-            unlink(ROOT_PATH . '/cache/config.cache');
-        }
-        if (is_file(ROOT_PATH . '/cache/classdirectory.cache')) {
-            unlink(ROOT_PATH . '/cache/classdirectory.cache');
-        }
-
-        $this->_paths = $this->_getCommandPath();
-        $is_ajax = !empty($this->_paths[1]) && strcmp($this->_paths[1], 'ajax') === 0;
-
-        if (!$is_ajax && (empty($this->_paths[0]) || empty($this->_paths[1]) || !preg_match('/^[0-9]+$/', $this->_paths[1]))) {
-            $this->redirect("/install/1/general");
-        } elseif (!$is_ajax && empty($this->_paths[2])) {
-            $submodule = $this->Install->findInstallStepName(intval($this->_paths[1]));
-            if (empty($submodule)) {
-                $this->redirect("/install/1/general");
-            } else {
-                $path = DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, [$this->_paths[0], $this->_paths[1], $submodule]);
-                $this->redirect($path);
-            }
-        } else {
-            $this->setLayout('install-layout');
-            $this->start(false);
-        }
-
-        exit();
-    }
-
-    /**
      * start processing of request
      * 1. look at the request parameter if the action parameter was set
      * 2. if not set, look at the pathinfo and use first
@@ -606,7 +548,7 @@ class Web
                     $this->ctx('error', "An error occoured, if this message persists please contact your administrator.");
                 });
             }
-            if ($init_database && !$this->_is_installing) {
+            if ($init_database) {
                 $this->initDB();
             }
 
@@ -776,26 +718,6 @@ class Web
 
             $actionmethods[] = $this->_action . '_' . $this->_requestMethod;
             $actionmethods[] = $this->_action . '_ALL';
-            //$actionmethods[] = 'default_ALL';
-
-            // change the submodule and action for installation
-            if ($this->_is_installing) {
-                if (is_file(ROOT_PATH . '/config.php')) {
-                    unset($this->_submodule);
-                    $this->_action = 'index';
-                } else {
-                    $step = $this->_action;
-
-                    // step name is either still in the paths array, or needs to be found
-                    $step_name = sizeof($this->_paths) > 0 ?
-                        array_shift($this->_paths) :
-                        $this->Install->findInstallStepName($step);
-
-                    $this->_submodule = $step . '-' . $step_name; // 1-general
-                    $this->_action = $step_name; // general
-                }
-                $actionmethods[] = $this->_defaultAction . '_ALL'; // index_ALL
-            }
 
             // Check/validate CSRF token
             if (Config::get('system.csrf.enabled') === true) {
@@ -1024,12 +946,6 @@ class Web
 
     public function loadConfigurationFiles()
     {
-        if ($this->_is_installing) {
-            // Load System config
-            $baseDir = SYSTEM_PATH . '/modules';
-            $this->scanModuleDirForConfigurationFiles($baseDir);
-            return;
-        }
         $cachefile = ROOT_PATH . "/cache/config.cache";
 
         // check for config cache file. If exists, then load the config
@@ -1071,12 +987,12 @@ class Web
         if (is_dir($dir)) {
             // Scan directory
             $dirListing = scandir($dir);
-            
+
             if (!empty($dirListing)) {
                 // Loop through listing
                 foreach ($dirListing as $item) {
                     $searchingDir = $dir . "/" . $item;
-                    
+
                     if (is_dir($searchingDir) and $item[0] !== '.') {
                         // If is also a directory, look for config.php file
                         if (file_exists($searchingDir . "/config.php")) {
@@ -1084,10 +1000,7 @@ class Web
                             Config::enableSandbox();
                             include($searchingDir . '/config.php');
                             $include_path = $searchingDir . '/config.php';
-                            // Include the project config unless installing to get any module active flag overrides
-                            if (!$this->_is_installing) {
-                                include(ROOT_PATH . '/config.php');
-                            }
+                            include(ROOT_PATH . '/config.php');
 
                             if (Config::get("{$item}.active") === true) {
                                 // Need to reset sandbox content to remove inclusion of project config
@@ -1186,12 +1099,6 @@ class Web
      */
     public function checkAccess($msg = "Access Restricted")
     {
-        // If we're installing cmfive then there won't be users
-        // TODO this may need refactoring
-        if ($this->_module == "install" && $this->_is_installing) {
-            return true;
-        }
-
         $submodule = $this->_submodule ? "-" . $this->_submodule : "";
         $path = $this->_module . $submodule . "/" . $this->_action;
         $actual_path = $path;
@@ -1830,7 +1737,7 @@ class Web
         }
         // Loop through each registered module to try and invoke the function
         $buffer = [];
-        
+
         foreach ($this->_hooks[$module] as $toInvoke) {
             // Check that the hook impl module that we are invoking is a module
             if (!in_array($toInvoke, $this->modules())) {
