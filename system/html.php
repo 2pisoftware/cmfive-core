@@ -1,4 +1,5 @@
 <?php
+
 require_once "classes/html/GlobalAttributes.php";
 require_once "classes/html/a.php";
 require_once "classes/html/button.php";
@@ -67,7 +68,7 @@ class Html
         return $buffer;
     }
 
-    public static function dataTable($data = array())
+    public static function dataTable($data = [])
     {
         if (empty($data)) {
             return '';
@@ -106,7 +107,7 @@ class Html
      * @param mixed $width
      * @return string
      */
-    public static function chart($id = "chartjs", $type = "line", $data = array(), $options = array(), $height = null, $width = null, $class = null)
+    public static function chart($id = "chartjs", $type = "line", $data = [], $options = [], $height = null, $width = null, $class = null)
     {
         // Set default values
         if (empty($height)) {
@@ -296,7 +297,7 @@ class Html
      */
     public static function ol(&$array, $id = null, $class = null, $subclass = null)
     {
-        return ul($array, $id, $class, $subclass, "ol");
+        return Html::ul($array, $id, $class, $subclass, "ol");
     }
 
     /**
@@ -408,7 +409,8 @@ class Html
                     if (isset($field[6])) {
                         $custom_class = $field[6];
                     }
-                    $buffer .= '<textarea' . $readonly . ' style="width:100%; height:auto; " name="' . $name . '" rows="' . $r . '" cols="' . $c . '" ' . (!empty($custom_class) ? ($custom_class === true ? "class='ckeditor'" : "class='$custom_class' ") : '') . ' id="' . $name . '">' . $value . '</textarea>';
+                    $buffer .= '<textarea' . $readonly . ' style="width:100%; height:auto; " name="' . $name . '" rows="' . $r . '" cols="' . $c . '" ' .
+                    (!empty($custom_class) ? ($custom_class === true ? "class='ckeditor'" : "class='$custom_class' ") : '') . ' id="' . $name . '">' . $value . '</textarea>';
                     break;
                 case "select":
                     $items = !empty($field[4]) ? $field[4] : null;
@@ -610,7 +612,8 @@ class Html
                     // Check if the row is an object like an InputField
                     if (!is_array($field) && is_object($field)) {
                         if ((property_exists($field, "type") && $field->type !== "hidden") || !property_exists($field, "type")) {
-                            $buffer .= '<li><label class=\'small-12 columns\'>' . $field->label . ($field->required ? " <small>Required</small>" : "") . $field->__toString() . '</label></li>';
+                            $buffer .= '<li><label class=\'small-12 columns\'>' . $field->label . ($field->required ? " <small>Required</small>" : "") .
+                            $field->__toString() . '</label></li>';
                         } else {
                             $buffer .= $field->__toString();
                         }
@@ -653,7 +656,8 @@ class Html
                         case "email":
                         case "tel":
                             $size = !empty($field[4]) ? $field[4] : null;
-                            $buffer .= '<input' . $readonly . ' style="width:100%;" type="' . $type . '" name="' . $name . '" value="' . htmlspecialchars($value) . '" size="' . $size . '" id="' . $name . '" ' . $required . " />";
+                            $buffer .= '<input' . $readonly . ' style="width:100%;" type="' . $type . '" name="' . $name . '" value="' . htmlspecialchars($value) .
+                            '" size="' . $size . '" id="' . $name . '" ' . $required . " />";
                             break;
                         case "autocomplete":
                             $options = !empty($field[4]) ? $field[4] : null;
@@ -683,7 +687,9 @@ class Html
                             if (isset($field[6])) {
                                 $custom_class = $field[6];
                             }
-                            $buffer .= '<textarea' . $readonly . ' style="width:100%; height: auto; " name="' . $name . '" rows="' . $r . '" cols="' . $c . '" ' . (!empty($custom_class) ? ($custom_class === true ? "class='ckeditor'" : "class='$custom_class' ") : '') . ' id="' . $name . '" ' . $required . '>' . $value . '</textarea>';
+                            $buffer .= '<textarea' . $readonly . ' style="width:100%; height: auto; " name="' . $name . '" rows="' . $r . '" cols="' . $c .
+                            '" ' . (!empty($custom_class) ? ($custom_class === true ? "class='ckeditor'" : "class='$custom_class' ") : '') . ' id="' . $name
+                            . '" ' . $required . '>' . $value . '</textarea>';
                             break;
                         case "select":
                             $items = !empty($field[4]) ? $field[4] : null;
@@ -996,7 +1002,7 @@ class Html
         if (!$valarray || !sizeof($valarray)) {
             return null;
         }
-        $error = array();
+        $error = [];
         if ($values == null) {
             $values = $_REQUEST;
         }
@@ -1047,6 +1053,82 @@ class Html
     }
 
     /**
+     * Paginated list will build the required HTML to create a paginated list. $list_items is an array
+     * of strings containing the HTML to be wrapped into the <li></li> tags.
+     *
+     * @param array $list_items
+     * @param integer $page
+     * @param integer $page_size
+     * @param integer $total_results
+     * @param string $base_url
+     * @param string|null $sort
+     * @param string $sort_direction
+     * @param string $page_query_param
+     * @param string $pagesize_query_param
+     * @param string $total_results_query_param
+     * @param string $sort_query_param
+     * @param string $sort_direction_param
+     * @return string
+     */
+    public static function paginatedList(
+        array $list_items,
+        int $page,
+        int $page_size,
+        int $total_results,
+        string $base_url,
+        ?string $sort = null,
+        string $sort_direction = "asc",
+        string $page_query_param = "page",
+        string $pagesize_query_param = "page_size",
+        string $total_results_query_param = "total_results",
+        string $sort_query_param = "sort",
+        string $sort_direction_param = "sort_direction"
+    ) : string {
+        // Build URL for pagination.
+        $url_parsed = parse_url($base_url);
+        $url_string = $url_parsed["path"];
+        $url_string .= (empty($url_parsed["query"]) ? "?" : "?" . $url_parsed["query"] . "&") . $sort_query_param . "=" . $sort . "&" . $sort_direction_param . "=" . $sort_direction;
+        $url_string .= (!empty($url_parsed["fragment"]) ? "#" . $url_parsed["fragment"] : "");
+
+        // Generate the table.
+        $num_results = $total_results;
+        if ($page_size > 0) {
+            $num_results = ceil($total_results / $page_size);
+        }
+
+        if ($total_results == 0) {
+            return '<div class="row-fluid clearfix"><div class="small-12 medium-6 small-text-center medium-text-left columns" style="margin: 5px 0px;">No results found</div></div>';
+        }
+
+        $count_items = count($list_items);
+        $starting_item = (($page - 1) * $page_size) + 1;
+        $buffer = '<div class="row-fluid clearfix">'
+            . '<div class="small-12 medium-6 small-text-center medium-text-left columns" style="margin-top: 5px;">Showing ' . $starting_item . ' - ' . ($starting_item + $count_items - 1) . ' of ' . $total_results . '</div>'
+            . '<div class="small-12 medium-6 columns">';
+        if ($num_results > 0) {
+            $buffer .= '<div class="row-fluid clearfix"><span class="small-3 medium-6 columns small-text-center medium-text-right" style="margin-top: 5px;">Page:</span><select onchange="location = this.value;" class="small-9 medium-6 columns right">';
+            // Build URL for dropdown pagination.
+            $dropdown_url_string = $url_parsed['path'];
+            $dropdown_url_string .= (empty($url_parsed['query']) ? "?" : '?' . $url_parsed['query'] . '&') . $sort_query_param . '=' . $sort . '&' . $sort_direction_param . '=' . $sort_direction;
+
+            for ($i = 1; $i <= $num_results; $i++) {
+                $buffer .= '<option' . ($i == $page ? ' selected="selected"' : '') . ' value="' . $dropdown_url_string . '&' . $page_query_param . '=' . $i . (!empty($url_parsed['fragment']) ? '#' . $url_parsed['fragment'] : '') . '">' . $i . '</option>';
+            }
+            $buffer .= '</select></div>';
+        }
+        $buffer .= "</div></div>"
+            . "<ul class='small-block-grid-1 medium-block-grid-2 large-block-grid-6'>";
+
+        foreach ($list_items as $list_item) {
+            $buffer .= "<li>$list_item</li>";
+        }
+        $buffer .= "</ul>";
+        $buffer .= '<div class="pagination-centered">' . Html::pagination($page, $num_results, $page_size, $total_results, $url_string, $page_query_param, $pagesize_query_param, $total_results_query_param) . '</div>';
+
+        return $buffer;
+    }
+
+    /**
      * This function creates a DataTables table, ID to identify the table,
      * an array of headers and the source data url are required
      *
@@ -1082,11 +1164,10 @@ class Html
         $sort_query_param = "sort",
         $sort_direction_param = "sort_direction"
     ) {
-
         // Build URL for pagination
         $url_parsed = parse_url($base_url);
         $url_string = $url_parsed['path'];
-        $url_string .= (empty($url_parsed['query']) ? "?" : '?' . $url_parsed['query'] . '&') . $sort_query_param . '=' . $sort . '&' . $sort_direction_param . '=' . $sort_direction; // . $page_query_param . '=' . $page . '&' . $pagesize_query_param . '=' . $page_size . '&' . $total_results_query_param . '=' . $total_results . '&'
+        $url_string .= (empty($url_parsed['query']) ? "?" : '?' . $url_parsed['query'] . '&') . $sort_query_param . '=' . $sort . '&' . $sort_direction_param . '=' . $sort_direction;
         $url_string .= (!empty($url_parsed['fragment']) ? '#' . $url_parsed['fragment'] : '');
 
         // Generate the table
@@ -1347,7 +1428,7 @@ class Html
         return $buffer;
     }
 
-    public static function listGrid($data, $buttons = array(), $perRow = 2)
+    public static function listGrid($data, $buttons = [], $perRow = 2)
     {
         if (!is_array($data)) {
             return;
@@ -1408,7 +1489,7 @@ class Html
         return $buffer;
     }
 
-    public static function breadcrumbs($data = array(), $w = null)
+    public static function breadcrumbs($data = [], $w = null)
     {
         if (!empty($data)) {
             $buffer = "<ul class='breadcrumbs'>";
@@ -1510,7 +1591,7 @@ UPLOAD;
      * @param string $class
      * @return string
      */
-    public static function alertBox($msg, $type = "info")
+    public static function alertBox($msg, $type = "info") : string
     {
         if ($type !== "info" && $type !== "warning" && $type !== "alert" && $type !== "success") {
             $type = "info";

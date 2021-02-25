@@ -27,7 +27,17 @@ class ReportService extends DbService
     // return member for given report ID and user id
     public function getReportMember($id, $uid)
     {
-        return $this->getObject("ReportMember", array("report_id" => $id, "user_id" => $uid, "is_deleted" => 0));
+        $conferred = [];
+        $conferred[] = $this->getObject("ReportMember", ["report_id" => $id, "user_id" => $uid, "is_deleted" => 0]);
+        $groups = AuthService::getInstance($this->w)->getGroups();
+
+        foreach ($groups ?? [] as $group) {
+            if (AuthService::getInstance($this->w)->getUser($uid)->inGroup($group)) {
+                $conferred[] = $this->getObject("ReportMember", ["report_id" => $id, "user_id" => $group->id, "is_deleted" => 0]);
+            }
+        }
+        $conferred = array_filter($conferred);
+        return end($conferred);
     }
 
     // Helper function to decide whether or not a user has access to a given report
@@ -144,25 +154,27 @@ class ReportService extends DbService
     {
 
         // Clause for admin user
-        if ($this->w->Auth->user()->hasRole("report_admin")) {
+        if (AuthService::getInstance($this->w)->user()->hasRole("report_admin")) {
             return $this->getReports();
         }
 
         // need to get reports for me and my groups
         // me
-        $myid = [$id];
+        $myid = [$this->_db->quote($id)];
 
         // need to check all groups given group member could be a group
-        $groups = $this->w->Auth->getGroups();
+        $groups = AuthService::getInstance($this->w)->getGroups();
 
         foreach ($groups ?? [] as $group) {
-            if ($this->w->Auth->user()->inGroup($group)) {
-                $myid[$group->id] = $group->id;
+            if (AuthService::getInstance($this->w)->user()->inGroup($group)) {
+                $myid[$group->id] = $this->_db->quote($group->id);
             }
         }
 
         // list of IDs to check for report membership, my ID and my group IDs
         $theid = implode(",", $myid);
+      
+        $filter = $this->unitaryWhereToAndClause($where);
 
         // the sql statement below return duplicate reports if they have multiple members
 
@@ -176,11 +188,52 @@ class ReportService extends DbService
 
         // this sql below statement may not be as nifty as the above .. but it works!
         $rows = $this->_db->sql("SELECT distinct r.* from " . ReportMember::$_db_table . " as m inner join " .
-            Report::$_db_table . " as r on m.report_id = r.id where m.user_id in (" . $this->_db->quote($theid) . ") " . (!empty($where) ? $this->_db->quote($where) : '') .
-            " and r.is_deleted = 0 order by r.is_approved desc,r.title")->fetch_all();
+            Report::$_db_table . " as r on m.report_id = r.id " .
+            " where m.user_id in (" . $theid . ") " . $filter .
+            " and r.is_deleted = 0 and m.is_deleted = 0 " .
+            " order by r.is_approved desc,r.title")->fetch_all();
         return $this->fillObjects("Report", $rows);
     }
 
+    /**
+     * unitary approach to form an 'and' clause for 'where' from text or key values
+     *
+     * @param string $where
+     * @param array $where
+     * @return string
+     */
+    public function unitaryWhereToAndClause($where)
+    {
+        // adapt if we were given raw SQL!
+        if (!is_array($where)) {
+            // assume we only check a single equality/pair
+            $spec = explode("=", $where);
+            // anything else will be turned to mush
+            $column = explode(" ", trim($spec[0]));
+            $column = explode(".", end($column));
+            $match = trim(end($spec));
+            $match = str_replace("'", "", $match);
+            $where = [
+                end($column) => $match
+            ];
+        }
+        $filter="";
+        // enforce literal quoted match as r.[columnName] = 'something'
+        foreach ($where as $term => $check) {
+            if (!empty($check)) {
+                $tmp=explode(".", $term);
+                $term=trim(end($tmp));
+                $tmp=explode(" ", $term);
+                $term=trim(end($tmp));
+                $check = str_replace("'", "", $check);
+                $term = str_replace("'", "", $term);
+                $term = str_replace("--", "", $term);
+                $term = str_replace(";", "", $term);
+                $filter .= " and r.".$term." = ".$this->_db->quote($check)." ";
+            }
+        }
+        return $filter;
+    }
     // return list of APPROVED and NOT DELETED report IDs for a given a user ID as member
     public function getReportsbyUserId($id)
     {
@@ -558,10 +611,12 @@ class ReportService extends DbService
             // get user roles
             $usr = $this->w->Auth->user();
             $roles = '';
-            foreach ($usr->getRoles() as $role) {
-                $roles .= "'" . $role . "',";
-            }
+            if (!empty($usr)) {
+                foreach ($usr->getRoles() as $role) {
+                    $roles .= "'" . $role . "',";
+                }
             $roles = rtrim($roles, ",");
+            }
 
             // $special must be in terms of a regexp for preg_match
             $special[0] = "/\{\{current_user_id\}\}/";

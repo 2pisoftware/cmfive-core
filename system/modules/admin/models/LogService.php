@@ -11,6 +11,14 @@ use Monolog\Processor\WebProcessor as WebProcessor;
 
 defined("LOG_SERVICE_DEFAULT_RETENTION_PERIOD") or define("LOG_SERVICE_DEFAULT_RETENTION_PERIOD", 30);
 
+/**
+ * Class LogService - logs to file or aws
+ *
+ * @method bool debug(string $message, array $context = array())
+ * @method bool info(string $message, array $context = array())
+ * @method bool warn(string $message, array $context = array())
+ * @method bool error(string $message, array $context = array())
+ */
 class LogService extends \DbService
 {
     private $loggers = [];
@@ -120,18 +128,25 @@ class LogService extends \DbService
         return $this;
     }
 
-    // Pass on missed calls to the logger (info, error, warning etc)
+    /**
+     * Pass on missed calls to the logger (info, error, warning etc)
+     *
+     * @param $name function name
+     * @param $arguments function arguments
+     */
     public function __call($name, $arguments)
     {
         if (empty($this->logger)) {
             $this->logger = $this->loggers[LogService::$system_logger];
         }
 
-        if ((!empty($arguments[0]) && $arguments[0] === "info") || stristr($name, "err") !== false) {
-            // Add the introspection processor if an error (Adds the line/file/class/method from which the log call originated)
-            $this->logger->pushProcessor(new WebProcessor());
+        if (!empty($arguments[0])) {
+            if ($arguments[0] === "info" || stristr($name, "err") !== false) {
+                // Add the introspection processor if an error (Adds the line/file/class/method from which the log call originated)
+                $this->logger->pushProcessor(new WebProcessor());
+            }
+            $this->logger->$name($arguments[0], ["user" => $this->w->session('user_id')]);
         }
-        $this->logger->$name($arguments[0], ["user" => $this->w->session('user_id')]);
 
         // In the interest of not breaking system logs, we will return the logger back to cmfive
         // This means for every log that isn't system, the call should look something like this:

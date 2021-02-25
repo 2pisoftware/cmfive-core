@@ -7,7 +7,7 @@
                     <div class="small-12 medium-6 large-6 columns">
                         <h3>Personal</h3>
                         <label>Title
-                            <autocomplete :list="user.account.titles" v-model="user.account.title"></autocomplete>
+                            <autocomplete id="title" :list="user.account.titles" v-model="user.account.title"></autocomplete>
                         </label>
                         <label>First Name
                             <?php
