@@ -1,0 +1,40 @@
+
+table.tablesorter {
+    width: 100%;
+    background-color: $white;
+    padding: 20px;
+
+    thead {
+        tr {
+            th {
+                padding: 12px;
+                color: $dark-grey;
+                font-weight: 400;
+                @include font-size('body');
+
+                &:before {
+                    content: "";
+                    display: block;
+                    background: url("~bootstrap-icons/icons/chevron-down.svg") no-repeat;
+                    width: 20px;
+                    height: 20px;
+                    float: left;
+                    margin: 6px 6px 0 0;
+                }
+            }
+        }
+    }
+    tbody {
+        tr {
+            td {
+                color: $mid-grey;
+                background-color: $white;
+                @include font-size('body');
+                
+                &:nth-child(2n -1) {
+                    background-color: $light-grey;
+                }
+            }
+        }
+    }
+}

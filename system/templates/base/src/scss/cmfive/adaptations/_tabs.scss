@@ -1,0 +1,28 @@
+
+.tabs {
+    .tab-head {
+        a {
+            @include font-size("5");
+            padding: 12px;
+            margin-right: 4px;
+            background-color: $white;
+            color: $caption;
+            
+            &.active {
+                background-color: $light-grey;
+                color: $dark-grey;
+            }
+        }
+    }
+
+    .tab-body {
+        div {
+            padding-top: 36px;
+            display: none;
+
+            &.active {
+                display: block;
+            }
+        }
+    }
+}

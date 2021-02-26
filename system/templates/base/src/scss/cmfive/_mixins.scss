@@ -1,0 +1,21 @@
+@use "sass:map";
+
+@mixin shadow-flat {
+    // background: $shadow-base;
+    box-shadow: 0px 4px 8px $shadow-light;
+}
+
+@mixin shadow-hover {
+    // background: $shadow-base;
+    box-shadow: 0px 16px 48px $shadow-light;
+}
+
+@mixin shadow-dark {
+    // background: $shadow-base;
+    box-shadow: 0px 4px 8px $shadow-dark;
+}
+
+@mixin font-size($size) {
+    font-size: map.get($font-sizes, $size);
+    line-height: map.get($line-heights, $size);
+}

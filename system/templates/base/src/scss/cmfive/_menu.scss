@@ -1,0 +1,109 @@
+
+#app {
+    #offscreen-menu {
+        position: fixed;
+        left: -$side-menu-width;
+        top: 0px;
+        bottom: 0px;
+        width: $side-menu-width;
+        z-index: 20;
+        transition: left $animation-duration $animation-path, opacity $animation-duration $animation-path;
+        background-color: white;
+        padding: 20px;
+        opacity: 0;
+
+        &.active {
+            left: 0px;
+            opacity: 1;
+        }
+    }
+
+    #content {
+        width: 100%;
+        z-index: 10;
+
+        #navbar {
+            background-color: $white;
+            padding-bottom: 12px;
+            margin-bottom: 34px;
+        }
+    }
+
+    
+    a.nav-link {
+        @include font-size("5");
+        color: $mid-grey;
+
+        &:hover, &.show {
+            background-color: $light-grey;
+            color: $black-grey;
+        }
+
+        i {
+            font-size: 16px;
+            color: $mid-grey;
+        }
+
+        &.nav-icon {
+            border-bottom: 2px solid $white;
+
+            &:hover {
+                border-bottom: 2px solid $black-grey;
+
+                i {
+                    color: $black-grey;
+                }
+            }
+        }
+
+        &.caret-off::before {
+            display: none;
+        }
+        
+        &.caret-off::after {
+            display: none;
+        }
+    }
+
+    .nav-item {
+        .dropdown-menu {
+            width: 228px;
+            margin: -1px;
+            @include shadow-hover();
+            padding: 12px 0px;
+
+            a {
+                width: 100%;
+                color: $dark-grey;
+                @include font-size("body");
+                display: block;
+                padding: 6px 24px;
+
+                // &:first-child {
+                //     padding-top: 12px;
+                // }
+
+                // &:last-child {
+                //     padding-bottom: 12px
+                // }
+            }
+        }
+    }
+
+    #menu-overlay {
+        position: fixed;
+        z-index: 15;
+        top: 0; bottom: 0;
+        left: 0; right: 0;
+        background-color: black;
+        background-color: rgba($color: #333, $alpha: 0.75);
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity $animation-duration $animation-path, visibility $animation-duration $animation-path;
+
+        &.active {
+            opacity: 1;
+            visibility: visible;
+        }
+    }
+}

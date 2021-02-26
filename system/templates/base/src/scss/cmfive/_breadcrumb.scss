@@ -1,0 +1,28 @@
+
+#breadcrumbs {
+    .breadcrumb {
+        padding: 10px 16px 12px;
+        margin: 0px;
+        background-color: $light-grey;
+        border-radius: 4px;
+        overflow-x: auto;
+        overflow-y: hidden;
+        white-space: nowrap;
+        display: block;
+        height: 48px;
+        
+        .breadcrumb-item {
+            display: inline-block;
+            max-width: 160px;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+
+            span, a {
+                @include font-size('body');
+                text-align: center;
+                overflow: hidden;
+            }
+        }
+    }
+}

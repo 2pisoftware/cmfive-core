@@ -1,0 +1,29 @@
+// Colours
+$black-grey: #353535 !default;
+$dark-grey: #4D4D4D !default;
+$mid-grey: #6C757D !default;
+$light-grey: #F2F2F2 !default;
+$white: #FFFFFF !default;
+
+$twopi-blue: #159CD5 !default;
+$caption: #A0A0A0 !default;
+$warning: #FFC107 !default;
+$danger: #DC3545 !default;
+$success: #28A745 !default;
+
+// Drop shadow
+$shadow-base: #C4C4C4 !default;
+$shadow-light: rgba(45, 45, 45, 0.25) !default;
+$shadow-dark: rgba(45, 45, 45, 0.5) !default;
+
+// Menu
+$side-menu-width: 300px !default;
+$animation-duration: 0.3s !default;
+$animation-path: cubic-bezier(0.645, 0.045, 0.355, 1) !default;
+
+// Type
+$font-sizes: ("1": 40px, "2": 32px, "3": 28px, "4": 24px, "5": 20px, "body": 16px, "caption": 10px);
+//("1": 2.488rem, "2": 2.074rem, "3": 1.728rem, "4": 1.44rem, "5": 1.2rem, "6": 1rem, "sm": 0.833rem);
+$line-heights: ("1": 48px, "2": 38px, "3": 34px, "4": 29px, "5": 24px, "body": 24px, "caption": 16px);
+
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro@1&display=swap');
