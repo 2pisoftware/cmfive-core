@@ -55,7 +55,7 @@ class Config
             // Loop through each key
             foreach ($exploded_key as $ekey) {
                 if (is_array($register) && !array_key_exists($ekey, $register)) {
-                    $register[$ekey] = array();
+                    $register[$ekey] = [];
                 }
                 $register = &$register[$ekey];
             }
@@ -135,7 +135,7 @@ class Config
             return self::$_shadow_keys_cache;
         }
 
-        $required = array("topmenu", "active", "path");
+        $required = ["topmenu", "active", "path"];
         $req_count = count($required);
         $modules = array_filter(self::$_use_sandbox === true ? self::$shadow_register : self::$register, function ($var) use ($required, $req_count) {
             return ($req_count === count(array_intersect_key($var, array_flip($required))));
@@ -167,7 +167,7 @@ class Config
             if (is_array($value)) {
                 self::set($key, $value);
             } else {
-                self::set($key, array($value));
+                self::set($key, [$value]);
             }
         } else {
             if (is_array($target_value)) {
@@ -182,7 +182,7 @@ class Config
                 if (is_array($value)) {
                     self::set($key, $value);
                 } else {
-                    self::set($key, array($value));
+                    self::set($key, [$value]);
                 }
             }
         }
@@ -248,6 +248,55 @@ class Config
     public static function fromJson($string)
     {
         self::$register = json_decode($string, true);
+    }
+
+    /**
+     * Extends the config by loading in additional JSON data using the $string parameter.
+     *
+     * @param string $string
+     * @return void
+     */
+    public static function extendFromJson(string $string): void
+    {
+        // validate
+        if (empty($string)) {
+            return;
+        }
+
+        // decode
+        $source = json_decode($string, true);
+        if (empty($source)) {
+            return;
+        }
+
+        self::merge($source, self::$register);
+    }
+
+    /**
+     * Merges two configs together.
+     *
+     * @param array $source
+     * @param array $target
+     * @return void
+     */
+    private static function merge(array $source, array &$target): void
+    {
+        // highly nested arrays may cause a stack overflow
+        if (!is_array($source)) {
+            return;
+        }
+
+        foreach ($source as $key => $value) {
+            if (array_key_exists($key, $target)) {
+                if (is_array($value)) {
+                    self::merge($source[$key], $target[$key]);
+                } else {
+                    $target[$key] = $value;
+                }
+            } else {
+                $target[$key] = $source[$key];
+            }
+        }
     }
 }
 

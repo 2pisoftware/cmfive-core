@@ -178,7 +178,7 @@ class DbPDO extends PDO
     public function count()
     {
         if ($this->query !== null) {
-            $result = $this->select()->select("count(*)")->fetch_element("count(*)");
+            $result = $this->select()->select("count(*)")->fetchElement("count(*)");
             return intval($result);
         }
     }
@@ -269,9 +269,8 @@ class DbPDO extends PDO
     }
 
     /**
+     * @deprecated v3.0.0
      * @see DbPDO::orderBy()
-     *
-     * @deprecated
      */
     public function order_by($orderby)
     {
@@ -353,14 +352,13 @@ class DbPDO extends PDO
      */
     public function fetchElement($element)
     {
-        $row = $this->fetch_row();
+        $row = $this->fetchRow();
         return (!is_null($row[$element]) ? $row[$element] : null);
     }
 
     /**
+     * @deprecated v3.0.0
      * @see DbPDO::fetchElement()
-     *
-     * @deprecated
      */
     public function fetch_element($element)
     {
@@ -371,7 +369,7 @@ class DbPDO extends PDO
     /**
      * Fetches the first matching row from the query
      *
-     * @return array row
+     * @return array rowk
      */
     public function fetchRow()
     {
@@ -379,9 +377,8 @@ class DbPDO extends PDO
     }
 
     /**
+     * @deprecated v3.0.0
      * @see DbPDO::fetchRow()
-     *
-     * @deprecated
      */
     public function fetch_row()
     {
@@ -404,6 +401,10 @@ class DbPDO extends PDO
         return [];
     }
 
+    /**
+     * @deprecated v3.0.0
+     * @see DbPDO::fetchAll()
+     */
     public function fetch_all()
     {
         return $this->fetchAll();
@@ -570,9 +571,8 @@ class DbPDO extends PDO
     }
 
     /**
+     * @deprecated v3.0.0
      * @see DbPDO::clearSql()
-     *
-     * @deprecated
      */
     public function clear_sql()
     {
@@ -656,7 +656,7 @@ class DbPDO extends PDO
         if (self::$trx_token == 0) {
             return;
         }
-        $this->clear_sql();
+        $this->clearSql();
         $this->rollBack();
         self::$trx_token = 0;
     }

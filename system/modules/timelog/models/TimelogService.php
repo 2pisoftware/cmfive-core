@@ -127,8 +127,8 @@ class TimelogService extends DbService {
     }
 
     public function shouldShowTimer() {
-        // Check if tracking object set or existing timelog is running
-        return ($this->w->Auth->user()->hasRole("timelog_user") && ($this->hasTrackingObject() || $this->hasActiveLog()));
+        // Check if tracking object set or existing timelog is running        
+        return ((!empty(AuthService::getInstance($this->w)->user())) && AuthService::getInstance($this->w)->user()->hasRole("timelog_user") && ($this->hasTrackingObject() || $this->hasActiveLog()));
     }
 
     /**
