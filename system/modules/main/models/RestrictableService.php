@@ -124,6 +124,12 @@ class RestrictableService extends DbService
         return MainService::getInstance($this->w)->getObjects("RestrictedObjectUserLink", ["object_id" => $object->id, "object_class" => get_class($object), "type" => "viewer"]);
     }
 
+    /**
+     * Will ckeck if a DbObject is restricted.
+     *
+     * @param DbObject $object
+     * @return boolean
+     */
     public function isRestricted(DbObject $object): bool
     {
         if (!property_exists($object, "_restrictable")) {
@@ -131,5 +137,23 @@ class RestrictableService extends DbService
         }
 
         return $this->_db->get("restricted_object_user_link")->where("object_id", $object->id, "object_class")->where("object_class", $object->getDbTableName())->count() > 0;
+    }
+
+    /**
+     * Removes restrictions from a DbObject.
+     *
+     * @param DbObject $object
+     * @return void
+     */
+    public function unrestrict(DbObject $object): void
+    {
+        if (!property_exists($object, "_restrictable")) {
+            return;
+        }
+
+        $links = $this->getObjects("RestrictedObjectUserLink", ["object_id" => $object->id, "object_class" => get_class($object)]);
+        foreach ($links as $link) {
+            $link->delete();
+        }
     }
 }

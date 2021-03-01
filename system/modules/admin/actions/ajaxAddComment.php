@@ -10,7 +10,7 @@ function ajaxAddComment_POST(Web $w)
         return;
     }
 
-    $user = $w->Auth->user();
+    $user = AuthService::getInstance($w)->user();
     if ($request_data->is_restricted && !$user->hasRole("restrict")) {
         $w->out((new AxiosResponse())->setErrorResponse(null, ["error_message" => "User not authorised to restrict objects"]));
         return;
@@ -18,7 +18,7 @@ function ajaxAddComment_POST(Web $w)
 
     $comment = null;
     if (!empty($request_data->comment_id)) {
-        $comment = $w->Comment->getComment($request_data->comment_id);
+        $comment = CommentService::getInstance($w)->getComment($request_data->comment_id);
     }
 
     $is_new = false;
@@ -43,11 +43,12 @@ function ajaxAddComment_POST(Web $w)
     $comment->creator_id = $request_data->new_owner->id;
     $comment->insertOrUpdate();
 
+
     if ($request_data->is_restricted) {
         RestrictableService::getInstance($w)->setOwner($comment, $request_data->new_owner->id);
 
         foreach (!empty($request_data->viewers) ? $request_data->viewers : [] as $viewer) {
-            if ($viewer->id == $w->Auth->user()->id) {
+            if ($viewer->id == AuthService::getInstance($w)->user()->id) {
                 continue;
             }
 
@@ -55,10 +56,12 @@ function ajaxAddComment_POST(Web $w)
                 RestrictableService::getInstance($w)->addViewer($comment, $viewer->id);
             }
         }
+    } elseif (!$request_data->is_restricted && RestrictableService::getInstance($w)->isRestricted($comment)) {
+        RestrictableService::getInstance($w)->unrestrict($comment);
     }
 
     if ($top_object_table_name === "comment") {
-        $top_object = $w->Comment->getComment($top_object_id)->getParentObject();
+        $top_object = CommentService::getInstance($w)->getComment($top_object_id)->getParentObject();
         $top_object_table_name = $top_object->getDbTableName();
         $top_object_id = $top_object->id;
     }
