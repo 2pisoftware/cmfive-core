@@ -1,118 +1,135 @@
 <?php
 
-class RestrictableService extends DbService {
+class RestrictableService extends DbService
+{
 
-	public function setOwner($object, $user_id) {
-		if (!property_exists($object, "_restrictable")) {
-			return false;
-		}
+    public function setOwner($object, $user_id)
+    {
+        if (!property_exists($object, "_restrictable")) {
+            return false;
+        }
 
-		$link = $this->w->Main->getObject("RestrictedObjectUserLink", ["object_id" => $object->id, "object_class" => get_class($object), "type" => "owner"]);
-		if (empty($link)) {
-			$link = new RestrictedObjectUserLink($this->w);
-		}
+        $link = MainService::getInstance($this->w)->getObject("RestrictedObjectUserLink", ["object_id" => $object->id, "object_class" => get_class($object), "type" => "owner"]);
+        if (empty($link)) {
+            $link = new RestrictedObjectUserLink($this->w);
+        }
 
-		$link->object_class = get_class($object);
-		$link->object_id = $object->id;
-		$link->user_id = $user_id;
-		$link->type = "owner";
+        $link->object_class = get_class($object);
+        $link->object_id = $object->id;
+        $link->user_id = $user_id;
+        $link->type = "owner";
 
-		if ($link->insertOrUpdate()) {
-			return true;
-		}
-		return false;
-	}
+        if ($link->insertOrUpdate()) {
+            return true;
+        }
+        return false;
+    }
 
-	public function addViewer($object, $user_id) {
-		if (!property_exists($object, "_restrictable")) {
-			return false;
-		}
+    public function addViewer($object, $user_id)
+    {
+        if (!property_exists($object, "_restrictable")) {
+            return false;
+        }
 
-		$logged_in_user_id = $this->w->Auth->user()->id;
-		$owner_link = $this->w->Main->getObject("RestrictedObjectUserLink", ["object_id" => $object->id, "object_class" => get_class($object), "user_id" => $logged_in_user_id, "type" => "owner"]);
+        $logged_in_user_id = AuthService::getInstance($this->w)->user()->id;
+        $owner_link = MainService::getInstance($this->w)->getObject("RestrictedObjectUserLink", ["object_id" => $object->id, "object_class" => get_class($object), "user_id" => $logged_in_user_id, "type" => "owner"]);
 
-		if (empty($owner_link) || $logged_in_user_id !== $owner_link->user_id) {
-			return false;
-		}
+        if (empty($owner_link) || $logged_in_user_id !== $owner_link->user_id) {
+            return false;
+        }
 
-		$link = new RestrictedObjectUserLink($this->w);
-		$link->object_class = get_class($object);
-		$link->object_id = $object->id;
-		$link->user_id = $user_id;
-		$link->type = "viewer";
+        $link = new RestrictedObjectUserLink($this->w);
+        $link->object_class = get_class($object);
+        $link->object_id = $object->id;
+        $link->user_id = $user_id;
+        $link->type = "viewer";
 
-		if ($link->insert()) {
-			return true;
-		}
-		return false;
-	}
+        if ($link->insert()) {
+            return true;
+        }
+        return false;
+    }
 
-	public function removeViewer($object, $user_id) {
-		if (!property_exists($object, "_restrictable")) {
-			return false;
-		}
+    public function removeViewer($object, $user_id)
+    {
+        if (!property_exists($object, "_restrictable")) {
+            return false;
+        }
 
-		$logged_in_user_id = $this->w->Auth->user()->id;
-		$owner_link = $this->w->Main->getObject("RestrictedObjectUserLink", ["object_id" => $object->id, "object_class" => get_class($object), "user_id" => $logged_in_user_id, "type" => "owner"]);
+        $logged_in_user_id = AuthService::getInstance($this->w)->user()->id;
+        $owner_link = MainService::getInstance($this->w)->getObject("RestrictedObjectUserLink", ["object_id" => $object->id, "object_class" => get_class($object), "user_id" => $logged_in_user_id, "type" => "owner"]);
 
-		if ($logged_in_user_id !== $owner_link->user_id) {
-			return false;
-		}
+        if ($logged_in_user_id !== $owner_link->user_id) {
+            return false;
+        }
 
-		$link = $this->w->Main->getObject("RestrictedObjectUserLink", ["object_id" => $object->id, "object_class" => get_class($object), "user_id" => $user_id, "type" => "viewer"]);
-		if (!empty($link) && $link->delete()) {
-			return true;
-		}
-		return false;
-	}
+        $link = MainService::getInstance($this->w)->getObject("RestrictedObjectUserLink", ["object_id" => $object->id, "object_class" => get_class($object), "user_id" => $user_id, "type" => "viewer"]);
+        if (!empty($link) && $link->delete()) {
+            return true;
+        }
+        return false;
+    }
 
-	public function getOwner($object) {
-		if (!property_exists($object, "_restrictable")) {
-			return false;
-		}
+    public function getOwner($object)
+    {
+        if (!property_exists($object, "_restrictable")) {
+            return false;
+        }
 
-		$link = $this->w->Main->getObject("RestrictedObjectUserLink", ["object_id" => $object->id, "object_class" => get_class($object), "type" => "owner"]);
-		if (empty($link)) {
-			return null;
-		}
+        $link = MainService::getInstance($this->w)->getObject("RestrictedObjectUserLink", ["object_id" => $object->id, "object_class" => get_class($object), "type" => "owner"]);
+        if (empty($link)) {
+            return null;
+        }
 
-		return $this->w->Auth->getObject("User", $link->user_id);
-	}
+        return AuthService::getInstance($this->w)->getObject("User", $link->user_id);
+    }
 
-	public function getViewers($object) {
-		if (!property_exists($object, "_restrictable")) {
-			return false;
-		}
+    public function getViewers($object)
+    {
+        if (!property_exists($object, "_restrictable")) {
+            return false;
+        }
 
-		$links = $this->w->Main->getObjects("RestrictedObjectUserLink", ["object_id" => $object->id, "object_class" => get_class($object), "type" => "viewer"]);
-		if (empty($links)) {
-			return null;
-		}
+        $links = MainService::getInstance($this->w)->getObjects("RestrictedObjectUserLink", ["object_id" => $object->id, "object_class" => get_class($object), "type" => "viewer"]);
+        if (empty($links)) {
+            return null;
+        }
 
-		$viewers = [];
-		foreach ($links as $link) {
-			$viewer = $this->w->Auth->getUser($link->user_id);
-			if (!empty($viewer)) {
-				$viewers[] = $viewer;
-			}
-		}
+        $viewers = [];
+        foreach ($links as $link) {
+            $viewer = AuthService::getInstance($this->w)->getUser($link->user_id);
+            if (!empty($viewer)) {
+                $viewers[] = $viewer;
+            }
+        }
 
-		return $viewers;
-	}
+        return $viewers;
+    }
 
-	public function getOwnerLink($object) {
-		if (!property_exists($object, "_restrictable")) {
-			return false;
-		}
+    public function getOwnerLink($object)
+    {
+        if (!property_exists($object, "_restrictable")) {
+            return false;
+        }
 
-		return $this->w->Main->getObject("RestrictedObjectUserLink", ["object_id" => $object->id, "object_class" => get_class($object), "type" => "owner"]);
-	}
+        return MainService::getInstance($this->w)->getObject("RestrictedObjectUserLink", ["object_id" => $object->id, "object_class" => get_class($object), "type" => "owner"]);
+    }
 
-	public function getViewerLinks($object) {
-		if (!property_exists($object, "_restrictable")) {
-			return false;
-		}
+    public function getViewerLinks($object)
+    {
+        if (!property_exists($object, "_restrictable")) {
+            return false;
+        }
 
-		return $this->w->Main->getObjects("RestrictedObjectUserLink", ["object_id" => $object->id, "object_class" => get_class($object), "type" => "viewer"]);
-	}
+        return MainService::getInstance($this->w)->getObjects("RestrictedObjectUserLink", ["object_id" => $object->id, "object_class" => get_class($object), "type" => "viewer"]);
+    }
+
+    public function isRestricted(DbObject $object): bool
+    {
+        if (!property_exists($object, "_restrictable")) {
+            return false;
+        }
+
+        return $this->_db->get("restricted_object_user_link")->where("object_id", $object->id, "object_class")->where("object_class", $object->getDbTableName())->count() > 0;
+    }
 }
