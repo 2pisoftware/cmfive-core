@@ -16,7 +16,7 @@
 //:value="value" \
 Vue.component('autocomplete', {
    template: '<div :class="classPrefix" v-on:mousedown="mousefocus = true" v-on:mouseout="mousefocus = false"> \
-        <input type="text" v-on:blur="focused = false" v-on:focus="focused = true" \
+        <input :id="id" type="text" v-on:blur="focused = false" v-on:focus="focused = true" \
             v-model="search" :placeholder="placeholder" :class="inputClass" \
             v-on:keydown.down.prevent.stop="moveDown()" \
             v-on:keydown.up.prevent.stop="moveUp()" \
@@ -154,6 +154,10 @@ Vue.component('autocomplete', {
             type: String,
             required: false,
             default: 'id',
+        },
+        id: {
+            type: String,
+            required: false,
         },
         inputClass: {
             type: String,
