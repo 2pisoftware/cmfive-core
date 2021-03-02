@@ -151,7 +151,7 @@ class RestrictableService extends DbService
             return;
         }
 
-        $links = $this->getObjects("RestrictedObjectUserLink", ["object_id" => $object->id, "object_class" => get_class($object)]);
+        $links = $this->getObjects("RestrictedObjectUserLink", ["object_id" => $object->id, "object_class" => $object->getDbTableName()]);
         foreach ($links as $link) {
             $link->delete();
         }
