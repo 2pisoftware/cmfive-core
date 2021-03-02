@@ -126,11 +126,11 @@ class InsightService extends DbService
         return $this->GetObject('InsightMembers',$id);
     }
 
-    public function getInsightInstance(string $insight_class): InsightBaseClass               
+    public function getInsightInstance(string $insight_class)               
     {
-        if (!empty($insight_class) && class_exists($insight_class) && is_subclass_of($insight_class, "InsightBaseClass")) {
-            return new $insight_class();
-        }
+            if (!empty($insight_class) && class_exists($insight_class) && is_subclass_of($insight_class, "InsightBaseClass")) {
+                return new $insight_class();
+            } 
         return null;
     }
 
@@ -143,12 +143,12 @@ class InsightService extends DbService
         } 
     }
 
-    // convert dd/mm/yyyy date to yyy-mm-dd for SQL statements
+    // convert dd/mm/yyyy date to yyyy-mm-dd for SQL statements
     public function date2db($date)
     {
         if ($date) {
-            list($d, $m, $y) = preg_split("/\/|-|\./", $date);
-            return $y . "-" . $m . "-" . $d;
+            $formatteddate = formatDate($date, 'Y-m-d');
+            return $formatteddate;
         }
     }
 
