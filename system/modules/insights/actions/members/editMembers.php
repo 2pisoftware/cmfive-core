@@ -55,11 +55,7 @@ function editMembers_GET(Web &$w) {
     	$addMemberForm[] =  array("With Role","select","type",$member->type,$w->Insight->getInsightPermissions());
 
 	//if we are editing an existing meber we need to send the id to the post method
-	if (!empty($p['id'])) {
-		$postUrl = '/insights-members/editMembers/' . $member->id;
-	} else {
-		$postUrl = '/insights-members/editMembers';
-	}
+	$postUrl = '/insights-members/editMembers/' . (!empty($member->id) ? $member->id : '');
 
 	// sending the form to the 'out' function bypasses the template. 
 	$w->out(Html::multiColForm([(empty($p['id']) ? "Add new member" : "Edit member") . " for $insight->name" => [$addMemberForm]], $postUrl));
