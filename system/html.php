@@ -608,7 +608,11 @@ class Html
                     continue;
                 }
 
-                foreach ($row as $field) {
+                foreach ($row as $entry) {
+                    // Backwards compatibility - provide option to pass additional data
+                    $field = array_key_exists('field', $entry) ? $entry['field'] : $entry;
+                    $tooltip = array_key_exists('tooltip', $entry) ? $entry['tooltip'] : null;
+
                     // Check if the row is an object like an InputField
                     if (!is_array($field) && is_object($field)) {
                         if ((property_exists($field, "type") && $field->type !== "hidden") || !property_exists($field, "type")) {
@@ -641,6 +645,9 @@ class Html
                     // Add title field
                     if (!empty($title) && $type !== "hidden") {
                         $buffer .= "<label class='small-12 columns'>$title";
+                        if (!empty($tooltip)) {
+                            $buffer .= " <span data-tooltip aria-haspopup='true' class='has-tip fi-info' title='" . $tooltip . "'></span>";
+                        }
                     }
                     $buffer .= ($type !== "hidden" ? "<div>" : "");
 
@@ -1598,5 +1605,16 @@ UPLOAD;
         }
 
         return "<div data-alert class='alert-box {$type}'>{$msg}<a href='#' class='close'>&times;</a></div>";
+    }
+
+    /**
+     * Strips all HTML tags that aren't in the allow list.
+     *
+     * @param string $s
+     * @return string
+     */
+    public static function sanitise(string $string): string
+    {
+        return strip_tags($string, "<a><blockquote><em><div><h1><h2><h3><h4><h5><h6><li><ol><p><strong><s><u><ul>");
     }
 }
