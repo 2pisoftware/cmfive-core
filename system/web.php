@@ -1747,35 +1747,40 @@ class Web
                 continue;
             }
 
-            $hook_function_name = $toInvoke . "_" . $module . "_" . $function;
+            // Wrap the hook call in a try-catch to hide and log exceptions caused by the hook function.
+            try {
+                $hook_function_name = $toInvoke . "_" . $module . "_" . $function;
 
-            //check if we have already loaded module hooks
-            if (!in_array($toInvoke, $this->_module_loaded_hooks)) {
-                // if this function is already loaded from an earlier call, execute now
-                if (function_exists($hook_function_name)) {
-                    $buffer[] = $hook_function_name($this, $data);
-                } else {
-                    // Check if the file exists and load
-                    if (!file_exists($this->getModuleDir($toInvoke) . $toInvoke . ".hooks.php")) {
-                        continue;
-                    }
-
-                    // Include and check if function exists
-
-                    include_once $this->getModuleDir($toInvoke) . $toInvoke . ".hooks.php";
-                    // add module to loaded hooks array
-                    $this->_module_loaded_hooks[] = $toInvoke;
-
+                //check if we have already loaded module hooks
+                if (!in_array($toInvoke, $this->_module_loaded_hooks)) {
+                    // if this function is already loaded from an earlier call, execute now
                     if (function_exists($hook_function_name)) {
-                        // Call function
+                        $buffer[] = $hook_function_name($this, $data);
+                    } else {
+                        // Check if the file exists and load
+                        if (!file_exists($this->getModuleDir($toInvoke) . $toInvoke . ".hooks.php")) {
+                            continue;
+                        }
 
+                        // Include and check if function exists
+
+                        include_once $this->getModuleDir($toInvoke) . $toInvoke . ".hooks.php";
+                        // add module to loaded hooks array
+                        $this->_module_loaded_hooks[] = $toInvoke;
+
+                        if (function_exists($hook_function_name)) {
+                            // Call function
+
+                            $buffer[] = $hook_function_name($this, $data);
+                        }
+                    }
+                } else {
+                    if (function_exists($hook_function_name)) {
                         $buffer[] = $hook_function_name($this, $data);
                     }
                 }
-            } else {
-                if (function_exists($hook_function_name)) {
-                    $buffer[] = $hook_function_name($this, $data);
-                }
+            } catch (Throwable $t) {
+                LogService::getInstance($this)->setLogger("CMFIVE")->error("Fatal error caught from hook {$t->getTraceAsString()}");
             }
         }
 
