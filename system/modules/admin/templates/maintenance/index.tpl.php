@@ -74,18 +74,6 @@
         });
     });
 
-    $("#regenerate_composer_json").click(function() {
-        var _this = $(this);
-        var _old_text = _this.text();
-
-        _this.addClass('disabled');
-        _this.text('Regenerating...');
-        $.get('/admin-maintenance/ajax_regeneratecomposerjson', function(response) {
-            _this.removeClass('disabled');
-            _this.text(_old_text);
-        });
-    });
-
     $("#reindex_objects").click(function() {
         var _this = $(this);
         var _old_text = _this.text();
