@@ -50,6 +50,11 @@ class Select extends \Html\Form\FormElement
             unset($fields['selected_option']);
         }
 
+        if (array_key_exists('selected_options', $fields)) {
+            $this->setSelectedOptions($fields['selected_options']);
+            unset($fields['selected_options']);
+        }
+
         parent::__construct($fields);
     }
 
@@ -112,7 +117,7 @@ class Select extends \Html\Form\FormElement
 
     public function __toString()
     {
-        $buffer = '<select ';
+        $buffer = '<select style="height: 100%;"';
 
         foreach (get_object_vars($this) as $field => $value) {
             if (!is_null($value) && !in_array($field, static::$_excludeFromOutput)) {
@@ -251,6 +256,17 @@ class Select extends \Html\Form\FormElement
      * @param string $option_value
      * @return \Html\Form\Select $this
      */
+    public function setSelectedOptions($option_values = null)
+    {
+        if (is_array($option_values)) {
+            foreach ($option_values as $option_value) {
+                $this->setSelectedOption($option_value);
+            }
+        }
+
+        return $this;
+    }
+
     public function setSelectedOption($option_value = null)
     {
         if (!empty($this->options) && !is_null($option_value)) {
