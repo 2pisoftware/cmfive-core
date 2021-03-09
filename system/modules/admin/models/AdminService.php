@@ -78,14 +78,15 @@ class AdminService extends DbService {
             $w->menuLink("admin/index", "Admin Dashboard", $nav);
             $w->menuLink("admin/users", "List Users", $nav);
             $w->menuLink("admin/groups", "List Groups", $nav);
+			$w->menuLink('admin-maintenance', 'Maintenance', $nav);
             $w->menuLink("admin/lookup", "Lookup", $nav);
             $w->menuLink("admin-templates", "Templates", $nav);
-            $w->menuLink("admin/phpinfo", "PHP Info", $nav);
-            $w->menuLink("admin/printers", "Printers", $nav);
-            $w->menuLink("admin/printqueue", "Print Queue", $nav);
-            $w->menuLink("admin/databasebackup", "Backup Database", $nav);
+            // $w->menuLink("admin/phpinfo", "PHP Info", $nav);
+//            $w->menuLink("admin/printers", "Printers", $nav);
+//            $w->menuLink("admin/printqueue", "Print Queue", $nav);
+            // $w->menuLink("admin/databasebackup", "Backup Database", $nav);
             $w->menuLink("admin/composer", "Update composer.json", $nav, null, "_blank");
-            $w->menuLink("admin/email", "Email", $nav);
+            // $w->menuLink("admin/email", "Email", $nav);
             $w->menuLink("admin-migration", "Migrations", $nav);
         }
 		
