@@ -10,8 +10,10 @@ class AuditInsight extends InsightBaseClass
     public function getFilters(Web $w, $parameters = []): array
 
     {
-        $moduleSelectOptions = $w->db->query("select distinct module as value, module as title from audit order by module asc")->fetchAll();
-        $actionSelectOptions = $w->db->query("select distinct concat(module,'/',action) as title, action as value from audit order by title")->fetchAll();
+        //$moduleSelectOptions = $w->db->query("select distinct module as value, module as title from audit order by module asc")->fetchAll();
+        $moduleSelectOptions = AuditService::getInstance($w)->getLoggedModules();
+        //$actionSelectOptions = $w->db->query("select distinct concat(module,'/',action) as title, action as value from audit order by title")->fetchAll();
+        $actionSelectOptions = AuditService::getInstance($w)->getLoggedActions();
         //var_dump($actionSelectOptions);
         //die;
 
@@ -89,7 +91,17 @@ class AuditInsight extends InsightBaseClass
              // convert $data from list of objects to array of values
             $convertedData = [];
                 foreach ($data as $datarow){
-                    
+                    $row = [];
+                    echo '<pre>';
+                    var_dump($datarow);
+                    echo '</pre>';
+                    //die;
+                    $row['Date'] = $datarow->dt_created;
+                    $row['User'] = AuthService::getInstance($w)->getUser($datarow->creator_id)->getFullName();
+                
+                
+                
+                    $convertedData[] = $row;
                 }
             var_dump($convertedData); //This should be identical to $oldformatdata
             $results[] = new InsightReportInterface('Audit Report', ['Date', 'User', 'Module', 'URL', 'Class', 'Action', 'DB Id'], $convertedData);
