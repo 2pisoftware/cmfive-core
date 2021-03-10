@@ -352,7 +352,8 @@ class Attachment extends DbObject
             ob_end_clean();
         }
         $this->w->header('Content-Description: File Transfer');
-        $this->w->header('Content-Type: application/octet-stream');
+        $mime = empty($this->mimetype) ? "application/octet-stream" : $this->mimetype;
+        $this->w->header('Content-Type: ' . $mime);
         $saveAs = empty($this->title) ? "File_Download" : $this->title;
         $this->w->header('Content-Disposition: attachment; filename="' . $saveAs . '"');
         $this->w->header('Expires: 0');
