@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html class="theme theme--dark">
     <head>
         <meta charset="utf-8" />
         <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -16,6 +16,7 @@
 
         $w->outputStyles();
         ?>
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
     </head>
     <body>
         <div id="app">
@@ -33,20 +34,20 @@
                     <a class="nav-link nav-icon" href="/"><i class="bi bi-house-fill"></i></a>
                     <a class="nav-link nav-icon" href="/"><i class="bi bi-star-fill"></i></a>
                     <a class="nav-link nav-icon" href="/"><i class="bi bi-person-fill"></i></a>
-                    <a class="nav-link nav-icon" href="/"><i class="bi bi-question-circle-fill"></i></a>
-                    <a class="nav-link nav-icon" href="/"><i class="bi bi-search"></i></a>
+                    <a class="nav-link nav-icon" href="#" @click.prevent="toggleWidth()"><i class="bi bi-question-circle-fill"></i></a>
+                    <a class="nav-link nav-icon" href="#" @click.prevent="toggleTheme()"><i class="bi bi-palette-fill"></i></a>
                 </nav>
             </div>
             <div id="content">
                 <div class="container-fluid" id="navbar">
-                    <nav class="container navbar navbar-expand-lg navbar-light bg-light">
+                    <nav :class="containerClass" class="navbar navbar-expand-lg navbar-light bg-light">
                         <div class="container-fluid">
                             <a class="nav-link nav-icon" :class="{'active': showSidemenu}" @click="toggleMenu()" href="#"><i class="bi bi-list"></i></a>
                             <a class="nav-link nav-icon" href="/"><i class="bi bi-house-fill"></i></a>
                             <a class="nav-link nav-icon" href="/"><i class="bi bi-star-fill"></i></a>
                             <a class="nav-link nav-icon" href="/"><i class="bi bi-person-fill"></i></a>
                             <a class="nav-link nav-icon" href="/"><i class="bi bi-question-circle-fill"></i></a>
-                            <a class="nav-link nav-icon" href="/"><i class="bi bi-search"></i></a>
+                            <a class="nav-link nav-icon" data-modal-target='/search?isbox=1'><i class="bi bi-search"></i></a>
                             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                                 <?php foreach ($w->modules() as $module) :
                                     // Check if config is set to display on topmenu
@@ -95,7 +96,7 @@
                         </div>
                     </nav>
 
-                    <nav aria-label="breadcrumb" class="container" id="breadcrumbs">
+                    <nav aria-label="breadcrumb" :class="containerClass" id="breadcrumbs">
                         <ol class="breadcrumb">
                         <?php
                         if (class_exists("History")) :
@@ -104,18 +105,18 @@
                             if (empty($breadcrumbs)) : ?>
                                 <li class="breadcrumb-item active" aria-current="page">Your history will appear here</li>
                             <?php endif;
-                            $isFirst = true && ($_SERVER['REQUEST_URI'] === key($breadcrumbs));
-                            foreach ($breadcrumbs as $path => $value) :
+                            $isFirst = true && $breadcrumbs !== null && ($_SERVER['REQUEST_URI'] === key($breadcrumbs));
+                            foreach ($breadcrumbs ?? [] as $path => $value) :
                                 if (!AuthService::getInstance($w)->allowed($path)) {
                                     continue;
                                 }
                                 if ($isFirst) : ?>
                                     <li class="breadcrumb-item active" aria-current="page">
-                                        <span data-bs-toggle="tooltip" data-bs-placement="bottom" title="<?php echo $value['name']; ?>" title='<?php echo $value['name']; ?>' ><?php echo $value['name']; ?></span>
+                                        <span data-bs-toggle="tooltip" data-bs-placement="bottom" title="<?php echo $value['name']; ?>"><?php echo $value['name']; ?></span>
                                     </li>
                                 <?php else : ?>
                                     <li class="breadcrumb-item">
-                                        <a href='<?php echo $path; ?>' data-bs-toggle="tooltip" data-bs-placement="bottom" title="<?php echo $value['name']; ?>" title='<?php echo $value['name']; ?>' ><?php echo $value['name']; ?></a>
+                                        <a href='<?php echo $path; ?>' data-bs-toggle="tooltip" data-bs-placement="bottom" title="<?php echo $value['name']; ?>"><?php echo $value['name']; ?></a>
                                     </li>
                                 <?php endif;
                                 $isFirst = false;
@@ -124,11 +125,16 @@
                         </ol>
                     </nav>
                 </div>
-                <div class="container">
+                <div :class="containerClass" id="body-content">
                     <?php echo !empty($body) ? $body : ''; ?>
                 </div>
             </div>
             <div id="menu-overlay" :class="{'active': showSidemenu}" @click="toggleMenu()"></div>
+        </div>
+        <div class="modal" id="cmfive-modal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content"></div>
+            </div>
         </div>
         <?php $w->outputScripts(); ?>
     </body>

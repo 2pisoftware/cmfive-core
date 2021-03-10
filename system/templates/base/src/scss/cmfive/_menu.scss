@@ -1,3 +1,18 @@
+@use 'sass:map';
+
+// Menu theme colours
+$themes: map.deep-merge($themes, (
+    default: (
+        offscreen-background: $white,
+        navbar-background: $white,
+        navbar-text: $mid-grey,
+    ),
+    dark: (
+        offscreen-background: $white--dark,
+        navbar-background: $white--dark,
+        navbar-text: $mid-grey--dark,
+    )
+));
 
 #app {
     #offscreen-menu {
@@ -8,7 +23,9 @@
         width: $side-menu-width;
         z-index: 20;
         transition: left $animation-duration $animation-path, opacity $animation-duration $animation-path;
-        background-color: white;
+        @include themed() {
+            background-color: t('offscreen-background');
+        }
         padding: 20px;
         opacity: 0;
 
@@ -23,7 +40,9 @@
         z-index: 10;
 
         #navbar {
-            background-color: $white;
+            @include themed() {
+                background-color: t('navbar-background');
+            }
             padding-bottom: 12px;
             margin-bottom: 34px;
         }
@@ -31,27 +50,40 @@
 
     
     a.nav-link {
-        @include font-size("5");
-        color: $mid-grey;
-
+        @include font-size("body");
+        @include theme((color: 'navbar-text'));
+        
         &:hover, &.show {
-            background-color: $light-grey;
-            color: $black-grey;
+            @include theme((color: 'black-grey', background-color: 'light-grey'));
+            
+            @include media-breakpoint-up(lg) {
+                .dropdown-menu {
+                    display: block;
+                }
+            }
         }
 
         i {
             font-size: 16px;
-            color: $mid-grey;
+            @include themed() {
+                color: t('mid-grey');
+            }
         }
 
         &.nav-icon {
-            border-bottom: 2px solid $white;
+            @include themed() {
+                border-bottom: 2px solid t('white-black');
+            }
 
             &:hover {
-                border-bottom: 2px solid $black-grey;
+                @include themed() {
+                    border-bottom: 2px solid t('black-grey');
+                }
 
                 i {
-                    color: $black-grey;
+                    @include themed() {
+                        color: t('black-grey');
+                    }
                 }
             }
         }
@@ -65,27 +97,47 @@
         }
     }
 
-    .nav-item {
+    li.nav-item {
+        a {
+            @include themed() {
+                color: t('caption');
+            }
+        }
+
+        &.active {
+            a {
+                @include themed() {
+                    color: t('dark-grey');
+                }
+            }
+        }
+
         .dropdown-menu {
             width: 228px;
             margin: -1px;
             @include shadow-hover();
             padding: 12px 0px;
+            
+            @include themed() {
+                background-color: t('white-black');
+            }
 
             a {
                 width: 100%;
-                color: $dark-grey;
+
+                @include themed() {
+                    color: t('dark-grey');
+                }
                 @include font-size("body");
                 display: block;
                 padding: 6px 24px;
 
-                // &:first-child {
-                //     padding-top: 12px;
-                // }
-
-                // &:last-child {
-                //     padding-bottom: 12px
-                // }
+                &:hover {
+                    @include themed() {
+                        color: t('caption');
+                        background-color: t('light-grey');
+                    }
+                }
             }
         }
     }

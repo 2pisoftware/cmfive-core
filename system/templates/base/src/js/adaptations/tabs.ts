@@ -68,12 +68,11 @@ export class TabAdaptation {
         if (hash && hash.length > 0) {
             TabAdaptation.changeTab(hash);
         } else {
-            const target = document.querySelector(".tab-head > a:first");
-            var me = document.createEvent('MouseEvents');
-            me.initMouseEvent('click', true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
-            target.dispatchEvent(me);
-            // return true;
-            // jQuery(".tab-head > a:first").trigger("click");
+            document.querySelector(".tab-head > a:first-child")?.dispatchEvent(new MouseEvent('click', {
+                bubbles: true,
+                cancelable: true,
+                view: window
+            }));
         }
     }
 }

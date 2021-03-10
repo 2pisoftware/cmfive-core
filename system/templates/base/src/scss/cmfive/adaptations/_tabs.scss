@@ -2,20 +2,47 @@
 .tabs {
     .tab-head {
         a {
-            @include font-size("5");
+            @include font-size("body");
             padding: 12px;
             margin-right: 4px;
-            background-color: $white;
-            color: $caption;
+            @include themed() {
+                color: t('caption');
+                background-color: t('white-black');
+            }
+            // background-color: $white;
+            // color: $caption;
+            // border-top: 1px solid $white;
+            // border-left: 1px solid $white;
+            // border-right: 1px solid $white;
             
             &.active {
-                background-color: $light-grey;
-                color: $dark-grey;
+                @include themed() {
+                    color: t('dark-grey');
+                    background-color: t('light-grey');
+                    border-top: 1px solid t('caption');
+                    border-left: 1px solid t('caption');
+                    border-right: 1px solid t('caption');
+                }
+                // background-color: $light-grey;
+                // color: $dark-grey;
+
+                // border-top: 1px solid lighten($caption, 20%);
+                // border-left: 1px solid lighten($caption, 20%);
+                // border-right: 1px solid lighten($caption, 20%);
+                border-bottom: none;
+
+                display: inline-block;
+                margin-bottom: -1px;
+                padding: 10px 11px 12px 11px;
             }
         }
     }
 
     .tab-body {
+        @include themed() {
+            border-top: 1px solid t('caption');
+        }
+        
         div {
             padding-top: 36px;
             display: none;

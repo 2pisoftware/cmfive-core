@@ -1,14 +1,20 @@
 
 table.tablesorter {
+    @include shadow-flat();
+    margin-top: 12px;
     width: 100%;
-    background-color: $white;
+    @include themed() {
+        background-color: t('white-black');
+    }
     padding: 20px;
 
     thead {
         tr {
             th {
-                padding: 12px;
-                color: $dark-grey;
+                padding: 12px 20px;
+                @include themed() {
+                    color: t('dark-grey');
+                }
                 font-weight: 400;
                 @include font-size('body');
 
@@ -27,12 +33,19 @@ table.tablesorter {
     tbody {
         tr {
             td {
-                color: $mid-grey;
-                background-color: $white;
                 @include font-size('body');
-                
-                &:nth-child(2n -1) {
-                    background-color: $light-grey;
+                @include themed() {
+                    color: t('dark-grey');
+                    background-color: t('white-black');
+                }
+                padding: 0px 20px;
+            }
+
+            &:first-child, &:nth-child(2n + 1) {
+                td {
+                    @include themed() {
+                        background-color: t('light-grey');
+                    }
                 }
             }
         }

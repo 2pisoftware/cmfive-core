@@ -32,15 +32,50 @@
 
 @import 'cmfive/breadcrumb';
 @import 'cmfive/menu';
+@import 'cmfive/modal';
 @import 'cmfive/type';
 
 
 // Foundation adaptation styles
-@import "cmfive/adaptations/button";
+@import "cmfive/adaptations/buttons";
+@import 'cmfive/adaptations/forms';
+@import 'cmfive/adaptations/grid';
 @import "cmfive/adaptations/tabs";
-@import "cmfive/adaptations/table";
+@import "cmfive/adaptations/tables";
+
+// * {
+    // transition: color $animation-duration $animation-path;
+    // transition: background-color $animation-duration $animation-path;
+// }
 
 body {
     min-height: 100vh;
-    background-color: $body-bg;
+    @include theme((color: 'mid-grey', background-color: 'light-grey'));
+    // @include themed() {
+    //     color: t('mid-grey');
+    //     background-color: t('light-grey');
+    // }
+
+    // theme((color: 'mid-grey', background-color: 'light-grey'));
+    // transition: color $animation-duration $animation-path;
+    // transition: color $animation-duration $animation-path, background-color $animation-duration $animation-path;
+
+    #app {
+        // min-height: 100vh;
+        // @include themed() {
+        //     color: t('mid-grey');
+        //     background-color: t('light-grey') !important;
+        // }
+        // @include themed() {
+        //     background-color: t('light-grey');
+        // }
+    }
+
+    // background-color: $body-bg;
+
+    // #body-content {
+    //     padding: 20px;
+    //     background-color: $white;
+    //     @include shadow-flat();
+    // }
 }
