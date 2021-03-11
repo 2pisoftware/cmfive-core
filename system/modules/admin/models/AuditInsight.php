@@ -99,7 +99,8 @@ class AuditInsight extends InsightBaseClass
                     $row['Date'] = formatDateTime($datarow->dt_created);
                     $row['User'] = AuthService::getInstance($w)->getUser($datarow->creator_id)->getFullName();
                     $row['Module'] = $datarow->module;
-                    
+                    // $row['Class'] = $datarow->
+                    // $row['Action'] = $datarow->
                 
                 
                     $convertedData[] = $row;
