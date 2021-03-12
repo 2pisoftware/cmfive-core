@@ -21,7 +21,7 @@ class UserCest
             ['user']
         );
         $I->createLookupType($I, 'title', $this->lookupTitle, $this->lookupTitle);
-        $I->editUser($I, $this->username, ['title input' => $this->lookupTitle]);
+        $I->editUser($I, $this->username, ['title' => $this->lookupTitle]);
         $I->editLookup($I, $this->lookupTitle, ['cmfive-modal #title' => 'The Honourable']);
         $I->clickCmfiveNavbar($I, 'Admin', 'List Users');
         $I->dontSee("The Honourable {$this->firstname} {$this->lastname}");
