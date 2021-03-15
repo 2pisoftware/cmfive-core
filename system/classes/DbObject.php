@@ -75,8 +75,8 @@ class DbObject extends DbService
 {
 
     public $id;
-    private static $_object_vars = array();
-    private static $_columns = array();
+    private static $_object_vars = [];
+    private static $_columns = [];
     private $_class;
     public $__use_auditing = true;
 
@@ -407,10 +407,10 @@ class DbObject extends DbService
             return self::$_object_vars[$this->_class];
         }
         // build cache of filtered object vars
-        self::$_object_vars[$this->_class] = array();
+        self::$_object_vars[$this->_class] = [];
         foreach (get_object_vars($this) as $k => $v) {
             // ignore volatile vars and web
-            if ('_' !== $k{0} && 'w' !== $k) {
+            if ('_' !== substr($k, 0, 1) && 'w' !== $k) {
                 self::$_object_vars[$this->_class][] = $k;
             }
         }
@@ -451,7 +451,7 @@ class DbObject extends DbService
     {
         $newObject = clone $this;
 
-        $toClear = array("id", "creator_id", "modifier_id", "dt_created", "dt_modified", "is_deleted");
+        $toClear = ["id", "creator_id", "modifier_id", "dt_created", "dt_modified", "is_deleted"];
 
         foreach ($toClear as $tc) {
             if (property_exists($newObject, $tc)) {
@@ -475,7 +475,7 @@ class DbObject extends DbService
      */
     public function toArray()
     {
-        $arr = array();
+        $arr = [];
         foreach ($this->getObjectVars() as $k) {
             $arr[$k] = $this->$k;
         }
@@ -669,34 +669,12 @@ class DbObject extends DbService
                 }
             }
 
-            $data = array();
+            $data = [];
             foreach (get_object_vars($this) as $k => $v) {
-                if ($k{0} != "_" && $k != "w" && $v !== null) {
+                if (substr($k, 0, 1) != "_" && $k != "w" && $v !== null) {
                     $dbk = $this->getDbColumnName($k);
-                    if (strpos($k, "dt_") === 0) {
-                        if ($v) {
-                            $v = $this->time2Dt($v);
-                            $data[$dbk] = $v;
-                        }
-                    } elseif (strpos($k, "d_") === 0) {
-                        if ($v) {
-                            $v = $this->time2D($v);
-                            $data[$dbk] = $v;
-                        }
-                    } elseif (strpos($k, "t_") === 0) {
-                        if ($v) {
-                            $v = $this->time2T($v);
-                            $data[$dbk] = $v;
-                        }
-                    } elseif (strpos($k, "s_") === 0) {
-                        if ($v) {
-                            $call_encrypt = $this->_systemEncrypt;
-                            $v = $call_encrypt($v); //AESencrypt($v, Config::get('system.password_salt'));
-                            $data[$dbk] = $v;
-                        }
-                    } else {
-                        $data[$dbk] = $v;
-                    }
+                    $data[$dbk] = $this->updateConvert($dbk, $v);
+  
                 }
             }
 
@@ -726,7 +704,7 @@ class DbObject extends DbService
             // store this id in the context for hooks etc.
             $inserts = $this->w->ctx('db_inserts');
             if (!$inserts) {
-                $inserts = array();
+                $inserts = [];
             }
             $inserts[get_class($this)][] = $this->id;
             $this->w->ctx('db_inserts', $inserts);
@@ -796,9 +774,9 @@ class DbObject extends DbService
 
             $this->validateBoolianProperties();
 
-            $data = array();
+            $data = [];
             foreach (get_object_vars($this) as $k => $v) {
-                if ($k{0} != "_" && $k != "w") { // ignore volatile vars
+                if (substr($k, 0, 1) != "_" && $k != "w") { // ignore volatile vars
                     $dbk = $this->getDbColumnName($k);
 
                     // call update conversions
@@ -841,7 +819,7 @@ class DbObject extends DbService
             // store this id in the context for hooks
             $updates = $this->w->ctx('db_updates');
             if (!$updates) {
-                $updates = array();
+                $updates = [];
             }
             $updates[get_class($this)][] = $this->id;
             $this->w->ctx('db_updates', $updates);
@@ -892,7 +870,7 @@ class DbObject extends DbService
             // store this id in the context for listeners
             $deletes = $this->w->ctx('db_deletes');
             if (!$deletes) {
-                $deletes = array();
+                $deletes = [];
             }
             $deletes[get_class($this)][] = $this->id;
             $this->w->ctx('db_deletes', $deletes);
@@ -951,14 +929,14 @@ class DbObject extends DbService
             }
             return self::$_columns[$this->_class]; //$this->_db->prepare("DESCRIBE tablename")->execute()->fetchAll(PDO::FETCH_COLUMN);
         }
-        self::$_columns[$this->_class][] = array();
-        return array();
+        self::$_columns[$this->_class][] = [];
+        return [];
     }
 
     public function getHumanReadableAttributeName($attribute)
     {
         // Remove magic markers (d_, dt_, etc)
-        $replace_magic = array("d_", "dt_", "t_");
+        $replace_magic = ["d_", "dt_", "t_"];
         foreach ($replace_magic as $rm) {
             if (substr($attribute, 0, strlen($rm)) == $rm) {
                 $attribute = substr($attribute, strlen($rm));
@@ -968,7 +946,7 @@ class DbObject extends DbService
         }
 
         // Remove underscores and " Id"
-        $attribute = str_ireplace(array("_", " id"), array(" ", ""), $attribute);
+        $attribute = str_ireplace(["_", " id"], [" ", ""], $attribute);
 
         // Capitalise all
         $attribute = ucwords(trim($attribute));
@@ -1071,10 +1049,10 @@ class DbObject extends DbService
 
         // -------------- concatenate all object fields ---------------------
         $str = "";
-        $exclude = array("dt_created", "dt_modified", "w");
+        $exclude = ["dt_created", "dt_modified", "w"];
 
         foreach (get_object_vars($this) as $k => $v) {
-            if ($k{0} != "_" // ignore volatile vars
+            if (substr($k, 0, 1) != "_" // ignore volatile vars
                  && (!property_exists($this, "_exclude_index") // ignore properties that should be excluded
                      || !in_array($k, $this->_exclude_index)) && stripos($k, "_id") === false && !in_array($k, $exclude)
             ) {
@@ -1181,7 +1159,7 @@ class DbObject extends DbService
                 return $this->$prop_string;
             }
         } elseif (property_exists($this, $prop_lookup) && $this->$prop_lookup) {
-            return $this->getObjects("Lookup", array("type" => $this->$prop_lookup, "is_deleted" => 0));
+            return $this->getObjects("Lookup", ["type" => $this->$prop_lookup, "is_deleted" => 0]);
         } elseif (property_exists($this, $prop_class) && $this->$prop_class) {
             if (property_exists($this, $prop_filter) && $this->$prop_filter) {
                 return $this->getObjects($this->$prop_class, $this->$prop_filter, true);
@@ -1205,11 +1183,11 @@ class DbObject extends DbService
 
         // Get table columns
         $table_columns = get_object_vars($this);
-        $response = array(
-            "valid" => array(),
-            "invalid" => array(),
+        $response = [
+            "valid" => [],
+            "invalid" => [],
             "success" => false,
-        );
+        ];
 
         // Get validation rules that may be declared static
         $validation_rules = null;
@@ -1297,7 +1275,7 @@ class DbObject extends DbService
                             $rule = $rule . '/';
                         }
 
-                        if (!filter_var($this->$vr_key, FILTER_VALIDATE_REGEXP, array('regexp' => $rule))) {
+                        if (!filter_var($this->$vr_key, FILTER_VALIDATE_REGEXP, ['regexp' => $rule])) {
                             $response["invalid"]["$vr_key"][] = "Invalid";
                         } else {
                             $response["valid"][] = $vr_key;
@@ -1331,6 +1309,8 @@ class DbObject extends DbService
 
     /**
      * Convert data values before sending to database
+     * Useful, to be sure types are asserted via human terms (formatted strings)
+     * regardless of how the value arrived in DB time_ field, eg: ->dt_created=time()
      *
      * @param string $k
      * @param mixed $v
@@ -1374,7 +1354,7 @@ class DbObject extends DbService
     public function validateBoolianProperties()
     {
         foreach (get_object_vars($this) as $k => $v) {
-            if ($k{0} != "_" && $k != "w") { // ignore volatile vars
+            if (substr($k, 0, 1) != "_" && $k != "w") { // ignore volatile vars
                 if (substr($k, 0, 3) === 'is_') {
                     //echo $k; echo '<br>';
                     $this->$k = $v ? 1 : 0;
