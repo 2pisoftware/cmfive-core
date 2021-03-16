@@ -24,10 +24,11 @@ jobs:
     runs-on: ubuntu-latest
     needs: [php-codesniffer]
     steps:
+      - run: git pull --no-rebase
       - uses: actions/checkout@v2
         with:
           repository: '2pisoftware/cmfive-boilerplate'
-          ref: 'feature/cicd'
+          ref: 'feature/PHP7.4'
 
       # - name: Cache composer output
       #   uses: actions/cache@v2
