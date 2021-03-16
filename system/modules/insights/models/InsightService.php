@@ -161,14 +161,17 @@ class InsightService extends DbService
         // if we have records, comma delimit the fields/columns and carriage return delimit the rows
         if (!empty($rows)) {
             foreach ($rows as $row) {
-                //throw away the first line which list the form parameters
+                // var_dump($row); die;
+                // throw away the first line which list the form parameters
                 //$crumbs = array_shift($row);
                 $title = array_shift($row);
-                //$hds = array_shift($row);
+                $hds = array_shift($row);
                 //$hvals = array_values($hds);
                 $hvals = array_shift($row);
                 
                 // find key of any links
+                // var_dump($hvals);
+                // die;
                 foreach ($hvals as $h) {
                     if (stripos($h, "_link")) {
                         list($fld, $lnk) = preg_split("/_/", $h);
@@ -189,12 +192,11 @@ class InsightService extends DbService
                     $row = $arr;
                     unset($arr);
                 }
-
                 $csv = new ParseCsv\Csv();
                 $csv->output_filename = $filename;
                 // ignore lib wrapper csv->output, to keep control over header re-sends!
                 
-                $this->w->out($csv->unparse($row, $hds, null, null, null));
+                $this->w->out($csv->unparse($hvals, $hds, null, null, null));
                 // can't use this way without commenting out header section, which composer won't like
                 // $this->w->out($csv->output($filename, $row, $hds));
                 unset($ukey);

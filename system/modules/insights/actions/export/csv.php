@@ -15,13 +15,16 @@ function csv_ALL(Web $w)
     $rows = [];
     foreach ($run_data as $table) {
         if (!empty($table)) {
-            $rows[] = [$table->title];
-            $rows[] = $table->header;
+            $row = [];
+            $row[] = [$table->title];
+            $row[] = $table->header;
             foreach ($table->data as $result_row) {
-                $rows[] = $result_row;
+                $row[] = $result_row;
             }
+            $rows[] = $row;
         }
     }
-
+// var_dump($rows);
+// die;
     InsightService::getInstance($w)->exportcsv($rows, $p['insight_class']);
 }
