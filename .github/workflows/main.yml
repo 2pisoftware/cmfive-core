@@ -23,8 +23,7 @@ jobs:
     name: Unit/Acceptance tests
     runs-on: ubuntu-latest
     needs: [php-codesniffer]
-    steps:
-      - run: git pull --no-rebase
+    steps:      
       - uses: actions/checkout@v2
         with:
           repository: '2pisoftware/cmfive-boilerplate'
