@@ -5,13 +5,6 @@ function index_ALL(Web $w)
 {
   $w->ctx("title", "Insights List");
 
-
-
-  LogService::getInstance($w)->setLogger("INSIGHTS")->error("This is an INSIGHTS.INFO message");
-  LogService::getInstance($w)->setLogger("INSIGHTS")->info("This is an INSIGHTS.INFO message");
-  LogService::getInstance($w)->setLogger("INSIGHTS")->debug("This is an INSIGHTS.INFO message");
-  LogService::getInstance($w)->setLogger("INSIGHTS")->warn("This is an INSIGHTS.INFO message");
-
   //get userId for logged in user
   $user_id =   AuthService::getInstance($w)->user()->id;
   //var_dump($user_id);
