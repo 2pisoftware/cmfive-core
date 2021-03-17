@@ -14,6 +14,7 @@ class CmfiveAdminModule extends \Codeception\Module
      * @param string $lastName
      * @param string $email
      * @param array[string] $permissions
+     *
      * @return void
      */
     public function createUser($I, $username, $password, $firstName, $lastName, $email, array $permissions = [])
@@ -50,6 +51,7 @@ class CmfiveAdminModule extends \Codeception\Module
         $I->clickCmfiveNavbar($I, 'Admin', 'List Users');
         $rowIndex = $I->findTableRowMatching(1, $user);
         $I->click('Edit', 'tbody tr:nth-child(' . $rowIndex . ')');
+        $I->wait(1);
         $I->fillForm($data);
         $I->click('Update');
         $I->waitForText("Account details updated");

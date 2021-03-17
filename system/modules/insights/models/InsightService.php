@@ -1,4 +1,5 @@
 <?php
+
 /**@author Alice Hutley <alice@2pisoftware.com> */
 
 defined('DS') || define('DS', DIRECTORY_SEPARATOR);
@@ -37,14 +38,13 @@ class InsightService extends DbService
         $insight_paths = [$module_path, $system_module_path];
         // Check if module contains file with Insight in the name
         //if (empty($availableInsights[$module])) {
-            //$availableInsights[$module] = [];
+        //$availableInsights[$module] = [];
         //}
 
         foreach ($insight_paths as $insight_path) {
             if (is_dir(ROOT_PATH . DS . $insight_path)) {
                 foreach (scandir(ROOT_PATH . DS . $insight_path) as $file) {
-                    if (!is_dir($file) && $file{
-                        0} !== '.') {
+                    if (!is_dir($file) && $file[0] !== '.') {
                         $classname = explode('.', $file);
                         //var_dump($classname);
                         //check if file is an insight
@@ -58,8 +58,7 @@ class InsightService extends DbService
                                 if (class_exists($classname[0]) && is_subclass_of($classname[0], 'InsightBaseClass')) {
                                     $insight = new $classname[0]($this->w);
                                     //is_subclass_of ( mixed $object , string $class_name [, bool $allow_string = TRUE ] ) : bool
-                                        $availableInsights[] = $insight;
-                                    
+                                    $availableInsights[] = $insight;
                                 }
                             }
                         }
@@ -79,22 +78,24 @@ class InsightService extends DbService
 
     //Members service functions
     //finding memebers for a specific insight
-    public function getAllMembersForInsightClass($classname = null){
-        if (empty($classname)){
+    public function getAllMembersForInsightClass($classname = null)
+    {
+        if (empty($classname)) {
             $this->w->error('No insight class name provided');
         }
-        return $this->getObjects('InsightMembers', ['is_deleted'=>0,'insight_class_name'=>$classname]);
+        return $this->getObjects('InsightMembers', ['is_deleted' => 0, 'insight_class_name' => $classname]);
     }
-     
+
     //Checking users mebership against insight
-    public function getUserMembershipForInsight($classname = null, $user_id = null){
-        if (empty($classname)){
+    public function getUserMembershipForInsight($classname = null, $user_id = null)
+    {
+        if (empty($classname)) {
             $this->w->error('No insight class name provided');
         }
-        if  (empty($user_id)){
+        if (empty($user_id)) {
             $this->w->error('No user provided');
         }
-        $insight_member = $this->getObject('InsightMembers',['is_deleted' => 0,'insight_class_name' => $classname, 'user_id' => $user_id]);
+        $insight_member = $this->getObject('InsightMembers', ['is_deleted' => 0, 'insight_class_name' => $classname, 'user_id' => $user_id]);
         if (empty($insight_member)) {
             return null;
         }
@@ -108,39 +109,41 @@ class InsightService extends DbService
     }
 
     //check if user is a member of an insight
-    public function IsMember($insight_class_name, $user_id) 
+    public function IsMember($insight_class_name, $user_id)
     {
 
-        if(AuthService::getInstance($this->w)->getUser($user_id)->hasRole('insights_admin')){
+        if (AuthService::getInstance($this->w)->getUser($user_id)->hasRole('insights_admin')) {
             return true;
         }
-        $member = $this->getObject('InsightMembers',['is_deleted' => 0,'insight_class_name' => $insight_class_name, 'user_id' => $user_id]);
-        if (empty ($member)){
+        $member = $this->getObject('InsightMembers', ['is_deleted' => 0, 'insight_class_name' => $insight_class_name, 'user_id' => $user_id]);
+        if (empty($member)) {
             return false;
         }
         return true;
     }
 
     //retrieve a specific member matching the id given number
-    public function GetMemberForId($id) {
-        return $this->GetObject('InsightMembers',$id);
+    public function GetMemberForId($id)
+    {
+        return $this->GetObject('InsightMembers', $id);
     }
 
-    public function getInsightInstance(string $insight_class)               
+    public function getInsightInstance(string $insight_class)
     {
-            if (!empty($insight_class) && class_exists($insight_class) && is_subclass_of($insight_class, "InsightBaseClass")) {
-                return new $insight_class();
-            } 
+        if (!empty($insight_class) && class_exists($insight_class) && is_subclass_of($insight_class, "InsightBaseClass")) {
+            return new $insight_class();
+        }
         return null;
     }
 
-    public function isInsightOwner($user_id, $insight_class) {
-        if(AuthService::getInstance($this->w)->getUser($user_id)->hasRole('insights_admin')){
+    public function isInsightOwner($user_id, $insight_class)
+    {
+        if (AuthService::getInstance($this->w)->getUser($user_id)->hasRole('insights_admin')) {
             return true;
         }
         if (InsightService::getInstance($this->w)->getUserMembershipForInsight($insight_class, $user_id) == "OWNER") {
             return true;
-        } 
+        }
     }
 
     // convert dd/mm/yyyy date to yyyy-mm-dd for SQL statements
@@ -167,7 +170,7 @@ class InsightService extends DbService
                 //$hds = array_shift($row);
                 //$hvals = array_values($hds);
                 $hvals = array_shift($row);
-                
+
                 // find key of any links
                 foreach ($hvals as $h) {
                     if (stripos($h, "_link")) {
@@ -193,15 +196,15 @@ class InsightService extends DbService
                 $csv = new ParseCsv\Csv();
                 $csv->output_filename = $filename;
                 // ignore lib wrapper csv->output, to keep control over header re-sends!
-                
+
                 $this->w->out($csv->unparse($row, $hds, null, null, null));
                 // can't use this way without commenting out header section, which composer won't like
                 // $this->w->out($csv->output($filename, $row, $hds));
                 unset($ukey);
-            } 
+            }
             $this->w->sendHeader("Content-type", "application/csv");
             $this->w->sendHeader("Content-Disposition", "attachment; filename=" . $filename);
-            $this->w->setLayout(null); 
+            $this->w->setLayout(null);
         }
     }
 }
