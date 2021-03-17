@@ -29,17 +29,17 @@ jobs:
           repository: '2pisoftware/cmfive-boilerplate'
           ref: 'feature/PHP7.4'
 
-      - name: Cache composer output
-        uses: actions/cache@v2
-        with:
-          path: composer/cache
-          key: ${{ runner.os }}-composer-${{ hashFiles('system/composer.json') }}
+      # - name: Cache composer output
+      #   uses: actions/cache@v2
+      #   with:
+      #     path: composer/cache
+      #     key: ${{ runner.os }}-composer-${{ hashFiles('system/composer.json') }}
 
-      - name: Cache pip
-        uses: actions/cache@v2
-        with:
-          path: .build/setup/venv
-          key: ${{ runner.os }}-pip2-${{ hashFiles('.build/setup/requirements.txt') }}
+      # - name: Cache pip
+      #   uses: actions/cache@v2
+      #   with:
+      #     path: .build/setup/venv
+      #     key: ${{ runner.os }}-pip2-${{ hashFiles('.build/setup/requirements.txt') }}
 
       # - name: Cache docker
       #   uses: actions/cache@v1
