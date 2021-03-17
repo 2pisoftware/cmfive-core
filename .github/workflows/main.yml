@@ -27,7 +27,7 @@ jobs:
       - uses: actions/checkout@v2
         with:
           repository: '2pisoftware/cmfive-boilerplate'
-          ref: 'feature/PHP7.4'
+          ref: 'develop'
 
       # - name: Cache composer output
       #   uses: actions/cache@v2
