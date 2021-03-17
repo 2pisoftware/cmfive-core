@@ -41,16 +41,16 @@ jobs:
           path: .build/setup/venv
           key: ${{ runner.os }}-pip2-${{ hashFiles('.build/setup/requirements.txt') }}
 
-      - name: Cache docker
-        uses: actions/cache@v1
-        with:
-          path: /tmp/docker-registry
-          key: docker-registry-${{ hashFiles('.build/environment/test/Dockerfile') }}
-      - run: docker run -d -p 5000:5000 --restart=always --name registry -v /tmp/docker-registry:/var/lib/registry registry:2 && npx wait-on tcp:5000
-      - run: docker pull localhost:5000/cmfive || true
-      - run: docker build ./.build/environment/test/ -t cmfive --cache-from=localhost:5000/cmfive
-      - run: docker tag cmfive localhost:5000/cmfive && docker push localhost:5000/cmfive || true
-        if: steps.cache.outputs.cache-hit != 'true'
+      # - name: Cache docker
+      #   uses: actions/cache@v1
+      #   with:
+      #     path: /tmp/docker-registry
+      #     key: docker-registry-${{ hashFiles('.build/environment/test/Dockerfile') }}
+      # - run: docker run -d -p 5000:5000 --restart=always --name registry -v /tmp/docker-registry:/var/lib/registry registry:2 && npx wait-on tcp:5000
+      # - run: docker pull localhost:5000/cmfive || true
+      # - run: docker build ./.build/environment/test/ -t cmfive --cache-from=localhost:5000/cmfive
+      # - run: docker tag cmfive localhost:5000/cmfive && docker push localhost:5000/cmfive || true
+      #   if: steps.cache.outputs.cache-hit != 'true'
 
       - name: Build cmfive
         run: |
