@@ -43,9 +43,8 @@ class DbPDO extends PDO
                 $url = "{$config['driver']}:host={$config['hostname']};dbname={$config['database']}{$port}";
         }
 
-        $timezone = date("e");
         $options = [
-            PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8mb4', time_zone='".$timezone."'",
+            PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8mb4', time_zone='" . date("e") . "'",
         ];
 
         if (!empty($config['ssl_cert_path'])) {
