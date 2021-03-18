@@ -432,14 +432,13 @@ class FileService extends DbService
 
     /**
      * Sends header and content of file to browser without intermediaries
-     * @param int $id Attachment id
+     * @param Attachment_object $att The Attachment
      * @param string $saveAs Override Filename for browser as string
      * @return exit(0) Terminates execution!
      */
-    public function writeOutAttachment($id, $saveAs = null)
+    public function writeOutAttachment($att, $saveAs = null)
     {
-        $att = $this->getAttachment($id);
-        if (!empty($att)) {
+        if (is_a("Attachment", $att)) {
             $this->w->setLayout(null);
             // per : https://www.php.net/manual/en/function.readfile.php
             // readfile() will not present any memory issues on its own.

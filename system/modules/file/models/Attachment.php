@@ -345,7 +345,7 @@ class Attachment extends DbObject
      */
     public function writeOut($saveAs = null)
     {
-        FileService::getInstance($this->w)->writeOutAttachment($this->id, $saveAs);
+        FileService::getInstance($this->w)->writeOutAttachment($this, $saveAs);
     }
 
     /**
