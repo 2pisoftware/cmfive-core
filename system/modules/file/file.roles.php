@@ -28,6 +28,6 @@ function role_file_download_allowed(Web $w,$path) {
 			$w->checkUrl($path, "file", null, "atdel") ||
 			$w->checkUrl($path, "file", null, "printview") ||
 			$w->checkUrl($path, "file", null, "atfile") ||
-			$w->checkUrl($path, "file", null, "atpull") ||
+			$w->checkUrl($path, "file", null, "atdownload") ||
 			$w->checkUrl($path, "file", null, "thumb");
 }
