@@ -438,7 +438,7 @@ class FileService extends DbService
      */
     public function writeOutAttachment($att, $saveAs = null)
     {
-        if (is_a("Attachment", $att)) {
+        if (is_a($att, "Attachment")) {
             $this->w->setLayout(null);
             // per : https://www.php.net/manual/en/function.readfile.php
             // readfile() will not present any memory issues on its own.
