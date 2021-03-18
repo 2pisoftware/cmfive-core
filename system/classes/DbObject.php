@@ -433,7 +433,7 @@ class DbObject extends DbService
         self::$_object_vars[$this->_class] = [];
         foreach (get_object_vars($this) as $k => $v) {
             // ignore volatile vars and web
-            if ('_' !== $k[0] && 'w' !== $k) {
+            if ('_' !== substr($k, 0, 1) && 'w' !== $k) {
                 self::$_object_vars[$this->_class][] = $k;
             }
         }
@@ -693,32 +693,10 @@ class DbObject extends DbService
 
             $data = [];
             foreach (get_object_vars($this) as $k => $v) {
-                if ($k[0] != "_" && $k != "w" && $v !== null) {
+                if (substr($k, 0, 1) != "_" && $k != "w" && $v !== null) {
                     $dbk = $this->getDbColumnName($k);
-                    if (strpos($k, "dt_") === 0) {
-                        if ($v) {
-                            $v = $this->time2Dt($v);
-                            $data[$dbk] = $v;
-                        }
-                    } elseif (strpos($k, "d_") === 0) {
-                        if ($v) {
-                            $v = $this->time2D($v);
-                            $data[$dbk] = $v;
-                        }
-                    } elseif (strpos($k, "t_") === 0) {
-                        if ($v) {
-                            $v = $this->time2T($v);
-                            $data[$dbk] = $v;
-                        }
-                    } elseif (strpos($k, "s_") === 0) {
-                        if ($v) {
-                            $call_encrypt = $this->_systemEncrypt;
-                            $v = $call_encrypt($v); //AESencrypt($v, Config::get('system.password_salt'));
-                            $data[$dbk] = $v;
-                        }
-                    } else {
-                        $data[$dbk] = $v;
-                    }
+                    $data[$dbk] = $this->updateConvert($dbk, $v);
+  
                 }
             }
 
@@ -820,7 +798,7 @@ class DbObject extends DbService
 
             $data = [];
             foreach (get_object_vars($this) as $k => $v) {
-                if ($k[0] != "_" && $k != "w") { // ignore volatile vars
+                if (substr($k, 0, 1) != "_" && $k != "w") { // ignore volatile vars
                     $dbk = $this->getDbColumnName($k);
 
                     // call update conversions
@@ -1108,7 +1086,7 @@ class DbObject extends DbService
         $exclude = ["dt_created", "dt_modified", "w"];
 
         foreach (get_object_vars($this) as $k => $v) {
-            if ($k[0] != "_" // ignore volatile vars
+            if (substr($k, 0, 1) != "_" // ignore volatile vars
                  && (!property_exists($this, "_exclude_index") // ignore properties that should be excluded
                      || !in_array($k, $this->_exclude_index)) && stripos($k, "_id") === false && !in_array($k, $exclude)
             ) {
@@ -1364,6 +1342,8 @@ class DbObject extends DbService
 
     /**
      * Convert data values before sending to database
+     * Useful, to be sure types are asserted via human terms (formatted strings)
+     * regardless of how the value arrived in DB time_ field, eg: ->dt_created=time()
      *
      * @param string $k
      * @param mixed $v
@@ -1411,7 +1391,7 @@ class DbObject extends DbService
     public function validateBoolianProperties()
     {
         foreach (get_object_vars($this) as $k => $v) {
-            if ($k[0] != "_" && $k != "w") { // ignore volatile vars
+            if (substr($k, 0, 1) != "_" && $k != "w") { // ignore volatile vars
                 if (substr($k, 0, 3) === 'is_') {
                     $this->$k = $v ? 1 : 0;
                 }
