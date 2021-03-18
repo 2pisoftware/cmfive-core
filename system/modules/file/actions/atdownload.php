@@ -1,5 +1,5 @@
 <?php
-function atpull_GET(Web &$w)
+function atdownload_GET(Web &$w)
 {
     list($id) = $w->pathMatch();
 

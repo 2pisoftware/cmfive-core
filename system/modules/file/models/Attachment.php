@@ -9,7 +9,6 @@ define('CACHE_PATH', 'cache');
 define('IMAGE_PATH', 'image');
 
 use Gaufrette\File as File;
-use Gaufrette\StreamWrapper as StreamWrapper;
 
 class Attachment extends DbObject
 {
@@ -341,35 +340,12 @@ class Attachment extends DbObject
 
     /**
      * Sends header and content of file to browser without intermediaries
+     * @param string $saveAs Override Filename for browser 'save as'
+     * @return exit(0) Terminates execution!
      */
-    public function writeOut()
+    public function writeOut($saveAs = null)
     {
-        $this->w->setLayout(null);
-        // per : https://www.php.net/manual/en/function.readfile.php
-        // readfile() will not present any memory issues on its own.
-        // If you encounter an out of memory error ensure that output buffering is off
-        if (ob_get_level()) {
-            ob_end_clean();
-        }
-        $this->w->header('Content-Description: File Transfer');
-        $mime = empty($this->mimetype) ? "application/octet-stream" : $this->mimetype;
-        $this->w->header('Content-Type: ' . $mime);
-        $saveAs = empty($this->title) ? "File_Download" : $this->title;
-        $this->w->header('Content-Disposition: attachment; filename="' . $saveAs . '"');
-        $this->w->header('Expires: 0');
-        $this->w->header('Cache-Control: must-revalidate');
-        $this->w->header('Pragma: public');
-
-        $filesystem = $this->getFileSystem();
-
-        $map = StreamWrapper::getFilesystemMap();
-        $map->set('mandated_stream', $filesystem);
-
-        StreamWrapper::register();
-        $streamFrom = 'gaufrette://mandated_stream/' . $this->filename;
-        $this->w->header('Content-Length: ' . filesize($streamFrom));
-        readfile($streamFrom);
-        exit(0);
+        FileService::getInstance($this->w)->writeOutAttachment($this->id, $saveAs);
     }
 
     /**
