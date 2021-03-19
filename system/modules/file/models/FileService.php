@@ -431,14 +431,13 @@ class FileService extends DbService
 
 
     /**
-     * Sends header and content of file to browser without intermediaries
-     * @param Attachment_object $att The Attachment
+     * Sends header and content of file to browser without intermediaries, via exit(0)=Terminates execution!
+     * @param Attachment $att The Attachment
      * @param string $saveAs Override Filename for browser as string
-     * @return exit(0) Terminates execution!
+     * @return void
      */
-    public function writeOutAttachment($att, $saveAs = null)
+    public function writeOutAttachment(Attachment $att, ?string $saveAs = null): void
     {
-        if (is_a($att, "Attachment")) {
             $this->w->setLayout(null);
             // per : https://www.php.net/manual/en/function.readfile.php
             // readfile() will not present any memory issues on its own.
@@ -468,7 +467,6 @@ class FileService extends DbService
             $streamFrom = 'gaufrette://mandated_stream/' . $att->filename;
             $this->w->header('Content-Length: ' . filesize($streamFrom));
             readfile($streamFrom);
-        }
         exit(0);
     }
 
