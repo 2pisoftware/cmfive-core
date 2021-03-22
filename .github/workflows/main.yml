@@ -96,21 +96,17 @@ jobs:
           echo "Config::set('core_template.foundation.reveal.animation', 'none');" >> config.php;          
       
       - name: Prepare cmfive Test Database
-        run: docker exec nginx-php7.4 bash -c "php cmfive.php testDB setup; exit \$?"; 
+        run: docker exec nginx-php7.4 bash -c "php cmfive.php testDB setup; exit \$?";
 
-      # - name: Test cmfive
-      #   run: |
-      #     echo "Config::set('report.database', ['hostname' => 'mysql-5.7', 'username' => 'cmfive_test', 'password' => 'cmfive_test', 'database' => 'cmfive_test', 'driver' => 'mysql']);" >> config.php
-      #     echo "Config::set('core_template.foundation.reveal.animation_speed', 0);" >> config.php
-      #     echo "Config::set('core_template.foundation.reveal.animation', 'none');" >> config.php
-      #     docker exec nginx-php7.4 bash -c "php cmfive.php cmfive help; exit \$?"
-      #     docker exec nginx-php7.4 bash -c "php cmfive.php testDB setup; exit \$?"
-      # - name: "Run admin module tests"
-      #   run: |
-      #     docker exec nginx-php7.4 bash -c "php cmfive.php tests module admin silent; exit \$?"
-      #     if [ $? -gt 0 ]; then
-      #       echo "Admin module tests failed"
-      #     fi
+      # --------------------
+      # Run Acceptance Tests
+      # --------------------
+      - name: "Run admin module tests"
+        run: |
+          docker exec nginx-php7.4 bash -c "php cmfive.php tests module admin silent; exit \$?"
+          if [ $? -gt 0 ]; then
+            echo "Admin module tests failed"
+          fi
       # - name: "Run auth module tests"
       #   run: |
       #     docker exec nginx-php7.4 bash -c "php cmfive.php tests module auth silent; exit \$?"
@@ -189,10 +185,14 @@ jobs:
       #     if [ $? -gt 0 ]; then
       #       echo "Timelog module tests failed"
       #     fi
-      # - name: Test results
-      #   if: ${{ failure() }} || ${{ success() }}
-      #   uses: actions/upload-artifact@v2
-      #   with:
-      #     name: test-output
-      #     path: test/Codeception/tests/_output/
-      #     retention-days: 5
+
+      # ------------------
+      # Store Test Results
+      # ------------------
+      - name: Test results
+        if: ${{ failure() }} || ${{ success() }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: test-output
+          path: test/Codeception/tests/_output/
+          retention-days: 5
