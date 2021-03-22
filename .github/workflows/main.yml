@@ -43,7 +43,7 @@ jobs:
           key: ${{ runner.os }}-pip-${{ hashFiles('.build/setup/requirements.txt') }}            
 
       - name: Cache cmfive Docker Image
-        uses: actions/cache@v1
+        uses: actions/cache@v2
         id: cmfive-docker-image
         with:
           path: /tmp/docker-registry
@@ -66,15 +66,18 @@ jobs:
           source venv/bin/activate;          
           python install.py prime-environment test
 
-      - name: Provision Temporary Docker Registry
+      - name: Prepare Docker Registry
         run: docker run -d -p 5000:5000 --restart=always --name registry -v /tmp/docker-registry:/var/lib/registry registry:2 && npx wait-on tcp:5000
       
-      - name: Build cmfive Docker Image
+      - name: Build and Push Image to Docker Registry
         if: steps.cmfive-docker-image.outputs.cache-hit != 'true'
-        run: |      
-          docker pull localhost:5000/cmfive || true;
+        run: |
           docker build ./.build/environment/test/ -t cmfive --cache-from=localhost:5000/cmfive;
           docker tag cmfive localhost:5000/cmfive && docker push localhost:5000/cmfive || true;
+
+      - name: Pull Image from Docker Registry
+        run: docker pull localhost:5000/cmfive || true;
+      
 
       # - name: Setup cmfive test environment
       #   run: |          
