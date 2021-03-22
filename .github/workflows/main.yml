@@ -9,6 +9,9 @@ on:
   workflow_dispatch:
 
 jobs:
+  # -------
+  # Linting
+  # -------
   php-codesniffer:
     name: PHP CS
     runs-on: ubuntu-latest
@@ -19,6 +22,9 @@ jobs:
       uses: pipeline-components/php-codesniffer@v0.12.3
       with:
         options: -s -p --colors --extensions=php --runtime-set testVersion 7.2
+  # ---------
+  # Testsuits
+  # ---------
   run_test:
     # --------------------
     # Checkout Boilerplate
