@@ -23,6 +23,7 @@ class CmfiveAdminModule extends \Codeception\Module
         $I->click('Add New User');
         $I->waitForElement('#login');
         $I->waitForElement("//button[contains(@class,'savebutton')]");
+        $I->wait(1);
         $I->fillForm(
             [
                 'login' => $username,
@@ -102,6 +103,7 @@ class CmfiveAdminModule extends \Codeception\Module
         $I->clickCmfiveNavbar($I, 'Admin', 'List Groups');
         $I->click('New Group');
         $I->waitForElement('#title');
+        $I->wait(1);
         $I->fillField('#title', $name);
         $I->click('Save');
         $I->waitForText('New group added!');

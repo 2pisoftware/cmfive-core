@@ -93,6 +93,7 @@ class CmfiveChannelsModule extends \Codeception\Module
     {
         $I->click("Add Processor");
         $I->waitForElement("#processor_form");
+        $I->wait(1);
         $I->fillField("#name", $processor_name);
         $I->selectOption("form select[name=channel_id]", $processor_channel);
         $I->selectOption("form select[name=processor_class]", $processor_class);
