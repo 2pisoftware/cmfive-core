@@ -41,6 +41,15 @@ jobs:
       #     path: .build/setup/venv
       #     key: ${{ runner.os }}-pip2-${{ hashFiles('.build/setup/requirements.txt') }}
 
+      - name: Prepare cmfive test environment
+        run: |
+          cp config.php.example config.php
+          cd .build/setup
+          python3 -m venv venv;
+          source venv/bin/activate;
+          pip install -r requirements.txt;          
+          python install.py prime-environment test
+
       - name: Cache docker
         uses: actions/cache@v1
         with:
@@ -52,15 +61,11 @@ jobs:
       - run: docker tag cmfive localhost:5000/cmfive && docker push localhost:5000/cmfive || true
         if: steps.cache.outputs.cache-hit != 'true'
 
-      - name: Build cmfive
-        run: |
-          cp config.php.example config.php
-          cd .build/setup
-          python3 -m venv venv;
+      - name: Provision cmfive test environment
+        run: |          
+          cd .build/setup          
           source venv/bin/activate;
-          pip3 install -r requirements.txt;
-          echo "${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}"
-          python3 install.py --verbose debug provision-test --cmfive_core_ref ${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}
+          python install.py --verbose debug provision-test --cmfive_core_ref ${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}
           docker start selenium314
 
       - name: Test cmfive
