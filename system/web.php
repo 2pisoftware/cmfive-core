@@ -1152,7 +1152,9 @@ class Web
 
     public function isAjax()
     {
-        return isset($_SERVER['HTTP_X_REQUESTED_WITH']);
+        return isset($_SERVER['HTTP_X_REQUESTED_WITH']) ||
+            (array_key_exists('CONTENT_TYPE', $_SERVER) && $_SERVER['CONTENT_TYPE'] == "application/json") ||
+            $this->_layout === null;
     }
 
     /**
@@ -1358,11 +1360,10 @@ class Web
      * @param array $array
      * @return string
      */
-    public function menuLink($path, $title, &$array = null, $confirm = null, $target = null)
+    public function menuLink($path, $title, &$array = null, $confirm = null, $target = null, $class = "")
     {
-        $class = "";
         if (startsWith($path, $this->currentModule())) {
-            $class = "current active";
+            $class .= " current active";
         }
         $link = $this->Auth->allowed($path, Html::a($this->localUrl($path), $title, $title, $class, $confirm, $target));
         if ($array !== null) {

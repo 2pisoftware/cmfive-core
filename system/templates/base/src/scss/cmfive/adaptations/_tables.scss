@@ -1,22 +1,18 @@
 
 table.tablesorter {
     @include shadow-flat();
+    @include theme((background-color: 'white-black'));
     margin-top: 12px;
     width: 100%;
-    @include themed() {
-        background-color: t('white-black');
-    }
     padding: 20px;
 
     thead {
         tr {
             th {
-                padding: 12px 20px;
-                @include themed() {
-                    color: t('dark-grey');
-                }
-                font-weight: 400;
                 @include font-size('body');
+                @include theme((color: 'dark-grey'));
+                font-weight: 400;
+                padding: 12px 20px;
 
                 &:before {
                     content: "";
@@ -34,18 +30,13 @@ table.tablesorter {
         tr {
             td {
                 @include font-size('body');
-                @include themed() {
-                    color: t('dark-grey');
-                    background-color: t('white-black');
-                }
+                @include theme((color: 'dark-grey', background-color: 'white-black'));
                 padding: 0px 20px;
             }
 
             &:first-child, &:nth-child(2n + 1) {
                 td {
-                    @include themed() {
-                        background-color: t('light-grey');
-                    }
+                    @include theme((background-color: 'light-grey'));
                 }
             }
         }

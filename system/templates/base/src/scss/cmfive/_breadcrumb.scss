@@ -1,13 +1,10 @@
 
 #breadcrumbs {
-    .breadcrumb {
+    ol.breadcrumb {
+        @include theme((background-color: 'light-grey'));
+        
         padding: 3px 16px 2px;
         margin: 0px;
-
-        @include themed() {
-            background-color: t('light-grey');
-        }
-        
         border-radius: 4px;
         overflow-x: auto;
         overflow-y: hidden;
@@ -15,7 +12,7 @@
         display: block;
         height: 40px;
         
-        .breadcrumb-item {
+        li.breadcrumb-item {
             display: inline-block;
             max-width: 160px;
             text-overflow: ellipsis;
@@ -23,6 +20,7 @@
             white-space: nowrap;
 
             span, a {
+                @include theme((color: 'dark-grey'));
                 @include font-size('caption');
                 text-align: center;
                 overflow: hidden;

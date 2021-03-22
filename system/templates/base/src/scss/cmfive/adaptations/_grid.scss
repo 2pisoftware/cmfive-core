@@ -4,6 +4,7 @@
     // @include make-col-ready();
     margin: 0 auto;
     width: 100%;
+    @include clearfix();
 }
 
 .clearfix {

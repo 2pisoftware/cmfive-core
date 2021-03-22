@@ -16,16 +16,14 @@ $themes: map.deep-merge($themes, (
 
 #app {
     #offscreen-menu {
+        $t: left $animation-duration $animation-path, opacity $animation-duration $animation-path,;
+        @include theme((background-color: 'offscreen-background'), $t);
         position: fixed;
         left: -$side-menu-width;
         top: 0px;
         bottom: 0px;
         width: $side-menu-width;
         z-index: 20;
-        transition: left $animation-duration $animation-path, opacity $animation-duration $animation-path;
-        @include themed() {
-            background-color: t('offscreen-background');
-        }
         padding: 20px;
         opacity: 0;
 
@@ -40,15 +38,49 @@ $themes: map.deep-merge($themes, (
         z-index: 10;
 
         #navbar {
-            @include themed() {
-                background-color: t('navbar-background');
-            }
+            @include theme((background-color: 'navbar-background'));
             padding-bottom: 12px;
             margin-bottom: 34px;
+
+            li {
+                a {
+                    padding: 0.5rem 1rem;
+                    @include font-size("body");
+                    @include theme((color: 'navbar-text'));
+                }
+        
+                &.active {
+                    a {
+                        @include theme((color: 'dark-grey'));
+                    }
+                }
+        
+                .dropdown-menu {
+                    width: 228px;
+                    margin: -1px;
+                    @include shadow-hover();
+                    padding: 12px 0px;
+                    
+                    @include theme((background-color: 'white-black'));
+        
+                    a {
+                        width: 100%;
+        
+                        @include theme((color: 'dark-grey'));
+                        @include font-size("body");
+                        display: block;
+                        padding: 6px 24px;
+        
+                        &:hover {
+                            @include theme((color: 'caption', background-color: 'light-grey'));
+                        }
+                    }
+                }
+            }
         }
     }
 
-    
+    // Navbar icons
     a.nav-link {
         @include font-size("body");
         @include theme((color: 'navbar-text'));
@@ -65,25 +97,19 @@ $themes: map.deep-merge($themes, (
 
         i {
             font-size: 16px;
-            @include themed() {
-                color: t('mid-grey');
-            }
+            @include theme((color: 'mid-grey'));
         }
 
         &.nav-icon {
-            @include themed() {
-                border-bottom: 2px solid t('white-black');
-            }
+            border-bottom-width: 2px;
+            border-bottom-style: solid;
+            @include theme((border-bottom-color: 'white-black'));
 
             &:hover {
-                @include themed() {
-                    border-bottom: 2px solid t('black-grey');
-                }
+                @include theme((border-bottom-color: 'black-grey'));
 
                 i {
-                    @include themed() {
-                        color: t('black-grey');
-                    }
+                    @include theme((color: 'black-grey'));
                 }
             }
         }
@@ -94,51 +120,6 @@ $themes: map.deep-merge($themes, (
         
         &.caret-off::after {
             display: none;
-        }
-    }
-
-    li.nav-item {
-        a {
-            @include themed() {
-                color: t('caption');
-            }
-        }
-
-        &.active {
-            a {
-                @include themed() {
-                    color: t('dark-grey');
-                }
-            }
-        }
-
-        .dropdown-menu {
-            width: 228px;
-            margin: -1px;
-            @include shadow-hover();
-            padding: 12px 0px;
-            
-            @include themed() {
-                background-color: t('white-black');
-            }
-
-            a {
-                width: 100%;
-
-                @include themed() {
-                    color: t('dark-grey');
-                }
-                @include font-size("body");
-                display: block;
-                padding: 6px 24px;
-
-                &:hover {
-                    @include themed() {
-                        color: t('caption');
-                        background-color: t('light-grey');
-                    }
-                }
-            }
         }
     }
 

@@ -1,12 +1,14 @@
-<?php namespace Html;
+<?php
+
+namespace Html;
 
 /**
  * \Html\a class for generation and tight control of "a" links within cmfive
  * 
  * @author Adam Buckley <adam.buckley90@gmail.com>
  */
-class a {
-
+class a
+{
     use GlobalAttributes;
 
     public $text;
@@ -18,14 +20,15 @@ class a {
     public $rel;
     public $target;
     public $type; // New in HTML5
-    
+
     public $onclick;
-    
-    public function __construct() {
-        
+
+    public function __construct()
+    {
     }
-    
-    public function __set($property, $value) {
+
+    public function __set($property, $value)
+    {
         if (method_exists($this, $property)) {
             $this->$property($value);
         } else {
@@ -48,26 +51,27 @@ class a {
      * 
      * @return string string representation
      */
-    public function __toString() {
+    public function __toString()
+    {
         $buffer = '<a ';
 
-        if (!empty($this->onclick)){
+        if (!empty($this->onclick)) {
             $buffer .= "onclick=\"{$this->onclick}\"";
         } else {
             if (!empty($this->confirm)) {
                 $buffer .= "onclick=\"javascript:return confirm('" . $this->confirm . "');\" ";
             }
         }
-        
-        foreach(get_object_vars($this) as $field => $value) {
-            if (!is_null($value) && !in_array($field, static::$_excludeFromOutput)) {
+
+        foreach (get_object_vars($this) as $field => $value) {
+            if (!is_null($value) && !in_array($field, static::$_excludeFromOutput) && $field[0] !== "_") {
                 $buffer .= $field . '=\'' . $this->{$field} . '\' ';
             }
         }
 
         return $buffer . '>' . $this->text . '</a>';
     }
-    
+
 
     // public function __toString() {
     //     $buffer = "<a ";
@@ -90,69 +94,81 @@ class a {
     //     $buffer .= (">{$this->text}</a>");
     //     return $buffer;
     // }
-    
-    public function confirm($confirmation) {
+
+    public function confirm($confirmation)
+    {
         $this->confirm = $confirmation;
         return $this;
     }
-    
-    public function text($text) {
+
+    public function text($text)
+    {
         $this->text = $text;
         return $this;
     }
-    
-    public function download($path) {
+
+    public function download($path)
+    {
         $this->download = $path;
         return $this;
     }
-    
-    public function href($uri) {
+
+    public function href($uri)
+    {
         $this->href = $uri;
         return $this;
     }
-    
-    public function hreflang($lang) {
+
+    public function hreflang($lang)
+    {
         $this->hreflang = $lang;
         return $this;
     }
-    
-    public function media($media) {
+
+    public function media($media)
+    {
         $this->media = $media;
         return $this;
     }
-    
-    public function id($id) {
+
+    public function id($id)
+    {
         $this->id = $id;
         return $this;
     }
-    
-    public function onclick($onclick) {
+
+    public function onclick($onclick)
+    {
         $this->onclick = $onclick;
         return $this;
     }
-    
+
     /**
      * Class is a reserved word so we have to use setClass
      * 
      * @param string $class
      * @return $this
      */
-    public function setClass($class) {
+    public function setClass($class)
+    {
         $this->class = $class;
         return $this;
     }
-    
-    public function rel($rel) {
+
+    public function rel($rel)
+    {
         $this->rel = $rel;
         return $this;
     }
-    
-    public function target($target) {
+
+    public function target($target)
+    {
         $this->target = $target;
         return $this;
     }
-    
-    public function type($type) {
+
+    public function type($type)
+    {
         $this->type = $type;
         return $this;
     }

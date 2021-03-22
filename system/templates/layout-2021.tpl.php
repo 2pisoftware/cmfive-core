@@ -17,10 +17,14 @@
         $w->outputStyles();
         ?>
         <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+        <script>
+            // @todo: move this into a build file
+            let modal_history = [];
+        </script>
     </head>
     <body>
         <div id="app">
-            <div id="offscreen-menu" :class="{'active': showSidemenu}">
+            <div id="offscreen-menu">
                 <div class="d-flex flex-row justify-content-between">
                     <div class="d-flex flex-row align-items-center">
                         <a class="nav-link" href="/">
@@ -28,21 +32,21 @@
                         </a>
                         <h5 class="d-flex flex-row mt-1 mb-1">Menu</h5>
                     </div>
-                    <a class="nav-link pt-0 pb-1" href="/"><i class="bi bi-x" style="font-size: 24px;"></i></a>
+                    <a class="nav-link pt-0 pb-1" data-toggle-menu="close"><i class="bi bi-x" style="font-size: 24px;"></i></a>
                 </div>
                 <nav class="navbar navbar-expand navbar-light bg-light justify-content-start">
                     <a class="nav-link nav-icon" href="/"><i class="bi bi-house-fill"></i></a>
                     <a class="nav-link nav-icon" href="/"><i class="bi bi-star-fill"></i></a>
                     <a class="nav-link nav-icon" href="/"><i class="bi bi-person-fill"></i></a>
-                    <a class="nav-link nav-icon" href="#" @click.prevent="toggleWidth()"><i class="bi bi-question-circle-fill"></i></a>
-                    <a class="nav-link nav-icon" href="#" @click.prevent="toggleTheme()"><i class="bi bi-palette-fill"></i></a>
+                    <a class="nav-link nav-icon" href="#"><i class="bi bi-question-circle-fill"></i></a>
+                    <a class="nav-link nav-icon" href="#" data-toggle-theme><i class="bi bi-palette-fill"></i></a>
                 </nav>
             </div>
             <div id="content">
                 <div class="container-fluid" id="navbar">
-                    <nav :class="containerClass" class="navbar navbar-expand-lg navbar-light bg-light">
+                    <nav class="container navbar navbar-expand-lg navbar-light bg-light">
                         <div class="container-fluid">
-                            <a class="nav-link nav-icon" :class="{'active': showSidemenu}" @click="toggleMenu()" href="#"><i class="bi bi-list"></i></a>
+                            <a class="nav-link nav-icon" data-toggle-menu="open"><i class="bi bi-list"></i></a>
                             <a class="nav-link nav-icon" href="/"><i class="bi bi-house-fill"></i></a>
                             <a class="nav-link nav-icon" href="/"><i class="bi bi-star-fill"></i></a>
                             <a class="nav-link nav-icon" href="/"><i class="bi bi-person-fill"></i></a>
@@ -53,8 +57,9 @@
                                     // Check if config is set to display on topmenu
                                     if (Config::get("{$module}.topmenu") && Config::get("{$module}.active")) :
                                         // Check for navigation
-                                        $service_module = ucfirst($module);
-                                        $menu_link = method_exists($w->$service_module, "menuLink") ? $w->$service_module->menuLink() : $w->menuLink($module, is_bool(Config::get("{$module}.topmenu")) ? ucfirst($module) : Config::get("{$module}.topmenu"));
+                                        $module_service = ucfirst($module) . "Service";
+                                        $array = [];
+                                        $menu_link = method_exists($module_service, "menuLink") ? $module_service::getInstance($w)->menuLink() : $w->menuLink($module, is_bool(Config::get("{$module}.topmenu")) ? ucfirst($module) : Config::get("{$module}.topmenu"), $array, null, null, "nav-link");
                                         if ($menu_link !== false) :
                                             if (method_exists($module . "Service", "navigation")) : ?>
                                                 <li class="nav-item dropdown <?php echo $w->_module == $module ? 'active' : ''; ?>" id="topnav_<?php echo $module; ?>">
@@ -62,8 +67,6 @@
                                                         <?php echo ucfirst($module); ?>
                                                     </a>
                                                     <?php // Try and get a badge count for the menu item
-                                                    // echo $menu_link;
-                                                    $module_service = ucfirst($module) . "Service";
                                                     $module_navigation = $module_service::getInstance($w)->navigation($w);
 
                                                     // Invoke hook to inject extra navigation
@@ -82,9 +85,8 @@
                                                     </div>
                                                 </li>
                                             <?php else : ?>
-                                                <li <?php echo $w->_module == $module ? 'class="active"' : ''; ?>><?php echo $menu_link; ?></li>
+                                                <li class="nav-item <?php echo $w->_module == $module ? 'active' : ''; ?>"><?php echo $menu_link; ?></li>
                                             <?php endif; ?>
-                                            <!-- <li class="divider"></li> -->
                                         <?php endif;
                                     endif;
                                 endforeach; ?>
@@ -96,40 +98,38 @@
                         </div>
                     </nav>
 
-                    <nav aria-label="breadcrumb" :class="containerClass" id="breadcrumbs">
+                    <nav aria-label="breadcrumb" class="container" id="breadcrumbs">
                         <ol class="breadcrumb">
                         <?php
-                        if (class_exists("History")) :
-                            $breadcrumbs = History::get();
+                        $breadcrumbs = History::get();
 
-                            if (empty($breadcrumbs)) : ?>
-                                <li class="breadcrumb-item active" aria-current="page">Your history will appear here</li>
+                        if (empty($breadcrumbs)) : ?>
+                            <li class="breadcrumb-item active" aria-current="page">Your history will appear here</li>
+                        <?php endif;
+                        $isFirst = true && $breadcrumbs !== null && ($_SERVER['REQUEST_URI'] === key($breadcrumbs));
+                        foreach ($breadcrumbs ?? [] as $path => $value) :
+                            if (!AuthService::getInstance($w)->allowed($path)) {
+                                continue;
+                            }
+                            if ($isFirst) : ?>
+                                <li class="breadcrumb-item active" aria-current="page">
+                                    <span data-bs-toggle="tooltip" data-bs-placement="bottom" title="<?php echo $value['name']; ?>"><?php echo $value['name']; ?></span>
+                                </li>
+                            <?php else : ?>
+                                <li class="breadcrumb-item">
+                                    <a href='<?php echo $path; ?>' data-bs-toggle="tooltip" data-bs-placement="bottom" title="<?php echo $value['name']; ?>"><?php echo $value['name']; ?></a>
+                                </li>
                             <?php endif;
-                            $isFirst = true && $breadcrumbs !== null && ($_SERVER['REQUEST_URI'] === key($breadcrumbs));
-                            foreach ($breadcrumbs ?? [] as $path => $value) :
-                                if (!AuthService::getInstance($w)->allowed($path)) {
-                                    continue;
-                                }
-                                if ($isFirst) : ?>
-                                    <li class="breadcrumb-item active" aria-current="page">
-                                        <span data-bs-toggle="tooltip" data-bs-placement="bottom" title="<?php echo $value['name']; ?>"><?php echo $value['name']; ?></span>
-                                    </li>
-                                <?php else : ?>
-                                    <li class="breadcrumb-item">
-                                        <a href='<?php echo $path; ?>' data-bs-toggle="tooltip" data-bs-placement="bottom" title="<?php echo $value['name']; ?>"><?php echo $value['name']; ?></a>
-                                    </li>
-                                <?php endif;
-                                $isFirst = false;
-                            endforeach;
-                        endif; ?>
+                            $isFirst = false;
+                        endforeach; ?>
                         </ol>
                     </nav>
                 </div>
-                <div :class="containerClass" id="body-content">
-                    <?php echo !empty($body) ? $body : ''; ?>
-                </div>
+                <div id="menu-overlay" data-toggle-menu="close"></div>
             </div>
-            <div id="menu-overlay" :class="{'active': showSidemenu}" @click="toggleMenu()"></div>
+            <div class="container" id="body-content">
+                <?php echo !empty($body) ? $body : ''; ?>
+            </div>
         </div>
         <div class="modal" id="cmfive-modal" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-xl">

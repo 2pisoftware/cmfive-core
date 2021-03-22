@@ -220,14 +220,10 @@ class Html
      * Creates a link (or button) which will pop up a colorbox
      * containing the contents of the url
      *
-     * @param <type> $href   (M) the url to display in the colorbox
-     * @param <type> $title  (M) the link title
-     * @param <type> $button (O) if true create a button instead of a link
-     * @param <type> $iframe (O) whether to use an iframe to display the html contents (default: false)
      */
     public static function box($href, $title, $button = false, $iframe = false, $width = null, $height = null, $param = "isbox", $id = null, $class = null, $confirm = null, $modal_window_id = 'cmfive-modal')
     {
-        $onclick = Html::boxOnClick($href, $iframe, $width, $height, $param, $confirm, false, $modal_window_id);
+        // $onclick = Html::boxOnClick($href, $iframe, $width, $height, $param, $confirm, false, $modal_window_id);
         $element = null;
         if ($button) {
             // $tag = "button";
@@ -235,10 +231,20 @@ class Html
         } else {
             $element = new \Html\a();
         }
-        $element->id($id)->setClass($class)->onclick($onclick)->text($title);
+        $element->id($id)->setClass($class)->setAttribute('data-modal-target', $href)->text($title);
+        if (!empty($confirm)) {
+            $element->setAttribute('data-modal-confirm', $confirm);
+        }
         return $element->__toString();
     }
 
+    /**
+     * Returns onclick event for inline html attribute
+     *
+     * This should no longer be used as JS click binding is the best way to do this
+     *
+     * @deprecated v4.0.x
+     */
     public static function boxOnClick($href, $iframe = false, $width = null, $height = null, $param = "isbox", $confirm = null, $include_tag = true, $modal_window_id = 'cmfive-modal')
     {
         if ($iframe) {
@@ -262,7 +268,7 @@ class Html
             $tag_end = "";
         }
 
-        return $tag_start . "{$confirm_str}modal_history.push(&quot;{$href}&quot;); \$(&quot;#{$modal_window_id}&quot;).foundation(&quot;reveal&quot;, &quot;open&quot;, &quot;{$href}&quot;);return false;" . ($confirm ? "}" : "") . $tag_end;
+        return $tag_start . "openModal(&quot;{$href}&quot;);return false;" . ($confirm ? "}" : "") . $tag_end;
     }
 
     /**
@@ -534,7 +540,7 @@ class Html
                     // Add title field
                     $buffer .= "<tr class='" . toSlug($title) . "' >";
                     if (!empty($title)) {
-                        $buffer .= "<td class='small-6 large-4'><b>{$title}</b></td>";
+                        $buffer .= "<td class='small-6 large-4'>{$title}</td>";
                     }
 
                     $buffer .= "<td class='small-6 large-8 type_" . toSlug($type) . "'>{$value}</td></tr>";

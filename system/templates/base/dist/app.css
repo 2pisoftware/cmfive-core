@@ -13152,7 +13152,11 @@ progress {
   content: "";
 }
 
-#breadcrumbs .breadcrumb {
+/**
+ * @param map props - a map of properties to be themed
+ * @param transitions - transitions to append
+ */
+#breadcrumbs ol.breadcrumb {
   padding: 3px 16px 2px;
   margin: 0px;
   border-radius: 4px;
@@ -13162,24 +13166,34 @@ progress {
   display: block;
   height: 40px;
 }
-.theme--default #breadcrumbs .breadcrumb {
+.theme--default #breadcrumbs ol.breadcrumb {
   background-color: #F2F2F2;
+  transition: background-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
 }
-.theme--dark #breadcrumbs .breadcrumb {
+.theme--dark #breadcrumbs ol.breadcrumb {
   background-color: #4D4D4D;
+  transition: background-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1) , background-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
 }
-#breadcrumbs .breadcrumb .breadcrumb-item {
+#breadcrumbs ol.breadcrumb li.breadcrumb-item {
   display: inline-block;
   max-width: 160px;
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
 }
-#breadcrumbs .breadcrumb .breadcrumb-item span, #breadcrumbs .breadcrumb .breadcrumb-item a {
-  font-size: 12px;
-  line-height: auto;
+#breadcrumbs ol.breadcrumb li.breadcrumb-item span, #breadcrumbs ol.breadcrumb li.breadcrumb-item a {
+  font-size: 12px !important;
+  line-height: auto !important;
   text-align: center;
   overflow: hidden;
+}
+.theme--default #breadcrumbs ol.breadcrumb li.breadcrumb-item span, .theme--default #breadcrumbs ol.breadcrumb li.breadcrumb-item a {
+  color: #4D4D4D;
+  transition: color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+.theme--dark #breadcrumbs ol.breadcrumb li.breadcrumb-item span, .theme--dark #breadcrumbs ol.breadcrumb li.breadcrumb-item a {
+  color: #F2F2F2;
+  transition: color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1) , color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 
 #app #offscreen-menu {
@@ -13189,15 +13203,16 @@ progress {
   bottom: 0px;
   width: 300px;
   z-index: 20;
-  transition: left 0.3s cubic-bezier(0.645, 0.045, 0.355, 1), opacity 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
   padding: 20px;
   opacity: 0;
 }
 .theme--default #app #offscreen-menu {
   background-color: #FFFFFF;
+  transition: background-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1) , left 0.3s cubic-bezier(0.645, 0.045, 0.355, 1), opacity 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 .theme--dark #app #offscreen-menu {
   background-color: #353535;
+  transition: background-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1) , background-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1) , left 0.3s cubic-bezier(0.645, 0.045, 0.355, 1), opacity 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 #app #offscreen-menu.active {
   left: 0px;
@@ -13213,13 +13228,75 @@ progress {
 }
 .theme--default #app #content #navbar {
   background-color: #FFFFFF;
+  transition: background-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 .theme--dark #app #content #navbar {
   background-color: #353535;
+  transition: background-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1) , background-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+#app #content #navbar li a {
+  padding: 0.5rem 1rem;
+  font-size: 16px !important;
+  line-height: 24px !important;
+}
+.theme--default #app #content #navbar li a {
+  color: #6C757D;
+  transition: color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+.theme--dark #app #content #navbar li a {
+  color: #6C757D;
+  transition: color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1) , color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+.theme--default #app #content #navbar li.active a {
+  color: #4D4D4D;
+  transition: color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+.theme--dark #app #content #navbar li.active a {
+  color: #F2F2F2;
+  transition: color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1) , color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+#app #content #navbar li .dropdown-menu {
+  width: 228px;
+  margin: -1px;
+  box-shadow: 0px 16px 48px rgba(45, 45, 45, 0.25);
+  padding: 12px 0px;
+}
+.theme--default #app #content #navbar li .dropdown-menu {
+  background-color: #FFFFFF;
+  transition: background-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+.theme--dark #app #content #navbar li .dropdown-menu {
+  background-color: #353535;
+  transition: background-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1) , background-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+#app #content #navbar li .dropdown-menu a {
+  width: 100%;
+  font-size: 16px !important;
+  line-height: 24px !important;
+  display: block;
+  padding: 6px 24px;
+}
+.theme--default #app #content #navbar li .dropdown-menu a {
+  color: #4D4D4D;
+  transition: color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+.theme--dark #app #content #navbar li .dropdown-menu a {
+  color: #F2F2F2;
+  transition: color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1) , color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+.theme--default #app #content #navbar li .dropdown-menu a:hover {
+  color: #A0A0A0;
+  background-color: #F2F2F2;
+  transition: background-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1) , color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+.theme--dark #app #content #navbar li .dropdown-menu a:hover {
+  color: #A0A0A0;
+  background-color: #4D4D4D;
+  transition: background-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1) , color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1) , background-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1) , color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 #app a.nav-link {
-  font-size: 16px;
-  line-height: 24px;
+  font-size: 16px !important;
+  line-height: 24px !important;
 }
 .theme--default #app a.nav-link {
   color: #6C757D;
@@ -13227,7 +13304,7 @@ progress {
 }
 .theme--dark #app a.nav-link {
   color: #6C757D;
-  transition: color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+  transition: color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1) , color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 .theme--default #app a.nav-link:hover, .theme--default #app a.nav-link.show {
   color: #353535;
@@ -13237,7 +13314,7 @@ progress {
 .theme--dark #app a.nav-link:hover, .theme--dark #app a.nav-link.show {
   color: #FFFFFF;
   background-color: #4D4D4D;
-  transition: background-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1) , color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+  transition: background-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1) , color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1) , background-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1) , color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 @media (min-width: 992px) {
   #app a.nav-link:hover .dropdown-menu, #app a.nav-link.show .dropdown-menu {
@@ -13249,78 +13326,45 @@ progress {
 }
 .theme--default #app a.nav-link i {
   color: #6C757D;
+  transition: color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 .theme--dark #app a.nav-link i {
   color: #F2F2F2;
+  transition: color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1) , color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+#app a.nav-link.nav-icon {
+  border-bottom-width: 2px;
+  border-bottom-style: solid;
 }
 .theme--default #app a.nav-link.nav-icon {
-  border-bottom: 2px solid #FFFFFF;
+  border-bottom-color: #FFFFFF;
+  transition: border-bottom-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 .theme--dark #app a.nav-link.nav-icon {
-  border-bottom: 2px solid #353535;
+  border-bottom-color: #353535;
+  transition: border-bottom-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1) , border-bottom-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 .theme--default #app a.nav-link.nav-icon:hover {
-  border-bottom: 2px solid #353535;
+  border-bottom-color: #353535;
+  transition: border-bottom-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 .theme--dark #app a.nav-link.nav-icon:hover {
-  border-bottom: 2px solid #FFFFFF;
+  border-bottom-color: #FFFFFF;
+  transition: border-bottom-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1) , border-bottom-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 .theme--default #app a.nav-link.nav-icon:hover i {
   color: #353535;
+  transition: color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 .theme--dark #app a.nav-link.nav-icon:hover i {
   color: #FFFFFF;
+  transition: color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1) , color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 #app a.nav-link.caret-off::before {
   display: none;
 }
 #app a.nav-link.caret-off::after {
   display: none;
-}
-.theme--default #app li.nav-item a {
-  color: #A0A0A0;
-}
-.theme--dark #app li.nav-item a {
-  color: #A0A0A0;
-}
-.theme--default #app li.nav-item.active a {
-  color: #4D4D4D;
-}
-.theme--dark #app li.nav-item.active a {
-  color: #F2F2F2;
-}
-#app li.nav-item .dropdown-menu {
-  width: 228px;
-  margin: -1px;
-  box-shadow: 0px 16px 48px rgba(45, 45, 45, 0.25);
-  padding: 12px 0px;
-}
-.theme--default #app li.nav-item .dropdown-menu {
-  background-color: #FFFFFF;
-}
-.theme--dark #app li.nav-item .dropdown-menu {
-  background-color: #353535;
-}
-#app li.nav-item .dropdown-menu a {
-  width: 100%;
-  font-size: 16px;
-  line-height: 24px;
-  display: block;
-  padding: 6px 24px;
-}
-.theme--default #app li.nav-item .dropdown-menu a {
-  color: #4D4D4D;
-}
-.theme--dark #app li.nav-item .dropdown-menu a {
-  color: #F2F2F2;
-}
-.theme--default #app li.nav-item .dropdown-menu a:hover {
-  color: #A0A0A0;
-  background-color: #F2F2F2;
-}
-.theme--dark #app li.nav-item .dropdown-menu a:hover {
-  color: #A0A0A0;
-  background-color: #4D4D4D;
 }
 #app #menu-overlay {
   position: fixed;
@@ -13349,7 +13393,7 @@ progress {
 }
 .theme--dark .modal .modal-dialog .modal-content {
   background-color: #353535;
-  transition: background-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+  transition: background-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1) , background-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 
 html {
@@ -13385,34 +13429,34 @@ h5,
 
 h1, .h1 {
   margin-top: 0;
-  font-size: 40px;
-  line-height: 48px;
+  font-size: 40px !important;
+  line-height: 48px !important;
 }
 
 h2, .h2 {
-  font-size: 32px;
-  line-height: 38px;
+  font-size: 32px !important;
+  line-height: 38px !important;
 }
 
 h3, .h3 {
-  font-size: 28px;
-  line-height: 34px;
+  font-size: 28px !important;
+  line-height: 34px !important;
 }
 
 h4, .h4 {
-  font-size: 24px;
-  line-height: 29px;
+  font-size: 24px !important;
+  line-height: 29px !important;
 }
 
 h5, .h5 {
-  font-size: 20px;
-  line-height: 24px;
+  font-size: 20px !important;
+  line-height: 24px !important;
 }
 
 small, .small,
 .text-small {
-  font-size: 12px;
-  line-height: auto;
+  font-size: 12px !important;
+  line-height: auto !important;
 }
 
 a:not(.nav-link) {
@@ -13420,9 +13464,92 @@ a:not(.nav-link) {
   text-decoration: none !important;
 }
 
+.accordion {
+  margin: 0;
+  padding: 0;
+}
+.accordion::after {
+  display: block;
+  clear: both;
+  content: "";
+}
+.accordion .accordion-navigation,
+.accordion dd {
+  display: block;
+  margin-bottom: 0 !important;
+}
+.theme--default .accordion .accordion-navigation.active > a,
+.theme--default .accordion dd.active > a {
+  background-color: #F2F2F2;
+  color: #FFFFFF;
+  transition: color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1) , background-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+.theme--dark .accordion .accordion-navigation.active > a,
+.theme--dark .accordion dd.active > a {
+  background-color: #4D4D4D;
+  color: #353535;
+  transition: color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1) , background-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1) , color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1) , background-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+.accordion .accordion-navigation > a,
+.accordion dd > a {
+  display: block;
+  padding: 20px;
+}
+.theme--default .accordion .accordion-navigation > a,
+.theme--default .accordion dd > a {
+  background-color: #FFFFFF;
+  color: #4D4D4D;
+  transition: color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1) , background-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+.theme--dark .accordion .accordion-navigation > a,
+.theme--dark .accordion dd > a {
+  background-color: #353535;
+  color: #F2F2F2;
+  transition: color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1) , background-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1) , color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1) , background-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+.theme--default .accordion .accordion-navigation > a:hover,
+.theme--default .accordion dd > a:hover {
+  background-color: #F2F2F2;
+  transition: background-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+.theme--dark .accordion .accordion-navigation > a:hover,
+.theme--dark .accordion dd > a:hover {
+  background-color: #4D4D4D;
+  transition: background-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1) , background-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+.accordion .accordion-navigation > .content,
+.accordion dd > .content {
+  display: none;
+  padding: 20px;
+}
+.theme--default .accordion .accordion-navigation > .content,
+.theme--default .accordion dd > .content {
+  background-color: #F2F2F2;
+  transition: background-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+.theme--dark .accordion .accordion-navigation > .content,
+.theme--dark .accordion dd > .content {
+  background-color: #4D4D4D;
+  transition: background-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1) , background-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+.accordion .accordion-navigation > .content.active,
+.accordion dd > .content.active {
+  display: block;
+}
+.theme--default .accordion .accordion-navigation > .content.active,
+.theme--default .accordion dd > .content.active {
+  background-color: #F2F2F2;
+  transition: background-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+.theme--dark .accordion .accordion-navigation > .content.active,
+.theme--dark .accordion dd > .content.active {
+  background-color: #4D4D4D;
+  transition: background-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1) , background-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+
 .button {
-  font-size: 16px;
-  line-height: 24px;
+  font-size: 16px !important;
+  line-height: 24px !important;
   display: inline-block;
   padding: 6px 12px;
   border-radius: 2px;
@@ -13439,8 +13566,8 @@ a:not(.nav-link) {
   margin: 4px 0px;
 }
 .button.small, .button.tiny {
-  font-size: 12px;
-  line-height: auto;
+  font-size: 12px !important;
+  line-height: auto !important;
   padding: 4px 8px;
 }
 .button.primary {
@@ -13530,6 +13657,11 @@ select {
 .row-fluid {
   margin: 0 auto;
   width: 100%;
+}
+.row-fluid::after {
+  display: block;
+  clear: both;
+  content: "";
 }
 
 .clearfix {
@@ -13723,22 +13855,83 @@ select {
     width: 100% !important;
   }
 }
+.panel {
+  float: left;
+  width: 300px;
+  padding: 20px;
+  margin: 10px 10px 10px 0px;
+  box-shadow: 0px 4px 8px rgba(45, 45, 45, 0.25);
+}
+.theme--default .panel {
+  background-color: #FFFFFF;
+  transition: background-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+.theme--dark .panel {
+  background-color: #353535;
+  transition: background-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1) , background-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+.panel h4, .panel .h4 {
+  font-size: 24px !important;
+  line-height: 29px !important;
+}
+.theme--default .panel h4, .theme--default .panel .h4 {
+  color: #4D4D4D;
+  transition: color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+.theme--dark .panel h4, .theme--dark .panel .h4 {
+  color: #F2F2F2;
+  transition: color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1) , color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+.panel table {
+  width: 100%;
+}
+.panel table tbody tr td {
+  width: 100% !important;
+  display: block;
+}
+.panel table tbody tr td:first-child {
+  margin-top: 12px;
+}
+.theme--default .panel table tbody tr td:first-child {
+  color: #6C757D;
+  transition: color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+.theme--dark .panel table tbody tr td:first-child {
+  color: #F2F2F2;
+  transition: color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1) , color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+.panel table tbody tr td + td {
+  margin-top: -5px;
+}
+.theme--default .panel table tbody tr td + td {
+  color: #4D4D4D;
+  transition: color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+.theme--dark .panel table tbody tr td + td {
+  color: #F2F2F2;
+  transition: color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1) , color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+
 .tabs .tab-head a {
-  font-size: 16px;
-  line-height: 24px;
+  font-size: 16px !important;
+  line-height: 24px !important;
   padding: 12px;
   margin-right: 4px;
 }
 .theme--default .tabs .tab-head a {
   color: #A0A0A0;
   background-color: #FFFFFF;
+  transition: background-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1) , color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 .theme--dark .tabs .tab-head a {
   color: #A0A0A0;
   background-color: #353535;
+  transition: background-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1) , color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1) , background-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1) , color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 .tabs .tab-head a.active {
-  border-bottom: none;
+  border-width: 1px;
+  border-bottom-width: 0px;
+  border-style: solid;
   display: inline-block;
   margin-bottom: -1px;
   padding: 10px 11px 12px 11px;
@@ -13746,22 +13939,26 @@ select {
 .theme--default .tabs .tab-head a.active {
   color: #4D4D4D;
   background-color: #F2F2F2;
-  border-top: 1px solid #A0A0A0;
-  border-left: 1px solid #A0A0A0;
-  border-right: 1px solid #A0A0A0;
+  border-color: #A0A0A0;
+  transition: border-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1) , background-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1) , color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 .theme--dark .tabs .tab-head a.active {
   color: #F2F2F2;
   background-color: #4D4D4D;
-  border-top: 1px solid #A0A0A0;
-  border-left: 1px solid #A0A0A0;
-  border-right: 1px solid #A0A0A0;
+  border-color: #A0A0A0;
+  transition: border-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1) , background-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1) , color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1) , border-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1) , background-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1) , color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+.tabs .tab-body {
+  border-top-width: 1px;
+  border-top-style: solid;
 }
 .theme--default .tabs .tab-body {
-  border-top: 1px solid #A0A0A0;
+  border-top-color: #A0A0A0;
+  transition: border-top-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 .theme--dark .tabs .tab-body {
-  border-top: 1px solid #A0A0A0;
+  border-top-color: #A0A0A0;
+  transition: border-top-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1) , border-top-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 .tabs .tab-body div {
   padding-top: 36px;
@@ -13779,21 +13976,25 @@ table.tablesorter {
 }
 .theme--default table.tablesorter {
   background-color: #FFFFFF;
+  transition: background-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 .theme--dark table.tablesorter {
   background-color: #353535;
+  transition: background-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1) , background-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 table.tablesorter thead tr th {
-  padding: 12px 20px;
+  font-size: 16px !important;
+  line-height: 24px !important;
   font-weight: 400;
-  font-size: 16px;
-  line-height: 24px;
+  padding: 12px 20px;
 }
 .theme--default table.tablesorter thead tr th {
   color: #4D4D4D;
+  transition: color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 .theme--dark table.tablesorter thead tr th {
   color: #F2F2F2;
+  transition: color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1) , color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 table.tablesorter thead tr th:before {
   content: "";
@@ -13805,23 +14006,27 @@ table.tablesorter thead tr th:before {
   margin: 6px 6px 0 0;
 }
 table.tablesorter tbody tr td {
-  font-size: 16px;
-  line-height: 24px;
+  font-size: 16px !important;
+  line-height: 24px !important;
   padding: 0px 20px;
 }
 .theme--default table.tablesorter tbody tr td {
   color: #4D4D4D;
   background-color: #FFFFFF;
+  transition: background-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1) , color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 .theme--dark table.tablesorter tbody tr td {
   color: #F2F2F2;
   background-color: #353535;
+  transition: background-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1) , color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1) , background-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1) , color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 .theme--default table.tablesorter tbody tr:first-child td, .theme--default table.tablesorter tbody tr:nth-child(2n+1) td {
   background-color: #F2F2F2;
+  transition: background-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 .theme--dark table.tablesorter tbody tr:first-child td, .theme--dark table.tablesorter tbody tr:nth-child(2n+1) td {
   background-color: #4D4D4D;
+  transition: background-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1) , background-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 
 body {
@@ -13835,5 +14040,5 @@ body {
 .theme--dark body {
   color: #F2F2F2;
   background-color: #4D4D4D;
-  transition: background-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1) , color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+  transition: background-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1) , color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1) , background-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1) , color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
 }

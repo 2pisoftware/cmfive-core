@@ -1,12 +1,10 @@
 // import bootstrap from 'bootstrap'
-import * as $ from 'jquery';
-// Object.assign(window, { $ });
+// import * as $ from 'jquery';
+// import Vue from 'vue';
+
+// Object.assign(window, { Vue, $ });
 
 import { Modal } from 'bootstrap'; // 'bootstrap/dist/js/bootstrap.bundle.min.js';
-
-// Tab interactions
-import { TabAdaptation } from './adaptations/tabs';
-import { DropdownAdaptation } from './adaptations/dropdown';
 
 function openModal(url: string) {
     const modal = new Modal(document.getElementById('cmfive-modal')) //, options
@@ -27,8 +25,12 @@ function openModal(url: string) {
     //     modal.show();
     // })
 
-
-    fetch(url).then((response) => {
+    modal.show();
+    fetch(url, {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then((response) => {
         // console.log(response);
         return response.text()
     }).then((content) => {
@@ -36,62 +38,49 @@ function openModal(url: string) {
         // @todo: find a way to not need query for modals to work
         $('#cmfive-modal .modal-content').html(content);
         // document.querySelector('#cmfive-modal .modal-content').innerHTML = content;
-        modal.show();
+
     })
 }
 
 // import CmfiveNav from './components/Nav';
-import { Vue } from 'vue-property-decorator';
+import { AccordionAdaptation } from './adaptations/accordion';
+import { DropdownAdaptation } from './adaptations/dropdown';
+import { TabAdaptation } from './adaptations/tabs';
 
-const THEME_KEY = 'theme';
-const app = new Vue({
-    el: '#app',
-    data: {
-        showSidemenu: false,
-        containerClass: 'container'
-    },
-    // components: {CmfiveNav},
-    methods: {
-        toggleMenu() {
-            this.showSidemenu = !this.showSidemenu
-        },
-        toggleWidth() {
-            if (this.containerClass == 'container') {
-                this.containerClass = 'container-fluid'
-            } else {
-                this.containerClass = 'container'
-            }
-        },
-        toggleTheme() {
-            // debugger;
-            const theme = localStorage.getItem(THEME_KEY);
-            if (!theme) {
-                localStorage.setItem(THEME_KEY, 'dark');
-            } else {
-                if (theme === 'default') {
-                    localStorage.setItem(THEME_KEY, 'dark');
-                } else {
-                    localStorage.setItem(THEME_KEY, 'default');
-                }
-            }
+class Cmfive {
+    static THEME_KEY = 'theme';
 
-            document.querySelector('html').classList.remove('theme--default');
-            document.querySelector('html').classList.remove('theme--dark');
-            document.querySelector('html').classList.add('theme--' + localStorage.getItem(THEME_KEY));
+    static toggleTheme() {
+        // debugger;
+        const theme = localStorage.getItem(Cmfive.THEME_KEY);
+        if (!theme) {
+            localStorage.setItem(Cmfive.THEME_KEY, 'dark');
+        } else {
+            if (theme === 'default') {
+                localStorage.setItem(Cmfive.THEME_KEY, 'dark');
+            } else {
+                localStorage.setItem(Cmfive.THEME_KEY, 'default');
+            }
         }
-    },
-    mounted() {
-        TabAdaptation.bindTabInteractions();
-        DropdownAdaptation.bindDropdownHover();
 
-        let theme = localStorage.getItem(THEME_KEY)
+        document.querySelector('html').classList.remove('theme--default');
+        document.querySelector('html').classList.remove('theme--dark');
+        document.querySelector('html').classList.add('theme--' + localStorage.getItem(Cmfive.THEME_KEY));
+    }
+
+    static ready() {
+        AccordionAdaptation.bindAccordionInteractions();
+        DropdownAdaptation.bindDropdownHover();
+        TabAdaptation.bindTabInteractions();
+
+        let theme = localStorage.getItem(Cmfive.THEME_KEY)
 
         if (!theme) {
             const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)"); 
             if (prefersDarkScheme.matches) {
-                localStorage.setItem(THEME_KEY, 'dark');
+                localStorage.setItem(Cmfive.THEME_KEY, 'dark');
             } else {
-                localStorage.setItem(THEME_KEY, 'default');
+                localStorage.setItem(Cmfive.THEME_KEY, 'default');
                 theme = 'default';
             }
         }
@@ -101,8 +90,50 @@ const app = new Vue({
             document.querySelector('html').classList.add('theme--default');
         }
 
+        // Bind modal links
         document.querySelectorAll('[data-modal-target]').forEach((m: Element) => {
-            m.addEventListener('click', () => openModal(m.getAttribute('data-modal-target')));
+            m.addEventListener('click', () => {
+                if (m.hasAttribute('data-modal-confirm')) {
+                    if (confirm(m.getAttribute('data-modal-confirm'))) {
+                        openModal(m.getAttribute('data-modal-target'));
+                    }
+                } else {
+                    openModal(m.getAttribute('data-modal-target'))
+                }
+            });
         })
+
+        // Theme toggle
+        document.querySelectorAll('[data-toggle-theme]')?.forEach(t => {
+            t.removeEventListener('click', (event) => Cmfive.toggleTheme());
+            t.addEventListener('click', (event) => Cmfive.toggleTheme());
+        })
+
+        // Menu toggle
+        document.querySelectorAll('[data-toggle-menu="open"]')?.forEach(m => {
+            m.addEventListener('click', (event) => {
+                console.log(event);
+                if (!document.getElementById('menu-overlay').classList.contains('active')) {
+                    document.getElementById('menu-overlay').classList.add('active');
+                }
+                if (!document.getElementById('offscreen-menu').classList.contains('active')) {
+                    document.getElementById('offscreen-menu').classList.add('active');
+                }
+            })
+        });
+
+        document.querySelectorAll('[data-toggle-menu="close"]')?.forEach(m => {
+            m.addEventListener('click', (event) => {
+                console.log(event);
+                if (document.getElementById('menu-overlay').classList.contains('active')) {
+                    document.getElementById('menu-overlay').classList.remove('active');
+                }
+                if (document.getElementById('offscreen-menu').classList.contains('active')) {
+                    document.getElementById('offscreen-menu').classList.remove('active');
+                }
+            })
+        });
     }
-});
+}
+
+window.addEventListener('load', () => Cmfive.ready());

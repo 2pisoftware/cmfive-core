@@ -287,7 +287,7 @@
 
     <!-- Breadcrumbs -->
     <div class="row-fluid">
-        <?php echo Html::breadcrumbs(array(), $w); ?>
+        <?php echo Html::breadcrumbs([], $w); ?>
     </div>
 
     <div class="row-fluid body">
@@ -336,6 +336,20 @@
 
         var modal_history = [];
         var modal_history_pop = false;
+
+        $(document).ready(function() {
+            document.querySelectorAll('[data-modal-target]').forEach(function(m) {
+                m.addEventListener('click', function() {
+                    if (m.hasAttribute('data-modal-confirm')) {
+                        if (confirm(m.getAttribute('data-modal-confirm'))) {
+                            openModal(m.getAttribute('data-modal-target'));
+                        }
+                    } else {
+                        openModal(m.getAttribute('data-modal-target'))
+                    }
+                });
+            })
+        })
 
         // Automatically append the close 'x' to reveal modals
         $(document).on('opened', '[data-reveal]', function() {
