@@ -37,7 +37,7 @@ jobs:
         id: pip
         with:
           path: .build/setup/venv
-          key: ${{ runner.os }}-pip2-${{ hashFiles('.build/setup/requirements.txt') }}
+          key: ${{ runner.os }}-pip-${{ hashFiles('.build/setup/requirements.txt') }}
       
       # ------------------------------------
       # Pre-requsite Environment Setup Steps
@@ -56,16 +56,16 @@ jobs:
           source venv/bin/activate;          
           python install.py prime-environment test
 
-      - name: Cache Docker
-        uses: actions/cache@v1
-        with:
-          path: /tmp/docker-registry
-          key: docker-registry-${{ hashFiles('.build/environment/test/config/docker/Dockerfile.template') }}
-      - run: docker run -d -p 5000:5000 --restart=always --name registry -v /tmp/docker-registry:/var/lib/registry registry:2 && npx wait-on tcp:5000
-      - run: docker pull localhost:5000/cmfive || true
-      - run: docker build ./.build/environment/test/ -t cmfive --cache-from=localhost:5000/cmfive
-      - run: docker tag cmfive localhost:5000/cmfive && docker push localhost:5000/cmfive || true
-        if: steps.cache.outputs.cache-hit != 'true'
+      # - name: Cache Docker
+      #   uses: actions/cache@v1
+      #   with:
+      #     path: /tmp/docker-registry
+      #     key: docker-registry-${{ hashFiles('.build/environment/test/config/docker/Dockerfile.template') }}
+      # - run: docker run -d -p 5000:5000 --restart=always --name registry -v /tmp/docker-registry:/var/lib/registry registry:2 && npx wait-on tcp:5000
+      # - run: docker pull localhost:5000/cmfive || true
+      # - run: docker build ./.build/environment/test/ -t cmfive --cache-from=localhost:5000/cmfive
+      # - run: docker tag cmfive localhost:5000/cmfive && docker push localhost:5000/cmfive || true
+      #   if: steps.cache.outputs.cache-hit != 'true'
 
       - name: Setup cmfive test environment
         run: |          
@@ -75,19 +75,19 @@ jobs:
           docker start selenium314
 
       
-      - name: Test cmfive
-        run: |
-          echo "Config::set('report.database', ['hostname' => 'mysql-5.7', 'username' => 'cmfive_test', 'password' => 'cmfive_test', 'database' => 'cmfive_test', 'driver' => 'mysql']);" >> config.php
-          echo "Config::set('core_template.foundation.reveal.animation_speed', 0);" >> config.php
-          echo "Config::set('core_template.foundation.reveal.animation', 'none');" >> config.php
-          docker exec nginx-php7.4 bash -c "php cmfive.php cmfive help; exit \$?"
-          docker exec nginx-php7.4 bash -c "php cmfive.php testDB setup; exit \$?"
-      - name: "Run admin module tests"
-        run: |
-          docker exec nginx-php7.4 bash -c "php cmfive.php tests module admin silent; exit \$?"
-          if [ $? -gt 0 ]; then
-            echo "Admin module tests failed"
-          fi
+      # - name: Test cmfive
+      #   run: |
+      #     echo "Config::set('report.database', ['hostname' => 'mysql-5.7', 'username' => 'cmfive_test', 'password' => 'cmfive_test', 'database' => 'cmfive_test', 'driver' => 'mysql']);" >> config.php
+      #     echo "Config::set('core_template.foundation.reveal.animation_speed', 0);" >> config.php
+      #     echo "Config::set('core_template.foundation.reveal.animation', 'none');" >> config.php
+      #     docker exec nginx-php7.4 bash -c "php cmfive.php cmfive help; exit \$?"
+      #     docker exec nginx-php7.4 bash -c "php cmfive.php testDB setup; exit \$?"
+      # - name: "Run admin module tests"
+      #   run: |
+      #     docker exec nginx-php7.4 bash -c "php cmfive.php tests module admin silent; exit \$?"
+      #     if [ $? -gt 0 ]; then
+      #       echo "Admin module tests failed"
+      #     fi
       # - name: "Run auth module tests"
       #   run: |
       #     docker exec nginx-php7.4 bash -c "php cmfive.php tests module auth silent; exit \$?"
@@ -166,10 +166,10 @@ jobs:
       #     if [ $? -gt 0 ]; then
       #       echo "Timelog module tests failed"
       #     fi
-      - name: Test results
-        if: ${{ failure() }} || ${{ success() }}
-        uses: actions/upload-artifact@v2
-        with:
-          name: test-output
-          path: test/Codeception/tests/_output/
-          retention-days: 5
+      # - name: Test results
+      #   if: ${{ failure() }} || ${{ success() }}
+      #   uses: actions/upload-artifact@v2
+      #   with:
+      #     name: test-output
+      #     path: test/Codeception/tests/_output/
+      #     retention-days: 5
