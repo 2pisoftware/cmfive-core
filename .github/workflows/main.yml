@@ -49,9 +49,9 @@ jobs:
           path: /tmp/docker-registry
           key: docker-registry-${{ hashFiles('.build/environment/test/config/docker/Dockerfile.template') }}
 
-      # ------------------------------------
-      # Pre-requsite Environment Setup Steps
-      # ------------------------------------
+      # ----------------------------
+      # Pre-requsite Prepare Runtime
+      # ----------------------------
       - name: Provision Python Virtual Environment
         if: steps.pip.outputs.cache-hit != 'true'
         run: |
@@ -76,15 +76,18 @@ jobs:
           docker tag cmfive localhost:5000/cmfive && docker push localhost:5000/cmfive || true;
 
       - name: Pull Image from Docker Registry
-        run: docker pull localhost:5000/cmfive || true;
+        run: docker pull localhost:5000/cmfive || true
       
-
-      # - name: Setup cmfive test environment
-      #   run: |          
-      #     cd .build/setup          
-      #     source venv/bin/activate;
-      #     python install.py --verbose debug provision-test --cmfive_core_ref ${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}
-      #     docker start selenium314
+      # ---------------------------------------
+      # Pre-requsite Prepare Cmfive Environment
+      # ---------------------------------------
+      - name: Setup cmfive test environment
+        run: |          
+          echo "${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}";
+          cd .build/setup;
+          source venv/bin/activate;
+          python install.py --verbose debug provision-test --cmfive_core_ref ${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}};
+          docker start selenium314;
 
       
       # - name: Test cmfive
