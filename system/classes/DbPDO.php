@@ -602,7 +602,9 @@ class DbPDO extends PDO
                 $this->execute();
             }
 
-            return $this->query;
+            $last_id = $this->query;
+			$this->query = null;
+			return $last_id;
         }
 
         return null;

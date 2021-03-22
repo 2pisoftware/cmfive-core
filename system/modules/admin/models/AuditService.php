@@ -1,7 +1,6 @@
 <?php
 class AuditService extends DbService
 {
-
     /**
      *
      * Adds an entry to the audit table
@@ -58,7 +57,7 @@ class AuditService extends DbService
     public function getLoggedUsers()
     {
         $ids = $this->_db->sql("select distinct creator_id from audit")->fetch_all();
-        $users = array();
+        $users = [];
         foreach ($ids as $id) {
             $users[] = $this->getObject("User", $id["creator_id"]);
         }
@@ -103,4 +102,6 @@ class AuditService extends DbService
         }
         return $users;
     }
+
+    
 }

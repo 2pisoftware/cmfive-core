@@ -7,7 +7,7 @@ function listcomments(\Web $w, $params)
     $object = $params['object'];
     $redirect = $params['redirect'];
     $internal_only = array_key_exists('internal_only', $params) ? $params['internal_only'] : true;
-    $external_only = $internal_only === true ? false : array_key_exists('external_only', $params) ? $params['external_only'] : false;
+    $external_only = $internal_only === true ? false : (array_key_exists('external_only', $params) ? $params['external_only'] : false);
     $has_notification_selection = array_key_exists('has_notification_selection', $params) ? $params["has_notification_selection"] : true;
 
 

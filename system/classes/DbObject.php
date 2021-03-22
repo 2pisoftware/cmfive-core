@@ -83,6 +83,9 @@ class DbObject extends DbService
     private $_systemEncrypt = null;
     private $_systemDecrypt = null;
 
+    //This is list is depreciated, it has been left here for backwards compatability
+    static $_stopwords = "about above across after again against all almost alone along already also although always among and any anybody anyone anything anywhere are area areas around ask asked asking asks away back backed backing backs became because become becomes been before began behind being beings best better between big both but came can cannot case cases certain certainly clear clearly come could did differ different differently does done down downed downing downs during each early either end ended ending ends enough even evenly ever every everybody everyone everything everywhere face faces fact facts far felt few find finds first for four from full fully further furthered furthering furthers gave general generally get gets give given gives going good goods got great greater greatest group grouped grouping groups had has have having her here herself high higher highest him himself his how however important interest interested interesting interests into its itself just keep keeps kind knew know known knows large largely last later latest least less let lets like likely long longer longest made make making man many may member members men might more most mostly mrs much must myself necessary need needed needing needs never new newer newest next nobody non noone not nothing now nowhere number numbers off often old older oldest once one only open opened opening opens order ordered ordering orders other others our out over part parted parting parts per perhaps place places point pointed pointing points possible present presented presenting presents problem problems put puts quite rather really right room rooms said same saw say says second seconds see seem seemed seeming seems sees several shall she should show showed showing shows side sides since small smaller smallest some somebody someone something somewhere state states still such sure take taken than that the their them then there therefore these they thing things think thinks this those though thought thoughts three through thus today together too took toward turn turned turning turns two under until upon use used uses very want wanted wanting wants was way ways well wells went were what when where whether which while who whole whose why will with within without work worked working works would year years yet you young younger youngest your yours";
+
     /**
      * Constructor
      *
@@ -130,19 +133,18 @@ class DbObject extends DbService
         }
     }
 
-    private function establishEncryptionModel() {
-
+    private function establishEncryptionModel()
+    {
         $this->_systemEncrypt = 'SSLencrypt';
         $this->_systemDecrypt = 'SSLdecrypt';
 
-                $encryption_key = Config::get('system.encryption.key',null);
-                //$encryption_iv = Config::get('system.encryption.iv',null);
+        $encryption_key = Config::get('system.encryption.key', null);
 
-                if (empty($encryption_key)) { // || empty($encryption_iv)) {
-                    $err = 'Encryption key is not set';
-                    $this->w->Log->error($err);
-                    throw new Exception($err);
-                }
+        if (empty($encryption_key)) {
+            $err = 'Encryption key is not set';
+            $this->w->Log->error($err);
+            throw new Exception($err);
+        }
     }
 
     /**
@@ -179,11 +181,25 @@ class DbObject extends DbService
     }
 
     /**
-     *
-     * intermediate method to facilitate transition from
+     * Intermediate method to facilitate transition from
      * selectTitle to getSelectOptionTitle
+     *
+     * Will be removed in cmfive v5.x
+     *
+     * @deprecated v3.6.13
      */
     public function _selectOptionTitle()
+    {
+        return $this->getSelectOptionTitle();
+    }
+
+    /**
+     * Used by the Html::select() function to display this object in
+     * a select list. Should also be used by other similar functions.
+     *
+     * @return string
+     */
+    public function getSelectOptionTitle()
     {
         $title = $this->getSelectOptionValue();
         if (property_exists(get_class($this), "title")) {
@@ -192,15 +208,6 @@ class DbObject extends DbService
             $title = $this->name;
         }
         return $title;
-    }
-
-    /**
-     * is used by the Html::select() function to display this object in
-     * a select list. Could also be used by other similar functions.
-     */
-    public function getSelectOptionTitle()
-    {
-        return $this->_selectOptionTitle(); // only until all references are resolved
     }
 
     /**
@@ -214,8 +221,13 @@ class DbObject extends DbService
     }
 
     /**
-     * used by the search display function to print a title with a
+     * Used by the search display function to print a title with a
      * possible link for this item in the list of results.
+     *
+     * Intended use is to be overriden in DbObject subclasses to
+     * enable a more human readable search title.
+     *
+     * @return string
      */
     public function printSearchTitle()
     {
@@ -223,8 +235,13 @@ class DbObject extends DbService
     }
 
     /**
-     * used by the search display function to print more information
+     * Used by the search display function to print more information
      * about this item in the list of search results.
+     *
+     * Intended use is to be overriden in DbObject subclasses to
+     * enable a more human readable search listing.
+     *
+     * @return string
      */
     public function printSearchListing()
     {
@@ -232,8 +249,13 @@ class DbObject extends DbService
     }
 
     /**
-     * used by the search display function to print a url for viewing details
+     * Used by the search display function to print a url for viewing details
      * about this item.
+     *
+     * Intended use is to be overriden in DbObject subclasses to
+     * enable a more human readable search url.
+     *
+     * @return string|null
      */
     public function printSearchUrl()
     {
@@ -241,10 +263,11 @@ class DbObject extends DbService
     }
 
     /**
-     * print a view link to this object
+     * Prints a link to this object. This function considers user access.
      *
-     * @param string $class
-     * @param string $target
+     * @param string|null $class
+     * @param string|null $target
+     * @param string|null $user
      * @return string
      */
     public function toLink($class = null, $target = null, $user = null)
@@ -422,6 +445,7 @@ class DbObject extends DbService
      * variable of this object.
      *
      * @param array $row
+     * @param bool $convert
      */
     public function fill($row, $convert = false)
     {
@@ -451,11 +475,9 @@ class DbObject extends DbService
     {
         $newObject = clone $this;
 
-        $toClear = ["id", "creator_id", "modifier_id", "dt_created", "dt_modified", "is_deleted"];
-
-        foreach ($toClear as $tc) {
-            if (property_exists($newObject, $tc)) {
-                $newObject->$tc = null;
+        foreach (["id", "creator_id", "modifier_id", "dt_created", "dt_modified", "is_deleted"] as $to_clear) {
+            if (property_exists($newObject, $to_clear)) {
+                $newObject->$to_clear = null;
             }
         }
 
@@ -964,11 +986,24 @@ class DbObject extends DbService
         return $attr;
     }
 
+    /**
+     * Shorthand function for getDbTableName()
+     *
+     * @return string
+     * @deprecated v3.6.13
+     */
     public function _tn()
     {
         return $this->getDbTableName();
     }
 
+    /**
+     * Shorthand function for getDbColumnName()
+     *
+     * @param string $attr
+     * @return string
+     * @deprecated v3.6.13
+     */
     public function _cn($attr)
     {
         return $this->getDbColumnName($attr);
@@ -1012,13 +1047,14 @@ class DbObject extends DbService
      * Override this function if you want to add custom content
      * to the search index for this object.
      *
-     * DO NOT CALL $this->getIndexContent() within this function
-     * or you will create an endless loop which will destroy the universe!
+     * DO NOT CALL @see{$this->getIndexContent} within this function
+     * or you will create an infinite loop
      *
-     * @return String
+     * @return string
      */
     public function addToIndex()
     {
+        
     }
 
     /**
@@ -1026,7 +1062,7 @@ class DbObject extends DbService
      * to the search index for this object.
      *
      *
-     * @return Bool
+     * @return bool
      */
     public function shouldAddToSearch()
     {
@@ -1036,9 +1072,7 @@ class DbObject extends DbService
     // a list of english words that need not be searched against
     // and thus do not need to be stored in an index
 
-    //This is list is depreciated, it has been left here for backwards compatability
-    static $_stopwords = "about above across after again against all almost alone along already also although always among and any anybody anyone anything anywhere are area areas around ask asked asking asks away back backed backing backs became because become becomes been before began behind being beings best better between big both but came can cannot case cases certain certainly clear clearly come could did differ different differently does done down downed downing downs during each early either end ended ending ends enough even evenly ever every everybody everyone everything everywhere face faces fact facts far felt few find finds first for four from full fully further furthered furthering furthers gave general generally get gets give given gives going good goods got great greater greatest group grouped grouping groups had has have having her here herself high higher highest him himself his how however important interest interested interesting interests into its itself just keep keeps kind knew know known knows large largely last later latest least less let lets like likely long longer longest made make making man many may member members men might more most mostly mrs much must myself necessary need needed needing needs never new newer newest next nobody non noone not nothing now nowhere number numbers off often old older oldest once one only open opened opening opens order ordered ordering orders other others our out over part parted parting parts per perhaps place places point pointed pointing points possible present presented presenting presents problem problems put puts quite rather really right room rooms said same saw say says second seconds see seem seemed seeming seems sees several shall she should show showed showing shows side sides since small smaller smallest some somebody someone something somewhere state states still such sure take taken than that the their them then there therefore these they thing things think thinks this those though thought thoughts three through thus today together too took toward turn turned turning turns two under until upon use used uses very want wanted wanting wants was way ways well wells went were what when where whether which while who whole whose why will with within without work worked working works would year years yet you young younger youngest your yours";
-
+    
     /**
      * Consolidate all object fields into one big search friendly string.
      *
@@ -1294,7 +1328,6 @@ class DbObject extends DbService
 
         return $response;
 
-        // die(); // debugging only
         // if validation fails return to invoked page with errors... how to transport them though?
         // this function is called deep in code so the initiator of the update or insert function may not know what's
         // going on ... redirecting away to another page from here is ... rude.
@@ -1302,7 +1335,7 @@ class DbObject extends DbService
         // - update or insert just fail but send an exception containing the invalid messages
         // - caller should call validate BEFORE update / insert to react to messages in a UI fashion (eg. redisplay form with message, etc)
         //         if (count($response["invalid"]) > 0){
-        //             $_SESSION["errors"] = $response["invalid"]; // <-- GENIUS!... hopefully that works
+        //             $_SESSION["errors"] = $response["invalid"];
         //             $this->w->redirect($this->w->localUrl($_SERVER["REDIRECT_URL"]));
         //         }
     }
@@ -1350,15 +1383,17 @@ class DbObject extends DbService
         return $this->printSearchTitle();
     }
 
-    //loops through properties ensuring boolians are either 'true' or 'false'
+    /**
+     * Loops through properties beginning with 'is_' ensuring the values are truthy
+     *
+     * @return void
+     */
     public function validateBoolianProperties()
     {
         foreach (get_object_vars($this) as $k => $v) {
             if (substr($k, 0, 1) != "_" && $k != "w") { // ignore volatile vars
                 if (substr($k, 0, 3) === 'is_') {
-                    //echo $k; echo '<br>';
                     $this->$k = $v ? 1 : 0;
-                    //echo $this->$k; echo '<br>';
                 }
             }
         }
