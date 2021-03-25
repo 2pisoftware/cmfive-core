@@ -359,7 +359,7 @@ class Html
             $readonly = "";
 
             // handle disabled fields
-            if ($name[0] == '-') {
+            if ($name !== null && $name[0] == '-') {
                 $name = substr($name, 1);
                 $readonly = " readonly='true' ";
             }
