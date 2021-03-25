@@ -457,35 +457,35 @@ class FileService extends DbService
      */
     public function writeOutAttachment(Attachment $att, ?string $saveAs = null): void
     {
-            $this->w->setLayout(null);
-            // per : https://www.php.net/manual/en/function.readfile.php
-            // readfile() will not present any memory issues on its own.
-            // If you encounter an out of memory error ensure that output buffering is off
-            if (ob_get_level()) {
-                ob_end_clean();
-            }
-            $this->w->header('Content-Description: File Transfer');
-            $this->w->header(
-                'Content-Type: '
-                    . empty($att->mimetype) ? "application/octet-stream" : $att->mimetype
-            );
-            $this->w->header(
-                'Content-Disposition: attachment; filename="'
-                    . $saveAs ?? $att->filename . '"'
-            );
-            $this->w->header('Expires: 0');
-            $this->w->header('Cache-Control: must-revalidate');
-            $this->w->header('Pragma: public');
+        $this->w->setLayout(null);
+        // per : https://www.php.net/manual/en/function.readfile.php
+        // readfile() will not present any memory issues on its own.
+        // If you encounter an out of memory error ensure that output buffering is off
+        if (ob_get_level()) {
+            ob_end_clean();
+        }
+        $this->w->header('Content-Description: File Transfer');
+        $this->w->header(
+            'Content-Type: '
+                . (empty($att->mimetype) ? "application/octet-stream" : $att->mimetype)
+        );
+        $this->w->header(
+            'Content-Disposition: attachment; filename="'
+                . ($saveAs ?? $att->filename). '"'
+        );
+        $this->w->header('Expires: 0');
+        $this->w->header('Cache-Control: must-revalidate');
+        $this->w->header('Pragma: public');
 
-            $filesystem = $att->getFileSystem();
+        $filesystem = $att->getFileSystem();
 
-            $map = StreamWrapper::getFilesystemMap();
-            $map->set('mandated_stream', $filesystem);
+        $map = StreamWrapper::getFilesystemMap();
+        $map->set('mandated_stream', $filesystem);
 
-            StreamWrapper::register();
-            $streamFrom = 'gaufrette://mandated_stream/' . $att->filename;
-            $this->w->header('Content-Length: ' . filesize($streamFrom));
-            readfile($streamFrom);
+        StreamWrapper::register();
+        $streamFrom = 'gaufrette://mandated_stream/' . $att->filename;
+        $this->w->header('Content-Length: ' . filesize($streamFrom));
+        readfile($streamFrom);
         exit(0);
     }
 
