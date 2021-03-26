@@ -359,7 +359,7 @@ class Html
             $readonly = "";
 
             // handle disabled fields
-            if ($name !== null && $name[0] == '-') {
+            if (substr($name, 0, 1) == '-') {
                 $name = substr($name, 1);
                 $readonly = " readonly='true' ";
             }
@@ -652,7 +652,7 @@ class Html
                     $buffer .= ($type !== "hidden" ? "<div>" : "");
 
                     // handle disabled fields
-                    if ($name[0] == '-') {
+                    if (substr($name, 0, 1) == '-') {
                         $name = substr($name, 1);
                         $readonly = " readonly='true' ";
                     }
@@ -1322,7 +1322,7 @@ class Html
             }
 
             // handle disabled fields
-            if ($name[0] == '-') {
+            if (substr($name, 0, 1) == '-') {
                 $name = substr($name, 1);
                 $readonly = " readonly='true' ";
             }
