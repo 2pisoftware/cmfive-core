@@ -19,7 +19,7 @@ class AspectModifiable
     private function getMo()
     {
         if ($this->object && $this->object->id && !$this->_mo) {
-            $this->_mo = $this->object->getObject("ObjectModification", array("table_name" => $this->object->getDbTableName(), "object_id" => $this->object->id));
+            $this->_mo = $this->object->getObject("ObjectModification", ["table_name" => $this->object->getDbTableName(), "object_id" => $this->object->id]);
         }
         return $this->_mo;
     }
