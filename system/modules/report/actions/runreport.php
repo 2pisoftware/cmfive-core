@@ -1,21 +1,18 @@
 <?php
-//////////////////////////////////////////////////
-//            EXECUTE REPORT                        //
-//////////////////////////////////////////////////
 
 // display the form allowing users to set report parameters
 function runreport_ALL(Web &$w)
 {
-    $w->Report->navigation($w, "Generate Report");
+    ReportService::getInstance($w)->navigation($w, "Generate Report");
     $p = $w->pathMatch("id");
 
     // if there is a report ID in the URL ...
     if (!empty($p['id'])) {
         // get member
-        $member = $w->Report->getReportMember($p['id'], $w->session('user_id'));
+        $member = ReportService::getInstance($w)->getReportMember($p['id'], $w->session('user_id'));
         if (!empty($member)) {
             // get the relevant report
-            $rep = $w->Report->getReportInfo($p['id']);
+            $rep = ReportService::getInstance($w)->getReportInfo($p['id']);
 
             // if report exists, first check status and user role before displaying
             if (!empty($rep)) {
@@ -23,7 +20,7 @@ function runreport_ALL(Web &$w)
                     $w->msg($rep->title . ": Report is yet to be approved", "/report/index/");
                 } else {
                     // display form
-                    $w->Report->navigation($w, $rep->title);
+                    ReportService::getInstance($w)->navigation($w, $rep->title);
                     History::add("Report: " . $rep->title);
 
                     // get the form array
