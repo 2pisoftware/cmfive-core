@@ -143,7 +143,7 @@ function getAllLocaleValues($base_locale)
  */
 function humanReadableBytes($input, $rounding = 2, $bytesValue = true)
 {
-    $ext = array("B", "KB", "MB", "GB", "TB");
+    $ext = ["B", "KB", "MB", "GB", "TB"];
     $barrier = 1024;
     if (!$bytesValue) {
         // If bytes value is false then we what to use 1000 (bits?)
@@ -172,7 +172,7 @@ function humanReadableBytes($input, $rounding = 2, $bytesValue = true)
  */
 function getFileExtension($contentType)
 {
-    $map = array(
+    $map = [
         'application/pdf' => '.pdf',
         'application/zip' => '.zip',
         'image/gif' => '.gif',
@@ -183,7 +183,7 @@ function getFileExtension($contentType)
         'text/javascript' => '.js',
         'text/plain' => '.txt',
         'text/xml' => '.xml',
-    );
+    ];
 
     if (isset($map[$contentType])) {
         return $map[$contentType];
@@ -356,15 +356,16 @@ function lookupForSelect($w, $type)
  */
 function getStateSelectArray()
 {
-    return array(
-        array("ACT", "ACT"),
-        array("NSW", "NSW"),
-        array("NT", "NT"),
-        array("QLD", "QLD"),
-        array("SA", "SA"),
-        array("TAS", "TAS"),
-        array("VIC", "VIC"),
-        array("WA", "WA"));
+    return [
+        ["ACT", "ACT"],
+        ["NSW", "NSW"],
+        ["NT", "NT"],
+        ["QLD", "QLD"],
+        ["SA", "SA"],
+        ["TAS", "TAS"],
+        ["VIC", "VIC"],
+        ["WA", "WA"]
+    ];
 }
 
 /**
@@ -462,8 +463,8 @@ function getTimeSelect($start = 8, $end = 19)
             }
         }
         $t = sprintf("%02d", $t);
-        $select[] = array($t . ":00" . $m, $i . ":00");
-        $select[] = array($t . ":30" . $m, $i . ":30");
+        $select[] = [$t . ":00" . $m, $i . ":00"];
+        $select[] = [$t . ":30" . $m, $i . ":30"];
     }
     return $select;
 }
@@ -533,7 +534,9 @@ function formatMoney($format, $number)
 {
     if (function_exists('money_format')) {
         setlocale(LC_MONETARY, 'en_AU');
-        return money_format($format, doubleval($number));
+        $formatter = new NumberFormatter("en_AU", NumberFormatter::CURRENCY);
+        return $formatter->formatCurrency(doubleval($number), "AUD");
+        // return money_format($format, doubleval($number));
     }
 
     $regex = '/%((?:[\^!\-]|\+|\(|\=.)*)([0-9]+)?' .
@@ -696,7 +699,7 @@ function returncorrectdates(Web $w, $dm_var, $from_date, $to_date)
             $to_date = $to_date + ((60 * 60 * 24 * cal_days_in_month(CAL_GREGORIAN, $month_number, $accepted_year)) - $minus_var);
         }
 
-        return array($from_date, $to_date);
+        return [$from_date, $to_date];
     }
 
     if ($dm_var == 'd') {
@@ -709,7 +712,7 @@ function returncorrectdates(Web $w, $dm_var, $from_date, $to_date)
             $to_date = $to_date + 86399;
         }
 
-        return array($from_date, $to_date);
+        return [$from_date, $to_date];
     }
 }
 
@@ -847,8 +850,6 @@ function in_modified_multiarray($value, $array, $levels = 3)
  */
 function AESencrypt($text, $password)
 {
-    $this->w->Log->info('AES and override password are deprecated, attempting compatibility through SSL.');
-
     return SSLencrypt($text);
 }
 
@@ -863,21 +864,23 @@ function AESencrypt($text, $password)
  */
 function AESdecrypt($text, $password)
 {
-    $this->w->Log->info('AES and override password are deprecated, attempting compatibility through SSL.');
-
     return SSLdecrypt($text);
 }
 
-function SystemSSLencrypt($text)
+/**
+ * Encrypts text with encryption key in config
+ *
+ * @param mixed $text
+ * @return string encrypted value
+ * @throws Exception if key or IV missing
+ */
+function SystemSSLencrypt($text): string
 {
     $ssl_method = "AES-256-CBC";
     $encryption_key = Config::get('system.encryption.key', null);
     $encryption_iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length($ssl_method));
     if (empty($encryption_key) || empty($encryption_iv)) {
-        // raise exception
-        $err = 'Cannot encrypt without system key and IV.';
-        $this->w->Log->error($err);
-        throw new Exception($err);
+        throw new Exception('Cannot encrypt without system key and IV.');
     } else {
         $ssl = openssl_encrypt($text, $ssl_method, $encryption_key, 0, $encryption_iv);
         $encryption_iv = bin2hex($encryption_iv);
@@ -885,17 +888,21 @@ function SystemSSLencrypt($text)
     }
 }
 
+/**
+ * Decrypts text with encryption key in config
+ *
+ * @param mixed $text
+ * @return string|false
+ * @throws Exception if key or IV missing
+ */
 function SystemSSLdecrypt($text)
 {
     $ssl_method = "AES-256-CBC";
     $encryption_key = Config::get('system.encryption.key', null);
-    $text = explode("::", $text); //var_dump($text);
+    $text = explode("::", $text);
     $encryption_iv = array_pop($text);
     if (empty($encryption_key) || empty($encryption_iv)) {
-        // raise exception
-        $err = 'Cannot decrypt without system key and IV.';
-        $this->w->Log->error($err);
-        throw new Exception($err);
+        throw new Exception('Cannot decrypt without system key and IV.');
     } else {
         $text = array_pop($text);
         return openssl_decrypt($text, $ssl_method, $encryption_key, 0, hex2bin($encryption_iv));
@@ -917,9 +924,7 @@ function SSLEncrypt($text)
     $encryption_iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length($ssl_method));
 
     if (empty($encryption_key) || empty($encryption_iv)) {
-        $err = 'Cannot encrypt without system key and IV.';
-        $this->w->Log->error($err);
-        throw new Exception($err);
+        throw new Exception('Cannot encrypt without system key and IV.');
     } else {
         $ssl = openssl_encrypt($text, $ssl_method, $encryption_key, 0, $encryption_iv);
         $encryption_iv = bin2hex($encryption_iv);
@@ -942,9 +947,7 @@ function SSLDecrypt($text)
     $encryption_iv = array_pop($text);
 
     if (empty($encryption_key) || empty($encryption_iv)) {
-        $err = 'Cannot decrypt without system key and IV.';
-        $this->w->Log->error($err);
-        throw new Exception($err);
+        throw new Exception('Cannot decrypt without system key and IV.');
     } else {
         $text = array_pop($text);
         return openssl_decrypt($text, $ssl_method, $encryption_key, 0, hex2bin($encryption_iv));
@@ -977,17 +980,17 @@ function getBetween($content, $start, $end)
  * @param array $array
  * @return bool
  */
-function is_associative_array($array)
+function is_associative_array($array): bool
 {
     return (bool) count(array_filter(array_keys($array), 'is_string'));
 }
 
 /**
- * Similar to above, except it checks that ALL keys are strings
+ * Similar to @see{is_associative_array}, except it checks that ALL keys are strings
  * @param array $array
  * @return bool
  */
-function is_complete_associative_array($array)
+function is_complete_associative_array($array): bool
 {
     return (bool) (count(array_filter(array_keys($array), 'is_string')) == count($array));
 }
@@ -1007,7 +1010,7 @@ function is_complete_associative_array($array)
  * @param bool $include
  * @return bool
  */
-function in_numeric_range($subject, $min, $max, $include = true)
+function in_numeric_range($subject, $min, $max, $include = true): bool
 {
     // Sanity checks
     if (!is_numeric($subject) || !is_numeric($min) || !is_numeric($max)) {
@@ -1084,7 +1087,7 @@ function cast($destination, $sourceObject)
  * @param string $string
  * @return string
  */
-function delete_all_between($beginning, $end, $string, $remove_every_instance = false)
+function delete_all_between($beginning, $end, $string, $remove_every_instance = false): string
 {
     $beginningPos = strpos($string, $beginning);
     $endPos = strpos($string, $end);
@@ -1116,7 +1119,7 @@ function delete_all_between($beginning, $end, $string, $remove_every_instance = 
  * @param string optional format of returned values
  * @return array<string> month list
  */
-function get_list_of_months_between_dates($from, $to, $format = 'M Y')
+function get_list_of_months_between_dates($from, $to, $format = 'M Y'): array
 {
     if (is_numeric($from)) {
         $from = date('d-m-Y', $from);

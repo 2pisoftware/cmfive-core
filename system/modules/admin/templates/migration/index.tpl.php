@@ -104,7 +104,7 @@
                 <div class="tabs-content">
                     <?php foreach ($available as $module => $available_in_module) : ?>
                         <div class="content" style="padding-top: 0px;" id="<?php echo $module; ?>">
-                            <?php echo Html::box("/admin-migration/create/" . $module, "Create a" . (in_array($module{0}, ['a', 'e', 'i' ,'o', 'u']) ? 'n' : '') . ' ' . $module . " migration", true); ?>
+                            <?php echo Html::box("/admin-migration/create/" . $module, "Create a" . (in_array($module[0], ['a', 'e', 'i' ,'o', 'u']) ? 'n' : '') . ' ' . $module . " migration", true); ?>
                             <?php if (count($available[$module]) > 0) : ?>
                                 <?php echo Html::b("/admin-migration/run/" . $module . "?ignoremessages=false&prevage=individual", "Run all " . $module . " migrations", "Are you sure you want to run all outstanding migrations for this module?"); ?>
                                 <table>

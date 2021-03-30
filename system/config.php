@@ -56,11 +56,12 @@ Config::set('email.transports', [
     'swiftmailer' => 'SwiftMailerTransport',
     'sendmail' => 'SwiftMailerTransport',
     'aws' => 'AwsTransport',
+    'mock' => 'MockTransport',
 ]);
 
 Config::set('system.gc_maxlifetime', 21600);
 
-Config::set('system.environment', 'development');
+Config::set('system.environment', ENVIRONMENT_PRODUCTION);
 
 // For SendGrid API integration (also used for Mandrill integration)
 // Config::append('email.api.credentials.key', '<your key>');

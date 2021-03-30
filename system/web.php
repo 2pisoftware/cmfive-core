@@ -5,6 +5,9 @@ if (!headers_sent()) {
 }
 
 //========== Constants =====================================
+const ENVIRONMENT_DEVELOPMENT = "development";
+const ENVIRONMENT_PRODUCTION = "production";
+
 defined("DS") || define("DS", DIRECTORY_SEPARATOR);
 
 define("ROOT_PATH", str_replace("\\", "/", getcwd()));
