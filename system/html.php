@@ -621,19 +621,15 @@ class Html
                     }
 
                     // Check if the row is an object like an InputField
-                    if (!is_array($entry) && is_object($entry)) {
-                        if ((property_exists($entry, "type") && $entry->type !== "hidden") || !property_exists($entry, "type")) {
-                            $buffer .= '<li><label class=\'small-12 columns\'>' . $entry->label . ($entry->required ? " <small>Required</small>" : "") .
-                            $entry->__toString() . '</label></li>';
+                    if (!is_array($field) && is_object($field)) {
+                        if ((property_exists($field, "type") && $field->type !== "hidden") || !property_exists($field, "type")) {
+                            $buffer .= '<li><label class=\'small-12 columns\'>' . $field->label . ($field->required ? " <small>Required</small>" : "") .
+                            $field->__toString() . '</label></li>';
                         } else {
-                            $buffer .= $entry->__toString();
+                            $buffer .= $field->__toString();
                         }
                         continue;
                     }
-                    
-                    // Backwards compatibility - provide option to pass additional data
-                    $field = isset($entry['field']) ? $entry['field'] : $entry;
-                    $tooltip = isset($entry['tooltip']) ? $entry['tooltip'] : null;
 
                     $title = !empty($field[0]) ? $field[0] : null;
                     $type = !empty($field[1]) ? $field[1] : null;
