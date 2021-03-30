@@ -12,19 +12,7 @@ function csv_ALL(Web $w)
     }
     $run_data = $insight->run($w, $_REQUEST);
 
-    $rows = [];
-    foreach ($run_data as $table) {
-        if (!empty($table)) {
-            $row = [];
-            $row[] = [$table->title];
-            $row[] = $table->header;
-            foreach ($table->data as $result_row) {
-                $row[] = $result_row;
-            }
-            $rows[] = $row;
-        }
-    }
 // var_dump($rows);
 // die;
-    InsightService::getInstance($w)->exportcsv($rows, $p['insight_class']);
+    InsightService::getInstance($w)->exportcsv($run_data, $p['insight_class']);
 }
