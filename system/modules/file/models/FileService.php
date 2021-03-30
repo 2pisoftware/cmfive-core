@@ -5,6 +5,7 @@ use Gaufrette\File as File;
 use Gaufrette\Adapter\Local as LocalAdapter;
 use Gaufrette\Adapter\InMemory as InMemoryAdapter;
 use Gaufrette\Adapter\AwsS3 as AwsS3;
+use Gaufrette\StreamWrapper as StreamWrapper;
 use Aws\S3\S3Client as S3Client;
 
 /**
@@ -367,7 +368,7 @@ class FileService extends DbService
      *
      * @return array[Attachment]
      */
-    public function getAttachments($object_or_table, $id = null, ?int $page = null, ?int $page_size = null) : array
+    public function getAttachments($object_or_table, $id = null, ?int $page = null, ?int $page_size = null): array
     {
         $table = "";
 
@@ -445,6 +446,47 @@ class FileService extends DbService
     public function getAttachment($id)
     {
         return $this->getObject("Attachment", $id);
+    }
+
+
+    /**
+     * Sends header and content of file to browser without intermediaries, via exit(0)=Terminates execution!
+     * @param Attachment $att The Attachment
+     * @param string $saveAs Override Filename for browser as string
+     * @return void
+     */
+    public function writeOutAttachment(Attachment $att, ?string $saveAs = null): void
+    {
+        $this->w->setLayout(null);
+        // per : https://www.php.net/manual/en/function.readfile.php
+        // readfile() will not present any memory issues on its own.
+        // If you encounter an out of memory error ensure that output buffering is off
+        if (ob_get_level()) {
+            ob_end_clean();
+        }
+        $this->w->header('Content-Description: File Transfer');
+        $this->w->header(
+            'Content-Type: '
+                . (empty($att->mimetype) ? "application/octet-stream" : $att->mimetype)
+        );
+        $this->w->header(
+            'Content-Disposition: attachment; filename="'
+                . ($saveAs ?? $att->filename). '"'
+        );
+        $this->w->header('Expires: 0');
+        $this->w->header('Cache-Control: must-revalidate');
+        $this->w->header('Pragma: public');
+
+        $filesystem = $att->getFileSystem();
+
+        $map = StreamWrapper::getFilesystemMap();
+        $map->set('mandated_stream', $filesystem);
+
+        StreamWrapper::register();
+        $streamFrom = 'gaufrette://mandated_stream/' . $att->filename;
+        $this->w->header('Content-Length: ' . filesize($streamFrom));
+        readfile($streamFrom);
+        exit(0);
     }
 
     /**
@@ -683,7 +725,7 @@ class FileService extends DbService
      *
      * @return string
      */
-    public static function getCacheRuntimePath() : string
+    public static function getCacheRuntimePath(): string
     {
         if (self::$cache_runtime_path === null) {
             self::$cache_runtime_path = uniqid();
