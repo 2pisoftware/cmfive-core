@@ -1,6 +1,6 @@
 <?php
 echo Html::b("/insights/viewInsight/" . $insight_class_name . "?" . $request_string, "Change Insight Parameters");
-echo Html::box("/insights-export/csv/" . $insight_class_name . "?" . $request_string, "Export to CSV", true);
+//echo Html::box("/insights-export/csv/" . $insight_class_name . "?" . $request_string, "Export to CSV", true);
 
 //Check for errors
 try {
