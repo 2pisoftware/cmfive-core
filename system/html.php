@@ -610,8 +610,15 @@ class Html
 
                 foreach ($row as $entry) {
                     // Backwards compatibility - provide option to pass additional data
-                    $field = array_key_exists('field', $entry) ? $entry['field'] : $entry;
-                    $tooltip = array_key_exists('tooltip', $entry) ? $entry['tooltip'] : null;
+                    $field = null;
+                    $tooltip = null;
+                    if (is_object($entry)) {
+                        $field = property_exists($entry, 'field') ? $entry->field : $entry;
+                        $tooltip = property_exists($entry, 'tooltip') ? $entry->tooltip : null;
+                    } else {
+                        $field = array_key_exists('field', $entry) ? $entry['field'] : $entry;
+                        $tooltip = array_key_exists('tooltip', $entry) ? $entry['tooltip'] : null;
+                    }
 
                     // Check if the row is an object like an InputField
                     if (!is_array($field) && is_object($field)) {

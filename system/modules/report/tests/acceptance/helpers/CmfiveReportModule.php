@@ -35,8 +35,8 @@ class CmfiveReportModule extends \Codeception\Module
         $I->wait(1);
         $I->click('SQL');
         $I->wait(1);
-        // $I->executeJS("$('.CodeMirror')[0].CodeMirror.setValue(\"" . $SQL . "\")");
-        $I->executeJS("$('.CodeMirror').val(\"" . $SQL . "\");");
+        $I->executeJS("$('.CodeMirror')[0].CodeMirror.setValue(\"" . $SQL . "\")");
+        // $I->executeJS("$('.CodeMirror').val(\"" . $SQL . "\");");
         $I->click("//div[@id='code']/form/div/button");
     }
 
