@@ -99,12 +99,6 @@ jobs:
           if [ $? -gt 0 ]; then
             echo "Admin module tests failed"
           fi
-      - name: "Run auth module tests"
-        run: |
-          docker exec nginx-php7.4 bash -c "php cmfive.php tests module auth silent; exit \$?"
-          if [ $? -gt 0 ]; then
-            echo "Auth module tests failed"
-          fi
       - name: "Run channels module tests"
         run: |
           docker exec nginx-php7.4 bash -c "php cmfive.php tests module channels silent; exit \$?"
