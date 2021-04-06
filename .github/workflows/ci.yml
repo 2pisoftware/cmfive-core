@@ -111,12 +111,6 @@ jobs:
           if [ $? -gt 0 ]; then
             echo "Inbox module tests failed"
           fi
-      - name: "Run main module tests"
-        run: |
-          docker exec nginx-php7.4 bash -c "php cmfive.php tests module main silent; exit \$?"
-          if [ $? -gt 0 ]; then
-            echo "Main module tests failed"
-          fi
       - name: "Run report module tests"
         run: |
           docker exec nginx-php7.4 bash -c "php cmfive.php tests module report silent; exit \$?"
