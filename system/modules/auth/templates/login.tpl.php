@@ -18,7 +18,6 @@
                 echo (new \Html\Form\InputField([
                     "id|name" => "mfa_code",
                     "placeholder" => "Your code",
-                    "autofocus" => true,
                     "required" => true,
                 ]))->setAttribute("v-model", "mfa_code");
                 ?>
@@ -97,6 +96,11 @@
                     }
 
                     _this.is_mfa_enabled = response.data.is_mfa_enabled;
+                    if (_this.is_mfa_enabled) {
+                        _this.$nextTick(function() {
+                            document.getElementById("mfa_code").focus();
+                        });
+                    }
                 }).catch(function(error) {
                     _this.login = null,
                     _this.password = null,
