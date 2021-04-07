@@ -30,6 +30,30 @@ class TimelogService extends DbService
         return $this->getObjects("Timelog", $where, false, true, "dt_start DESC", ($page - 1) * $page_size, $page_size);
     }
 
+     /**
+     * Returns all time logs for a given user
+     *
+     * @param User $user
+     * @param boolean $includeDeleted
+     * @return Timelog
+     */
+    public function getTimelogsForUserAndClass(User $user, $className, $includeDeleted = false, $dt_start =null, $dt_end = null, $page = null, $page_size = null)
+    {
+
+        $where = ['user_id' => $user->id];
+        $where['object_class'] = $className;
+
+        if (!$includeDeleted) {
+            $where['is_deleted'] = 0;
+        }
+
+        $where["dt_start >= ?"] = formatDateTime($dt_start, "Y-m-d H:i:s");
+        $where["dt_end <= ?"] = formatDateTime($dt_end, "Y-m-d H:i:s");
+
+        return $this->getObjects("Timelog", $where, false, true, "dt_start DESC", ($page - 1) * $page_size, $page_size);
+    }
+   
+
     public function countTotalTimelogsForUser(User $user = null, $includeDeleted = false)
     {
         if ($user === null) {
