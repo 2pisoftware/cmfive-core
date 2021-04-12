@@ -144,9 +144,9 @@ class FileService extends DbService
             "version" => Config::get("file.adapters.s3.version", "2006-03-01"),
         ];
 
-        if (Config::get("system.environment", ENVIRONMENT_PRODUCTION) === ENVIRONMENT_DEVELOPMENT) {
+        // if (Config::get("system.environment", ENVIRONMENT_PRODUCTION) === ENVIRONMENT_DEVELOPMENT) {
             $args["credentials"] = Config::get("file.adapters.s3.credentials");
-        }
+        // }
 
         return new Aws\S3\S3Client($args);
     }
