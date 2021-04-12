@@ -24,7 +24,7 @@ Config::set('admin', [
     ],
     "dependencies" => [
         "swiftmailer/swiftmailer" => "~6.2",
-        "twig/twig" => "2.4.*",
+        "twig/twig" => "3.0.*",
         "nesbot/carbon" => "1.22.1",
         "robmorgan/phinx" => "0.8.*",
         "sendgrid/sendgrid" => "~5.5",
