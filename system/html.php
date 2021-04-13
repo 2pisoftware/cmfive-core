@@ -359,7 +359,7 @@ class Html
             $readonly = "";
 
             // handle disabled fields
-            if ($name[0] == '-') {
+            if (substr($name, 0, 1) == '-') {
                 $name = substr($name, 1);
                 $readonly = " readonly='true' ";
             }
@@ -610,8 +610,15 @@ class Html
 
                 foreach ($row as $entry) {
                     // Backwards compatibility - provide option to pass additional data
-                    $field = array_key_exists('field', $entry) ? $entry['field'] : $entry;
-                    $tooltip = array_key_exists('tooltip', $entry) ? $entry['tooltip'] : null;
+                    $field = null;
+                    $tooltip = null;
+                    if (is_object($entry)) {
+                        $field = property_exists($entry, 'field') ? $entry->field : $entry;
+                        $tooltip = property_exists($entry, 'tooltip') ? $entry->tooltip : null;
+                    } else {
+                        $field = array_key_exists('field', $entry) ? $entry['field'] : $entry;
+                        $tooltip = array_key_exists('tooltip', $entry) ? $entry['tooltip'] : null;
+                    }
 
                     // Check if the row is an object like an InputField
                     if (!is_array($field) && is_object($field)) {
@@ -652,7 +659,7 @@ class Html
                     $buffer .= ($type !== "hidden" ? "<div>" : "");
 
                     // handle disabled fields
-                    if ($name[0] == '-') {
+                    if (substr($name, 0, 1) == '-') {
                         $name = substr($name, 1);
                         $readonly = " readonly='true' ";
                     }
@@ -1322,7 +1329,7 @@ class Html
             }
 
             // handle disabled fields
-            if ($name[0] == '-') {
+            if (substr($name, 0, 1) == '-') {
                 $name = substr($name, 1);
                 $readonly = " readonly='true' ";
             }

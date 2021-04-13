@@ -60,15 +60,13 @@ class ChannelsModuleCest
         $channel_body_edited = "channel_body_{$uniqid}_edited";
         $channel_post_read_data = "channel_post_read_data_$uniqid";
         $channel_post_read_data_edited = "channel_post_read_data_{$uniqid}_edited";
-
-        $I->createEmailChannel($I, $channel_name, false, false, "POP3", $channel_url, $channel_username, $channel_password, 563, true, false, true, $channel_folder, $to, $from, $cc, $channel_subject, $channel_body, "Archive", $channel_post_read_data);
-        $I->verifyEmailChannel($I, $channel_name, false, false, "POP3", $channel_url, $channel_username, $channel_password, 563, true, false, true, $channel_folder, $to, $from, $cc, $channel_subject, $channel_body, "Archive", $channel_post_read_data);
+        $port = "563";
+        $I->createEmailChannel($I, $channel_name, false, false, "POP3", $channel_url, $channel_username, $channel_password, $port, true, false, true, $channel_folder, $to, $from, $cc, $channel_subject, $channel_body, "Archive", $channel_post_read_data);
+        $I->verifyEmailChannel($I, $channel_name, false, false, "POP3", $channel_url, $channel_username, $channel_password, $port, true, false, true, $channel_folder, $to, $from, $cc, $channel_subject, $channel_body, "Archive", $channel_post_read_data);
         $I->waitForElementNotVisible("#channelform");
-
-        $I->editEmailChannel($I, $channel_name_edited, true, true, "IMAP", $channel_url_edited, $channel_username_edited, $channel_password_edited, 564, false, true, false, $channel_folder_edited, $to_edited, $from_edited, $cc_edited, $channel_subject_edited, $channel_body_edited, "Move to Folder", $channel_post_read_data_edited);
-        $I->verifyEmailChannel($I, $channel_name_edited, true, true, "IMAP", $channel_url_edited, $channel_username_edited, $channel_password_edited, 564, false, true, false, $channel_folder_edited, $to_edited, $from_edited, $cc_edited, $channel_subject_edited, $channel_body_edited, "Move to Folder", $channel_post_read_data_edited);
+        $I->editEmailChannel($I, $channel_name_edited, true, true, "IMAP", $channel_url_edited, $channel_username_edited, $channel_password_edited, $port, false, true, false, $channel_folder_edited, $to_edited, $from_edited, $cc_edited, $channel_subject_edited, $channel_body_edited, "Move to Folder", $channel_post_read_data_edited);
+        $I->verifyEmailChannel($I, $channel_name_edited, true, true, "IMAP", $channel_url_edited, $channel_username_edited, $channel_password_edited, $port, false, true, false, $channel_folder_edited, $to_edited, $from_edited, $cc_edited, $channel_subject_edited, $channel_body_edited, "Move to Folder", $channel_post_read_data_edited);
         $I->waitForElementNotVisible("#channelform");
-
         $I->deleteChannel($I);
     }
 }

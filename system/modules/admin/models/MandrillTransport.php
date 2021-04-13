@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * @deprecated v3.7.1
+ */
 class MandrillTransport implements GenericTransport
 {
     private $w;

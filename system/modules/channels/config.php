@@ -10,7 +10,7 @@ Config::set('channels', [
         'TestProcessor'
     ],
     "dependencies" => [
-        "zendframework/zend-mail" => "~2.9",
-        "zendframework/zend-serializer" => "~2.9"
+        "laminas/laminas-mail" => "~2.9",
+        "laminas/laminas-serializer" => "~2.9"
     ]
 ]);
