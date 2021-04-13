@@ -1,7 +1,7 @@
 <?php
 function csv_ALL(Web $w)
 {
-
+    $w->setLayout(null);
     $p = $w->pathMatch('insight_class');
     if (empty($p['insight_class'])) {
         $w->error('No insight class name found','/insights');

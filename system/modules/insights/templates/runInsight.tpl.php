@@ -15,5 +15,3 @@ try {
       echo "Error caught: " . $e->getMessage();
       LogService::getInstance($w)->setLogger("INSIGHTS")->error("Error occurred. Cannot run insight $p" . $e->getMessage());
     }
-    
-

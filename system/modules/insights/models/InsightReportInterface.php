@@ -10,7 +10,11 @@ class InsightReportInterface
     
 {
         $this->title = $title;
-        $this->header = $header;
+        $hds = [];
+        foreach ($header as $hd){
+            $hds[$hd] = $hds;
+        }
+        //$this->header = $header;
         $this->data = $data;
     }
 }
