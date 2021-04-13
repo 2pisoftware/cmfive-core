@@ -17,7 +17,7 @@ class Request
     public static function int(string $key, ?int $default = null): ?int
     {
         if (!array_key_exists($key, $_REQUEST) || !is_int($_REQUEST[$key])) {
-            return trim($default);
+            return $default;
         }
 
         return trim($_REQUEST[$key]);
@@ -34,10 +34,10 @@ class Request
     public static function float(string $key, ?float $default = null): ?float
     {
         if (!array_key_exists($key, $_REQUEST) || !is_float($_REQUEST[$key])) {
-            return trim($default);
+            return $default;
         }
 
-        return trim($_REQUEST[$key]);
+        return $_REQUEST[$key];
     }
 
     /**
@@ -51,10 +51,10 @@ class Request
     public static function bool(string $key, ?bool $default = null): ?bool
     {
         if (!array_key_exists($key, $_REQUEST) || !is_bool($_REQUEST[$key])) {
-            return trim($default);
+            return $default;
         }
 
-        return trim($_REQUEST[$key]);
+        return $_REQUEST[$key];
     }
 
     /**
@@ -89,9 +89,9 @@ class Request
     public static function mixed(string $key, $default = null)
     {
         if (!array_key_exists($key, $_REQUEST)) {
-            return trim($default);
+            return is_string($default) ? trim($default) : $default;
         }
 
-        return trim($_REQUEST[$key]);
+        return is_string($_REQUEST[$key]) ? trim($_REQUEST[$key]) : $_REQUEST[$key];
     }
 }
