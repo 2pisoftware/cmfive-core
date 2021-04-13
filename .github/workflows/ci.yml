@@ -96,8 +96,8 @@ jobs:
       - name: "Run unit tests"
         run: |
           docker exec nginx-php7.4 bash -c "php cmfive.php tests unit all; exit \$?"
-            if [ $? -gt 0 ]; then
-              echo "Admin module tests failed"
+          if [ $? -gt 0 ]; then
+            echo "Admin module tests failed"
           fi
 
       # Run Acceptance Tests

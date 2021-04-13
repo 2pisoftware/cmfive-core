@@ -7,8 +7,8 @@
 class Request
 {
     /**
-     * Returns the int value that is tied to the $key parameter. If the value is
-     * not an int or doesn't exist the $default parameter will be returned instead.
+     * Returns the value that is tied to the $key parameter as an int. If the value is
+     * not scalar or doesn't exist the $default parameter will be returned instead.
      *
      * @param string $key
      * @param integer|null $default
@@ -16,16 +16,16 @@ class Request
      */
     public static function int(string $key, ?int $default = null): ?int
     {
-        if (!array_key_exists($key, $_REQUEST) || !is_int($_REQUEST[$key])) {
+        if (!array_key_exists($key, $_REQUEST) || !is_scalar($_REQUEST[$key])) {
             return $default;
         }
 
-        return trim($_REQUEST[$key]);
+        return intval($_REQUEST[$key]);
     }
 
     /**
-     * Returns the float value that is tied to the $key parameter. If the value is
-     * no a float or doesn't exist the $default parameter will be returned instead.
+     * Returns the value that is tied to the $key parameter as a float. If the value is
+     * not scalar or doesn't exist the $default parameter will be returned instead.
      *
      * @param string $key
      * @param float|null $default
@@ -33,16 +33,16 @@ class Request
      */
     public static function float(string $key, ?float $default = null): ?float
     {
-        if (!array_key_exists($key, $_REQUEST) || !is_float($_REQUEST[$key])) {
+        if (!array_key_exists($key, $_REQUEST) || !is_scalar($_REQUEST[$key])) {
             return $default;
         }
 
-        return $_REQUEST[$key];
+        return floatval($_REQUEST[$key]);
     }
 
     /**
-     * Returns the bool value that is tied to the $key parameter. If the value is
-     * not a bool or doesn't exist the $default parameter will be returned instead.
+     * Returns the value that is tied to the $key parameter as a bool. If the value is
+     * not scalar or doesn't exist the $default parameter will be returned instead.
      *
      * @param string $key
      * @param boolean|null $default
@@ -50,16 +50,16 @@ class Request
      */
     public static function bool(string $key, ?bool $default = null): ?bool
     {
-        if (!array_key_exists($key, $_REQUEST) || !is_bool($_REQUEST[$key])) {
+        if (!array_key_exists($key, $_REQUEST) || !is_scalar($_REQUEST[$key])) {
             return $default;
         }
 
-        return $_REQUEST[$key];
+        return boolval($_REQUEST[$key]);
     }
 
     /**
-     * Returns the string value that is tied to the $key parameter. If the value is
-     * not a string or doesn't exist the $default parameter will be returned instead.
+     * Returns the value that is tied to the $key parameter as a string. If the value is
+     * not scalar or doesn't exist the $default parameter will be returned instead.
      *
      * @param string $key
      * @param string|null $default
@@ -67,11 +67,11 @@ class Request
      */
     public static function string(string $key, ?string $default = null): ?string
     {
-        if (!array_key_exists($key, $_REQUEST) || !is_string($_REQUEST[$key])) {
+        if (!array_key_exists($key, $_REQUEST) || !is_scalar($_REQUEST[$key])) {
             return trim($default);
         }
 
-        return trim($_REQUEST[$key]);
+        return trim(strval($_REQUEST[$key]));
     }
 
     /**
