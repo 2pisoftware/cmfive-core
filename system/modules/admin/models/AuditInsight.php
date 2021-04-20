@@ -1,4 +1,3 @@
-
 <?php
 
 class AuditInsight extends InsightBaseClass
