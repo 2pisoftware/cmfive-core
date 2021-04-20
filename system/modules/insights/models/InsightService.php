@@ -157,8 +157,6 @@ class InsightService extends DbService
     // export a recordset as CSV
     public function exportcsv($run_data, $title)
     {
-        // echo '<pre>';
-        // var_dump($run_data); die;
         // set filename
         $filename = str_replace(" ", "_", $title) . "_" . date("Y.m.d-H.i") . ".csv";
         foreach ($run_data as $table) {
@@ -168,8 +166,6 @@ class InsightService extends DbService
                 foreach ($table->header as $hd){
                     $hds[$hd] = $hd;
                 }
-                //$hds = $table->header;
-                //var_dump($hds); die;
                 $csv = new ParseCsv\Csv();
                 $csv->output_filename = $filename;
                 // ignore lib wrapper csv->output, to keep control over header re-sends!
@@ -180,8 +176,8 @@ class InsightService extends DbService
             }
         }
 
-            $this->w->sendHeader("Content-type", "application/csv");
-            $this->w->sendHeader("Content-Disposition", "attachment; filename=" . $filename);
-            $this->w->setLayout(null); 
+        $this->w->sendHeader("Content-type", "application/csv");
+        $this->w->sendHeader("Content-Disposition", "attachment; filename=" . $filename);
+        $this->w->setLayout(null); 
     }
 }
