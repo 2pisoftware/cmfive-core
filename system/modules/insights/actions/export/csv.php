@@ -12,7 +12,5 @@ function csv_ALL(Web $w)
     }
     $run_data = $insight->run($w, $_REQUEST);
 
-// var_dump($rows);
-// die;
     InsightService::getInstance($w)->exportcsv($run_data, $p['insight_class']);
 }
