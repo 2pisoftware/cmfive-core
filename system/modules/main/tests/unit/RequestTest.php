@@ -9,7 +9,7 @@ class RequestTest extends TestCase
      *
      * @return void
      */
-    public function testInt()
+    public function testInt(): void
     {
         require_once("system/web.php");
         $w = new Web();
@@ -44,7 +44,7 @@ class RequestTest extends TestCase
      *
      * @return void
      */
-    public function testFloat()
+    public function testFloat(): void
     {
         require_once("system/web.php");
         $w = new Web();
@@ -79,7 +79,7 @@ class RequestTest extends TestCase
      *
      * @return void
      */
-    public function testBool()
+    public function testBool(): void
     {
         require_once("system/web.php");
         $w = new Web();
@@ -116,7 +116,7 @@ class RequestTest extends TestCase
      *
      * @return void
      */
-    public function testString()
+    public function testString(): void
     {
         require_once("system/web.php");
         $w = new Web();
@@ -151,7 +151,7 @@ class RequestTest extends TestCase
      *
      * @return void
      */
-    public function testMixed()
+    public function testMixed(): void
     {
         require_once("system/web.php");
         $w = new Web();
