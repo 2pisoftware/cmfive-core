@@ -118,7 +118,8 @@ abstract class TaskType
      * Return a html string which will be displayed alongside
      * the generic task details.
      *
-     * @deprecated this should move out into a hook called from the task template!
+     * @deprecated v2.0.0 - Will be removed in v5.0.0.
+     *
      * @param Task $task
      */
     public function displayExtraDetails(Task $task)
@@ -128,7 +129,8 @@ abstract class TaskType
     /**
      * Return a Html string which will be appended to the row of buttons in the viewtask screen.
      *
-     * @deprecated this should move out into a hook called from the task template!
+     * @deprecated v2.0.0 - Will be removed in v5.0.0.
+     *
      * @param Task $task
      */
     public function displayExtraButtons(Task $task)
