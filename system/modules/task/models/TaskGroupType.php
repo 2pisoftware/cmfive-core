@@ -115,7 +115,8 @@ abstract class TaskGroupType
      * By default returns the very first status of the
      * status array if defined. Otherwise "".
      *
-     * @deprecated v2.0.0 - Will be removed in v5.0.0, see TaskGroupType::getDefaultStatus().
+     * @deprecated v2.0.0 - Will be removed in v5.0.0.
+     * @see TaskGroupType::getDefaultStatus()
      */
     public function get_default_status()
     {

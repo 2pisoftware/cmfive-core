@@ -330,7 +330,8 @@ function rotateImage($img, $rotation)
  * Returns a lookup by type from the database and formats
  * it ready for a Html::select field.
  *
- * @deprecated v3.0.0 - Will be removed in v5.0.0, see LookupService::lookupForSelect().
+ * @deprecated v3.0.0 - Will be removed in v5.0.0.
+ * @see LookupService::lookupForSelect()
  *
  * @param Web $w
  * @param string type
@@ -541,7 +542,8 @@ function formatCurrency(float $value, string $locale = "en_AU", string $currency
  *
  * For those that do not (Windows), then the function is imitated with code.
  *
- * @deprecated v4.0.6 - Will be removed in v5.0.0, see formatCurrency().
+ * @deprecated v4.0.6 - Will be removed in v5.0.0.
+ * @see formatCurrency()
  *
  * @param string format
  * @param float|mixed number
@@ -754,7 +756,8 @@ function in_modified_multiarray($value, $array, $levels = 3)
 /**
  * Returns AES encrypted string.
  *
- * @deprecated v3.0.0 - Will be removed in v5.0.0, see SSLEncrypt().
+ * @deprecated v3.0.0 - Will be removed in v5.0.0.
+ * @see SSLEncrypt()
  *
  * @param mixed text to encrypt
  * @param mixed password (unused)
@@ -768,7 +771,8 @@ function AESencrypt($text, $password)
 /**
  * Decrypts AES string.
  *
- * @deprecated v3.0.0 - Will be removed in v5.0.0, see SSLDecrypt().
+ * @deprecated v3.0.0 - Will be removed in v5.0.0.
+ * @see SSLDecrypt()
  *
  * @param mixed text to decrypt
  * @param mixed password (unused)

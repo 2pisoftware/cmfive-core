@@ -82,7 +82,8 @@ class HttpRequest
     /**
      * Runs the request.
      *
-     * @deprecated 2.14.5 - Will be removed in v5.0.0, see HttpRequest::execute().
+     * @deprecated 2.14.5 - Will be removed in v5.0.0.
+     * @see HttpRequest::execute()
      *
      * @param string $output
      * @param string $error
