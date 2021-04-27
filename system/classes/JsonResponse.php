@@ -89,7 +89,8 @@ class JsonResponse
     /**
      * Shorthand function for creating a not found (404) response
      *
-     * @deprecated v3.6.13
+     * @deprecated v3.6.13 - Will be removed in v5.0.0.
+     *
      * @param string $message
      * @return self
      */
