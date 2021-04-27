@@ -431,11 +431,10 @@ class Web
 
     /**
      * Performs comparison for weights (for the enqueue functions above) to sort
-     * by the "weight" key in descending order
+     * by the "weight" key in descending order.
      *
-     * Will be removed in v4
+     * @deprecated v3.6.13 - Will be removed in v5.0.0.
      *
-     * @deprecated v3.6.13
      * @param Array $a
      * @param Array $b
      * @return int
@@ -913,7 +912,8 @@ class Web
      * Returns a service class instance that matches the name given,
      * E.g. $w->Inbox->... would return an InboxService class instance.
      *
-     * @deprecated v3.6
+     * @deprecated v3.6.0 - Will be removed in v5.0.0.
+     *
      * @param string $name
      * @return mixed|null
      */
@@ -1253,8 +1253,9 @@ class Web
      * Send the contents of the file to the client browser
      * as raw data.
      *
+     * @deprecated v0.8.5 - Will be removed in v5.0.0.
+     *
      * @param string $filename
-     * @deprecated deprecated since 0.8.5
      */
     public function sendFile($filename)
     {
@@ -1513,7 +1514,8 @@ class Web
      * defined in a model.php inside
      * as module.
      *
-     * @deprecated v3.6
+     * @deprecated v3.6.0 - Will be removed in v5.0.0.
+     *
      * @param string $name
      * @return mixed|null
      */
@@ -2042,9 +2044,7 @@ class Web
     /**
      * Call all PRE ACTION listeners
      *
-     * "pre listeners" should not be used anymore - will be removed in v4
-     *
-     * @deprecated v3.6.13
+     * @deprecated v3.6.13 - Will be removed in v5.0.0, "pre listeners" should not be used anymore.
      */
     public function _callPreListeners()
     {
@@ -2064,9 +2064,7 @@ class Web
      * Call all POST ACTION listeners
      * (rely on listener files included from pre_listener call!
      *
-     * "post listeners" should not be used anymore - will be removed in v4
-     *
-     * @deprecated v3.6.13
+     * @deprecated v3.6.13 - Will be removed in v5.0.0, "post listeners" should not be used anymore.
      */
     public function _callPostListeners()
     {

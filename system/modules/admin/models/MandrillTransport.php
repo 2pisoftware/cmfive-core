@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @deprecated v3.7.1
+ * @deprecated v3.7.1 - Will be removed in v5.0.0.
  */
 class MandrillTransport implements GenericTransport
 {

@@ -54,7 +54,8 @@ class FileService extends DbService
     /**
      * Return the path adjusted to the currently active adapter.
      *
-     * @deprecated v3.6
+     * @deprecated v3.6.0 - Will be removed in v5.0.0.
+     *
      * @param string file path
      *
      * @return string resulting file path

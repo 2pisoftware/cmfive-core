@@ -32,7 +32,8 @@ class DbService
     /**
      * Magic get implementation to pass to Web, returns a {$name}Service singleton
      *
-     * @deprecated v3.6
+     * @deprecated v3.6.0 - Will be removed in v5.0.0.
+     *
      * @param string
      * @return mixed|null
      */
@@ -165,7 +166,7 @@ class DbService
         if (is_array($idOrWhere)) {
             $key = "";
             foreach ($idOrWhere as $k => $v) {
-                $key .= $k . "::" . $v . "::";
+                $key .= $k . "::" . (is_scalar($v) ? $v : json_encode($v)) . "::";
             }
         }
         $usecache = $use_cache && is_scalar($key);
