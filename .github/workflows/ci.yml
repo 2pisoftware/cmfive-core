@@ -92,6 +92,14 @@ jobs:
       - name: Prepare cmfive Test Database
         run: docker exec nginx-php7.4 bash -c "php cmfive.php testDB setup; exit \$?";
 
+      # Run Unit Tests
+      - name: "Run unit tests"
+        run: |
+          docker exec nginx-php7.4 bash -c "php cmfive.php tests unit all; exit \$?"
+          if [ $? -gt 0 ]; then
+            echo "Admin module tests failed"
+          fi
+
       # Run Acceptance Tests
       - name: "Run admin module tests"
         run: |
