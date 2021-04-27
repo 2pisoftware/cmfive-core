@@ -52,7 +52,7 @@ class AuditInsight extends InsightBaseClass
                     $row['URL'] = $datarow->path;
                     $row['Class'] = $datarow->db_class;
                     $row['Action'] = $datarow->db_action;
-                    $row['DB Id'] = $datarow->db_id;
+                    $row['DB_Id'] = $datarow->db_id;
                     $convertedData[] = $row;
                 }
             $results[] = new InsightReportInterface('Audit Report', ['Date', 'User', 'Module', 'URL', 'Class', 'Action', 'DB Id'], $convertedData);
