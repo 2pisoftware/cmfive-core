@@ -44,7 +44,7 @@ class DbPDO extends PDO
         }
 
         $options = [
-            PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8mb4'",
+            PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8mb4', time_zone='" . date("e") . "'",
         ];
 
         if (!empty($config['ssl_cert_path'])) {
@@ -602,7 +602,9 @@ class DbPDO extends PDO
                 $this->execute();
             }
 
-            return $this->query;
+            $last_id = $this->query;
+			$this->query = null;
+			return $last_id;
         }
 
         return null;
