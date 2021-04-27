@@ -353,6 +353,10 @@ class DbPDO extends PDO
     public function fetchElement($element)
     {
         $row = $this->fetchRow();
+        if (empty($row)) {
+            return null;
+        }
+
         return (!is_null($row[$element]) ? $row[$element] : null);
     }
 
