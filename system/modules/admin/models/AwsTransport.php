@@ -66,24 +66,20 @@ class AwsTransport implements GenericTransport
 
         $queue_url = Config::get("admin.mail.aws.queue_url");
         if (empty($queue_url)) {
-            LogService::getInstance($this->w)->error("Failed to send mail to: $to, from: $reply_to, about: $subject: admin.mail.aws.queue_url not set in config");
+            LogService::getInstance($this->w)->setLogger("EMAIL")->error("Failed to send mail to: $to, from: $reply_to, about: $subject: admin.mail.aws.queue_url not set in config");
             return;
         }
 
         $from_arn = Config::get("admin.mail.aws.from_arn");
-        if (empty($from_arn)) {
-            LogService::getInstance($this->w)->error("Failed to send mail to: $to, from: $reply_to, about: $subject: admin.mail.aws.from_arn not set in config");
-            return;
-        }
 
         $from = Config::get("main.company_support_email");
         if (empty($from)) {
-            $this->w->Log->error("Failed to send mail to: $to, from: $reply_to, about: $subject: main.company_support_email not set in config");
+            LogService::getInstance($this->w)->setLogger("EMAIL")->error("Failed to send mail to: $to, from: $reply_to, about: $subject: main.company_support_email not set in config");
             return;
         }
 
         if (empty($to) || strlen($to) === 0) {
-            LogService::getInstance($this->w)->error("Failed to send mail to: $to, from: $reply_to, about: $subject: no recipients");
+            LogService::getInstance($this->w)->setLogger("EMAIL")->error("Failed to send mail to: $to, from: $reply_to, about: $subject: no recipients");
             return;
         }
 
