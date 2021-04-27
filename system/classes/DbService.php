@@ -165,7 +165,7 @@ class DbService
         if (is_array($idOrWhere)) {
             $key = "";
             foreach ($idOrWhere as $k => $v) {
-                $key .= $k . "::" . $v . "::";
+                $key .= $k . "::" . (is_scalar($v) ? $v : json_encode($v)) . "::";
             }
         }
         $usecache = $use_cache && is_scalar($key);
