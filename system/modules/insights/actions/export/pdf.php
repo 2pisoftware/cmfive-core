@@ -2,6 +2,7 @@
 function pdf_ALL(Web $w)
 {
     //Drop-down for chossing template to use for export
+    $chooseTemplate = TemplateService::getInstance($w)->findTemplates(null,null,false,false);
     
     //Find class name of insight
     $p = $w->pathMatch('insight_class');
