@@ -1,9 +1,23 @@
 <?php
 
+/**
+ * This insight report collects timelogs from any tasks that a user
+ * has worked on within the given time period.
+ * 
+ * The logs are presented in 3 views: per day, per taskgroup and showing
+ * a detailed view.
+ */
 class MyTaskTimeInsight extends InsightBaseClass
 {
     public $name = "My Task Time";
     public $description = "Shows your timelog spent on tasks and taskgroups.";
+
+    /**
+     * returns a string of the format HH:mm for the number of seconds
+     */
+    private function formatDuration($seconds) {
+        return sprintf('%02d:%02d', ($seconds/3600),($seconds/60%60));
+    }
 
     //Displays Filters 
     public function getFilters(Web $w, $parameters = []): array
@@ -28,36 +42,50 @@ class MyTaskTimeInsight extends InsightBaseClass
             "Task", 
             false, 
             $parameters['dt_start'], 
-            $parameters['dt_end']);
+            $parameters['dt_end'],
+        );
 
-        if (!is_null($timelogs)) {
+        if (is_null($timelogs)) {
             $results[] = new InsightReportInterface('My Task Timelogs', ['Results'], [['No data returned for selections']]);
         } else {
             // convert $data from list of objects to array of values
-            $convertedData = [];
+            $detailData = [];
+            $hoursPerDay = [];
+            $hoursPerDayFormatted = [];
+            $hoursPerTaskGroup = [];
+            $hoursPerTaskGroupFormatted = [];
             foreach ($timelogs as $log) {
                 $row = [];
                 $task = TaskService::getInstance($w)->getTask($log->object_id);
+                $taskgroup = $task->getTaskgroup();
+                $row['Date'] = formatDatetime($log->dt_start, "Y-m-d H:i:s");
+                $row['Duration'] = $this->formatDuration($log->getDuration());
+                $row['Type'] = $log->time_type;
+                $row['Description'] = $log->getComment()->comment;
+
                 if (!is_null($task)) {
-                    $row['Date'] = formatDatetime($log->dt_start, "Y-m-d H:i:s");
-                    $row['Task'] = "";
-                    $row['Duration'] = $log->getDuration();
-                    $row['Taskgroup'] = "";
-                    $row['Type'] = $log->time_type;
-                    $row['Description'] = $log->description;
+                    $row['Task'] = $task->title;
+                    $row['Taskgroup'] = $taskgroup->title;
+                    @$hoursPerTaskGroup[$taskgroup->title] += $log->getDuration();
                 }
                 else {
-                    $row['Date'] = formatDatetime($log->dt_start, "Y-m-d H:i:s");
                     $row['Task'] = "ERROR: No Task found for ID (".$log->object_id.")";
-                    $row['Duration'] = $log->getDuration();
                     $row['Taskgroup'] = "n/a";
-                    $row['Type'] = $log->time_type;
-                    $row['Description'] = $log->description;
-
                 }
-                $convertedData[] = $row;
+                $detailData[] = $row;
+                @$hoursPerDay[formatDatetime($log->dt_start, "Y-m-d")] += $log->getDuration();
+                
             }
-            $results[] = new InsightReportInterface('Timelog Details', ['Date / Time', 'Task', 'Duration (hrs)', 'TaskGroup' ,'Type', 'Description'], $convertedData);
+            foreach ($hoursPerDay as $day => $duration) {
+                $hoursPerDayFormatted[] = ["Date" => $day, "Duration" => $this->formatDuration($duration)];
+            }
+            foreach ($hoursPerTaskGroup as $taskgroup => $duration) {
+                $hoursPerTaskGroupFormatted[] = ["Taskgroup"=> $taskgroup, "Duration"=>$this->formatDuration($duration)];
+            }
+
+            $results[] = new InsightReportInterface('Timelog per Day', ['Date', 'Duration (hrs:min)'], $hoursPerDayFormatted);
+            $results[] = new InsightReportInterface('Timelog per TaskGroup', ['Taskgroup Name', 'Duration (hrs:min)'], $hoursPerTaskGroupFormatted);
+            $results[] = new InsightReportInterface('Timelog Details', ['Date / Time', 'Task', 'Duration (hrs:min)', 'TaskGroup' ,'Type', 'Description'], $detailData);
         }
         return $results;
     }
