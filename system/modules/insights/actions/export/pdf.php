@@ -11,7 +11,6 @@ function pdf_ALL(Web $w)
     //Drop-down for chossing template to use for export
     $templates = TemplateService::getInstance($w)->findTemplates(null,$insight_class_name_pdf,false,false);
     var_dump($templates); die;
-    $category = 
     $template_list = array(
         array("", "hidden", "insight_class_name", $insight_class_name)
     );
