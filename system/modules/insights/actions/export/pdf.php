@@ -6,9 +6,11 @@ function pdf_ALL(Web $w)
     //Find insight that matches class name
     $insight = InsightService::getInstance($w)->getInsightInstance($p['insight_class']);
     $insight_class_name = $insight->name;
+    $insight_class_name_pdf = $insight_class_name . ' PDF';
         
     //Drop-down for chossing template to use for export
-    $templates = TemplateService::getInstance($w)->findTemplates(null,null,false,false);
+    $templates = TemplateService::getInstance($w)->findTemplates(null,$insight_class_name_pdf,false,false);
+    var_dump($templates); die;
     $category = 
     $template_list = array(
         array("", "hidden", "insight_class_name", $insight_class_name)
