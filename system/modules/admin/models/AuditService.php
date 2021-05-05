@@ -127,41 +127,41 @@ class AuditService extends DbService
         $results = $this->getObjects('Audit', $where);
 
         //filter results by date
-        //$filteredResults = [];
+        $filteredResults = [];
         //convert dates to and from to DD-MM-YYYY HH:ii:ss format. Name $formatdt_from and $formatdt_to
         //Convert dates to and from to timestamp
-        // if (!empty($dt_from) || !empty($dt_to)) {
-        //     $from = null;
-        //     $to=null;
-        //     if (!empty($dt_from)) {
-        //         $from = DateTime::createFromFormat('d/m/Y H:i:s', $dt_from . ' 00:00:00');
-        //         $tsFrom = $from->getTimestamp();
-        //     }
-        //     if (!empty($dt_to)) {
-        //         $to = DateTime::createFromFormat('d/m/Y H:i:s', $dt_to . ' 23:59:59');
-        //         $tsTo = $to->getTimestamp();
-        //     }
-        //     foreach ($results as $result) {
-        //         if (!empty($tsFrom) && !empty($tsTo)){
-        //             if ($result->dt_created >= $tsFrom && $result->dt_created <= $tsTo){
-        //                 $filteredResults[] = $result;
-        //             }
-        //         }
-        //         elseif (!empty($tsFrom)) {
-        //             if ($result->dt_created >= $tsFrom){
-        //                 $filteredResults[] = $result;
-        //             }
-        //         }
-        //         elseif (!empty($tsTo)) {
-        //             if ($result->dt_created <= $tsTo){
-        //                 $filteredResults[] = $result;
-        //             }
-        //         }
-        //     }
-        // }
-        // else {
-        //     $filteredResults = $results;
-        // }
-        // return $filteredResults;
+        if (!empty($dt_from) || !empty($dt_to)) {
+            $from = null;
+            $to=null;
+            if (!empty($dt_from)) {
+                $from = DateTime::createFromFormat('d/m/Y H:i:s', $dt_from . ' 00:00:00');
+                $tsFrom = $from->getTimestamp();
+            }
+            if (!empty($dt_to)) {
+                $to = DateTime::createFromFormat('d/m/Y H:i:s', $dt_to . ' 23:59:59');
+                $tsTo = $to->getTimestamp();
+            }
+            foreach ($results as $result) {
+                if (!empty($tsFrom) && !empty($tsTo)){
+                    if ($result->dt_created >= $tsFrom && $result->dt_created <= $tsTo){
+                        $filteredResults[] = $result;
+                    }
+                }
+                elseif (!empty($tsFrom)) {
+                    if ($result->dt_created >= $tsFrom){
+                        $filteredResults[] = $result;
+                    }
+                }
+                elseif (!empty($tsTo)) {
+                    if ($result->dt_created <= $tsTo){
+                        $filteredResults[] = $result;
+                    }
+                }
+            }
+        }
+        else {
+            $filteredResults = $results;
+        }
+        return $filteredResults;
     }
 }
