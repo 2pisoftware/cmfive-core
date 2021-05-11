@@ -269,7 +269,7 @@ class DbPDO extends PDO
     }
 
     /**
-     * @deprecated v3.0.0
+     * @deprecated v3.0.0 - Will be removed in v5.0.0.
      * @see DbPDO::orderBy()
      */
     public function order_by($orderby)
@@ -353,11 +353,15 @@ class DbPDO extends PDO
     public function fetchElement($element)
     {
         $row = $this->fetchRow();
+        if (empty($row)) {
+            return null;
+        }
+
         return (!is_null($row[$element]) ? $row[$element] : null);
     }
 
     /**
-     * @deprecated v3.0.0
+     * @deprecated v3.0.0 - Will be removed in v5.0.0.
      * @see DbPDO::fetchElement()
      */
     public function fetch_element($element)
@@ -377,7 +381,7 @@ class DbPDO extends PDO
     }
 
     /**
-     * @deprecated v3.0.0
+     * @deprecated v3.0.0 - Will be removed in v5.0.0.
      * @see DbPDO::fetchRow()
      */
     public function fetch_row()
@@ -402,7 +406,7 @@ class DbPDO extends PDO
     }
 
     /**
-     * @deprecated v3.0.0
+     * @deprecated v3.0.0 - Will be removed in v5.0.0.
      * @see DbPDO::fetchAll()
      */
     public function fetch_all()
@@ -571,7 +575,7 @@ class DbPDO extends PDO
     }
 
     /**
-     * @deprecated v3.0.0
+     * @deprecated v3.0.0 - Will be removed in v5.0.0.
      * @see DbPDO::clearSql()
      */
     public function clear_sql()

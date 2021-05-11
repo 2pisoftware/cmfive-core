@@ -184,9 +184,7 @@ class DbObject extends DbService
      * Intermediate method to facilitate transition from
      * selectTitle to getSelectOptionTitle
      *
-     * Will be removed in cmfive v5.x
-     *
-     * @deprecated v3.6.13
+     * @deprecated v3.6.13 - Will be removed in v5.0.0.
      */
     public function _selectOptionTitle()
     {
@@ -696,7 +694,7 @@ class DbObject extends DbService
                 if (substr($k, 0, 1) != "_" && $k != "w" && $v !== null) {
                     $dbk = $this->getDbColumnName($k);
                     $data[$dbk] = $this->updateConvert($dbk, $v);
-  
+
                 }
             }
 
@@ -989,8 +987,9 @@ class DbObject extends DbService
     /**
      * Shorthand function for getDbTableName()
      *
+     * @deprecated v3.6.13 - Will be removed in v5.0.0.
+     *
      * @return string
-     * @deprecated v3.6.13
      */
     public function _tn()
     {
@@ -1000,9 +999,10 @@ class DbObject extends DbService
     /**
      * Shorthand function for getDbColumnName()
      *
+     * @deprecated v3.6.13 - Will be removed in v5.0.0.
+     *
      * @param string $attr
      * @return string
-     * @deprecated v3.6.13
      */
     public function _cn($attr)
     {
@@ -1054,7 +1054,7 @@ class DbObject extends DbService
      */
     public function addToIndex()
     {
-        
+
     }
 
     /**
@@ -1072,7 +1072,7 @@ class DbObject extends DbService
     // a list of english words that need not be searched against
     // and thus do not need to be stored in an index
 
-    
+
     /**
      * Consolidate all object fields into one big search friendly string.
      *

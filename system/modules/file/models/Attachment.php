@@ -339,6 +339,16 @@ class Attachment extends DbObject
     }
 
     /**
+     * Sends header and content of file to browser without intermediaries, via exit(0)=Terminates execution!
+     * @param string $saveAs Override Filename for browser 'save as'
+     * @return void
+     */
+    public function writeOut(?string $saveAs = null): void
+    {
+        FileService::getInstance($this->w)->writeOutAttachment($this, $saveAs);
+    }
+
+    /**
      * Moves the content from one adapter to another
      */
     public function moveToAdapter($adapter = "local", $delete_after_move = false)
