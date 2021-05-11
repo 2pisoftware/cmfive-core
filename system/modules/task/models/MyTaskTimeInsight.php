@@ -71,7 +71,9 @@ class MyTaskTimeInsight extends InsightBaseClass
                     $row['Task'] = $task->title;
                     $row['Taskgroup'] = $taskgroup->title;
                     // add up hours per taskgroup
-                    @$hoursPerTaskGroup[$taskgroup->title] += $log->getDuration();
+                    array_key_exists($taskgroup->title,$hoursPerTaskGroup) ? 
+                        $hoursPerTaskGroup[$taskgroup->title] += $log->getDuration() :
+                        $hoursPerTaskGroup[$taskgroup->title] = $log->getDuration();
                 }
                 else {
                     $row['Task'] = "ERROR: No Task found for ID (".$log->object_id.")";
@@ -79,8 +81,9 @@ class MyTaskTimeInsight extends InsightBaseClass
                 }
                 $detailData[] = $row;
                 // add up hours per day
-                @$hoursPerDay[formatDatetime($log->dt_start, "Y-m-d")] += $log->getDuration();
-                
+                array_key_exists(formatDatetime($log->dt_start, "Y-m-d"),$hoursPerDay) ?
+                    $hoursPerDay[formatDatetime($log->dt_start, "Y-m-d")] += $log->getDuration() :
+                    $hoursPerDay[formatDatetime($log->dt_start, "Y-m-d")] = $log->getDuration();   
             }
             // reformat the hours per day
             foreach ($hoursPerDay as $day => $duration) {
