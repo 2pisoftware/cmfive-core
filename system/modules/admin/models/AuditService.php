@@ -118,10 +118,10 @@ class AuditService extends DbService
             $where['action'] = $action;
         }
         if (!empty($dt_from)) {
-            $where["dt_from >= ?"] = formatDateTime($dt_from, "Y-m-d H:i:s");
+            $where["dt_from >= ?"] = formatDateTime($dt_from, "Y-m-d 00:00:00");
         }
         if (!empty($dt_to)) {
-            $where["$dt_to <= ?"] = formatDateTime($$dt_to, "Y-m-d H:i:s");
+            $where["dt_to <= ?"] = formatDateTime($dt_to, "Y-m-d 59:59:59");
         }
     }
 }
