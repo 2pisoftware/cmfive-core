@@ -1,7 +1,7 @@
 <?php
 echo Html::b("/insights/viewInsight/" . $insight_class_name . "?" . $request_string, "Change Insight Parameters");
-echo Html::b("/insights-export/csv/" . $insight_class_name . "?" . $request_string, "Export to CSV", false);
-echo Html::b("/insights-export/pdf/" . $insight_class_name . "?" . $request_string, "Export to PDF", false);
+echo Html::b("/insights-export/csv/" . $insight_class_name . "?" . $request_string, "Export to CSV", null);
+echo Html::box("/insights-export/pdf/" . $insight_class_name . "?" . $request_string, "Export to PDF", true, false, null, null, "isbox", null, null, null, 'cmfive-modal');
 
 //Check for errors
 try {
