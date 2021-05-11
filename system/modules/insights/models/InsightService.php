@@ -154,5 +154,4 @@ class InsightService extends DbService
             return $formatteddate;
         }
     }
-
-    
+}
