@@ -1,5 +1,5 @@
 <?php
-function pdf_ALL(Web $w)//GET
+function pdf_GET(Web $w)
 {
     //Find class name of insight
     $p = $w->pathMatch('insight_class');
@@ -18,13 +18,26 @@ function pdf_ALL(Web $w)//GET
     $template_list[] =  array("Template", "select", "template_id", null, $templates);
 
     //Send template to the post method (to be edited)
-    $postUrl = '/insights-members/editMembers/' . (!empty($member->id) ? $member->id : '');
+    $postUrl = '/insights/viewInsight' . $insight . '';
 
     $w->out(Html::multiColForm([(empty($p['insight_class']) ? "Use template") . " for $insight_name" => [$template_list]], $postUrl));
 
 }
-//POST
-//put data for insight in template
-//$run_data = $insight->run($w, $_REQUEST);
+
+function pdf_POST(Web $w)
+{
+    //Find class name of insight
+    $p = $w->pathMatch('insight_class');
+    //Find insight that matches class name
+    $insight = InsightService::getInstance($w)->getInsightInstance($p['insight_class']);
+    $insight_name = $insight->name;
+    //retrieve data for insight
+    $run_data = $insight->run($w, $_REQUEST);
+    //retieve slected template
+
+    //use template service render function to place $run_data and $insight_name in template
     
-//create service funtion for export to PDF to use here
+    //create service funtion for export to PDF to use here
+
+    //redirect/close pop-up box
+}
