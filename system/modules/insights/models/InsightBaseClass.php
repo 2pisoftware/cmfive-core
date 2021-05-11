@@ -1,8 +1,8 @@
 <?php
+
 /**@author Alice Hutley <alice@2pisoftware.com> */
 
 abstract class InsightBaseClass
-
 {
     public $name;
     public $module;
@@ -25,8 +25,8 @@ abstract class InsightBaseClass
      */
     abstract public function run(Web $w, array $params = []): array;
 
-    public function getMembers(Web $w){
+    public function getMembers(Web $w)
+    {
         return InsightService::getInstance($w)->getAllMembersForInsightClass(get_class($this));
     }
-
 }
