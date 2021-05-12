@@ -27,11 +27,11 @@ function pdf_GET(Web $w)
 function pdf_POST(Web $w)
 {
     //retrieve data for insight
-    $run_data = $insight->run($w, $_REQUEST);
+    $run_data = $p['insight_class']->run($w, $_REQUEST);
     //retieve slected template from GET function
 
     //use template service render function to place $run_data and $insight_name in template
-    TemplateService::getInstance($w)->render("template_id", $run_data);
+    TemplateService::getInstance($w)->render($template_list["template_id"], $run_data);
 
     //create service funtion for export to PDF to use here
 
