@@ -18,7 +18,7 @@ function pdf_GET(Web $w)
     $template_list[] =  array("Template", "select", "template_id", null, $templates);
 
     //Send template to the post method
-    $postUrl = '/insights/runInsight' . $p['insight_class'] . "template_id" . '';
+    $postUrl = '/insights-export/pdf' . $p['insight_class'] . "template_id" . '';
 
     $w->out(Html::multiColForm($template_list, $postUrl));
 
