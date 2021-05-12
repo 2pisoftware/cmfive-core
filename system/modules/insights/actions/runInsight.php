@@ -1,12 +1,13 @@
 <?php
+
 /**@author Alice Hutley <alice@2pisoftware.com> */
 
 function runInsight_GET(Web $w)
 {
 
 
-  /** @var InsightBaseClass $insight */
-  /** this class will be used on all other classes accessed by the runInsight action. It sets up the initial parameters for each insight */
+    /** @var InsightBaseClass $insight */
+    /** this class will be used on all other classes accessed by the runInsight action. It sets up the initial parameters for each insight */
 
   $p = $w->pathMatch('insight_class');
   $w->ctx('insight_class_name', $p['insight_class']);
