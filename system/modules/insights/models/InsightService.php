@@ -180,4 +180,87 @@ class InsightService extends DbService
         $this->w->sendHeader("Content-Disposition", "attachment; filename=" . $filename);
         $this->w->setLayout(null); 
     }
+    
+        // export a recordset as PDF
+        public function exportpdf($rows, $title, $report_template = null)
+        {
+            $filename = str_replace(" ", "_", $title) . "_" . date("Y.m.d-H.i") . ".pdf";
+    
+            // using TCPDF, but sourcing from Composer
+            //require_once('tcpdf/tcpdf.php');
+    
+            // instantiate and set parameters
+            $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+            $pdf->SetCreator(PDF_CREATOR);
+            $pdf->SetTitle($title);
+            $pdf->setHeaderFont(array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+            $pdf->setFooterFont(array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+            $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+            $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+            $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
+            $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+            $pdf->SetAutoPageBreak(true, PDF_MARGIN_BOTTOM);
+            $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+            //$pdf->setLanguageArray($l);
+            // no header, set font and create a page
+            $pdf->setPrintHeader(false);
+            $pdf->SetFont("helvetica", "B", 9);
+            $pdf->AddPage();
+    
+            // title of report
+            $hd = "<h1>" . $title . "</h1>";
+            $pdf->writeHTMLCell(0, 10, 60, 15, $hd, 0, 1, 0, true);
+            $created = date("d/m/Y g:i a");
+            $pdf->writeHTMLCell(0, 10, 60, 25, $created, 0, 1, 0, true);
+    
+            // display recordset
+    
+            if (!empty($rows)) {
+                if (empty($report_template)) {
+                    foreach ($rows as $row) {
+                        //throw away the first line which list the form parameters
+                        $crumbs = array_shift($row);
+                        $title = array_shift($row);
+                        $hds = array_shift($row);
+                        $hds = array_values($hds);
+    
+                        $results = "<h3>" . $title . "</h3>";
+                        $results .= "<table cellpadding=2 cellspacing=2 border=0 width=100%>\n";
+                        foreach ($row as $r) {
+                            $i = 0;
+                            foreach ($r as $field) {
+                                if (!stripos($hds[$i], "_link")) {
+                                    $results .= "<tr><td width=20%>" . $hds[$i] . "</td><td>" . $field . "</td></tr>\n";
+                                }
+                                $i++;
+                            }
+                            $results .= "<tr><td colspan=2><hr /></td></tr>\n";
+                        }
+                        $results .= "</table><p>";
+                        $pdf->writeHTML($results, true, false, true, false);
+                    }
+                } else {
+                    $templatedata = array();
+                    foreach ($rows as $row) {
+                        $crumbs = array_shift($row);
+                        $title = array_shift($row);
+                        $hds = array_shift($row);
+                        $hds = array_values($hds);
+    
+                        $templatedata[] = array("title" => $title, "headers" => $hds, "results" => $row);
+                    }
+    
+                    if (!empty($report_template) && !empty($templatedata)) {
+                        $results = $this->w->Template->render(
+                            $report_template->template_id,
+                            array("data" => $templatedata, "w" => $this->w, "POST" => $_POST));
+    
+                        $pdf->writeHTML($results, true, false, true, false);
+                    }
+                }
+            }
+    
+            // set for 'open/save as...' dialog
+            $pdf->Output($filename, 'D');
+        }
 }

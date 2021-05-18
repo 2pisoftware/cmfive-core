@@ -10,6 +10,9 @@ function runInsight_GET(Web $w)
     /** this class will be used on all other classes accessed by the runInsight action. It sets up the initial parameters for each insight */
 
     $p = $w->pathMatch('insight_class');
+    if (empty($p['insight_class'])) {
+        $w->error('no insight class found', '/insights');
+    }
     $w->ctx('insight_class_name', $p['insight_class']);
     $insight = InsightService::getInstance($w)->getInsightInstance($p['insight_class']);
     $w->ctx('insight', $insight);
