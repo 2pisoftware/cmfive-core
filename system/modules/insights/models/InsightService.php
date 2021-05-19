@@ -250,6 +250,7 @@ class InsightService extends DbService
                         $results .= "</table><p>";
                         $pdf->writeHTML($results, true, false, true, false);
                     }
+                }
                 } else {
                     $templatedata = array();
                     foreach ($rows as $row) {
@@ -274,6 +275,6 @@ class InsightService extends DbService
     
             // set for 'open/save as...' dialog
             $pdf->Output($filename, 'D');
-        }
+        
     }
 }
