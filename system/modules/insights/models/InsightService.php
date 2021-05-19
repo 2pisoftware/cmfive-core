@@ -185,7 +185,7 @@ class InsightService extends DbService
         public function exportpdf($rows, $title, $report_template = null)
         {
             $filename = str_replace(" ", "_", $title) . "_" . date("Y.m.d-H.i") . ".pdf";
-    
+            //var_dump($filename); die;
             // using TCPDF, but sourcing from Composer
             //require_once('tcpdf/tcpdf.php');
     
@@ -201,6 +201,7 @@ class InsightService extends DbService
             $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
             $pdf->SetAutoPageBreak(true, PDF_MARGIN_BOTTOM);
             $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+            //var_dump($title); die;
             //$pdf->setLanguageArray($l);
             // no header, set font and create a page
             $pdf->setPrintHeader(false);
@@ -212,7 +213,7 @@ class InsightService extends DbService
             $pdf->writeHTMLCell(0, 10, 60, 15, $hd, 0, 1, 0, true);
             $created = date("d/m/Y g:i a");
             $pdf->writeHTMLCell(0, 10, 60, 25, $created, 0, 1, 0, true);
-    
+            //var_dump($created); die;
             // display recordset
     
             if (!empty($rows)) {
@@ -223,6 +224,7 @@ class InsightService extends DbService
                         $title = array_shift($row);
                         $hds = array_shift($row);
                         $hds = array_values($hds);
+                        //var_dump($hds); die;
     
                         $results = "<h3>" . $title . "</h3>";
                         $results .= "<table cellpadding=2 cellspacing=2 border=0 width=100%>\n";
