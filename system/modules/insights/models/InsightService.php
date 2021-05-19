@@ -181,9 +181,9 @@ class InsightService extends DbService
         $this->w->setLayout(null); 
     }
     
-        // export a recordset as PDF
-        public function exportpdf($rows, $title, $report_template = null)
-        {
+    // export a recordset as PDF
+    public function exportpdf($run_data, $title, $report_template = null)
+    {
             $filename = str_replace(" ", "_", $title) . "_" . date("Y.m.d-H.i") . ".pdf";
             //var_dump($filename); die;
             // using TCPDF, but sourcing from Composer
@@ -215,22 +215,31 @@ class InsightService extends DbService
             $pdf->writeHTMLCell(0, 10, 60, 25, $created, 0, 1, 0, true);
             //var_dump($created); die;
             // display recordset
-    
-            if (!empty($rows)) {
-                if (empty($report_template)) {
-                    foreach ($rows as $row) {
-                        //throw away the first line which list the form parameters
-                        $crumbs = array_shift($row);
-                        $title = array_shift($row);
-                        $hds = array_shift($row);
-                        $hds = array_values($hds);
+ 
+            
+////////////            
+        if (!empty($run_data)) {
+            if (empty($report_template)) {
+                foreach ($run_data as $table) {
+                    if (!empty($table)) {
+                        $title = $table->title;
+                        $hds = [];
+                        foreach ($table->header as $hd){
+                            $hds[$hd] = $hd;
+                        }
+                    // foreach ($rows as $row) {
+                    //     //throw away the first line which list the form parameters
+                    //     $crumbs = array_shift($row);
+                    //     $title = array_shift($row);
+                    //     $hds = array_shift($row);
+                    //     $hds = array_values($hds);
                         //var_dump($hds); die;
     
                         $results = "<h3>" . $title . "</h3>";
                         $results .= "<table cellpadding=2 cellspacing=2 border=0 width=100%>\n";
-                        foreach ($row as $r) {
+                        foreach ($table as $row) {
                             $i = 0;
-                            foreach ($r as $field) {
+                            foreach ($row as $field) {
                                 if (!stripos($hds[$i], "_link")) {
                                     $results .= "<tr><td width=20%>" . $hds[$i] . "</td><td>" . $field . "</td></tr>\n";
                                 }
@@ -250,6 +259,7 @@ class InsightService extends DbService
                         $hds = array_values($hds);
     
                         $templatedata[] = array("title" => $title, "headers" => $hds, "results" => $row);
+                        //var_dump($title); die;
                     }
     
                     if (!empty($report_template) && !empty($templatedata)) {
@@ -265,4 +275,5 @@ class InsightService extends DbService
             // set for 'open/save as...' dialog
             $pdf->Output($filename, 'D');
         }
+    }
 }
