@@ -930,6 +930,7 @@ class Web
         try {
             $this->db = new DbPDO(Config::get("database"), Config::get("search.stopword_override"));
         } catch (Exception $ex) {
+            LogService::getInstance($this)->setLogger("CORE")->error("Error: Can't connect to database, $ex");
             echo "Error: Can't connect to database.";
             die();
         }
