@@ -238,7 +238,7 @@ class InsightService extends DbService
                         $results = "<h3>" . $title . "</h3>";
                         $results .= "<table cellpadding=2 cellspacing=2 border=0 width=100%>\n";
                         foreach ($table->data as $row) {
-                            var_dump($table->data); die;
+                            //var_dump($table->data); die;
                             $i = 0;
                             foreach ($row as $field) {
                                 if (!stripos($hds[$i], "_link")) {
