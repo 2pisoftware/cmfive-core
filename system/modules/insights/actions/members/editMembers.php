@@ -1,10 +1,12 @@
 <?php
+
 /**@author Alice Hutley <alice@2pisoftware.com> */
 
 // provide form by which to add members to an insight
-function editMembers_GET(Web &$w) {
+function editMembers_GET(Web &$w)
+{
 
-    //We now need to check if we are adding a new members or editing an existing member
+	//We now need to check if we are adding a new members or editing an existing member
 	//We will use pathmatch to retrieve a member id from the yrl
 	$p = $w->pathMatch('id');
 	//if the id exists we will retrieve the data for that member. Otherwise we will add a new member
@@ -29,7 +31,7 @@ function editMembers_GET(Web &$w) {
 			//if (!InsightService::getInstance($w)->IsMember($insight_class_name, $user->id)){
 			//var_dump(array_search($user->id, array_column($members, 'user_id')));
 			//die;
-			if (array_search($user->id, array_column($members, 'user_id')) ===FALSE){
+			if (array_search($user->id, array_column($members, 'user_id')) === FALSE) {
 				$users[] = $user;
 			}
 		}
@@ -45,14 +47,14 @@ function editMembers_GET(Web &$w) {
 	// else
 	// AuthService::getInstance($w)->getUser($member->user_id)->getContact()->getFullName();
 	$addMemberForm = array(
-        array("","hidden", "insight_class_name", $insight_class_name)
-		);
-        if (empty($p['id'])) {
-            $addMemberForm[] = array("Add Member","select","user_id",null,$users);
-        } else {
-            $addMemberForm[] = array("Add member", "text", "-user_id", AuthService::getInstance($w)->getUser($member->user_id)->getContact()->getFullName());
-        }
-    	$addMemberForm[] =  array("With Role","select","type",$member->type,$w->Insight->getInsightPermissions());
+		array("", "hidden", "insight_class_name", $insight_class_name)
+	);
+	if (empty($p['id'])) {
+		$addMemberForm[] = array("Add Member", "select", "user_id", null, $users);
+	} else {
+		$addMemberForm[] = array("Add member", "text", "-user_id", AuthService::getInstance($w)->getUser($member->user_id)->getContact()->getFullName());
+	}
+	$addMemberForm[] =  array("With Role", "select", "type", $member->type, $w->Insight->getInsightPermissions());
 
 	//if we are editing an existing meber we need to send the id to the post method
 	$postUrl = '/insights-members/editMembers/' . (!empty($member->id) ? $member->id : '');
@@ -61,7 +63,8 @@ function editMembers_GET(Web &$w) {
 	$w->out(Html::multiColForm([(empty($p['id']) ? "Add new member" : "Edit member") . " for $insight->name" => [$addMemberForm]], $postUrl));
 }
 
-function editMembers_POST(Web $w) {
+function editMembers_POST(Web $w)
+{
 
 	//As in the get function we need to check if we are editing an exisiting member
 	$p = $w->pathMatch('id');
@@ -70,15 +73,14 @@ function editMembers_POST(Web $w) {
 	//use the fill function to fill input field data into properties with matching names
 	if (empty($member->id)) {
 		$member->fill($_POST);
-	}
-	else {
+	} else {
 		$member->type = $w->request('type');
 	}
-	
-	
+
+
 	// function for saving to database
 	$member->insertOrUpdate();
-	
+
 	// the msg (message) function redirects with a message box
-	$w->msg('Member Permissions Saved', '/insights/manageMembers?insight_class='.$member->insight_class_name);
+	$w->msg('Member Permissions Saved', '/insights/manageMembers?insight_class=' . $member->insight_class_name);
 }
