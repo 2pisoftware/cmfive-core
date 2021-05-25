@@ -210,7 +210,7 @@ class InsightService extends DbService
             // display recordset
  
             
-////////////            
+        ////////////            
         if (!empty($run_data)) {
             if (empty($report_template)) {
                 echo 'Cannot export PDF! Please return to previous page and select template';
@@ -250,29 +250,37 @@ class InsightService extends DbService
                         $pdf->writeHTML($closetable, true, false, true, false, false);
                     }
                 }
-                } else {
-                    $templatedata = array();
-                    foreach ($rows as $row) {
-                        $crumbs = array_shift($row);
-                        $title = array_shift($row);
-                        $hds = array_shift($row);
-                        $hds = array_values($hds);
+            } else {
+                $templatedata = array();
+                foreach ($run_data as $table) {
+                    if (!empty($table)) {
+                        $title = $table->title;
+                        $hds = [];
+                        foreach ($table->header as $hd){
+                            $hds[$hd] = $hd;
+                        }
+                        $data = $table->$data;
+                    //var_dump($data); die;
+                        // $crumbs = array_shift($row);
+                        // $title = array_shift($row);
+                        // $hds = array_shift($row);
+                        // $hds = array_values($hds);
     
-                        $templatedata[] = array("title" => $title, "headers" => $hds, "results" => $row);
-                        //var_dump($title); die;
-                    }
+                    $templatedata[] = array("title" => $title, "headers" => $hd, "results" => $data);
+                    //var_dump($title); die;
     
-                    if (!empty($report_template) && !empty($templatedata)) {
-                        $results = $this->w->Template->render(
-                            $report_template->template_id,
-                            array("data" => $templatedata, "w" => $this->w, "POST" => $_POST));
+                        if (!empty($report_template) && !empty($templatedata)) {
+                            $results = $this->w->Template->render(
+                                $report_template->template_id,
+                                array("data" => $templatedata, "w" => $this->w, "POST" => $_POST));
     
-                        $pdf->writeHTML($results, true, false, true, false);
+                            $pdf->writeHTML($results, true, false, true, false);
+                        }
                     }
                 }
             }
-            
             // set for 'open/save as...' dialog
             $pdf->Output($filename, 'D');
         }
     }
+}

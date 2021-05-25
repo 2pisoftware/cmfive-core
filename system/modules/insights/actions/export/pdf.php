@@ -45,7 +45,7 @@ function pdf_POST(Web $w)
     TemplateService::getInstance($w)->render($_POST['template_id'], $data_array);
 
     //create service funtion for export to PDF to use here
-    InsightService::getInstance($w)->exportpdf($run_data, $insight->name, null);
+    InsightService::getInstance($w)->exportpdf($run_data, $insight->name, $_POST['template_id']);
 
     //redirect/close pop-up box
     //$w->redirect('/insights/runInsight/' . $_POST['insight_class']);
