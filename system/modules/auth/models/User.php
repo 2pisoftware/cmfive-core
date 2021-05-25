@@ -375,7 +375,7 @@ class User extends DbObject
                     return true;
                 }
             } else {
-                $this->w->Log->error("Role '" . $rn . "' does not exist!");
+                LogService::getInstance($this->w)->setLogger("AUTH")->error("Role '$rn' does not exist!");
             }
         }
 

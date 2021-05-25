@@ -357,7 +357,8 @@ class DbPDO extends PDO
             return null;
         }
 
-        return (!is_null($row[$element]) ? $row[$element] : null);
+        // Check that $row is an array DbPdo::fetchRow() will return false on failure.
+        return (is_array($row) ? $row[$element] : null);
     }
 
     /**
