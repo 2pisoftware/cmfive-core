@@ -220,12 +220,13 @@ class InsightService extends DbService
 ////////////            
         if (!empty($run_data)) {
             if (empty($report_template)) {
+                echo 'Cannot export PDF! Please return to previous page and select template';
                 foreach ($run_data as $table) {
                     if (!empty($table)) {
                         $title = $table->title;
                         $hds = [];
                         foreach ($table->header as $hd){
-                            $hds[$hd] = $hd;
+                            $hds[] = $hd;
                         }
                     // foreach ($rows as $row) {
                     //     //throw away the first line which list the form parameters
@@ -236,20 +237,24 @@ class InsightService extends DbService
                         //var_dump($hds); die;
     
                         $results = "<h3>" . $title . "</h3>";
-                        $results .= "<table cellpadding=2 cellspacing=2 border=0 width=100%>\n";
+                        $results .= "<table cellpadding='2' cellspacing='2' border='0' width='50px'>\n";
+                        $pdf->writeHTML($results, true, false, true, false, false);
                         foreach ($table->data as $row) {
-                            //var_dump($table->data); die;
+                            $rowresults = '';
+                            //var_dump($row); die;
                             $i = 0;
                             foreach ($row as $field) {
                                 if (!stripos($hds[$i], "_link")) {
-                                    $results .= "<tr><td width=20%>" . $hds[$i] . "</td><td>" . $field . "</td></tr>\n";
+                                    $rowresults .= "<tr><td width='20%'>" . $hds[$i] . "</td><td>" . $field . "</td></tr>\n";
                                 }
                                 $i++;
                             }
-                            $results .= "<tr><td colspan=2><hr /></td></tr>\n";
+                            $rowresults .= "<tr><td colspan=2><hr /></td></tr>\n";
+                            $pdf->writeHTML($rowresults, true, false, true, false, false);
                         }
-                        $results .= "</table><p>";
-                        $pdf->writeHTML($results, true, false, true, false);
+                        $closetable = "</table><p>";
+                        //var_dump($results); die;
+                        $pdf->writeHTML($closetable, true, false, true, false, false);
                     }
                 }
                 } else {
@@ -273,7 +278,7 @@ class InsightService extends DbService
                     }
                 }
             }
-    
+            
             // set for 'open/save as...' dialog
             $pdf->Output($filename, 'D');
         }

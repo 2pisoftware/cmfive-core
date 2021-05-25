@@ -32,6 +32,7 @@ function pdf_GET(Web $w)
 
 function pdf_POST(Web $w)
 {
+    error_reporting(0);
     //var_dump($_REQUEST); die;
     //retrieve data for insight
     $insight = InsightService::getInstance($w)->getInsightInstance($_POST['insight_class']);
