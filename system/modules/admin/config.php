@@ -60,6 +60,7 @@ Config::set('admin', [
             "queue_url" => "",
             "region" => "",
             "version" => "",
+            "validated_domains" => [],
         ],
     ],
 ]);
