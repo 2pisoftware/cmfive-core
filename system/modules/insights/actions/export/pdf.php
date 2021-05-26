@@ -16,7 +16,7 @@ function pdf_GET(Web $w)
         
         [
             array("", "hidden", "insight_class", $p['insight_class']),
-            array("Template", "select", "template_id", null, $templates)
+            array("Template (required)", "select", "template_id", null, $templates)
         ]
         
     ]

@@ -213,7 +213,6 @@ class InsightService extends DbService
         ////////////            
         if (!empty($run_data)) {
             if (empty($report_template)) {
-                echo 'Cannot export PDF! Please return to previous page and select template';
                 foreach ($run_data as $table) {
                     if (!empty($table)) {
                         $title = $table->title;
