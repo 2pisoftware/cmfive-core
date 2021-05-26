@@ -9,7 +9,7 @@ function pdf_GET(Web $w)
     $insight_class_name_pdf = $p['insight_class'] . '_pdf';
         
     //Drop-down for chossing template to use for export
-    $templates = TemplateService::getInstance($w)->findTemplates('insights',$insight_class_name_pdf,false,false);
+    $templates = TemplateService::getInstance($w)->findTemplates('insights', $insight_class_name_pdf, false, false);
     //var_dump($insight_name); die;
     //build form for drop-down
     $template_list = array( "template"=>[
@@ -27,7 +27,6 @@ function pdf_GET(Web $w)
     $postUrl = '/insights-export/pdf?' . http_build_query($_GET);
 
     $w->out(Html::multiColForm($template_list, $postUrl));
-
 }
 
 function pdf_POST(Web $w)
@@ -37,7 +36,7 @@ function pdf_POST(Web $w)
     //retrieve data for insight
     $insight = InsightService::getInstance($w)->getInsightInstance($_POST['insight_class']);
     $run_data = $insight->run($w, $_REQUEST);
-    $data_array = json_decode(json_encode($run_data),true);
+    $data_array = json_decode(json_encode($run_data), true);
     //var_dump($data_array); die;
     //retieve slected template from GET function
 

@@ -97,7 +97,7 @@ class InsightService extends DbService
     // static list of group permissions
     public function getInsightPermissions()
     {
-        return array("OWNER", "MEMBER");
+        return ["OWNER", "MEMBER"];
     }
 
     //check if user is a member of an insight
@@ -156,7 +156,7 @@ class InsightService extends DbService
             if (!empty($table)) {
                 $title = $table->title;
                 $hds = [];
-                foreach ($table->header as $hd){
+                foreach ($table->header as $hd) {
                     $hds[$hd] = $hd;
                 }
                 $csv = new ParseCsv\Csv();
@@ -165,13 +165,12 @@ class InsightService extends DbService
                 
                 $this->w->out($csv->unparse($table->data, $hds, null, null, null));
                 // can't use this way without commenting out header section, which composer won't like
-
             }
         }
 
         $this->w->sendHeader("Content-type", "application/csv");
         $this->w->sendHeader("Content-Disposition", "attachment; filename=" . $filename);
-        $this->w->setLayout(null); 
+        $this->w->setLayout(null);
     }
     
     // export a recordset as PDF
@@ -186,8 +185,8 @@ class InsightService extends DbService
             $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
             $pdf->SetCreator(PDF_CREATOR);
             $pdf->SetTitle($title);
-            $pdf->setHeaderFont(array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-            $pdf->setFooterFont(array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+            $pdf->setHeaderFont([PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN]);
+            $pdf->setFooterFont([PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA]);
             $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
             $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
             $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
@@ -210,14 +209,14 @@ class InsightService extends DbService
             // display recordset
  
             
-        ////////////            
+        ////////////
         if (!empty($run_data)) {
             if (empty($report_template)) {
                 foreach ($run_data as $table) {
                     if (!empty($table)) {
                         $title = $table->title;
                         $hds = [];
-                        foreach ($table->header as $hd){
+                        foreach ($table->header as $hd) {
                             $hds[] = $hd;
                         }
                     // foreach ($rows as $row) {
@@ -230,7 +229,7 @@ class InsightService extends DbService
     
                         $results = "<h3>" . $title . "</h3>";
                         $results .= "<table cellpadding='2' cellspacing='2' border='0' width='50px'>\n";
-                        $pdf->writeHTML($results, true, false, true, false, false);
+                        $pdf->writeHTML($results, true, false, true, false, '');
                         foreach ($table->data as $row) {
                             $rowresults = '';
                             //var_dump($row); die;
@@ -242,44 +241,48 @@ class InsightService extends DbService
                                 $i++;
                             }
                             $rowresults .= "<tr><td colspan=2><hr /></td></tr>\n";
-                            $pdf->writeHTML($rowresults, true, false, true, false, false);
+                            $pdf->writeHTML($rowresults, true, false, true, false, '');
                         }
                         $closetable = "</table><p>";
                         //var_dump($results); die;
-                        $pdf->writeHTML($closetable, true, false, true, false, false);
+                        $pdf->writeHTML($closetable, true, false, true, false, '');
                     }
                 }
             } else {
-                $templatedata = array();
+                $templatedata = [];
                 foreach ($run_data as $table) {
                     if (!empty($table)) {
                         $title = $table->title;
                         $hds = [];
-                        foreach ($table->header as $hd){
+                        foreach ($table->header as $hd) {
                             $hds[$hd] = $hd;
                         }
-                        $data = $table->$data;
+                        $data = $table->data;
                     //var_dump($data); die;
                         // $crumbs = array_shift($row);
                         // $title = array_shift($row);
                         // $hds = array_shift($row);
                         // $hds = array_values($hds);
     
-                    $templatedata[] = array("title" => $title, "headers" => $hd, "results" => $data);
+                        $templatedata[] = ["title" => $title, "headers" => $hd, "results" => $data];
                     //var_dump($title); die;
     
                         if (!empty($report_template) && !empty($templatedata)) {
                             $results = $this->w->Template->render(
                                 $report_template->template_id,
-                                array("data" => $templatedata, "w" => $this->w, "POST" => $_POST));
+                                ["data" => $templatedata, "w" => $this->w, "POST" => $_POST]
+                            );
     
-                            $pdf->writeHTML($results, true, false, true, false);
+                            $pdf->writeHTML($results, true, false, true, false, '');
                         }
                     }
                 }
             }
             // set for 'open/save as...' dialog
             $pdf->Output($filename, 'D');
+
+            // $pdf->lastPage();
+            // return $pdf;
         }
     }
 }
