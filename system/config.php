@@ -82,3 +82,11 @@ Config::set("system.ldap", [
     'auth_search'   => '(cn={$username})', // {username} will be replaced in auth
     'search_filter_attribute' => [], // Here you can specify only certain attributes to get from ldap such as "ou" or "cn" etc
 ]);
+
+Config::set('system.aws', [
+    // Only used when system.environment is set to 'development'.
+    'credentials' => [
+        'key' => '',
+        'secret' => '',
+    ],
+]);
