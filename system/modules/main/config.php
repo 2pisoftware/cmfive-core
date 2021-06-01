@@ -69,5 +69,5 @@ Config::set('main', [
             '/system/templates/vue-components/loading-indicator.vue.js',
             '/system/templates/vue-components/loading-indicator.vue.css'
         ],
-    ]
+    ],
 ]);
