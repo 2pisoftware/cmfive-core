@@ -1,12 +1,14 @@
 <?php
+
 /**@author Alice Hutley <alice@2pisoftware.com> */
 
-function manageMembers_ALL(Web $w) {
-    
+function manageMembers_ALL(Web $w)
+{
+
 
     $insight_class = $w->request('insight_class');
     //var_dump($insight_class);
-      //die;
+    //die;
 
     //define member id for edit and delete buttons
     $p = $w->pathMatch('id');
@@ -23,7 +25,7 @@ function manageMembers_ALL(Web $w) {
 
     // build the table array adding the headers and the row data
     $table = [];
-    $tableHeaders = ['Memeber','Is Email Recipient','Role','Actions'];
+    $tableHeaders = ['Memeber', 'Is Email Recipient', 'Role', 'Actions'];
     if (!empty($memberList)) {
         foreach ($memberList as $member) {
             $row = [];
@@ -33,16 +35,13 @@ function manageMembers_ALL(Web $w) {
             $row[] = $member->type;
             // the actions column is used to hold buttons that link to actions per item. Note the item id is added to the href on these buttons.
             $actions = [];
-            $actions[] = Html::box("/insights-members/editMembers/$member->id?" . $member->insight_class,'Edit', true);
+            $actions[] = Html::box("/insights-members/editMembers/$member->id?" . $member->insight_class, 'Edit', true);
             $actions[] = Html::b("/insights-members/deleteMembers/$member->id?" . $member->insight_class, 'Delete', 'Are you sure you want to delete this member?');
-            $row[] = implode('',$actions);
+            $row[] = implode('', $actions);
             $table[] = $row;
         }
     }
 
     //send the table to the template using ctx
-    $w->ctx('membersTable', Html::table($table,'membersTable','tablesorter',$tableHeaders));
-
+    $w->ctx('membersTable', Html::table($table, 'membersTable', 'tablesorter', $tableHeaders));
 }
-
-

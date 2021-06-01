@@ -1,6 +1,6 @@
 <?php
 echo Html::b("/insights/viewInsight/" . $insight_class_name . "?" . $request_string, "Change Insight Parameters");
-//echo Html::box("/insights-export/csv/" . $insight_class_name . "?" . $request_string, "Export to CSV", true);
+echo Html::b("/insights-export/csv/" . $insight_class_name . "?" . $request_string, "Export to CSV", false);
 
 //Check for errors
 try {
@@ -15,5 +15,3 @@ try {
       echo "Error caught: " . $e->getMessage();
       LogService::getInstance($w)->setLogger("INSIGHTS")->error("Error occurred. Cannot run insight $p" . $e->getMessage());
     }
-    
-

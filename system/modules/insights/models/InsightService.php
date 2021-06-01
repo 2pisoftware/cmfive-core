@@ -8,7 +8,6 @@ defined('SYSTEM_MODULE_DIRECTORY') || define('SYSTEM_MODULE_DIRECTORY', 'system'
 defined('MODELS_DIRECTORY') || define('MODELS_DIRECTORY', 'models');
 
 class InsightService extends DbService
-
 {
     // returns all insight instances
     public function getAllInsights($insights)
@@ -37,27 +36,20 @@ class InsightService extends DbService
         $system_module_path = SYSTEM_MODULE_DIRECTORY . DS . $module . DS . MODELS_DIRECTORY;
         $insight_paths = [$module_path, $system_module_path];
         // Check if module contains file with Insight in the name
-        //if (empty($availableInsights[$module])) {
-        //$availableInsights[$module] = [];
-        //}
-
         foreach ($insight_paths as $insight_path) {
             if (is_dir(ROOT_PATH . DS . $insight_path)) {
                 foreach (scandir(ROOT_PATH . DS . $insight_path) as $file) {
                     if (!is_dir($file) && $file[0] !== '.') {
                         $classname = explode('.', $file);
-                        //var_dump($classname);
                         //check if file is an insight
                         //if insight add to arry. If not insight skip
                         if (strpos($classname[0], 'Insight') !== false && $classname[0] !== "InsightBaseClass" && $classname[0] !== "InsightService") {
-                            //echo "Found insights class; " . $classname[0] . " <br>";
                             //Create instance of class
                             $insightspath = $insight_path . DS . $file;
                             if (file_exists(ROOT_PATH . DS . $insightspath)) {
                                 include_once ROOT_PATH . DS . $insightspath;
                                 if (class_exists($classname[0]) && is_subclass_of($classname[0], 'InsightBaseClass')) {
                                     $insight = new $classname[0]($this->w);
-                                    //is_subclass_of ( mixed $object , string $class_name [, bool $allow_string = TRUE ] ) : bool
                                     $availableInsights[] = $insight;
                                 }
                             }
@@ -156,55 +148,29 @@ class InsightService extends DbService
     }
 
     // export a recordset as CSV
-    public function exportcsv($rows, $title)
+    public function exportcsv($run_data, $title)
     {
         // set filename
         $filename = str_replace(" ", "_", $title) . "_" . date("Y.m.d-H.i") . ".csv";
-
-        // if we have records, comma delimit the fields/columns and carriage return delimit the rows
-        if (!empty($rows)) {
-            foreach ($rows as $row) {
-                //throw away the first line which list the form parameters
-                //$crumbs = array_shift($row);
-                $title = array_shift($row);
-                //$hds = array_shift($row);
-                //$hvals = array_values($hds);
-                $hvals = array_shift($row);
-
-                // find key of any links
-                foreach ($hvals as $h) {
-                    if (stripos($h, "_link")) {
-                        list($fld, $lnk) = preg_split("/_/", $h);
-                        $ukey[] = array_search($h, $hvals);
-                        unset($hds[$h]);
-                    }
+        foreach ($run_data as $table) {
+            if (!empty($table)) {
+                $title = $table->title;
+                $hds = [];
+                foreach ($table->header as $hd){
+                    $hds[$hd] = $hd;
                 }
-
-                // iterate row to build URL. if required
-                if (!empty($ukey)) {
-                    foreach ($row as $r) {
-                        foreach ($ukey as $n => $u) {
-                            // dump the URL related fields for display
-                            unset($r[$u]);
-                        }
-                        $arr[] = $r;
-                    }
-                    $row = $arr;
-                    unset($arr);
-                }
-
                 $csv = new ParseCsv\Csv();
                 $csv->output_filename = $filename;
                 // ignore lib wrapper csv->output, to keep control over header re-sends!
-
-                $this->w->out($csv->unparse($row, $hds, null, null, null));
+                
+                $this->w->out($csv->unparse($table->data, $hds, null, null, null));
                 // can't use this way without commenting out header section, which composer won't like
-                // $this->w->out($csv->output($filename, $row, $hds));
-                unset($ukey);
+
             }
-            $this->w->sendHeader("Content-type", "application/csv");
-            $this->w->sendHeader("Content-Disposition", "attachment; filename=" . $filename);
-            $this->w->setLayout(null);
         }
+
+        $this->w->sendHeader("Content-type", "application/csv");
+        $this->w->sendHeader("Content-Disposition", "attachment; filename=" . $filename);
+        $this->w->setLayout(null); 
     }
 }

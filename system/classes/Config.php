@@ -1,5 +1,7 @@
 <?php
 
+use Aws\S3\S3Client;
+
 /**
  * This class is responsible for storing and accessing
  * the configurations for each class with case sensitive keys.
@@ -18,11 +20,8 @@
  * Note: When calling Config::get, if a key is not found NULL is returned so it
  * is important to check that condition when fetching config keys.
  *
- *
- *
  * @author Adam Buckley
  */
-
 class Config
 {
     // Storage array
@@ -34,6 +33,13 @@ class Config
     private static $shadow_register = [];
     private static $_shadow_config_cache = [];
     private static $_shadow_keys_cache = [];
+
+    /**
+     * The client used to interact with S3.
+     *
+     * @var Aws\S3\S3Client
+     */
+    private static $s3_client;
 
     /**
      * This function will set a key in an array
@@ -281,11 +287,6 @@ class Config
      */
     private static function merge(array $source, array &$target): void
     {
-        // highly nested arrays may cause a stack overflow
-        if (!is_array($source)) {
-            return;
-        }
-
         foreach ($source as $key => $value) {
             if (array_key_exists($key, $target)) {
                 if (is_array($value)) {
@@ -297,6 +298,45 @@ class Config
                 $target[$key] = $source[$key];
             }
         }
+    }
+
+    /**
+     * Will get and object from an S3 bucket and merge it with the existing config. The object
+     * is expected to be valid JSON. If the JSON decode fails an exception will be thrown.
+     *
+     * @param string $bucket
+     * @param string $key
+     * @return void
+     * @throws Exception
+     */
+    public static function setFromS3Object(string $bucket, string $key): void
+    {
+        if (self::$s3_client === null) {
+            $args = [
+                'region' => 'ap-southeast-2',
+                'version' => '2006-03-01',
+            ];
+
+            // Only load key and secret credentials when developing locally. Otherwise assume
+            // IAM role has been correctly set.
+            if (Config::get("system.environment", ENVIRONMENT_PRODUCTION) === ENVIRONMENT_DEVELOPMENT) {
+                $args["credentials"] = Config::get('system.aws.credentials');
+            }
+
+            self::$s3_client = new S3Client($args);
+        }
+
+        $result = self::$s3_client->getObject([
+            'Bucket' => $bucket,
+            'Key' => $key,
+        ]);
+
+        $data = json_decode($result->get('Body'), true);
+        if (empty($data)) {
+            throw new Exception("Failed to decode config data from $bucket/$key");
+        }
+
+        Config::merge($data, self::$register);
     }
 }
 
