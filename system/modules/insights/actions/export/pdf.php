@@ -26,7 +26,7 @@ function pdf_GET(Web $w)
     //Send template to the post method
     $postUrl = '/insights-export/pdf?' . http_build_query($_GET);
 
-    $w->out(Html::multiColForm($template_list, $postUrl));
+    $w->out(Html::multiColForm($template_list, $postUrl, 'POST', 'Save', null, null, null, '_self', true, null));//look up to see what to change last null to for validation, make selcting a template mandatory. Maybe contains PHP?
 }
 
 function pdf_POST(Web $w)
