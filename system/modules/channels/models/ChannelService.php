@@ -138,9 +138,12 @@ class ChannelService extends DbService
 
     /**
      * Get new messages using a sql query
+     *
+     * @deprecated v2.12.1 - Will be removed in v5.0.0.
+     * @see ChannelProcessor->getnewmessages()
+     *
      * @param  int $channel_id   [description]
      * @param  int $processor_id [description]
-     * @deprecated does not consider whether the message is processed. Used channelprocessor->getnewmessages() instead
      */
     public function getNewMessages($channel_id, $processor_id)
     {

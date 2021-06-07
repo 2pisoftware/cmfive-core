@@ -56,11 +56,12 @@ Config::set('email.transports', [
     'swiftmailer' => 'SwiftMailerTransport',
     'sendmail' => 'SwiftMailerTransport',
     'aws' => 'AwsTransport',
+    'mock' => 'MockTransport',
 ]);
 
 Config::set('system.gc_maxlifetime', 21600);
 
-Config::set('system.environment', 'development');
+Config::set('system.environment', ENVIRONMENT_PRODUCTION);
 
 // For SendGrid API integration (also used for Mandrill integration)
 // Config::append('email.api.credentials.key', '<your key>');
@@ -80,4 +81,12 @@ Config::set("system.ldap", [
     'auth_ou'       => 'OU=Users',
     'auth_search'   => '(cn={$username})', // {username} will be replaced in auth
     'search_filter_attribute' => [], // Here you can specify only certain attributes to get from ldap such as "ou" or "cn" etc
+]);
+
+Config::set('system.aws', [
+    // Only used when system.environment is set to 'development'.
+    'credentials' => [
+        'key' => '',
+        'secret' => '',
+    ],
 ]);

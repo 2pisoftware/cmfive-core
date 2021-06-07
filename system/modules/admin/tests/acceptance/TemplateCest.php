@@ -1,4 +1,4 @@
-<?php
+ <?php
 
 class TemplateCest
 {
@@ -18,9 +18,9 @@ class TemplateCest
                 . "	             <td colspan='2' style='border:none;'><img width='400' src='' style='width: 400px;' />	"
                 . "	            </td>	"
                 . "	             <td colspan='2' style='border:none; text-align:right;'>	"
-                . "	            Fake Company<br/>	"
-                . "	            123 Fake St, Fakeville, NSW 1234<br/>	"
-                . "	            fake@example.com<br/>	"
+                . "	            Test Company<br/>	"
+                . "	            123 Test St, Test Town, NSW 1234<br/>	"
+                . "	            test@example.com<br/>	"
                 . "	            ACN 123456789<br/>	"
                 . "	            ABN 12345678901	"
                 . "	             </td>	"
@@ -31,6 +31,6 @@ class TemplateCest
         $I->see('Template Saved');
         $I->demoTemplate($I, 'Test Template');
         $I->wait(2);
-        $I->see("2pi Software");
+        $I->see("Test Company");
     }
 }

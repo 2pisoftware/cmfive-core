@@ -135,7 +135,7 @@ function task_task_subscriber_notification(Web $w, $params)
 {
     $task = TaskService::getInstance($w)->getTask($params["task_id"]);
     $user = AuthService::getInstance($w)->getUser($params["user_id"]);
-    
+
     TaskService::getInstance($w)->sendSubscribeNotificationForTask($task, $user);
 }
 
@@ -335,8 +335,8 @@ function task_core_dbobject_after_update_TaskGroup(Web $w, $object)
             if ($task->isUserSubscribed($user->id) && !$task->canView($user)) {
                 //If so, remove subscription
                 TaskService::getInstance($w)->getSubscriberForUserAndTask($user->id, $task->id)->delete();
-            }    
-        } 
+            }
+        }
     }
 
 

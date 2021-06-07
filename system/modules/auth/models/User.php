@@ -35,7 +35,7 @@ class User extends DbObject
     /**
      * Checks if the passed password matches the stored password when hashed.
      *
-     * @deprecated v3.0.0
+     * @deprecated v3.0.0 - Will be removed in v5.0.0.
      *
      * @param string $password
      *
@@ -132,21 +132,14 @@ class User extends DbObject
 
     /**
      * @param integer $group_id
-     * @return true if this user is in the group with the id
+     * @return array<GroupUser> if this user is in the group with the id
      */
     public function isInGroups($group_id = null)
     {
-        $groupUsers = isset($group_id) ? $this->getObjects("GroupUser", array(
+        return isset($group_id) ? $this->getObjects("GroupUser", [
             'user_id' => $this->id,
             'group_id' => $group_id,
-        )) : $this->getObjects("GroupUser", array(
-            'user_id' => $this->id,
-        ));
-
-        if ($groupUsers) {
-            return $groupUsers;
-        }
-        return null;
+        ]) : $this->getObjects("GroupUser", ['user_id' => $this->id]);
     }
 
     /**
@@ -238,7 +231,7 @@ class User extends DbObject
             return AuthService::getInstance($this->w)->getAllRoles();
         }
         if (!$this->_roles || $force) {
-            $this->_roles = array();
+            $this->_roles = [];
 
             $groupUsers = $this->isInGroups();
 
@@ -253,7 +246,7 @@ class User extends DbObject
                     }
                 }
             }
-            $rows = $this->getObjects("UserRole", array("user_id" => $this->id));
+            $rows = $this->getObjects("UserRole", ["user_id" => $this->id]);
 
             if ($rows) {
                 foreach ($rows as $row) {
@@ -271,9 +264,7 @@ class User extends DbObject
      */
     public function updateLastLogin()
     {
-        $data = array(
-            "dt_lastlogin" => $this->time2Dt(time()),
-        );
+        $data = ["dt_lastlogin" => $this->time2Dt(time())];
         $this->_db->update("user", $data)->where("id", $this->id)->execute();
     }
 

@@ -1,8 +1,7 @@
 <?php
+
 class TemplateService extends DbService
 {
-    private $twig_lib = "Twig-1.13.2";
-
     /**
      *
      * @param in $id
@@ -104,16 +103,14 @@ class TemplateService extends DbService
         if (is_string($template)) {
             if (file_exists($template)) {
                 $dir = dirname($template);
-                $loader = new Twig_Loader_Filesystem($dir);
+                $loader = new Twig\Loader\FilesystemLoader($dir);
                 $template = str_replace($dir . DIRECTORY_SEPARATOR, "", $template);
-                $twig = new Twig_Environment($loader, array('debug' => true));
-                $twig->addExtension(new Twig_Extension_Debug());
+                $twig = new Twig\Environment($loader, ['debug' => true]);
+                $twig->addExtension(new Twig\Extension\DebugExtension());
                 return $twig->render($template, $data);
             } else {
-                // Latest version of twig deprecates the use of a string loader
-                // https://stackoverflow.com/questions/31081910/what-to-use-instead-of-twig-loader-string
-                $loader = new Twig_Loader_Array([]);
-                $twig = new Twig_Environment($loader, array('debug' => true));
+                $loader = new Twig\Loader\ArrayLoader();
+                $twig = new Twig\Environment($loader, ['debug' => true]);
                 $twig->setCache(false);
                 $template = $twig->createTemplate($template);
                 return $template->render($data);

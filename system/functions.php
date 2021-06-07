@@ -143,7 +143,7 @@ function getAllLocaleValues($base_locale)
  */
 function humanReadableBytes($input, $rounding = 2, $bytesValue = true)
 {
-    $ext = array("B", "KB", "MB", "GB", "TB");
+    $ext = ["B", "KB", "MB", "GB", "TB"];
     $barrier = 1024;
     if (!$bytesValue) {
         // If bytes value is false then we what to use 1000 (bits?)
@@ -164,15 +164,16 @@ function humanReadableBytes($input, $rounding = 2, $bytesValue = true)
 }
 
 /**
- * DEPRECATED from v3.0.0
- * Returns the extension for given content type
+ * Returns the extension for given content type.
+ *
+ * @deprecated v3.0.0 - Will be removed in v5.0.0.
  *
  * @param string contentType
  * @return string extension
  */
 function getFileExtension($contentType)
 {
-    $map = array(
+    $map = [
         'application/pdf' => '.pdf',
         'application/zip' => '.zip',
         'image/gif' => '.gif',
@@ -183,7 +184,7 @@ function getFileExtension($contentType)
         'text/javascript' => '.js',
         'text/plain' => '.txt',
         'text/xml' => '.xml',
-    );
+    ];
 
     if (isset($map[$contentType])) {
         return $map[$contentType];
@@ -326,10 +327,11 @@ function rotateImage($img, $rotation)
 }
 
 /**
- * DEPRECATED from v3.0.0 - use LookupService::lookupForSelect instead
- *
  * Returns a lookup by type from the database and formats
- * it ready for a Html::select field
+ * it ready for a Html::select field.
+ *
+ * @deprecated v3.0.0 - Will be removed in v5.0.0.
+ * @see LookupService::lookupForSelect()
  *
  * @param Web $w
  * @param string type
@@ -348,23 +350,24 @@ function lookupForSelect($w, $type)
 }
 
 /**
- * DEPRECATED from v3.0.0 - define this whenever needed in your module
+ * Returns a list of states of Australia structured for a Html::select field.
  *
- * Returns a list of states of Australia structured for a Html::select field
+ * @deprecated v3.0.0 - Will be removed in v5.0.0, define this whenever needed in your module.
  *
  * @return Array states
  */
 function getStateSelectArray()
 {
-    return array(
-        array("ACT", "ACT"),
-        array("NSW", "NSW"),
-        array("NT", "NT"),
-        array("QLD", "QLD"),
-        array("SA", "SA"),
-        array("TAS", "TAS"),
-        array("VIC", "VIC"),
-        array("WA", "WA"));
+    return [
+        ["ACT", "ACT"],
+        ["NSW", "NSW"],
+        ["NT", "NT"],
+        ["QLD", "QLD"],
+        ["SA", "SA"],
+        ["TAS", "TAS"],
+        ["VIC", "VIC"],
+        ["WA", "WA"]
+    ];
 }
 
 /**
@@ -462,8 +465,8 @@ function getTimeSelect($start = 8, $end = 19)
             }
         }
         $t = sprintf("%02d", $t);
-        $select[] = array($t . ":00" . $m, $i . ":00");
-        $select[] = array($t . ":30" . $m, $i . ":30");
+        $select[] = [$t . ":00" . $m, $i . ":00"];
+        $select[] = [$t . ":30" . $m, $i . ":30"];
     }
     return $select;
 }
@@ -521,119 +524,33 @@ function formatNumber($number)
 }
 
 /**
+ * Formats a float value into a valid currency string based on the $locale and $currency parameters.
+ *
+ * @param float $value
+ * @param string $locale
+ * @param string $currency
+ * @return string
+ */
+function formatCurrency(float $value, string $locale = "en_AU", string $currency = "AUD"): string
+{
+    return (new NumberFormatter($locale, NumberFormatter::CURRENCY))->formatCurrency($value, $currency);
+}
+
+/**
  * A replacement function for the money_format PHP function that is only
  * available on most Linux based systems with the strfmon C function.
  *
  * For those that do not (Windows), then the function is imitated with code.
+ *
+ * @deprecated v4.0.6 - Will be removed in v5.0.0.
+ * @see formatCurrency()
  *
  * @param string format
  * @param float|mixed number
  */
 function formatMoney($format, $number)
 {
-    if (function_exists('money_format')) {
-        setlocale(LC_MONETARY, 'en_AU');
-        return money_format($format, doubleval($number));
-    }
-
-    $regex = '/%((?:[\^!\-]|\+|\(|\=.)*)([0-9]+)?' .
-        '(?:#([0-9]+))?(?:\.([0-9]+))?([in%])/';
-    if (setlocale(LC_MONETARY, 0) == 'C') {
-        setlocale(LC_MONETARY, '');
-    }
-
-    $locale = localeconv();
-    if (empty($locale['mon_decimal_point'])) {
-        $locale['mon_decimal_point'] = ".";
-    }
-
-    if (empty($locale['mon_thousands_sep'])) {
-        $locale['mon_thousands_sep'] = ",";
-    }
-
-    preg_match_all($regex, $format, $matches, PREG_SET_ORDER);
-
-    foreach ($matches ?? [] as $fmatch) {
-        $value = floatval($number);
-        $flags = [
-            'fillchar' => preg_match('/\=(.)/', $fmatch[1], $fmatch) ? $fmatch[1] : ' ',
-            'nogroup' => preg_match('/\^/', $fmatch[1]) > 0,
-            'usesignal' => preg_match('/\+|\(/', $fmatch[1], $fmatch) ? $fmatch[0] : '+',
-            'nosimbol' => preg_match('/\!/', $fmatch[1]) > 0,
-            'isleft' => preg_match('/\-/', $fmatch[1]) > 0,
-        ];
-
-        $width = trim($fmatch[2]) ? intval($fmatch[2]) : 0;
-        $left = trim($fmatch[3]) ? intval($fmatch[3]) : 0;
-        $right = trim($fmatch[4]) ? intval($fmatch[4]) : $locale['int_frac_digits'];
-        $conversion = $fmatch[5];
-
-        $positive = true;
-        if ($value < 0) {
-            $positive = false;
-            $value *= -1;
-        }
-
-        $letter = $positive ? 'p' : 'n';
-
-        $prefix = $suffix = $cprefix = $csuffix = $signal = '';
-
-        $signal = $positive ? $locale['positive_sign'] : $locale['negative_sign'];
-        switch (true) {
-            case $locale["{$letter}_sign_posn"] == 1 && $flags['usesignal'] == '+':
-                $prefix = $signal;
-                break;
-            case $locale["{$letter}_sign_posn"] == 2 && $flags['usesignal'] == '+':
-                $suffix = $signal;
-                break;
-            case $locale["{$letter}_sign_posn"] == 3 && $flags['usesignal'] == '+':
-                $cprefix = $signal;
-                break;
-            case $locale["{$letter}_sign_posn"] == 4 && $flags['usesignal'] == '+':
-                $csuffix = $signal;
-                break;
-            case $flags['usesignal'] == '(':
-            case $locale["{$letter}_sign_posn"] == 0:
-                $prefix = '(';
-                $suffix = ')';
-                break;
-        }
-
-        if (!$flags['nosimbol']) {
-            $currency = $cprefix .
-                ($conversion == 'i' ? $locale['int_curr_symbol'] : $locale['currency_symbol']) .
-                $csuffix;
-        } else {
-            $currency = '';
-        }
-
-        $space = $locale["{$letter}_sep_by_space"] ? ' ' : '';
-        $value = number_format($value, $right, $locale['mon_decimal_point'], $flags['nogroup'] ? '' : $locale['mon_thousands_sep']);
-        $value = @explode($locale['mon_decimal_point'], $value);
-
-        $n = strlen($prefix) + strlen($currency) + strlen($value[0]);
-        if ($left > 0 && $left > $n) {
-            $value[0] = str_repeat($flags['fillchar'], $left - $n) . $value[0];
-        }
-
-        if (!empty($value)) {
-            $value = implode($locale['mon_decimal_point'], $value);
-        }
-
-        if ($locale["{$letter}_cs_precedes"]) {
-            $value = $prefix . $currency . $space . $value . $suffix;
-        } else {
-            $value = $prefix . $value . $space . $currency . $suffix;
-        }
-
-        if ($width > 0) {
-            $value = str_pad($value, $width, $flags['fillchar'], $flags['isleft'] ?
-                STR_PAD_RIGHT : STR_PAD_LEFT);
-        }
-
-        $format = str_replace($fmatch[0], $value, $format);
-    }
-    return trim($format);
+    return formatCurrency($number);
 }
 
 /**
@@ -670,7 +587,7 @@ function recursiveArraySearch($haystack, $needle, $index = null)
  * To use this function, use the list function, calling this function.
  * i.e. list($from_date, $to_date) = returncorrectdates($w,$dm_var,$from_date,$to_date);
  *
- * @deprecated v3.0.0
+ * @deprecated v3.0.0 - Will be removed in v5.0.0.
  *
  * @param Web $w
  * @param string $dm_var
@@ -696,7 +613,7 @@ function returncorrectdates(Web $w, $dm_var, $from_date, $to_date)
             $to_date = $to_date + ((60 * 60 * 24 * cal_days_in_month(CAL_GREGORIAN, $month_number, $accepted_year)) - $minus_var);
         }
 
-        return array($from_date, $to_date);
+        return [$from_date, $to_date];
     }
 
     if ($dm_var == 'd') {
@@ -709,7 +626,7 @@ function returncorrectdates(Web $w, $dm_var, $from_date, $to_date)
             $to_date = $to_date + 86399;
         }
 
-        return array($from_date, $to_date);
+        return [$from_date, $to_date];
     }
 }
 
@@ -837,9 +754,10 @@ function in_modified_multiarray($value, $array, $levels = 3)
 }
 
 /**
- * Returns AES encrypted string - will now use new SSLEncrypt function
+ * Returns AES encrypted string.
  *
- * @deprecated v3.0.0
+ * @deprecated v3.0.0 - Will be removed in v5.0.0.
+ * @see SSLEncrypt()
  *
  * @param mixed text to encrypt
  * @param mixed password (unused)
@@ -847,15 +765,14 @@ function in_modified_multiarray($value, $array, $levels = 3)
  */
 function AESencrypt($text, $password)
 {
-    $this->w->Log->info('AES and override password are deprecated, attempting compatibility through SSL.');
-
     return SSLencrypt($text);
 }
 
 /**
- * Decrypts AES string - will now use new SSLDecrypt function
+ * Decrypts AES string.
  *
- * @deprecated v3.0.0
+ * @deprecated v3.0.0 - Will be removed in v5.0.0.
+ * @see SSLDecrypt()
  *
  * @param mixed text to decrypt
  * @param mixed password (unused)
@@ -863,21 +780,23 @@ function AESencrypt($text, $password)
  */
 function AESdecrypt($text, $password)
 {
-    $this->w->Log->info('AES and override password are deprecated, attempting compatibility through SSL.');
-
     return SSLdecrypt($text);
 }
 
-function SystemSSLencrypt($text)
+/**
+ * Encrypts text with encryption key in config
+ *
+ * @param mixed $text
+ * @return string encrypted value
+ * @throws Exception if key or IV missing
+ */
+function SystemSSLencrypt($text): string
 {
     $ssl_method = "AES-256-CBC";
     $encryption_key = Config::get('system.encryption.key', null);
     $encryption_iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length($ssl_method));
     if (empty($encryption_key) || empty($encryption_iv)) {
-        // raise exception
-        $err = 'Cannot encrypt without system key and IV.';
-        $this->w->Log->error($err);
-        throw new Exception($err);
+        throw new Exception('Cannot encrypt without system key and IV.');
     } else {
         $ssl = openssl_encrypt($text, $ssl_method, $encryption_key, 0, $encryption_iv);
         $encryption_iv = bin2hex($encryption_iv);
@@ -885,17 +804,21 @@ function SystemSSLencrypt($text)
     }
 }
 
+/**
+ * Decrypts text with encryption key in config
+ *
+ * @param mixed $text
+ * @return string|false
+ * @throws Exception if key or IV missing
+ */
 function SystemSSLdecrypt($text)
 {
     $ssl_method = "AES-256-CBC";
     $encryption_key = Config::get('system.encryption.key', null);
-    $text = explode("::", $text); //var_dump($text);
+    $text = explode("::", $text);
     $encryption_iv = array_pop($text);
     if (empty($encryption_key) || empty($encryption_iv)) {
-        // raise exception
-        $err = 'Cannot decrypt without system key and IV.';
-        $this->w->Log->error($err);
-        throw new Exception($err);
+        throw new Exception('Cannot decrypt without system key and IV.');
     } else {
         $text = array_pop($text);
         return openssl_decrypt($text, $ssl_method, $encryption_key, 0, hex2bin($encryption_iv));
@@ -917,9 +840,7 @@ function SSLEncrypt($text)
     $encryption_iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length($ssl_method));
 
     if (empty($encryption_key) || empty($encryption_iv)) {
-        $err = 'Cannot encrypt without system key and IV.';
-        $this->w->Log->error($err);
-        throw new Exception($err);
+        throw new Exception('Cannot encrypt without system key and IV.');
     } else {
         $ssl = openssl_encrypt($text, $ssl_method, $encryption_key, 0, $encryption_iv);
         $encryption_iv = bin2hex($encryption_iv);
@@ -942,9 +863,7 @@ function SSLDecrypt($text)
     $encryption_iv = array_pop($text);
 
     if (empty($encryption_key) || empty($encryption_iv)) {
-        $err = 'Cannot decrypt without system key and IV.';
-        $this->w->Log->error($err);
-        throw new Exception($err);
+        throw new Exception('Cannot decrypt without system key and IV.');
     } else {
         $text = array_pop($text);
         return openssl_decrypt($text, $ssl_method, $encryption_key, 0, hex2bin($encryption_iv));
@@ -977,17 +896,17 @@ function getBetween($content, $start, $end)
  * @param array $array
  * @return bool
  */
-function is_associative_array($array)
+function is_associative_array($array): bool
 {
     return (bool) count(array_filter(array_keys($array), 'is_string'));
 }
 
 /**
- * Similar to above, except it checks that ALL keys are strings
+ * Similar to @see{is_associative_array}, except it checks that ALL keys are strings
  * @param array $array
  * @return bool
  */
-function is_complete_associative_array($array)
+function is_complete_associative_array($array): bool
 {
     return (bool) (count(array_filter(array_keys($array), 'is_string')) == count($array));
 }
@@ -1007,7 +926,7 @@ function is_complete_associative_array($array)
  * @param bool $include
  * @return bool
  */
-function in_numeric_range($subject, $min, $max, $include = true)
+function in_numeric_range($subject, $min, $max, $include = true): bool
 {
     // Sanity checks
     if (!is_numeric($subject) || !is_numeric($min) || !is_numeric($max)) {
@@ -1084,7 +1003,7 @@ function cast($destination, $sourceObject)
  * @param string $string
  * @return string
  */
-function delete_all_between($beginning, $end, $string, $remove_every_instance = false)
+function delete_all_between($beginning, $end, $string, $remove_every_instance = false): string
 {
     $beginningPos = strpos($string, $beginning);
     $endPos = strpos($string, $end);
@@ -1116,7 +1035,7 @@ function delete_all_between($beginning, $end, $string, $remove_every_instance = 
  * @param string optional format of returned values
  * @return array<string> month list
  */
-function get_list_of_months_between_dates($from, $to, $format = 'M Y')
+function get_list_of_months_between_dates($from, $to, $format = 'M Y'): array
 {
     if (is_numeric($from)) {
         $from = date('d-m-Y', $from);

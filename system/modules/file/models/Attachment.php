@@ -223,8 +223,8 @@ class Attachment extends DbObject
      */
     public function getFilePath(): string
     {
-        if (file_exists(ROOT_PATH . "/" . Attachment::CACHE_PATH . "/". Attachment::TEMP_PATH . "/" . FileService::getCacheRuntimePath() . "/" . $this->id . "/" . $this->dt_created . "/" . $this->filename)) {
-            return ROOT_PATH . "/" . Attachment::CACHE_PATH . "/". Attachment::TEMP_PATH . "/" . FileService::getCacheRuntimePath() . "/" . $this->id . "/" . $this->dt_created;
+        if (file_exists(ROOT_PATH . "/" . Attachment::CACHE_PATH . "/" . Attachment::TEMP_PATH . "/" . FileService::getCacheRuntimePath() . "/" . $this->id . "/" . $this->dt_created . "/" . $this->filename)) {
+            return ROOT_PATH . "/" . Attachment::CACHE_PATH . "/" . Attachment::TEMP_PATH . "/" . FileService::getCacheRuntimePath() . "/" . $this->id . "/" . $this->dt_created;
         }
 
         $path = dirname($this->fullpath);
@@ -336,6 +336,16 @@ class Attachment extends DbObject
     {
         $this->w->header("Content-Type: " . $this->getMimetype());
         $this->w->out($this->getContent());
+    }
+
+    /**
+     * Sends header and content of file to browser without intermediaries, via exit(0)=Terminates execution!
+     * @param string $saveAs Override Filename for browser 'save as'
+     * @return void
+     */
+    public function writeOut(?string $saveAs = null): void
+    {
+        FileService::getInstance($this->w)->writeOutAttachment($this, $saveAs);
     }
 
     /**

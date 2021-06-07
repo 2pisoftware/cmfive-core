@@ -1,7 +1,6 @@
 <?php
 class AuditService extends DbService
 {
-
     /**
      *
      * Adds an entry to the audit table
@@ -58,7 +57,7 @@ class AuditService extends DbService
     public function getLoggedUsers()
     {
         $ids = $this->_db->sql("select distinct creator_id from audit")->fetch_all();
-        $users = array();
+        $users = [];
         foreach ($ids as $id) {
             $users[] = $this->getObject("User", $id["creator_id"]);
         }
@@ -102,5 +101,29 @@ class AuditService extends DbService
             }
         }
         return $users;
+    }
+
+    
+    public function getAudits($dt_from = null, $dt_to = null, $user_id = null, $module = null, $action = null)
+    {
+        //build where array
+        $where = [];
+        if (!empty($user_id)) {
+            $where['creator_id'] = $user_id;
+        }
+        if (!empty($module)) {
+            $where['module'] = $module;
+        }
+        if (!empty($action)) {
+            $where['action'] = $action;
+        }
+        if (!empty($dt_from)) {
+            $where["dt_created >= ?"] = formatDateTime($dt_from, "Y-m-d 00:00:00");
+        }
+        if (!empty($dt_to)) {
+            $where["dt_created <= ?"] = formatDateTime($dt_to, "Y-m-d 59:59:59");
+        }
+        $results = $this->getObjects('Audit', $where);
+        return $results;
     }
 }

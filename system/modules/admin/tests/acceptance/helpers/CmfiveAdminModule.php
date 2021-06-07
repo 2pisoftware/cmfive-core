@@ -14,6 +14,7 @@ class CmfiveAdminModule extends \Codeception\Module
      * @param string $lastName
      * @param string $email
      * @param array[string] $permissions
+     *
      * @return void
      */
     public function createUser($I, $username, $password, $firstName, $lastName, $email, array $permissions = [])
@@ -22,6 +23,7 @@ class CmfiveAdminModule extends \Codeception\Module
         $I->click('Add New User');
         $I->waitForElement('#login');
         $I->waitForElement("//button[contains(@class,'savebutton')]");
+        $I->wait(1);
         $I->fillForm(
             [
                 'login' => $username,
@@ -50,6 +52,7 @@ class CmfiveAdminModule extends \Codeception\Module
         $I->clickCmfiveNavbar($I, 'Admin', 'List Users');
         $rowIndex = $I->findTableRowMatching(1, $user);
         $I->click('Edit', 'tbody tr:nth-child(' . $rowIndex . ')');
+        $I->wait(1);
         $I->fillForm($data);
         $I->click('Update');
         $I->waitForText("Account details updated");
@@ -100,6 +103,7 @@ class CmfiveAdminModule extends \Codeception\Module
         $I->clickCmfiveNavbar($I, 'Admin', 'List Groups');
         $I->click('New Group');
         $I->waitForElement('#title');
+        $I->wait(1);
         $I->fillField('#title', $name);
         $I->click('Save');
         $I->waitForText('New group added!');
