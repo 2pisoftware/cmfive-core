@@ -12,15 +12,16 @@ function pdf_GET(Web $w)
     $templates = TemplateService::getInstance($w)->findTemplates('insights', $insight_class_name_pdf, false, false);
     //var_dump($insight_name); die;
     //build form for drop-down
-    $template_list = array( "template"=>[
+    $template_list = [ "template"=>[
         
         [
-            array("", "hidden", "insight_class", $p['insight_class']),
-            array("Template (required)", "select", "template_id", null, $templates)
+            (new \Html\Form\Select($w))->setLabel('Template (required)')->setName('template_id')->setOptions($templates)->setRequired(true),
+            ["", "hidden", "insight_class", $p['insight_class']],
+            ["Template (required)", "select", "template_id", null, $templates,]
         ]
         
     ]
-    );
+        ];
    
 
     //Send template to the post method
