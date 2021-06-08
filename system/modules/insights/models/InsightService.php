@@ -193,12 +193,14 @@ class InsightService extends DbService
             $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
             $pdf->SetAutoPageBreak(true, PDF_MARGIN_BOTTOM);
             $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+            //$pdf->
             //var_dump($title); die;
             //$pdf->setLanguageArray($l);
             // no header, set font and create a page
             $pdf->setPrintHeader(false);
             $pdf->SetFont("helvetica", "B", 9);
             $pdf->AddPage();
+        
     
             // title of report
             $hd = "<h1>" . $title . "</h1>";
@@ -229,23 +231,26 @@ class InsightService extends DbService
     
                         $results = "<h3>" . $title . "</h3>";
                         $results .= "<table cellpadding='2' cellspacing='2' border='0' width='50px'>\n";
-                        $pdf->writeHTML($results, true, false, true, false, '');
+                        //$pdf->writeHTML($results, true, false, true, false, '');
                         foreach ($table->data as $row) {
                             $rowresults = '';
                             //var_dump($row); die;
                             $i = 0;
                             foreach ($row as $field) {
                                 if (!stripos($hds[$i], "_link")) {
-                                    $rowresults .= "<tr><td width='20%'>" . $hds[$i] . "</td><td>" . $field . "</td></tr>\n";
+                                    $results .= "<tr><td width='5px'>" . $hds[$i] . "</td><td>" . $field . "</td></tr>\n";
                                 }
                                 $i++;
                             }
-                            $rowresults .= "<tr><td colspan=2><hr /></td></tr>\n";
-                            $pdf->writeHTML($rowresults, true, false, true, false, '');
+                            $results .= "<tr><td colspan=2></td></tr>\n";
+                            //echo $results; die;
+                            //$pdf->writeHTML($results, true, false, true, false, '');
                         }
-                        $closetable = "</table><p>";
+                        $results .= "</table><p>";
+
                         //var_dump($results); die;
-                        $pdf->writeHTML($closetable, true, false, true, false, '');
+                        echo $results; die;
+                        $pdf->writeHTML($results, true, false, true, false, '');
                     }
                 }
             } else {
@@ -257,7 +262,10 @@ class InsightService extends DbService
                         foreach ($table->header as $hd) {
                             $hds[$hd] = $hd;
                         }
-                        $data = $table->data;
+                        $data = [];
+                        foreach ($table->data as $d) {
+                            $data[$d] = $d;
+                        }
                     //var_dump($data); die;
                         // $crumbs = array_shift($row);
                         // $title = array_shift($row);
