@@ -6,6 +6,7 @@
  */
 function useradd_GET(Web &$w) {
 	$p = $w->pathMatch("box");
+    $w->setLayout("layout-2021");
 	$w->ctx('availableLocales', $w->getAvailableLanguages());
 
 	if (!$p['box']) {

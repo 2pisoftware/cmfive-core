@@ -2,6 +2,7 @@
 
 function users_GET(Web &$w)
 {
+    $w->setLayout("layout-2021"); 
     $w->Admin->navigation($w, "Users");
     $users = $w->Admin->getObjects("User", ["is_deleted" => 0, "is_group" => 0]);
 
@@ -54,7 +55,7 @@ function users_GET(Web &$w)
         }
     }
 
-    $internal_header = ["Login", "First Name", "Last Name", ["Admin", true], ["Active", true], ["Is MFA Enabled", true], ["Created", true], ["Last Login", true], "Operations"];
+    $internal_header = ["Login", "First Name", "Last Name", ["Admin", true], ["Active", true], ["MFA", true], ["Created", true], ["Last Login", true], "Operations"];
     $external_header = ["Login", "First Name", "Last Name", ["Admin", true], ["Active", true], ["Created", true], ["Last Login", true], "Operations"];
 
     $w->ctx("internal_table", Html::table($internal_data, null, "tablesorter", $internal_header));

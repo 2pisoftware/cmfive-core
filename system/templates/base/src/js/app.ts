@@ -5,6 +5,11 @@
 // Object.assign(window, { Vue, $ });
 
 import { Modal } from 'bootstrap'; // 'bootstrap/dist/js/bootstrap.bundle.min.js';
+// import CmfiveNav from './components/Nav';
+// import { AccordionAdaptation } from './adaptations/accordion';
+import { DropdownAdaptation } from './adaptations/dropdown';
+import { TabAdaptation } from './adaptations/tabs';
+import { TableAdaptation } from './adaptations/table';
 
 function openModal(url: string) {
     const modal = new Modal(document.getElementById('cmfive-modal')) //, options
@@ -42,10 +47,6 @@ function openModal(url: string) {
     })
 }
 
-// import CmfiveNav from './components/Nav';
-import { AccordionAdaptation } from './adaptations/accordion';
-import { DropdownAdaptation } from './adaptations/dropdown';
-import { TabAdaptation } from './adaptations/tabs';
 
 class Cmfive {
     static THEME_KEY = 'theme';
@@ -69,9 +70,10 @@ class Cmfive {
     }
 
     static ready() {
-        AccordionAdaptation.bindAccordionInteractions();
+        // AccordionAdaptation.bindAccordionInteractions();
         DropdownAdaptation.bindDropdownHover();
         TabAdaptation.bindTabInteractions();
+        TableAdaptation.bindTableInteractions();
 
         let theme = localStorage.getItem(Cmfive.THEME_KEY)
 

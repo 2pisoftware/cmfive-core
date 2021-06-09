@@ -44,3 +44,27 @@
         }
     }
 }
+
+@for $i from 1 through 6 {
+    @media only screen {
+        .small-block-grid-#{$i} {
+            width: (100% / 6) * $i;
+        }
+    }
+
+    @media only screen {
+        @include media-breakpoint-up(md) {
+            .medium-block-grid-#{$i} {
+                width: (100% / 6) * $i !important;
+            }
+        }
+    }
+
+    @media only screen {
+        @include media-breakpoint-up(lg) {
+            .large-block-grid-#{$i} {
+                width: (100% / 6) * $i !important;
+            }
+        }
+    }
+}
