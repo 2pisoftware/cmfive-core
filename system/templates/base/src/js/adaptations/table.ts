@@ -10,6 +10,7 @@ export class TableAdaptation {
             ascDirection = false;
             header.classList.remove(TableAdaptation.sortedClass);
         } else {
+            table.querySelectorAll('thead th')?.forEach(th => th.classList.remove(TableAdaptation.sortedClass))
             header.classList.add(TableAdaptation.sortedClass);
         }
 

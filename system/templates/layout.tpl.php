@@ -47,7 +47,6 @@
     CmfiveScriptComponentRegister::registerComponent('AxiosJS', new CmfiveScriptComponent('/system/templates/js/axios.min.js'));
     CmfiveScriptComponentRegister::registerComponent('ToastJS', new CmfiveScriptComponent("/system/templates/js/Toast.js"));
     CmfiveStyleComponentRegister::registerComponent('ToastSCSS', new CmfiveStyleComponent("/system/templates/css/Toast.scss", ['/system/templates/scss/']));
-
     $w->loadVueComponents();
 
     $w->outputStyles();
@@ -417,6 +416,10 @@
                 object.html(data + "<a class=\"close-reveal-modal\">&#215;</a>");
                 bindModalLinks();
             });
+        }
+
+        function openModal(url) {
+            changeModalWindow($('#cmfive-modal .modal-content'), url);
         }
     </script>
 </body>

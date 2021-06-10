@@ -3122,7 +3122,7 @@ var TableAdaptation = function () {
   TableAdaptation.sortedClass = 'sorted-asc';
 
   TableAdaptation.headerClickEvent = function (header, table, index) {
-    var _a;
+    var _a, _b;
 
     var ascDirection = true;
 
@@ -3130,6 +3130,9 @@ var TableAdaptation = function () {
       ascDirection = false;
       header.classList.remove(TableAdaptation.sortedClass);
     } else {
+      (_a = table.querySelectorAll('thead th')) === null || _a === void 0 ? void 0 : _a.forEach(function (th) {
+        return th.classList.remove(TableAdaptation.sortedClass);
+      });
       header.classList.add(TableAdaptation.sortedClass);
     }
 
@@ -3146,7 +3149,7 @@ var TableAdaptation = function () {
 
       return (_a = a.querySelector('td:nth-child(' + (index + 1) + ')')) === null || _a === void 0 ? void 0 : _a.innerText.localeCompare((_b = b.querySelector('td:nth-child(' + (index + 1) + ')')) === null || _b === void 0 ? void 0 : _b.innerText);
     });
-    (_a = tbody.querySelectorAll('tr')) === null || _a === void 0 ? void 0 : _a.forEach(function (row) {
+    (_b = tbody.querySelectorAll('tr')) === null || _b === void 0 ? void 0 : _b.forEach(function (row) {
       return tbody === null || tbody === void 0 ? void 0 : tbody.removeChild(row);
     });
     tr === null || tr === void 0 ? void 0 : tr.forEach(function (row) {

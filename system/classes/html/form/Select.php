@@ -115,7 +115,7 @@ class Select extends \Html\Form\FormElement
         $buffer = '<select ';
 
         foreach (get_object_vars($this) as $field => $value) {
-            if (!is_null($value) && !in_array($field, static::$_excludeFromOutput)) {
+            if (!is_null($value) && !in_array($field, static::$_excludeFromOutput) && $field[0] !== "_") {
                 $buffer .= $field . '=\'' . $this->{$field} . '\' ';
             }
         }
