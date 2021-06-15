@@ -15,9 +15,9 @@ function pdf_GET(Web $w)
     $template_list = [ "template"=>[
         
         [
-            (new \Html\Form\Select($w))->setLabel('Template (required)')->setName('template_id')->setOptions($templates)->setRequired(true),
+            (new \Html\Form\Select($w))->setLabel('Template')->setName('template_id')->setOptions($templates),//->setRequired(false),
             ["", "hidden", "insight_class", $p['insight_class']],
-            ["Template (required)", "select", "template_id", null, $templates,]
+            //["Template (required)", "select", "template_id", null, $templates,]
         ]
         
     ]
@@ -32,7 +32,7 @@ function pdf_GET(Web $w)
 
 function pdf_POST(Web $w)
 {
-    error_reporting(0);
+    //error_reporting(0);
     //var_dump($_REQUEST); die;
     //retrieve data for insight
     $insight = InsightService::getInstance($w)->getInsightInstance($_POST['insight_class']);
@@ -42,11 +42,13 @@ function pdf_POST(Web $w)
     //retieve slected template from GET function
 
     //use template service render function to place $run_data and $insight_name in template
-    TemplateService::getInstance($w)->render($_POST['template_id'], $data_array);
+    //TemplateService::getInstance($w)->render($_POST['template_id'], $data_array);
 
     //create service funtion for export to PDF to use here
     InsightService::getInstance($w)->exportpdf($run_data, $insight->name, $_POST['template_id']);
 
+    echo 'test';
+
     //redirect/close pop-up box
-    //$w->redirect('/insights/runInsight/' . $_POST['insight_class']);
+    $w->redirect('/insights/runInsight/' . $_POST['insight_class'] . '?' . http_build_query($_REQUEST));
 }
