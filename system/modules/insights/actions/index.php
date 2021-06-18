@@ -6,13 +6,12 @@ function index_ALL(Web $w)
   $w->ctx("title", "Insights List");
 
   //get userId for logged in user
-  $user_id =   AuthService::getInstance($w)->user()->id;
+  $user_id = AuthService::getInstance($w)->user()->id;
   //var_dump($user_id);
   //die;
 
   // access service functions using the Web $w object and the module name
   $modules = InsightService::getInstance($w)->getAllInsights('all');
-  //var_dump($modules);
 
   //Display a list of all the insights this user can see
   // build the table array adding the headers and the row data
