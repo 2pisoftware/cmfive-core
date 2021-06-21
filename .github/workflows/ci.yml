@@ -48,40 +48,44 @@ jobs:
           key: docker-registry-${{ hashFiles('.build/environment/test/config/docker/Dockerfile.template') }}
 
       # Pre-requsites Prepare Runtime
-      - name: Provision Python Virtual Environment
-        if: steps.pip.outputs.cache-hit != 'true'
+      # - name: Provision Python Virtual Environment
+      #   if: steps.pip.outputs.cache-hit != 'true'
+      #   run: |
+      #     cd .build/setup;
+      #     python3 -m venv venv;
+      #     source venv/bin/activate;
+      #     pip install -r requirements.txt;
+
+      # - name: Prepare cmfive Test Environment
+      #   run: |
+      #     cd .build/setup;
+      #     source venv/bin/activate;
+      #     python install.py prime-environment test
+
+      # - name: Prepare Docker Registry
+      #   run: docker run -d -p 5000:5000 --restart=always --name registry -v /tmp/docker-registry:/var/lib/registry registry:2 && npx wait-on tcp:5000
+
+      # - name: Build and Push Image to Docker Registry
+      #   if: steps.cmfive-docker-image.outputs.cache-hit != 'true'
+      #   run: |
+      #     docker build ./.build/environment/test/ -t cmfive --cache-from=localhost:5000/cmfive;
+      #     docker tag cmfive localhost:5000/cmfive && docker push localhost:5000/cmfive || true;
+
+      # - name: Pull Image from Docker Registry
+      #   run: docker pull localhost:5000/cmfive || true
+
+      # # Pre-requsites Prepare Cmfive Environment
+      # - name: Setup cmfive Test Environment
+      #   run: |
+      #     echo ${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}};
+      #     cd .build/setup;
+      #     source venv/bin/activate;
+      #     python install.py --verbose debug provision-test --cmfive_core_ref ${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}};
+      #     docker start selenium314;
+
+      - name: Run docker compose up
         run: |
-          cd .build/setup;
-          python3 -m venv venv;
-          source venv/bin/activate;
-          pip install -r requirements.txt;
-
-      - name: Prepare cmfive Test Environment
-        run: |
-          cd .build/setup;
-          source venv/bin/activate;
-          python install.py prime-environment test
-
-      - name: Prepare Docker Registry
-        run: docker run -d -p 5000:5000 --restart=always --name registry -v /tmp/docker-registry:/var/lib/registry registry:2 && npx wait-on tcp:5000
-
-      - name: Build and Push Image to Docker Registry
-        if: steps.cmfive-docker-image.outputs.cache-hit != 'true'
-        run: |
-          docker build ./.build/environment/test/ -t cmfive --cache-from=localhost:5000/cmfive;
-          docker tag cmfive localhost:5000/cmfive && docker push localhost:5000/cmfive || true;
-
-      - name: Pull Image from Docker Registry
-        run: docker pull localhost:5000/cmfive || true
-
-      # Pre-requsites Prepare Cmfive Environment
-      - name: Setup cmfive Test Environment
-        run: |
-          echo ${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}};
-          cd .build/setup;
-          source venv/bin/activate;
-          python install.py --verbose debug provision-test --cmfive_core_ref ${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}};
-          docker start selenium314;
+          docker compose up -d
 
       - name: Inject configs into cmfive Test Environment
         run: |
