@@ -85,7 +85,7 @@ jobs:
 
       - name: Run docker compose up
         run: |
-          docker compose up -d
+          docker-compose up -d
 
       - name: Inject configs into cmfive Test Environment
         run: |
