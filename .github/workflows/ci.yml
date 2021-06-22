@@ -89,15 +89,18 @@ jobs:
 
       - name: Inject configs into cmfive Test Environment
         run: |
-          ls -la
+          cp config.php.example config.php
+          sed -i -e 's/<username>/root/g' config.php
+          sed -i -e 's/<password>/root/g' config.php
+          sed -i -e 's/<database>/cmfive/g' config.php
           echo "Config::set('report.database', ['hostname' => 'mysql-5.7', 'username' => 'cmfive_test', 'password' => 'cmfive_test', 'database' => 'cmfive_test', 'driver' => 'mysql']);" >> config.php;
           echo "Config::set('core_template.foundation.reveal.animation_speed', 0);" >> config.php;
           echo "Config::set('core_template.foundation.reveal.animation', 'none');" >> config.php;
 
       - name: Prepare cmfive Test Database
         run: |
-          cat config.php
-          docker exec nginx-php7.4 bash -c "php cmfive.php testDB setup; exit \$?";
+          docker exec mysql-5.7 bash -c "sudo mysql -u root -proot -e 'CREATE DATABASE cmfive'; exit \$?"
+          docker exec nginx-php7.4 bash -c "php cmfive.php testDB setup; exit \$?"
 
       # Run Unit Tests
       - name: "Run unit tests"
