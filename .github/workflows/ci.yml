@@ -93,6 +93,7 @@ jobs:
           sed -i -e 's/<username>/root/g' config.php
           sed -i -e 's/<password>/root/g' config.php
           sed -i -e 's/<database>/cmfive/g' config.php
+          sed -i -e 's/"testrunner"  => "",/"testrunner"  => "ENABLED",/g' config.php
           echo "Config::set('report.database', ['hostname' => 'mysql-5.7', 'username' => 'cmfive_test', 'password' => 'cmfive_test', 'database' => 'cmfive_test', 'driver' => 'mysql']);" >> config.php;
           echo "Config::set('core_template.foundation.reveal.animation_speed', 0);" >> config.php;
           echo "Config::set('core_template.foundation.reveal.animation', 'none');" >> config.php;
@@ -100,7 +101,6 @@ jobs:
       - name: Prepare cmfive Test Database
         run: |
           sleep 10s
-          cat config.php
           docker exec nginx-php7.4 bash -c "mysql -u root -h mysql-5.7 -proot -e 'CREATE DATABASE cmfive'; exit \$?"
           docker exec nginx-php7.4 bash -c "php cmfive.php testDB setup; exit \$?"
 
