@@ -12,7 +12,7 @@ jobs:
   # Lint
   php-codesniffer:
     name: PHP CS
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     steps:
     - name: Get phpcs
       run: wget https://raw.githubusercontent.com/2pisoftware/cmfive-boilerplate/master/phpcs.xml
@@ -24,7 +24,7 @@ jobs:
   run_test:
     # Checkout Boilerplate
     name: Unit/Acceptance tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     needs: [ php-codesniffer ]
     steps:
       - uses: actions/checkout@v2
