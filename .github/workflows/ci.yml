@@ -99,6 +99,7 @@ jobs:
 
       - name: Prepare cmfive Test Database
         run: |
+          docker ps
           docker exec nginx-php7.4 bash -c "mysql -u root -h mysql-5.7 -proot -e 'CREATE DATABASE cmfive'; exit \$?"
           docker exec nginx-php7.4 bash -c "php cmfive.php testDB setup; exit \$?"
 
