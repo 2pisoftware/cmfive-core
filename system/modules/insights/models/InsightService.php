@@ -202,18 +202,19 @@ class InsightService extends DbService
             $pdf->AddPage();
         
     
-            // title of report
-            $hd = "<h1>" . $title . "</h1>";
-            $pdf->writeHTMLCell(0, 10, 60, 15, $hd, 0, 1, 0, true);
-            $created = date("d/m/Y g:i a");
-            $pdf->writeHTMLCell(0, 10, 60, 25, $created, 0, 1, 0, true);
-            //var_dump($created); die;
-            // display recordset
+           
  
             
         ////////////
         if (!empty($run_data)) {
             if (empty($report_template_id)) {
+                // title of report
+                $hd = "<h1>" . $title . "</h1>";
+                $pdf->writeHTMLCell(0, 10, 60, 15, $hd, 0, 1, 0, true);
+                $created = date("d/m/Y g:i a");
+                $pdf->writeHTMLCell(0, 10, 60, 25, $created, 0, 1, 0, true);
+            //var_dump($created); die;
+            // display recordset
                 foreach ($run_data as $table) {
                     if (!empty($table)) {
                         $title = $table->title;
@@ -255,12 +256,14 @@ class InsightService extends DbService
                 }
             } else {
                 $templatedata = [];
+                $templatedata ["insightTitle"] = $title;
+                $templatedata ["tables"] = [];
                 foreach ($run_data as $table) {
                     if (!empty($table)) {
-                        $title = $table->title . " " . date("d/m/Y g:i a");
+                        $title = $table->title;
                         $hds = [];
                         foreach ($table->header as $hd) {
-                            $hds[$hd] = $hd;
+                            $hds[] = $hd;
                         }
                         // $data = [];
                         // foreach ($table->data as $row) {
@@ -273,7 +276,7 @@ class InsightService extends DbService
                         // $hds = array_shift($row);
                         // $hds = array_values($hds);
     
-                        $templatedata[] = ["title" => $title, "headers" => $hd, "results" => $table->data];
+                        $templatedata["tables"][] = ["title" => $title, "headers" => $hd, "results" => $table->data];
                     //var_dump($title); die;
     
                         if (!empty($report_template_id) && !empty($templatedata)) {
