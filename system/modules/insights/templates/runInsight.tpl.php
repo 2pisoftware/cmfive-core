@@ -7,17 +7,18 @@ echo Html::box("/insights-export/pdf/" . $insight_class_name . "?" . $request_st
 //Check for errors
 try {
     //retrieve correct insight to delete member from and redirect to
-      foreach ($run_data as $data) {
+    foreach ($run_data as $data) {
         echo '<h4>' . $data->title . '</h4>';
         echo Html::table($data->data, null, "tablesorter", $data->header);
-      }
     }
-    //catch any fatal errors
-    catch (Error $e) {
+}
+//catch any fatal errors
+catch (Error $e) {
       echo "Error caught: " . $e->getMessage();
       LogService::getInstance($w)->setLogger("INSIGHTS")->error("Error occurred. Cannot run insight $p" . $e->getMessage());
-    }
+}
 ?>
+
 <!--div GET item on to become visible id($pdf)-->
 <div id="cmfive-modal" class="reveal-modal xlarge open" data-reveal=""  style="display:block; opacity:1; visibility:hidden; top:100px" aligned:position=absolute>
   <form class=" small-12 columns">
@@ -27,7 +28,8 @@ try {
         <ul class="small-block-grid-1 medium-block-grid-2 section-body">
           <li>
             <label class="small-12 columns">
-              <select style="visibility:visible"></select>
+              <select style="visibility:visible">
+              </select>
             </label>
           </li>
         </ul>
@@ -38,7 +40,6 @@ try {
       <button class="button tiny tiny button cancelbutton"></button>
     </div>
   </form>
-</div>
 <!--Select field goes in here along with save and cancel options. Rest of get goes in reunInsight action-->
 </div>
 <!--script goes at bottom
