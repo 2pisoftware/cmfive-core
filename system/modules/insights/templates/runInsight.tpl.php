@@ -16,6 +16,9 @@ try {
       echo "Error caught: " . $e->getMessage();
       LogService::getInstance($w)->setLogger("INSIGHTS")->error("Error occurred. Cannot run insight $p" . $e->getMessage());
     }
-    //dive get item on  id to become visible
-    //script goes at bottom
-    //js get elemt by id
+//div GET item on to become visible id($pdf)
+<div style:visible=hidden aligned:position=absolute>
+//Select field goes in here along with save and cancel options
+</div>
+//script goes at bottom
+//js get elemt by id and send data to post function in pdf action
