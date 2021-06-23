@@ -1,7 +1,7 @@
 <?php
 echo Html::b("/insights/viewInsight/" . $insight_class_name . "?" . $request_string, "Change Insight Parameters");
 echo Html::b("/insights-export/csv/" . $insight_class_name . "?" . $request_string, "Export to CSV", null);
-echo Html::box("/insights-export/pdf/" . $insight_class_name . "?" . $request_string, "Export to PDF", true, false, null, null, "isbox", null, null, null, 'cmfive-modal');
+echo Html::b("#", "Export to PDF", null, $pdf, false, null, null, null);
 
 //Check for errors
 try {
@@ -16,3 +16,6 @@ try {
       echo "Error caught: " . $e->getMessage();
       LogService::getInstance($w)->setLogger("INSIGHTS")->error("Error occurred. Cannot run insight $p" . $e->getMessage());
     }
+    //dive get item on  id to become visible
+    //script goes at bottom
+    //js get elemt by id
