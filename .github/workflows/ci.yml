@@ -97,6 +97,7 @@ jobs:
           echo "Config::set('report.database', ['hostname' => 'mysql-5.7', 'username' => 'cmfive_test', 'password' => 'cmfive_test', 'database' => 'cmfive_test', 'driver' => 'mysql']);" >> config.php;
           echo "Config::set('core_template.foundation.reveal.animation_speed', 0);" >> config.php;
           echo "Config::set('core_template.foundation.reveal.animation', 'none');" >> config.php;
+          echo "Config::set('tests', ['testrunner'  => 'ENABLED' , 'config' => '' , 'yaml' => ['- WebDriver:' => ['url' => 'http://webapp:3000', 'browser' => 'chrome', 'wait' => '60', 'host' => 'selenium314', 'port' => '4444', 'capabilities' => ['acceptInsecureCerts' => true, 'goog:chromeOptions' => 'w3c: false']], '- Db:' => ['dsn' => 'mysql:host=mysql-5.7:3306;dbname=cmfive_test', 'user' => 'cmfive_test', 'password' => 'cmfive_test'], '- Asserts:' => ']]);" >> config.php;
           docker start selenium314;
           docker start mysql-5.7
 
