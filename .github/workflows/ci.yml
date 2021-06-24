@@ -104,7 +104,7 @@ jobs:
       - name: Prepare cmfive Test Database
         run: |
           sleep 10s
-          docker exec nginx-php7.4 bash -c "mysql -u root -h mysql-5.7 -proot -e 'CREATE DATABASE cmfive'; create user cmfive@'%' identified by 'cmfive'; grant all privileges on cmfive.* to cmfive@'%'; flush privileges; exit \$?"
+          docker exec nginx-php7.4 bash -c "mysql -u root -h mysql-5.7 -proot -e "CREATE DATABASE cmfive; create user cmfive@'%' identified by 'cmfive'; grant all privileges on cmfive.* to cmfive@'%'; flush privileges; exit \$?"
           docker exec nginx-php7.4 bash -c "php cmfive.php testDB setup; exit \$?"
 
       # Run Unit Tests
