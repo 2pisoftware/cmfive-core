@@ -90,8 +90,8 @@ jobs:
       - name: Inject configs into cmfive Test Environment
         run: |
           cp config.php.example config.php
-          sed -i -e 's/<username>/cmfive/g' config.php
-          sed -i -e 's/<password>/cmfive/g' config.php
+          sed -i -e 's/<username>/root/g' config.php
+          sed -i -e 's/<password>/root/g' config.php
           sed -i -e 's/<database>/cmfive/g' config.php
           sed -i -e 's/"testrunner"  => "",/"testrunner"  => "ENABLED",/g' config.php
           echo "Config::set('report.database', ['hostname' => 'mysql-5.7', 'username' => 'cmfive', 'password' => 'cmfive', 'database' => 'cmfive', 'driver' => 'mysql']);" >> config.php;
@@ -105,9 +105,9 @@ jobs:
         run: |
           sleep 10;
           docker exec nginx-php7.4 bash -c 'mysql -u root -h mysql-5.7 -proot -e "CREATE DATABASE cmfive;"';
-          docker exec nginx-php7.4 bash -c 'mysql -u root -h mysql-5.7 -proot -e "create user cmfive@\'%\' identified by \'cmfive\';"';
-          docker exec nginx-php7.4 bash -c 'mysql -u root -h mysql-5.7 -proot -e "grant all privileges on cmfive.* to cmfive@\'%\';"';
-          docker exec nginx-php7.4 bash -c 'mysql -u root -h mysql-5.7 -proot -e "flush privileges;"';
+          # docker exec nginx-php7.4 bash -c 'mysql -u root -h mysql-5.7 -proot -e "create user cmfive@\'%\' identified by \'cmfive\';"';
+          # docker exec nginx-php7.4 bash -c 'mysql -u root -h mysql-5.7 -proot -e "grant all privileges on cmfive.* to cmfive@\'%\';"';
+          # docker exec nginx-php7.4 bash -c 'mysql -u root -h mysql-5.7 -proot -e "flush privileges;"';
           docker exec nginx-php7.4 bash -c "php cmfive.php testDB setup; exit \$?"
 
       # Run Unit Tests
