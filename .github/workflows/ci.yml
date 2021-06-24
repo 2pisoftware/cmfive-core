@@ -108,7 +108,10 @@ jobs:
           # docker exec nginx-php7.4 bash -c 'mysql -u root -h mysql-5.7 -proot -e "create user cmfive@\'%\' identified by \'cmfive\';"';
           # docker exec nginx-php7.4 bash -c 'mysql -u root -h mysql-5.7 -proot -e "grant all privileges on cmfive.* to cmfive@\'%\';"';
           # docker exec nginx-php7.4 bash -c 'mysql -u root -h mysql-5.7 -proot -e "flush privileges;"';
-          docker exec nginx-php7.4 bash -c "php cmfive.php testDB setup; exit \$?"
+          docker exec nginx-php7.4 bash -c "php cmfive.php cmfive help";
+          docker exec nginx-php7.4 bash -c "php cmfive.php install core";
+          docker exec nginx-php7.4 bash -c "php cmfive.php install migrations";
+          # docker exec nginx-php7.4 bash -c "php cmfive.php testDB setup; exit \$?"
 
       # Run Unit Tests
       - name: "Run unit tests"
