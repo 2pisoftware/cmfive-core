@@ -103,11 +103,12 @@ jobs:
 
       - name: Prepare cmfive Test Database
         run: |
-          docker exec mysql-5.7 bash -c 'mysql -u root -proot -e "CREATE DATABASE cmfive;"';
-          docker exec mysql-5.7 bash -c 'mysql -u root -proot -e "create user cmfive@\'%\' identified by \'cmfive\';"';
-          docker exec mysql-5.7 bash -c 'mysql -u root -proot -e "grant all privileges on cmfive.* to cmfive@\'%\';"';
-          docker exec mysql-5.7 bash -c 'mysql -u root -proot -e "flush privileges;"';
-          docker exec mysql-5.7 bash -c "php cmfive.php testDB setup; exit \$?"
+          sleep 10;
+          docker exec nginx-php7.4 bash -c 'mysql -u root -h mysql-5.7 -proot -e "CREATE DATABASE cmfive;"';
+          docker exec nginx-php7.4 bash -c 'mysql -u root -h mysql-5.7 -proot -e "create user cmfive@\'%\' identified by \'cmfive\';"';
+          docker exec nginx-php7.4 bash -c 'mysql -u root -h mysql-5.7 -proot -e "grant all privileges on cmfive.* to cmfive@\'%\';"';
+          docker exec nginx-php7.4 bash -c 'mysql -u root -h mysql-5.7 -proot -e "flush privileges;"';
+          docker exec nginx-php7.4 bash -c "php cmfive.php testDB setup; exit \$?"
 
       # Run Unit Tests
       - name: "Run unit tests"
