@@ -97,6 +97,8 @@ jobs:
           echo "Config::set('report.database', ['hostname' => 'mysql-5.7', 'username' => 'cmfive_test', 'password' => 'cmfive_test', 'database' => 'cmfive_test', 'driver' => 'mysql']);" >> config.php;
           echo "Config::set('core_template.foundation.reveal.animation_speed', 0);" >> config.php;
           echo "Config::set('core_template.foundation.reveal.animation', 'none');" >> config.php;
+          docker start selenium314;
+          docker start mysql-5.7
 
       - name: Prepare cmfive Test Database
         run: |
