@@ -86,12 +86,11 @@ jobs:
       - name: Run docker compose up
         run: |
           docker-compose up -d
-          sleep 10s
-          docker ps
 
       - name: Inject configs into cmfive Test Environment
         run: |
           cp config.php.example config.php
+          sed -i -e 's/localhost/mysql-5.7/g' config.php
           sed -i -e 's/<username>/root/g' config.php
           sed -i -e 's/<password>/root/g' config.php
           sed -i -e 's/<database>/cmfive/g' config.php
