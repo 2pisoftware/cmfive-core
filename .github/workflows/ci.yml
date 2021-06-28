@@ -87,7 +87,7 @@ jobs:
         run: |
           docker-compose up -d
 
-      - name: Inject configs into cmfive Test Environment
+      - name: Prepare config
         run: |
           cp config.php.example config.php
           sed -i -e 's/localhost/mysql-5.7/g' config.php
@@ -95,25 +95,20 @@ jobs:
           sed -i -e 's/<password>/root/g' config.php
           sed -i -e 's/<database>/cmfive/g' config.php
           sed -i -e 's/"testrunner"  => "",/"testrunner"  => "ENABLED",/g' config.php
-          echo "Config::set('report.database', ['hostname' => 'mysql-5.7', 'username' => 'cmfive', 'password' => 'cmfive', 'database' => 'cmfive', 'driver' => 'mysql']);" >> config.php;
-          echo "Config::set('core_template.foundation.reveal.animation_speed', 0);" >> config.php;
-          echo "Config::set('core_template.foundation.reveal.animation', 'none');" >> config.php;
-          echo "Config::set('tests', ['testrunner'  => 'ENABLED' , 'config' => '' , 'yaml' => ['- WebDriver:' => ['url' => 'http://webapp:3000', 'browser' => 'chrome', 'wait' => '60', 'host' => 'selenium314', 'port' => '4444', 'capabilities' => ['acceptInsecureCerts' => true, 'goog:chromeOptions' => 'w3c: false']], '- Db:' => ['dsn' => 'mysql:host=mysql-5.7:3306;dbname=cmfive', 'user' => 'root', 'password' => 'root'], '- Asserts:' => '']]);" >> config.php;
-          docker start selenium314;
-          docker start mysql-5.7
-          cat config.php
+          echo "Config::set('report.database', ['hostname' => 'mysql-5.7', 'username' => 'cmfive', 'password' => 'cmfive', 'database' => 'cmfive', 'driver' => 'mysql']);" >> config.php
+          echo "Config::set('core_template.foundation.reveal.animation_speed', 0);" >> config.php
+          echo "Config::set('core_template.foundation.reveal.animation', 'none');" >> config.php
+          echo "Config::set('tests', ['testrunner'  => 'ENABLED' , 'config' => '' , 'yaml' => ['- WebDriver:' => ['url' => 'http://webapp:3000', 'browser' => 'chrome', 'wait' => '60', 'host' => 'selenium314', 'port' => '4444', 'capabilities' => ['acceptInsecureCerts' => true, 'goog:chromeOptions' => 'w3c: false']], '- Db:' => ['dsn' => 'mysql:host=mysql-5.7:3306;dbname=cmfive', 'user' => 'root', 'password' => 'root'], '- Asserts:' => '']]);" >> config.php
 
-      - name: Prepare cmfive Test Database
+      - name: Prepare test database
         run: |
-          sleep 10;
-          docker exec nginx-php7.4 bash -c 'mysql -u root -h mysql-5.7 -proot -e "CREATE DATABASE cmfive;"';
-          # docker exec nginx-php7.4 bash -c 'mysql -u root -h mysql-5.7 -proot -e "create user cmfive@\'%\' identified by \'cmfive\';"';
-          # docker exec nginx-php7.4 bash -c 'mysql -u root -h mysql-5.7 -proot -e "grant all privileges on cmfive.* to cmfive@\'%\';"';
-          # docker exec nginx-php7.4 bash -c 'mysql -u root -h mysql-5.7 -proot -e "flush privileges;"';
-          docker exec nginx-php7.4 bash -c "php cmfive.php cmfive help";
-          docker exec nginx-php7.4 bash -c "php cmfive.php install core";
-          docker exec nginx-php7.4 bash -c "php cmfive.php install migrations";
-          # docker exec nginx-php7.4 bash -c "php cmfive.php testDB setup; exit \$?"
+          docker exec nginx-php7.4 bash -c 'mkdir /var/www/html/storage/log'
+          docker exec nginx-php7.4 bash -c 'mkdir /var/www/html/storage/session'
+          docker exec nginx-php7.4 bash -c 'mysql -u root -h mysql-5.7 -proot -e "CREATE DATABASE cmfive;"'
+          docker exec nginx-php7.4 bash -c 'php cmfive.php cmfive help'
+          docker exec nginx-php7.4 bash -c 'php cmfive.php install core'
+          docker exec nginx-php7.4 bash -c 'php cmfive.php install migrations'
+          docker exec nginx-php7.4 bash -c 'chown -R www-data:www-data /var/www/html'
 
       # Run Unit Tests
       - name: "Run unit tests"
