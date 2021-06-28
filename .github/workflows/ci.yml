@@ -85,7 +85,7 @@ jobs:
 
       - name: Start docker
         run: |
-          docker-compose up -d
+          sudo -H -u www-data bash -c 'docker-compose up -d'
           sleep 10s
           docker start selenium314
           docker start mysql-5.7
@@ -114,6 +114,7 @@ jobs:
           docker exec nginx-php7.4 bash -c 'php cmfive.php install core'
           docker exec nginx-php7.4 bash -c 'php cmfive.php install migrations'
           cut -d: -f1 /etc/passwd
+          docker exec nginx-php7.4 bash -c ' ls -la /var/www/html/storage/log'
 
       # Run Unit Tests
       - name: "Run unit tests"
