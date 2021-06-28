@@ -85,8 +85,8 @@ jobs:
 
       - name: Start docker
         run: |
-          export UID=$(id -u)
-          export GID=$(id -g)
+          export USER_ID=$(id -u)
+          export GROUP_ID=$(id -g)
           docker-compose up -d
           sleep 10s
           docker start selenium314
