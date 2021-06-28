@@ -116,6 +116,7 @@ jobs:
           docker exec nginx-php7.4 bash -c ' ls -la /var/www/html'
           docker exec nginx-php7.4 bash -c ' ls -la /var/www/html/storage'
           docker exec nginx-php7.4 bash -c ' ls -la /var/www/html/storage/session'
+          docker exec nginx-php7.4 bash -c ' ls -la /var/www/html/storage/log'
 
       # Run Unit Tests
       - name: "Run unit tests"
