@@ -105,15 +105,14 @@ jobs:
 
       - name: Prepare test database
         run: |
+          docker exec nginx-php7.4 bash -c 'mysql -u root -h mysql-5.7 -proot -e "CREATE DATABASE cmfive;"'
           docker exec nginx-php7.4 bash -c 'mkdir /var/www/html/storage/log'
           docker exec nginx-php7.4 bash -c 'mkdir /var/www/html/storage/session'
-          docker exec nginx-php7.4 bash -c 'chown -R www-data:www-data /var/www/html'
-          docker exec nginx-php7.4 bash -c 'chmod -R 777 storage'
-          docker exec nginx-php7.4 bash -c 'mysql -u root -h mysql-5.7 -proot -e "CREATE DATABASE cmfive;"'
           docker exec nginx-php7.4 bash -c 'php cmfive.php seed encryption'
           docker exec nginx-php7.4 bash -c 'php cmfive.php install core'
           docker exec nginx-php7.4 bash -c 'php cmfive.php install migrations'
           docker exec nginx-php7.4 bash -c 'chown -R www-data:www-data /var/www/html'
+          docker exec nginx-php7.4 bash -c 'chmod -R 777 storage'
           docker exec nginx-php7.4 bash -c ' ls -la /var/www/html/storage/log'
 
       # Run Unit Tests
