@@ -85,8 +85,8 @@ jobs:
 
       - name: Start docker
         run: |
-          export USER_ID=$(id -u)
-          export GROUP_ID=$(id -g)
+          export USER_ID=$(id -u www-data)
+          export GROUP_ID=$(id -g www-data)
           docker-compose up -d
           sleep 10s
           docker start selenium314
@@ -116,8 +116,8 @@ jobs:
       # Run Unit Tests
       - name: "Run unit tests"
         run: |
-          id -u
-          id -g
+          id -u www-data
+          id -g www-data
           docker exec nginx-php7.4 bash -c "id -u"
           docker exec nginx-php7.4 bash -c "id -g"
           docker exec nginx-php7.4 bash -c "php cmfive.php tests unit all; exit \$?"
