@@ -112,6 +112,9 @@ jobs:
           docker exec nginx-php7.4 bash -c 'php cmfive.php install core'
           docker exec nginx-php7.4 bash -c 'php cmfive.php install migrations'
           docker exec nginx-php7.4 bash -c 'chown -R www-data:www-data /var/www/html'
+          docker exec nginx-php7.4 bash -c ' ls -la /var/www/html'
+          docker exec nginx-php7.4 bash -c ' ls -la /var/www/html/storage'
+          docker exec nginx-php7.4 bash -c ' ls -la /var/www/html/storage/session'
 
       # Run Unit Tests
       - name: "Run unit tests"
