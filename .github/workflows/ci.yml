@@ -83,9 +83,12 @@ jobs:
       #     python install.py --verbose debug provision-test --cmfive_core_ref ${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}};
       #     docker start selenium314;
 
-      - name: Run docker compose up
+      - name: Start docker
         run: |
           docker-compose up -d
+          sleep 10s
+          docker start selenium314
+          docker start mysql-5.7
 
       - name: Prepare config
         run: |
