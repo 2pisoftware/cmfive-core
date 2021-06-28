@@ -107,11 +107,10 @@ jobs:
 
       - name: Prepare test database
         run: |
-          docker exec nginx-php7.4 bash -c ' ls -la /var/www/html'
           docker exec nginx-php7.4 bash -c 'mysql -u root -h mysql-5.7 -proot -e "CREATE DATABASE cmfive;"'
-          docker exec nginx-php7.4 bash -c 'php cmfive.php seed encryption'
           docker exec nginx-php7.4 bash -c 'php cmfive.php install core'
           docker exec nginx-php7.4 bash -c 'php cmfive.php install migrations'
+          docker exec nginx-php7.4 bash -c 'php cmfive.php seed encryption'
 
       # Run Unit Tests
       - name: "Run unit tests"
@@ -120,6 +119,8 @@ jobs:
           id -g www-data
           docker exec nginx-php7.4 bash -c "id -u"
           docker exec nginx-php7.4 bash -c "id -g"
+          ls -la
+          docker exec nginx-php7.4 bash -c ' ls -la /var/www/html'
           docker exec nginx-php7.4 bash -c "php cmfive.php tests unit all; exit \$?"
           if [ $? -gt 0 ]; then
             echo "Admin module tests failed"
