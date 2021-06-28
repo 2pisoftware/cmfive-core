@@ -116,6 +116,10 @@ jobs:
       # Run Unit Tests
       - name: "Run unit tests"
         run: |
+          id -u
+          id -g
+          docker exec nginx-php7.4 bash -c "id -u"
+          docker exec nginx-php7.4 bash -c "id -g"
           docker exec nginx-php7.4 bash -c "php cmfive.php tests unit all; exit \$?"
           if [ $? -gt 0 ]; then
             echo "Admin module tests failed"
