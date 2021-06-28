@@ -86,6 +86,8 @@ jobs:
       - name: Run docker compose up
         run: |
           docker-compose up -d
+          sleep 10s
+          docker ps
 
       - name: Inject configs into cmfive Test Environment
         run: |
@@ -100,6 +102,7 @@ jobs:
           echo "Config::set('tests', ['testrunner'  => 'ENABLED' , 'config' => '' , 'yaml' => ['- WebDriver:' => ['url' => 'http://webapp:3000', 'browser' => 'chrome', 'wait' => '60', 'host' => 'selenium314', 'port' => '4444', 'capabilities' => ['acceptInsecureCerts' => true, 'goog:chromeOptions' => 'w3c: false']], '- Db:' => ['dsn' => 'mysql:host=mysql-5.7:3306;dbname=cmfive', 'user' => 'root', 'password' => 'root'], '- Asserts:' => '']]);" >> config.php;
           docker start selenium314;
           docker start mysql-5.7
+          cat config.php
 
       - name: Prepare cmfive Test Database
         run: |
