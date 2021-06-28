@@ -113,10 +113,7 @@ jobs:
           docker exec nginx-php7.4 bash -c 'php cmfive.php seed encryption'
           docker exec nginx-php7.4 bash -c 'php cmfive.php install core'
           docker exec nginx-php7.4 bash -c 'php cmfive.php install migrations'
-          docker exec nginx-php7.4 bash -c ' ls -la /var/www/html'
-          docker exec nginx-php7.4 bash -c ' ls -la /var/www/html/storage'
-          docker exec nginx-php7.4 bash -c ' ls -la /var/www/html/storage/session'
-          docker exec nginx-php7.4 bash -c ' ls -la /var/www/html/storage/log'
+          cut -d: -f1 /etc/passwd
 
       # Run Unit Tests
       - name: "Run unit tests"
