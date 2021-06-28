@@ -12,7 +12,7 @@ jobs:
   # Lint
   php-codesniffer:
     name: PHP CS
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
     - name: Get phpcs
       run: wget https://raw.githubusercontent.com/2pisoftware/cmfive-boilerplate/master/phpcs.xml
@@ -24,7 +24,7 @@ jobs:
   run_test:
     # Checkout Boilerplate
     name: Unit/Acceptance tests
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     needs: [ php-codesniffer ]
     steps:
       - uses: actions/checkout@v2
@@ -32,95 +32,69 @@ jobs:
           repository: '2pisoftware/cmfive-boilerplate'
           ref: 'hotfix/CIAction'
 
-      # # Cache
-      # - name: Cache Python Virtual Environment
-      #   uses: actions/cache@v2
-      #   id: pip
-      #   with:
-      #     path: .build/setup/venv
-      #     key: ${{ runner.os }}-pip-${{ hashFiles('.build/setup/requirements.txt') }}
+      # Cache
+      - name: Cache Python Virtual Environment
+        uses: actions/cache@v2
+        id: pip
+        with:
+          path: .build/setup/venv
+          key: ${{ runner.os }}-pip-${{ hashFiles('.build/setup/requirements.txt') }}
 
-      # - name: Cache cmfive Docker Image
-      #   uses: actions/cache@v2
-      #   id: cmfive-docker-image
-      #   with:
-      #     path: /tmp/docker-registry
-      #     key: docker-registry-${{ hashFiles('.build/environment/test/config/docker/Dockerfile.template') }}
+      - name: Cache cmfive Docker Image
+        uses: actions/cache@v2
+        id: cmfive-docker-image
+        with:
+          path: /tmp/docker-registry
+          key: docker-registry-${{ hashFiles('.build/environment/test/config/docker/Dockerfile.template') }}
 
       # Pre-requsites Prepare Runtime
-      # - name: Provision Python Virtual Environment
-      #   if: steps.pip.outputs.cache-hit != 'true'
-      #   run: |
-      #     cd .build/setup;
-      #     python3 -m venv venv;
-      #     source venv/bin/activate;
-      #     pip install -r requirements.txt;
-
-      # - name: Prepare cmfive Test Environment
-      #   run: |
-      #     cd .build/setup;
-      #     source venv/bin/activate;
-      #     python install.py prime-environment test
-
-      # - name: Prepare Docker Registry
-      #   run: docker run -d -p 5000:5000 --restart=always --name registry -v /tmp/docker-registry:/var/lib/registry registry:2 && npx wait-on tcp:5000
-
-      # - name: Build and Push Image to Docker Registry
-      #   if: steps.cmfive-docker-image.outputs.cache-hit != 'true'
-      #   run: |
-      #     docker build ./.build/environment/test/ -t cmfive --cache-from=localhost:5000/cmfive;
-      #     docker tag cmfive localhost:5000/cmfive && docker push localhost:5000/cmfive || true;
-
-      # - name: Pull Image from Docker Registry
-      #   run: docker pull localhost:5000/cmfive || true
-
-      # # Pre-requsites Prepare Cmfive Environment
-      # - name: Setup cmfive Test Environment
-      #   run: |
-      #     echo ${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}};
-      #     cd .build/setup;
-      #     source venv/bin/activate;
-      #     python install.py --verbose debug provision-test --cmfive_core_ref ${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}};
-      #     docker start selenium314;
-
-      - name: Start docker
+      - name: Provision Python Virtual Environment
+        if: steps.pip.outputs.cache-hit != 'true'
         run: |
-          export USER_ID=$(id -u www-data)
-          export GROUP_ID=$(id -g www-data)
-          docker-compose up -d
-          sleep 10s
-          docker start selenium314
-          docker start mysql-5.7
+          cd .build/setup;
+          python3 -m venv venv;
+          source venv/bin/activate;
+          pip install -r requirements.txt;
 
-      - name: Prepare config
+      - name: Prepare cmfive Test Environment
         run: |
-          cp config.php.example config.php
-          sed -i -e 's/localhost/mysql-5.7/g' config.php
-          sed -i -e 's/<username>/root/g' config.php
-          sed -i -e 's/<password>/root/g' config.php
-          sed -i -e 's/<database>/cmfive/g' config.php
-          sed -i -e 's/"testrunner"  => "",/"testrunner"  => "ENABLED",/g' config.php
-          echo "Config::set('report.database', ['hostname' => 'mysql-5.7', 'username' => 'cmfive', 'password' => 'cmfive', 'database' => 'cmfive', 'driver' => 'mysql']);" >> config.php
-          echo "Config::set('core_template.foundation.reveal.animation_speed', 0);" >> config.php
-          echo "Config::set('core_template.foundation.reveal.animation', 'none');" >> config.php
-          echo "Config::set('tests', ['testrunner'  => 'ENABLED' , 'config' => '' , 'yaml' => ['- WebDriver:' => ['url' => 'http://webapp:3000', 'browser' => 'chrome', 'wait' => '60', 'host' => 'selenium314', 'port' => '4444', 'capabilities' => ['acceptInsecureCerts' => true, 'goog:chromeOptions' => 'w3c: false']], '- Db:' => ['dsn' => 'mysql:host=mysql-5.7:3306;dbname=cmfive', 'user' => 'root', 'password' => 'root'], '- Asserts:' => '']]);" >> config.php
+          cd .build/setup;
+          source venv/bin/activate;
+          python install.py prime-environment test
 
-      - name: Prepare test database
+      - name: Prepare Docker Registry
+        run: docker run -d -p 5000:5000 --restart=always --name registry -v /tmp/docker-registry:/var/lib/registry registry:2 && npx wait-on tcp:5000
+
+      - name: Build and Push Image to Docker Registry
+        if: steps.cmfive-docker-image.outputs.cache-hit != 'true'
         run: |
-          docker exec nginx-php7.4 bash -c 'mysql -u root -h mysql-5.7 -proot -e "CREATE DATABASE cmfive;"'
-          docker exec nginx-php7.4 bash -c 'php cmfive.php install core'
-          docker exec nginx-php7.4 bash -c 'php cmfive.php install migrations'
-          docker exec nginx-php7.4 bash -c 'php cmfive.php seed encryption'
+          docker build ./.build/environment/test/ -t cmfive --cache-from=localhost:5000/cmfive;
+          docker tag cmfive localhost:5000/cmfive && docker push localhost:5000/cmfive || true;
+
+      - name: Pull Image from Docker Registry
+        run: docker pull localhost:5000/cmfive || true
+
+      # Pre-requsites Prepare Cmfive Environment
+      - name: Setup cmfive Test Environment
+        run: |
+          echo ${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}};
+          cd .build/setup;
+          source venv/bin/activate;
+          python install.py --verbose debug provision-test --cmfive_core_ref ${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}};
+          docker start selenium314;
+
+      - name: Inject configs into cmfive Test Environment
+        run: |
+          echo "Config::set('report.database', ['hostname' => 'mysql-5.7', 'username' => 'cmfive_test', 'password' => 'cmfive_test', 'database' => 'cmfive_test', 'driver' => 'mysql']);" >> config.php;
+          echo "Config::set('core_template.foundation.reveal.animation_speed', 0);" >> config.php;
+          echo "Config::set('core_template.foundation.reveal.animation', 'none');" >> config.php;
+
+      - name: Prepare cmfive Test Database
+        run: docker exec nginx-php7.4 bash -c "php cmfive.php testDB setup; exit \$?";
 
       # Run Unit Tests
       - name: "Run unit tests"
         run: |
-          id -u www-data
-          id -g www-data
-          docker exec nginx-php7.4 bash -c "id -u"
-          docker exec nginx-php7.4 bash -c "id -g"
-          ls -la
-          docker exec nginx-php7.4 bash -c ' ls -la /var/www/html'
           docker exec nginx-php7.4 bash -c "php cmfive.php tests unit all; exit \$?"
           if [ $? -gt 0 ]; then
             echo "Admin module tests failed"
