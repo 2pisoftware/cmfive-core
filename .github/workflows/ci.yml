@@ -30,7 +30,7 @@ jobs:
       - uses: actions/checkout@v2
         with:
           repository: '2pisoftware/cmfive-boilerplate'
-          ref: 'hotfix/CIAction'
+          ref: 'master'
 
       # Cache
       - name: Cache Python Virtual Environment
