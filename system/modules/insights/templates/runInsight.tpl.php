@@ -1,8 +1,8 @@
 <?php
 echo Html::b("/insights/viewInsight/" . $insight_class_name . "?" . $request_string, "Change Insight Parameters");
 echo Html::b("/insights-export/csv/" . $insight_class_name . "?" . $request_string, "Export to CSV", null);
-//echo Html::b("#", "Export to PDF", null, $pdf, false, null, null, null);
-echo Html::box("/insights-export/pdf/" . $insight_class_name . "?" . $request_string, "Export to PDF", false, false, null, null, "isbox", null, null, null, 'cmfive-modal');
+echo Html::b("#", "Export to PDF", null, 'my_pdf_button', false, null, null, null);
+//echo Html::box("/insights-export/pdf/" . $insight_class_name . "?" . $request_string, "Export to PDF", false, false, null, null, "isbox", null, null, null, 'cmfive-modal');
 
 //Check for errors
 try {
@@ -20,17 +20,16 @@ catch (Error $e) {
 ?>
 
 <!--div GET item on to become visible id($pdf)-->
-<div id="cmfive-modal" class="reveal-modal xlarge open" data-reveal=""  style="display:block; opacity:1; visibility:hidden; top:100px" aligned:position=absolute>
+<div id="insight_pdf_modal" class="reveal-modal xlarge open" data-reveal=""  style="display:block; opacity:1; visibility:hidden; top:100px" aligned:position=absolute>
   <form class=" small-12 columns">
     <div class="row-fluid clearfix small-12 multicolform">
       <div class="panel clearfix">
         <div class="row-fluid clearfix section-header"></div>
         <ul class="small-block-grid-1 medium-block-grid-2 section-body">
           <li>
-            <label class="small-12 columns">
-              <select style="visibility:visible">
-              </select>
-            </label>
+            <?php
+              echo $template_select->__toString();
+            ?>
           </li>
         </ul>
       </div>
