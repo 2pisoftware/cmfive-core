@@ -70,10 +70,8 @@ class AwsTransport implements GenericTransport
             return;
         }
 
-        $from_arn = Config::get("admin.mail.aws.from_arn");
-
-        $from = Config::get("main.company_support_email");
-        if (empty($from)) {
+        $company_support_email = Config::get("main.company_support_email");
+        if (empty($company_support_email)) {
             LogService::getInstance($this->w)->setLogger("EMAIL")->error("Failed to send mail to: $to, from: $reply_to, about: $subject: main.company_support_email not set in config");
             return;
         }
@@ -97,6 +95,23 @@ class AwsTransport implements GenericTransport
 
         if (strpos($reply_to, ",") !== false) {
             $reply_to = array_map("trim", explode(",", $reply_to));
+        }
+
+        // To determin the from address, set the company support email as a detail.
+        $from = $company_support_email;
+        // Get the frst reply to address by checking if $reply_to is an array or string.
+        $first_reply_to = is_array($reply_to) ? $reply_to[0] : $reply_to;
+        // Split the $first_reply_to addresses with the '@' symbol to determin its domain.
+        // So john@example.com would become ["john", "example.com"].
+        $reply_to_parts = explode("@", $first_reply_to);
+
+        // Loop over the domains that have been validated in SES.
+        // If we find a match, update $from to be $first_reply_to.
+        foreach (Config::get("admin.mail.aws.validated_domains", []) as $validated_domain) {
+            if (count($reply_to_parts) === 2 && $validated_domain === $reply_to_parts[1]) {
+                $from = $first_reply_to;
+                break;
+            }
         }
 
         if (empty($cc)) {
@@ -142,7 +157,7 @@ class AwsTransport implements GenericTransport
             "body_content_type" => $body_content_type,
             "headers" => $headers,
             "attachments" => $attachmentsWithTypes,
-            "from_arn" => $from_arn,
+            "from_arn" => Config::get("admin.mail.aws.from_arn"),
         ];
 
         $client->sendMessage([
