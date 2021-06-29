@@ -60,6 +60,7 @@ Config::set('admin', [
             "queue_url" => "",
             "region" => "",
             "version" => "",
+            // An array of domains that have been validated in AWS, eg. example.com.
             "validated_domains" => [],
         ],
     ],
