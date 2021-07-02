@@ -128,6 +128,16 @@
                 <div id="menu-overlay" data-toggle-menu="close"></div>
             </div>
             <div class="container" id="body-content">
+                <?php
+                if (!empty($error)) {
+                    echo Html::alertBox($error, "warning");
+                } elseif (!empty($msg)) {
+                    echo Html::alertBox($msg, 'success');
+                }
+                ?>
+                <?php if (!empty($title)) : ?>
+                    <h1><?php echo $title; ?></h1>
+                <?php endif; ?>
                 <?php echo !empty($body) ? $body : ''; ?>
             </div>
         </div>

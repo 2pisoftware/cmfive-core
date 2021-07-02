@@ -1,3 +1,14 @@
+@use 'sass:map';
+
+// Menu theme colours
+$themes: map.deep-merge($themes, (
+    default: (
+        breadcrumb-text: $mid-grey,
+    ),
+    dark: (
+        breadcrumb-text: $mid-grey--dark,
+    )
+));
 
 #breadcrumbs {
     ol.breadcrumb {
@@ -13,6 +24,7 @@
         height: 40px;
         
         li.breadcrumb-item {
+            @include theme((color: 'breadcrumb-text'));
             display: inline-block;
             max-width: 160px;
             text-overflow: ellipsis;
@@ -20,10 +32,16 @@
             white-space: nowrap;
 
             span, a {
-                @include theme((color: 'dark-grey'));
+                @include theme((color: 'breadcrumb-text'));
                 @include font-size('caption');
                 text-align: center;
                 overflow: hidden;
+            }
+
+            &.active {
+                span, a {
+                    @include theme((color: 'dark-grey'));
+                }
             }
         }
     }

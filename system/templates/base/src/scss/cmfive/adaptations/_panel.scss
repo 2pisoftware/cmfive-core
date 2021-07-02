@@ -1,0 +1,14 @@
+
+.panel {
+    @include shadow-hover();
+    padding: 1rem;
+    // @include theme((background-color: 'light-grey'));
+
+    .section-header {
+        padding: 0.3rem 1rem 0;
+    }
+}
+
+.modal .panel {
+    box-shadow: none;
+}

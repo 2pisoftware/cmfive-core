@@ -419,7 +419,8 @@
         }
 
         function openModal(url) {
-            changeModalWindow($('#cmfive-modal .modal-content'), url);
+            changeModalWindow($('#cmfive-modal'), url);
+            $('#cmfive-modal').foundation('reveal', 'open');
         }
     </script>
 </body>

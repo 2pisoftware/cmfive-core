@@ -54,3 +54,41 @@
         }
     }
 }
+
+@mixin theme-colours() {
+    &.primary {
+        @include theme((background-color: 'twopi-blue', color: 'white-black'));
+    }
+
+    &.secondary {
+        @include theme((background-color: 'mid-grey', color: 'white-black'));
+    }
+
+    &.success {
+        @include theme((background-color: 'success', color: 'white-black'));
+    }
+
+    &.danger {
+        @include theme((background-color: 'danger', color: 'white-black'));
+    }
+
+    &.error {
+        @include theme((background-color: 'danger', color: 'white-black'));
+    }
+
+    &.warning {
+        @include theme((background-color: 'warning', color: 'dark-grey'));
+    }
+
+    &.info {
+        @include theme((background-color: 'caption', color: 'white-black'));
+    }
+
+    &.light {
+        @include theme((background-color: 'light-grey', color: 'caption'));
+    }
+
+    &.dark {
+        @include theme((background-color: 'dark-grey', color: 'white-black'));
+    }
+}

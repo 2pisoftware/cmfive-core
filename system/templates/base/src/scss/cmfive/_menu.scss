@@ -42,37 +42,39 @@ $themes: map.deep-merge($themes, (
             padding-bottom: 12px;
             margin-bottom: 34px;
 
-            li {
-                a {
-                    padding: 0.5rem 1rem;
-                    @include font-size("body");
-                    @include theme((color: 'navbar-text'));
-                }
-        
-                &.active {
+            .navbar {
+                li {
                     a {
-                        @include theme((color: 'dark-grey'));
-                    }
-                }
-        
-                .dropdown-menu {
-                    width: 228px;
-                    margin: -1px;
-                    @include shadow-hover();
-                    padding: 12px 0px;
-                    
-                    @include theme((background-color: 'white-black'));
-        
-                    a {
-                        width: 100%;
-        
-                        @include theme((color: 'dark-grey'));
+                        padding: 0.5rem 1rem;
                         @include font-size("body");
-                        display: block;
-                        padding: 6px 24px;
-        
-                        &:hover {
-                            @include theme((color: 'caption', background-color: 'light-grey'));
+                        @include theme((color: 'navbar-text'));
+                    }
+            
+                    &.active {
+                        a {
+                            @include theme((color: 'dark-grey'));
+                        }
+                    }
+            
+                    .dropdown-menu {
+                        width: 228px;
+                        margin: -1px;
+                        @include shadow-hover();
+                        padding: 12px 0px;
+                        
+                        @include theme((background-color: 'white-black'));
+            
+                        a {
+                            width: 100%;
+            
+                            @include theme((color: 'dark-grey'));
+                            @include font-size("body");
+                            display: block;
+                            padding: 6px 24px;
+            
+                            &:hover {
+                                @include theme((color: 'caption', background-color: 'light-grey'));
+                            }
                         }
                     }
                 }

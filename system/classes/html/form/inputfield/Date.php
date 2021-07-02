@@ -9,13 +9,13 @@
  */
 class Date extends \Html\Form\InputField {
 	
-	public $type = "text";
+	public $type = "date";
 	
-	public function __toString() {
-		$this->class .= ' date_picker';
+	// public function __toString() {
+	// 	$this->class .= ' date_picker';
 		
-		$buffer = parent::__toString();
-		$buffer .= "<script>$('#{$this->id}').datepicker({dateFormat: 'dd/mm/yy', changeMonth: true, changeYear: true});$('#{$this->id}').keyup( function(event) { $(this).val('');}); </script>";
-        return $buffer;
-	}
+	// 	$buffer = parent::__toString();
+	// 	$buffer .= "<script>$('#{$this->id}').datepicker({dateFormat: 'dd/mm/yy', changeMonth: true, changeYear: true});$('#{$this->id}').keyup( function(event) { $(this).val('');}); </script>";
+    //     return $buffer;
+	// }
 }

@@ -20,14 +20,17 @@ export class DropdownAdaptation {
     }
 
     static bindDropdownHover = () => {
-        document.addEventListener("load resize", function () {
-            if (this.matchMedia("(min-width: 768px)").matches) {
-                DropdownAdaptation.dropdown.addEventListener('mouseenter', DropdownAdaptation.mouseEnterEvent);
-                DropdownAdaptation.dropdown.addEventListener('mouseleave', DropdownAdaptation.mouseLeaveEvent);
-            } else {
-                DropdownAdaptation.dropdown.removeEventListener('mouseenter', DropdownAdaptation.mouseEnterEvent)
-                DropdownAdaptation.dropdown.removeEventListener('mouseleave', DropdownAdaptation.mouseLeaveEvent)
-            }
-        })
+        document.removeEventListener('load resize', DropdownAdaptation.resizeEvent)
+        document.addEventListener("load resize", DropdownAdaptation.resizeEvent)
+    }
+
+    private static resizeEvent = function() {
+        if (this.matchMedia("(min-width: 768px)").matches) {
+            DropdownAdaptation.dropdown.addEventListener('mouseenter', DropdownAdaptation.mouseEnterEvent);
+            DropdownAdaptation.dropdown.addEventListener('mouseleave', DropdownAdaptation.mouseLeaveEvent);
+        } else {
+            DropdownAdaptation.dropdown.removeEventListener('mouseenter', DropdownAdaptation.mouseEnterEvent)
+            DropdownAdaptation.dropdown.removeEventListener('mouseleave', DropdownAdaptation.mouseLeaveEvent)
+        }
     }
 }

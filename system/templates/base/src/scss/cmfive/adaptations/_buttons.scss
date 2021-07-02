@@ -19,8 +19,12 @@
     margin: 4px 0px;
 
     &.small, &.tiny {
-        @include font-size("caption");
-        padding: 4px 8px;
+        // @include font-size("body");
+        // padding: 4px 8px;
+    }
+
+    &:not(:first-of-type) {
+        margin-left: 8px;
     }
 
     @each $key, $value in $colours {

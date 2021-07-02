@@ -23,6 +23,12 @@ table.tablesorter {
                     float: left;
                     margin: 6px 6px 0 0;
                 }
+
+                &.sorted-asc {
+                    &:before {
+                        background: url("~bootstrap-icons/icons/chevron-up.svg") no-repeat !important;
+                    }
+                }
             }
         }
     }

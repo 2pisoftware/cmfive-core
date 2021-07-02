@@ -10,6 +10,7 @@ import { Modal } from 'bootstrap'; // 'bootstrap/dist/js/bootstrap.bundle.min.js
 import { DropdownAdaptation } from './adaptations/dropdown';
 import { TabAdaptation } from './adaptations/tabs';
 import { TableAdaptation } from './adaptations/table';
+import { QuillEditor } from './components/QuillEditor';
 
 function openModal(url: string) {
     const modal = new Modal(document.getElementById('cmfive-modal')) //, options
@@ -36,14 +37,12 @@ function openModal(url: string) {
             'Content-Type': 'application/json'
         }
     }).then((response) => {
-        // console.log(response);
         return response.text()
     }).then((content) => {
-        // console.log(content);
         // @todo: find a way to not need query for modals to work
         $('#cmfive-modal .modal-content').html(content);
-        // document.querySelector('#cmfive-modal .modal-content').innerHTML = content;
-
+        // Rebind elements for modal
+        Cmfive.ready();
     })
 }
 
@@ -74,6 +73,7 @@ class Cmfive {
         DropdownAdaptation.bindDropdownHover();
         TabAdaptation.bindTabInteractions();
         TableAdaptation.bindTableInteractions();
+        QuillEditor.bindQuillEditor();
 
         let theme = localStorage.getItem(Cmfive.THEME_KEY)
 
