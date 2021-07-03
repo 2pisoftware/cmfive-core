@@ -13,7 +13,13 @@ export class QuillEditor {
             quillEditors.forEach((q) => {
                 const options = q.getAttribute('data-quill-options');
                 let editor = new Quill('#' + q.id, JSON.parse(options));
+
+                const textarea = document.getElementById(q.id.substring(6));
+                console.log(textarea);
+                q.closest('form').removeEventListener('submit', () => textarea.innerText = q.querySelector('.ql-editor').innerHTML);
+                q.closest('form').addEventListener('submit', () => textarea.innerText = q.querySelector('.ql-editor').innerHTML);
             })
         }
     }
+
 }

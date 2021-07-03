@@ -3351,7 +3351,7 @@ function openModal(url) {
     return response.text();
   }).then(function (content) {
     $('#cmfive-modal .modal-content').html(content);
-    Cmfive.ready();
+    Cmfive.ready(document.getElementById('#cmfive-modal'));
   });
 }
 
@@ -3376,8 +3376,8 @@ var Cmfive = function () {
     document.querySelector('html').classList.add('theme--' + localStorage.getItem(Cmfive.THEME_KEY));
   };
 
-  Cmfive.ready = function () {
-    var _a, _b, _c;
+  Cmfive.ready = function (target) {
+    var _a, _b, _c, _d;
 
     _adaptations_dropdown__WEBPACK_IMPORTED_MODULE_1__.DropdownAdaptation.bindDropdownHover();
     _adaptations_tabs__WEBPACK_IMPORTED_MODULE_2__.TabAdaptation.bindTabInteractions();
@@ -3401,59 +3401,61 @@ var Cmfive = function () {
       document.querySelector('html').classList.add('theme--default');
     }
 
-    document.querySelectorAll('[data-modal-target]').forEach(function (m) {
-      m.addEventListener('click', function () {
-        if (m.hasAttribute('data-modal-confirm')) {
-          if (confirm(m.getAttribute('data-modal-confirm'))) {
-            openModal(m.getAttribute('data-modal-target'));
-          }
-        } else {
-          openModal(m.getAttribute('data-modal-target'));
-        }
-      });
+    (_a = target.querySelectorAll('[data-modal-target]')) === null || _a === void 0 ? void 0 : _a.forEach(function (m) {
+      m.removeEventListener('click', Cmfive.modalClickListener);
+      m.addEventListener('click', Cmfive.modalClickListener);
     });
-    (_a = document.querySelectorAll('[data-toggle-theme]')) === null || _a === void 0 ? void 0 : _a.forEach(function (t) {
-      t.removeEventListener('click', function (event) {
-        return Cmfive.toggleTheme();
-      });
-      t.addEventListener('click', function (event) {
-        return Cmfive.toggleTheme();
-      });
+    (_b = target.querySelectorAll('[data-toggle-theme]')) === null || _b === void 0 ? void 0 : _b.forEach(function (t) {
+      t.removeEventListener('click', Cmfive.toggleTheme);
+      t.addEventListener('click', Cmfive.toggleTheme);
     });
-    (_b = document.querySelectorAll('[data-toggle-menu="open"]')) === null || _b === void 0 ? void 0 : _b.forEach(function (m) {
-      m.addEventListener('click', function (event) {
-        console.log(event);
-
-        if (!document.getElementById('menu-overlay').classList.contains('active')) {
-          document.getElementById('menu-overlay').classList.add('active');
-        }
-
-        if (!document.getElementById('offscreen-menu').classList.contains('active')) {
-          document.getElementById('offscreen-menu').classList.add('active');
-        }
-      });
+    (_c = target.querySelectorAll('[data-toggle-menu="open"]')) === null || _c === void 0 ? void 0 : _c.forEach(function (m) {
+      m.removeEventListener('click', Cmfive.menuOpenClickListener);
+      m.addEventListener('click', Cmfive.menuOpenClickListener);
     });
-    (_c = document.querySelectorAll('[data-toggle-menu="close"]')) === null || _c === void 0 ? void 0 : _c.forEach(function (m) {
-      m.addEventListener('click', function (event) {
-        console.log(event);
-
-        if (document.getElementById('menu-overlay').classList.contains('active')) {
-          document.getElementById('menu-overlay').classList.remove('active');
-        }
-
-        if (document.getElementById('offscreen-menu').classList.contains('active')) {
-          document.getElementById('offscreen-menu').classList.remove('active');
-        }
-      });
+    (_d = target.querySelectorAll('[data-toggle-menu="close"]')) === null || _d === void 0 ? void 0 : _d.forEach(function (m) {
+      m.removeEventListener('click', Cmfive.menuCloseClickListener);
+      m.addEventListener('click', Cmfive.menuCloseClickListener);
     });
   };
 
   Cmfive.THEME_KEY = 'theme';
+
+  Cmfive.modalClickListener = function () {
+    if (this.hasAttribute('data-modal-confirm')) {
+      if (confirm(this.getAttribute('data-modal-confirm'))) {
+        openModal(this.getAttribute('data-modal-target'));
+      }
+    } else {
+      openModal(this.getAttribute('data-modal-target'));
+    }
+  };
+
+  Cmfive.menuOpenClickListener = function () {
+    if (!document.getElementById('menu-overlay').classList.contains('active')) {
+      document.getElementById('menu-overlay').classList.add('active');
+    }
+
+    if (!document.getElementById('offscreen-menu').classList.contains('active')) {
+      document.getElementById('offscreen-menu').classList.add('active');
+    }
+  };
+
+  Cmfive.menuCloseClickListener = function () {
+    if (document.getElementById('menu-overlay').classList.contains('active')) {
+      document.getElementById('menu-overlay').classList.remove('active');
+    }
+
+    if (document.getElementById('offscreen-menu').classList.contains('active')) {
+      document.getElementById('offscreen-menu').classList.remove('active');
+    }
+  };
+
   return Cmfive;
 }();
 
 window.addEventListener('load', function () {
-  return Cmfive.ready();
+  return Cmfive.ready(document);
 });
 
 /***/ }),
@@ -3483,6 +3485,14 @@ var QuillEditor = function () {
       quillEditors.forEach(function (q) {
         var options = q.getAttribute('data-quill-options');
         var editor = new (quill__WEBPACK_IMPORTED_MODULE_0___default())('#' + q.id, JSON.parse(options));
+        var textarea = document.getElementById(q.id.substring(6));
+        console.log(textarea);
+        q.closest('form').removeEventListener('submit', function () {
+          return textarea.innerText = q.querySelector('.ql-editor').innerHTML;
+        });
+        q.closest('form').addEventListener('submit', function () {
+          return textarea.innerText = q.querySelector('.ql-editor').innerHTML;
+        });
       });
     }
   };

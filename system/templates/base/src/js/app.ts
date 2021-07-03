@@ -42,7 +42,7 @@ function openModal(url: string) {
         // @todo: find a way to not need query for modals to work
         $('#cmfive-modal .modal-content').html(content);
         // Rebind elements for modal
-        Cmfive.ready();
+        Cmfive.ready(document.getElementById('#cmfive-modal'));
     })
 }
 
@@ -68,7 +68,41 @@ class Cmfive {
         document.querySelector('html').classList.add('theme--' + localStorage.getItem(Cmfive.THEME_KEY));
     }
 
-    static ready() {
+    private static modalClickListener = function() {
+        if (this.hasAttribute('data-modal-confirm')) {
+            if (confirm(this.getAttribute('data-modal-confirm'))) {
+                openModal(this.getAttribute('data-modal-target'));
+            }
+        } else {
+            openModal(this.getAttribute('data-modal-target'))
+        }
+    }
+
+    private static menuOpenClickListener = function() {
+        if (!document.getElementById('menu-overlay').classList.contains('active')) {
+            document.getElementById('menu-overlay').classList.add('active');
+        }
+        if (!document.getElementById('offscreen-menu').classList.contains('active')) {
+            document.getElementById('offscreen-menu').classList.add('active');
+        }
+    }
+
+    private static menuCloseClickListener = function() {
+        if (document.getElementById('menu-overlay').classList.contains('active')) {
+            document.getElementById('menu-overlay').classList.remove('active');
+        }
+        if (document.getElementById('offscreen-menu').classList.contains('active')) {
+            document.getElementById('offscreen-menu').classList.remove('active');
+        }
+    }
+
+    /**
+     * Ready can be called on a target (like a modal) to bind interactions on elements
+     * that are loaded dynamically onto the page
+     * 
+     * @param target Document|Element
+     */
+    static ready(target: Document|Element) {
         // AccordionAdaptation.bindAccordionInteractions();
         DropdownAdaptation.bindDropdownHover();
         TabAdaptation.bindTabInteractions();
@@ -93,49 +127,28 @@ class Cmfive {
         }
 
         // Bind modal links
-        document.querySelectorAll('[data-modal-target]').forEach((m: Element) => {
-            m.addEventListener('click', () => {
-                if (m.hasAttribute('data-modal-confirm')) {
-                    if (confirm(m.getAttribute('data-modal-confirm'))) {
-                        openModal(m.getAttribute('data-modal-target'));
-                    }
-                } else {
-                    openModal(m.getAttribute('data-modal-target'))
-                }
-            });
+        target.querySelectorAll('[data-modal-target]')?.forEach((m: Element) => {
+            m.removeEventListener('click', Cmfive.modalClickListener);
+            m.addEventListener('click', Cmfive.modalClickListener);
         })
 
         // Theme toggle
-        document.querySelectorAll('[data-toggle-theme]')?.forEach(t => {
-            t.removeEventListener('click', (event) => Cmfive.toggleTheme());
-            t.addEventListener('click', (event) => Cmfive.toggleTheme());
+        target.querySelectorAll('[data-toggle-theme]')?.forEach(t => {
+            t.removeEventListener('click', Cmfive.toggleTheme);
+            t.addEventListener('click', Cmfive.toggleTheme);
         })
 
         // Menu toggle
-        document.querySelectorAll('[data-toggle-menu="open"]')?.forEach(m => {
-            m.addEventListener('click', (event) => {
-                console.log(event);
-                if (!document.getElementById('menu-overlay').classList.contains('active')) {
-                    document.getElementById('menu-overlay').classList.add('active');
-                }
-                if (!document.getElementById('offscreen-menu').classList.contains('active')) {
-                    document.getElementById('offscreen-menu').classList.add('active');
-                }
-            })
+        target.querySelectorAll('[data-toggle-menu="open"]')?.forEach(m => {
+            m.removeEventListener('click', Cmfive.menuOpenClickListener);
+            m.addEventListener('click', Cmfive.menuOpenClickListener);
         });
 
-        document.querySelectorAll('[data-toggle-menu="close"]')?.forEach(m => {
-            m.addEventListener('click', (event) => {
-                console.log(event);
-                if (document.getElementById('menu-overlay').classList.contains('active')) {
-                    document.getElementById('menu-overlay').classList.remove('active');
-                }
-                if (document.getElementById('offscreen-menu').classList.contains('active')) {
-                    document.getElementById('offscreen-menu').classList.remove('active');
-                }
-            })
+        target.querySelectorAll('[data-toggle-menu="close"]')?.forEach(m => {
+            m.removeEventListener('click', Cmfive.menuCloseClickListener);
+            m.addEventListener('click', Cmfive.menuCloseClickListener);
         });
     }
 }
 
-window.addEventListener('load', () => Cmfive.ready());
+window.addEventListener('load', () => Cmfive.ready(document));
