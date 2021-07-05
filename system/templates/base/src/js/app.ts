@@ -1,12 +1,9 @@
-// import bootstrap from 'bootstrap'
-// import * as $ from 'jquery';
-// import Vue from 'vue';
+// src/app.ts
 
-// Object.assign(window, { Vue, $ });
-
-import { Modal } from 'bootstrap'; // 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import { Modal } from 'bootstrap';
 // import CmfiveNav from './components/Nav';
 // import { AccordionAdaptation } from './adaptations/accordion';
+import { AlertAdaptation } from './adaptations/alert';
 import { DropdownAdaptation } from './adaptations/dropdown';
 import { TabAdaptation } from './adaptations/tabs';
 import { TableAdaptation } from './adaptations/table';
@@ -31,6 +28,11 @@ function openModal(url: string) {
     //     modal.show();
     // })
 
+    let modalContent = document.querySelector('#cmfive-modal .modal-content');
+    if (modalContent) {
+        modalContent.innerHTML = '';
+    }
+
     modal.show();
     fetch(url, {
         headers: {
@@ -39,8 +41,8 @@ function openModal(url: string) {
     }).then((response) => {
         return response.text()
     }).then((content) => {
-        // @todo: find a way to not need query for modals to work
-        $('#cmfive-modal .modal-content').html(content);
+        modalContent.innerHTML = content;
+        
         // Rebind elements for modal
         Cmfive.ready(document.getElementById('#cmfive-modal'));
     })
@@ -104,6 +106,7 @@ class Cmfive {
      */
     static ready(target: Document|Element) {
         // AccordionAdaptation.bindAccordionInteractions();
+        AlertAdaptation.bindCloseEvent();
         DropdownAdaptation.bindDropdownHover();
         TabAdaptation.bindTabInteractions();
         TableAdaptation.bindTableInteractions();

@@ -14918,6 +14918,7 @@ a:not(.nav-link) {
   display: block;
   padding: 12px 20px;
   border-radius: 2px;
+  margin-bottom: 1rem;
   font-size: 16px !important;
   line-height: 24px !important;
 }

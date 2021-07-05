@@ -3105,6 +3105,41 @@ function within(min, value, max) {
 
 /***/ }),
 
+/***/ "./src/js/adaptations/alert.ts":
+/*!*************************************!*\
+  !*** ./src/js/adaptations/alert.ts ***!
+  \*************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "AlertAdaptation": () => (/* binding */ AlertAdaptation)
+/* harmony export */ });
+var AlertAdaptation = function () {
+  function AlertAdaptation() {}
+
+  AlertAdaptation.bindCloseEvent = function () {
+    var _a;
+
+    (_a = document.querySelectorAll(AlertAdaptation.closeTarget)) === null || _a === void 0 ? void 0 : _a.forEach(function (a) {
+      a.removeEventListener('click', function () {
+        return a.closest('.alert').remove();
+      });
+      a.addEventListener('click', function () {
+        return a.closest('.alert').remove();
+      });
+    });
+  };
+
+  AlertAdaptation.closeTarget = '.alert .close';
+  return AlertAdaptation;
+}();
+
+
+
+/***/ }),
+
 /***/ "./src/js/adaptations/dropdown.ts":
 /*!****************************************!*\
   !*** ./src/js/adaptations/dropdown.ts ***!
@@ -3330,10 +3365,12 @@ var TabAdaptation = function () {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var bootstrap__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! bootstrap */ "./node_modules/bootstrap/dist/js/bootstrap.esm.js");
-/* harmony import */ var _adaptations_dropdown__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./adaptations/dropdown */ "./src/js/adaptations/dropdown.ts");
-/* harmony import */ var _adaptations_tabs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./adaptations/tabs */ "./src/js/adaptations/tabs.ts");
-/* harmony import */ var _adaptations_table__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./adaptations/table */ "./src/js/adaptations/table.ts");
-/* harmony import */ var _components_QuillEditor__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./components/QuillEditor */ "./src/js/components/QuillEditor.ts");
+/* harmony import */ var _adaptations_alert__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./adaptations/alert */ "./src/js/adaptations/alert.ts");
+/* harmony import */ var _adaptations_dropdown__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./adaptations/dropdown */ "./src/js/adaptations/dropdown.ts");
+/* harmony import */ var _adaptations_tabs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./adaptations/tabs */ "./src/js/adaptations/tabs.ts");
+/* harmony import */ var _adaptations_table__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./adaptations/table */ "./src/js/adaptations/table.ts");
+/* harmony import */ var _components_QuillEditor__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./components/QuillEditor */ "./src/js/components/QuillEditor.ts");
+
 
 
 
@@ -3342,6 +3379,12 @@ __webpack_require__.r(__webpack_exports__);
 
 function openModal(url) {
   var modal = new bootstrap__WEBPACK_IMPORTED_MODULE_0__.Modal(document.getElementById('cmfive-modal'));
+  var modalContent = document.querySelector('#cmfive-modal .modal-content');
+
+  if (modalContent) {
+    modalContent.innerHTML = '';
+  }
+
   modal.show();
   fetch(url, {
     headers: {
@@ -3350,7 +3393,7 @@ function openModal(url) {
   }).then(function (response) {
     return response.text();
   }).then(function (content) {
-    $('#cmfive-modal .modal-content').html(content);
+    modalContent.innerHTML = content;
     Cmfive.ready(document.getElementById('#cmfive-modal'));
   });
 }
@@ -3379,10 +3422,11 @@ var Cmfive = function () {
   Cmfive.ready = function (target) {
     var _a, _b, _c, _d;
 
-    _adaptations_dropdown__WEBPACK_IMPORTED_MODULE_1__.DropdownAdaptation.bindDropdownHover();
-    _adaptations_tabs__WEBPACK_IMPORTED_MODULE_2__.TabAdaptation.bindTabInteractions();
-    _adaptations_table__WEBPACK_IMPORTED_MODULE_3__.TableAdaptation.bindTableInteractions();
-    _components_QuillEditor__WEBPACK_IMPORTED_MODULE_4__.QuillEditor.bindQuillEditor();
+    _adaptations_alert__WEBPACK_IMPORTED_MODULE_1__.AlertAdaptation.bindCloseEvent();
+    _adaptations_dropdown__WEBPACK_IMPORTED_MODULE_2__.DropdownAdaptation.bindDropdownHover();
+    _adaptations_tabs__WEBPACK_IMPORTED_MODULE_3__.TabAdaptation.bindTabInteractions();
+    _adaptations_table__WEBPACK_IMPORTED_MODULE_4__.TableAdaptation.bindTableInteractions();
+    _components_QuillEditor__WEBPACK_IMPORTED_MODULE_5__.QuillEditor.bindQuillEditor();
     var theme = localStorage.getItem(Cmfive.THEME_KEY);
 
     if (!theme) {
