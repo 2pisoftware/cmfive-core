@@ -5,28 +5,13 @@ import { Modal } from 'bootstrap';
 // import { AccordionAdaptation } from './adaptations/accordion';
 import { AlertAdaptation } from './adaptations/alert';
 import { DropdownAdaptation } from './adaptations/dropdown';
+import { FavouritesAdaptation} from './adaptations/favourites';
 import { TabAdaptation } from './adaptations/tabs';
 import { TableAdaptation } from './adaptations/table';
 import { QuillEditor } from './components/QuillEditor';
 
 function openModal(url: string) {
     const modal = new Modal(document.getElementById('cmfive-modal')) //, options
-
-    // let xhttp = new XMLHttpRequest();
-    // xhttp.onreadystatechange = () => {
-    //     if (xhttp.readyState === XMLHttpRequest.DONE && xhttp.status == 200) { 
-    //         document.querySelector('#cmfive-modal .modal-content').innerHTML = xhttp.responseText;
-    //         modal.show();
-    //     }
-    // }
-
-    // xhttp.open('GET', url)
-    // xhttp.send();
-
-    // $.get(url).done((response) => {
-    //     $('#cmfive-modal .modal-content').html(response);
-    //     modal.show();
-    // })
 
     let modalContent = document.querySelector('#cmfive-modal .modal-content');
     if (modalContent) {
@@ -42,7 +27,7 @@ function openModal(url: string) {
         return response.text()
     }).then((content) => {
         modalContent.innerHTML = content;
-        
+
         // Rebind elements for modal
         Cmfive.ready(document.getElementById('#cmfive-modal'));
     })
@@ -108,6 +93,7 @@ class Cmfive {
         // AccordionAdaptation.bindAccordionInteractions();
         AlertAdaptation.bindCloseEvent();
         DropdownAdaptation.bindDropdownHover();
+        FavouritesAdaptation.bindFavouriteInteractions();
         TabAdaptation.bindTabInteractions();
         TableAdaptation.bindTableInteractions();
         QuillEditor.bindQuillEditor();
@@ -130,24 +116,24 @@ class Cmfive {
         }
 
         // Bind modal links
-        target.querySelectorAll('[data-modal-target]')?.forEach((m: Element) => {
+        target?.querySelectorAll('[data-modal-target]')?.forEach((m: Element) => {
             m.removeEventListener('click', Cmfive.modalClickListener);
             m.addEventListener('click', Cmfive.modalClickListener);
         })
 
         // Theme toggle
-        target.querySelectorAll('[data-toggle-theme]')?.forEach(t => {
+        target?.querySelectorAll('[data-toggle-theme]')?.forEach(t => {
             t.removeEventListener('click', Cmfive.toggleTheme);
             t.addEventListener('click', Cmfive.toggleTheme);
         })
 
         // Menu toggle
-        target.querySelectorAll('[data-toggle-menu="open"]')?.forEach(m => {
+        target?.querySelectorAll('[data-toggle-menu="open"]')?.forEach(m => {
             m.removeEventListener('click', Cmfive.menuOpenClickListener);
             m.addEventListener('click', Cmfive.menuOpenClickListener);
         });
 
-        target.querySelectorAll('[data-toggle-menu="close"]')?.forEach(m => {
+        target?.querySelectorAll('[data-toggle-menu="close"]')?.forEach(m => {
             m.removeEventListener('click', Cmfive.menuCloseClickListener);
             m.addEventListener('click', Cmfive.menuCloseClickListener);
         });

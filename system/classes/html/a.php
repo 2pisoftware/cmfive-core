@@ -69,6 +69,18 @@ class a
             }
         }
 
+        if (!empty($this->_attributeList)) {
+            foreach ($this->_attributeList as $attribute) {
+                foreach ($attribute as $key => $value) {
+                    if (!empty($value)) {
+                        $buffer .= "{$key}=\"{$value}\" ";
+                    } else {
+                        $buffer .= "{$key} ";
+                    }
+                }
+            }
+        }
+
         return $buffer . '>' . $this->text . '</a>';
     }
 

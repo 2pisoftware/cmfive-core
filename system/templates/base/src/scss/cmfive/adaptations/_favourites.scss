@@ -1,0 +1,27 @@
+
+// @todo
+i {
+    &.new-favourite-button {
+        display: inline-block;
+        color: lightgrey;
+        padding: 0px 5px;
+        font-size: 35px;
+        line-height: 40px;
+        width: 40px;
+
+        &:hover {
+            cursor: pointer;
+        }
+
+        &.bi-star-fill {
+            color: gold;
+        }
+    }
+
+    &.favorite_flag {
+        &.fi-star {
+            display: none !important;
+            visibility: hidden !important;
+        }
+    }
+}

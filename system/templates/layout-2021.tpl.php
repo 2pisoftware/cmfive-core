@@ -48,7 +48,9 @@
                         <div class="container-fluid">
                             <a class="nav-link nav-icon" data-toggle-menu="open"><i class="bi bi-list"></i></a>
                             <a class="nav-link nav-icon" href="/"><i class="bi bi-house-fill"></i></a>
-                            <a class="nav-link nav-icon" href="/"><i class="bi bi-star-fill"></i></a>
+                            <?php if (AuthService::getInstance($w)->user()->allowed('/favorite')) : ?>
+                                <a class="nav-link nav-icon" data-modal-target="/favorite"><i class="bi bi-star-fill"></i></a>
+                            <?php endif; ?>
                             <a class="nav-link nav-icon" href="/"><i class="bi bi-person-fill"></i></a>
                             <a class="nav-link nav-icon" href="/"><i class="bi bi-question-circle-fill"></i></a>
                             <a class="nav-link nav-icon" data-modal-target='/search?isbox=1'><i class="bi bi-search"></i></a>

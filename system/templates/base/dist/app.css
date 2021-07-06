@@ -15129,6 +15129,25 @@ a:not(.nav-link) {
   color: #4D4D4D;
 }
 
+i.new-favourite-button {
+  display: inline-block;
+  color: lightgrey;
+  padding: 0px 5px;
+  font-size: 35px;
+  line-height: 40px;
+  width: 40px;
+}
+i.new-favourite-button:hover {
+  cursor: pointer;
+}
+i.new-favourite-button.bi-star-fill {
+  color: gold;
+}
+i.favorite_flag.fi-star {
+  display: none !important;
+  visibility: hidden !important;
+}
+
 input {
   margin: 4px 0px;
   border: 1px solid #ccc;
@@ -15456,6 +15475,17 @@ ul[class*=-block-grid-] li {
 .panel {
   box-shadow: 0px 16px 48px rgba(45, 45, 45, 0.25);
   padding: 1rem;
+  margin: 0;
+}
+.theme--default .panel {
+  background-color: #FFFFFF;
+  color: #353535;
+  transition: color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1) , background-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+.theme--dark .panel {
+  background-color: #353535;
+  color: #FFFFFF;
+  transition: color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1) , background-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1) , color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1) , background-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 .panel .section-header {
   padding: 0.3rem 1rem 0;

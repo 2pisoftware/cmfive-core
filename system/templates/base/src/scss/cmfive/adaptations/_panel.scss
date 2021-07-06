@@ -1,7 +1,9 @@
 
 .panel {
+    @include theme((background-color: 'white-black', color: 'black-grey'));
     @include shadow-hover();
     padding: 1rem;
+    margin: 0;
     // @include theme((background-color: 'light-grey'));
 
     .section-header {

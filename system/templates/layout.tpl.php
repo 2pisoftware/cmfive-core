@@ -128,6 +128,22 @@
             });
         });
 
+
+        // function modalClickListener() {
+        //     if (this.hasAttribute('data-modal-confirm')) {
+        //         if (confirm(this.getAttribute('data-modal-confirm'))) {
+        //             openModal(this.getAttribute('data-modal-target'));
+        //         }
+        //     } else {
+        //         openModal(this.getAttribute('data-modal-target'))
+        //     }
+        // }
+
+        // function openModal(url) {
+        //     $('#cmfive_modal').foundation('reveal', 'open', url);
+        //     bindNewModalLinks();
+        // }
+
         // Try and prevent multiple form submissions
         $("input[type=submit]").click(function() {
             $(this).hide();
@@ -139,8 +155,16 @@
             });
         });
 
+        // function bindNewModalLinks() {
+        //     document.querySelectorAll('[data-modal-target]')?.forEach((m) => {
+        //         m.removeEventListener('click', modalClickListener);
+        //         m.addEventListener('click', modalClickListener);
+        //     });
+        // }
         // Focus first form element when the modal opens
         $(document).ready(function() {
+            // bindNewModalLinks();
+
             $('.body form:first :input:visible:enabled:first').not('.no-focus').focus();
 
             $(document).on('opened.fndtn.reveal', '[data-reveal]', function() {
