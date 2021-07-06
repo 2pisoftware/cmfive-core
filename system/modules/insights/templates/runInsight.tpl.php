@@ -42,4 +42,13 @@ catch (Error $e) {
 <!--Select field goes in here along with save and cancel options. Rest of get goes in reunInsight action-->
 </div>
 <!--script goes at bottom
-js get elemt by id and send data to post function in pdf action-->
+js get element by id and send data to post function in pdf action-->
+<script>
+  //variable for modal and button needed
+  //override onclick function of button
+  //onclick sets modal visibiltiy to visible
+  //variable needed for save and cancel buttons
+  //override onclick of cancel button. Sets visibiltiy back to hidden
+  //override onclick of save button. Send data to post funtion of PDF action (use ajax). Then close modal.
+  console.log('hello my_modal');
+</script>
