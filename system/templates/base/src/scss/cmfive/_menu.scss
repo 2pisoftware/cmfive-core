@@ -27,6 +27,10 @@ $themes: map.deep-merge($themes, (
         padding: 20px;
         opacity: 0;
 
+        .navbar {
+            @include theme((background-color: 'navbar-background'));
+        }
+
         &.active {
             left: 0px;
             opacity: 1;
@@ -43,6 +47,7 @@ $themes: map.deep-merge($themes, (
             margin-bottom: 34px;
 
             .navbar {
+                @include theme((background-color: 'navbar-background'));
                 li {
                     a {
                         padding: 0.5rem 1rem;

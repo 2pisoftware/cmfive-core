@@ -1,0 +1,11 @@
+
+ul.list-group {
+    li.list-group-item {
+        border-radius: 0;
+        border: none;
+        padding-right: 10px;
+        border-bottom: 1px solid $dark-grey;
+        margin-bottom: -1px;
+        margin: 0;
+    }
+}

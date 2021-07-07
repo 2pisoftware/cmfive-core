@@ -1,4 +1,6 @@
-@use "sass:map";
+// @use "sass:map";
+
+@import '../variables';
 
 @mixin shadow-flat {
     box-shadow: 0px 4px 8px $shadow-light;
@@ -23,8 +25,8 @@
 }
 
 @mixin font-size($size) {
-    font-size: map.get($font-sizes, $size) !important;
-    line-height: map.get($line-heights, $size) !important;
+    font-size: map-get($font-sizes, $size) !important;
+    line-height: map-get($line-heights, $size) !important;
 }
 
 @mixin cleafix() {
@@ -46,8 +48,8 @@
             }
             
             @each $prop, $target in $props {
-                #{$prop}: map-get($theme-map, $target);
-                $t: append($prop $animation-duration $animation-path',', $t);
+                #{$prop}: map-get($theme-map, $target) !important;
+                $t: append($prop $animation-duration $animation-path + ',', $t);
             }
             transition: #{$t};
             $theme-map: null !global;
