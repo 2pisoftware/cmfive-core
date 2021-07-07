@@ -150,7 +150,7 @@ class DbService
      *
      * @param <type> $table
      * @param <type> $idOrWhere
-     * @return <type>
+     * @return DbObject|null
      */
     public function getObject($class, $idOrWhere, $use_cache = true, $order_by = null, $includeDeleted = false)
     {

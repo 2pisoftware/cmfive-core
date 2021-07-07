@@ -122,7 +122,12 @@ class User extends DbObject
         }
     }
 
-    public function getContact()
+    /**
+     * Returns a user's contact by its $contact_id
+     *
+     * @return Contact|null
+     */
+    public function getContact(): ?Contact
     {
         if (!$this->_contact) {
             $this->_contact = $this->getObject("Contact", $this->contact_id);
