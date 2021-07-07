@@ -127,7 +127,7 @@ class User extends DbObject
      *
      * @return Contact|null
      */
-    public function getContact(): ?Contact
+    public function getContact()
     {
         if (!$this->_contact) {
             $this->_contact = $this->getObject("Contact", $this->contact_id);

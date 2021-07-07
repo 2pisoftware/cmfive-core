@@ -7,6 +7,11 @@ class AdminService extends DbService
         return $this->getObject('Country', $where);
     }
 
+    public function getCountries(array $where = []): array
+    {
+        return $this->getObjects('Country', $where);
+    }
+
     /**
      * @deprecated v4.3.0 - Will be removed in v5.0.0.
      */
