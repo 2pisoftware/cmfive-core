@@ -20,7 +20,7 @@ async function loadAssets() {
                 const ts_asset_dir = fs.opendirSync(BASE_PATH + module_dir_ent.name + '/assets/ts');
                 let ts_asset_dir_ent;
                 while ((ts_asset_dir_ent = ts_asset_dir.readSync()) !== null) {
-                    if (ts_asset_dir_ent.name.split('.').pop() == 'ts') {
+                    if (ts_asset_dir_ent.name.split('.').pop() == 'ts' || ts_asset_dir_ent.name.split('.').pop() == 'vue') {
                         console.log('Compiling', ts_asset_dir_ent.name)
                         mix.ts(BASE_PATH + module_dir_ent.name + '/assets/ts/' + ts_asset_dir_ent.name, 'dist/' + module_dir_ent.name).vue()
                             .setPublicPath('dist')
