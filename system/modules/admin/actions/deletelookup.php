@@ -3,9 +3,9 @@ function deletelookup_ALL(Web &$w) {
 	$p = $w->pathMatch("id","type");
 	$return_url = "/admin/lookup/?type=".$p['type'];
 	$lookup = $w->Admin->getLookupbyId($p['id']);
-	
+
 	if ($lookup) {
-		$contacts_used_by_lookup = $w->Admin->getObjects('contact', ['title_lookup_id' => $p['id']]);
+		$contacts_used_by_lookup = $w->Admin->getObjects('Contact', ['title_lookup_id' => $p['id']]);
 		if (!empty($contacts_used_by_lookup)) {
 			$list_of_contacts = "";
 			foreach ($contacts_used_by_lookup as $contact) {
