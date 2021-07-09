@@ -143,10 +143,8 @@ class FileService extends DbService
             "region" =>  Config::get("file.adapters.s3.region", "ap-southeast-2"),
             "version" => Config::get("file.adapters.s3.version", "2006-03-01"),
         ];
-
-        // if (Config::get("system.environment", ENVIRONMENT_PRODUCTION) === ENVIRONMENT_DEVELOPMENT) {
-            $args["credentials"] = Config::get("file.adapters.s3.credentials");
-        // }
+        
+        $args["credentials"] = Config::get("file.adapters.s3.credentials");
 
         return new Aws\S3\S3Client($args);
     }
@@ -172,15 +170,6 @@ class FileService extends DbService
                 $adapter_obj = new InMemoryAdapter([basename($path) => $content]);
                 break;
             case "s3":
-                // $args = [
-                //     "region" =>  Config::get("file.adapters.s3.region", "ap-southeast-2"),
-                //     "version" => Config::get("file.adapters.s3.version", "2006-03-01"),
-                // ];
-
-                // if (Config::get("system.environment", ENVIRONMENT_PRODUCTION) === ENVIRONMENT_DEVELOPMENT) {
-                //     $args["credentials"] = Config::get("file.adapters.s3.credentials");
-                // }
-
                 $client = $this->getS3ClientBelowFilesystem(); //new Aws\S3\S3Client($args);
                 $config_options = Config::get('file.adapters.s3.options');
                 $s3path = (substr($path, -1) == "/") ? substr($path, 0, -1) : $path; // because trailing presence varies with call/object history
@@ -219,15 +208,6 @@ class FileService extends DbService
             case "s3":
                 $config_options = $adapter_config['options'];
                 $config_options = array_replace(is_array($config_options) ? $config_options : [], ["directory" => $path], $options);
-
-                // $args = [
-                //     "region" =>  Config::get("file.adapters.s3.region", "ap-southeast-2"),
-                //     "version" => Config::get("file.adapters.s3.version", "2006-03-01"),
-                // ];
-
-                // if (Config::get("system.environment", ENVIRONMENT_PRODUCTION) === ENVIRONMENT_DEVELOPMENT) {
-                //     $args["credentials"] = Config::get("file.adapters.s3.credentials");
-                // }
 
                 $client = $this->getS3ClientBelowFilesystem(); //new S3Client($args);
                 $adapter_obj = new AwsS3($client, $adapter_config['bucket'], is_array($config_options) ? $config_options : []);
