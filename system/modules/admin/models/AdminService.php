@@ -2,14 +2,54 @@
 
 class AdminService extends DbService
 {
-    public function getCountry(array $where): ?Country
+    /**
+     * Returns a country via the $id parameter.
+     *
+     * @param string $id
+     * @return Country|null
+     */
+    public function getCountry(string $id): ?Country
     {
-        return $this->getObject('Country', $where);
+        return $this->getObject('Country', $id);
     }
 
+    /**
+     * Returns all countries filtered using the $where parameter.
+     *
+     * @param array $where
+     * @return array
+     */
     public function getCountries(array $where = []): array
     {
         return $this->getObjects('Country', $where);
+    }
+
+    /**
+     * Returns an array of rows containing the country's demonym.
+     *
+     * @return array
+     */
+    public function getCountryDemonyms(): array
+    {
+        return $this->_db->get('country')
+            ->select()
+            ->select('demonym')
+            ->where('is_deleted', 0)
+            ->fetchAll();
+    }
+
+    /**
+     * Returns an array of rows containing the country's name.
+     *
+     * @return array
+     */
+    public function getCountryNames(): array
+    {
+        return $this->_db->get('country')
+            ->select()
+            ->select('name')
+            ->where('is_deleted', 0)
+            ->fetchAll();
     }
 
     /**
