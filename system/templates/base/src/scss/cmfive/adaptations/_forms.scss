@@ -1,11 +1,21 @@
 
-input {
-    margin: 4px 0px;
-    border: 1px solid #ccc;
-    padding: 0 10px !important;
+label {
+    display: flex;
+    flex-direction: column;
 
-    &.input-large {
-        width: 100%;
+    input {
+        margin: 4px 0px;
+        border: 1px solid #ccc;
+        padding: 0 10px !important;
+
+        &.input-large {
+            width: 100%;
+        }
+
+        &[type='color'] {
+            max-width: 40px;
+            display: block;
+        }
     }
 }
 

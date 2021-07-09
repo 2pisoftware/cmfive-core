@@ -8,6 +8,7 @@ import { DropdownAdaptation } from './adaptations/dropdown';
 import { FavouritesAdaptation} from './adaptations/favourites';
 import { TabAdaptation } from './adaptations/tabs';
 import { TableAdaptation } from './adaptations/table';
+import { Toast } from './components/Toast';
 import { QuillEditor } from './components/QuillEditor';
 
 function openModal(url: string) {

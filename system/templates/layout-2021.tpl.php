@@ -148,6 +148,7 @@
                 <div class="modal-content"></div>
             </div>
         </div>
+        <div class="cmfive-toast-message"></div>
         <?php $w->outputScripts(); ?>
     </body>
 </html>

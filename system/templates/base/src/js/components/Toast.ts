@@ -5,14 +5,16 @@
  */
 'use strict';
 
-class Toast
+export class Toast
 {
 	public message: string;
 	public duration: number;
 
-	private static messageTarget: string = '.cmfive-toast-message';
+	private static toastParentElement: string = 'body';
+	private static messageTargetClass: string = 'cmfive-toast-message';
+	private static toastAppearClass: string = 'cmfive-toast-message-appear';
 
-	public constructor(message: string, duration: number)
+	public constructor(message: string, duration: number = 5000)
 	{
 		this.message = message;
 		this.duration = duration > 500 ? duration : 5000;
@@ -20,84 +22,26 @@ class Toast
 
 	public show()
 	{
-		let toaster = document.querySelector(Toast.);
-		if (toaster.length === 0) {
-			$('.body').append($('<div>').addClass('cmfive-toast-message'));
-		}
-		toaster = $('.cmfive-toast-message');
-		if (toaster.length === 0) {
-			throw new Error('Could not create Toast container');
+		let toaster = document.querySelector('.' + Toast.messageTargetClass);
+		if (!toaster) {
+			let toaster = document.createElement('div');
+			toaster.classList.add(Toast.messageTargetClass);
+			document.querySelector(Toast.toastParentElement).appendChild(toaster);
 		}
 
+		toaster = document.querySelector('.' + Toast.messageTargetClass)
+		if (!toaster) {
+			throw new Error('Could not create Toaster element');
+		}
+		
 		// Add the message and display
-		toaster.html(this.message);
+		toaster.innerHTML = this.message;
 
-		toaster.addClass('cmfive-toast-message-appear');
+		toaster.classList.add(Toast.toastAppearClass);
 		window.setTimeout(function() {
-			toaster.removeClass('cmfive-toast-message-appear');
-			window.setTimeout(function() {toaster.html('')}, 500);
+			toaster.classList.remove(Toast.toastAppearClass);
+			window.setTimeout(() => toaster.innerHTML = '', 500);
 		}, this.duration);
 	}
 }
 
-Toast.prototype.show = function() {
-	// Try and create the toast container if it doesn't exist
-	var toaster = $('.cmfive-toast-message');
-	if (toaster.length === 0) {
-		$('.body').append($('<div>').addClass('cmfive-toast-message'));
-	}
-	toaster = $('.cmfive-toast-message');
-	if (toaster.length === 0) {
-		throw new Error('Could not create Toast container');
-	}
-
-	// Add the message and display
-	toaster.html(this.message);
-
-	toaster.addClass('cmfive-toast-message-appear');
-	window.setTimeout(function() {
-		toaster.removeClass('cmfive-toast-message-appear');
-		window.setTimeout(function() {toaster.html('')}, 500);
-	}, this.duration);
-
-	// var promise = new Promise((resolve, reject) => {	
-	// 	resolve();
-	// }).then(() => {
-		
-	// })
-}
-
-// class Toast {
-
-// 	constructor(message, duration) {
-// 		this.message = message;
-// 		this.duration = duration > 500 ? duration : 5000;
-// 	}
-
-// 	show() {
-// 		// Try and create the toast container if it doesn't exist
-// 		var toaster = $('.cmfive-toast-message');
-// 		if (toaster.length === 0) {
-// 			$('.body').append($('<div>').addClass('cmfive-toast-message'));
-// 		}
-// 		toaster = $('.cmfive-toast-message');
-// 		if (toaster.length === 0) {
-// 			throw new Error('Could not create Toast container');
-// 		}
-	
-// 		// Add the message and display
-// 		toaster.html(this.message);
-
-// 		var promise = new Promise((resolve, reject) => {
-// 			toaster.addClass('cmfive-toast-message-appear');
-// 			resolve();
-// 		}).then(() => {
-// 			window.setTimeout(() => {
-// 				toaster.removeClass('cmfive-toast-message-appear');
-// 				window.setTimeout(() => {toaster.html('')}, 500);
-// 			}, this.duration);
-// 		})
-		
-// 	}
-
-// }
