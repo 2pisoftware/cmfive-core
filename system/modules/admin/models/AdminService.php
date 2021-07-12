@@ -14,6 +14,17 @@ class AdminService extends DbService
     }
 
     /**
+     * Returns a country filtering on the $where parameter.
+     *
+     * @param array $where
+     * @return Country|null
+     */
+    public function getCountryWhere(array $where): ?Country
+    {
+        return $this->getObject('Country', $where);
+    }
+
+    /**
      * Returns all countries filtered using the $where parameter.
      *
      * @param array $where

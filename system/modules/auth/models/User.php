@@ -119,7 +119,10 @@ class User extends DbObject
         } catch (Exception $e) {
             // The error should already be logged
             $this->rollbackTransaction();
+            return false;
         }
+
+        return true;
     }
 
     /**

@@ -38,7 +38,7 @@ function get_countries_GET(Web $w): void
 
     foreach ($data as $d) {
         $is_new = false;
-        $country = AdminService::getInstance($w)->getCountry([
+        $country = AdminService::getInstance($w)->getCountryWhere([
             'name' => $d->name,
         ]);
         if (empty($country)) {
