@@ -34,8 +34,7 @@ function openModal(url: string) {
     })
 }
 
-
-class Cmfive {
+export class Cmfive {
     static THEME_KEY = 'theme';
 
     static toggleTheme() {
@@ -58,12 +57,22 @@ class Cmfive {
 
     private static modalClickListener = function() {
         if (this.hasAttribute('data-modal-confirm')) {
-            if (confirm(this.getAttribute('data-modal-confirm'))) {
-                openModal(this.getAttribute('data-modal-target'));
+            if (!confirm(this.getAttribute('data-modal-confirm'))) {
+                return false;
             }
-        } else {
-            openModal(this.getAttribute('data-modal-target'))
         }
+
+        openModal(this.getAttribute('data-modal-target'))
+    }
+
+    private static linkClickListener = function() {
+        if (this.hasAttribute('data-link-confirm')) {
+            if (!confirm(this.getAttribute('data-link-confirm'))) {
+                return false;
+            }
+        }
+
+        window.location.href = this.getAttribute('data-link-target');
     }
 
     private static menuOpenClickListener = function() {
@@ -120,6 +129,11 @@ class Cmfive {
         target?.querySelectorAll('[data-modal-target]')?.forEach((m: Element) => {
             m.removeEventListener('click', Cmfive.modalClickListener);
             m.addEventListener('click', Cmfive.modalClickListener);
+        })
+
+        target?.querySelectorAll('[data-link-target]')?.forEach((m: Element) => {
+            m.removeEventListener('click', Cmfive.linkClickListener);
+            m.addEventListener('click', Cmfive.linkClickListener);
         })
 
         // Theme toggle

@@ -705,7 +705,10 @@ function objectPropertyHasValueInMultiArray($object, $property, $value, $multiar
     if (!empty($multiarray)) {
         foreach ($multiarray as $array_key => $array_value) {
             if (is_array($array_value)) {
-                return objectPropertyHasValueInMultiArray($object, $property, $value, $array_value);
+                $response = objectPropertyHasValueInMultiArray($object, $property, $value, $array_value);
+                if ($response) {
+                    return $response;
+                }
             }
 
             if (is_object($array_value) && is_a($array_value, $object, true) && property_exists($array_value, $property) && $array_value->$property === $value) {

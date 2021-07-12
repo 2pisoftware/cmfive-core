@@ -9,4 +9,14 @@ class Country extends DbObject
     public $region;
     public $subregion;
     public $demonym;
+
+    public function getSelectOptionTitle()
+    {
+        return $this->name;
+    }
+
+    public function getSelectOptionValue()
+    {
+        return $this->alpha_2_code;
+    }
 }
