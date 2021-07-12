@@ -451,43 +451,64 @@ class FileService extends DbService
 
 
     /**
-     * Sends header and content of file to browser without intermediaries, via exit(0)=Terminates execution!
+     * Sends header and content of file to browser without intermediaries:
+     * defaults to via filestream & exit(0)=Terminates execution!
+     * otherwise, for s3, redirects to presigned url
+     * In both cases, allows for largest possible file size by bypassing
+     * PHP memory handling of data
      * @param Attachment $att The Attachment
      * @param string $saveAs Override Filename for browser as string
      * @return void
      */
     public function writeOutAttachment(Attachment $att, ?string $saveAs = null): void
     {
-        $this->w->setLayout(null);
-        // per : https://www.php.net/manual/en/function.readfile.php
-        // readfile() will not present any memory issues on its own.
-        // If you encounter an out of memory error ensure that output buffering is off
-        if (ob_get_level()) {
-            ob_end_clean();
+        switch ($att->adapter) {
+
+            case "s3":
+                $client = $this->getS3ClientBelowFilesystem();
+                $cmd = $client->getCommand('GetObject', [
+                    'Bucket' => Config::get('file.adapters.s3.bucket'),
+                    'Key' => $att->fullpath
+                ]);
+
+                $request = $client->createPresignedRequest($cmd, '+300 minutes');
+
+                // Get the actual presigned-url
+                $this->w->redirect((string)$request->getUri());
+                break;
+
+            default:
+                $this->w->setLayout(null);
+                // per : https://www.php.net/manual/en/function.readfile.php
+                // readfile() will not present any memory issues on its own.
+                // If you encounter an out of memory error ensure that output buffering is off
+                if (ob_get_level()) {
+                    ob_end_clean();
+                }
+                $this->w->header('Content-Description: File Transfer');
+                $this->w->header(
+                    'Content-Type: '
+                        . (empty($att->mimetype) ? "application/octet-stream" : $att->mimetype)
+                );
+                $this->w->header(
+                    'Content-Disposition: attachment; filename="'
+                        . ($saveAs ?? $att->filename) . '"'
+                );
+                $this->w->header('Expires: 0');
+                $this->w->header('Cache-Control: must-revalidate');
+                $this->w->header('Pragma: public');
+
+                $filesystem = $att->getFileSystem();
+
+                $map = StreamWrapper::getFilesystemMap();
+                $map->set('mandated_stream', $filesystem);
+
+                StreamWrapper::register();
+                $streamFrom = 'gaufrette://mandated_stream/' . $att->filename;
+                $this->w->header('Content-Length: ' . filesize($streamFrom));
+                readfile($streamFrom);
+                exit(0);
         }
-        $this->w->header('Content-Description: File Transfer');
-        $this->w->header(
-            'Content-Type: '
-                . (empty($att->mimetype) ? "application/octet-stream" : $att->mimetype)
-        );
-        $this->w->header(
-            'Content-Disposition: attachment; filename="'
-                . ($saveAs ?? $att->filename). '"'
-        );
-        $this->w->header('Expires: 0');
-        $this->w->header('Cache-Control: must-revalidate');
-        $this->w->header('Pragma: public');
-
-        $filesystem = $att->getFileSystem();
-
-        $map = StreamWrapper::getFilesystemMap();
-        $map->set('mandated_stream', $filesystem);
-
-        StreamWrapper::register();
-        $streamFrom = 'gaufrette://mandated_stream/' . $att->filename;
-        $this->w->header('Content-Length: ' . filesize($streamFrom));
-        readfile($streamFrom);
-        exit(0);
     }
 
     /**

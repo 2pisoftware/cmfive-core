@@ -64,6 +64,54 @@ class AdminService extends DbService
     }
 
     /**
+     * Returns a country language via the $country_id and $language_id parameters.
+     *
+     * @param string $country_id
+     * @param string $language_id
+     * @return CountryLanguage|null
+     */
+    public function getCountryLanguage(string $country_id, string $language_id): ?CountryLanguage
+    {
+        return $this->getObject('CountryLanguage', [
+            'country_id' => $country_id,
+            'language_id' => $language_id,
+        ]);
+    }
+
+    /**
+     * Returns a language via the $id parameter.
+     *
+     * @param string $id
+     * @return Language|null
+     */
+    public function getLanguage(string $id): ?Language
+    {
+        return $this->getObject('Language', $id);
+    }
+
+    /**
+     * Returns a language filtering on the $where parameter.
+     *
+     * @param array $where
+     * @return Language|null
+     */
+    public function getLanguageWhere(array $where): ?Language
+    {
+        return $this->getObject('Language', $where);
+    }
+
+    /**
+     * Returns all languages filtered using the $where parameter.
+     *
+     * @param array $where
+     * @return array
+     */
+    public function getLanguages(array $where = []): array
+    {
+        return $this->getObjects('Language', $where);
+    }
+
+    /**
      * @deprecated v4.3.0 - Will be removed in v5.0.0.
      */
     public static function sortByType($a, $b)
