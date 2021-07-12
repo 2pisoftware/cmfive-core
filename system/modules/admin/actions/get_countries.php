@@ -9,6 +9,7 @@ function get_countries_GET(Web $w): void
         'timeout' => 5.0,
     ]);
 
+    // Fetch the list of countries.
     try {
         $response = $client->request('GET', '/rest/v2/all');
 
@@ -20,54 +21,84 @@ function get_countries_GET(Web $w): void
         echo 'API request failed: ' . $t->getMessage();
     }
 
-    $data = null;
-
+    // Decode the JSON into objects.
+    $countries = [];
     try {
-        $data = json_decode($response->getBody());
-        if (empty($data)) {
-            throw new Exception('Data is empty: ' . $data);
+        $countries = json_decode($response->getBody());
+        if (empty($countries)) {
+            throw new Exception('Response body is empty');
         }
     } catch (Throwable $t) {
         LogService::getInstance($w)->setLogger('ADMIN')->error('Failed to decode response body: ' . $t->getMessage());
         echo 'Failed to decode response body: ' . $t->getMessage();
     }
 
-    $new = 0;
-    $updated = 0;
-    $failures = 0;
-
-    foreach ($data as $d) {
-        $is_new = false;
-        $country = AdminService::getInstance($w)->getCountry([
-            'name' => $d->name,
+    // Loop over the objects.
+    foreach ($countries as $c) {
+        // Check if a country already exists under that name.
+        $country = AdminService::getInstance($w)->getCountryWhere([
+            'name' => $c->name,
         ]);
+        // If not, create a new one.
         if (empty($country)) {
-            $is_new = true;
             $country = new Country($w);
         }
 
-        $country->name = $d->name;
-        $country->alpha_2_Code = $d->alpha2Code;
-        $country->alpha_3_Code = $d->alpha3Code;
-        $country->capital = $d->capital;
-        $country->region = $d->region;
-        $country->subregion = $d->subregion;
-        $country->demonym = $d->demonym;
+        try {
+            AdminService::getInstance($w)->startTransaction();
 
-        if (!$country->insertOrUpdate()) {
-            LogService::getInstance($w)->setLogger('ADMIN')->error('Failed to insert or update country with name: ' . $country->name);
-            $failures++;
+            // Set the country's properties and insert/update it.
+            $country->name = $c->name;
+            $country->alpha_2_Code = $c->alpha2Code;
+            $country->alpha_3_Code = $c->alpha3Code;
+            $country->capital = $c->capital;
+            $country->region = $c->region;
+            $country->subregion = $c->subregion;
+            $country->demonym = $c->demonym;
+
+            if (!$country->insertOrUpdate()) {
+                throw new Exception('Failed to insert or update country with name: ' . $country->name);
+                continue;
+            }
+
+            // Loop over the country's languages.
+            foreach ($c->languages as $l) {
+                // Check if the language already exists under that name.
+                $language = AdminService::getInstance($w)->getLanguageWhere([
+                    'name' => $l->name,
+                ]);
+                // If not, create a new one and insert it.
+                if (empty($language)) {
+                    $language = new Language($w);
+                    $language->name = $l->name;
+                    $language->native_name = $l->nativeName;
+                    $language->iso_639_1 = $l->iso639_1;
+                    $language->iso_639_2 = $l->iso639_2;
+
+                    if (!$language->insert()) {
+                        LogService::getInstance($w)->setLogger('ADMIN')->error('Failed to insert or update language with name: ' . $language->name);
+                        continue;
+                    }
+                }
+
+                // Check if a country language exists for that country and language. If not, create one and insert it.
+                $country_language = AdminService::getInstance($w)->getCountryLanguage($country->id, $language->id);
+                if (empty($country_language)) {
+                    $country_language = new CountryLanguage($w);
+                    $country_language->country_id = $country->id;
+                    $country_language->language_id = $language->id;
+
+                    if (!$country_language->insert()) {
+                        LogService::getInstance($w)->setLogger('ADMIN')->error('Failed to insert or update country language with name: ' . $language->name);
+                    }
+                }
+            }
+
+            AdminService::getInstance($w)->commitTransaction();
+        } catch (Throwable $t) {
+            BridgeService::getInstance($w)->rollbackTransaction();
+            LogService::getInstance($w)->setLogger('BRIDGE')->error($t->getMessage());
             continue;
         }
-
-        if ($is_new) {
-            $new++;
-        } else {
-            $updated++;
-        }
     }
-
-    echo '<p>New Countries: ' . $new . '</p>';
-    echo '<p>Updated Countries: ' . $updated . '</p>';
-    echo '<p>Failures (Check logs for details): ' . $failures . '</p>';
 }
