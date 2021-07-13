@@ -1,14 +1,16 @@
 
 .panel {
     @include theme((background-color: 'white-black', color: 'black-grey'));
-    @include shadow-hover();
     padding: 1rem;
     margin: 0;
     // @include theme((background-color: 'light-grey'));
-
-    .section-header {
-        // padding: 0.3rem 1rem 0;
+    &:not(.flat) {
+        @include shadow-hover();
     }
+
+    // .section-header {
+    //     // padding: 0.3rem 1rem 0;
+    // }
 }
 
 .modal .panel {

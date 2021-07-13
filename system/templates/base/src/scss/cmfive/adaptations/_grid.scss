@@ -18,6 +18,14 @@
     float: left;
 }
 
+.show-for-small {
+    display: block;
+
+    @include media-breakpoint-up(md) {
+        display: none;
+    }
+}
+
 @for $i from 1 through 12 {
     @media only screen {
         .small-#{$i} {
@@ -54,6 +62,15 @@ ul[class*="-block-grid-"] {
 
     li {
         list-style-type: none;
+        padding: 0 1rem;
+
+        &:first-child {
+            padding-left: 0;
+        }
+
+        &:last-child {
+            padding-right: 0;
+        }
     }
 }
 

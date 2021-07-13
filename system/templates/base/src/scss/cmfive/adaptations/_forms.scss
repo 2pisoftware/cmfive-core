@@ -1,24 +1,4 @@
 
-label {
-    display: flex;
-    flex-direction: column;
-
-    input {
-        margin: 4px 0px;
-        border: 1px solid #ccc;
-        padding: 0 10px !important;
-
-        &.input-large {
-            width: 100%;
-        }
-
-        &[type='color'] {
-            max-width: 40px;
-            display: block;
-        }
-    }
-}
-
 select {
     margin: 4px 0px;
     border: 1px solid #ccc;
@@ -26,11 +6,37 @@ select {
     background-color: $white;
 }
 
-.form-button-container {
-    padding: 0px 15px 15px;
-}
+form {
+    label {
+        display: flex;
+        flex-direction: column;
 
-.ql-snow {
-    background-color: white;
-    color: black;
+        input {
+            margin: 4px 0px;
+            border: 1px solid #ccc;
+            padding: 0 10px !important;
+
+            &.input-large {
+                width: 100%;
+            }
+
+            &[type='color'] {
+                max-width: 40px;
+                display: block;
+            }
+        }
+    }
+
+    select {
+        width: 100%;
+    }
+
+    .form-button-container {
+        padding: 0px 15px 15px;
+    }
+
+    .ql-snow {
+        background-color: white;
+        color: black;
+    }
 }

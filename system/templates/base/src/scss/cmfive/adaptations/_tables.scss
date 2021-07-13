@@ -1,16 +1,29 @@
 
+table {
+    width: 100%;
+    @include theme((background-color: 'white-black'));
+
+    th {
+        @include font-size('body');
+        @include theme((color: 'dark-grey'));
+    }
+
+    td {
+        @include font-size('body');
+        @include theme((color: 'dark-grey', background-color: 'white-black'));
+    }
+}
+
+
 table.tablesorter {
     @include shadow-flat();
-    @include theme((background-color: 'white-black'));
     margin-top: 12px;
-    width: 100%;
     padding: 20px;
 
     thead {
         tr {
             th {
-                @include font-size('body');
-                @include theme((color: 'dark-grey'));
+                
                 font-weight: 400;
                 padding: 12px 20px;
 
@@ -35,8 +48,6 @@ table.tablesorter {
     tbody {
         tr {
             td {
-                @include font-size('body');
-                @include theme((color: 'dark-grey', background-color: 'white-black'));
                 padding: 0px 20px;
             }
 
@@ -46,5 +57,43 @@ table.tablesorter {
                 }
             }
         }
+    }
+}
+
+.table-responsive {
+    table {
+        margin-top: 12px;
+        padding: 20px;
+        
+        thead {
+            tr {
+                th {
+                    @include font-size('body');
+                    font-weight: 400;
+                    padding: 12px 20px;
+                }
+            }
+        }
+        tbody {
+            tr {
+                td {
+                    padding: 0px 20px;
+                }
+    
+                &:first-child, &:nth-child(2n + 1) {
+                    td {
+                        @include theme((background-color: 'light-grey'));
+                    }
+                }
+            }
+        }
+    }
+}
+
+.item {
+    margin-top: 1rem;
+
+    .panel {
+        margin-bottom: 2rem;
     }
 }
