@@ -33,7 +33,8 @@
 @import 'cmfive/mixins';
 
 @import 'cmfive/breadcrumb';
-// @import 'cmfive/list-group';
+@import 'cmfive/buttons';
+@import 'cmfive/forms';
 @import 'cmfive/menu';
 @import 'cmfive/modal';
 @import 'cmfive/toast';
@@ -45,6 +46,7 @@
 @import "cmfive/adaptations/alerts";
 @import "cmfive/adaptations/buttons";
 @import 'cmfive/adaptations/favourites';
+@import 'cmfive/adaptations/filter';
 @import 'cmfive/adaptations/forms';
 @import 'cmfive/adaptations/grid';
 @import 'cmfive/adaptations/panel';
@@ -60,4 +62,8 @@
 body {
     min-height: 100vh;
     @include theme((color: 'mid-grey', background-color: 'light-grey'));
+}
+
+.clearfix {
+    @include clearfix();
 }

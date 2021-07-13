@@ -1431,16 +1431,19 @@ class Html
         // Filter button (optional... though optional is pointless)
         if (!empty($action)) {
             $button = new \Html\button();
-            $buffer .= "<li><div class='small-12 columns'><label>Actions<br/>";
+            $buffer .= "<li><div class='small-12 columns'><label>Actions<div class='filter-button-container'>";
             if ($submitTitle !== null && !$should_autosubmit) {
-                $buffer .= $button->type("submit")->text($submitTitle)->__toString();
+                $buffer .= $button->type("submit")->text($submitTitle)->setClass('btn btn-sm btn-primary')->__toString();
             }
             if (!empty($id)) {
-                $buffer .= $button->text("Reset")->id("filter_reset_{$id}")->name("filter_reset_{$id}")->value("reset")->__toString() . "</label></div></li>";
+                $buffer .= $button->text("Reset")->id("filter_reset_{$id}")->name("filter_reset_{$id}")->value("reset")->setClass('btn btn-sm btn-secondary')->__toString();
             } else {
-                $buffer .= $button->text("Reset")->name("reset")->value("reset")->__toString() . "</label></div></li>";
+                $buffer .= $button->text("Reset")->name("reset")->value("reset")->setClass('btn btn-sm btn-secondary')->__toString();
             }
+
+            $buffer .= "</div></label></div></li>";
         }
+        
         $buffer .= "</ul>"; // </div>
         $buffer .= "\n</fieldset>\n";
         $buffer .= $hidden . "</form>\n";

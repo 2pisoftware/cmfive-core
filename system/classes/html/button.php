@@ -198,7 +198,7 @@ class button
 
     public function setClass($class)
     {
-        $this->_class .= $class;
+        $this->_class .= ' ' . $class;
         return $this;
     }
 

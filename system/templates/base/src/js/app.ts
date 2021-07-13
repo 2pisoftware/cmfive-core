@@ -1,41 +1,18 @@
 // src/app.ts
-
-import { Modal } from 'bootstrap';
-// import CmfiveNav from './components/Nav';
-// import { AccordionAdaptation } from './adaptations/accordion';
 import { AlertAdaptation } from './adaptations/alert';
 import { DropdownAdaptation } from './adaptations/dropdown';
 import { FavouritesAdaptation} from './adaptations/favourites';
 import { TabAdaptation } from './adaptations/tabs';
 import { TableAdaptation } from './adaptations/table';
-import { Toast } from './components/Toast';
 import { QuillEditor } from './components/QuillEditor';
 
-function openModal(url: string) {
-    const modal = new Modal(document.getElementById('cmfive-modal')) //, options
+import { Modal } from 'bootstrap';
 
-    let modalContent = document.querySelector('#cmfive-modal .modal-content');
-    if (modalContent) {
-        modalContent.innerHTML = '';
-    }
+// import { CmfiveHelper } from './CmfiveHelper';
 
-    modal.show();
-    fetch(url, {
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    }).then((response) => {
-        return response.text()
-    }).then((content) => {
-        modalContent.innerHTML = content;
-
-        // Rebind elements for modal
-        Cmfive.ready(document.getElementById('#cmfive-modal'));
-    })
-}
-
-export class Cmfive {
+class Cmfive {
     static THEME_KEY = 'theme';
+    static currentModal: Modal;
 
     static toggleTheme() {
         // debugger;
@@ -55,17 +32,35 @@ export class Cmfive {
         document.querySelector('html').classList.add('theme--' + localStorage.getItem(Cmfive.THEME_KEY));
     }
 
-    private static modalClickListener = function() {
+    static menuOpenClickListener = function() {
+        if (!document.getElementById('menu-overlay').classList.contains('active')) {
+            document.getElementById('menu-overlay').classList.add('active');
+        }
+        if (!document.getElementById('offscreen-menu').classList.contains('active')) {
+            document.getElementById('offscreen-menu').classList.add('active');
+        }
+    }
+
+    static menuCloseClickListener = function() {
+        if (document.getElementById('menu-overlay').classList.contains('active')) {
+            document.getElementById('menu-overlay').classList.remove('active');
+        }
+        if (document.getElementById('offscreen-menu').classList.contains('active')) {
+            document.getElementById('offscreen-menu').classList.remove('active');
+        }
+    }
+
+    static modalClickListener = function() {
         if (this.hasAttribute('data-modal-confirm')) {
             if (!confirm(this.getAttribute('data-modal-confirm'))) {
                 return false;
             }
         }
 
-        openModal(this.getAttribute('data-modal-target'))
+        Cmfive.openModal(this.getAttribute('data-modal-target'))
     }
 
-    private static linkClickListener = function() {
+    static linkClickListener = function() {
         if (this.hasAttribute('data-link-confirm')) {
             if (!confirm(this.getAttribute('data-link-confirm'))) {
                 return false;
@@ -75,21 +70,37 @@ export class Cmfive {
         window.location.href = this.getAttribute('data-link-target');
     }
 
-    private static menuOpenClickListener = function() {
-        if (!document.getElementById('menu-overlay').classList.contains('active')) {
-            document.getElementById('menu-overlay').classList.add('active');
+    static openModal(url: string) {
+        Cmfive.currentModal = new Modal(document.getElementById('cmfive-modal')) //, options
+    
+        let modalContent = document.querySelector('#cmfive-modal .modal-content');
+        if (modalContent) {
+            modalContent.innerHTML = '';
         }
-        if (!document.getElementById('offscreen-menu').classList.contains('active')) {
-            document.getElementById('offscreen-menu').classList.add('active');
-        }
+    
+        Cmfive.currentModal.show();
+        fetch(url, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then((response) => {
+            return response.text()
+        }).then((content) => {
+            modalContent.innerHTML = content;
+    
+            // Rebind elements for modal
+            Cmfive.ready(modalContent);
+        })
     }
 
-    private static menuCloseClickListener = function() {
-        if (document.getElementById('menu-overlay').classList.contains('active')) {
-            document.getElementById('menu-overlay').classList.remove('active');
-        }
-        if (document.getElementById('offscreen-menu').classList.contains('active')) {
-            document.getElementById('offscreen-menu').classList.remove('active');
+    static formCancel()
+    {
+        console.log("FORM CANCEL")
+        if (Cmfive.currentModal) {
+            Cmfive.currentModal.hide();
+            Cmfive.currentModal = null;
+        } else {
+            window.history.back();
         }
     }
 
@@ -100,40 +111,38 @@ export class Cmfive {
      * @param target Document|Element
      */
     static ready(target: Document|Element) {
-        // AccordionAdaptation.bindAccordionInteractions();
-        AlertAdaptation.bindCloseEvent();
-        DropdownAdaptation.bindDropdownHover();
-        FavouritesAdaptation.bindFavouriteInteractions();
-        TabAdaptation.bindTabInteractions();
-        TableAdaptation.bindTableInteractions();
-        QuillEditor.bindQuillEditor();
+        if (!window.hasOwnProperty('cmfiveEventBus')) {
+            // @ts-ignore
+            window.cmfiveEventBus = document.createComment('Helper')
+            // @ts-ignore
+            window.cmfiveEventBus.addEventListener('dom-update', (event) => {
+                console.log("DOM EVENT", event); // => detail-data
+                Cmfive.ready(event.detail);
+            });
+        }
 
-        let theme = localStorage.getItem(Cmfive.THEME_KEY)
+        if (target instanceof Document) {
+            let theme = localStorage.getItem(Cmfive.THEME_KEY)
 
-        if (!theme) {
-            const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)"); 
-            if (prefersDarkScheme.matches) {
-                localStorage.setItem(Cmfive.THEME_KEY, 'dark');
-            } else {
-                localStorage.setItem(Cmfive.THEME_KEY, 'default');
-                theme = 'default';
+            if (!theme) {
+                const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)"); 
+                if (prefersDarkScheme.matches) {
+                    localStorage.setItem(Cmfive.THEME_KEY, 'dark');
+                } else {
+                    localStorage.setItem(Cmfive.THEME_KEY, 'default');
+                    theme = 'default';
+                }
+            }
+            
+            if (theme === "default") {
+                document.querySelector('html').classList.remove('theme--dark');
+                document.querySelector('html').classList.add('theme--default');
             }
         }
-        
-        if (theme === "default") {
-            document.querySelector('html').classList.remove('theme--dark');
-            document.querySelector('html').classList.add('theme--default');
-        }
 
-        // Bind modal links
-        target?.querySelectorAll('[data-modal-target]')?.forEach((m: Element) => {
-            m.removeEventListener('click', Cmfive.modalClickListener);
-            m.addEventListener('click', Cmfive.modalClickListener);
-        })
-
-        target?.querySelectorAll('[data-link-target]')?.forEach((m: Element) => {
-            m.removeEventListener('click', Cmfive.linkClickListener);
-            m.addEventListener('click', Cmfive.linkClickListener);
+        target?.querySelectorAll('.form-cancel-button')?.forEach(b => {
+            b.removeEventListener('click', Cmfive.formCancel);
+            b.addEventListener('click', Cmfive.formCancel);
         })
 
         // Theme toggle
@@ -152,6 +161,32 @@ export class Cmfive {
             m.removeEventListener('click', Cmfive.menuCloseClickListener);
             m.addEventListener('click', Cmfive.menuCloseClickListener);
         });
+
+        AlertAdaptation.bindCloseEvent();
+        DropdownAdaptation.bindDropdownHover();
+        FavouritesAdaptation.bindFavouriteInteractions();
+        TabAdaptation.bindTabInteractions();
+        TableAdaptation.bindTableInteractions();
+        QuillEditor.bindQuillEditor();
+
+        // Remove all foundation button classes and replace them with bootstrap if they don't exist
+        target?.querySelectorAll('.button')?.forEach(b =>  {
+            b.classList.remove('button', 'tiny')
+            if (!b.classList.contains('btn')) {
+                b.classList.add('btn', 'btn-sm', 'btn-primary');
+            }
+        });
+
+        // Bind modal links
+        target?.querySelectorAll('[data-modal-target]')?.forEach((m: Element) => {
+            m.removeEventListener('click', this.modalClickListener);
+            m.addEventListener('click', this.modalClickListener);
+        })
+
+        target?.querySelectorAll('[data-link-target]')?.forEach((m: Element) => {
+            m.removeEventListener('click', this.linkClickListener);
+            m.addEventListener('click', this.linkClickListener);
+        })
     }
 }
 

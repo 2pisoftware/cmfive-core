@@ -65,7 +65,7 @@ $animation-path: cubic-bezier(0.645, 0.045, 0.355, 1) !default;
 // Type
 $font-sizes: ("1": 40px, "2": 32px, "3": 28px, "4": 24px, "5": 20px, "body": 16px, "caption": 12px);
 //("1": 2.488rem, "2": 2.074rem, "3": 1.728rem, "4": 1.44rem, "5": 1.2rem, "6": 1rem, "sm": 0.833rem);
-$line-heights: ("1": 48px, "2": 38px, "3": 34px, "4": 29px, "5": 24px, "body": 24px, "caption": auto);
+$line-heights: ("1": 48px, "2": 38px, "3": 34px, "4": 29px, "5": 24px, "body": 24px, "caption": 16px);
 
 $colours: (
     "primary": ("background-color": $twopi-blue, "color": $white),
