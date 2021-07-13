@@ -119,9 +119,17 @@ class User extends DbObject
         } catch (Exception $e) {
             // The error should already be logged
             $this->rollbackTransaction();
+            return false;
         }
+
+        return true;
     }
 
+    /**
+     * Returns a user's contact by its $contact_id
+     *
+     * @return Contact|null
+     */
     public function getContact()
     {
         if (!$this->_contact) {
