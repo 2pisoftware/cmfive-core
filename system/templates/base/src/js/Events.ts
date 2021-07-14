@@ -1,3 +1,4 @@
+// src/js/Events.ts
 
 /**
  * OK, look, this is messy as all hell and hard to maintain

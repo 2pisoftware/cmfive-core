@@ -83,7 +83,7 @@ $themes: map.deep-merge($themes, (
                     & > ul {
                         & > li {
                             &.active {
-                                a {
+                                & > a {
                                     @include theme((color: 'dark-grey', background-color: 'light-grey'));
                                 }
                             }
