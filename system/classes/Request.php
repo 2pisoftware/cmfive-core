@@ -94,4 +94,21 @@ class Request
 
         return is_string($_REQUEST[$key]) ? trim($_REQUEST[$key]) : $_REQUEST[$key];
     }
+
+    /**
+     * Checks if any of the keys in the $keys parameter exists in the $_REQUEST superglobal.
+     *
+     * @param string ...$keys
+     * @return boolean
+     */
+    public static function has(string ...$keys): bool
+    {
+        foreach ($keys as $key) {
+            if (array_key_exists($key, $_REQUEST)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }
