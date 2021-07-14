@@ -69,7 +69,7 @@
                                             if (method_exists($module . "Service", "navigation")) : ?>
                                                 <li class="nav-item dropdown <?php echo $w->_module == $module ? 'active' : ''; ?>" id="topnav_<?php echo $module; ?>">
                                                     <a class="nav-link dropdown-toggle caret-off" href="#" id="topnav_<?php echo $module; ?>_dropdown_link" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                        <?php echo ucfirst($module); ?>
+                                                        <?php echo is_bool(Config::get("{$module}.topmenu")) ? ucfirst($module) : Config::get("{$module}.topmenu"); ?>
                                                     </a>
                                                     <?php // Try and get a badge count for the menu item
                                                     $module_navigation = $module_service::getInstance($w)->navigation($w);

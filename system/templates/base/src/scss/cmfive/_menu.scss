@@ -55,12 +55,6 @@ $themes: map.deep-merge($themes, (
                         @include theme((color: 'navbar-text'));
                     }
             
-                    &.active {
-                        a {
-                            @include theme((color: 'dark-grey'));
-                        }
-                    }
-            
                     .dropdown-menu {
                         width: 228px;
                         margin: -1px;
@@ -79,6 +73,19 @@ $themes: map.deep-merge($themes, (
             
                             &:hover {
                                 @include theme((color: 'caption', background-color: 'light-grey'));
+                            }
+                        }
+                    }
+                }
+
+                // Only style the topmenu active items
+                & > div {
+                    & > ul {
+                        & > li {
+                            &.active {
+                                a {
+                                    @include theme((color: 'dark-grey', background-color: 'light-grey'));
+                                }
                             }
                         }
                     }
