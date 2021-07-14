@@ -108,7 +108,7 @@ class AdminService extends DbService
      */
     public function getLanguages(array $where = []): array
     {
-        return $this->getObjects('Language', $where);
+        return $this->getObjects('Language', $where, false, true, 'name asc');
     }
 
     /**
