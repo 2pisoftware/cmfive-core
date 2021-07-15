@@ -168,28 +168,28 @@ class RequestTest extends TestCase
     }
 
     /**
-     * Test Request::has().
+     * Test Request::hasAny().
      *
      * @return void
      */
-    public function testHas(): void
+    public function testHasAny(): void
     {
         require_once("system/web.php");
         $w = new Web();
 
         // Test that a single key is not found when it doesn't exist.
-        $this->assertEquals(false, Request::has("key-1"));
+        $this->assertEquals(false, Request::hasAny("key-1"));
         // Test that multiple keys aren't found when they don't exist.
-        $this->assertEquals(false, Request::has("key-1", "key-2", "key-3"));
+        $this->assertEquals(false, Request::hasAny("key-1", "key-2", "key-3"));
 
         // Test that a single key is found when it does exist.
         $_REQUEST["key-1"] = "value-1";
-        $this->assertEquals(true, Request::has("key-1"));
+        $this->assertEquals(true, Request::hasAny("key-1"));
 
         // Test that any of these keys are found when some exist and some don't.
         unset($_REQUEST["key-1"]);
         $_REQUEST["key-2"] = "value-1";
         $_REQUEST["key-3"] = "value-1";
-        $this->assertEquals(true, Request::has("key-1", "key-2", "key-3"));
+        $this->assertEquals(true, Request::hasAny("key-1", "key-2", "key-3"));
     }
 }

@@ -101,7 +101,7 @@ class Request
      * @param string ...$keys
      * @return boolean
      */
-    public static function has(string ...$keys): bool
+    public static function hasAny(string ...$keys): bool
     {
         foreach ($keys as $key) {
             if (array_key_exists($key, $_REQUEST)) {
