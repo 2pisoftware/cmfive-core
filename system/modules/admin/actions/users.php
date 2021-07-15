@@ -2,7 +2,7 @@
 
 function users_GET(Web &$w)
 {
-    $w->setLayout("layout-2021"); 
+    $w->setLayout("layout-bootstrap-5");
     $w->Admin->navigation($w, "Users");
     $users = $w->Admin->getObjects("User", ["is_deleted" => 0, "is_group" => 0]);
 
