@@ -433,7 +433,7 @@ class User extends DbObject
      * not.
      *
      * @param string $password
-     * @param boolean $update_salt - DEPRICATED
+     * @param boolean $update_salt - Deprecated, will be removed in v5.0.0.
      */
     public function setPassword($password, $update_salt = true)
     {
