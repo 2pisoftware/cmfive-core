@@ -2009,6 +2009,9 @@ class Web
      * Returns the request value in a safe way
      * without generating warning.
      *
+     * @deprecated v4.3.0 - Will be removed in v5.0.0.
+     * @see Request class.
+     *
      * @param <type> $key
      * @param <type> $default
      * @return <type>
@@ -2016,12 +2019,10 @@ class Web
     public function request($key, $default = null)
     {
         if (array_key_exists($key, $_REQUEST) && is_array($_REQUEST[$key])) {
-            foreach ($_REQUEST[$key] as &$k) {
-                $k = urldecode($k);
-            }
             return $_REQUEST[$key];
         }
-        return array_key_exists($key, $_REQUEST) ? urldecode($_REQUEST[$key]) : $default;
+
+        return array_key_exists($key, $_REQUEST) ? $_REQUEST[$key] : $default;
     }
 
     public function requestIpAddress()
