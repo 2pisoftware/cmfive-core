@@ -172,7 +172,7 @@ class Web
         if (!is_dir(STORAGE_PATH)) {
             mkdir(STORAGE_PATH);
         }
-        if (!is_dir(STORAGE_PATH .'/session')) {
+        if (!is_dir(STORAGE_PATH . '/session')) {
             mkdir(STORAGE_PATH . "/session");
         }
     }
@@ -211,25 +211,37 @@ class Web
         }
         foreach ($modules as $model) {
             // Check if the hosting module is active before we autoload it
-            if (Config::get("{$model}.active") === true) {
-                $file = $this->getModuleDir($model) . 'models/' . ucfirst($className) . ".php";
-                if (file_exists($file)) {
-                    require_once $file;
-                    // add this class file to the cache file
-                    file_put_contents($classdirectory_cache_file, '// ' . $cause . "\n" . '$this->_classdirectory["' . $className . '"]="' . $file . '";' . "\n\n", FILE_APPEND);
-                    $this->_classdirectory[$className]=$file;
-                    return true;
-                } else {
-                    // Try a lower case version
-                    $file = $this->getModuleDir($model) . 'models/' . $className . ".php";
-                    if (file_exists($file)) {
-                        require_once $file;
-                        // add this class file to the cache file
-                        file_put_contents($classdirectory_cache_file, '// ' . $cause . "\n" . '$this->_classdirectory["' . $className . '"]="' . $file . '";' . "\n\n", FILE_APPEND);
-                        $this->_classdirectory[$className]=$file;
-                        return true;
-                    }
+            if (Config::get("{$model}.active") !== true) {
+                continue;
+            }
+
+            // Try a lower case version
+            $file = $this->getModuleDir($model) . 'models/' . $className . ".php";
+            if (file_exists($file)) {
+                require_once $file;
+                // add this class file to the cache file
+                file_put_contents($classdirectory_cache_file, '// ' . $cause . "\n" . '$this->_classdirectory["' . $className . '"]="' . $file . '";' . "\n\n", FILE_APPEND);
+                $this->_classdirectory[$className] = $file;
+                return true;
+            }
+
+            $namespace_parts = explode('\\', $className);
+            $class_file = array_pop($namespace_parts) . '.php';
+
+            $top_directory = new \RecursiveDirectoryIterator($this->getModuleDir($model) . 'models/', \FilesystemIterator::FOLLOW_SYMLINKS | \FilesystemIterator::SKIP_DOTS);
+            $class_filter = new \RecursiveCallbackFilterIterator($top_directory, function ($current, $key, $iterator) {
+                return (!$current->isDir() && $current->getExtension() === "php") || true;
+            });
+
+            foreach (new \RecursiveIteratorIterator($class_filter) as $info) {
+                if ($info->getFilename() != $class_file) {
+                    continue;
                 }
+
+                require_once $info->getPathname();
+                file_put_contents($classdirectory_cache_file, '// ' . implode("\\", $namespace_parts) . " " . $cause . "\n" . '$this->_classdirectory["' . $className . '"]="' . $info->getPathname() . '";' . "\n\n", FILE_APPEND);
+                $this->_classdirectory[$className] = $info->getPathname();
+                return true;
             }
         }
 
@@ -242,7 +254,7 @@ class Web
             if (file_exists($file)) {
                 require_once $file;
                 file_put_contents($classdirectory_cache_file, '// ' . $cause . "\n" . '$this->_classdirectory["' . $className . '"]="' . $file . '";' . "\n\n", FILE_APPEND);
-                $this->_classdirectory[$className]=$file;
+                $this->_classdirectory[$className] = $file;
                 return true;
             }
         }
@@ -250,10 +262,10 @@ class Web
         // Last try, recurse in "/lib"
         $toplibpath = 'system' . DS . 'lib';
         $namespaceparts = explode('\\', $className);
-        $classfile = array_pop($namespaceparts).'.php';
+        $classfile = array_pop($namespaceparts) . '.php';
         $libmatch = false;
 
-        $topdirectory = new \RecursiveDirectoryIterator($toplibpath, \FilesystemIterator::FOLLOW_SYMLINKS|\FilesystemIterator::SKIP_DOTS);
+        $topdirectory = new \RecursiveDirectoryIterator($toplibpath, \FilesystemIterator::FOLLOW_SYMLINKS | \FilesystemIterator::SKIP_DOTS);
         $classfilter = new \RecursiveCallbackFilterIterator($topdirectory, function ($current, $key, $iterator) {
             if (!$current->isDir()) { // Only respond to possible class match files.
                 return  $current->getExtension() === "php";
@@ -268,7 +280,7 @@ class Web
                 $matchfile = $info->getPathname();
                 require_once $matchfile;
                 file_put_contents($classdirectory_cache_file, '// ' . implode("\\", $namespaceparts) . " " . $cause . "\n" . '$this->_classdirectory["' . $className . '"]="' . $matchfile . '";' . "\n\n", FILE_APPEND);
-                $this->_classdirectory[$className]=$matchfile;
+                $this->_classdirectory[$className] = $matchfile;
                 $libmatch = true;
             }
         }
@@ -359,7 +371,7 @@ class Web
         }
 
         // Load components loaded in actions
-        foreach (VueComponentRegister::getComponents() ? : [] as $name => $vue_component) {
+        foreach (VueComponentRegister::getComponents() ?: [] as $name => $vue_component) {
             CmfiveScriptComponentRegister::registerComponent($name, new CmfiveScriptComponent($vue_component->js_path, ['weight' => 100]));
             if (!empty($vue_component->css_path) && file_exists(ROOT_PATH . $vue_component->css_path)) {
                 CmfiveStyleComponentRegister::registerComponent($name, (new CmfiveStyleComponent($vue_component->css_path, ['/system/templates/scss/']))->setProps(['weight' => 100]));
@@ -1996,6 +2008,9 @@ class Web
      * Returns the request value in a safe way
      * without generating warning.
      *
+     * @deprecated v4.3.0 - Will be removed in v5.0.0.
+     * @see Request class.
+     *
      * @param <type> $key
      * @param <type> $default
      * @return <type>
@@ -2003,12 +2018,10 @@ class Web
     public function request($key, $default = null)
     {
         if (array_key_exists($key, $_REQUEST) && is_array($_REQUEST[$key])) {
-            foreach ($_REQUEST[$key] as &$k) {
-                $k = urldecode($k);
-            }
             return $_REQUEST[$key];
         }
-        return array_key_exists($key, $_REQUEST) ? urldecode($_REQUEST[$key]) : $default;
+
+        return array_key_exists($key, $_REQUEST) ? $_REQUEST[$key] : $default;
     }
 
     public function requestIpAddress()

@@ -20,8 +20,8 @@ function users_GET(Web &$w)
 
             $internal_data[$internal_user->id] = [
                 $internal_user->login,
-                $contact->firstname,
-                $contact->lastname,
+                !empty($contact) ? $contact->firstname : "",
+                !empty($contact) ? $contact->lastname : "",
                 [$internal_user->is_admin ? "Yes" : "No", true],
                 [$internal_user->is_active ? "Yes" : "No", true],
                 [$internal_user->is_mfa_enabled ? "Yes" : "No", true],
