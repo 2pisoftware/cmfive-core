@@ -94,4 +94,49 @@ class Request
 
         return is_string($_REQUEST[$key]) ? trim($_REQUEST[$key]) : $_REQUEST[$key];
     }
+
+    /**
+     * Checks if the $key parameter exists in the $_REQUEST superglobal.
+     *
+     * @param string $key
+     * @return boolean
+     */
+    public static function has(string $key): bool
+    {
+        return array_key_exists($key, $_REQUEST);
+    }
+
+    /**
+     * Checks if any of the keys in the $keys parameter exists in the $_REQUEST superglobal.
+     *
+     * @param string ...$keys
+     * @return boolean
+     */
+    public static function hasAny(string ...$keys): bool
+    {
+        foreach ($keys as $key) {
+            if (array_key_exists($key, $_REQUEST)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Checks if all of the keys in the $keys parameter exist in the $_REQUEST superglobal.
+     *
+     * @param string ...$keys
+     * @return boolean
+     */
+    public static function hasAll(string ...$keys): bool
+    {
+        foreach ($keys as $key) {
+            if (!array_key_exists($key, $_REQUEST)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }

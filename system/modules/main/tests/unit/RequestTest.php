@@ -166,4 +166,73 @@ class RequestTest extends TestCase
         // Test that a default value is returned when that key doesn't exist.
         $this->assertEquals(2, Request::mixed("test-mixed-default", 2));
     }
+
+    /**
+     * Test Reqest::has().
+     *
+     * @return void
+     */
+    public function testHas(): void
+    {
+        require_once("system/web.php");
+        $w = new Web();
+
+        // Test that a key is not found when it doesn't exist.
+        $this->assertEquals(false, Request::has("key-1"));
+
+        // Test that a key is found when it does exist.
+        $_REQUEST["key-1"] = "value-1";
+        $this->assertEquals(true, Request::has("key-1"));
+    }
+
+    /**
+     * Test Request::hasAny().
+     *
+     * @return void
+     */
+    public function testHasAny(): void
+    {
+        require_once("system/web.php");
+        $w = new Web();
+
+        // Test that a single key is not found when it doesn't exist.
+        $this->assertEquals(false, Request::hasAny("key-1"));
+        // Test that multiple keys aren't found when they don't exist.
+        $this->assertEquals(false, Request::hasAny("key-1", "key-2", "key-3"));
+
+        // Test that a single key is found when it does exist.
+        $_REQUEST["key-1"] = "value-1";
+        $this->assertEquals(true, Request::hasAny("key-1"));
+
+        // Test that any of these keys are found when some exist and some don't.
+        unset($_REQUEST["key-1"]);
+        $_REQUEST["key-2"] = "value-1";
+        $_REQUEST["key-3"] = "value-1";
+        $this->assertEquals(true, Request::hasAny("key-1", "key-2", "key-3"));
+    }
+
+    /**
+     * Test Request::hasAll()
+     *
+     * @return void
+     */
+    public function testHasAll(): void
+    {
+        require_once("system/web.php");
+        $w = new Web();
+
+        // Test that a single key is not found when it doesn't exist.
+        $this->assertEquals(false, Request::hasAll("key-1"));
+        // Test that multiple keys aren't found when they don't exist.
+        $this->assertEquals(false, Request::hasAll("key-1", "key-2", "key-3"));
+
+        // Test that a single key is found when it does exist.
+        $_REQUEST["key-1"] = "value-1";
+        $this->assertEquals(true, Request::hasAll("key-1"));
+
+        // Test that any of these keys are found when some exist and some don't.
+        $_REQUEST["key-2"] = "value-1";
+        $_REQUEST["key-3"] = "value-1";
+        $this->assertEquals(true, Request::hasAll("key-1", "key-2", "key-3"));
+    }
 }

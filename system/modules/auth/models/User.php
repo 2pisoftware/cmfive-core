@@ -119,9 +119,17 @@ class User extends DbObject
         } catch (Exception $e) {
             // The error should already be logged
             $this->rollbackTransaction();
+            return false;
         }
+
+        return true;
     }
 
+    /**
+     * Returns a user's contact by its $contact_id
+     *
+     * @return Contact|null
+     */
     public function getContact()
     {
         if (!$this->_contact) {
@@ -425,7 +433,7 @@ class User extends DbObject
      * not.
      *
      * @param string $password
-     * @param boolean $update_salt - DEPRICATED
+     * @param boolean $update_salt - Deprecated, will be removed in v5.0.0.
      */
     public function setPassword($password, $update_salt = true)
     {

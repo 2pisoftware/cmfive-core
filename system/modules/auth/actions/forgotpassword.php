@@ -19,8 +19,7 @@ function forgotpassword_POST(Web $w)
         $w->error("Cannot send recovery email. This site has not been configured with a default email address", "/auth/login");
     }
 
-    $login = $w->request("login");
-    $user = AuthService::getInstance($w)->getUserForLogin($login);
+    $user = AuthService::getInstance($w)->getUserForLogin(Request::string('login'));
     $responseString = "If this account exists then a password reset email has been just sent to the associated email address.";
 
     // For someone trying to gain access to a system, this is one of the
@@ -40,7 +39,7 @@ function forgotpassword_POST(Web $w)
     // Send email
     $message = "Hello {$user->getFullName()},\n<br/>";
     $message .= "Please go to this link to reset your password:<br/>\n";
-    $message .= "<a href=\"http://" . $_SERVER["HTTP_HOST"] . "/auth/resetpassword?email={$user_contact->email}&token={$user->password_reset_token}\">http://"
+    $message .= "<a href=\"https://" . $_SERVER["HTTP_HOST"] . "/auth/resetpassword?email={$user_contact->email}&token={$user->password_reset_token}\">https://"
         . $_SERVER["HTTP_HOST"] . "/auth/resetpassword?token={$user->password_reset_token}</a>\n<br/>You have 24 hours to reset your password.<br/><br/>";
     $message .= "Thank you,\n<br/>cmfive support";
 
