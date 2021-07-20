@@ -20,7 +20,7 @@ catch (Error $e) {
 ?>
 
 <!--div GET item on to become visible id($pdf)-->
-<div id="insight_pdf_modal" class="reveal-modal xlarge open" data-reveal>
+<div id="insight_pdf_modal" class="reveal-modal xlarge">
 
   <!-- style="display:none; opacity:1; visibility:hidden; top:100px" aligned:position=absolute> -->
   <form class=" small-12 columns">
@@ -42,7 +42,7 @@ catch (Error $e) {
     </div>
   </form>
   <!--Select field goes in here along with save and cancel options. Rest of get goes in reunInsight action-->
-  <a class=\"close-reveal-modal\">&#215;</a>
+  <a id="pdf-close-modal" class="close-reveal-modal">&#215;</a>
 </div>
 <!--script goes at bottom
 js get element by id and send data to post function in pdf action-->
@@ -50,31 +50,48 @@ js get element by id and send data to post function in pdf action-->
   //variable for modal and button
   let my_pdf_button = document.getElementById('my_pdf_button');
   let insight_pdf_modal = document.getElementById('insight_pdf_modal');
+
+
   //insight_pdf_modal.foundation.
   //override onclick function of button
   //onclick sets modal visibiltiy to visible
   my_pdf_button.onclick = function(){
-    insight_pdf_modal.style.display = "block";
-    insight_pdf_modal.style.visibility = "visible";
-    $("#insight_pdf_modal a:not(#modal-back)").click(function(event) {
-                if ($(this).hasClass("close-reveal-modal")) {
-                    $("#insight_pdf_modal").foundation("reveal", "close");
-                } else {
-                    // No one is using the help system at the moment
-                    // Therefore no real need for a dynamic modal history
-                    return true;
-                }
-                return false;
-            });
 
+    // insight_pdf_modal.style.display = "block";
+    // insight_pdf_modal.style.visibility = "visible";
+    $("#insight_pdf_modal").foundation("reveal", "open");
   }
+
+
+  $("#pdf-close-modal").click(function(event) {
+
+    console.log("hello close-modal");
+    $("#insight_pdf_modal").foundation("reveal", "close");
+
+    if ($(this).hasClass("close-reveal-modal")) {
+      
+      //new Foundation.Reveal($("#insight_pdf_modal")).close();
+    } else {
+      // No one is using the help system at the moment
+      // Therefore no real need for a dynamic modal history
+      return true;
+    }
+    return false;
+  });
+
+
   //variable needed for save and cancel buttons
   let save_button = document.getElementById("save_button");
   let cancel_button = document.getElementById("cancel_button");
+
+
   //override onclick of cancel button. Sets visibiltiy back to hidden
   cancel_button.onclick = function(){
+
     insight_pdf_modal.style.display = "none";
   }
+
+
   //override onclick of save button. Send data to post funtion of PDF action (use ajax). Then close modal.
   //close when click outside of modal
   // window.onclick = function(e){
@@ -82,5 +99,7 @@ js get element by id and send data to post function in pdf action-->
   //     insight_pdf_modal.style.display = "none";
   //   }
   // }
+
+
   console.log('hello my_modal');
 </script>
