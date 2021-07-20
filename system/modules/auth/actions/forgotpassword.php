@@ -19,8 +19,7 @@ function forgotpassword_POST(Web $w)
         $w->error("Cannot send recovery email. This site has not been configured with a default email address", "/auth/login");
     }
 
-    $login = $w->request("login");
-    $user = AuthService::getInstance($w)->getUserForLogin($login);
+    $user = AuthService::getInstance($w)->getUserForLogin(Request::string('login'));
     $responseString = "If this account exists then a password reset email has been just sent to the associated email address.";
 
     // For someone trying to gain access to a system, this is one of the

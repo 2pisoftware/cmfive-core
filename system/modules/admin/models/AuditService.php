@@ -21,8 +21,7 @@ class AuditService extends DbService
         // is in the list
         if ($blacklist) {
             foreach ($blacklist as $line) {
-                if (
-                    $line[0] == $this->w->currentModule() &&
+                if ($line[0] == $this->w->currentModule() &&
                     ($line[1] == $this->w->currentAction() || $line[1] == "*")
                 ) {
                     return;
@@ -56,7 +55,7 @@ class AuditService extends DbService
 
     public function getLoggedUsers()
     {
-        $ids = $this->_db->sql("select distinct creator_id from audit")->fetch_all();
+        $ids = $this->_db->sql("select distinct creator_id from audit")->fetchAll();
         $users = [];
         foreach ($ids as $id) {
             $users[] = $this->getObject("User", $id["creator_id"]);
@@ -66,7 +65,7 @@ class AuditService extends DbService
 
     public function getLoggedModules()
     {
-        $modules = $this->_db->sql("select distinct module from audit order by module")->fetch_all();
+        $modules = $this->_db->sql("select distinct module from audit order by module")->fetchAll();
         foreach ($modules as $m) {
             $list[] = $m['module'];
         }
@@ -75,7 +74,7 @@ class AuditService extends DbService
 
     public function getLoggedActions()
     {
-        $actions = $this->_db->sql("select distinct action from audit order by action")->fetch_all();
+        $actions = $this->_db->sql("select distinct action from audit order by action")->fetchAll();
         foreach ($actions as $m) {
             $list[] = $m['action'];
         }
@@ -94,7 +93,7 @@ class AuditService extends DbService
     {
         $users = [];
         $stmt = "SELECT distinct creator_id FROM audit where timediff(now(), dt_created) < " . $this->_db->quote("00:" . $idleMinutes  . ":00") . " and creator_id > 0";
-        $res = $this->_db->sql($stmt)->fetch_all();
+        $res = $this->_db->sql($stmt)->fetchAll();
         if ($res && sizeof($res)) {
             foreach ($res as $row) {
                 $users[] = $this->getObject("User", $row['creator_id']);
@@ -103,7 +102,7 @@ class AuditService extends DbService
         return $users;
     }
 
-    
+
     public function getAudits($dt_from = null, $dt_to = null, $user_id = null, $module = null, $action = null)
     {
         //build where array
