@@ -20,25 +20,29 @@ catch (Error $e) {
 ?>
 
 <!--div GET item on to become visible id($pdf)-->
-<div id="insight_pdf_modal" class="reveal-modal xlarge">
+<div id="insight_pdf_modal" class="reveal-modal xlarge" data-reveal >
 
   <!-- style="display:none; opacity:1; visibility:hidden; top:100px" aligned:position=absolute> -->
-  <form class=" small-12 columns">
+  <form id="pdf_form" class=" small-12 columns">
     <div class="row-fluid clearfix small-12 multicolform">
       <div class="panel clearfix">
-        <div class="row-fluid clearfix section-header"></div>
+        <div class="row-fluid clearfix section-header">
+        <h4>PDF Export</h4>
+        </div>
         <ul class="small-block-grid-1 medium-block-grid-2 section-body">
           <li>
-            <?php
-              echo $template_select->__toString();
+          <label class='small-12 columns'>
+            <?php echo $template_select->label . ($template_select->required ? " <small>Required</small>" : "")
+              . $template_select->__toString();
             ?>
+            </label>
           </li>
         </ul>
       </div>
     </div>
     <div class="row small-12 columns">
-      <button id="save_button" class="button tiny tiny button savebutton"></button>
-      <button id="cancel_button" class="button tiny tiny button cancelbutton"></button>
+      <button id="pdf_export_button" class="tiny button">Export</button>
+      <button id="pdf_cancel_button" class="button tiny">Cancel</button>
     </div>
   </form>
   <!--Select field goes in here along with save and cancel options. Rest of get goes in reunInsight action-->
@@ -63,13 +67,21 @@ js get element by id and send data to post function in pdf action-->
   }
 
 
+
   $("#pdf-close-modal").click(function(event) {
+
+
 
     console.log("hello close-modal");
     $("#insight_pdf_modal").foundation("reveal", "close");
+    //insight_pdf_modal.foundation("reveal", "close");
+
+
 
     if ($(this).hasClass("close-reveal-modal")) {
       
+
+
       //new Foundation.Reveal($("#insight_pdf_modal")).close();
     } else {
       // No one is using the help system at the moment
@@ -80,26 +92,49 @@ js get element by id and send data to post function in pdf action-->
   });
 
 
+
   //variable needed for save and cancel buttons
-  let save_button = document.getElementById("save_button");
-  let cancel_button = document.getElementById("cancel_button");
+  let export_button = document.getElementById("pdf_export_button");
+  let cancel_button = document.getElementById("pdf_cancel_button");
+
 
 
   //override onclick of cancel button. Sets visibiltiy back to hidden
-  cancel_button.onclick = function(){
+  $("#pdf_cancel_button").click(function(event){
 
-    insight_pdf_modal.style.display = "none";
-  }
+
+
+    event.preventDefault();
+    console.log('cancel modal');
+    //insight_pdf_modal.style.display = "none";
+    $("#insight_pdf_modal").foundation("reveal", "close");
+  });
 
 
   //override onclick of save button. Send data to post funtion of PDF action (use ajax). Then close modal.
-  //close when click outside of modal
-  // window.onclick = function(e){
-  //   if(e.target == insight_pdf_modal){
-  //     insight_pdf_modal.style.display = "none";
-  //   }
-  // }
 
+
+  $("#pdf_form").submit(function() {
+    
+
+
+    $("#insight_pdf_modal").foundation("reveal", "close");
+
+
+    $.ajax({
+                        url  : '/insights-export/pdf',//add url parameters
+                        type : 'POST',
+                        data : {
+                            
+                        },
+                        complete: function(response_data) {
+                          
+                          
+                        }
+                    });
+
+
+  });
 
   console.log('hello my_modal');
 </script>
