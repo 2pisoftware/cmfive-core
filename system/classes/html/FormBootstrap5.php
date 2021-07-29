@@ -11,7 +11,7 @@ class FormBootstrap5 extends form
             $cancel_button->_class = 'btn';
             $cancel_button->setClass('btn-secondary form-cancel-button');
             $cancel_button->type("button")->text("Cancel");
-                    
+
             return "<div class='row form-button-container'><div class='col'>{$button->__toString()}{$cancel_button->__toString()}{$extrabuttons}</div></div></form>";
         } else {
             return "</form>";
