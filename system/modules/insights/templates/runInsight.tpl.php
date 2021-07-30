@@ -6,43 +6,44 @@ echo Html::b("#", "Export to PDF", null, 'my_pdf_button', false, null, null, nul
 
 //Check for errors
 try {
-    //retrieve correct insight to delete member from and redirect to
-    foreach ($run_data as $data) {
-        echo '<h4>' . $data->title . '</h4>';
-        echo Html::table($data->data, null, "tablesorter", $data->header);
-    }
+  //retrieve correct insight to delete member from and redirect to
+  foreach ($run_data as $data) {
+    echo '<h4>' . $data->title . '</h4>';
+    echo Html::table($data->data, null, "tablesorter", $data->header);
+  }
 }
+
 //catch any fatal errors
 catch (Error $e) {
-      echo "Error caught: " . $e->getMessage();
-      LogService::getInstance($w)->setLogger("INSIGHTS")->error("Error occurred. Cannot run insight $p" . $e->getMessage());
+  echo "Error caught: " . $e->getMessage();
+  LogService::getInstance($w)->setLogger("INSIGHTS")->error("Error occurred. Cannot run insight $p" . $e->getMessage());
 }
 ?>
 
 <!--div GET item on to become visible id($pdf)-->
-<div id="insight_pdf_modal" class="reveal-modal xlarge" data-reveal >
+<div id="insight_pdf_modal" class="reveal-modal xlarge" data-reveal>
 
   <!-- style="display:none; opacity:1; visibility:hidden; top:100px" aligned:position=absolute> -->
-  <form id="pdf_form" class=" small-12 columns">
+  <form id="pdf_form" class=" small-12 columns" action="<?php"/insights-export/php/" . $insight_class_name . "?" . $request_string,?>" method="POST">
     <div class="row-fluid clearfix small-12 multicolform">
       <div class="panel clearfix">
         <div class="row-fluid clearfix section-header">
-        <h4>PDF Export</h4>
+          <h4>PDF Export</h4>
         </div>
         <ul class="small-block-grid-1 medium-block-grid-2 section-body">
           <li>
-          <label class='small-12 columns'>
-            <?php echo $template_select->label . ($template_select->required ? " <small>Required</small>" : "")
-              . $template_select->__toString();
-            ?>
+            <label class='small-12 columns'>
+              <?php echo $template_select->label . ($template_select->required ? " <small>Required</small>" : "")
+                . $template_select->__toString();
+              ?>
             </label>
           </li>
         </ul>
       </div>
     </div>
     <div class="row small-12 columns">
-      <button id="pdf_export_button" class="tiny button">Export</button>
-      <button id="pdf_cancel_button" class="button tiny">Cancel</button>
+      <button id="pdf_export_button" class="tiny button" type="submit">Export</button>
+      <button id="pdf_cancel_button" class="button tiny" type="button">Cancel</button>
     </div>
   </form>
   <!--Select field goes in here along with save and cancel options. Rest of get goes in reunInsight action-->
@@ -59,7 +60,7 @@ js get element by id and send data to post function in pdf action-->
   //insight_pdf_modal.foundation.
   //override onclick function of button
   //onclick sets modal visibiltiy to visible
-  my_pdf_button.onclick = function(){
+  my_pdf_button.onclick = function() {
 
     // insight_pdf_modal.style.display = "block";
     // insight_pdf_modal.style.visibility = "visible";
@@ -79,7 +80,7 @@ js get element by id and send data to post function in pdf action-->
 
 
     if ($(this).hasClass("close-reveal-modal")) {
-      
+
 
 
       //new Foundation.Reveal($("#insight_pdf_modal")).close();
@@ -100,7 +101,7 @@ js get element by id and send data to post function in pdf action-->
 
 
   //override onclick of cancel button. Sets visibiltiy back to hidden
-  $("#pdf_cancel_button").click(function(event){
+  $("#pdf_cancel_button").click(function(event) {
 
 
 
@@ -115,23 +116,32 @@ js get element by id and send data to post function in pdf action-->
 
 
   $("#pdf_form").submit(function() {
-    
+
 
 
     $("#insight_pdf_modal").foundation("reveal", "close");
 
 
-    $.ajax({
-                        url  : '/insights-export/pdf',//add url parameters
-                        type : 'POST',
-                        data : {
-                            
-                        },
-                        complete: function(response_data) {
-                          
-                          
-                        }
-                    });
+    //$.ajax({
+
+      //variable = new XMLHttpRequest();
+      //send("POST");
+
+      //url: '/insights-export/pdf'.http_build_query($_GET), //add url parameters
+      //type: 'POST',
+      //data: {
+
+        //XML?
+        //$w - > out(Html::multiColForm($template_list, $postUrl, 'POST', 'Save', null, null, null, '_self', true, null)),
+        //$insight = InsightService::getInstance($w) - > getInsightInstance($_POST['insight_class']),
+        //$run_data = $insight - > run($w, $_REQUEST),
+        //$data_array = json_decode(json_encode($run_data), true),
+      //},
+      //complete: function(response_data) {
+
+        //InsightService::getInstance($w)->exportpdf($run_data, $insight->name, $_POST['template_id']),
+      //}
+    //});
 
 
   });

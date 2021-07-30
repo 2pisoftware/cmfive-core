@@ -37,7 +37,7 @@ function pdf_POST(Web $w)
     //retrieve data for insight
     $insight = InsightService::getInstance($w)->getInsightInstance($_POST['insight_class']);
     $run_data = $insight->run($w, $_REQUEST);
-    $data_array = json_decode(json_encode($run_data), true);
+    //$data_array = json_decode(json_encode($run_data), true);
     //var_dump($data_array); die;
     //retieve slected template from GET function
 
@@ -50,5 +50,5 @@ function pdf_POST(Web $w)
     echo 'test';
 
     //redirect/close pop-up box
-    $w->redirect('/insights/runInsight/' . $_POST['insight_class'] . '?' . http_build_query($_REQUEST));
+    //$w->redirect('/insights/runInsight/' . $_POST['insight_class'] . '?' . http_build_query($_REQUEST));
 }

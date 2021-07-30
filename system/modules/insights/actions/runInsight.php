@@ -17,7 +17,7 @@ function runInsight_GET(Web $w)
     $insight = InsightService::getInstance($w)->getInsightInstance($p['insight_class']);
     $w->ctx('insight', $insight);
     $w->ctx('title', $insight->name);
-    //var_dump($_GET);
+    var_dump($_GET);
     //die;
     $run_data = $insight->run($w, $_GET);
     /** @var InsightReportInterface $data */
