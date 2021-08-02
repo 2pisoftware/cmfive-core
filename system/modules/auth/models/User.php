@@ -63,7 +63,7 @@ class User extends DbObject
     }
 
     /**
-     * A static array of string arrays to be used for validaiton when creating forms with a User in it.
+     * A static array of string arrays to be used for validation when creating forms with a User in it.
      *
      * @var array[array[string]]
      */
@@ -395,7 +395,7 @@ class User extends DbObject
      * password hash and the PHP Version.
      *
      * @param string $password
-     * @param boolean $update_salt - DEPRICATED
+     * @param boolean $update_salt - Deprecated, will be removed in v5.0.0.
      * @return string
      */
     public function encryptPassword($password, $update_salt = true)
@@ -442,7 +442,7 @@ class User extends DbObject
     }
 
     /**
-     * If the User's password hash is depricated and the $password paramter matches the User's password,
+     * If the User's password hash is deprecated and the $password parameter matches the User's password,
      * update the User's password to use the latest Hash.
      *
      * @param string $password
