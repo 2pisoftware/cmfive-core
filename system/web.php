@@ -586,7 +586,7 @@ class Web
              * To enable portal support set portal flag in the module to true.
              * For it to work properly a domain name module must also be set.
              *
-             * For exmaple:
+             * For example:
              * Config::set('{module}.portal', true);
              * Config::set('{module}.domain_name', '{domain_url}');
              */
@@ -617,7 +617,7 @@ class Web
                     // just add the module to the first path entry, eg. frontend-page/1
                     $this->_paths[0] = $domainmodule . "-" . $this->_paths[0];
                 } else {
-                    // add the module as an entry to the front of paths, eg. frontent/index
+                    // add the module as an entry to the front of paths, eg. frontend/index
                     array_unshift($this->_paths, $domainmodule);
                 }
             }
@@ -791,7 +791,7 @@ class Web
                 "max-age" => "10886400",
                 "endpoints" => ["url" => "/main/logCSPReport"],
             ])); */
-                // All content must come from the site and dissallow flash.
+                // All content must come from the site and disallow flash.
                 // report uri is deprecated in chrome 70, but still required for firefox and other browsers (as of jan 2020)
                 // see https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/report-uri
                 /* $this->sendHeader(
@@ -861,7 +861,7 @@ class Web
         } catch (Throwable $t) {
             $logger = empty($this->currentModule()) ? "CMFIVE" : strtoupper($this->currentModule());
             $this->Log->setLogger($logger)->error("Throwable caught in Web: {$t->getMessage()} Trace: {$t->getTraceAsString()}");
-            echo Html::alertBox("An error occoured, if this message persists please contact your administrator.", "alert");
+            echo Html::alertBox("An error occurred, if this message persists please contact your administrator.", "alert");
         } finally {
             $this->_callWebHooks("cleanup");
         }
@@ -1169,7 +1169,7 @@ class Web
     {
         $mime = "application/octet-stream";
 
-        // finfo_open was introduced in 5.3, however some hosts like Crazydomains make it extra difficult
+        // finfo_open was introduced in 5.3, however some hosts like Crazy Domains make it extra difficult
         // by compiling php without the finfo extension.
 
         // BEST OPTION
@@ -1386,7 +1386,7 @@ class Web
      * $w is for the error() function
      * $object is the object that one is saving/updating whatever
      * $type is for the message returned, i.e. "Updating this $type failed"
-     * $response is the reponse array from the validation method
+     * $response is the response array from the validation method
      * $isUpdating is a helper for the message i.e. creating/updating
      * $returnUrl is where the redirection in error() will go
      *
@@ -1476,7 +1476,7 @@ class Web
             return;
         }
 
-        echo Html::alertBox("An error occoured, if this message persists please contact your administrator.", "alert");
+        echo Html::alertBox("An error occurred, if this message persists please contact your administrator.", "alert");
     }
 
     public function internalLink($title, $module, $action = null, $params = null)
@@ -1611,12 +1611,6 @@ class Web
                 $this->Log->setLogger('I18N')->error($e->getMessage());
             }
         }
-
-        // Check if the module if active or not
-        //        if (!Config::get("{$name}.active") && $name !== "main") {
-        //            // Do we want to do something else?
-        //            return NULL;
-        //        }
 
         // save current output buffer
         $oldbuf = $this->_buffer;
