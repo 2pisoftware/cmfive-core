@@ -37,6 +37,7 @@
 @import 'cmfive/forms';
 @import 'cmfive/menu';
 @import 'cmfive/modal';
+@import 'cmfive/multi_file_uploads';
 @import 'cmfive/tables';
 @import 'cmfive/toast';
 @import 'cmfive/type';
@@ -58,6 +59,7 @@
 @import "~quill/dist/quill.snow.css";
 .quill-editor {
     min-height: 200px;
+    height: 200px;
 }
 
 body {

@@ -5,8 +5,10 @@ import { FavouritesAdaptation} from './adaptations/favourites';
 import { TabAdaptation } from './adaptations/tabs';
 import { TableAdaptation } from './adaptations/table';
 import { QuillEditor } from './components/QuillEditor';
+import { InputWithOther } from './components/InputWithOther';
 
 import { Modal } from 'bootstrap';
+import { MultiFileUpload } from './components/MultiFileUpload';
 
 // import { CmfiveHelper } from './CmfiveHelper';
 
@@ -95,7 +97,6 @@ class Cmfive {
 
     static formCancel()
     {
-        console.log("FORM CANCEL")
         if (Cmfive.currentModal) {
             Cmfive.currentModal.hide();
             Cmfive.currentModal = null;
@@ -165,6 +166,8 @@ class Cmfive {
         AlertAdaptation.bindCloseEvent();
         DropdownAdaptation.bindDropdownHover();
         FavouritesAdaptation.bindFavouriteInteractions();
+        InputWithOther.bindOtherInteractions();
+        MultiFileUpload.bindInteractions();
         TabAdaptation.bindTabInteractions();
         TableAdaptation.bindTableInteractions();
         QuillEditor.bindQuillEditor();

@@ -1,0 +1,28 @@
+
+.multi-upload-files-display {
+    margin-top: 1rem;
+    padding: 1rem 2rem;
+    border-width: 1px;
+    border-style: solid;
+    @include theme((border-color: 'light-grey'));
+    border-radius: 4px;
+
+    .multi-upload-item {
+
+        button {
+            padding: 0;
+            margin-top: 3px;
+            margin-left: 0.5rem;
+            border: none;
+            border-radius: 50%;
+            height: 30px;
+            width: 30px;
+            @include theme((background-color: 'white-black'));
+            @include font-size('5');
+
+            &:hover {
+                @include theme((background-color: 'mid-grey', color: 'white-black'));
+            }
+        }
+    }
+}

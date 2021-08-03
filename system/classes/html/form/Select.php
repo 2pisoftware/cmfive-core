@@ -22,6 +22,8 @@ class Select extends \Html\Form\FormElement
     public $required;
     public $size;
 
+    public $_selected_option;
+
     // Cmfive attributes
     public $options = [];
 
@@ -47,6 +49,7 @@ class Select extends \Html\Form\FormElement
         // Check for given selected option
         if (array_key_exists('selected_option', $fields)) {
             $this->setSelectedOption($fields['selected_option']);
+            $this->_selected_option = $fields['selected_option'];
             unset($fields['selected_option']);
         }
 

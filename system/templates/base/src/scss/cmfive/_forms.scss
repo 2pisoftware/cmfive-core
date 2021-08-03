@@ -2,10 +2,13 @@ form {
     label.form-label {
         display: flex;
         flex-direction: row;
+        margin-top: 1rem;
         margin-bottom: 2px;
+        font-weight: bold;
 
         small {
             padding: 8px 0 0 8px;
+            font-weight: normal;
         }
 
         select {

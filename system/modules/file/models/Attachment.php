@@ -286,7 +286,7 @@ class Attachment extends DbObject
         $cached_file_path = $cache_directory . "/" . $this->filename;
 
         if (file_exists($cached_file_path)) {
-            return new File($this->filename, FileService::getInstance($this->w)->File->getSpecificFilesystem("local", $cache_directory));
+            return new File($this->filename, FileService::getInstance($this->w)->getSpecificFilesystem("local", $cache_directory));
         }
 
         return new File($this->filename, $this->getFilesystem());

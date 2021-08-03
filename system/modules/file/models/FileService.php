@@ -609,7 +609,7 @@ class FileService extends DbService
             $this->w->error("Parent object not found.");
             return false;
         }
-
+        
         $rpl_nil = ["..", "'", '"', ",", "\\", "/"];
         $rpl_ws = [" ", "&", "+", "$", "?", "|", "%", "@", "#", "(", ")", "{", "}", "[", "]", ",", ";", ":"];
 
@@ -617,9 +617,9 @@ class FileService extends DbService
             $file_index = 0;
             foreach ($_FILES[$request_key]['name'] as $FILE_filename) {
                 // Files can be empty
-                if (!empty($FILE_filename['file'])) {
-                    $filename = str_replace($rpl_ws, "_", str_replace($rpl_nil, "", basename($FILE_filename['file'])));
-
+                if (!empty($FILE_filename)) {
+                    $filename = str_replace($rpl_ws, "_", str_replace($rpl_nil, "", basename($FILE_filename)));
+// var_dump($filename);
                     $att = new Attachment($this->w);
                     $att->filename = $filename;
                     $att->fullpath = null;
@@ -628,15 +628,30 @@ class FileService extends DbService
                     $att->title = (!empty($titles[$file_index]) ? $titles[$file_index] : '');
                     $att->description = (!empty($descriptions[$file_index]) ? $descriptions[$file_index] : '');
                     $att->type_code = (!empty($type_codes) ? $type_codes[$file_index] : '');
-                    $att->insert();
-
-                    $filesystemPath = FILE_ROOT . "attachments/" . $parentObject->getDbTableName() . '/' . date('Y/m/d') . '/' . $att->id . '/';
-                    $filesystem = $this->getFilesystem($filesystemPath);
+                    
+                    $filesystemPath = "attachments/" . $parentObject->getDbTableName() . '/' . date('Y/m/d') . '/' . $parentObject->id . '/';
+                    $filesystem = $this->getFilesystem($this->getFilePath($filesystemPath));
+                    if (empty($filesystem)) {
+                        LogService::getInstance($this->w)->setLogger("FILE_SERVICE")->error("Cannot save file, no filesystem returned");
+                        return null;
+                    }
+                    
                     $file = new File($filename, $filesystem);
-                    $file->setContent(file_get_contents($_FILES[$request_key]['tmp_name'][$file_index]['file']));
-
+                    
+                    $att->adapter = $this->getActiveAdapter();
                     $att->fullpath = str_replace(FILE_ROOT, "", $filesystemPath . $filename);
-                    $att->update();
+                    
+                    $content = file_get_contents($_FILES[$request_key]['tmp_name'][$file_index]);
+                    $file->setContent($content);
+                    switch ($att->adapter) {
+                        case "local":
+                            $att->mimetype = $this->w->getMimetype(FILE_ROOT . $att->fullpath);
+                            break;
+                        default:
+                            $att->mimetype = $this->w->getMimetypeFromString($content);
+                    }
+                    
+                    $att->insert();
                 }
 
                 $file_index++;

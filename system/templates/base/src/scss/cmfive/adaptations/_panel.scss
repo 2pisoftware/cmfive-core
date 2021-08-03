@@ -5,7 +5,11 @@
     margin: 0;
     // @include theme((background-color: 'light-grey'));
     &:not(.flat) {
-        @include shadow-hover();
+        @include shadow-flat();
+    }
+
+    &:not(:first-child) {
+        margin-top: 1.5rem;
     }
 
     // .section-header {

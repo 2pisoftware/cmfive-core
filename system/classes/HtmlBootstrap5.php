@@ -2,7 +2,6 @@
 
 class HtmlBootstrap5 extends Html
 {
-
     public static function b($href, $title, $confirm = null, $id = null, $newtab = false, $class = null, $type = null, $name = null)
     {
         $button = new \Html\button();
@@ -70,7 +69,7 @@ class HtmlBootstrap5 extends Html
         }
 
         // Set up shell layout
-        $buffer .= "<div class='row clearfix multicolform'>";
+        $buffer .= "<div class='multicolform'>";
 
         // Print internals
         foreach ($data as $section => $rows) {
@@ -301,16 +300,6 @@ class HtmlBootstrap5 extends Html
                     if (empty($title) and empty($value)) {
                         continue;
                     }
-
-                    // Exploit HTML5s inbuilt form validation
-                    $required = null;
-                    if (!empty($validation[$name])) {
-                        if (in_array("required", $validation[$name])) {
-                            $required = "required";
-                        }
-                    }
-
-                    //                $buffer .= "<li class='display-row'>";
 
                     // Add title field
                     $buffer .= "<tr class='" . toSlug($title) . "' >";
