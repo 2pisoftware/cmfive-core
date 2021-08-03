@@ -3,6 +3,7 @@
 function profile_GET(Web &$w)
 {
     VueComponentRegister::registerComponent("autocomplete", new VueComponent("autocomplete", "/system/templates/vue-components/form/elements/autocomplete.vue.js", "/system/templates/vue-components/form/elements/autocomplete.vue.css"));
+    VueComponentRegister::registerComponent("profile-security", new VueComponent("profile-security", "/system/templates/vue-components/profile-security.vue.js"));
 
     $user = AuthService::getInstance($w)->user();
     if (empty($user)) {
