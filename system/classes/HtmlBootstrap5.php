@@ -80,7 +80,6 @@ class HtmlBootstrap5 extends Html
             // Loop through each row
             foreach ($rows as $row) {
                 // Print each field
-                $fieldCount = is_array($row) ? count($row) : 1;
                 $buffer .= "<div class='row'>";
 
                 if (empty($row)) {
@@ -130,7 +129,7 @@ class HtmlBootstrap5 extends Html
 
                     // Add title field
                     if (!empty($title) && $type !== "hidden") {
-                        $buffer .= "<label class='form-label'>$title</div>";
+                        $buffer .= "<div class='col'><label class='form-label'>$title</div>";
                         if (!empty($tooltip)) {
                             $buffer .= " <span data-tooltip aria-haspopup='true' class='has-tip fi-info' title='" . $tooltip . "'></span>";
                         }

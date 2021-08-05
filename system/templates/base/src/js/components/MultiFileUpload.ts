@@ -18,6 +18,11 @@ export class MultiFileUpload {
         document.querySelectorAll('.' + MultiFileUpload.fileTarget)?.forEach(f => {
             f.removeEventListener('change', () => MultiFileUpload.fileChangeHandler(f));
             f.addEventListener('change', () => MultiFileUpload.fileChangeHandler(f));
+        });
+
+        document.querySelectorAll('.' + MultiFileUpload.containerTarget + ' .remove')?.forEach(r => {
+            r.removeEventListener('click', MultiFileUpload.removeExistingFile);
+            r.addEventListener('click', MultiFileUpload.removeExistingFile);
         })
     }
 
@@ -67,6 +72,22 @@ export class MultiFileUpload {
         this.files = (new DataTransfer()).files;
 
         MultiFileUpload.loadList(parent);
+    }
+
+    static removeExistingFile = function() {
+        const parent_p = this.closest('p');
+        const container_parent = this.closest('.' + MultiFileUpload.containerTarget)
+
+        if (parent_p && container_parent) {
+            let hidden_remove = document.getElementById(container_parent.id + '_remove') as HTMLInputElement;
+            if (hidden_remove) {
+                let values = hidden_remove.value?.split(',');
+                values.push(parent_p.getAttribute('data-file-id'));
+                hidden_remove.value = values.join(',');
+
+                parent_p.classList.add('d-none');
+            }
+        }
     }
 
     private static loadList(parent) {

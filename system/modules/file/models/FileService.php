@@ -662,6 +662,23 @@ class FileService extends DbService
     }
 
     /**
+     * Removes a list of attachments by ID from an object
+     *
+     * @param DbObject $object
+     * @param array $attachment_ids
+     * @return void
+     */
+    public function removeAttachmentsByID(DbObject $object, array $attachment_ids)
+    {
+        foreach ($attachment_ids as $attachment_id) {
+            $attachment = $this->getAttachment($attachment_id);
+            if ($attachment->parent_table = $object->getDbTableName() && $attachment->parent_id == $object->id && $attachment->canDelete(AuthService::getInstance($this->w)->user())) {
+                $attachment->delete();
+            }
+        }
+    }
+
+    /**
      * Save an attachment and create a file based on content passed as a parameter
      *
      * @param DbObject $object object to save content to

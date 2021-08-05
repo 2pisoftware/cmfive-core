@@ -36,6 +36,29 @@ class AdminService extends DbService
     }
 
     /**
+     * Returns the country name represented by either alpha 2 or 3 code
+     *
+     * @param string $code
+     * @param string $type
+     * @return string
+     */
+    public function getCountryNameForISOCode(string $code, ?string $type = Country::_ALPHA_2_CODE): string
+    {
+        $query = $this->_db->get('country')
+            ->select()
+            ->select('name')
+            ->where('is_deleted', 0);
+
+        if ($type == Country::_ALPHA_2_CODE) {
+            $query->where('alpha_2_code', $code);
+        } else {
+            $query->where('alpha_3_code', $code);
+        }
+
+        return $query->fetchElement('name');
+    }
+
+    /**
      * Returns an array of rows containing the country's demonym.
      *
      * @return array

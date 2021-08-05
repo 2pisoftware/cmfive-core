@@ -2,6 +2,9 @@
 
 class Country extends DbObject
 {
+    const _ALPHA_2_CODE = '2';
+    const _ALPHA_3_CODE = '3';
+
     public $name;
     public $alpha_2_code;
     public $alpha_3_code;

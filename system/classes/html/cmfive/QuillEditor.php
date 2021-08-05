@@ -14,12 +14,13 @@ class QuillEditor extends \Html\Form\InputField
 
     /**
      * Sets the options to use for Quill
-     * 
+     *
      * @param array $options
      */
-    public function setOptions(array $options = [])
+    public function setOptions(array $options = []): self
     {
         $this->options = array_merge($this->options, $options);
+        return $this;
     }
 
     public function __toString()
