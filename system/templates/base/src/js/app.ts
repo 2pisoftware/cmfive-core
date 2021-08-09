@@ -1,16 +1,10 @@
 // src/app.ts
-import { AlertAdaptation } from './adaptations/alert';
-import { DropdownAdaptation } from './adaptations/dropdown';
-import { FavouritesAdaptation} from './adaptations/favourites';
-import { TabAdaptation } from './adaptations/tabs';
-import { TableAdaptation } from './adaptations/table';
-import { QuillEditor } from './components/QuillEditor';
-import { InputWithOther } from './components/InputWithOther';
+import { AlertAdaptation, DropdownAdaptation, FavouritesAdaptation, TabAdaptation, TableAdaptation } from './adaptations';
+import { QuillEditor, InputWithOther, MultiFileUpload } from './components';
 
 import { Modal } from 'bootstrap';
-import { MultiFileUpload } from './components/MultiFileUpload';
 
-// import { CmfiveHelper } from './CmfiveHelper';
+import Vue from 'vue';
 
 class Cmfive {
     static THEME_KEY = 'theme';

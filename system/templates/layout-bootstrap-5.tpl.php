@@ -25,7 +25,7 @@
             let modal_history = [];
         </script>
     </head>
-    <body>
+    <body id="cmfive-body">
         <div id="app">
             <div id="offscreen-menu">
                 <div class="d-flex flex-row justify-content-between">

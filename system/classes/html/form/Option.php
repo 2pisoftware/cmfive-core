@@ -21,8 +21,7 @@ class Option extends \Html\Form\FormElement
         foreach (get_object_vars($this) as $field => $value) {
             if (!is_null($value) && !in_array($field, static::$_excludeFromOutput) && $field[0] !== "_") {
                 if (is_array($this->{$field})) {
-                    var_dump($field);
-                    var_dump($this->{$field});
+                    continue;
                 }
                 $buffer .= $field . '=\'' . $this->{$field} . '\' ';
             }
