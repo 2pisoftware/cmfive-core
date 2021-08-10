@@ -47,7 +47,7 @@ jobs:
           path: /tmp/docker-registry
           key: docker-registry-${{ hashFiles('.build/environment/test/config/docker/Dockerfile.template') }}
 
-      # Pre-requsites Prepare Runtime
+      # Pre-requisites Prepare Runtime
       - name: Provision Python Virtual Environment
         if: steps.pip.outputs.cache-hit != 'true'
         run: |
@@ -74,7 +74,7 @@ jobs:
       - name: Pull Image from Docker Registry
         run: docker pull localhost:5000/cmfive || true
 
-      # Pre-requsites Prepare Cmfive Environment
+      # Pre-requisites Prepare Cmfive Environment
       - name: Setup cmfive Test Environment
         run: |
           echo ${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}};
