@@ -147,6 +147,40 @@ class RequestTest extends TestCase
     }
 
     /**
+     * Test Request::array().
+     *
+     * @return void
+     */
+    public function testArray(): void
+    {
+        require_once("system/web.php");
+        $w = new Web();
+
+        $testCases = [
+            // Test the different arrays work as expected.
+            ["key" => "test-array-empty", "value" => [], "default" => [1, 2, 3], "want" => []],
+            ["key" => "test-array-scalar", "value" => [1, 2, 3], "default" => [1, 2, 3], "want" => [1, 2, 3]],
+            ["key" => "test-array-compound", "value" => [new stdClass()], "default" => [1, 2, 3], "want" => [new stdClass()]],
+            // Test the default parameter works as expected for non-array types.
+            ["key" => "test-default-null", "value" => null, "default" => [1, 2, 3], "want" => [1, 2, 3]],
+            ["key" => "test-default-int", "value" => 1, "default" => [1, 2, 3], "want" => [1, 2, 3]],
+            ["key" => "test-default-class", "value" => new stdClass(), "default" => [1, 2, 3], "want" => [1, 2, 3]],
+        ];
+
+        foreach ($testCases as $testCase) {
+            $_REQUEST[$testCase["key"]] = $testCase["value"];
+            $this->assertEquals($testCase["want"], Request::array($testCase["key"], $testCase["default"]));
+            unset($_REQUEST[$testCase["key"]]);
+        }
+
+        // Test that an empty array is returned when that key doesn't exist.
+        $this->assertEquals([], Request::array("test-missing"));
+
+        // Test that the default parameter works as expected when the key doesn't exist.
+        $this->assertEquals([1, 2, 3], Request::array("test-missing-default", [1, 2, 3]));
+    }
+
+    /**
      * Test Request::mixed().
      *
      * @return void
@@ -168,7 +202,7 @@ class RequestTest extends TestCase
     }
 
     /**
-     * Test Reqest::has().
+     * Test Request::has().
      *
      * @return void
      */
@@ -183,6 +217,9 @@ class RequestTest extends TestCase
         // Test that a key is found when it does exist.
         $_REQUEST["key-1"] = "value-1";
         $this->assertEquals(true, Request::has("key-1"));
+
+        // Reset the superglobal for the other tests.
+        $_REQUEST = [];
     }
 
     /**
@@ -209,6 +246,9 @@ class RequestTest extends TestCase
         $_REQUEST["key-2"] = "value-1";
         $_REQUEST["key-3"] = "value-1";
         $this->assertEquals(true, Request::hasAny("key-1", "key-2", "key-3"));
+
+        // Reset the superglobal for the other tests.
+        $_REQUEST = [];
     }
 
     /**
@@ -234,5 +274,8 @@ class RequestTest extends TestCase
         $_REQUEST["key-2"] = "value-1";
         $_REQUEST["key-3"] = "value-1";
         $this->assertEquals(true, Request::hasAll("key-1", "key-2", "key-3"));
+
+        // Reset the superglobal for the other tests.
+        $_REQUEST = [];
     }
 }
