@@ -48,3 +48,20 @@
         }
     }
 }
+
+// Remove button - needs consistent styling
+.bi.bi-x {
+    margin-left: 2rem;
+    display: inline-block;
+    border-radius: 50%;
+    height: 20px;
+    width: 20px;
+    bottom: 2px;
+    text-align: center;
+    line-height: 22px;
+
+    &:hover {
+        cursor: pointer;
+        @include theme((background-color: 'mid-grey', color: 'white-black'));
+    }
+}

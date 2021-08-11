@@ -11,7 +11,8 @@
     },
     "include": [
         "src/**/*.ts",
-        "src/**/*.vue"
+        "src/**/*.vue",
+        "../../../../../../../modules/*/assets/ts/*"
     ],
     "exclude": ["node_modules", "**/*.spec.ts"]
 }

@@ -1,0 +1,329 @@
+/**
+ * @param map props - a map of properties to be themed
+ * @param transitions - transitions to append
+ */
+.curriculum-list-container {
+  box-shadow: 0px 4px 8px rgba(45, 45, 45, 0.25);
+  padding: 1rem;
+}
+.theme--default .curriculum-list-container {
+  background-color: #FFFFFF !important;
+  transition: background-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+.theme--dark .curriculum-list-container {
+  background-color: #353535 !important;
+  transition: background-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1), background-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+.curriculum-list-container h3:after {
+  content: "";
+  visibility: hidden;
+  display: block;
+  height: 0;
+  clear: both;
+}
+.curriculum-list-container .list-button-container {
+  font-size: 20px !important;
+  line-height: 24px !important;
+}
+.curriculum-list-container .list-button-container > i {
+  padding: 1px 2px 0px;
+  margin-top: 10px;
+  display: inline-block;
+  border-radius: 4px;
+}
+.theme--default .curriculum-list-container .list-button-container > i {
+  color: #6C757D !important;
+  transition: color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+.theme--dark .curriculum-list-container .list-button-container > i {
+  color: #F2F2F2 !important;
+  transition: color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1), color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+.curriculum-list-container .list-button-container > i:hover {
+  cursor: pointer;
+}
+.theme--default .curriculum-list-container .list-button-container > i:hover {
+  background-color: #4D4D4D !important;
+  color: #FFFFFF !important;
+  transition: color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1), background-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+.theme--dark .curriculum-list-container .list-button-container > i:hover {
+  background-color: #F2F2F2 !important;
+  color: #353535 !important;
+  transition: color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1), background-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1), color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1), background-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+.curriculum-list-container .list-button-container .add-category-button {
+  float: right;
+}
+.curriculum-list-container .list-button-container .add-category-button i {
+  margin-right: 5px;
+}
+.curriculum-list-container ul.list-group {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  border-width: 1px;
+  border-style: solid;
+}
+.theme--default .curriculum-list-container ul.list-group {
+  border-color: #F2F2F2 !important;
+  transition: border-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+.theme--dark .curriculum-list-container ul.list-group {
+  border-color: #4D4D4D !important;
+  transition: border-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1), border-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+.curriculum-list-container ul.list-group ul.list-group {
+  margin-left: 1px;
+  box-shadow: none !important;
+  border-radius: 0;
+  border: none;
+  border-left-width: 10px;
+  border-left-style: solid;
+}
+.curriculum-list-container ul.list-group .category-drag-target {
+  height: 1px;
+}
+.theme--default .curriculum-list-container ul.list-group .category-drag-target {
+  background-color: #F2F2F2 !important;
+  transition: background-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1), height 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+.theme--dark .curriculum-list-container ul.list-group .category-drag-target {
+  background-color: #4D4D4D !important;
+  transition: background-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1), background-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1), height 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+.curriculum-list-container ul.list-group li.list-group-item {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  list-style-type: none;
+  display: flow-root !important;
+  border-radius: 0;
+  border: none;
+  padding: 8px 10px;
+  border-bottom-width: 0px;
+  border-bottom-style: solid;
+  margin-bottom: -1px;
+  margin: 0;
+}
+.theme--default .curriculum-list-container ul.list-group li.list-group-item {
+  background-color: #FFFFFF !important;
+  color: #4D4D4D !important;
+  border-bottom-color: #F2F2F2 !important;
+  transition: border-bottom-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1), color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1), background-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1), box-shadow 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+.theme--dark .curriculum-list-container ul.list-group li.list-group-item {
+  background-color: #353535 !important;
+  color: #F2F2F2 !important;
+  border-bottom-color: #4D4D4D !important;
+  transition: border-bottom-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1), color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1), background-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1), border-bottom-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1), color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1), background-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1), box-shadow 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+.theme--default .curriculum-list-container ul.list-group li.list-group-item.active {
+  background-color: #F2F2F2 !important;
+  transition: background-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1), box-shadow 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+.theme--dark .curriculum-list-container ul.list-group li.list-group-item.active {
+  background-color: #4D4D4D !important;
+  transition: background-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1), background-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1), box-shadow 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+.curriculum-list-container ul.list-group li.list-group-item.dragging {
+  box-shadow: 0px 4px 16px rgba(45, 45, 45, 0.5), 0px -4px 16px rgba(45, 45, 45, 0.5);
+  z-index: 10000;
+}
+.curriculum-list-container ul.list-group li.list-group-item i {
+  font-size: 1rem;
+  line-height: 1rem;
+}
+.curriculum-list-container ul.list-group li.list-group-item i.category-drag:hover {
+  cursor: move;
+}
+.theme--default .curriculum-list-container ul.list-group li.list-group-item i.category-drag:hover {
+  background-color: #F2F2F2 !important;
+  transition: background-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+.theme--dark .curriculum-list-container ul.list-group li.list-group-item i.category-drag:hover {
+  background-color: #4D4D4D !important;
+  transition: background-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1), background-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+.curriculum-list-container ul.list-group li.list-group-item i.expand-indicator {
+  display: inline-block;
+  margin-right: 10px;
+  padding: 6px;
+  border-radius: 2px;
+}
+.curriculum-list-container ul.list-group li.list-group-item i.expand-indicator:hover {
+  cursor: pointer;
+  border-width: 1px;
+  border-style: solid;
+  margin: -1px;
+  margin-right: 9px;
+}
+.theme--default .curriculum-list-container ul.list-group li.list-group-item i.expand-indicator:hover {
+  border-left-color: #6C757D !important;
+  transition: border-left-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+.theme--dark .curriculum-list-container ul.list-group li.list-group-item i.expand-indicator:hover {
+  border-left-color: #F2F2F2 !important;
+  transition: border-left-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1), border-left-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+.curriculum-list-container ul.list-group li.list-group-item i.expand-indicator[aria-expanded=true] {
+  transform: rotate(90deg);
+}
+.curriculum-list-container ul.list-group li.list-group-item button.btn {
+  padding: 0 5px;
+  margin: 0 0 0 5px;
+  font-size: 12px !important;
+  line-height: 14px !important;
+}
+.curriculum-list-container ul.list-group li.list-group-item button.btn .bi-x {
+  height: auto;
+  width: auto;
+  margin-left: 0px;
+  bottom: 0px;
+}
+.curriculum-list-container ul.list-group li.list-group-item button.btn .bi-x:hover {
+  background-color: #bd2130 !important;
+  color: #FFFFFF !important;
+}
+.curriculum-list-container ul.list-group li.list-group-item li.list-group-item {
+  margin-bottom: -6px;
+}
+
+.curriculum-details-container {
+  opacity: 0;
+  margin-top: 20px;
+  box-shadow: 0px 4px 8px rgba(45, 45, 45, 0.25);
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+.theme--default .curriculum-details-container {
+  background-color: #FFFFFF !important;
+  transition: background-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1), opacity 0.2s cubic-bezier(0.645, 0.045, 0.355, 1), margin-top 0.2s cubic-bezier(0.645, 0.045, 0.355, 1), height 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+.theme--dark .curriculum-details-container {
+  background-color: #353535 !important;
+  transition: background-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1), background-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1), opacity 0.2s cubic-bezier(0.645, 0.045, 0.355, 1), margin-top 0.2s cubic-bezier(0.645, 0.045, 0.355, 1), height 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+.curriculum-details-container.show {
+  margin-top: 0;
+  opacity: 1;
+}
+.curriculum-details-container .curriculum-detail-header {
+  margin-bottom: 1rem;
+}
+
+.curriculum-file-container {
+  opacity: 0;
+  margin-top: 20px;
+  box-shadow: 0px 4px 8px rgba(45, 45, 45, 0.25);
+  padding: 1rem;
+}
+.theme--default .curriculum-file-container {
+  background-color: #FFFFFF !important;
+  transition: background-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1), opacity 0.2s cubic-bezier(0.645, 0.045, 0.355, 1), margin-top 0.2s cubic-bezier(0.645, 0.045, 0.355, 1), height 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+.theme--dark .curriculum-file-container {
+  background-color: #353535 !important;
+  transition: background-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1), background-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1), opacity 0.2s cubic-bezier(0.645, 0.045, 0.355, 1), margin-top 0.2s cubic-bezier(0.645, 0.045, 0.355, 1), height 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+.curriculum-file-container.show {
+  margin-top: 0;
+  opacity: 1;
+}
+.curriculum-file-container .curriculum-files {
+  border-width: 2px;
+  border-style: solid;
+  border-radius: 10px;
+  padding: 15px;
+}
+.theme--default .curriculum-file-container .curriculum-files {
+  border-color: #F2F2F2 !important;
+  transition: border-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+.theme--dark .curriculum-file-container .curriculum-files {
+  border-color: #4D4D4D !important;
+  transition: border-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1), border-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+.curriculum-file-container .curriculum-files.empty {
+  display: none;
+}
+.curriculum-file-container .curriculum-files .curriculum-file p {
+  margin-bottom: 0;
+}
+.curriculum-file-container .curriculum-files .curriculum-file p.file-header .button-container {
+  float: right;
+}
+.curriculum-file-container .curriculum-files .curriculum-file p.file-header .button-container button.btn {
+  padding: 0 5px;
+  margin: 0 0 0 5px;
+  font-size: 12px !important;
+  line-height: 14px !important;
+}
+.curriculum-file-container .curriculum-files .curriculum-file p.file-header .button-container button.btn i {
+  font-size: 1rem;
+}
+.curriculum-file-container .curriculum-files .curriculum-file p.file-header .button-container button.btn i.bi-x {
+  height: auto;
+  width: auto;
+  margin-left: 0px;
+  bottom: 0px;
+  line-height: 16px;
+}
+.curriculum-file-container .curriculum-files .curriculum-file p.file-header .button-container button.btn i.bi-x:hover {
+  background-color: #bd2130 !important;
+  color: #FFFFFF !important;
+}
+.curriculum-file-container .curriculum-files .curriculum-file p.file-description {
+  font-size: 12px !important;
+  line-height: 16px !important;
+  border-radius: 10px;
+  margin-top: 10px;
+  margin-bottom: 15px;
+  padding: 5px 10px;
+}
+.theme--default .curriculum-file-container .curriculum-files .curriculum-file p.file-description {
+  background-color: #F2F2F2 !important;
+  color: #6C757D !important;
+  transition: color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1), background-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+.theme--dark .curriculum-file-container .curriculum-files .curriculum-file p.file-description {
+  background-color: #4D4D4D !important;
+  color: #F2F2F2 !important;
+  transition: color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1), background-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1), color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1), background-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+.curriculum-file-container .curriculum-files .curriculum-file p.file-description span {
+  display: block;
+}
+.theme--default .curriculum-file-container .curriculum-files .curriculum-file p.file-description span {
+  color: #4D4D4D !important;
+  transition: color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+.theme--dark .curriculum-file-container .curriculum-files .curriculum-file p.file-description span {
+  color: #F2F2F2 !important;
+  transition: color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1), color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+.curriculum-file-container .curriculum-files .curriculum-file .meta-container {
+  font-size: 16px !important;
+  line-height: 24px !important;
+  text-transform: capitalize;
+}
+.curriculum-file-container .curriculum-files .curriculum-file .meta-container > * {
+  padding: 5px;
+}
+.curriculum-file-container .curriculum-files .curriculum-file .meta-container > *:first-child {
+  padding-left: 0;
+}
+.curriculum-file-container .curriculum-files .curriculum-file .meta-container > *:last-child {
+  padding-right: 0;
+}
+
+.event-status-container .event-status {
+  margin-top: 1rem;
+}
+.event-status-container .event-status h4 {
+  margin-bottom: 0px;
+}
