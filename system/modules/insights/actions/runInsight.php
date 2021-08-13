@@ -17,8 +17,6 @@ function runInsight_GET(Web $w)
     $insight = InsightService::getInstance($w)->getInsightInstance($p['insight_class']);
     $w->ctx('insight', $insight);
     $w->ctx('title', $insight->name);
-    var_dump($_GET);
-    //die;
     $run_data = $insight->run($w, $_GET);
     /** @var InsightReportInterface $data */
     /**Defines how the insight table should look. Gives column heading for the data defined in each insight class */
@@ -36,5 +34,4 @@ function runInsight_GET(Web $w)
     $template_select = (new \Html\Form\Select($w))->setLabel('Template')->setName('template_id')->setOptions($templates);//->setRequired(false)
 
     $w->ctx('template_select', $template_select);
-
 }

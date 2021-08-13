@@ -177,7 +177,6 @@ class InsightService extends DbService
     public function exportpdf($run_data, $title, $report_template_id = null)
     {
             $filename = str_replace(" ", "_", $title) . "_" . date("Y.m.d-H.i") . ".pdf";
-            //var_dump($filename); die;
             // using TCPDF, but sourcing from Composer
             //require_once('tcpdf/tcpdf.php');
     
@@ -193,19 +192,12 @@ class InsightService extends DbService
             $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
             $pdf->SetAutoPageBreak(true, PDF_MARGIN_BOTTOM);
             $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
-            //$pdf->
-            //var_dump($title); die;
-            //$pdf->setLanguageArray($l);
+            
             // no header, set font and create a page
             $pdf->setPrintHeader(false);
             $pdf->SetFont("helvetica", "B", 9);
             $pdf->AddPage();
-        
-    
-           
- 
-            
-        ////////////
+     
         if (!empty($run_data)) {
             if (empty($report_template_id)) {
                 // title of report
@@ -213,30 +205,24 @@ class InsightService extends DbService
                 $pdf->writeHTMLCell(0, 10, 60, 15, $hd, 0, 1, 0, true);
                 $created = date("d/m/Y g:i a");
                 $pdf->writeHTMLCell(0, 10, 60, 25, $created, 0, 1, 0, true);
-            //var_dump($created); die;
+
             // display recordset
                 foreach ($run_data as $table) {
                     if (!empty($table)) {
                         $title = $table->title;
                         $hds = [];
+
                         foreach ($table->header as $hd) {
                             $hds[] = $hd;
                         }
-                    // foreach ($rows as $row) {
-                    //     //throw away the first line which list the form parameters
-                    //     $crumbs = array_shift($row);
-                    //     $title = array_shift($row);
-                    //     $hds = array_shift($row);
-                    //     $hds = array_values($hds);
-                        //var_dump($hds); die;
-    
                         $results = "<h3>" . $title . "</h3>";
                         $results .= "<table cellpadding='2' cellspacing='2' border='0' width='50px'>\n";
-                        //$pdf->writeHTML($results, true, false, true, false, '');
+
                         foreach ($table->data as $row) {
                             $rowresults = '';
                             //var_dump($row); die;
                             $i = 0;
+
                             foreach ($row as $field) {
                                 if (!stripos($hds[$i], "_link")) {
                                     $results .= "<tr><td width='5px'>" . $hds[$i] . "</td><td>" . $field . "</td></tr>\n";
@@ -244,13 +230,9 @@ class InsightService extends DbService
                                 $i++;
                             }
                             $results .= "<tr><td colspan=2></td></tr>\n";
-                            //echo $results; die;
-                            //$pdf->writeHTML($results, true, false, true, false, '');
                         }
                         $results .= "</table><p>";
 
-                        //var_dump($results); die;
-                        //echo $results; die;
                         $pdf->writeHTML($results, true, false, true, false, '');
                     }
                 }
@@ -262,29 +244,17 @@ class InsightService extends DbService
                     if (!empty($table)) {
                         $title = $table->title;
                         $hds = [];
+
                         foreach ($table->header as $hd) {
                             $hds[] = $hd;
                         }
-                        // $data = [];
-                        // foreach ($table->data as $row) {
-                        //     var_dump($d);
-                        //     $data[$r] = $d;
-                        // }
-                    //var_dump($data); die;
-                        // $crumbs = array_shift($row);
-                        // $title = array_shift($row);
-                        // $hds = array_shift($row);
-                        // $hds = array_values($hds);
-    
                         $templatedata["tables"][] = ["title" => $title, "headers" => $hd, "results" => $table->data];
-                    //var_dump($title); die;
     
                         if (!empty($report_template_id) && !empty($templatedata)) {
                             $results = $this->w->Template->render(
                                 $report_template_id,
                                 ["data" => $templatedata, "w" => $this->w, "POST" => $_POST]
                             );
-    
                             $pdf->writeHTML($results, true, false, true, false, '');
                         }
                     }
@@ -293,9 +263,6 @@ class InsightService extends DbService
             // set for 'open/save as...' dialog
             $pdf->Output($filename, 'D');
 
-            //echo 'test service';
-
-            // $pdf->lastPage();
              return $pdf;
         }
     }

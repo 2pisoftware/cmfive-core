@@ -43,6 +43,7 @@ class AuditInsight extends InsightBaseClass
         } else {
             // convert $data from list of objects to array of values
             $convertedData = [];
+            
             foreach ($data as $datarow) {
                 $row = [];
                 $row['Date'] = formatDateTime($datarow->dt_created);
