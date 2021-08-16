@@ -25,7 +25,7 @@
         border-top-width: 1px;
         border-top-style: solid;
         
-        div {
+        & > div {
             padding-top: 36px;
             display: none;
 

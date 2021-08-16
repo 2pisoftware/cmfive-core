@@ -14,6 +14,6 @@ class Language extends DbObject
 
     public function getSelectOptionValue()
     {
-        return $this->iso_639_1;
+        return $this->iso_639_2;
     }
 }

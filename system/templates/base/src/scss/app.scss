@@ -65,6 +65,9 @@
     height: 200px;
 }
 
+// Tom Select styles
+@import '~tom-select/src/scss/tom-select.bootstrap5.scss';
+
 body {
     min-height: 100vh;
     @include theme((color: 'mid-grey', background-color: 'light-grey'));

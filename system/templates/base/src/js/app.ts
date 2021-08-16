@@ -1,6 +1,6 @@
 // src/app.ts
 import { AlertAdaptation, DropdownAdaptation, FavouritesAdaptation, TabAdaptation, TableAdaptation } from './adaptations';
-import { QuillEditor, InputWithOther, MultiFileUpload } from './components';
+import { QuillEditor, InputWithOther, MultiFileUpload, MultiSelect } from './components';
 
 import { Modal } from 'bootstrap';
 
@@ -162,6 +162,7 @@ class Cmfive {
         FavouritesAdaptation.bindFavouriteInteractions();
         InputWithOther.bindOtherInteractions();
         MultiFileUpload.bindInteractions();
+        MultiSelect.bindInteractions();
         TabAdaptation.bindTabInteractions();
         TableAdaptation.bindTableInteractions();
         QuillEditor.bindQuillEditor();

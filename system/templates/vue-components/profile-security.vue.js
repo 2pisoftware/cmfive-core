@@ -77,7 +77,7 @@ Vue.component('profile-security', {
       }
 
       if (_this.password !== _this.passwordConfirmation) {
-        new Toast("Passwords don't match").show();
+        (new Toast("Passwords don't match")).show();
         return;
       }
 
@@ -89,15 +89,15 @@ Vue.component('profile-security', {
         repeat_new_password: _this.passwordConfirmation
       }).then(function (response) {
         if (response.status !== 200) {
-          new Toast("Failed to update password").show();
+          (new Toast("Failed to update password")).show();
           return;
         }
 
         _this.password = "";
         _this.passwordConfirmation = "";
-        new Toast("Password successfully updated").show();
+        (new Toast("Password successfully updated")).show();
       }).catch(function (error) {
-        new Toast("Failed to update password").show();
+        (new Toast("Failed to update password")).show();
         console.log(error);
       }).finally(function () {
         _this.is_loading = false;
@@ -118,14 +118,14 @@ Vue.component('profile-security', {
         }
       }).then(function (response) {
         if (response.status !== 200) {
-          new Toast("Failed to fetch QR Code").show();
+          (new Toast("Failed to fetch QR Code")).show();
           return;
         }
 
         _this.mfa_qr_code_url = response.data.qr_code;
         _this.mfa_secret = response.data.mfa_secret;
       }).catch(function (error) {
-        new Toast("Failed to fetch QR Code").show();
+        (new Toast("Failed to fetch QR Code")).show();
         console.log(error);
       }).finally(function () {
         _this.is_loading = false;
@@ -146,16 +146,16 @@ Vue.component('profile-security', {
         mfa_code: _this.mfa_code
       }).then(function (response) {
         if (response.status !== 200) {
-          new Toast("Failed to confirm 2FA Code").show();
+          (new Toast("Failed to confirm 2FA Code")).show();
           return;
         }
 
         _this.mfa_qr_code_url = null;
         _this.mfa_secret = null;
         _this.isMfaEnabled = true;
-        new Toast("2FA enabled").show();
+        (new Toast("2FA enabled")).show();
       }).catch(function (error) {
-        new Toast("Failed to confirm 2FA Code").show();
+        (new Toast("Failed to confirm 2FA Code")).show();
         console.log(error);
       }).finally(function () {
         _this.is_loading = false;
@@ -178,14 +178,14 @@ Vue.component('profile-security', {
         id: _this.userId
       }).then(function (response) {
         if (response.status !== 200) {
-          new Toast("Failed to disable 2FA").show();
+          (new Toast("Failed to disable 2FA")).show();
           return;
         }
 
         _this.isMfaEnabled = false;
-        new Toast("2FA disabled").show();
+        (new Toast("2FA disabled")).show();
       }).catch(function (error) {
-        new Toast("Failed to disable 2FA").show();
+        (new Toast("Failed to disable 2FA")).show();
         console.log(error);
       }).finally(function () {
         _this.is_loading = false;
