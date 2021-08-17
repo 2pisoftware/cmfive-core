@@ -9,8 +9,10 @@ use Html\Form\Select;
 class SelectWithOther extends Select
 {
     public $other_field;
+    public $other_target_value;
 
     public static $_excludeFromOutput = [
+        'other_target_value',
         'other_field',
         'options',
     ];
@@ -21,15 +23,24 @@ class SelectWithOther extends Select
         return $this;
     }
 
+    public function setOtherTargetValue(string $other_target_value): self
+    {
+        $this->other_target_value = $other_target_value;
+        return $this;
+    }
+
     public function __toString(): string
     {
-        $option = new Option(['label' => 'Other', 'value' => 'other']);
-        if ($this->_selected_option === 'other') {
-            $option->setSelected("selected");
+        if (empty($this->other_target_value)) {
+            $option = new Option(['label' => 'Other', 'value' => 'other']);
+            if ($this->_selected_option === 'other') {
+                $option->setSelected("selected");
+            }
+            array_push($this->options, $option);
         }
-        array_push($this->options, $option);
         if (!empty($this->other_field)) {
             $this->other_field->setAttribute('data-other-field', $this->id);
+            $this->other_field->setAttribute('data-other-target-value', $this->other_target_value ?? 'other');
             $this->other_field->class .= ' d-none';
         } else {
             return parent::__toString();

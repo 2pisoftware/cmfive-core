@@ -428,7 +428,7 @@ class HtmlBootstrap5 extends Html
             $buffer .= "</tbody>";
         }
         $buffer .= "</table></div></div>";
-        $buffer .= '<div class="pagination-centered">' . Html::pagination($page, $num_results, $page_size, $total_results, $url_string, $page_query_param, $pagesize_query_param, $total_results_query_param) . '</div></div>';
+        $buffer .= '<div class="pagination-centered">' . self::pagination($page, $num_results, $page_size, $total_results, $url_string, $page_query_param, $pagesize_query_param, $total_results_query_param) . '</div></div>';
         return $buffer;
     }
 
@@ -617,5 +617,46 @@ class HtmlBootstrap5 extends Html
         $buffer .= $hidden . "</form>\n";
 
         return $buffer;
+    }
+
+    public static function pagination($currentpage, $numpages, $pagesize, $totalresults, $baseurl, $pageparam = "p", $pagesizeparam = "ps", $totalresultsparam = "tr")
+    {
+//         <nav aria-label="...">
+//   <ul class="pagination pagination-sm">
+//     <li class="page-item active" aria-current="page">
+//       <span class="page-link">1</span>
+//     </li>
+//     <li class="page-item"><a class="page-link" href="#">2</a></li>
+//     <li class="page-item"><a class="page-link" href="#">3</a></li>
+//   </ul>
+// </nav>
+
+        // See functions.php for implementation of isNumber
+        // Prepare buffer
+        $buf = '';
+        if (isNumber($currentpage) && isNumber($numpages) && isNumber($pagesize) && isNumber($totalresults)) {
+            // Check that we're within range
+            if ($currentpage > 0 && $currentpage <= $numpages && $numpages > 1) {
+                $buf = "<nav aria-label='pagination'><ul class='pagination justify-content-center'>";
+
+                // Build pagination links
+                for ($page = 1; $page <= $numpages; $page++) {
+                    // Check if the current page
+                    $buf .= "<li class='page-item" . ($currentpage == $page ? " active disabled' aria-current='page'" : "'") . ">";
+
+                    $url_parsed = parse_url($baseurl);
+
+                    $url_string = $url_parsed['path'];
+                    $url_string .= (empty($url_parsed['query']) ? '?' : '?' . $url_parsed['query'] . '&') . $pageparam . '=' . $page . '&' . $pagesizeparam . '=' . $pagesize . '&' . $totalresultsparam . '=' . $totalresults;
+                    $url_string .= (!empty($url_parsed['fragment']) ? '#' . $url_parsed['fragment'] : '');
+
+                    $buf .= '<a class="page-link" href=\'' . $url_string . '\'>' . $page . '</a></li>';
+                }
+
+                $buf .= "</ul></nav>";
+            }
+        }
+
+        return $buf;
     }
 }
