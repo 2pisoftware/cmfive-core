@@ -60,7 +60,6 @@ catch (Error $e) {
   }
 
   $("#pdf-close-modal").click(function(event) {
-    console.log("hello close-modal");
     $("#insight_pdf_modal").foundation("reveal", "close");
     if ($(this).hasClass("close-reveal-modal")) {
     } else {
@@ -68,6 +67,7 @@ catch (Error $e) {
       // Therefore no real need for a dynamic modal history
       return true;
     }
+
     return false;
   });
 
@@ -78,7 +78,6 @@ catch (Error $e) {
   //override onclick of cancel button. Sets visibiltiy back to hidden
   $("#pdf_cancel_button").click(function(event) {
     event.preventDefault();
-    console.log('cancel modal');
     $("#insight_pdf_modal").foundation("reveal", "close");
   });
 
