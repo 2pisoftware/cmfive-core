@@ -233,9 +233,15 @@ class AuthService extends DbService
         return LookupService::getInstance($this->w)->getLookupByType("title");
     }
 
-    public function getContact($contact_id)
+    /**
+     * Returns a contact via its id.
+     *
+     * @param string $id
+     * @return Contact|null
+     */
+    public function getContact($id)
     {
-        return $this->getObject("Contact", ['id' => $contact_id]);
+        return $this->getObject("Contact", ['id' => $id]);
     }
 
     public function getContactByEmail($email)
@@ -361,6 +367,12 @@ class AuthService extends DbService
         $this->_roles_loaded = true;
     }
 
+    /**
+     * Returns a user via its id.
+     *
+     * @param string $id
+     * @return User|null
+     */
     public function getUser($id)
     {
         return $this->getObject("User", $id);
@@ -404,7 +416,7 @@ class AuthService extends DbService
             return null;
         }
         $users = $this->getUsersAndGroups();
-        $roleUsers = array();
+        $roleUsers = [];
         if ($users) {
             foreach ($users as $u) {
                 if ($u->hasRole($role)) {
@@ -417,7 +429,7 @@ class AuthService extends DbService
 
     public function getGroups()
     {
-        $rows = $this->_db->get("user")->where(['is_active' => 1, 'is_deleted' => 0, 'is_group' => 1])->fetch_all();
+        $rows = $this->_db->get("user")->where(['is_active' => 1, 'is_deleted' => 0, 'is_group' => 1])->fetchAll();
 
         if ($rows) {
             $objects = $this->fillObjects("User", $rows);
