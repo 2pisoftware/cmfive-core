@@ -24,6 +24,13 @@ class LookupService extends DbService
         return $this->getObjects("Lookup", ["type" => $type, "is_deleted" => 0]);
     }
 
+    /**
+     * Returns a lookup from the type and code.
+     *
+     * @param string $type
+     * @param string $code
+     * @return array<Lookup>
+     */
     public function getLookupByTypeAndCode($type, $code)
     {
         return $this->getObjects("Lookup", ["type" => $type, "code" => $code, "is_deleted" => 0]);
