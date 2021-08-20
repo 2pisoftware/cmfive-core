@@ -28,24 +28,12 @@ function editMembers_GET(Web &$w)
     $users = [];
     foreach ($userstoadd as $user) {
         if (!in_array($user, $users, true)) {
-            //if (!InsightService::getInstance($w)->IsMember($insight_class_name, $user->id)){
-            //var_dump(array_search($user->id, array_column($members, 'user_id')));
-            //die;
             if (array_search($user->id, array_column($members, 'user_id')) === false) {
                 $users[] = $user;
             }
         }
     }
 
-    // build form
-    // if (!empty($p['id'])) {
-    // $addMemberForm = array(
-    //     array("","hidden", "insight_class_name", $insight_class_name);
-    //  array("Add Member","select","user_id",null,$users);
-    //     array("With Role","select","type",$member->type,$w->Insight->getInsightPermissions());
-    // );
-    // else
-    // AuthService::getInstance($w)->getUser($member->user_id)->getContact()->getFullName();
     $addMemberForm = [
         ["", "hidden", "insight_class_name", $insight_class_name]
     ];
