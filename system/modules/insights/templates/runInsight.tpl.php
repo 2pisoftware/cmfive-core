@@ -56,12 +56,11 @@ catch (Error $e) {
 
   //override onclick function of button
   my_pdf_button.onclick = function() {
-    $("#insight_pdf_modal").foundation("reveal", "open");
+    document.getElementById("insight_pdf_modal").foundation("reveal", "open");
   }
 
-  $("#pdf-close-modal").click(function(event) {
-    $("#insight_pdf_modal").foundation("reveal", "close");
-    if ($(this).hasClass("close-reveal-modal")) {
+  document.getElementById("pdf-close-modal").click(function(event)=>.getElementById("insight_pdf_modal").foundation("reveal", "close");
+    if (document.getElementById(this).hasClass("close-reveal-modal")) {
     } else {
       // No one is using the help system at the moment
       // Therefore no real need for a dynamic modal history
@@ -69,20 +68,20 @@ catch (Error $e) {
     }
 
     return false;
-  });
+  );
 
   //set variables for save and cancel buttons
   let export_button = document.getElementById("pdf_export_button");
   let cancel_button = document.getElementById("pdf_cancel_button");
 
   //override onclick of cancel button. Sets visibiltiy back to hidden
-  $("#pdf_cancel_button").click(function(event) {
+  document.getElementById("pdf_cancel_button").click(function(event)=>
     event.preventDefault();
-    $("#insight_pdf_modal").foundation("reveal", "close");
-  });
+    document.getElementById("insight_pdf_modal").foundation("reveal", "close");
+  );
 
   //override onclick of save button. Info sent to post function in HTML form. Close modal.
-  $("#pdf_form").submit(function() {
-    $("#insight_pdf_modal").foundation("reveal", "close");
+  document.getElementById("pdf_form").submit(function() {
+    document.getElementById("insight_pdf_modal").foundation("reveal", "close");
   });
 </script>
