@@ -97,7 +97,7 @@ class InsightService extends DbService
     // static list of group permissions
     public function getInsightPermissions()
     {
-        return array("OWNER", "MEMBER");
+        return ["OWNER", "MEMBER"];
     }
 
     //check if user is a member of an insight
@@ -156,7 +156,7 @@ class InsightService extends DbService
             if (!empty($table)) {
                 $title = $table->title;
                 $hds = [];
-                foreach ($table->header as $hd){
+                foreach ($table->header as $hd) {
                     $hds[$hd] = $hd;
                 }
                 $csv = new ParseCsv\Csv();
@@ -165,12 +165,105 @@ class InsightService extends DbService
                 
                 $this->w->out($csv->unparse($table->data, $hds, null, null, null));
                 // can't use this way without commenting out header section, which composer won't like
-
             }
         }
 
         $this->w->sendHeader("Content-type", "application/csv");
         $this->w->sendHeader("Content-Disposition", "attachment; filename=" . $filename);
-        $this->w->setLayout(null); 
+        $this->w->setLayout(null);
+    }
+    
+    // export a recordset as PDF
+    public function exportpdf($run_data, $title, $report_template_id = null)
+    {
+            $filename = str_replace(" ", "_", $title) . "_" . date("Y.m.d-H.i") . ".pdf";
+            // using TCPDF, but sourcing from Composer
+            //require_once('tcpdf/tcpdf.php');
+    
+            // instantiate and set parameters
+            $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+            $pdf->SetCreator(PDF_CREATOR);
+            $pdf->SetTitle($title);
+            $pdf->setHeaderFont([PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN]);
+            $pdf->setFooterFont([PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA]);
+            $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+            $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+            $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
+            $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+            $pdf->SetAutoPageBreak(true, PDF_MARGIN_BOTTOM);
+            $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+            
+            // no header, set font and create a page
+            $pdf->setPrintHeader(false);
+            $pdf->SetFont("helvetica", "B", 9);
+            $pdf->AddPage();
+     
+        if (!empty($run_data)) {
+            if (empty($report_template_id)) {
+                // title of report
+                $hd = "<h1>" . $title . "</h1>";
+                $pdf->writeHTMLCell(0, 10, 60, 15, $hd, 0, 1, 0, true);
+                $created = date("d/m/Y g:i a");
+                $pdf->writeHTMLCell(0, 10, 60, 25, $created, 0, 1, 0, true);
+
+            // display recordset
+                foreach ($run_data as $table) {
+                    if (!empty($table)) {
+                        $title = $table->title;
+                        $hds = [];
+
+                        foreach ($table->header as $hd) {
+                            $hds[] = $hd;
+                        }
+                        $results = "<h3>" . $title . "</h3>";
+                        $results .= "<table cellpadding='2' cellspacing='2' border='0' width='50px'>\n";
+
+                        foreach ($table->data as $row) {
+                            $rowresults = '';
+                            //var_dump($row); die;
+                            $i = 0;
+
+                            foreach ($row as $field) {
+                                if (!stripos($hds[$i], "_link")) {
+                                    $results .= "<tr><td width='5px'>" . $hds[$i] . "</td><td>" . $field . "</td></tr>\n";
+                                }
+                                $i++;
+                            }
+                            $results .= "<tr><td colspan=2></td></tr>\n";
+                        }
+                        $results .= "</table><p>";
+
+                        $pdf->writeHTML($results, true, false, true, false, '');
+                    }
+                }
+            } else {
+                $templatedata = [];
+                $templatedata ["insightTitle"] = $title;
+                $templatedata ["tables"] = [];
+                foreach ($run_data as $table) {
+                    if (!empty($table)) {
+                        $title = $table->title;
+                        $hds = [];
+
+                        foreach ($table->header as $hd) {
+                            $hds[] = $hd;
+                        }
+                        $templatedata["tables"][] = ["title" => $title, "headers" => $hd, "results" => $table->data];
+    
+                        if (!empty($report_template_id) && !empty($templatedata)) {
+                            $results = $this->w->Template->render(
+                                $report_template_id,
+                                ["data" => $templatedata, "w" => $this->w, "POST" => $_POST]
+                            );
+                            $pdf->writeHTML($results, true, false, true, false, '');
+                        }
+                    }
+                }
+            }
+            // set for 'open/save as...' dialog
+            $pdf->Output($filename, 'D');
+
+             return $pdf;
+        }
     }
 }
