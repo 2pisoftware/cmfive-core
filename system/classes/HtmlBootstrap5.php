@@ -226,38 +226,6 @@ class HtmlBootstrap5 extends Html
             }
             $buffer .= "</div>";
         }
-        // $buffer .= "<script>$(function(){try{\$('.ckeditor').each(function(){CKEDITOR.replace(this)})}catch(err){}});</script>";
-        // $buffer .= "<script>$(function(){try{\$('.codemirror').each(function(){var editor = CodeMirror.fromTextArea($(this), {lineNumbers: true, mode: 'text/html', matchBrackets: true, viewportMargin: Infinity}); editor.refresh()})}catch(err){}});</script>";
-
-        // Expermiental
-        if (strpos($class, "prompt") !== false) {
-            // @todo: move this to cmfive ts
-
-            // $buffer .= "<script>"
-            //     . "(function() {"
-            //     . "		var confirmOnPageExit = function (e) {
-            //                     console.log(e);
-            //                     // If we haven't been passed the event get the window.event
-            //                     e = e || window.event;
-
-            //                     var message = 'You have unsaved changes, are you sure you want to navigate away?';
-
-            //                     // For IE6-8 and Firefox prior to version 4
-            //                     if (e) {
-            //                         e.returnValue = message;
-            //                     }
-
-            //                     // For Chrome, Safari, IE8+ and Opera 12+
-            //                     return message;
-            //                 };"
-            //     . "		$('form.prompt :input').unbind('input');"
-            //     . "		$('form.prompt :input').on('input', function() {"
-            //     . "			window.onbeforeunload = confirmOnPageExit;"
-            //     . "			$(this).closest('form').find('.section-header h4 > .changed_status').show();"
-            //     . "		});"
-            //     . "})();"
-            //     . "</script>";
-        }
 
         // Finish shell div tag
         $buffer .= "</div>";

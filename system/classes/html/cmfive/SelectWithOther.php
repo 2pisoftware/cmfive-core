@@ -31,14 +31,14 @@ class SelectWithOther extends Select
 
     public function __toString(): string
     {
-        if (empty($this->other_target_value)) {
+        if (is_null($this->other_target_value)) {
             $option = new Option(['label' => 'Other', 'value' => 'other']);
             if ($this->_selected_option === 'other') {
                 $option->setSelected("selected");
             }
             array_push($this->options, $option);
         }
-        if (!empty($this->other_field)) {
+        if (!is_null($this->other_field)) {
             $this->other_field->setAttribute('data-other-field', $this->id);
             $this->other_field->setAttribute('data-other-target-value', $this->other_target_value ?? 'other');
             $this->other_field->class .= ' d-none';
