@@ -27,6 +27,8 @@ class LookupService extends DbService
     /**
      * Returns a lookup from the type and code.
      *
+     * @deprecated, see getLookupByTypeAndCodeV2.
+     *
      * @param string $type
      * @param string $code
      * @return array<Lookup>
@@ -34,6 +36,11 @@ class LookupService extends DbService
     public function getLookupByTypeAndCode($type, $code)
     {
         return $this->getObjects("Lookup", ["type" => $type, "code" => $code, "is_deleted" => 0]);
+    }
+
+    public function getLookupByTypeAndCodeV2(string $type, string $code): ?Lookup
+    {
+        return $this->getObject("Lookup", ["type" => $type, "code" => $code]);
     }
 
     public function lookupForSelect($w, $type)
