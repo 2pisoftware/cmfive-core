@@ -37,7 +37,9 @@ class MultiSelect extends Select
         }
         $this->setAttribute('data-config', json_encode($this->_config));
         $this->class = $this->class .= ' tom-select-target';
-        $this->multiple = true;
+        if (!array_key_exists('maxItems', $this->_config) || $this->_config['maxItems'] !== 1) {
+            $this->multiple = true;
+        }
 
         return parent::__toString();
     }

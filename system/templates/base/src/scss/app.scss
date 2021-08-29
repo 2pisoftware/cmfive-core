@@ -68,6 +68,13 @@
 // Tom Select styles
 @import '~tom-select/src/scss/tom-select.bootstrap5.scss';
 
+// There is a collision in styles between quill and tom-select - this is a patch for this:
+.ts-control {
+    .item {
+        margin-top: 0 !important;
+    }
+}
+
 body {
     min-height: 100vh;
     @include theme((color: 'mid-grey', background-color: 'light-grey'));

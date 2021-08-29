@@ -63,7 +63,11 @@ class Cmfive {
             }
         }
 
-        window.location.href = this.getAttribute('data-link-target');
+        if (this.hasAttribute('data-link-new-tab')) {
+            window.open(this.getAttribute('data-link-target'));
+        } else {
+            window.location.href = this.getAttribute('data-link-target');
+        }
     }
 
     static openModal(url: string) {
