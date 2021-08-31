@@ -100,8 +100,28 @@ class HtmlBootstrap5 extends Html
 
                     // Check if the row is an object like an InputField
                     if (!is_array($field) && is_object($field)) {
+                        $label_class = 'form-label';
+                        $field->setClass(str_replace(['small-12', 'columns', 'column'], '', $field->class));
+                        switch (get_class($field)) {
+                            case 'Html\Form\Select':
+                            case 'Html\Cmfive\SelectWithOther':
+                                $field->setClass($field->class . ' form-select');
+                                break;
+                            case 'Html\Form\InputField\Checkbox':
+                            case 'Html\Form\InputField\Radio':
+                                $field->setClass($field->class . ' form-check-control');
+                                $label_class = 'form-check-label';
+                                break;
+                            case 'Html\Form\InputField\Text':
+                            case 'Html\Form\InputField\Date':
+                            case 'Html\Form\InputField\File':
+                            case 'Html\Form\InputField\Number':
+                            default:
+                                $field->setClass($field->class . ' form-control');
+                                break;
+                        }
                         if ((property_exists($field, "type") && $field->type !== "hidden") || !property_exists($field, "type")) {
-                            $buffer .= '<div class="col"><label class="form-label"' . (property_exists($field, 'id') && !empty($field->id) ? ' for="' . $field->id . '"' : '' ) . '>' . $field->label . ($field->required ? " <small>Required</small>" : "") . "</label>"
+                            $buffer .= '<div class="col"><label class="' . $label_class . '"' . (property_exists($field, 'id') && !empty($field->id) ? ' for="' . $field->id . '"' : '' ) . '>' . $field->label . ($field->required ? " <small>Required</small>" : "") . "</label>"
                             . $field->__toString() . '</div>';
                         } else {
                             $buffer .= $field->__toString();
@@ -445,8 +465,25 @@ class HtmlBootstrap5 extends Html
         foreach ($data as $row) {
             // Check if the row is an object like an InputField
             if (!is_array($row) && is_object($row)) {
+                switch (get_class($row)) {
+                    case 'Html\Form\Select':
+                    case 'Html\Cmfive\SelectWithOther':
+                        $row->setClass($row->class . ' form-select form-select-sm');
+                        break;
+                    case 'Html\Form\Checkbox':
+                    case 'Html\Form\Radio':
+                        $row->setClass($row->class . ' form-check-control');
+                        break;
+                    case 'Html\Form\InputField\Text':
+                    case 'Html\Form\InputField\Date':
+                    case 'Html\Form\InputField\File':
+                    case 'Html\Form\InputField\Number':
+                    default:
+                        $row->setClass($row->class . ' form-control form-control-sm');
+                        break;
+                }
                 if ((property_exists($row, "type") && $row->type !== "hidden") || !property_exists($row, "type")) {
-                    $buffer .= '<li><label class=\'col\'>' . $row->label . '<div>' . $row->__toString() . '</div></label></li>';
+                    $buffer .= '<li><label class="col">' . $row->label . '<div>' . $row->__toString() . '</div></label></li>';
                 } else {
                     $buffer .= $row->__toString();
                 }
@@ -626,5 +663,21 @@ class HtmlBootstrap5 extends Html
         }
 
         return $buf;
+    }
+
+    /**
+     * Display a message inside an alert box.
+     *
+     * @param string $msg
+     * @param string $class
+     * @return string
+     */
+    public static function alertBox($msg, $type = "alert-info") : string
+    {
+        if ($type !== "alert-info" && $type !== "alert-warning" && $type !== "alert-danger" && $type !== "alert-success") {
+            $type = "alert-info";
+        }
+
+        return "<div data-alert class='alert alert-box {$type}'>{$msg}<a href='#' class='close'>&times;</a></div>";
     }
 }

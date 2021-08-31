@@ -135,9 +135,9 @@
             <div class="container" id="body-content">
                 <?php
                 if (!empty($error)) {
-                    echo Html::alertBox($error, "warning");
+                    echo HtmlBootstrap5::alertBox($error, "alert-warning");
                 } elseif (!empty($msg)) {
-                    echo Html::alertBox($msg, 'success');
+                    echo HtmlBootstrap5::alertBox($msg, 'alert-success');
                 }
                 ?>
                 <?php if (!empty($title)) : ?>

@@ -41,7 +41,7 @@ class SelectWithOther extends Select
         if (!is_null($this->other_field)) {
             $this->other_field->setAttribute('data-other-field', $this->id);
             $this->other_field->setAttribute('data-other-target-value', $this->other_target_value ?? 'other');
-            $this->other_field->class .= ' d-none';
+            $this->other_field->class .= ' form-control d-none';
         } else {
             return parent::__toString();
         }
