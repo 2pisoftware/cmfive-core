@@ -153,16 +153,7 @@ class FileService extends DbService
                 $adapter_obj = new InMemoryAdapter([basename($path) => $content]);
                 break;
             case "s3":
-                $args = [
-                    "region" =>  Config::get("file.adapters.s3.region", "ap-southeast-2"),
-                    "version" => Config::get("file.adapters.s3.version", "2006-03-01"),
-                ];
-
-                if (Config::get("system.environment", ENVIRONMENT_PRODUCTION) === ENVIRONMENT_DEVELOPMENT) {
-                    $args["credentials"] = Config::get("file.adapters.s3.credentials");
-                }
-
-                $client = new Aws\S3\S3Client($args);
+                $client = $this->getS3ClientBelowFilesystem();
                 $config_options = Config::get('file.adapters.s3.options');
                 $s3path = (substr($path, -1) == "/") ? substr($path, 0, -1) : $path; // because trailing presence varies with call/object history
                 $config_options = array_replace(is_array($config_options) ? $config_options : [], ["directory" => $s3path], $options);
@@ -201,16 +192,7 @@ class FileService extends DbService
                 $config_options = $adapter_config['options'];
                 $config_options = array_replace(is_array($config_options) ? $config_options : [], ["directory" => $path], $options);
 
-                $args = [
-                    "region" =>  Config::get("file.adapters.s3.region", "ap-southeast-2"),
-                    "version" => Config::get("file.adapters.s3.version", "2006-03-01"),
-                ];
-
-                if (Config::get("system.environment", ENVIRONMENT_PRODUCTION) === ENVIRONMENT_DEVELOPMENT) {
-                    $args["credentials"] = Config::get("file.adapters.s3.credentials");
-                }
-
-                $client = new S3Client($args);
+                $client = $this->getS3ClientBelowFilesystem();
                 $adapter_obj = new AwsS3($client, $adapter_config['bucket'], is_array($config_options) ? $config_options : []);
                 break;
         }
@@ -447,6 +429,26 @@ class FileService extends DbService
     public function getAttachment($id)
     {
         return $this->getObject("Attachment", $id);
+    }
+
+
+    /**
+     * Get core cmfive s3 client, radically below abstraction of Gaufrette Filesystem
+     *
+     * @return S3Client
+     */
+    public function getS3ClientBelowFilesystem()
+    {
+        $args = [
+            "region" =>  Config::get("file.adapters.s3.region", "ap-southeast-2"),
+            "version" => Config::get("file.adapters.s3.version", "2006-03-01"),
+        ];
+
+        if (Config::get("system.environment", ENVIRONMENT_PRODUCTION) === ENVIRONMENT_DEVELOPMENT) {
+            $args["credentials"] = Config::get("file.adapters.s3.credentials");
+        }
+
+        return new S3Client($args);
     }
 
 
