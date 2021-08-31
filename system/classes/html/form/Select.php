@@ -42,7 +42,7 @@ class Select extends \Html\Form\FormElement
         if (is_array($fields) && array_key_exists('options', $fields)) {
             $this->setOptions($fields['options']);
             unset($fields['options']);
-        } else {
+        } elseif (is_object($fields)) {
             $this->setOptions($fields->options);
             $fields->options = null;
         }
@@ -51,7 +51,7 @@ class Select extends \Html\Form\FormElement
         if (is_array($fields) && array_key_exists('selected_option', $fields)) {
             $this->setSelectedOption($fields['selected_option']);
             unset($fields['selected_option']);
-        } else {
+        } elseif (is_object($fields)) {
             $this->setSelectedOption($fields->selected_option);
             $fields->selected_option = null;
         }
