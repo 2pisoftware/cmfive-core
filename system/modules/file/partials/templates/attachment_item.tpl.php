@@ -50,7 +50,7 @@
         <div class="column small-12 medium-<?php echo $attachment->isImage() ? '4' : '6'; ?>">
             <a href="/file/atfile/<?php echo $attachment->id; ?>" target="_blank" class="button expand" onclick="$('#attachment_modal_<?php echo $attachment->id; ?>').foundation('reveal', 'close');">Open in new tab</a>
         </div>
-        <?php if ($attachment->isImage()) { ?>
+        <?php if ($attachment->isImage() && !$image_data_blocked) { ?>
             <div class="column small-12 medium-4">
                 <a href="/file-image/metadata/<?php echo $attachment->id; ?>" target="_blank" class="button expand" onclick="$('#attachment_modal_<?php echo $attachment->id; ?>').foundation('reveal', 'close');">View metadata</a>
             </div>
