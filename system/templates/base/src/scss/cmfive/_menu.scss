@@ -24,11 +24,97 @@ $themes: map.deep-merge($themes, (
         bottom: 0px;
         width: $side-menu-width;
         z-index: 20;
-        padding: 20px;
+        padding: 1rem 0;
         opacity: 0;
+        overflow-y: auto;
 
-        .navbar {
+        .offscreen-header {
+            & > .nav-link {
+                padding: 0;
+
+                .bi.bi-x {
+                    margin-left: 0;
+                    display: inline-block;
+                    border-radius: 0;
+                    height: 40px;
+                    width: 40px;
+                    padding-top: 10px;
+                    bottom: 0;
+                    text-align: center;
+                    line-height: 22px;
+                
+                    &:hover {
+                        cursor: pointer;
+                        @include theme((background-color: 'light-grey', color: 'black-grey'));
+                    }
+                }
+            }
+        }
+
+        .nav {
             @include theme((background-color: 'navbar-background'));
+            width: 100%;
+            justify-content: space-between;
+
+            .dropdown {
+                a {
+                    &::after {
+                        display: none;
+                    }
+                }
+            }
+        }
+
+        .accordion {
+            @include theme((background-color: 'navbar-background'));
+            border-radius: 0px;
+            border: none;
+
+            .accordion-item {
+                @include theme((background-color: 'navbar-background'));
+                border-radius: 0px;
+
+                .accordion-header {
+                    .accordion-button {
+                        @include theme((background-color: 'navbar-background', color: 'black-grey'));
+                        padding: 0.5rem 1rem;
+
+                        &:not(.collapsed) {
+                            @include theme((background-color: 'light-grey', color: 'black-grey'));
+                        }
+
+                        &:focus {
+                            outline: 0;
+                        }
+
+                        &::after {
+                            @include theme((color: 'white-black'));
+                        }
+                    }
+
+                    .nav-link {
+                        @include theme((background-color: 'navbar-background', color: 'black-grey'));
+                        padding: 1rem;
+                    }
+                }
+
+                .accordion-collapse {
+                    ul.nav {
+                        li {
+                            a {
+                                @include theme((color: 'navbar-text'));
+                                padding: 0.5rem 1rem;
+                                display: inline-block;
+                                width: 100%;
+
+                                &:hover {
+                                    @include theme((background-color: 'light-grey', color: 'black-grey'));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         &.active {

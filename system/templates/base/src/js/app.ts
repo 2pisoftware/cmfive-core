@@ -120,6 +120,14 @@ class Cmfive {
             });
         }
 
+        // Add offset for breadcrumb if scrollbar is visible
+        const breadcrumb = document.querySelector('#breadcrumbs .breadcrumb');
+        if (breadcrumb) {
+            if (breadcrumb.scrollHeight > breadcrumb.clientHeight) {
+                breadcrumb.classList.add('scroll-active');
+            }
+        }
+
         if (target instanceof Document) {
             let theme = localStorage.getItem(Cmfive.THEME_KEY)
 

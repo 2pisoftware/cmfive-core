@@ -23,6 +23,10 @@ $themes: map.deep-merge($themes, (
         display: block;
         height: 40px;
         
+        &.scroll-active {
+            height: 50px;
+        }
+
         li.breadcrumb-item {
             @include theme((color: 'breadcrumb-text'));
             display: inline-block;

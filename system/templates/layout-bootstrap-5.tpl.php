@@ -28,7 +28,7 @@
     <body id="cmfive-body">
         <div id="app">
             <div id="offscreen-menu">
-                <div class="d-flex flex-row justify-content-between">
+                <div class="d-flex flex-row justify-content-between offscreen-header">
                     <div class="d-flex flex-row align-items-center">
                         <a class="nav-link" href="/">
                             <img class="nav" width="24px" height="24px" src="/system/templates/img/cmfive_V_logo.png" />
@@ -37,30 +37,77 @@
                     </div>
                     <a class="nav-link pt-0 pb-1" data-toggle-menu="close"><i class="bi bi-x" style="font-size: 24px;"></i></a>
                 </div>
-                <nav class="navbar navbar-expand navbar-light bg-light justify-content-start">
-                    <ul class="navbar-nav me-auto nav-icon-list">
-                        <li class="nav-item"><a class="nav-link nav-icon" href="/"><i class="bi bi-house-fill"></i></a></li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link nav-icon dropdown-toggle" href="#" id="profile-menu-dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="bi bi-person-fill"></i>
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="profile-menu-dropdown">
-                                <li><a class="dropdown-item" href="/auth/profile">Profile</a></li>
-                                <li><a class="dropdown-item" href="/auth/logout">Logout</a></li>
-                            </ul>
-                        </li>
-                        <?php if (AuthService::getInstance($w)->user()->allowed('/favorite')) : ?>
-                            <li class="nav-item"><a class="nav-link nav-icon" data-modal-target="/favorite"><i class="bi bi-star-fill"></i></a></li>
-                        <?php endif; ?>
-                        <li class="nav-item"><a class="nav-link nav-icon" data-modal-target="/help/view/<?php echo $w->_module . ($w->_submodule ? "-" . $w->_submodule : "") . "/" . $w->_action; ?>"><i class="bi bi-question-circle-fill"></i></a></li>
-                        <li class="nav-item"><a class="nav-link nav-icon" data-modal-target='/search?isbox=1'><i class="bi bi-search"></i></a></li>
-                        <li class="nav-item"><a class="nav-link nav-icon" href="#" data-toggle-theme><i class="bi bi-palette-fill"></i></a></li>
-                    </ul>
-                </nav>
+                <!-- <nav class="navbar navbar-expand navbar-light bg-light"> -->
+                <ul class="nav">
+                    <li class="nav-item"><a class="nav-link nav-icon" href="/"><i class="bi bi-house-fill"></i></a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link nav-icon dropdown-toggle" href="#" id="profile-menu-dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-person-fill"></i>
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="profile-menu-dropdown">
+                            <li><a class="dropdown-item" href="/auth/profile">Profile</a></li>
+                            <li><a class="dropdown-item" href="/auth/logout">Logout</a></li>
+                        </ul>
+                    </li>
+                    <?php if (AuthService::getInstance($w)->user()->allowed('/favorite')) : ?>
+                        <li class="nav-item"><a class="nav-link nav-icon" data-modal-target="/favorite"><i class="bi bi-star-fill"></i></a></li>
+                    <?php endif; ?>
+                    <li class="nav-item"><a class="nav-link nav-icon" data-modal-target="/help/view/<?php echo $w->_module . ($w->_submodule ? "-" . $w->_submodule : "") . "/" . $w->_action; ?>"><i class="bi bi-question-circle-fill"></i></a></li>
+                    <li class="nav-item"><a class="nav-link nav-icon" data-modal-target='/search?isbox=1'><i class="bi bi-search"></i></a></li>
+                    <li class="nav-item"><a class="nav-link nav-icon" href="#" data-toggle-theme><i class="bi bi-palette-fill"></i></a></li>
+                </ul>
+                <!-- </nav> -->
+                <div class="accordion" id="accordion_menu">
+                    <?php foreach ($w->modules() as $module) :
+                        // Check if config is set to display on topmenu
+                        if (Config::get("{$module}.topmenu") && Config::get("{$module}.active")) :
+                            // Check for navigation
+                            $module_service = ucfirst($module) . "Service";
+                            $array = [];
+                            $menu_link = method_exists($module_service, "menuLink") ? $module_service::getInstance($w)->menuLink() : $w->menuLink($module, is_bool(Config::get("{$module}.topmenu")) ? ucfirst($module) : Config::get("{$module}.topmenu"), $array, null, null, "nav-link");
+                            if ($menu_link !== false) :
+                                if (method_exists($module . "Service", "navigation")) : ?>
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header" id="accordion_menu_<?php echo $module; ?>_heading">
+                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accordion_menu_<?php echo $module; ?>" aria-expanded="true" aria-controls="accordion_menu_<?php echo $module; ?>">
+                                                <?php echo is_bool(Config::get("{$module}.topmenu")) ? ucfirst($module) : Config::get("{$module}.topmenu"); ?>
+                                            </button>
+                                        </h2>
+                                        <?php // Try and get a badge count for the menu item
+                                        $module_navigation = $module_service::getInstance($w)->navigation($w);
+
+                                        // Invoke hook to inject extra navigation
+                                        $hook_navigation_items = $w->callHook($module, "extra_navigation_items", $module_navigation);
+                                        if (!empty($hook_navigation_items)) {
+                                            foreach ($hook_navigation_items as $hook_navigation_item) {
+                                                if (is_array($hook_navigation_item)) {
+                                                    $module_navigation = array_merge($module_navigation, $hook_navigation_item);
+                                                } else {
+                                                    $module_navigation[] = $hook_navigation_item;
+                                                }
+                                            }
+                                        } ?>
+                                        <div id="accordion_menu_<?php echo $module; ?>" class="accordion-collapse collapse" aria-labelledby="accordion_menu_<?php echo $module; ?>_heading" data-bs-parent="#accordion_menu">
+                                            <ul class="nav flex-column">
+                                                <li class="nav-item"><?php echo implode('</li><li class="nav-item">', $module_navigation); ?></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                <?php else : ?>
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header" id="accordion_menu_<?php echo $module; ?>_heading">
+                                            <?php echo $menu_link; ?>
+                                        </h2>
+                                    </div>
+                                <?php endif; ?>
+                            <?php endif;
+                        endif;
+                    endforeach; ?>
+                </div>
             </div>
             <div id="content">
                 <div class="container-fluid" id="navbar">
-                    <nav class="container navbar navbar-expand-lg navbar-light bg-light">
+                    <nav class="container-xl navbar navbar-expand navbar-light bg-light">
                         <div class="container-fluid justify-content-start">
                             <ul class="navbar-nav nav-icon-list me-4">
                                 <li class="nav-item"><a class="nav-link nav-icon" data-toggle-menu="open"><i class="bi bi-list"></i></a></li>
@@ -80,7 +127,7 @@
                                 <li class="nav-item"><a class="nav-link nav-icon" data-modal-target="/help/view/<?php echo $w->_module . ($w->_submodule ? "-" . $w->_submodule : "") . "/" . $w->_action; ?>"><i class="bi bi-question-circle-fill"></i></a></li>
                                 <li class="nav-item"><a class="nav-link nav-icon" data-modal-target='/search?isbox=1'><i class="bi bi-search"></i></a></li>
                             </ul>
-                            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                            <ul class="navbar-nav me-auto mb-2 mb-lg-0 d-none d-lg-flex">
                                 <?php foreach ($w->modules() as $module) :
                                     // Check if config is set to display on topmenu
                                     if (Config::get("{$module}.topmenu") && Config::get("{$module}.active")) :
@@ -126,7 +173,7 @@
                         </div>
                     </nav>
 
-                    <nav aria-label="breadcrumb" class="container" id="breadcrumbs">
+                    <nav aria-label="breadcrumb" class="container-xl" id="breadcrumbs">
                         <ol class="breadcrumb">
                         <?php
                         $breadcrumbs = History::get();
@@ -155,7 +202,7 @@
                 </div>
                 <div id="menu-overlay" data-toggle-menu="close"></div>
             </div>
-            <div class="container" id="body-content">
+            <div class="container-xl" id="body-content">
                 <?php
                 if (!empty($error)) {
                     echo HtmlBootstrap5::alertBox($error, "alert-warning");
