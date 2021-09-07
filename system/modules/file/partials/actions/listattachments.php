@@ -25,7 +25,11 @@ function listattachments(\Web $w, $params)
             $attachment->update();
         }
 
-        $list_items[] = $w->partial("attachment_item", ["attachment" => $attachment, "redirect" => $redirect], "file", "GET");
+        $list_items[] = $w->partial("attachment_item", [
+            "attachment" => $attachment,
+            "redirect" => $redirect,
+            "hide_image_exif" => $params["hide_image_exif"] ?? false,
+        ], "file", "GET");
     }
 
     $w->ctx("list_items", $list_items);
