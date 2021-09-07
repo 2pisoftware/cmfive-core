@@ -2,7 +2,6 @@
 
 namespace Html\Cmfive;
 
-use Html\Form\InputField;
 use Html\Form\Select;
 
 class MultiSelect extends Select

@@ -53,6 +53,10 @@ $themes: map.deep-merge($themes, (
                         padding: 0.5rem 1rem;
                         @include font-size("body");
                         @include theme((color: 'navbar-text'));
+
+                        &::after {
+                            display: none;
+                        }
                     }
             
                     .dropdown-menu {

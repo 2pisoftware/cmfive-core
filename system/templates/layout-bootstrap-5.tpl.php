@@ -38,25 +38,48 @@
                     <a class="nav-link pt-0 pb-1" data-toggle-menu="close"><i class="bi bi-x" style="font-size: 24px;"></i></a>
                 </div>
                 <nav class="navbar navbar-expand navbar-light bg-light justify-content-start">
-                    <a class="nav-link nav-icon" href="/"><i class="bi bi-house-fill"></i></a>
-                    <a class="nav-link nav-icon" href="/"><i class="bi bi-star-fill"></i></a>
-                    <a class="nav-link nav-icon" href="/"><i class="bi bi-person-fill"></i></a>
-                    <a class="nav-link nav-icon" href="#"><i class="bi bi-question-circle-fill"></i></a>
-                    <a class="nav-link nav-icon" href="#" data-toggle-theme><i class="bi bi-palette-fill"></i></a>
+                    <ul class="navbar-nav me-auto nav-icon-list">
+                        <li class="nav-item"><a class="nav-link nav-icon" href="/"><i class="bi bi-house-fill"></i></a></li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link nav-icon dropdown-toggle" href="#" id="profile-menu-dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-person-fill"></i>
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="profile-menu-dropdown">
+                                <li><a class="dropdown-item" href="/auth/profile">Profile</a></li>
+                                <li><a class="dropdown-item" href="/auth/logout">Logout</a></li>
+                            </ul>
+                        </li>
+                        <?php if (AuthService::getInstance($w)->user()->allowed('/favorite')) : ?>
+                            <li class="nav-item"><a class="nav-link nav-icon" data-modal-target="/favorite"><i class="bi bi-star-fill"></i></a></li>
+                        <?php endif; ?>
+                        <li class="nav-item"><a class="nav-link nav-icon" data-modal-target="/help/view/<?php echo $w->_module . ($w->_submodule ? "-" . $w->_submodule : "") . "/" . $w->_action; ?>"><i class="bi bi-question-circle-fill"></i></a></li>
+                        <li class="nav-item"><a class="nav-link nav-icon" data-modal-target='/search?isbox=1'><i class="bi bi-search"></i></a></li>
+                        <li class="nav-item"><a class="nav-link nav-icon" href="#" data-toggle-theme><i class="bi bi-palette-fill"></i></a></li>
+                    </ul>
                 </nav>
             </div>
             <div id="content">
                 <div class="container-fluid" id="navbar">
                     <nav class="container navbar navbar-expand-lg navbar-light bg-light">
-                        <div class="container-fluid">
-                            <a class="nav-link nav-icon" data-toggle-menu="open"><i class="bi bi-list"></i></a>
-                            <a class="nav-link nav-icon" href="/"><i class="bi bi-house-fill"></i></a>
-                            <?php if (AuthService::getInstance($w)->user()->allowed('/favorite')) : ?>
-                                <a class="nav-link nav-icon" data-modal-target="/favorite"><i class="bi bi-star-fill"></i></a>
-                            <?php endif; ?>
-                            <a class="nav-link nav-icon" href="/"><i class="bi bi-person-fill"></i></a>
-                            <a class="nav-link nav-icon" href="/"><i class="bi bi-question-circle-fill"></i></a>
-                            <a class="nav-link nav-icon" data-modal-target='/search?isbox=1'><i class="bi bi-search"></i></a>
+                        <div class="container-fluid justify-content-start">
+                            <ul class="navbar-nav nav-icon-list me-4">
+                                <li class="nav-item"><a class="nav-link nav-icon" data-toggle-menu="open"><i class="bi bi-list"></i></a></li>
+                                <li class="nav-item"><a class="nav-link nav-icon" href="/"><i class="bi bi-house-fill"></i></a></li>
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link nav-icon dropdown-toggle" href="#" id="profile-menu-dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="bi bi-person-fill"></i>
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="profile-menu-dropdown">
+                                        <li><a class="dropdown-item" href="/auth/profile">Profile</a></li>
+                                        <li><a class="dropdown-item" href="/auth/logout">Logout</a></li>
+                                    </ul>
+                                </li>
+                                <?php if (AuthService::getInstance($w)->user()->allowed('/favorite')) : ?>
+                                    <li class="nav-item"><a class="nav-link nav-icon" data-modal-target="/favorite"><i class="bi bi-star-fill"></i></a></li>
+                                <?php endif; ?>
+                                <li class="nav-item"><a class="nav-link nav-icon" data-modal-target="/help/view/<?php echo $w->_module . ($w->_submodule ? "-" . $w->_submodule : "") . "/" . $w->_action; ?>"><i class="bi bi-question-circle-fill"></i></a></li>
+                                <li class="nav-item"><a class="nav-link nav-icon" data-modal-target='/search?isbox=1'><i class="bi bi-search"></i></a></li>
+                            </ul>
                             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                                 <?php foreach ($w->modules() as $module) :
                                     // Check if config is set to display on topmenu
