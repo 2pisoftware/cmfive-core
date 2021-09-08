@@ -282,9 +282,9 @@ class User extends DbObject
      * @param string $role
      * @return true if and only if the user has this role
      */
-    public function hasRole($role)
+    public function hasRole($role, $strict = false)
     {
-        if ($this->is_admin) {
+        if ($this->is_admin && !$strict) {
             return true;
         }
         if ($this->getRoles(true)) {
@@ -300,9 +300,9 @@ class User extends DbObject
      * @param array $roles
      * @return true if the user has any one of these roles
      */
-    public function hasAnyRole($roles)
+    public function hasAnyRole($roles, $strict = false)
     {
-        if ($this->is_admin) {
+        if ($this->is_admin && !$strict) {
             return true;
         }
         if (!empty($roles)) {

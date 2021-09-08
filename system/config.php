@@ -36,6 +36,7 @@ Config::set('system.password_salt', md5('override this in your project config'))
 
 Config::set('system.encryptionMigration', 'AdminSecurityAesToOpenssl');
 
+Config::set('system.search_enabled', true);
 
 /**
  * Syntax for csrf config

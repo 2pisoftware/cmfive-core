@@ -15,6 +15,17 @@ $themes: map.deep-merge($themes, (
         .modal-content {
             padding: 20px;
             @include theme((background-color: 'modal-background'));
+
+            @include media-breakpoint-down(md) {
+                padding: 0;
+            }
+        }
+
+        .btn-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 2000;
         }
     }
 }

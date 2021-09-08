@@ -64,6 +64,10 @@ ul[class*="-block-grid-"] {
         list-style-type: none;
         padding: 0 1rem;
 
+        @include media-breakpoint-down(md) {
+            padding: 0;
+        }
+
         &:first-child {
             padding-left: 0;
         }

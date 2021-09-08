@@ -56,10 +56,16 @@ $themes: map.deep-merge($themes, (
             width: 100%;
             justify-content: space-between;
 
-            .dropdown {
-                a {
-                    &::after {
-                        display: none;
+            .nav-item {
+                .nav-link {
+                    padding: 0.5rem 15px;
+                }
+                
+                &.dropdown {
+                    a {
+                        &::after {
+                            display: none;
+                        }
                     }
                 }
             }

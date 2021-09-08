@@ -359,10 +359,10 @@ class HtmlBootstrap5 extends Html
         $count_items = count($data);
         $starting_item = (($page - 1) * $page_size) + 1;
         $buffer = '<div class="paginated-table-container"><div class="row">'
-            . '<div class="col col-md-6 col-sm-12" style="margin-top: 5px;">Showing ' . $starting_item . ' - ' . ($starting_item + $count_items - 1) . ' of ' . $total_results . '</div>'
-            . '<div class="col col-md-6 col-sm-12">';
+            . '<div class="col-md-6 col-sm-12" style="margin-top: 5px;">Showing ' . $starting_item . ' - ' . ($starting_item + $count_items - 1) . ' of ' . $total_results . '</div>'
+            . '<div class="col-md-6 col-sm-12">';
         if ($num_results > 0) {
-            $buffer .= '<div class="float-end">Page: <select onchange="location = this.value;">';
+            $buffer .= '<div class="float-md-end">Page: <select class="form-select mb-4 mb-md-0" onchange="location = this.value;">';
             // Build URL for dropdown pagination
             $dropdown_url_string = $url_parsed['path'];
             $dropdown_url_string .= (empty($url_parsed['query']) ? "?" : '?' . $url_parsed['query'] . '&') . $sort_query_param . '=' . $sort . '&' . $sort_direction_param . '=' . $sort_direction;
@@ -373,8 +373,7 @@ class HtmlBootstrap5 extends Html
             $buffer .= '</select></div>';
         }
         $buffer .= "</div></div>"
-            . "<div data-alert class='show-for-small alert-box'>This is a responsive table, pan left to right to view data.</div>"
-            . "<div class='row table-responsive'><div class='col'>"
+            . "<div class='row table-responsive d-none d-md-block'><div class='col'>"
             . "<table>";
         if (!empty($header) && is_array($header)) {
             // Print table header
@@ -416,6 +415,21 @@ class HtmlBootstrap5 extends Html
             $buffer .= "</tbody>";
         }
         $buffer .= "</table></div></div>";
+        $buffer .= "<div class='d-block d-md-none'>";
+        if (!empty($data) && is_array($data)) {
+            foreach ($data as $key => $row) {
+                $buffer .= '<div class="card d-block mb-4"><ul class="list-group list-group-flush">';
+                foreach ($row as $index => $column) {
+                    $buffer .= '<li class="list-group-item">';
+                    if (array_key_exists($index, $header)) {
+                        $buffer .= "<strong class='me-3'>" . (is_array($header[$index]) ? $header[$index][1] : $header[$index]) . "</strong>";
+                    }
+                    $buffer .= "<span>{$column}</span></li>";
+                }
+                $buffer .= "</ul></div>";
+            }
+        }
+        $buffer .= '</div>';
         $buffer .= '<div class="pagination-centered">' . self::pagination($page, $num_results, $page_size, $total_results, $url_string, $page_query_param, $pagesize_query_param, $total_results_query_param) . '</div></div>';
         return $buffer;
     }
@@ -604,7 +618,7 @@ class HtmlBootstrap5 extends Html
         // Filter button (optional... though optional is pointless)
         if (!empty($action)) {
             $button = new \Html\button();
-            $buffer .= "<li><div class='small-12 columns'><label>Actions<div class='filter-button-container'>";
+            $buffer .= "<li><label>Actions<div class='filter-button-container'>";
             if ($submitTitle !== null && !$should_autosubmit) {
                 $buffer .= $button->type("submit")->text($submitTitle)->setClass('btn btn-sm btn-primary')->__toString();
             }
@@ -614,7 +628,7 @@ class HtmlBootstrap5 extends Html
                 $buffer .= $button->text("Reset")->name("reset")->value("reset")->setClass('btn btn-sm btn-secondary')->__toString();
             }
 
-            $buffer .= "</div></label></div></li>";
+            $buffer .= "</div></label></li>";
         }
         
         $buffer .= "</ul>"; // </div>
@@ -626,17 +640,6 @@ class HtmlBootstrap5 extends Html
 
     public static function pagination($currentpage, $numpages, $pagesize, $totalresults, $baseurl, $pageparam = "p", $pagesizeparam = "ps", $totalresultsparam = "tr")
     {
-//         <nav aria-label="...">
-//   <ul class="pagination pagination-sm">
-//     <li class="page-item active" aria-current="page">
-//       <span class="page-link">1</span>
-//     </li>
-//     <li class="page-item"><a class="page-link" href="#">2</a></li>
-//     <li class="page-item"><a class="page-link" href="#">3</a></li>
-//   </ul>
-// </nav>
-
-        // See functions.php for implementation of isNumber
         // Prepare buffer
         $buf = '';
         if (isNumber($currentpage) && isNumber($numpages) && isNumber($pagesize) && isNumber($totalresults)) {

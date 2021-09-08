@@ -51,9 +51,13 @@
                     </li>
                     <?php if (AuthService::getInstance($w)->user()->allowed('/favorite')) : ?>
                         <li class="nav-item"><a class="nav-link nav-icon" data-modal-target="/favorite"><i class="bi bi-star-fill"></i></a></li>
+                    <?php endif;
+                    if (AuthService::getInstance($w)->user()->allowed('/help')) : ?>
+                        <li class="nav-item"><a class="nav-link nav-icon" data-modal-target="/help/view/<?php echo $w->_module . ($w->_submodule ? "-" . $w->_submodule : "") . "/" . $w->_action; ?>"><i class="bi bi-question-circle-fill"></i></a></li>
+                    <?php endif;
+                    if (Config::get('system.search_enabled', true) && AuthService::getInstance($w)->user()->allowed('/search')) : ?>
+                        <li class="nav-item"><a class="nav-link nav-icon" data-modal-target='/search?isbox=1'><i class="bi bi-search"></i></a></li>
                     <?php endif; ?>
-                    <li class="nav-item"><a class="nav-link nav-icon" data-modal-target="/help/view/<?php echo $w->_module . ($w->_submodule ? "-" . $w->_submodule : "") . "/" . $w->_action; ?>"><i class="bi bi-question-circle-fill"></i></a></li>
-                    <li class="nav-item"><a class="nav-link nav-icon" data-modal-target='/search?isbox=1'><i class="bi bi-search"></i></a></li>
                     <li class="nav-item"><a class="nav-link nav-icon" href="#" data-toggle-theme><i class="bi bi-palette-fill"></i></a></li>
                 </ul>
                 <!-- </nav> -->
@@ -106,10 +110,10 @@
                 </div>
             </div>
             <div id="content">
-                <div class="container-fluid" id="navbar">
-                    <nav class="container-xl navbar navbar-expand navbar-light bg-light">
+                <div class="container-fluid p-0 py-2 p-lg-2" id="navbar">
+                    <nav class="container-xl navbar navbar-expand navbar-light bg-light p-0 p-lg-2">
                         <div class="container-fluid justify-content-start">
-                            <ul class="navbar-nav nav-icon-list me-4">
+                            <ul class="navbar-nav me-md-4">
                                 <li class="nav-item"><a class="nav-link nav-icon" data-toggle-menu="open"><i class="bi bi-list"></i></a></li>
                                 <li class="nav-item"><a class="nav-link nav-icon" href="/"><i class="bi bi-house-fill"></i></a></li>
                                 <li class="nav-item dropdown">
@@ -123,9 +127,13 @@
                                 </li>
                                 <?php if (AuthService::getInstance($w)->user()->allowed('/favorite')) : ?>
                                     <li class="nav-item"><a class="nav-link nav-icon" data-modal-target="/favorite"><i class="bi bi-star-fill"></i></a></li>
+                                <?php endif;
+                                if (AuthService::getInstance($w)->user()->allowed('/help')) : ?>
+                                    <li class="nav-item"><a class="nav-link nav-icon" data-modal-target="/help/view/<?php echo $w->_module . ($w->_submodule ? "-" . $w->_submodule : "") . "/" . $w->_action; ?>"><i class="bi bi-question-circle-fill"></i></a></li>
+                                <?php endif; 
+                                if (Config::get('system.search_enabled', true) && AuthService::getInstance($w)->user()->allowed('/search')) : ?>
+                                    <li class="nav-item"><a class="nav-link nav-icon" data-modal-target='/search?isbox=1'><i class="bi bi-search"></i></a></li>
                                 <?php endif; ?>
-                                <li class="nav-item"><a class="nav-link nav-icon" data-modal-target="/help/view/<?php echo $w->_module . ($w->_submodule ? "-" . $w->_submodule : "") . "/" . $w->_action; ?>"><i class="bi bi-question-circle-fill"></i></a></li>
-                                <li class="nav-item"><a class="nav-link nav-icon" data-modal-target='/search?isbox=1'><i class="bi bi-search"></i></a></li>
                             </ul>
                             <ul class="navbar-nav me-auto mb-2 mb-lg-0 d-none d-lg-flex">
                                 <?php foreach ($w->modules() as $module) :
@@ -166,10 +174,6 @@
                                     endif;
                                 endforeach; ?>
                             </ul>
-                            <!-- <form class="d-flex">
-                                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                                <button class="btn btn-outline-success" type="submit">Search</button>
-                            </form> -->
                         </div>
                     </nav>
 

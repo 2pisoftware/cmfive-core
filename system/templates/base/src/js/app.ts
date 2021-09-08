@@ -75,7 +75,7 @@ class Cmfive {
     
         let modalContent = document.querySelector('#cmfive-modal .modal-content');
         if (modalContent) {
-            modalContent.innerHTML = '';
+            modalContent.innerHTML = '<button type="button" class="btn-close" data-bs-dismiss="modal" data-bs-target="#cmfive-modal" aria-label="Close"></button>';
         }
     
         Cmfive.currentModal.show();
@@ -86,7 +86,7 @@ class Cmfive {
         }).then((response) => {
             return response.text()
         }).then((content) => {
-            modalContent.innerHTML = content;
+            modalContent.innerHTML = content + modalContent.innerHTML;
     
             // Rebind elements for modal
             Cmfive.ready(modalContent);
