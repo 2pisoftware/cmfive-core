@@ -13,6 +13,10 @@ class MultiFileUpload extends \Html\Form\InputField\File
 {
     public $existing_files = [];
 
+    public static $_excludeFromOutput = [
+        'existing_files'
+    ];
+
     public function getExistingFiles(): array
     {
         return $this->existing_files;
@@ -26,9 +30,11 @@ class MultiFileUpload extends \Html\Form\InputField\File
 
     public function __toString(): string
     {
+        $this->setClass('d-none multi-upload-file-element')->setMultiple(true);
+        
         $buffer = '<div class="multi-upload-file-container row" id="' . $this->id . '" data-name="' . $this->name . '"><div class="' . (!empty($this->existing_files) ? 'col-sm-12 col-md-6' : 'col') . '">' .
             '<button type="button" class="btn btn-outline-primary multi-upload-button">Add a file</button>' .
-            (new File(['class' => 'd-none multi-upload-file-element', 'multiple' => true])) .
+            parent::__toString() .
             (new File([
                 'name' => $this->name,
                 'class' => 'd-none multi-upload-files',
