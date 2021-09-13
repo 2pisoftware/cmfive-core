@@ -8,16 +8,16 @@
         <title><?php echo ucfirst($w->currentModule()); ?><?php echo !empty($title) ? ' - ' . $title : ''; ?></title>
 
         <?php
-            $w->enqueueStyle(array("name" => "style.css", "uri" => "/system/templates/css/style.css", "weight" => 1000));
-            $w->enqueueStyle(array("name" => "normalize.css", "uri" => "/system/templates/js/foundation-5.5.0/css/normalize.css", "weight" => 990));
-            $w->enqueueStyle(array("name" => "foundation.css", "uri" => "/system/templates/js/foundation-5.5.0/css/foundation.css", "weight" => 980));
+            $w->enqueueStyle(["name" => "style.css", "uri" => "/system/templates/css/style.css", "weight" => 1000]);
+            $w->enqueueStyle(["name" => "normalize.css", "uri" => "/system/templates/js/foundation-5.5.0/css/normalize.css", "weight" => 990]);
+            $w->enqueueStyle(["name" => "foundation.css", "uri" => "/system/templates/js/foundation-5.5.0/css/foundation.css", "weight" => 980]);
 
-            $w->enqueueScript(array("name" => "modernizr.js", "uri" => "/system/templates/js/foundation-5.5.0/js/vendor/modernizr.js", "weight" => 1000));
-            $w->enqueueScript(array("name" => "jquery.js", "uri" => "/system/templates/js/foundation-5.5.0/js/vendor/jquery.js", "weight" => 990));
-            $w->enqueueScript(array("name" => "foundation.min.js", "uri" => "/system/templates/js/foundation-5.5.0/js/foundation/foundation.js", "weight" => 980));
-            $w->enqueueScript(array("name" => "main.js", "uri" => "/system/templates/js/main.js", "weight" => 500));
+            $w->enqueueScript(["name" => "modernizr.js", "uri" => "/system/templates/js/foundation-5.5.0/js/vendor/modernizr.js", "weight" => 1000]);
+            $w->enqueueScript(["name" => "jquery.js", "uri" => "/system/templates/js/foundation-5.5.0/js/vendor/jquery.js", "weight" => 990]);
+            $w->enqueueScript(["name" => "foundation.min.js", "uri" => "/system/templates/js/foundation-5.5.0/js/foundation/foundation.js", "weight" => 980]);
+            $w->enqueueScript(["name" => "main.js", "uri" => "/system/templates/js/main.js", "weight" => 500]);
 
-            $w->enqueueStyle(array("name" => "auth.css", "uri" => "/system/modules/auth/assets/css/auth.css", "weight" => 1000));
+            $w->enqueueStyle(["name" => "auth.css", "uri" => "/system/modules/auth/assets/css/auth.css", "weight" => 1000]);
 
             $w->outputStyles();
             $w->outputScripts();
@@ -37,19 +37,8 @@
                 </div>
 
                 <?php if (!empty($error) || !empty($msg)) : ?>
-                    <?php
-                    $type = [];
-                    $nameValue='';
-                    if (!empty($error)) {
-                        $type= array("name" => "error", "class" => "warning");
-                        $nameValue=$error;
-                    } else {
-                        $type=array("name" => "msg", "class" => "info");
-                        $nameValue=$msg;
-                    }
-                    ?>
-                    <div data-alert class="alert-box <?php echo $type["class"]; ?>">
-                        <?php echo $nameValue; ?>
+                    <div data-alert class="alert-box <?php echo !empty($error) ? 'alert-warning' : 'alert-info'; ?>">
+                        <?php echo !empty($error) ? $error : $msg; ?>
                         <a href="#" class="close">&times;</a>
                     </div>
                 <?php endif; ?>

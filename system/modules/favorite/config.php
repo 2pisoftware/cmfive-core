@@ -1,19 +1,20 @@
 <?php
+
 /**
- * config settings for favorites 
+ * Config settings for favorites 
  *
  * @author Steve Ryan, steve@2pisoftware.com, 2015
  **/
 
-Config::set('favorite', array(
+Config::set('favorite', [
     'active' => true,
     'path' => 'system/modules',
     'topmenu' => false,
-    'widgets' => array(
-		'favorites_widget'
-	),
-	'hooks' => array(
-		'core_template',
+    'widgets' => [
+        'favorites_widget'
+    ],
+    'hooks' => [
+        'core_template',
         'core_dbobject'
-	)
-));
+    ]
+]);

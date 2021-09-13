@@ -228,36 +228,38 @@
                     ?>
 
                     <!-- Search bar -->
-                    <li><?php echo Html::box("/search", "<span class='fi-magnifying-glass show-for-medium-up'></span><span class='show-for-small'>Search</span>", false, false, null, null, null, "cmfive_search_button"); ?></li>
+                    <?php if (Config::get('system.search_enabled', true) && AuthService::getInstance($w)->user()->allowed('/search')) : ?>
+                        <li><?php echo Html::box("/search", "<span class='fi-magnifying-glass show-for-medium-up'></span><span class='show-for-small'>Search</span>", false, false, null, null, null, "cmfive_search_button"); ?></li>
+                    <?php endif; ?>
 
-                        <?php if ($w->Auth->user()) : ?>
-                        <!-- Clear cache button -->
-                            <?php if ($w->Auth->user()->is_admin) : ?>
-                            <li>
-                                <a id="admin_clear_cache" href="/admin/ajaxClearCache" onclick="return false;" title="Clear configuration cache">
-                                    <span class="clear_cache_icon fi-refresh show-for-medium-up"></span>
-                                    <span class="show-for-small">Clear cache</span>
-                                </a>
-                            </li>
-                            <?php endif; ?>
-                        <!-- User Profile drop down -->
-                            <li class="has-dropdown">
-                                <a href="#">
-                                    <span class="fi-torso show-for-medium-up"></span>
-                                    <span class="show-for-small">Account</span>
-                                </a>
-                                <?php
-                                echo Html::ul(
-                                    array(
-                                        $w->menuLink("auth/profile", $w->Auth->user()->getShortName()),
-                                        $w->menuLink("auth/logout", "Logout")
-                                    ),
-                                    null,
-                                    "dropdown"
-                                );
-                                ?>
+                    <?php if ($w->Auth->user()) : ?>
+                    <!-- Clear cache button -->
+                        <?php if ($w->Auth->user()->is_admin) : ?>
+                        <li>
+                            <a id="admin_clear_cache" href="/admin/ajaxClearCache" onclick="return false;" title="Clear configuration cache">
+                                <span class="clear_cache_icon fi-refresh show-for-medium-up"></span>
+                                <span class="show-for-small">Clear cache</span>
+                            </a>
                         </li>
                         <?php endif; ?>
+                    <!-- User Profile drop down -->
+                        <li class="has-dropdown">
+                            <a href="#">
+                                <span class="fi-torso show-for-medium-up"></span>
+                                <span class="show-for-small">Account</span>
+                            </a>
+                            <?php
+                            echo Html::ul(
+                                [
+                                    $w->menuLink("auth/profile", $w->Auth->user()->getShortName()),
+                                    $w->menuLink("auth/logout", "Logout")
+                                ],
+                                null,
+                                "dropdown"
+                            );
+                            ?>
+                    </li>
+                    <?php endif; ?>
                 </ul>
 
                 <!-- Left Nav Section -->
@@ -299,7 +301,7 @@
                             endif;
                         }
 
-                        if ($w->Auth->allowed('help/view')) : ?>
+                        if (Config::get('system.help_enabled', true) && $w->Auth->allowed('/help/view')) : ?>
                             <li><?php echo Html::box(WEBROOT . "/help/view/" . $w->_module . ($w->_submodule ? "-" . $w->_submodule : "") . "/" . $w->_action, "<span class='fi-q show-for-medium-up'>?</span><span class='show-for-small'>Help</span>", false, true, 750, 500, "isbox", null, null, null, 'cmfive-help-modal'); ?> </li>
                         <?php endif;
                     endif; ?>

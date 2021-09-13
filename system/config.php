@@ -36,6 +36,8 @@ Config::set('system.password_salt', md5('override this in your project config'))
 
 Config::set('system.encryptionMigration', 'AdminSecurityAesToOpenssl');
 
+// Adds ability to disable help and search
+Config::set('system.help_enabled', true);
 Config::set('system.search_enabled', true);
 
 /**

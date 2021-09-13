@@ -49,10 +49,10 @@
                             <li><a class="dropdown-item" href="/auth/logout">Logout</a></li>
                         </ul>
                     </li>
-                    <?php if (AuthService::getInstance($w)->user()->allowed('/favorite')) : ?>
+                    <?php if (Config::get('favorite.active', true) === true && AuthService::getInstance($w)->user()->allowed('/favorite')) : ?>
                         <li class="nav-item"><a class="nav-link nav-icon" data-modal-target="/favorite"><i class="bi bi-star-fill"></i></a></li>
                     <?php endif;
-                    if (AuthService::getInstance($w)->user()->allowed('/help')) : ?>
+                    if (Config::get('system.help_enabled', true) && AuthService::getInstance($w)->user()->allowed('/help')) : ?>
                         <li class="nav-item"><a class="nav-link nav-icon" data-modal-target="/help/view/<?php echo $w->_module . ($w->_submodule ? "-" . $w->_submodule : "") . "/" . $w->_action; ?>"><i class="bi bi-question-circle-fill"></i></a></li>
                     <?php endif;
                     if (Config::get('system.search_enabled', true) && AuthService::getInstance($w)->user()->allowed('/search')) : ?>

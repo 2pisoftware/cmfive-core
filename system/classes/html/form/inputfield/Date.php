@@ -3,8 +3,7 @@
 namespace Html\Form\InputField;
 
 /**
- * A helper InputField class for date, to work correctly, the id attribute is
- * REQUIRED.
+ * A helper InputField class for date
  *
  * @author Adam Buckley <adam@2pisoftware.com>
  */
