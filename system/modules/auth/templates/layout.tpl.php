@@ -31,7 +31,9 @@
                     <?php if (Config::get("main.application_logo")) : ?>
                         <center><img src="<?php echo Config::get("main.application_logo");?>" alt="<?php echo Config::get("main.application_name");?>"/></center>
                     <?php endif;?>
-                    <h1 style="text-align: center;"><?php echo $w->moduleConf('main', 'application_name'); ?></h1>
+                    <?php if (Config::get('auth.show_application_name', true)) : ?>
+                        <h1 style="text-align: center;"><?php echo $w->moduleConf('main', 'application_name'); ?></h1>
+                    <?php endif; ?>
                 </div>
 
                 <?php if (!empty($error) || !empty($msg)) : ?>

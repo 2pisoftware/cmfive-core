@@ -58,6 +58,6 @@ function users_GET(Web $w)
     $internal_header = ["Login", "First Name", "Last Name", ["Admin", true], ["Active", true], ["MFA", true], ["Created", true], ["Last Login", true], "Operations"];
     $external_header = ["Login", "First Name", "Last Name", ["Admin", true], ["Active", true], ["Created", true], ["Last Login", true], "Operations"];
 
-    $w->ctx("internal_table", Html::table($internal_data, null, "tablesorter", $internal_header));
-    $w->ctx("external_table", Html::table($external_data, null, "tablesorter", $external_header));
+    $w->ctx("internal_table", HtmlBootstrap5::table($internal_data, null, "tablesorter", $internal_header));
+    $w->ctx("external_table", HtmlBootstrap5::table($external_data, null, "tablesorter", $external_header));
 }

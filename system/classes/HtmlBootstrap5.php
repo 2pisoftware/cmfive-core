@@ -259,6 +259,88 @@ class HtmlBootstrap5 extends Html
     }
 
     /**
+     * Creates an html table from an array like
+     * (
+     *   ("one","two","three"),
+     *   ("hello","world","bla")
+     * )
+     *
+     * @param array $array is the array of data
+     * @param string $id is a css id
+     * @param string $class is a css class
+     * @param boolean $header use first row as <th> if true
+     *
+     */
+    public static function table($data, $id = null, $class = "tablesorter", $header = null)
+    {
+        if (empty($data)) {
+            return null;
+        }
+        $buffer = "";
+
+        // Opening tags
+        $buffer .= "<table class='{$class} d-none d-md-block'>";
+        if (!empty($header)) {
+            $buffer .= "<thead><tr>";
+            if (is_array($header)) {
+                foreach ($header as $h) {
+                    if (!is_array($h)) {
+                        $buffer .= "<th>{$h}</th>";
+                    } else {
+                        $buffer .= "<th " . ($h[1] === true ? "class='show-for-medium-up'" : "") . ">{$h[0]}</th>";
+                    }
+                }
+            } else {
+                // Backwards capability!
+                foreach ($data[0] as $h) {
+                    $buffer .= "<th>{$h}</th>";
+                }
+                array_shift($data);
+            }
+            $buffer .= "</tr></thead>";
+        }
+
+        $buffer .= "<tbody>";
+        foreach ($data as $key => $row) {
+            // add a data-id attribute to each table row
+            $rowId = ' data-id="' . $key . '" ';
+            $buffer .= "<tr " . $rowId . ">";
+            foreach ($row as $column) {
+                if (!is_array($column)) {
+                    $buffer .= "<td>{$column}</td>";
+                } else {
+                    $buffer .= "<td class='" . ($column[1] === true ? "show-for-medium-up" : (is_scalar($column[1]) ? $column[1] : '')) . "'>{$column[0]}</td>";
+                }
+            }
+            $buffer .= "</tr>";
+        }
+        $buffer .= "</tbody></table>";
+
+        $buffer .= "<div class='d-block d-md-none'>";
+        if (!empty($data) && is_array($data)) {
+            if (!is_array($header)) {
+                $header = $data[0];
+                array_slice($data, 0, 1);
+            }
+
+            foreach ($data as $key => $row) {
+                $buffer .= '<div class="card d-block mb-4"><ul class="list-group list-group-flush">';
+                foreach ($row as $index => $column) {
+                    $buffer .= '<li class="list-group-item">';
+                    if (!empty($header) && array_key_exists($index, $header)) {
+                        $buffer .= "<strong class='me-3'>" . (is_array($header[$index]) ? $header[$index][0] : $header[$index]) . "</strong>";
+                    }
+                    $buffer .= "<span>" . (is_array($column) ? $column[0] : $column) . "</span></li>";
+                }
+                $buffer .= "</ul></div>";
+            }
+        }
+        $buffer .= '</div>';
+
+        return $buffer;
+    }
+
+    /**
      * This function invokes multiColForm with default parameters
      * to remove unnecessary html when displaying data
      *

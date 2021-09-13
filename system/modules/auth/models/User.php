@@ -288,7 +288,7 @@ class User extends DbObject
             return true;
         }
         if ($this->getRoles(true)) {
-            return in_array($role, $this->_roles);
+            return is_array($this->_roles) && in_array($role, $this->_roles);
         } else {
             return false;
         }
