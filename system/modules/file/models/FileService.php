@@ -523,7 +523,7 @@ class FileService extends DbService
      *
      * @return mixed the id of the attachment object or null
      */
-    public function uploadAttachment($request_key, $parentObject, $title = null, $description = null, $type_code = null, $is_public = false)
+    public function uploadAttachment($request_key, $parentObject, $title = null, $description = null, $type_code = null, $is_public = false, $filter_types = [])
     {
         if (empty($_POST[$request_key]) && (empty($_FILES[$request_key]) || $_FILES[$request_key]['size'] <= 0)) {
             return false;
@@ -560,6 +560,13 @@ class FileService extends DbService
             return null;
         }
 
+        if (!empty($filter_types)) {
+            if (!$this->fileIsInAllowedMimetypes($_FILES[$request_key]['tmp_name'], $filter_types, true)) {
+                LogService::getInstance($this->w)->error('File upload is of a restricted type');
+                return null;
+            }
+        }
+
         $file = new File($filename, $filesystem);
 
         $att->adapter = $this->getActiveAdapter();
@@ -571,9 +578,11 @@ class FileService extends DbService
             $data = substr($_POST[$request_key], strpos($_POST[$request_key], ",") + 1);
             $mime_type = $mime[1];
             $content = base64_decode($data);
+
             $file->setContent($content, ['contentType' => $mime_type]);
         } else {
             $content = file_get_contents($_FILES[$request_key]['tmp_name']);
+
             $file->setContent($content);
             switch ($att->adapter) {
                 case "local":
@@ -603,7 +612,7 @@ class FileService extends DbService
      *
      * @return bool if upload was successful
      */
-    public function uploadMultiAttachment($request_key, $parentObject, $titles = null, $descriptions = null, $type_codes = null)
+    public function uploadMultiAttachment($request_key, $parentObject, $titles = null, $descriptions = null, $type_codes = null, $filter_types = [])
     {
         if (!is_a($parentObject, "DbObject")) {
             $this->w->error("Parent object not found.");
@@ -619,7 +628,6 @@ class FileService extends DbService
                 // Files can be empty
                 if (!empty($FILE_filename)) {
                     $filename = str_replace($rpl_ws, "_", str_replace($rpl_nil, "", basename($FILE_filename)));
-// var_dump($filename);
                     $att = new Attachment($this->w);
                     $att->filename = $filename;
                     $att->fullpath = null;
@@ -642,18 +650,21 @@ class FileService extends DbService
                     $att->fullpath = str_replace(FILE_ROOT, "", $filesystemPath . $filename);
                     
                     $content = file_get_contents($_FILES[$request_key]['tmp_name'][$file_index]);
-                    $file->setContent($content);
-                    switch ($att->adapter) {
-                        case "local":
-                            $att->mimetype = $this->w->getMimetype(FILE_ROOT . $att->fullpath);
-                            break;
-                        default:
-                            $att->mimetype = $this->w->getMimetypeFromString($content);
-                    }
-                    
-                    $att->insert();
-                }
 
+                    if (!empty($filter_types) && !$this->fileIsInAllowedMimetypes($_FILES[$request_key]['tmp_name'][$file_index], $filter_types, true)) {
+                        LogService::getInstance($this->w)->error('File upload is of a restricted type');
+                    } else {
+                        $file->setContent($content);
+                        switch ($att->adapter) {
+                            case "local":
+                                $att->mimetype = $this->w->getMimetype(FILE_ROOT . $att->fullpath);
+                                break;
+                            default:
+                                $att->mimetype = $this->w->getMimetypeFromString($content);
+                        }
+                        $att->insert();
+                    }
+                }
                 $file_index++;
             }
         }
@@ -689,7 +700,7 @@ class FileService extends DbService
      *
      * @return int Attachment ID
      */
-    public function saveFileContent($object, $content, $name = null, $type_code = null, $content_type = null, $description = null)
+    public function saveFileContent($object, $content, $name = null, $type_code = null, $content_type = null, $description = null, $filter_types = [])
     {
         $filename = (!empty($name) ? $name : (str_replace(".", "", microtime()) . getFileExtension($content_type)));
 
@@ -715,6 +726,22 @@ class FileService extends DbService
 
         $att->adapter = $this->getActiveAdapter();
         $att->fullpath = str_replace(FILE_ROOT, "", $filesystemPath . $filename);
+
+        if (!empty($filter_types)) {
+            $file_type_data = '';
+            switch ($this->getActiveAdapter()) {
+                case "local":
+                    $file_type_data = FILE_ROOT . $att->fullpath;
+                    break;
+                default:
+                    $file_type_data = $content;
+            }
+
+            if (!$this->fileIsInAllowedMimetypes($file_type_data, $filter_types)) {
+                LogService::getInstance($this->w)->error('File upload is of a restricted type');
+                return null;
+            }
+        }
 
         //Check for posted content
         $file->setContent($content);
@@ -786,5 +813,112 @@ class FileService extends DbService
         }
 
         return self::$cache_runtime_path;
+    }
+
+    public function fileIsInAllowedMimetypes($file, $allowed_extensions = [], $force_local = false)
+    {
+        $mimetype = '';
+        if ($force_local) {
+            $mimetype = $this->w->getMimetype($file);
+        } else {
+            switch ($this->getActiveAdapter()) {
+                case "local":
+                    $mimetype = $this->w->getMimetype($file);
+                    break;
+                default:
+                    $mimetype = $this->w->getMimetypeFromString($file);
+            }
+        }
+
+        $current_list = $this->getMimetypeList();
+        foreach ($allowed_extensions as $ext) {
+            if (array_key_exists($ext, $current_list) && ((is_array($current_list[$ext]) && in_array($mimetype, $current_list[$ext])) || $mimetype == $current_list[$ext])) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function getMimetypeList(): array
+    {
+       return [
+            '.aac'  => 'audio/aac',
+            '.abw'  => 'application/x-abiword',
+            '.arc'  => 'application/x-freearc',
+            '.avi'  => 'video/x-msvideo',
+            '.azw'  => 'application/vnd.amazon.ebook',
+            '.bin'  => 'application/octet-stream',
+            '.bmp'  => 'image/bmp',
+            '.bz'   => 'application/x-bzip',
+            '.bz2'  => 'application/x-bzip2',
+            '.cda'  => 'application/x-cdf',
+            '.csh'  => 'application/x-csh',
+            '.css'  => 'text/css',
+            '.csv'  => 'text/csv',
+            '.doc'  => 'application/msword',
+            '.docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            '.eot'  => 'application/vnd.ms-fontobject',
+            '.epub' => 'application/epub+zip',
+            '.gz'   => 'application/gzip',
+            '.gif'  => 'image/gif',
+            '.htm'  => 'text/html',
+            '.html' => 'text/html',
+            '.ico'  => 'image/vnd.microsoft.icon',
+            '.ics'  => 'text/calendar',
+            '.jar'  => 'application/java-archive',
+            '.jpg'  => 'image/jpeg',
+            '.jpeg' => 'image/jpeg',
+            '.js'   => 'text/javascript',
+            '.json' => 'application/json',
+            '.jsonld'   => 'application/ld+json',
+            '.mid'  => 'audio/midi',
+            '.midi' => 'audio/x-midi',
+            '.mjs'  => 'text/javascript',
+            '.mp3'  => 'audio/mpeg',
+            '.mp4'  => 'video/mp4',
+            '.mpeg' => 'video/mpeg',
+            '.mpkg' => 'application/vnd.apple.installer+xml',
+            '.odp'  => 'application/vnd.oasis.opendocument.presentation',
+            '.ods'  => 'application/vnd.oasis.opendocument.spreadsheet',
+            '.odt'  => 'application/vnd.oasis.opendocument.text',
+            '.oga'  => 'audio/ogg',
+            '.ogv'  => 'video/ogg',
+            '.ogx'  => 'application/ogg',
+            '.opus' => 'audio/opus',
+            '.otf'  => 'font/otf',
+            '.png'  => 'image/png',
+            '.pdf'  => 'application/pdf',
+            '.php'  => 'application/x-httpd-php',
+            '.ppt'  => 'application/vnd.ms-powerpoint',
+            '.pptx' => 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+            '.rar'  => 'application/vnd.rar',
+            '.rtf'  => 'application/rtf',
+            '.sh'   => 'application/x-sh',
+            '.svg'  => 'image/svg+xml',
+            '.swf'  => 'application/x-shockwave-flash',
+            '.tar'  => 'application/x-tar',
+            '.tif'  => 'image/tiff',
+            '.tiff' => 'image/tiff',
+            '.ts'   => 'video/mp2t',
+            '.ttf'  => 'font/ttf',
+            '.txt'  => 'text/plain',
+            '.vsd'  => 'application/vnd.visio',
+            '.wav'  => 'audio/wav',
+            '.weba' => 'audio/webm',
+            '.webm' => 'video/webm',
+            '.webp' => 'image/webp',
+            '.woff' => 'font/woff',
+            '.woff2'    => 'font/woff2',
+            '.xhtml'    => 'application/xhtml+xml',
+            '.xls'  => 'application/vnd.ms-excel',
+            '.xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            '.xml'  => 'application/xml',
+            '.xul'  => 'application/vnd.mozilla.xul+xml',
+            '.zip'  => 'application/zip',
+            '.3gp' => ['video/3gpp', 'audio/3gpp'],
+            '.3g2' => ['video/3gpp2', 'audio/3gpp2'],
+            '.7z'   => 'application/x-7z-compressed',
+        ];
     }
 }

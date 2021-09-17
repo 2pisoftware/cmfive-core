@@ -30,11 +30,14 @@ class MultiFileUpload extends \Html\Form\InputField\File
 
     public function __toString(): string
     {
-        $this->setClass('d-none multi-upload-file-element')->setMultiple(true);
+        $user_facing_file = (new File(['class' => 'd-none multi-upload-file-element', 'multiple' => true]));
+        if (!empty($this->accept)) {
+            $user_facing_file->setAccept($this->accept);
+        }
         
         $buffer = '<div class="multi-upload-file-container row" id="' . $this->id . '" data-name="' . $this->name . '"><div class="' . (!empty($this->existing_files) ? 'col-sm-12 col-md-6' : 'col') . '">' .
             '<button type="button" class="btn btn-outline-primary multi-upload-button">Add a file</button>' .
-            parent::__toString() .
+            $user_facing_file .
             (new File([
                 'name' => $this->name,
                 'class' => 'd-none multi-upload-files',

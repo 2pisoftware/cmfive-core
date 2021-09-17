@@ -435,7 +435,10 @@ class HtmlBootstrap5 extends Html
         }
 
         if ($total_results == 0) {
-            return '<div class="row paginated-table-container"><div class="col" style="margin: 5px 0px;">No results found</div></div>';
+            $total_results = count($data);
+            if ($total_results == 0) {
+                return '<div class="row paginated-table-container"><div class="col" style="margin: 5px 0px;">No results found</div></div>';
+            }
         }
 
         $count_items = count($data);
