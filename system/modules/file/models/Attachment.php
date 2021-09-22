@@ -258,9 +258,9 @@ class Attachment extends DbObject
     /**
      * Returns Gaufrette Filsystem instance for fetching files
      *
-     * @return \Gaufrette\Filesystem
+     * @return League\Flysystem\Filesystem
      */
-    public function getFilesystem(): \Gaufrette\Filesystem
+    public function getFilesystem(): League\Flysystem\Filesystem
     {
         return FileService::getInstance($this->w)->getSpecificFilesystem($this->adapter, $this->getFilePath());
     }
@@ -278,18 +278,18 @@ class Attachment extends DbObject
     /**
      * Returns Gaufrette File instance (of the attached file)
      *
-     * @return \Gaufrette\File
+     * @return FilePolyfill
      */
-    public function getFile(): \Gaufrette\File
+    public function getFile(): FilePolyfill
     {
         $cache_directory = ROOT_PATH . "/" . Attachment::CACHE_PATH . "/" . Attachment::TEMP_PATH . "/" . FileService::getCacheRuntimePath() . "/" . $this->id . "/" . $this->dt_created;
         $cached_file_path = $cache_directory . "/" . $this->filename;
 
         if (file_exists($cached_file_path)) {
-            return new File($this->filename, FileService::getInstance($this->w)->getSpecificFilesystem("local", $cache_directory));
+            return new FilePolyfill($this->getFilePath() . DS . $this->filename, FileService::getInstance($this->w)->getSpecificFilesystem("local", $cache_directory));
         }
 
-        return new File($this->filename, $this->getFilesystem());
+        return new FilePolyfill($this->getFilePath() . DS . $this->filename, $this->getFilesystem());
     }
 
     /**
@@ -365,7 +365,7 @@ class Attachment extends DbObject
         $this->adapter = $adapter;
 
         $filesystem = $this->getFilesystem();
-        $file = new Gaufrette\File($this->filename, $filesystem);
+        $file = new FilePolyfill($this->filename, $filesystem);
 
         $file->setContent($content);
 

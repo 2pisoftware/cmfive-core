@@ -2,11 +2,11 @@
 
 use Gaufrette\Filesystem;
 use Gaufrette\File as File;
-use Gaufrette\Adapter\Local as LocalAdapter;
-use Gaufrette\Adapter\InMemory as InMemoryAdapter;
-use Gaufrette\Adapter\AwsS3 as AwsS3;
+// use Gaufrette\Adapter\Local as LocalAdapter;
+// use Gaufrette\Adapter\InMemory as InMemoryAdapter;
+// use Gaufrette\Adapter\AwsS3 as AwsS3;
+// use Aws\S3\S3Client as S3Client;
 use Gaufrette\StreamWrapper as StreamWrapper;
-use Aws\S3\S3Client as S3Client;
 
 /**
  * Service class with functions to help managing files and attachment records.
@@ -125,7 +125,7 @@ class FileService extends DbService
      * @param mixed $content content to load into the filesystem (mainly used for the "memory" adapter
      * @param array $options options to give to the filesystem
      *
-     * @return \Gaufrette\Filesystem
+     * @return League\Flysystem\Filesystem
      */
     public function getFilesystem($path = null, $content = null, $options = [])
     {
@@ -140,17 +140,71 @@ class FileService extends DbService
      * @param mixed $content content to load into the filesystem (mainly used for the "memory" adapter
      * @param array $options options to give to the filesystem
      *
-     * @return FileSystem
+     * @return League\Flysystem\Filesystem
      */
     public function getSpecificFilesystem($adapter = "local", $path = null, $content = null, $options = [])
     {
         $adapter_obj = null;
         switch ($adapter) {
             case "local":
-                $adapter_obj = new LocalAdapter($path, true);
+                $adapter_obj = new League\Flysystem\Local\LocalFilesystemAdapter($path);
                 break;
             case "memory":
-                $adapter_obj = new InMemoryAdapter([basename($path) => $content]);
+                $adapter_obj = new League\Flysystem\InMemory\InMemoryFilesystemAdapter();
+                break;
+            case "s3":
+                $args = [
+                    "region" =>  Config::get("file.adapters.s3.region", "ap-southeast-2"),
+                    "version" => Config::get("file.adapters.s3.version", "2006-03-01"),
+                ];
+
+                if (Config::get("system.environment", ENVIRONMENT_PRODUCTION) === ENVIRONMENT_DEVELOPMENT) {
+                    $args["credentials"] = Config::get("file.adapters.s3.credentials");
+                }
+
+                // $adapter = new League\Flysystem\AwsS3V3\AwsS3V3Adapter($client, 'adam-dev-machine');
+                // $filesystem = new League\Flysystem\Filesystem($adapter);
+
+                $client = new Aws\S3\S3Client($args);
+                // $config_options = Config::get('file.adapters.s3.options');
+                // $s3path = (substr($path, -1) == "/") ? substr($path, 0, -1) : $path; // because trailing presence varies with call/object history
+                // $config_options = array_replace(is_array($config_options) ? $config_options : [], ["directory" => $s3path], $options);
+                $adapter_obj = new League\Flysystem\AwsS3V3\AwsS3V3Adapter(
+                    // S3Client
+                    $client,
+                    // Bucket name
+                    Config::get('file.adapters.s3.bucket')
+                );
+                // $adapter_obj = new AwsS3($client, Config::get('file.adapters.s3.bucket'), is_array($config_options) ? $config_options : []);
+                break;
+        }
+
+        if ($adapter_obj !== null) {
+            return new League\Flysystem\Filesystem($adapter_obj);
+        }
+        return null;
+    }
+
+    /**
+     * Get a Gaufrette Filesystem for a given adapter, adapter config and path
+     *
+     * @param string $adapter adapter to load
+     * @param array $adapter_config to use
+     * @param string $path base path to load the filesystem adapter at
+     * @param mixed $content content to load into the filesystem (mainly used for the "memory" adapter
+     * @param array $options options to give to the filesystem
+     *
+     * @return League\Flysystem\Filesystem
+     */
+    public function getSpecificFilesystemWithCustomAdapter($adapter = 'local', $adapter_config = null, $path = null, $content = null, $options = [])
+    {
+        $adapter_obj = null;
+        switch ($adapter) {
+            case "local":
+                $adapter_obj = new League\Flysystem\Local\LocalFilesystemAdapter($path);
+                break;
+            case "memory":
+                $adapter_obj = new League\Flysystem\InMemory\InMemoryFilesystemAdapter();
                 break;
             case "s3":
                 $args = [
@@ -166,59 +220,37 @@ class FileService extends DbService
                 $config_options = Config::get('file.adapters.s3.options');
                 $s3path = (substr($path, -1) == "/") ? substr($path, 0, -1) : $path; // because trailing presence varies with call/object history
                 $config_options = array_replace(is_array($config_options) ? $config_options : [], ["directory" => $s3path], $options);
-                $adapter_obj = new AwsS3($client, Config::get('file.adapters.s3.bucket'), is_array($config_options) ? $config_options : []);
+                $adapter_obj = new League\Flysystem\AwsS3V3\AwsS3V3Adapter(
+                    // S3Client
+                    $client,
+                    // Bucket name
+                    Config::get('file.adapters.s3.bucket')
+                );
+                // $adapter_obj = new AwsS3($client, Config::get('file.adapters.s3.bucket'), is_array($config_options) ? $config_options : []);
                 break;
         }
 
         if ($adapter_obj !== null) {
-            return new Filesystem($adapter_obj);
+            return new League\Flysystem\Filesystem($adapter_obj);
         }
         return null;
     }
 
     /**
-     * Get a Gaufrette Filesystem for a given adapter, adapter config and path
-     *
-     * @param string $adapter adapter to load
-     * @param array $adapter_config to use
-     * @param string $path base path to load the filesystem adapter at
-     * @param mixed $content content to load into the filesystem (mainly used for the "memory" adapter
-     * @param array $options options to give to the filesystem
-     *
-     * @return FileSystem
+     * 
      */
-    public function getSpecificFilesystemWithCustomAdapter($adapter = 'local', $adapter_config = null, $path = null, $content = null, $options = [])
+    public function getS3Client(): Aws\S3\S3Client
     {
-        $adapter_obj = null;
-        switch ($adapter) {
-            case "local":
-                $adapter_obj = new LocalAdapter($path, true);
-                break;
-            case "memory":
-                $adapter_obj = new InMemoryAdapter([basename($path) => $content]);
-                break;
-            case "s3":
-                $config_options = $adapter_config['options'];
-                $config_options = array_replace(is_array($config_options) ? $config_options : [], ["directory" => $path], $options);
+        $args = [
+            "region" =>  Config::get("file.adapters.s3.region", "ap-southeast-2"),
+            "version" => Config::get("file.adapters.s3.version", "2006-03-01"),
+        ];
 
-                $args = [
-                    "region" =>  Config::get("file.adapters.s3.region", "ap-southeast-2"),
-                    "version" => Config::get("file.adapters.s3.version", "2006-03-01"),
-                ];
-
-                if (Config::get("system.environment", ENVIRONMENT_PRODUCTION) === ENVIRONMENT_DEVELOPMENT) {
-                    $args["credentials"] = Config::get("file.adapters.s3.credentials");
-                }
-
-                $client = new S3Client($args);
-                $adapter_obj = new AwsS3($client, $adapter_config['bucket'], is_array($config_options) ? $config_options : []);
-                break;
+        if (Config::get("system.environment", ENVIRONMENT_PRODUCTION) === ENVIRONMENT_DEVELOPMENT) {
+            $args["credentials"] = Config::get("file.adapters.s3.credentials");
         }
 
-        if ($adapter_obj !== null) {
-            return new Filesystem($adapter_obj);
-        }
-        return null;
+        return new Aws\S3\S3Client($args);
     }
 
     /**
@@ -462,22 +494,21 @@ class FileService extends DbService
      */
     public function writeOutAttachment(Attachment $att, ?string $saveAs = null): void
     {
-        switch ($att->adapter) {
+        // switch ($att->adapter) {
+        //     case "s3":
+        //         $client = $this->getS3Client();
+        //         $cmd = $client->getCommand('GetObject', [
+        //             'Bucket' => Config::get('file.adapters.s3.bucket'),
+        //             'Key' => $att->getFilePath() . DS . $att->filename
+        //         ]);
 
-            case "s3":
-                $client = $this->getS3ClientBelowFilesystem();
-                $cmd = $client->getCommand('GetObject', [
-                    'Bucket' => Config::get('file.adapters.s3.bucket'),
-                    'Key' => $att->fullpath
-                ]);
+        //         $request = $client->createPresignedRequest($cmd, '+300 minutes');
 
-                $request = $client->createPresignedRequest($cmd, '+300 minutes');
+        //         // Get the actual presigned-url
+        //         $this->w->redirect((string)$request->getUri());
+        //         break;
 
-                // Get the actual presigned-url
-                $this->w->redirect((string)$request->getUri());
-                break;
-
-            default:
+        //     default:
                 $this->w->setLayout(null);
                 // per : https://www.php.net/manual/en/function.readfile.php
                 // readfile() will not present any memory issues on its own.
@@ -486,29 +517,17 @@ class FileService extends DbService
                     ob_end_clean();
                 }
                 $this->w->header('Content-Description: File Transfer');
-                $this->w->header(
-                    'Content-Type: '
-                        . (empty($att->mimetype) ? "application/octet-stream" : $att->mimetype)
-                );
-                $this->w->header(
-                    'Content-Disposition: attachment; filename="'
-                        . ($saveAs ?? $att->filename) . '"'
-                );
+                $this->w->header('Content-Type: ' . (empty($att->mimetype) ? "application/octet-stream" : $att->mimetype));
+                $this->w->header('Content-Disposition: attachment; filename="' . ($saveAs ?? $att->filename) . '"');
                 $this->w->header('Expires: 0');
                 $this->w->header('Cache-Control: must-revalidate');
                 $this->w->header('Pragma: public');
 
                 $filesystem = $att->getFileSystem();
-
-                $map = StreamWrapper::getFilesystemMap();
-                $map->set('mandated_stream', $filesystem);
-
-                StreamWrapper::register();
-                $streamFrom = 'gaufrette://mandated_stream/' . $att->filename;
-                $this->w->header('Content-Length: ' . filesize($streamFrom));
-                readfile($streamFrom);
+                $this->w->header('Content-Length: ' . $filesystem->fileSize('/' . $att->getFilePath() . DS . $att->filename));
+                readfile($filesystem->read('/' . $att->getFilePath() . DS . $att->filename));
                 exit(0);
-        }
+        // }
     }
 
     /**
@@ -567,7 +586,8 @@ class FileService extends DbService
             }
         }
 
-        $file = new File($filename, $filesystem);
+        // The FilesystemOperator
+        // $file = new File($filename, $filesystem);
 
         $att->adapter = $this->getActiveAdapter();
         $att->fullpath = str_replace(FILE_ROOT, "", $filesystemPath . $filename);
@@ -579,17 +599,25 @@ class FileService extends DbService
             $mime_type = $mime[1];
             $content = base64_decode($data);
 
-            $file->setContent($content, ['contentType' => $mime_type]);
+            // $file->setContent($content, ['contentType' => $mime_type]);
         } else {
-            $content = file_get_contents($_FILES[$request_key]['tmp_name']);
+            $local_filesystem = $this->getSpecificFilesystemWithCustomAdapter('local', null, '/tmp');
 
-            $file->setContent($content);
+            try {
+                $filesystem->writeStream('/uploads/' . $att->fullpath, $local_filesystem->readStream(basename($_FILES[$request_key]['tmp_name'])));
+            } catch (Exception $exception) {
+                // handle the error
+                throw $exception;
+            }
+
+            
+            // $file->setContent($content);
             switch ($att->adapter) {
                 case "local":
                     $mime_type = $this->w->getMimetype(FILE_ROOT . $att->fullpath);
                     break;
                 default:
-                    $mime_type = $this->w->getMimetypeFromString($content);
+                    $mime_type = $local_filesystem->mimeType(basename($_FILES[$request_key]['tmp_name']));
             }
         }
 
@@ -644,7 +672,7 @@ class FileService extends DbService
                         return null;
                     }
                     
-                    $file = new File($filename, $filesystem);
+                    $file = new FilePolyfill('/uploads/' . $filesystemPath . $filename, $filesystem);
                     
                     $att->adapter = $this->getActiveAdapter();
                     $att->fullpath = str_replace(FILE_ROOT, "", $filesystemPath . $filename);
@@ -722,7 +750,7 @@ class FileService extends DbService
             return null;
         }
 
-        $file = new File($filename, $filesystem);
+        $file = new FilePolyfill($filename, $filesystem);
 
         $att->adapter = $this->getActiveAdapter();
         $att->fullpath = str_replace(FILE_ROOT, "", $filesystemPath . $filename);

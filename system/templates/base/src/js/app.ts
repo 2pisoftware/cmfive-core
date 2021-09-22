@@ -14,7 +14,7 @@ class Cmfive {
         // debugger;
         const theme = localStorage.getItem(Cmfive.THEME_KEY);
         if (!theme) {
-            localStorage.setItem(Cmfive.THEME_KEY, 'dark');
+            localStorage.setItem(Cmfive.THEME_KEY, 'default');
         } else {
             if (theme === 'default') {
                 localStorage.setItem(Cmfive.THEME_KEY, 'dark');
@@ -26,6 +26,7 @@ class Cmfive {
         document.querySelector('html').classList.remove('theme--default');
         document.querySelector('html').classList.remove('theme--dark');
         document.querySelector('html').classList.add('theme--' + localStorage.getItem(Cmfive.THEME_KEY));
+        fetch('/auth/ajax_set_setting?key=bs5-theme&value=' + localStorage.getItem(Cmfive.THEME_KEY)); // .then(r => r.text()).then(r => console.log(r));
     }
 
     static menuOpenClickListener = function() {
@@ -128,24 +129,24 @@ class Cmfive {
             }
         }
 
-        if (target instanceof Document) {
-            let theme = localStorage.getItem(Cmfive.THEME_KEY)
+        // if (target instanceof Document) {
+        //     let theme = localStorage.getItem(Cmfive.THEME_KEY)
 
-            if (!theme) {
-                const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)"); 
-                if (prefersDarkScheme.matches) {
-                    localStorage.setItem(Cmfive.THEME_KEY, 'dark');
-                } else {
-                    localStorage.setItem(Cmfive.THEME_KEY, 'default');
-                    theme = 'default';
-                }
-            }
+        //     if (!theme) {
+        //         const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)"); 
+        //         if (prefersDarkScheme.matches) {
+        //             localStorage.setItem(Cmfive.THEME_KEY, 'dark');
+        //         } else {
+        //             localStorage.setItem(Cmfive.THEME_KEY, 'default');
+        //             theme = 'default';
+        //         }
+        //     }
             
-            if (theme === "default") {
-                document.querySelector('html').classList.remove('theme--dark');
-                document.querySelector('html').classList.add('theme--default');
-            }
-        }
+        //     if (theme === "default") {
+        //         document.querySelector('html').classList.remove('theme--dark');
+        //         document.querySelector('html').classList.add('theme--default');
+        //     }
+        // }
 
         target?.querySelectorAll('.form-cancel-button')?.forEach(b => {
             b.removeEventListener('click', Cmfive.formCancel);

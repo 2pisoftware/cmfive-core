@@ -476,4 +476,9 @@ class AuthService extends DbService
         }
         return null;
     }
+
+    public function getSettingByKey(string $key)
+    {
+        return $this->getObject('UserSetting', ['user_id' => $this->user()->id, 'setting_key' => $key]);
+    }
 }

@@ -1,5 +1,8 @@
+<?php
+$theme_setting = AuthService::getInstance($w)->getSettingByKey('bs5-theme');
+?>
 <!DOCTYPE html>
-<html class="theme theme--dark">
+<html class="theme theme--<?php echo !empty($theme_setting->id) ? $theme_setting->setting_value : 'dark'; ?>">
     <head>
         <meta charset="utf-8" />
         <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -10,16 +13,10 @@
         CmfiveStyleComponentRegister::registerComponent('app', new CmfiveStyleComponent("/system/templates/base/dist/app.css"));
         CmfiveScriptComponentRegister::registerComponent('app', new CmfiveScriptComponent("/system/templates/base/dist/app.js"));
 
-        // // Print registered vue component links
-        /** @var Web $w */
-        // $w->loadVueComponents();
-
         $w->outputStyles();
         ?>
         <!-- backwards compat -->
         <script src="/system/templates/base/node_modules/vue/dist/vue.min.js"></script>
-        <!-- <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
-         -->
         <script>
             // @todo: move this into a build file
             let modal_history = [];
