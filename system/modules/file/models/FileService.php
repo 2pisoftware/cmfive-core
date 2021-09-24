@@ -525,7 +525,7 @@ class FileService extends DbService
 
                 $filesystem = $att->getFileSystem();
                 $this->w->header('Content-Length: ' . $filesystem->fileSize('/' . $att->getFilePath() . DS . $att->filename));
-                readfile($filesystem->read('/' . $att->getFilePath() . DS . $att->filename));
+                echo $filesystem->read('/' . $att->getFilePath() . DS . $att->filename);
                 exit(0);
         // }
     }
