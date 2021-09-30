@@ -110,7 +110,7 @@ class HtmlBootstrap5 extends Html
                             case 'Html\Form\InputField\Checkbox':
                             case 'Html\Form\InputField\Radio':
                                 $field->setClass($field->class . ' form-check-control');
-                                $label_class = 'form-check-label';
+                                // $label_class = 'form-check-label';
                                 break;
                             case 'Html\Form\InputField\Text':
                             case 'Html\Form\InputField\Date':
@@ -613,15 +613,7 @@ class HtmlBootstrap5 extends Html
             }
 
             // span entry fields that have no title
-            if (!empty($title)) {
-                $mediumCols = 9;
-                if ($type == "checkbox") {
-                    $mediumCols = 6;
-                }
-                $buffer .= "<div class='col'><label>{$title}";
-            } else {
-                $buffer .= "<div class='col'>";
-            }
+            $buffer .= "<div class='col'>" . (!empty($title) ? "<label>{$title}" : '');
 
             $size = !empty($row[4]) ? $row[4] : null;
 
@@ -767,5 +759,15 @@ class HtmlBootstrap5 extends Html
         }
 
         return "<div data-alert class='alert alert-box {$type}'>{$msg}<a href='#' class='close'>&times;</a></div>";
+    }
+
+    public static function dataCard(string $header, array $data)
+    {
+        $buffer = '<div class="row panel flex-fill"><div class="col-sm-12">';
+        $buffer .= '<h4>' . $header . '</h4>';
+        foreach ($data as $row_header => $row_data) {
+            $buffer .= '<p><strong>' . $row_header . '</strong><br/>' . $row_data . '</p>';
+        }
+        return $buffer . '</div></div>';
     }
 }
