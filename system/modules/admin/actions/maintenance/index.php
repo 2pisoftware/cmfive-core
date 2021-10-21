@@ -20,7 +20,7 @@ function index_GET(Web $w)
     $w->ctx('audit_row_count', $w->db->get('audit')->count());
 
     if (Config::get('file.adapters.local.active') !== true) {
-        $w->ctx('cache_image_count', FileService::getInstance($w)->countFilesInDirectory(WEBROOT . '/cache'));
+        // $w->ctx('cache_image_count', FileService::getInstance($w)->countFilesInDirectory(WEBROOT . '/cache'));
     }
 
     $w->ctx("number_of_printers", 0);

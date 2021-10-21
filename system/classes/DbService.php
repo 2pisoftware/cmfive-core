@@ -327,7 +327,7 @@ class DbService
         }
 
         $this->buildSelect($o, $table, $class);
-        $result = $this->_db->fetch_all();
+        $result = $this->_db->fetchAll();
         if ($result) {
             $objects = $this->getObjectsFromRows($class, $result, true);
 

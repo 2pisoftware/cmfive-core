@@ -66,7 +66,7 @@ class MigrationService extends DbService
         foreach ($migration_paths as $migration_path) {
             if (is_dir(ROOT_PATH . DS . $migration_path)) {
                 foreach (scandir(ROOT_PATH . DS . $migration_path) as $file) {
-                    if (!is_dir($file) && $file[0] !== '.') {
+                    if (!is_dir(ROOT_PATH . DS . $migration_path . DS . $file) && $file[0] !== '.') {
                         $classname = explode('.', str_replace('-', '.', $file));
                         if (!empty($classname[1])) {
                             if ($this->isInstalled($classname[1])) {
