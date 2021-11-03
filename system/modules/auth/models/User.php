@@ -31,6 +31,8 @@ class User extends DbObject
     public $is_password_invalid;
     public $is_mfa_enabled;
     public $mfa_secret;
+    public $login_attempts;
+    public $is_locked;
 
     /**
      * Checks if the passed password matches the stored password when hashed.
@@ -48,6 +50,25 @@ class User extends DbObject
         }
 
         return password_verify($password, $this->password);
+    }
+
+    public function lock()
+    {
+        $this->is_locked = 1;
+        $this->update();
+    }
+
+    public function unlock()
+    {
+        $this->is_locked = 0;
+        $this->login_attempts = 0;
+        $this->update();
+    }
+
+    public function resetAttempts()
+    {
+        $this->login_attempts = 0;
+        $this->update();
     }
 
     /**
@@ -367,6 +388,11 @@ class User extends DbObject
      */
     public function allowed($path)
     {
+        if ($this->is_locked) {
+            unset($_SESSION['user_id']);
+            $this->w->error("This account is locked, most likely due to too many login attempts. Please contact an Administrator to get your account unlocked", "/auth/login");
+        }
+        
         if (!$this->is_active) {
             return false;
         }

@@ -20,7 +20,7 @@ function users_GET(Web $w)
             $contact = $internal_user->getContact();
 
             $internal_data[$internal_user->id] = [
-                $internal_user->login,
+                ($internal_user->is_locked ? '<i class="bi bi-lock"></i>' : '') . $internal_user->login,
                 !empty($contact) ? $contact->firstname : "",
                 !empty($contact) ? $contact->lastname : "",
                 [$internal_user->is_admin ? "Yes" : "No", true],

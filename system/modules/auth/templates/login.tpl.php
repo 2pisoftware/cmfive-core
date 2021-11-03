@@ -106,7 +106,7 @@
                     _this.password = null,
                     _this.mfa_code = null,
                     _this.is_mfa_enabled = false;
-                    _this.error_message = "Incorrect login details";
+                    _this.error_message = error.response.data;
                 }).finally(function() {
                     _this.is_loading = false;
                 });

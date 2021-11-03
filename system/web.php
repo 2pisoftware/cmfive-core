@@ -460,7 +460,7 @@ class Web
 
     public function initLocale()
     {
-        $user = $this->Auth->user();
+        $user = AuthService::getInstance($this)->user();
 
         // default language
         $language = Config::get('system.language');
@@ -477,7 +477,7 @@ class Web
             $language = 'en_AU';
         }
 
-        $this->Log->info('init locale ' . $language);
+        LogService::getInstance($this)->info('init locale ' . $language);
 
         $all_locale = getAllLocaleValues($language);
 
@@ -641,6 +641,17 @@ class Web
                 session_start();
             } catch (Exception $e) {
                 $this->Log->info("Error starting session " . $e->getMessage());
+            }
+
+            // Log out if timeout is set
+            if (Config::get('auth.logout.logout_after_inactivity', false) === true && AuthService::getInstance($this)->loggedIn()) {
+                if (array_key_exists('logout_timestamp', $_SESSION) && time() - $_SESSION['logout_timestamp'] > Config::get('auth.logout.timeout', 900)) {
+                    $this->sessionDestroy();
+                    $this->error('Your session has timed out, please log in again', '/auth/login');
+                    exit;
+                } else {
+                    $_SESSION['logout_timestamp'] = time(); //set new timestamp
+                }
             }
 
             // Initialise the logger (needs to log "info" to include the request data, see LogService __call function)

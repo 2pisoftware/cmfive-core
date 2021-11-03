@@ -1,20 +1,74 @@
 <?php
 
+use Html\Form\InputField\Password;
+
 /**
  * Display User edit form in colorbox
  *
  * @param <type> $w
  */
-function useradd_GET(Web &$w) {
-	$p = $w->pathMatch("box");
+function useradd_GET(Web $w)
+{
+    $p = $w->pathMatch("box");
     $w->setLayout("layout-2021");
-	$w->ctx('availableLocales', $w->getAvailableLanguages());
+
+    $availableLocales = $w->getAvailableLanguages();
 
     if (!$p['box']) {
         $w->Admin->navigation($w, "Add User");
     } else {
         $w->setLayout(null);
     }
+
+    $password_field = (new Password([
+        'id|name' => 'password',
+        'label' => 'Password'
+    ]));
+
+    $password_confirm_field = (new Password([
+        'id|name' => 'password2',
+        'label' => 'Repeat password'
+    ]));
+
+    if (Config::get('auth.login.password.enforce_length') === true) {
+        $password_field->setMinlength(Config::get('auth.login.password.min_length', 8));
+        $password_confirm_field->setMinlength(Config::get('auth.login.password.min_length', 8));
+    }
+
+    $form['User Details'][] = [
+        ["Login","text","login"],
+        ["Admin","checkbox","is_admin"],
+        ["Active","checkbox","is_active"],
+        ["External", "checkbox", "is_external"],
+        ["Language", "select", "language", null, $availableLocales],
+    ];
+    
+    $form['User Details'][] = [
+        $password_field,
+        $password_confirm_field,
+    ];
+    
+    $form['Contact Details'][] = [
+        ["First Name", "text", "firstname"],
+        ["Last Name", "text", "lastname"],
+    ];
+
+    $form['Contact Details'][] = [
+        ["Title", "autocomplete", "title", null, LookupService::getInstance($w)->getLookupByType("title")],
+        ["Email", "text", "email"],
+    ];
+    
+    $roles = AuthService::getInstance($w)->getAllRoles();
+    $roles = array_chunk($roles, 4);
+    foreach ($roles as $r) {
+        $row = [];
+        foreach ($r as $rf) {
+            $row[] = [$rf, "checkbox", "check_" . $rf];
+        }
+        $form['User Roles'][] = $row;
+    }
+
+    $w->ctx('form', $form);
 }
 
 /**
@@ -27,7 +81,7 @@ function useradd_POST(Web &$w)
     $errors = $w->validate([
         ["login", ".+", "Login is mandatory"],
         ["password", ".+", "Password is mandatory"],
-        ["password2", ".+", "Password2 is mandatory"],
+        ["password2", ".+", "Password confirm is mandatory"],
     ]);
     if ($_REQUEST['password2'] != $_REQUEST['password']) {
         $errors[] = "Passwords don't match";

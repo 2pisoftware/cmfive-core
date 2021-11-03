@@ -95,6 +95,9 @@
                 <div class="small-12 medium-6 large-4 columns">
                     <h3>General</h3>
                     <form>
+                        <div data-alert class="alert-box warning" v-if="user.security.is_locked">
+                            This account is locked <input class="button tiny alert" value="Unlock" style="font-size: 0.8rem; display: inline; float: right; width: 100px; margin-top: -8px; margin-right: -15px;" @click.prevent="unlockAccount" :disabled="is_loading">
+                        </div>
                         <label>Login
                             <?php
                             echo (new \Html\Form\InputField([
@@ -136,18 +139,27 @@
                     <form>
                         <label>New Password
                             <?php
-                            echo (new \Html\Form\InputField\Password([
+                            $password_field = (new \Html\Form\InputField\Password([
                                 "id|name" => "password",
                                 "required" => true,
                             ]))->setAttribute("v-model", "user.security.new_password");
+                            if (Config::get('auth.login.password.enforce_length') === true) {
+                                $password_field->setMinlength(Config::get('auth.login.password.min_length', 8));
+                            }
+                            echo $password_field;
                             ?>
                         </label>
                         <label>Repeat New Password
                             <?php
-                            echo (new \Html\Form\InputField\Password([
+                            $password_confirm = (new \Html\Form\InputField\Password([
                                 "id|name" => "repeatpassword",
                                 "required" => true,
                             ]))->setAttribute("v-model", "user.security.repeat_new_password");
+                            if (Config::get('auth.login.password.enforce_length') === true) {
+                                $password_confirm->setMinlength(Config::get('auth.login.password.min_length', 8));
+                            }
+
+                            echo $password_confirm;
                             ?>
                         </label>
                         <br>
@@ -269,6 +281,26 @@
                     _this.is_loading = false;
                 });
             },
+            unlockAccount: function() {
+                this.is_loading = true;
+
+                axios.post("/admin-user/ajax_unlock_account", {
+                    id: this.user.id
+                }).then((response) => {
+                    if (response.status !== 200) {
+                        new Toast("Failed to unlock").show();
+                        return;
+                    }
+
+                    new Toast("Account unlocked").show();
+                    this.user.security.is_locked = false;
+                }).catch(function(error) {
+                    new Toast("Failed to update").show();
+                    console.log(error);
+                }).finally(() => {
+                    this.is_loading = false;
+                });
+            },
             updatePassword: function() {
                 var _this = this;
                 _this.user.security.new_password = _this.user.security.new_password.trim();
@@ -282,6 +314,13 @@
                     new Toast("Passwords don't match").show();
                     return;
                 }
+
+                <?php if (Config::get('auth.login.password.enforce_length') === true) : ?>
+                    if (_this.user.security.new_password.length < <?php echo Config::get('auth.login.password.min_length', 8); ?>) {
+                        new Toast('Passwords must be at least <?php echo Config::get('auth.login.password.min_length', 8); ?> characters long').show()
+                        return;
+                    }
+                <?php endif; ?>
 
                 _this.is_loading = true;
 
