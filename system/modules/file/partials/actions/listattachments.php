@@ -7,7 +7,7 @@ function listattachments(\Web $w, $params)
     $object = $params["object"];
     $redirect = $params["redirect"];
 
-    $page = $w->sessionOrRequest("attachment__{$object->id}__page", 1);
+    $page = $w->sessionOrRequest("attachment__" . hash("crc32", get_class($object) . $object->id) . "__page", 1);
     $page_size = 6;
     $w->ctx("page", $page);
     $w->ctx("page_size", $page_size);
@@ -29,6 +29,7 @@ function listattachments(\Web $w, $params)
             "attachment" => $attachment,
             "redirect" => $redirect,
             "hide_image_exif" => $params["hide_image_exif"] ?? false,
+            "is_mutable" => $params["is_mutable"] ?? true,
         ], "file", "GET");
     }
 
