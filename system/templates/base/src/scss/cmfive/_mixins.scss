@@ -77,6 +77,18 @@
     }
 }
 
+@mixin light-theme-rule($target, $rule) {
+    .theme--default & {
+        #{$target}: $rule !important;
+    }
+}
+
+@mixin dark-theme-rule($target, $rule) {
+    .theme--dark & {
+        #{$target}: $rule !important;
+    }
+}
+
 @mixin theme-colours() {
     &.primary {
         @include theme((background-color: 'twopi-blue', color: 'white-black'));
