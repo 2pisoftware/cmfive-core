@@ -129,30 +129,10 @@ class Cmfive {
         // Add offset for breadcrumb if scrollbar is visible
         const breadcrumb = document.querySelector('#breadcrumbs .breadcrumb');
         if (breadcrumb) {
-            console.log(breadcrumb.scrollWidth, breadcrumb.clientWidth)
             if (breadcrumb.scrollWidth > breadcrumb.clientWidth) {
                 breadcrumb.classList.add('scroll-active');
             }
         }
-
-        // if (target instanceof Document) {
-        //     let theme = localStorage.getItem(Cmfive.THEME_KEY)
-
-        //     if (!theme) {
-        //         const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)"); 
-        //         if (prefersDarkScheme.matches) {
-        //             localStorage.setItem(Cmfive.THEME_KEY, 'dark');
-        //         } else {
-        //             localStorage.setItem(Cmfive.THEME_KEY, 'default');
-        //             theme = 'default';
-        //         }
-        //     }
-            
-        //     if (theme === "default") {
-        //         document.querySelector('html').classList.remove('theme--dark');
-        //         document.querySelector('html').classList.add('theme--default');
-        //     }
-        // }
 
         target?.querySelectorAll('.form-cancel-button')?.forEach(b => {
             b.removeEventListener('click', Cmfive.formCancel);

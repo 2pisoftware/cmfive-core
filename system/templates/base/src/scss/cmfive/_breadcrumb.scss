@@ -42,6 +42,12 @@ $themes: map.deep-merge($themes, (
                 overflow: hidden;
             }
 
+            &:hover {
+                span, a {
+                    @include theme((color: 'dark-grey'));
+                }
+            }
+
             &.active {
                 max-width: 200px;
                 span, a {
