@@ -24,7 +24,7 @@ $themes: map.deep-merge($themes, (
         height: 40px;
         
         &.scroll-active {
-            height: 50px;
+            height: 55px;
         }
 
         li.breadcrumb-item {
@@ -43,6 +43,7 @@ $themes: map.deep-merge($themes, (
             }
 
             &.active {
+                max-width: 200px;
                 span, a {
                     @include theme((color: 'dark-grey'));
                 }

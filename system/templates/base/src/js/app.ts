@@ -129,7 +129,8 @@ class Cmfive {
         // Add offset for breadcrumb if scrollbar is visible
         const breadcrumb = document.querySelector('#breadcrumbs .breadcrumb');
         if (breadcrumb) {
-            if (breadcrumb.scrollHeight > breadcrumb.clientHeight) {
+            console.log(breadcrumb.scrollWidth, breadcrumb.clientWidth)
+            if (breadcrumb.scrollWidth > breadcrumb.clientWidth) {
                 breadcrumb.classList.add('scroll-active');
             }
         }
