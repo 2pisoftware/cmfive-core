@@ -54,7 +54,7 @@ $themes: map.deep-merge($themes, (
         .nav {
             @include theme((background-color: 'navbar-background'));
             width: 100%;
-            justify-content: space-between;
+            // justify-content: space-between;
 
             .nav-item {
                 .nav-link {

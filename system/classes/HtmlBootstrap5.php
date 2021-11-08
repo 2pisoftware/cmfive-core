@@ -26,6 +26,11 @@ class HtmlBootstrap5 extends Html
         return $element->__toString();
     }
 
+    public static function buttonGroup(string $content): string
+    {
+        return '<div class="btn-group btn-group-sm" role="group">' . $content . '</div>';
+    }
+
     /**
      * Creates a complex form where each section can have
      * a different number of columns.

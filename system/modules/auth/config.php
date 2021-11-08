@@ -25,5 +25,6 @@ Config::set('auth', [
     'logout' => [
         'logout_after_inactivity' => false,
         'timeout' => 900
-    ]
+    ],
+    'login_label' => 'Login'
 ]);

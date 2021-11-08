@@ -38,11 +38,11 @@
                 "value" => CSRF::getTokenValue(),
             ]));
             ?>
-            <label>Login
+            <label><?php echo Config::get('auth.login_label', 'Login'); ?>
                 <?php
                 echo (new \Html\Form\InputField([
                     "id|name" => "login",
-                    "placeholder" => "Your login",
+                    "placeholder" => Config::get('auth.login_label', 'Login'),
                     "required" => true,
                 ]))->setAttribute("v-model", "login");
                 ?>

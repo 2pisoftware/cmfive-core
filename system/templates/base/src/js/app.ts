@@ -29,6 +29,11 @@ class Cmfive {
         fetch('/auth/ajax_set_setting?key=bs5-theme&value=' + localStorage.getItem(Cmfive.THEME_KEY)); // .then(r => r.text()).then(r => console.log(r));
     }
 
+    static toggleNavSettings() {
+        const navBackup = document.getElementById('accordion_menu').innerHTML;
+
+    }
+
     static menuOpenClickListener = function() {
         if (!document.getElementById('menu-overlay').classList.contains('active')) {
             document.getElementById('menu-overlay').classList.add('active');
@@ -157,6 +162,12 @@ class Cmfive {
         target?.querySelectorAll('[data-toggle-theme]')?.forEach(t => {
             t.removeEventListener('click', Cmfive.toggleTheme);
             t.addEventListener('click', Cmfive.toggleTheme);
+        })
+
+        // Nav settings toggle
+        target?.querySelectorAll('[data-toggle-nav-settings]')?.forEach(t => {
+            t.removeEventListener('click', Cmfive.toggleNavSettings);
+            t.addEventListener('click', Cmfive.toggleNavSettings);
         })
 
         // Menu toggle

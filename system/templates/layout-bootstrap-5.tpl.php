@@ -56,6 +56,7 @@ $theme_setting = AuthService::getInstance($w)->getSettingByKey('bs5-theme');
                         <li class="nav-item"><a class="nav-link nav-icon" data-modal-target='/search?isbox=1'><i class="bi bi-search"></i></a></li>
                     <?php endif; ?>
                     <li class="nav-item"><a class="nav-link nav-icon" href="#" data-toggle-theme><i class="bi bi-palette-fill"></i></a></li>
+                    <li class="nav-item"><a class="nav-link nav-icon" href="#" data-toggle-nav-settings><i class="bi bi-gear-fill"></i></a></li>
                 </ul>
                 <!-- </nav> -->
                 <div class="accordion" id="accordion_menu">

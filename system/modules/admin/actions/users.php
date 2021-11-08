@@ -3,8 +3,8 @@
 function users_GET(Web $w)
 {
     $w->setLayout("layout-bootstrap-5");
-    $w->Admin->navigation($w, "Users");
-    $users = $w->Admin->getObjects("User", ["is_deleted" => 0, "is_group" => 0]);
+    AdminService::getInstance($w)->navigation($w, "Users");
+    $users = AdminService::getInstance($w)->getObjects("User", ["is_deleted" => 0, "is_group" => 0]);
 
     $internal_users = array_filter($users ?: [], function (User $user) {
         return !empty($user->id) && $user->is_external == 0;
@@ -26,11 +26,13 @@ function users_GET(Web $w)
                 [$internal_user->is_admin ? "Yes" : "No", true],
                 [$internal_user->is_active ? "Yes" : "No", true],
                 [$internal_user->is_mfa_enabled ? "Yes" : "No", true],
-                [$w->Admin->time2Dt($internal_user->dt_created), true],
-                [empty($internal_user->dt_lastlogin) ? "" : $w->Admin->time2Dt($internal_user->dt_lastlogin), true],
-                HtmlBootstrap5::b("/admin-user/edit/" . $internal_user->id, "Edit", null, "editbutton", false, 'btn-sm btn-secondary') .
-                HtmlBootstrap5::b("/admin/permissionedit/" . $internal_user->id, "Permissions", null, "permissionsbutton", false, 'btn-sm btn-secondary') .
-                HtmlBootstrap5::b("/admin-user/remove/" . $internal_user->id, "Remove", null, "deletebutton", false, "btn-sm btn-danger")
+                [AdminService::getInstance($w)->time2Dt($internal_user->dt_created), true],
+                [empty($internal_user->dt_lastlogin) ? "" : AdminService::getInstance($w)->time2Dt($internal_user->dt_lastlogin), true],
+                HtmlBootstrap5::buttonGroup(
+                    HtmlBootstrap5::b("/admin-user/edit/" . $internal_user->id, "Edit", null, "editbutton", false, 'btn-sm btn-secondary') .
+                    HtmlBootstrap5::b("/admin/permissionedit/" . $internal_user->id, "Permissions", null, "permissionsbutton", false, 'btn-sm btn-info') .
+                    HtmlBootstrap5::b("/admin-user/remove/" . $internal_user->id, "Remove", null, "deletebutton", false, "btn-sm btn-danger")
+                )
             ];
         }
     }
@@ -46,11 +48,13 @@ function users_GET(Web $w)
                 !empty($contact->id) ? $contact->lastname : 'No Contact object found',
                 [$external_user->is_admin ? "Yes" : "No", true],
                 [$external_user->is_active ? "Yes" : "No", true],
-                [$w->Admin->time2Dt($external_user->dt_created), true],
-                [empty($internal_user->dt_lastlogin) ? "" : $w->Admin->time2Dt($internal_user->dt_lastlogin), true],
-                HtmlBootstrap5::b("/admin-user/edit/" . $external_user->id, "Edit", null, "editbutton", false, 'btn-sm btn-secondary') .
-                HtmlBootstrap5::b("/admin/permissionedit/" . $external_user->id, "Permissions", null, "permissionsbutton". false, 'btn-sm btn-secondary') .
-                HtmlBootstrap5::b("/admin-user/remove/" . $external_user->id, "Remove", null, "deletebutton", false, "btn-sm btn-danger")
+                [AdminService::getInstance($w)->time2Dt($external_user->dt_created), true],
+                [empty($internal_user->dt_lastlogin) ? "" : AdminService::getInstance($w)->time2Dt($internal_user->dt_lastlogin), true],
+                HtmlBootstrap5::buttonGroup(
+                    HtmlBootstrap5::b("/admin-user/edit/" . $external_user->id, "Edit", null, "editbutton", false, 'btn-sm btn-secondary') .
+                    HtmlBootstrap5::b("/admin/permissionedit/" . $external_user->id, "Permissions", null, "permissionsbutton". false, 'btn-sm btn-info') .
+                    HtmlBootstrap5::b("/admin-user/remove/" . $external_user->id, "Remove", null, "deletebutton", false, "btn-sm btn-danger")
+                )
             ];
         }
     }

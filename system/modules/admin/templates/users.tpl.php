@@ -1,5 +1,6 @@
-<?php echo Html::box($webroot . "/admin/useradd/box", "Add New User", true); ?>
-<br /><br />
+<div class="mb-3">
+    <?php echo Html::box($webroot . "/admin/useradd/box", "Add New User", true); ?>
+</div>
 <div class='tabs'>
     <div class='tab-head'>
         <a class='active' href='#internal'>Internal</a>
