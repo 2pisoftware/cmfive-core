@@ -727,7 +727,7 @@ class HtmlBootstrap5 extends Html
         if (isNumber($currentpage) && isNumber($numpages) && isNumber($pagesize) && isNumber($totalresults)) {
             // Check that we're within range
             if ($currentpage > 0 && $currentpage <= $numpages && $numpages > 1) {
-                $buf = "<nav aria-label='pagination'><ul class='pagination justify-content-center'>";
+                $buf = "<nav aria-label='pagination'><ul class='pagination justify-content-center flex-wrap'>";
 
                 // Build pagination links
                 for ($page = 1; $page <= $numpages; $page++) {
@@ -757,13 +757,13 @@ class HtmlBootstrap5 extends Html
      * @param string $class
      * @return string
      */
-    public static function alertBox($msg, $type = "alert-info") : string
+    public static function alertBox($msg, $type = "alert-info", $include_close = true) : string
     {
         if ($type !== "alert-info" && $type !== "alert-warning" && $type !== "alert-danger" && $type !== "alert-success") {
             $type = "alert-info";
         }
 
-        return "<div data-alert class='alert alert-box {$type}'>{$msg}<a href='#' class='close'>&times;</a></div>";
+        return "<div data-alert class='alert alert-box {$type}'>{$msg}" . (!!$include_close ? "<a href='#' class='close'>&times;</a>" : '') . "</div>";
     }
 
     public static function dataCard(string $header, array $data)
