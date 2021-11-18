@@ -13,7 +13,11 @@ function auth_admin_remove_user(Web $w, User $user) {
  */
 function auth_core_web_after(Web $w)
 {
-    if (Config::get('auth.require_mfa', false) == true && !AuthService::getInstance($w)->user()->is_mfa_enabled) {
+    $user = AuthService::getInstance($w)->user();
+    if (empty($user)) {
+        return;
+    }
+    if (Config::get('auth.require_mfa', false) == true && !$user->is_mfa_enabled) {
         $w->ctx('error', 'Two Factor Authentication (2FA) is required to use ' . Config::get('main.application_name', 'this system') . '. Please go to the Security tab in <a class="text-info" href="/auth/profile">your profile</a> to set 2FA up.');
     }
 }
