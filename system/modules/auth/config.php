@@ -6,7 +6,8 @@ Config::set('auth', [
     'topmenu' => false,
     'access_hint' => 'Forgot password?',
     'hooks' => [
-        'admin'
+        'admin',
+        'core_web',
     ],
     'show_application_name' => true,
     "dependencies" => [
@@ -26,5 +27,6 @@ Config::set('auth', [
         'logout_after_inactivity' => false,
         'timeout' => 900
     ],
-    'login_label' => 'Login'
+    'login_label' => 'Login',
+    'require_mfa' => false
 ]);
