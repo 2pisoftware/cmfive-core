@@ -1,6 +1,6 @@
 // src/app.ts
 import { AlertAdaptation, DropdownAdaptation, FavouritesAdaptation, TabAdaptation, TableAdaptation } from './adaptations';
-import { QuillEditor, InputWithOther, MultiFileUpload, MultiSelect } from './components';
+import { QuillEditor, InputWithOther, MultiFileUpload, MultiSelect, Overlay } from './components';
 
 import { Modal } from 'bootstrap';
 
@@ -69,6 +69,10 @@ class Cmfive {
             }
         }
 
+        if (this.hasAttribute('data-show-overlay')) {
+            Overlay.showOverlay();
+        }
+        
         if (this.hasAttribute('data-link-new-tab')) {
             window.open(this.getAttribute('data-link-target'));
         } else {
@@ -161,6 +165,11 @@ class Cmfive {
             m.removeEventListener('click', Cmfive.menuCloseClickListener);
             m.addEventListener('click', Cmfive.menuCloseClickListener);
         });
+
+        // target?.querySelectorAll('[data-show-overlay]')?.forEach(o => {
+        //     o.removeEventListener('click', Overlay.showOverlay);
+        //     o.addEventListener('click', Overlay.showOverlay);
+        // })
 
         AlertAdaptation.bindCloseEvent();
         DropdownAdaptation.bindDropdownHover();
