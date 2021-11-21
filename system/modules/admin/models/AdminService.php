@@ -3,6 +3,50 @@
 class AdminService extends DbService
 {
     /**
+     * Returns a list of users for paginated tables
+     *
+     * @param array $where
+     * @param integer|null $page_number
+     * @param integer|null $page_size
+     * @param string|null $sort
+     * @param string|null $sort_direction
+     * @return array
+     */
+    public function getUsers(array $where = [], ?int $page_number = null, ?int $page_size = null, ?string $sort = null, ?string $sort_direction = null): array
+    {
+        $query = $this->_db->get('user')->leftJoin('contact on user.contact_id = contact.id');
+
+        foreach ($where as $key => $value) {
+            $query->where($key, $value);
+        }
+
+        if (!empty($page_number) && !empty($page_size)) {
+            $query->paginate($page_number, $page_size);
+        }
+
+        if (!empty($sort) && !empty($sort_direction)) {
+            if ($sort == 'name') {
+                $query->sort('contact.firstname', $sort_direction)->sort('contact.lastname', $sort_direction);
+            } else {
+                $query->sort($sort, $sort_direction);
+            }
+        }
+
+        return $this->getObjectsFromRows('User', $query->fetchAll());
+    }
+
+    /**
+     * Returns a count of users with a where clause
+     *
+     * @param array $where
+     * @return integer
+     */
+    public function countUsers(array $where = []): int
+    {
+        return $this->db->get('user')->where($where)->count();
+    }
+
+    /**
      * Returns a country via the $id parameter.
      *
      * @param string $id
