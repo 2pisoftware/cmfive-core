@@ -28,5 +28,6 @@ Config::set('auth', [
         'timeout' => 900
     ],
     'login_label' => 'Login',
-    'require_mfa' => false
+    'require_mfa' => false,
+    // mfa_message => '' // override the message that is shown to require MFA
 ]);

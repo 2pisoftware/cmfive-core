@@ -18,6 +18,6 @@ function auth_core_web_after(Web $w)
         return;
     }
     if (Config::get('auth.require_mfa', false) == true && !$user->is_mfa_enabled) {
-        $w->ctx('error', 'Two Factor Authentication (2FA) is required to use ' . Config::get('main.application_name', 'this system') . '. Please go to the Security tab in <a class="text-info" href="/auth/profile">your profile</a> to set 2FA up.');
+        $w->ctx('error', Config::get('auth.mfa_message', 'Two Factor Authentication (2FA) is required to use ' . Config::get('main.application_name', 'this system') . '. Please go to the Security tab in <a class="text-info" href="/auth/profile">your profile</a> to set 2FA up.'));
     }
 }

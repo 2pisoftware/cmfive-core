@@ -8,8 +8,8 @@ class AuditInsight extends InsightBaseClass
     //Displays Filters to select user
     public function getFilters(Web $w, $parameters = []): array
     {
-       $moduleSelectOptions = AuditService::getInstance($w)->getLoggedModules();
-       $actionSelectOptions = AuditService::getInstance($w)->getLoggedActions();
+        $moduleSelectOptions = AuditService::getInstance($w)->getLoggedModules();
+        $actionSelectOptions = AuditService::getInstance($w)->getLoggedActions();
 
         return [
             "Options" => [
@@ -39,24 +39,24 @@ class AuditInsight extends InsightBaseClass
         $data = AuditService::getInstance($w)->getAudits(($parameters['dt_from']), ($parameters['dt_to']), ($parameters['user_id']), ($parameters['module']), ($parameters['action']));
 
         if (!$data) {
-             $results[] = new InsightReportInterface('Audit Report', ['Results'], [['No data returned for selections']]);
-         } else {
-             // convert $data from list of objects to array of values
+            $results[] = new InsightReportInterface('Audit Report', ['Results'], [['No data returned for selections']]);
+        } else {
+            // convert $data from list of objects to array of values
             $convertedData = [];
-                foreach ($data as $datarow){
-                    $row = [];
-                    $row['Date'] = formatDateTime($datarow->dt_created);
-                    $creator = AuthService::getInstance($w)->getUser($datarow->creator_id);
-                    $row['User'] = empty($creator) ? '' : $creator->getFullName();
-                    $row['Module'] = $datarow->module;
-                    $row['URL'] = $datarow->path;
-                    $row['Class'] = $datarow->db_class;
-                    $row['Action'] = $datarow->db_action;
-                    $row['DB Id'] = $datarow->db_id;
-                    $convertedData[] = $row;
-                }
+            foreach ($data as $datarow) {
+                $row = [];
+                $row['Date'] = formatDateTime($datarow->dt_created);
+                $creator = AuthService::getInstance($w)->getUser($datarow->creator_id);
+                $row['User'] = empty($creator) ? '' : $creator->getFullName();
+                $row['Module'] = $datarow->module;
+                $row['URL'] = $datarow->path;
+                $row['Class'] = $datarow->db_class;
+                $row['Action'] = $datarow->db_action;
+                $row['DB Id'] = $datarow->db_id;
+                $convertedData[] = $row;
+            }
             $results[] = new InsightReportInterface('Audit Report', ['Date', 'User', 'Module', 'URL', 'Class', 'Action', 'DB Id'], $convertedData);
-         }
+        }
         return $results;
     }
 }

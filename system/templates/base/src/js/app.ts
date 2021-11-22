@@ -166,6 +166,11 @@ class Cmfive {
             m.addEventListener('click', Cmfive.menuCloseClickListener);
         });
 
+        target?.querySelectorAll('form[data-show-overlay]')?.forEach(f => {
+            f.removeEventListener('submit', () => Overlay.showOverlay());
+            f.addEventListener('submit', () => Overlay.showOverlay());
+        })
+
         // target?.querySelectorAll('[data-show-overlay]')?.forEach(o => {
         //     o.removeEventListener('click', Overlay.showOverlay);
         //     o.addEventListener('click', Overlay.showOverlay);

@@ -10,7 +10,7 @@ function users_GET(Web $w)
     $internal_sort = $w->sessionOrRequest('cmfive-internal-users__sort', 'login');
     $internal_sort_direction = $w->sessionOrRequest('cmfive-internal-users__sort-direction', 'asc');
 
-    $external_page_number = $w->sessionOrRequest('cmfive-internal-users__page-number', 1);
+    $external_page_number = $w->sessionOrRequest('cmfive-external-users__page-number', 1);
     $external_page_size = $w->sessionOrRequest('cmfive-external-users__page-size', 50);
     $external_sort = $w->sessionOrRequest('cmfive-external-users__sort', 'login');
     $external_sort_direction = $w->sessionOrRequest('cmfive-external-users__sort-direction', 'asc');

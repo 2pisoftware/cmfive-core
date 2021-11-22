@@ -113,7 +113,7 @@ class form {
             $buffer .= "class='{$this->_class}' ";
         }
         
-        $buffer .= " >";
+        $buffer .= " data-show-overlay >";
         
         // Automatically print CSRF token
         if (class_exists("CSRF") && !empty($this->method) && ($this->method == "POST")) {
