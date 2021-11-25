@@ -26,6 +26,8 @@ $themes: map.deep-merge($themes, (
             top: 20px;
             right: 20px;
             z-index: 2000;
+
+            @include dark-theme-rule('filter', invert(1) grayscale(100%) brightness(200%));
         }
     }
 }
