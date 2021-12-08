@@ -1,7 +1,5 @@
 <?php
 
-require 'vendor/autoload.php';
-
 use Aws\Sqs\SqsClient;
 use Aws\Exception\AwsException;
 
