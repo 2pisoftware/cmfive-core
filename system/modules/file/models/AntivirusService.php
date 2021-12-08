@@ -30,6 +30,7 @@ class AntivirusService extends DbService
                 foreach ($result->get('Messages') as $message) {
                     $body = json_decode($message['Body']);
 
+                    LogService::getInstance($this->w)->error("Body: " . $message['Body']);
                     if (array_key_exists("responsePayload", $body)) {
                         $scan_details = $body["responsePayload"];
                         if (array_key_exists("status", $scan_details)) {
@@ -43,7 +44,11 @@ class AntivirusService extends DbService
                                     LogService::getInstance($this->w)->error("Infected file found with no matching attachment object");
                                 }
                             }
+                        } else {
+                            LogService::getInstance($this->w)->error("No status key");
                         }
+                    } else {
+                        LogService::getInstance($this->w)->error("No response payload key");
                     }
 
                     $result = $client->deleteMessage([
@@ -51,6 +56,8 @@ class AntivirusService extends DbService
                         'ReceiptHandle' => $message['ReceiptHandle']
                     ]);
                 }
+            } else {
+                LogService::getInstance($this->w)->error("No messages");
             }
         } catch (AwsException $e) {
             // output error message if fails
