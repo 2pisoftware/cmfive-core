@@ -14,7 +14,6 @@ class AntivirusService extends DbService
         }
 
         $client = new SqsClient([
-            'profile' => 'default',
             'region' => 'ap-southeast-2',
             'version' => '2012-11-05'
         ]);
