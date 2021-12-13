@@ -34,10 +34,10 @@ class AntivirusService extends DbService
                     $body = json_decode($message['Body']);
                     if (property_exists($body, "responsePayload")) {
                         $scan_details = $body->responsePayload;
-                        if (array_key_exists("status", $scan_details)) {
-                            if (strtoupper($scan_details['status']) == "INFECTED") {
+                        if (property_exists($scan_details, "status")) {
+                            if (strtoupper($scan_details->status) == "INFECTED") {
                                 /** @var Attachment */
-                                $attachment = $this->getObject('Attachment', ['fullpath' => $scan_details['input_key']]);
+                                $attachment = $this->getObject('Attachment', ['fullpath' => $scan_details->input_key]);
                                 LogService::getInstance($this->w)->error("Removing infected file: " . $attachment->filename);
                                 if (!empty($attachment)) {
                                     $attachment->delete();
