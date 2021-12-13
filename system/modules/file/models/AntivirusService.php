@@ -31,7 +31,7 @@ class AntivirusService extends DbService
                     $body = json_decode($message['Body']);
 
                     LogService::getInstance($this->w)->error("Body: " . $message['Body']);
-                    if (property_exists("responsePayload", $body)) {
+                    if (property_exists($body, "responsePayload")) {
                         $scan_details = $body->responsePayload;
                         if (array_key_exists("status", $scan_details)) {
                             if (strtoupper($scan_details['status']) == "INFECTED") {
