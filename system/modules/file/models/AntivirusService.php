@@ -37,7 +37,7 @@ class AntivirusService extends DbService
                         if (property_exists($scan_details, "status")) {
                             if (strtoupper($scan_details->status) == "INFECTED") {
                                 /** @var Attachment */
-                                $attachment = $this->getObject('Attachment', ['fullpath' => $scan_details->input_key]);
+                                $attachment = $this->getObject('Attachment', ['fullpath' => str_replace('uploads/', '', $scan_details->input_key)]);
                                 LogService::getInstance($this->w)->error("Removing infected file: " . $attachment->filename);
                                 if (!empty($attachment)) {
                                     $attachment->delete();
