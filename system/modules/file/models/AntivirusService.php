@@ -28,11 +28,11 @@ class AntivirusService extends DbService
             ]);
             if (!empty($result->get('Messages'))) {
                 foreach ($result->get('Messages') as $message) {
-                    $body = json_decode($message['Body']);
+                    // $body = json_decode($message['Body']);
 
                     LogService::getInstance($this->w)->error("Body: " . $message['Body']);
-                    if (property_exists($body, "responsePayload")) {
-                        $scan_details = $body->responsePayload;
+                    if (property_exists($message['Body'], "responsePayload")) {
+                        $scan_details = $message['Body']->responsePayload;
                         if (array_key_exists("status", $scan_details)) {
                             if (strtoupper($scan_details['status']) == "INFECTED") {
                                 /** @var Attachment */
