@@ -56,11 +56,6 @@ catch (Error $e) {
   let my_pdf_button = document.getElementById('my_pdf_button');
   let insight_pdf_modal = document.getElementById('insight_pdf_modal');
 
-  console.log(document.getElementById("insight_pdf_modal"));
-  console.log($("#insight_pdf_modal"));
-
-
-
   //override onclick function of button
   my_pdf_button.onclick = function() {
     $(document.getElementById("insight_pdf_modal")).foundation("reveal", "open");
