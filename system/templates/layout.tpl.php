@@ -347,6 +347,8 @@
 
         function bindModalLinks() {
             // Let deliberate button action collapse the modal (eg: on POST)
+            // double check if this needs be iterator model
+            // implement on <a> also as <button>
             $("#cmfive-modal button").click(function(event) {
                 if ($(this).hasClass("escape-reveal-modal")) {
                     $("#cmfive-modal").foundation("reveal", "close");
