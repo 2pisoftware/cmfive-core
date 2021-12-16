@@ -201,10 +201,12 @@ class InsightService extends DbService
         if (!empty($run_data)) {
             if (empty($report_template_id)) {
                 // title of report
-                $hd = "<h1>" . $title . "</h1>";
-                $pdf->writeHTMLCell(0, 10, 60, 15, $hd, 0, 1, 0, true);
-                $created = date("d/m/Y g:i a");
-                $pdf->writeHTMLCell(0, 10, 60, 25, $created, 0, 1, 0, true);
+                $hd = "<div style='width: 100%; text-align: center;'><h1>" . $title . "</h1></div>";
+                // $pdf->writeHTMLCell(0, 10, 60, 15, $hd, 0, 1, 0, true);
+                        $pdf->writeHTML($hd, true, false, true, false, 'C');
+                $created = "<div style='width: 100%; text-align: center;'>".date("d/m/Y g:i a")."</div><br>";
+                // $pdf->writeHTMLCell(0, 10, 60, 25, $created, 0, 1, 0, true);
+                        $pdf->writeHTML($created, true, false, true, false, 'C');
 
                 // display recordset
                 foreach ($run_data as $table) {
