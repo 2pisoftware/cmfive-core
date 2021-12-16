@@ -35,7 +35,8 @@ function runInsight_GET(Web $w)
     //Drop-down for chossing template to use for export
     $templates = TemplateService::getInstance($w)->findTemplates('insights', $insight_class_name_pdf, false, false);
 
-    $template_select = (new \Html\Form\Select($w))->setLabel('Template')->setName('template_id')->setOptions($templates); //->setRequired(false)
+    $template_select = (new \Html\Form\Select($w))->setLabel('Template')->setName('template_id')->setOptions($templates, true);//->setRequired(false)
 
     $w->ctx('template_select', $template_select);
+
 }
