@@ -30,13 +30,19 @@ function bindpdf_GET(Web $w)
     $templates = TemplateService::getInstance($w)->findTemplates('insights', $insight_class_name_pdf, false, false);
     $template_select = Html::form(
         [
+            ["Select template for PDF layout (optional)","section"],
             [
-                "Select template for PDF layout (optional)",
+                "",
                 "select",
                 "template_id",
                 $requestedTemplate,
                 $templates
-            ]
+            ],
+            ["&nbsp","section"],
+            ["Select page layout","section"],
+            [Html::radio("layout_P","layout_selection","P","P")." : Portrait"],
+            [Html::radio("layout_L","layout_selection",null,"L")." : Landscape"],
+
         ],
         "/insights-export/pdf/" . $p['insight_class'] . "?" . $refreshedParameters,
         "POST",

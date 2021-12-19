@@ -174,14 +174,14 @@ class InsightService extends DbService
     }
 
     // export a recordset as PDF
-    public function exportpdf($run_data, $title, $report_template_id = null)
+    public function exportpdf($run_data, $title, $report_template_id = null, $layout_orientation = PDF_PAGE_ORIENTATION)
     {
         $filename = str_replace(" ", "_", $title) . "_" . date("Y.m.d-H.i") . ".pdf";
         // using TCPDF, but sourcing from Composer
         //require_once('tcpdf/tcpdf.php');
 
         // instantiate and set parameters
-        $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+        $pdf = new TCPDF($layout_orientation, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
         $pdf->SetCreator(PDF_CREATOR);
         $pdf->SetTitle($title);
         $pdf->setHeaderFont([PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN]);
@@ -203,10 +203,10 @@ class InsightService extends DbService
                 // title of report
                 $hd = "<div style='width: 100%; text-align: center;'><h1>" . $title . "</h1></div>";
                 // $pdf->writeHTMLCell(0, 10, 60, 15, $hd, 0, 1, 0, true);
-                        $pdf->writeHTML($hd, true, false, true, false, 'C');
-                $created = "<div style='width: 100%; text-align: center;'>".date("d/m/Y g:i a")."</div><br>";
+                $pdf->writeHTML($hd, true, false, true, false, 'C');
+                $created = "<div style='width: 100%; text-align: center;'>" . date("d/m/Y g:i a") . "</div><br>";
                 // $pdf->writeHTMLCell(0, 10, 60, 25, $created, 0, 1, 0, true);
-                        $pdf->writeHTML($created, true, false, true, false, 'C');
+                $pdf->writeHTML($created, true, false, true, false, 'C');
 
                 // display recordset
                 foreach ($run_data as $table) {
@@ -221,8 +221,6 @@ class InsightService extends DbService
                         $results .= "<table cellpadding='2' cellspacing='2' border='0' width='50px'>\n";
 
                         foreach ($table->data as $row) {
-                            $rowresults = '';
-                            //var_dump($row); die;
                             $i = 0;
 
                             foreach ($row as $field) {
