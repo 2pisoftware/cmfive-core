@@ -241,6 +241,7 @@ class InsightService extends DbService
             } else {
                 $templatedata = [];
                 $templatedata["insightTitle"] = $title;
+                $templatedata["insightDateRun"] = date("d/m/Y g:i a");
                 $templatedata["tables"] = [];
                 foreach ($run_data as $table) {
                     if (!empty($table)) {
