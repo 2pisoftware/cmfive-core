@@ -346,15 +346,17 @@
         });
 
         function bindModalLinks() {
-            // Let deliberate button action collapse the modal (eg: on POST)
-            // double check if this needs be iterator model
-            // implement on <a> also as <button>
-            $("#cmfive-modal button").click(function(event) {
+            // Let deliberate actions collapse the modal (eg: on POST)
+            // by magic, this doesn't need to be an iterator!
+            // implemented on <a> and <button>
+            $("#cmfive-modal button, #cmfive-modal a").click(function(event) {
                 if ($(this).hasClass("escape-reveal-modal")) {
                     $("#cmfive-modal").foundation("reveal", "close");
                     return true;
                 }
             });
+            // Conversely, by default we don't collapse
+            // except by the [X] close-reveal icon:
             // Stop a links and follow them inside the reveal modal
             $("#cmfive-modal a:not(#modal-back)").click(function(event) {
                 if ($(this).hasClass("close-reveal-modal")) {
