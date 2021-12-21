@@ -17,10 +17,10 @@ function pdf_ALL(Web $w)
 
     //create service funtion for export to PDF to use here
     InsightService::getInstance($w)
-    ->exportpdf(
-        $run_data, 
-        $insight->name, 
-        $_REQUEST['template_id'] ?? null, 
-        $_REQUEST['layout_selection'] ?? "P"
-    );
+        ->exportpdf(
+            $run_data,
+            $insight->name,
+            $_REQUEST['template_id'] ?? null,
+            $_REQUEST['layout_selection'] ?? "P"
+        );
 }

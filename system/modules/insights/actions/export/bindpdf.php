@@ -26,11 +26,11 @@ function bindpdf_GET(Web $w)
     //template_select
     $insight_class_name_pdf = $p['insight_class'] . '_pdf';
 
-    //Drop-down for chossing template to use for export
+    //Drop-down for choosing template to use for export
     $templates = TemplateService::getInstance($w)->findTemplates('insights', $insight_class_name_pdf, false, false);
     $template_select = Html::form(
         [
-            ["Select template for PDF layout (optional)","section"],
+            ["Select template for PDF layout (optional)", "section"],
             [
                 "",
                 "select",
@@ -38,10 +38,10 @@ function bindpdf_GET(Web $w)
                 $requestedTemplate,
                 $templates
             ],
-            ["&nbsp","section"],
-            ["Select page layout","section"],
-            [Html::radio("layout_P","layout_selection","P","P")." : Portrait"],
-            [Html::radio("layout_L","layout_selection",null,"L")." : Landscape"],
+            ["&nbsp", "section"],
+            ["Select page layout", "section"],
+            [Html::radio("layout_P", "layout_selection", "P", "P") . " : Portrait"],
+            [Html::radio("layout_L", "layout_selection", null, "L") . " : Landscape"],
 
         ],
         "/insights-export/pdf/" . $p['insight_class'] . "?" . $refreshedParameters,
