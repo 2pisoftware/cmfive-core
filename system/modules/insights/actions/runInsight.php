@@ -11,10 +11,14 @@ function runInsight_GET(Web $w)
 
     $p = $w->pathMatch('insight_class');
     if (empty($p['insight_class'])) {
-        $w->error('no insight class found', '/insights');
+        $w->error('No insight class found', '/insights');
     }
-    $w->ctx('insight_class_name', $p['insight_class']);
     $insight = InsightService::getInstance($w)->getInsightInstance($p['insight_class']);
+    if (empty($insight)) {
+        $w->error('Insight class could not resolve', '/insights');
+    }
+
+    $w->ctx('insight_class_name', $p['insight_class']);
     $w->ctx('insight', $insight);
     $w->ctx('title', $insight->name);
     $run_data = $insight->run($w, $_GET);
@@ -27,7 +31,7 @@ function runInsight_GET(Web $w)
 
     //template_select
     $insight_class_name_pdf = $p['insight_class'] . '_pdf';
-        
+
     //Drop-down for chossing template to use for export
     $templates = TemplateService::getInstance($w)->findTemplates('insights', $insight_class_name_pdf, false, false);
 
