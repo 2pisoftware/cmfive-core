@@ -152,5 +152,5 @@ jobs:
           name: test-output
           path: |
             test/Codeception/tests/_output/
-            storage/logs/
+            storage/log/
           retention-days: 5
