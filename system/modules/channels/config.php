@@ -11,6 +11,7 @@ Config::set('channels', [
     ],
     "dependencies" => [
         "laminas/laminas-mail" => "~2.9",
-        "laminas/laminas-serializer" => "~2.9"
+        "laminas/laminas-serializer" => "~2.9",
+        "zendframework/zend-mail" => "~2.5"
     ]
 ]);
