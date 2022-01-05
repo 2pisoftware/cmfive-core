@@ -150,13 +150,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: test-output
-          path: test/Codeception/tests/_output/
-          retention-days: 5
-      # Store Test Results
-      - name: Logs
-        if: ${{ failure() }} || ${{ success() }}
-        uses: actions/upload-artifact@v2
-        with:
-          name: logs-output
-          path: storage/logs/
+          path: |
+            test/Codeception/tests/_output/
+            storage/logs/
           retention-days: 5
