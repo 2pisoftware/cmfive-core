@@ -599,7 +599,7 @@ class DbObject extends DbService
     public function propertyHasChanged($prop)
     {
         return property_exists($this, '__old') && property_exists($this, $prop) &&
-        array_key_exists($prop, $this->__old) && $this->__old[$prop] != $this->$prop;
+            array_key_exists($prop, $this->__old) && $this->__old[$prop] != $this->$prop;
     }
 
     /**
@@ -694,7 +694,6 @@ class DbObject extends DbService
                 if (substr($k, 0, 1) != "_" && $k != "w" && $v !== null) {
                     $dbk = $this->getDbColumnName($k);
                     $data[$dbk] = $this->updateConvert($dbk, $v);
-
                 }
             }
 
@@ -773,7 +772,7 @@ class DbObject extends DbService
             // check delete attribute
             if (in_array("is_deleted", $columns) && $this->is_deleted === null) {
                 $this->is_deleted = 0;
-            } elseif (in_array("is_deleted", $columns) && $this->is_deleted == 1 && $this->__old["is_deleted"] != 1) {
+            } elseif (in_array("is_deleted", $columns) && $this->is_deleted == 1 && ($this->__old["is_deleted"] ?? null) != 1) {
                 // call delete function if property is_deleted has changed to 1
                 $deletedOnManualUpdate = true;
                 $this->_callHooks("before", "delete");
@@ -1054,7 +1053,6 @@ class DbObject extends DbService
      */
     public function addToIndex()
     {
-
     }
 
     /**
@@ -1086,9 +1084,10 @@ class DbObject extends DbService
         $exclude = ["dt_created", "dt_modified", "w"];
 
         foreach (get_object_vars($this) as $k => $v) {
-            if (substr($k, 0, 1) != "_" // ignore volatile vars
-                 && (!property_exists($this, "_exclude_index") // ignore properties that should be excluded
-                     || !in_array($k, $this->_exclude_index)) && stripos($k, "_id") === false && !in_array($k, $exclude)
+            if (
+                substr($k, 0, 1) != "_" // ignore volatile vars
+                && (!property_exists($this, "_exclude_index") // ignore properties that should be excluded
+                    || !in_array($k, $this->_exclude_index)) && stripos($k, "_id") === false && !in_array($k, $exclude)
             ) {
                 if ($k == "id") {
                     $str .= "id" . $v . " ";
