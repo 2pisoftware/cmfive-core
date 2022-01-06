@@ -1,5 +1,6 @@
 <?php
-function csv_ALL(Web $w)
+
+function pdf_ALL(Web $w)
 {
     $w->setLayout(null);
     //Find class name of insight
@@ -14,5 +15,12 @@ function csv_ALL(Web $w)
     }
     $run_data = $insight->run($w, $_REQUEST);
 
-    InsightService::getInstance($w)->exportcsv($run_data, $p['insight_class']);
+    //create service funtion for export to PDF to use here
+    InsightService::getInstance($w)
+        ->exportpdf(
+            $run_data,
+            $insight->name,
+            $_REQUEST['template_id'] ?? null,
+            $_REQUEST['layout_selection'] ?? "P"
+        );
 }
