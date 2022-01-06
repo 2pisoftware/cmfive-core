@@ -162,7 +162,7 @@ class InsightService extends DbService
                 $csv = new ParseCsv\Csv();
                 $csv->output_filename = $filename;
                 // ignore lib wrapper csv->output, to keep control over header re-sends!
-                
+
                 $this->w->out($csv->unparse($table->data, $hds, null, null, null));
                 // can't use this way without commenting out header section, which composer won't like
             }
@@ -172,41 +172,43 @@ class InsightService extends DbService
         $this->w->sendHeader("Content-Disposition", "attachment; filename=" . $filename);
         $this->w->setLayout(null);
     }
-    
+
     // export a recordset as PDF
-    public function exportpdf($run_data, $title, $report_template_id = null)
+    public function exportpdf($run_data, $title, $report_template_id = null, $layout_orientation = PDF_PAGE_ORIENTATION)
     {
-            $filename = str_replace(" ", "_", $title) . "_" . date("Y.m.d-H.i") . ".pdf";
-            // using TCPDF, but sourcing from Composer
-            //require_once('tcpdf/tcpdf.php');
-    
-            // instantiate and set parameters
-            $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-            $pdf->SetCreator(PDF_CREATOR);
-            $pdf->SetTitle($title);
-            $pdf->setHeaderFont([PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN]);
-            $pdf->setFooterFont([PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA]);
-            $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
-            $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
-            $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
-            $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
-            $pdf->SetAutoPageBreak(true, PDF_MARGIN_BOTTOM);
-            $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
-            
-            // no header, set font and create a page
-            $pdf->setPrintHeader(false);
-            $pdf->SetFont("helvetica", "B", 9);
-            $pdf->AddPage();
-     
+        $filename = str_replace(" ", "_", $title) . "_" . date("Y.m.d-H.i") . ".pdf";
+        // using TCPDF, but sourcing from Composer
+        //require_once('tcpdf/tcpdf.php');
+
+        // instantiate and set parameters
+        $pdf = new TCPDF($layout_orientation, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+        $pdf->SetCreator(PDF_CREATOR);
+        $pdf->SetTitle($title);
+        $pdf->setHeaderFont([PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN]);
+        $pdf->setFooterFont([PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA]);
+        $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+        $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+        $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
+        $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+        $pdf->SetAutoPageBreak(true, PDF_MARGIN_BOTTOM);
+        $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+
+        // no header, set font and create a page
+        $pdf->setPrintHeader(false);
+        $pdf->SetFont("helvetica", "B", 9);
+        $pdf->AddPage();
+
         if (!empty($run_data)) {
             if (empty($report_template_id)) {
                 // title of report
-                $hd = "<h1>" . $title . "</h1>";
-                $pdf->writeHTMLCell(0, 10, 60, 15, $hd, 0, 1, 0, true);
-                $created = date("d/m/Y g:i a");
-                $pdf->writeHTMLCell(0, 10, 60, 25, $created, 0, 1, 0, true);
+                $hd = "<div style='width: 100%; text-align: center;'><h1>" . $title . "</h1></div>";
+                // $pdf->writeHTMLCell(0, 10, 60, 15, $hd, 0, 1, 0, true);
+                $pdf->writeHTML($hd, true, false, true, false, 'C');
+                $created = "<div style='width: 100%; text-align: center;'>" . date("d/m/Y g:i a") . "</div><br>";
+                // $pdf->writeHTMLCell(0, 10, 60, 25, $created, 0, 1, 0, true);
+                $pdf->writeHTML($created, true, false, true, false, 'C');
 
-            // display recordset
+                // display recordset
                 foreach ($run_data as $table) {
                     if (!empty($table)) {
                         $title = $table->title;
@@ -219,8 +221,6 @@ class InsightService extends DbService
                         $results .= "<table cellpadding='2' cellspacing='2' border='0' width='50px'>\n";
 
                         foreach ($table->data as $row) {
-                            $rowresults = '';
-                            //var_dump($row); die;
                             $i = 0;
 
                             foreach ($row as $field) {
@@ -238,8 +238,9 @@ class InsightService extends DbService
                 }
             } else {
                 $templatedata = [];
-                $templatedata ["insightTitle"] = $title;
-                $templatedata ["tables"] = [];
+                $templatedata["insightTitle"] = $title;
+                $templatedata["insightDateRun"] = date("d/m/Y g:i a");
+                $templatedata["tables"] = [];
                 foreach ($run_data as $table) {
                     if (!empty($table)) {
                         $title = $table->title;
@@ -248,22 +249,21 @@ class InsightService extends DbService
                         foreach ($table->header as $hd) {
                             $hds[] = $hd;
                         }
-                        $templatedata["tables"][] = ["title" => $title, "headers" => $hd, "results" => $table->data];
-    
-                        if (!empty($report_template_id) && !empty($templatedata)) {
-                            $results = $this->w->Template->render(
-                                $report_template_id,
-                                ["data" => $templatedata, "w" => $this->w, "POST" => $_POST]
-                            );
-                            $pdf->writeHTML($results, true, false, true, false, '');
-                        }
+                        $templatedata["tables"][] = ["title" => $title, "headers" => $hds, "results" => $table->data];
                     }
+                }
+                if (!empty($report_template_id) && !empty($templatedata)) {
+                    $results = $this->w->Template->render(
+                        $report_template_id,
+                        ["data" => $templatedata, "w" => $this->w, "POST" => $_POST]
+                    );
+                    $pdf->writeHTML($results, true, false, true, false, '');
                 }
             }
             // set for 'open/save as...' dialog
             $pdf->Output($filename, 'D');
 
-             return $pdf;
+            return $pdf;
         }
     }
 }
