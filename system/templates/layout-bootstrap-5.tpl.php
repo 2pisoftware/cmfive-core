@@ -192,7 +192,7 @@ $theme_setting = AuthService::getInstance($w)->getSettingByKey('bs5-theme');
 
                         if (empty($breadcrumbs)) : ?>
                             <li class="breadcrumb-item active" aria-current="page">Your history will appear here</li>
-                            <?php endif;
+                        <?php endif;
                         $isFirst = true && $breadcrumbs !== null && ($_SERVER['REQUEST_URI'] === key($breadcrumbs));
                         foreach ($breadcrumbs ?? [] as $path => $value) :
                             if (!AuthService::getInstance($w)->allowed($path)) {
@@ -218,7 +218,8 @@ $theme_setting = AuthService::getInstance($w)->getSettingByKey('bs5-theme');
             <?php
             if (!empty($error)) {
                 echo HtmlBootstrap5::alertBox($error, "alert-warning");
-            } elseif (!empty($msg)) {
+            }
+            if (!empty($msg)) {
                 echo HtmlBootstrap5::alertBox($msg, 'alert-success');
             }
             ?>

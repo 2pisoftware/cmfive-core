@@ -2,7 +2,7 @@
 import { AlertAdaptation, DropdownAdaptation, FavouritesAdaptation, TabAdaptation, TableAdaptation } from './adaptations';
 import { QuillEditor, InputWithOther, MultiFileUpload, MultiSelect, Overlay } from './components';
 
-import { Modal } from 'bootstrap';
+import { Modal, Tooltip } from 'bootstrap';
 
 import Vue from 'vue';
 
@@ -137,6 +137,11 @@ class Cmfive {
                 breadcrumb.classList.add('scroll-active');
             }
         }
+
+        // Set up bootstrap tooltips
+        target.querySelectorAll('[data-bs-toggle="tooltip"]').forEach((tooltip) => {
+            return new Tooltip(tooltip)
+        })
 
         target?.querySelectorAll('.form-cancel-button')?.forEach(b => {
             b.removeEventListener('click', Cmfive.formCancel);

@@ -327,7 +327,8 @@
             <?php
             if (!empty($error)) {
                 echo Html::alertBox($error, "warning");
-            } elseif (!empty($msg)) {
+            }
+            if (!empty($msg)) {
                 echo Html::alertBox($msg);
             }
             ?>
