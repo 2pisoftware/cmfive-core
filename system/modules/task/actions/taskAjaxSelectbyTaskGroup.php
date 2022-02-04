@@ -6,15 +6,15 @@ use \Html\Form\Select as Select;
 function taskAjaxSelectbyTaskGroup_ALL(Web $w)
 {
     $p = $w->pathMatch("taskgroup_id");
-    $task_group = $w->Task->getTaskGroup($p['taskgroup_id']);
+    $task_group = TaskService::getInstance($w)->getTaskGroup($p['taskgroup_id']);
 
     if (empty($task_group->id)) {
         return;
     }
 
-    $task_types = !empty($task_group) ? $w->Task->getTaskTypes($task_group->task_group_type) : [];
-    $priority = !empty($task_group) ? $w->Task->getTaskPriority($task_group->task_group_type) : [];
-    $members = !empty($task_group) ? $w->Task->getMembersBeAssigned($task_group->id) : [];
+    $task_types = !empty($task_group) ? TaskService::getInstance($w)->getTaskTypes($task_group->task_group_type) : [];
+    $priority = !empty($task_group) ? TaskService::getInstance($w)->getTaskPriority($task_group->task_group_type) : [];
+    $members = !empty($task_group) ? TaskService::getInstance($w)->getMembersBeAssigned($task_group->id) : [];
     sort($members);
     $type_title = !empty($task_group) ? $task_group->getTypeTitle() : "";
     $type_desc = !empty($task_group) ? $task_group->getTypeDescription() : "";
@@ -44,7 +44,7 @@ function taskAjaxSelectbyTaskGroup_ALL(Web $w)
 
     $mem = "<label>Assigned To" . $assigned_to . "</label>";
 
-    $taskgroup_link = $task_group->isOwner($w->Auth->user()) ? "<a href=\"" . $w->localUrl("task-group/viewmembergroup/" . $task_group->id) . "\">" . $task_group->title . "</a>" : $task_group->title;
+    $taskgroup_link = $task_group->isOwner(AuthService::getInstance($w)->user()) ? "<a href=\"" . $w->localUrl("task-group/viewmembergroup/" . $task_group->id) . "\">" . $task_group->title . "</a>" : $task_group->title;
     $task_text = "<table style='width: 100%;'>" .
         "<tr><td class=section colspan=2>Task Group Description</td></tr>" .
         "<tr><td><b>Task Group</td><td>" . $taskgroup_link . "</td></tr>" .

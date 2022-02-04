@@ -93,7 +93,7 @@ class FormAdditionalFieldsInterface extends FormFieldInterface
                 $output = '';
 
                 // Get attachments - value should be the actual FormValue object
-                $attachments = $w->File->getAttachments($form_value);
+                $attachments = FileService::getInstance($w)->getAttachments($form_value);
                 if (!empty($attachments)) {
                     foreach ($attachments as $attachment) {
                         $output .= (new \Html\a())->href($attachment->getViewUrl())->text('View ' . $attachment->title)->target('_blank')->setClass('block-link abbreviated-link')->setTitle($attachment->title);
@@ -146,7 +146,7 @@ class FormAdditionalFieldsInterface extends FormFieldInterface
                 // Upload attachment if FILES superglobal has an entry for the field
                 if (array_key_exists($field->technical_name, $_FILES)) {
                     // Upload attachment to form value object
-                    $attachment_id = $form_value->w->File->uploadAttachment($field->technical_name, $form_value);
+                    $attachment_id = FileService::getInstance($form_value->w)->uploadAttachment($field->technical_name, $form_value);
                     if (!empty($attachment_id)) {
                         // Append attachment ID so a link to the attachment will be displayed
                         $form_value->value .= (!empty($form_value->value) ? ',' : '') . $attachment_id;

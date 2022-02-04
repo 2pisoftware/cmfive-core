@@ -1,6 +1,6 @@
-<?php if ($w->Auth->user()->hasRole('tag_user') && $object->canView($w->Auth->user())) : ?>
+<?php if (AuthService::getInstance($w)->user()->hasRole('tag_user') && $object->canView(AuthService::getInstance($w)->user())) : ?>
 
-<?php if ($object->canEdit($w->Auth->user())) : ?>
+<?php if ($object->canEdit(AuthService::getInstance($w)->user())) : ?>
 	<div id='tag_<?php echo get_class($object); ?>_<?php echo $object->id; ?>_modal' class='reveal-modal medium' data-reveal>
 		<a class="close-reveal-modal" aria-label="Close">&#215;</a>
 	</div>
@@ -47,7 +47,7 @@
 		}
 	});
 	
-	<?php if ($object->canEdit($w->Auth->user())) : ?>
+	<?php if ($object->canEdit(AuthService::getInstance($w)->user())) : ?>
 		$(document).ready(function() {
 			$(document).on('close.fndtn.reveal', '[data-reveal]', function () {
 				var modal = $(this);

@@ -1,14 +1,14 @@
 <?php
 function index_GET(Web &$w) {
-    $w->Inbox->navigation($w,"New Messages");
+    InboxService::getInstance($w)->navigation($w,"New Messages");
 
     // Get current page number
     $p = $w->pathMatch('num');
     $num = !empty($p['num']) ? $p['num'] : 1;
 
     // Get count of messages and the messages for current page
-    $new_total = $w->Inbox->getNewMessageCount();
-    $new = $w->Inbox->getMessages($num-1,40,$w->Auth->user()->id,1);
+    $new_total = InboxService::getInstance($w)->getNewMessageCount();
+    $new = InboxService::getInstance($w)->getMessages($num-1,40,AuthService::getInstance($w)->user()->id,1);
 
     // Make new message table
     $header = array("<input style='margin: 0px;' type='checkbox' id='allChk' onclick='selectAll()' />", "Subject", "Date", "Sender");

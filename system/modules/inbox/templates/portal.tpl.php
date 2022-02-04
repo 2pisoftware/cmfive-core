@@ -1,6 +1,6 @@
 <?php
 
-	$new = $w->Inbox->getMessages(0,5,$w->Auth->user()->id,1);
+	$new = InboxService::getInstance($w)->getMessages(0,5,AuthService::getInstance($w)->user()->id,1);
 	
 	if ($new) {
 		$newqlines = array(array("Subject","Date","Sender"));

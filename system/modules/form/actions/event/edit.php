@@ -6,21 +6,21 @@ function edit_GET(Web $w)
     if (empty($p['id'])) {
         $event = new FormEvent($w);
     } else {
-        $event = $w->Form->getFormEvent($p['id']);
+        $event = FormService::getInstance($w)->getFormEvent($p['id']);
         if (empty($event)) {
             $w->error('Could not find Event for id', '/form');
         }
     }
-    $form_id = $w->request('form_id');
+    $form_id = Request::int('form_id');
     if (empty($form_id)) {
         $w->error('No Form id found', '/form');
     }
 
     //retrieve form event processor classes from module configs
-    $processor_options = $w->Form->getEventProcessorList();
+    $processor_options = FormService::getInstance($w)->getEventProcessorList();
 
     //setup application select options
-    $applications = $w->Form->getFormApplicationsForFormId($form_id);
+    $applications = FormService::getInstance($w)->getFormApplicationsForFormId($form_id);
     $application_select_options = [['label' => '--- Select ---', 'value' => null]];
     foreach ($applications as $application) {
         $application_select_options[] = ['label' => $application->title, 'value' => $application->id];
@@ -53,12 +53,12 @@ function edit_POST(Web $w)
     if (empty($p['id'])) {
         $event = new FormEvent($w);
     } else {
-        $event = $w->Form->getFormEvent($p['id']);
+        $event = FormService::getInstance($w)->getFormEvent($p['id']);
         if (empty($event)) {
             $w->error('Could not find Event for id', '/form');
         }
     }
-    $form_id = $w->request('form_id');
+    $form_id = Request::int('form_id');
     if (empty($form_id)) {
         $w->error('No Form id found', '/form');
     }

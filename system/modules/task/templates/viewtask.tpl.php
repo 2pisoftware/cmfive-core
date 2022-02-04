@@ -18,7 +18,8 @@
         <div id="details" class="clearfix">
             <?php echo !empty($btndelete) ? $btndelete : null; ?>
             <?php echo !empty($btntimelog) ? $btntimelog : null; ?>
-            <?php $tasktypeobject = $task->getTaskTypeObject(); !empty($tasktypeobject) ? $tasktypeobject->displayExtraButtons($task) : null;?>
+            <?php $tasktypeobject = $task->getTaskTypeObject(); 
+            !empty($tasktypeobject) && method_exists($tasktypeobject, "displayExtraButtons") ? $tasktypeobject->displayExtraButtons($task) : null;?>
 
             <?php echo !empty($viewtask) ? $viewtask : null; ?>
             <?php echo !empty($extradetails) ? $extradetails : null; ?>

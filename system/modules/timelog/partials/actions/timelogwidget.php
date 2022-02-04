@@ -2,8 +2,8 @@
 
 function timelogwidget(\Web $w) {
 	
-    $w->ctx("active_log", $w->Timelog->getActiveTimelogForUser());
-    $object = $w->Timelog->hasTrackingObject() ? $w->timelog->getTrackingObject() : null;
+    $w->ctx("active_log", \TimelogService::getInstance($w)->getActiveTimelogForUser());
+    $object = \TimelogService::getInstance($w)->hasTrackingObject() ? \TimelogService::getInstance($w)->getTrackingObject() : null;
     $w->ctx('tracked_object', $object);
 
     $form = [];

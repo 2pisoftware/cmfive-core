@@ -16,7 +16,7 @@
     <div class="tab-head">
         <a href="#details">Task Details</a>
         <?php if (!empty($task->id)) : ?>
-            <?php if ($w->Auth->user()->hasRole('timelog_user')) : ?>
+            <?php if (AuthService::getInstance($w)->user()->hasRole('timelog_user')) : ?>
                 <a href="#timelog">Time Log <span class='label secondary round cmfive__tab-label cmfive__count-timelog'></span></a>
             <?php endif; ?>
             <a href="#internal_comments">Internal Comments <span class='label secondary round cmfive__tab-label cmfive__count-internal_comment_section'></span></a>
@@ -37,15 +37,16 @@
                 <div class="row-fluid columns">
                     <?php
                     if (!empty($task->id)) {
-                        echo $w->Favorite->getFavoriteButton($task);
+                        echo FavoriteService::getInstance($w)->getFavoriteButton($task);
                         // Note the extra buttons only show when the task_type object
                         $tasktypeobject = $task->getTaskTypeObject();
-                        echo !empty($tasktypeobject) ? $tasktypeobject->displayExtraButtons($task) : null;
-                        echo $task->canDelete($w->Auth->user()) ? Html::b($task->w->localUrl('/task/delete/' . $task->id), "Delete", "Are you sure you want to delete this task?", null, false, 'warning') : '';
+                        echo !empty($tasktypeobject) && method_exists($tasktypeobject, "displayExtraButtons") ? $tasktypeobject->displayExtraButtons($task) : null;
+                        echo $task->canDelete(AuthService::getInstance($w)->user()) ? Html::b($task->w->localUrl('/task/delete/' . $task->id), "Delete", "Are you sure you want to delete this task?", null, false, 'warning') : '';
                         echo Html::b($task->w->localURL('task/duplicatetask/' . $task->id), "Duplicate Task");
                         echo Html::b($task->w->localURL('/task/edit/?gid=' . $task->task_group_id), "New Task");
 
-                        $task_group = $w->Task->getTaskGroup($task->task_group_id);
+                        /** @var TaskGroup */
+                        $task_group = TaskService::getInstance($w)->getTaskGroup($task->task_group_id);
                         if (!empty($task_group) && $task_group->getCanICreate()) {
                             echo Html::box("/task-group/moveTaskgroup/" . $task->id, "Move to Taskgroup", true, false, null, null, null, null, 'secondary');
                         }
@@ -131,7 +132,7 @@
             </div>
         </div>
         <?php if (!empty($task->id)) : ?>
-            <?php if ($w->Auth->user()->hasRole('timelog_user')) : ?>
+            <?php if (AuthService::getInstance($w)->user()->hasRole('timelog_user')) : ?>
                 <div id="timelog">
                     <?php echo $w->partial("listtimelog", ["object_class" => "Task", "object_id" => $task->id, "redirect" => "task/edit/{$task->id}#timelog"], "timelog"); ?>
                 </div>
@@ -165,7 +166,7 @@
     $(document).ready(function() {
         bindTypeChangeEvent();
 
-        getTaskGroupData(<?php echo !empty($task->task_group_id) ? $task->task_group_id : $w->request('gid'); ?>);
+        getTaskGroupData(<?php echo !empty($task->task_group_id) ? $task->task_group_id : Request::int('gid'); ?>);
         $("#task_type").trigger("change");
     });
 
@@ -252,6 +253,7 @@
                 'extra': extras_form
             },
             complete: function(response) {
+                console.error(response.responseText);
                 window.onbeforeunload = null;
                 if ($.isNumeric(response.responseText)) {
                     window.location.href = "/task/edit/" + response.responseText;

@@ -1,6 +1,6 @@
 <div class="row-fluid" id="timelog_container">
     <div id="start_timer">
-        <?php if ($w->Timelog->hasTrackingObject()) : ?>
+        <?php if (TimelogService::getInstance($w)->hasTrackingObject()) : ?>
             <a onclick="openDescription();">Start Timer</a>
         <?php endif; ?>
     </div>
@@ -77,7 +77,7 @@
         var timer = null;
         var start_time = <?php echo (!empty($active_log) && $active_log->dt_start) ? $active_log->dt_start : time(); ?>;
         
-        <?php if ($w->Timelog->hasActiveLog()) : ?>
+        <?php if (TimelogService::getInstance($w)->hasActiveLog()) : ?>
             timer = countTime();
             jQuery("#stop_timer").show();
         <?php else : ?>
@@ -120,7 +120,7 @@
                 }
             }
 
-            var _object = JSON.parse(<?php echo $w->Timelog->hasTrackingObject() ? json_encode($w->Timelog->getJSTrackingObject()) : ''; ?>);
+            var _object = JSON.parse(<?php echo TimelogService::getInstance($w)->hasTrackingObject() ? json_encode(TimelogService::getInstance($w)->getJSTrackingObject()) : ''; ?>);
             if (_object.class && _object.id) {
                 jQuery.ajax("/timelog/ajaxStart/" + _object.class + "/" + _object.id, {
 					method: "POST",

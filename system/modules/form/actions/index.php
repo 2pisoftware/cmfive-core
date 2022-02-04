@@ -3,7 +3,7 @@
 function index_ALL(Web $w) {
 	
 	$w->ctx("title", "Forms list");
-	$forms = $w->Form->getForms();
+	$forms = FormService::getInstance($w)->getForms();
 	
 	$w->ctx("forms", $forms);
 	

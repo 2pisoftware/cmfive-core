@@ -24,6 +24,7 @@ class AuthService extends DbService
             }
         }
 
+        /** @var User $user */
         if (empty($user)) {
             $user = $this->getUserForLogin($login);
             if (empty($user)) {
@@ -126,7 +127,7 @@ class AuthService extends DbService
      */
     public function getUserForLogin($login)
     {
-        $user = $this->db->get("user")->where("login", $login)->and("is_deleted", 0)->fetch_row();
+        $user = $this->_db->get("user")->where("login", $login)->and("is_deleted", 0)->fetchRow();
         return $this->getObjectFromRow("User", $user);
     }
 

@@ -13,7 +13,7 @@ function main_core_dbobject_after_delete(Web $w, DbObject $object) {
 		return;
 	}
 
-	$links = $w->Main->getObjects("RestrictedObjectUserLink", ["object_id" => $object->id, "object_class" => get_class($object)]);
+	$links = MainService::getInstance($w)->getObjects("RestrictedObjectUserLink", ["object_id" => $object->id, "object_class" => get_class($object)]);
 
 	foreach (empty($links) ? [] : $links as $link) {
 		$link->delete();
@@ -21,7 +21,7 @@ function main_core_dbobject_after_delete(Web $w, DbObject $object) {
 }
 
 function main_admin_remove_user(Web $w, User $user) {
-	$owner_links = $w->Main->getObjects("RestrictedObjectUserLink", ["user_id" => $user->id, "type" => "owner"]);
+	$owner_links = MainService::getInstance($w)->getObjects("RestrictedObjectUserLink", ["user_id" => $user->id, "type" => "owner"]);
 	if (empty($owner_links)) {
 		return;
 	}

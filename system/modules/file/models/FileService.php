@@ -52,37 +52,6 @@ class FileService extends DbService
     }
 
     /**
-     * Return the path adjusted to the currently active adapter.
-     *
-     * @deprecated v3.6.0 - Will be removed in v5.0.0.
-     *
-     * @param string file path
-     *
-     * @return string resulting file path
-     */
-    public function getFilePath($path)
-    {
-        $active_adapter = $this->getActiveAdapter();
-
-        switch ($active_adapter) {
-            case "local":
-                if (strpos($path, FILE_ROOT . "attachments/") !== false) {
-                    return $path;
-                }
-                if (strpos($path, "attachments/") !== false) {
-                    return FILE_ROOT . $path;
-                }
-
-                return FILE_ROOT . "attachments/" . $path;
-            default:
-                if (strpos($path, "uploads/") === false) {
-                    return "uploads/" . $path;
-                }
-                return $path;
-        }
-    }
-
-    /**
      * Create a new Gaufrette File object from a filename and path
      *
      * @param \Gaufrette\Filesystem
@@ -677,7 +646,7 @@ class FileService extends DbService
         $filesystemPath = "attachments/" . $object->getDbTableName() . '/' . date('Y/m/d') . '/' . $object->id . '/';
         $filesystem = $this->getFilesystem($this->getFilePath($filesystemPath));
         if (empty($filesystem)) {
-            $this->w->Log->setLogger("FILE_SERVICE")->error("Cannot save file, no filesystem returned");
+            LogService::getInstance($this->w)->setLogger("FILE_SERVICE")->error("Cannot save file, no filesystem returned");
             return null;
         }
 

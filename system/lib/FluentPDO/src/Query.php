@@ -2,6 +2,7 @@
 
 namespace Envms\FluentPDO;
 
+use PDO;
 use Envms\FluentPDO\Queries\{Insert, Select, Update, Delete};
 
 /**
@@ -10,24 +11,24 @@ use Envms\FluentPDO\Queries\{Insert, Select, Update, Delete};
  * For more information see readme.md
  *
  * @link      https://github.com/envms/fluentpdo
- * @author    envms, start@env.ms
- * @copyright 2012-2018 env.ms - Chris Bornhoft, Aldo Matelli, Stefan Yohansson, Kevin Sanabria, Marek Lichtner
+ * @author    Chris Bornhoft, start@env.ms
+ * @copyright 2012-2020 envms - Chris Bornhoft, Marek Lichtner
  * @license   https://www.gnu.org/licenses/gpl-3.0.en.html GNU General Public License, version 3.0
  */
 
 /**
  * Class Query
+ * @method debug(Queries\Base $param)
  */
 class Query
 {
-
-    /** @var \PDO */
+    /** @var PDO */
     protected $pdo;
-    /** @var Structure|null */
+    /** @var Structure */
     protected $structure;
 
-    /** @var bool|callback */
-    public $debug;
+    /** @var bool|callable */
+    public $debug = false;
 
     /** @var bool - Determines whether to convert types when fetching rows from Select */
     public $convertRead = false;
@@ -47,30 +48,26 @@ class Query
     /**
      * Query constructor
      *
-     * @param \PDO           $pdo
-     * @param Structure|null $structure
+     * @param PDO        $pdo
+     * @param ?Structure $structure
      */
-    function __construct(\PDO $pdo, Structure $structure = null)
+    public function __construct(PDO $pdo, ?Structure $structure = null)
     {
         $this->pdo = $pdo;
 
         // if exceptions are already activated in PDO, activate them in Fluent as well
-        if ($this->pdo->getAttribute(\PDO::ATTR_ERRMODE) === \PDO::ERRMODE_EXCEPTION) {
+        if ($this->pdo->getAttribute(PDO::ATTR_ERRMODE) === PDO::ERRMODE_EXCEPTION) {
             $this->throwExceptionOnError(true);
         }
 
-        if (!$structure) {
-            $structure = new Structure();
-        }
-
-        $this->structure = $structure;
+        $this->structure = ($structure instanceof Structure) ? $structure : new Structure();
     }
 
     /**
      * Create SELECT query from $table
      *
-     * @param string $table      - db table name
-     * @param int    $primaryKey - return one row by primary key
+     * @param ?string $table      - db table name
+     * @param ?int    $primaryKey - return one row by primary key
      *
      * @return Select
      *
@@ -96,8 +93,8 @@ class Query
     /**
      * Create INSERT INTO query
      *
-     * @param string $table
-     * @param array  $values - accepts one or multiple rows, @see docs
+     * @param ?string $table
+     * @param array   $values - accepts one or multiple rows, @see docs
      *
      * @return Insert
      *
@@ -108,17 +105,15 @@ class Query
         $this->setTableName($table);
         $table = $this->getFullTableName();
 
-        $query = new Insert($this, $table, $values);
-
-        return $query;
+        return new Insert($this, $table, $values);
     }
 
     /**
      * Create UPDATE query
      *
-     * @param string       $table
+     * @param ?string      $table
      * @param array|string $set
-     * @param int          $primaryKey
+     * @param ?int         $primaryKey
      *
      * @return Update
      *
@@ -143,8 +138,8 @@ class Query
     /**
      * Create DELETE query
      *
-     * @param string $table
-     * @param int    $primaryKey delete only row by primary key
+     * @param ?string $table
+     * @param ?int    $primaryKey delete only row by primary key
      *
      * @return Delete
      *
@@ -168,8 +163,8 @@ class Query
     /**
      * Create DELETE FROM query
      *
-     * @param string $table
-     * @param int    $primaryKey
+     * @param ?string $table
+     * @param ?int    $primaryKey
      *
      * @return Delete
      */
@@ -181,9 +176,9 @@ class Query
     }
 
     /**
-     * @return \PDO
+     * @return PDO
      */
-    public function getPdo(): \PDO
+    public function getPdo(): PDO
     {
         return $this->pdo;
     }
@@ -207,9 +202,9 @@ class Query
     /**
      * Set table name comprised of prefix.separator.table
      *
-     * @param string $table
-     * @param string $prefix
-     * @param string $separator
+     * @param ?string $table
+     * @param string  $prefix
+     * @param string  $separator
      *
      * @return $this
      *
@@ -295,5 +290,4 @@ class Query
     {
         $this->convertWrite = $flag;
     }
-
 }

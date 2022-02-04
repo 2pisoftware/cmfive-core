@@ -219,6 +219,7 @@ class CmfiveChannelsModule extends \Codeception\Module
         $is_active ? $I->seeCheckboxIsChecked("#is_active") : $I->dontSeeCheckboxIsChecked("#is_active");
         $do_processing ? $I->seeCheckboxIsChecked("#do_processing") : $I->dontSeeCheckboxIsChecked("#do_processing");
         $I->seeInField("#url", $web_api_url);
+        $I->wait(1);
         $I->click("Cancel");
     }
 

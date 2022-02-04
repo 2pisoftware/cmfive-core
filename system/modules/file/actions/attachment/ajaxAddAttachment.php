@@ -10,13 +10,13 @@ function ajaxAddAttachment_POST(Web $w)
         return;
     }
 
-    $user = $w->Auth->user();
+    $user = AuthService::getInstance($w)->user();
     if (isset($request_data->is_restricted) && $request_data->is_restricted && !$user->hasRole("restrict")) {
         $w->out((new AxiosResponse())->setErrorResponse(null, ["error_message" => "User not authorised to restrict objects"]));
         return;
     }
 
-    $object = $w->File->getObject($request_data->class, $request_data->class_id);
+    $object = FileService::getInstance($w)->getObject($request_data->class, $request_data->class_id);
     if (empty($object)) {
         $w->out((new AxiosResponse())->setErrorResponse(null, ["error_message" => "Missing attachment class"]));
         return;
@@ -27,19 +27,19 @@ function ajaxAddAttachment_POST(Web $w)
     $type_code = property_exists($request_data, "type_code") ? $request_data->type_code : null;
     $is_public = property_exists($request_data, "is_public") ? $request_data->is_public : false;
 
-    $attachment_id = $w->File->uploadAttachment("file", $object, $title, $description, $type_code, $is_public);
+    $attachment_id = FileService::getInstance($w)->uploadAttachment("file", $object, $title, $description, $type_code, $is_public);
     if (empty($attachment_id)) {
         $w->out((new AxiosResponse())->setErrorResponse(null, ["error_message" => "Failed to add attachment"]));
         return;
     }
 
-    $attachment = $w->File->getAttachment($attachment_id);
+    $attachment = FileService::getInstance($w)->getAttachment($attachment_id);
 
     if (isset($request_data->is_restricted) && $request_data->is_restricted) {
-        $w->Restrictable->setOwner($attachment, $user->id);
+        RestrictableService::getInstance($w)->setOwner($attachment, $user->id);
 
         foreach (!empty($request_data->viewers) ? $request_data->viewers : [] as $viewer) {
-            $w->Restrictable->addViewer($attachment, $viewer->id);
+            RestrictableService::getInstance($w)->addViewer($attachment, $viewer->id);
         }
     }
 
@@ -47,6 +47,6 @@ function ajaxAddAttachment_POST(Web $w)
         "attachment_id" => $attachment_id,
         "attachment_name" => $attachment->title,
         "attachment_description" => $attachment->description,
-        "attachment_url" => $w->File->isImage($attachment->fullpath) ? WEBROOT . '/file/atfile/' . $attachment->id : WEBROOT . '/file/atfile/' . $attachment->id . "/" . $attachment->filename
+        "attachment_url" => FileService::getInstance($w)->isImage($attachment->fullpath) ? WEBROOT . '/file/atfile/' . $attachment->id : WEBROOT . '/file/atfile/' . $attachment->id . "/" . $attachment->filename
     ]));
 }

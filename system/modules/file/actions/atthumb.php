@@ -6,8 +6,8 @@ function atthumb_GET(Web &$w)
 
     // Get the attachment
     $attachment = FileService::getInstance($w)->getAttachment($id);
-    $width = $w->request("w", FileService::$_thumb_width);
-    $height = $w->request("h", FileService::$_thumb_height);
+    $width = Request::int("w", FileService::$_thumb_width);
+    $height = Request::int("h", FileService::$_thumb_height);
 
     header("Content-Type: image/png");
     if (!empty($attachment) && $attachment->exists()) {

@@ -7,7 +7,7 @@ function delete_ALL(Web $w) {
 		$w->error("Form field not found", "/form");
 	}
 	
-	$_form_field_object = $w->Form->getFormField($p['id']);
+	$_form_field_object = FormService::getInstance($w)->getFormField($p['id']);
 	$form=$_form_field_object->getForm();
 	if (empty($form->id)) {
 		$w->error("Form not found", "/form");

@@ -4,7 +4,7 @@
 function viewtaskgroup_GET(Web &$w) {
 	$p = $w->pathMatch("id");
 	// return task group details given a task group ID
-	$group_details = $w->Task->getTaskGroup($p['id']);
+	$group_details = TaskService::getInstance($w)->getTaskGroup($p['id']);
 
 	// if (!empty($group_details)) {
 	// 	History::add("Taskgroup: ".$group_details->title, null, $group_details);
@@ -17,14 +17,14 @@ function viewtaskgroup_GET(Web &$w) {
 	$is_deleted = array(array("Yes","1"), array("No","0"));
 	
 	// get generic task group permissions
-	$arrassign = $w->Task->getTaskGroupPermissions();
+	$arrassign = TaskService::getInstance($w)->getTaskGroupPermissions();
 	// unset 'ALL' given all can never assign a task
 	unset($arrassign[0]);
 
         // Get list of possible task types and priorities adn assignees
-        $tasktypes = $w->Task->getTaskTypes($group_details->task_group_type);
-        $priorities = $w->Task->getTaskPriority($group_details->task_group_type);
-        $assignees = $w->Task->getMembersInGroup($p['id']);
+        $tasktypes = TaskService::getInstance($w)->getTaskTypes($group_details->task_group_type);
+        $priorities = TaskService::getInstance($w)->getTaskPriority($group_details->task_group_type);
+        $assignees = TaskService::getInstance($w)->getMembersInGroup($p['id']);
         array_unshift($assignees,array("Unassigned","unassigned")); 
         // No default assignee means it is unassigned
         $default_assignee = (empty($group_details->default_assignee_id)) ? "unassigned" : $group_details->default_assignee_id;
@@ -35,8 +35,8 @@ function viewtaskgroup_GET(Web &$w) {
 			array("Task Group Type", "static", "task_group_type", $group_details->getTypeTitle()),
 			array("Title", "text", "title", $group_details->title),
 			array("Who Can Assign", "select", "can_assign", $group_details->can_assign, $arrassign),
-			array("Who Can View", "select", "can_view", $group_details->can_view, $w->Task->getTaskGroupPermissions()),
-			array("Who Can Create", "select", "can_create", $group_details->can_create, $w->Task->getTaskGroupPermissions()),
+			array("Who Can View", "select", "can_view", $group_details->can_view, TaskService::getInstance($w)->getTaskGroupPermissions()),
+			array("Who Can Create", "select", "can_create", $group_details->can_create, TaskService::getInstance($w)->getTaskGroupPermissions()),
 			//array("Is Active", "select", "is_active", $isactive, $is_active),
 			array("Description", "textarea", "description", $group_details->description, "26", "6"),
 			array("Default Task Type", "select", "default_task_type", $group_details->default_task_type, $tasktypes),
@@ -53,13 +53,13 @@ function viewtaskgroup_GET(Web &$w) {
 function viewtaskgroup_POST(Web &$w) {
 	$p = $w->pathMatch("id");
 	// get details of task group being edited
-	$group_details = $w->Task->getTaskGroup($p['id']);
+	$group_details = TaskService::getInstance($w)->getTaskGroup($p['id']);
 
 	// if group exists, update the details
 	if ($group_details) {
         $group_details->fill($_REQUEST);
         //$group_details->is_active = $_POST['is_active'] == "Yes" ? 1 : 0;
-		$group_details->is_automatic_subscription = !empty($w->request('is_automatic_subscription'));
+		$group_details->is_automatic_subscription = !empty(Request::bool('is_automatic_subscription'));
 		$response = $group_details->update();
 
                 // Check the validation
@@ -70,7 +70,7 @@ function viewtaskgroup_POST(Web &$w) {
 		// if a default assignee is set (other than unassigned), return their membership object for this group
                 $default_assignee_id = $_REQUEST['default_assignee_id'];
 		if (!empty($default_assignee_id) && $default_assignee_id != "unassigned") {
-			$mem = $w->Task->getMemberGroupById($group_details->id, $_REQUEST['default_assignee_id']);
+			$mem = TaskService::getInstance($w)->getMemberGroupById($group_details->id, $_REQUEST['default_assignee_id']);
 		
 			// populate an array with the required details for updating
 			// if the person is already a member we will maintain their current role

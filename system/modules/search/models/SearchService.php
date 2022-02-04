@@ -134,7 +134,7 @@ class SearchService extends DbService
         }
 
         $str = implode(' ', $str_array);
-        $this->w->Log->setLogger("SEARCH")->info("Query: " . $str);
+        LogService::getInstance($this->w)->setLogger("SEARCH")->info("Query: " . $str);
 
         $index_mode = "BOOLEAN MODE";
         $index_all_limit = 10;
@@ -162,7 +162,7 @@ class SearchService extends DbService
             // $limitBy will just be an empty string if page and pageSize are invalid
             $select .= " AND class_name = '" . $index . "' " . $limitBy;
             $select_count .= " AND class_name = '" . $index . "'";
-            $max_result = $this->_db->sql($select_count)->fetch_element('MAX_RESULT');
+            $max_result = $this->_db->sql($select_count)->fetchElement('MAX_RESULT');
         } else {
             // if searching over all indexes, limit the results for each index to 10
             foreach ($this->getIndexes() as $title => $classname) {
@@ -171,7 +171,7 @@ class SearchService extends DbService
             $select = implode(" UNION ", $s2);
         }
 
-        $results = $this->_db->sql($select)->fetch_all();
+        $results = $this->_db->sql($select)->fetchAll();
 
         return array($results, $max_result);
     }

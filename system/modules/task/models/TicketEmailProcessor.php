@@ -15,7 +15,7 @@ class TicketEmailProcessor extends ProcessorType {
         return ["Settings" => [
             [["Target Notify Email Address", "text", "target_email_address", @$current_settings->target_email_address]],
             [["Support reply-to email", "text", "support_email_address", @$current_settings->support_email_address]],
-            [["Authenticate as", "autocomplete", "authenticate_as", @$current_settings->authenticate_as, !empty($w) ? $w->Auth->getUsers() : array()]],
+            [["Authenticate as", "autocomplete", "authenticate_as", @$current_settings->authenticate_as, !empty($w) ? AuthService::getInstance($w)->getUsers() : array()]],
             [["Default Task Name (when no subject given)", "text", "default_task_name", @$current_settings->default_task_name]],
             [['Default Task Description (when no email body given)', 'text', 'default_task_description', @$current_settings->default_task_description]]
         ]];
@@ -37,12 +37,12 @@ class TicketEmailProcessor extends ProcessorType {
         }
         
         if (!empty($settings->authenticate_as)) {
-            $processor->w->Auth->forceLogin($settings->authenticate_as);
+            AuthService::getInstance($processor->w)->forceLogin($settings->authenticate_as);
         }
         
-        $processor->w->Log->debug("Running ticket processor");
+        LogService::getInstance($processor->w)->debug("Running ticket processor");
 
-        $messages = $processor->w->Channel->getNewMessages($processor->channel_id, $processor->id);
+        $messages = ChannelService::getInstance($processor->w)->getNewMessages($processor->channel_id, $processor->id);
         if (!empty($messages)) {
             foreach ($messages as $message) {
                 // Get a message status or create a new one
@@ -67,7 +67,7 @@ class TicketEmailProcessor extends ProcessorType {
 				$from = $email->from;
 				// Validate email
 				if (strpos($from, '@') === FALSE) {
-					$processor->w->Log->error("From field is not an email address");
+					LogService::getInstance($processor->w)->error("From field is not an email address");
 					continue;
 				}
 
@@ -85,7 +85,7 @@ class TicketEmailProcessor extends ProcessorType {
 				$from_email_address = getBetween($from, "<", ">");
 
 				// Try and get contact from CRM
-				$contact = $processor->w->Auth->getContactByEmail($from_email_address);
+				$contact = AuthService::getInstance($processor->w)->getContactByEmail($from_email_address);
 
                 // Find or create external user if no contact
                 $user = !empty($contact->id) ? $contact->getUser() : null;
@@ -94,7 +94,7 @@ class TicketEmailProcessor extends ProcessorType {
                 if (empty($contact->id)) {
                 	// Find or create an external user
                 	echo "Creating external user<br/>";
-                	$processor->w->Log->setLogger("HELPDESK")->info("Could not find existing contact for email, creating a new external user");
+                	LogService::getInstance($processor->w)->setLogger("HELPDESK")->info("Could not find existing contact for email, creating a new external user");
 
                 	$user = new User($processor->w);
                 	$contact = new Contact($processor->w);
@@ -123,17 +123,17 @@ class TicketEmailProcessor extends ProcessorType {
                 	$user->contact_id = $contact->id;
                 	$user->insert();
 
-                	$processor->w->Log->setLogger("HELPDESK")->info("External user created, id: " . $user->id);
+                	LogService::getInstance($processor->w)->setLogger("HELPDESK")->info("External user created, id: " . $user->id);
                 	echo "External user created, id: " . $user->id . "<br/>";
 
                 } else {
                 	// Ensure a user object exists for the contact
-                	$processor->w->Auth->createExernalUserForContact($contact->id);
+                	AuthService::getInstance($processor->w)->createExernalUserForContact($contact->id);
                 }
 
                 if (empty($contact->id) || empty($user->id)) {
                 	// Something else went wrong
-                	$processor->w->Log->setLogger("HELPDESK")->error("Failed to find or create a contact or user, in TicketEmailProcessor");
+                	LogService::getInstance($processor->w)->setLogger("HELPDESK")->error("Failed to find or create a contact or user, in TicketEmailProcessor");
                 }
 
                 // Find the right taskgroup and find/create the task
@@ -143,7 +143,7 @@ class TicketEmailProcessor extends ProcessorType {
                 $task_id = getBetween($subject, '[', ']');
 				if (!empty($task_id)) {
 					// Try and find the task
-					$task = $processor->w->Task->getTask($task_id);
+					$task = TaskService::getInstance($processor->w)->getTask($task_id);
 					echo "Email is a reply to existing task: {$task_id}<br/>";
 
 					if (!empty($task)) {
@@ -166,38 +166,38 @@ class TicketEmailProcessor extends ProcessorType {
 					}
 				}
 
-				$support_taskgroup = $processor->w->TaskTicket->getTaskGroup();
+				$support_taskgroup = TaskTicketService::getInstance($processor->w)->getTaskGroup();
 
                 // Create task if necessary
 				if ($new_task) {
 					echo "Creating new task<br/>";
-					$task = $processor->w->Task->createTask($processor->w->TaskTicket->task_type, $support_taskgroup->id, $subject, "From: $from<br/>\nBody: $body", "Normal", null, $support_taskgroup->default_assignee_id);
+					$task = TaskService::getInstance($processor->w)->createTask(TaskTicketService::getInstance($processor->w)->task_type, $support_taskgroup->id, $subject, "From: $from<br/>\nBody: $body", "Normal", null, $support_taskgroup->default_assignee_id);
 
 					// Send email if its a new task
 					// Get notify email address
 					$email_address_notify = (!empty($settings->target_email_address) ? $settings->target_email_address : null);
 
 					// Get support email template
-					$support_template = $processor->w->Template->findTemplate("task", "accepted_ticket");
+					$support_template = TemplateService::getInstance($processor->w)->findTemplate("task", "accepted_ticket");
 					if (!empty($support_template->id)) {
 						// Send mail
 
 						if (!empty($contact->id)) {
 							// Render email template as Body field
-							$template_body = $processor->w->Template->render($support_template, array("task" => $task, "contact" => $contact, "email" => $email));
+							$template_body = TemplateService::getInstance($processor->w)->render($support_template, array("task" => $task, "contact" => $contact, "email" => $email));
 						} else {
-							$template_body = $processor->w->Template->render($support_template, array("task" => $task, "email" => $email));
+							$template_body = TemplateService::getInstance($processor->w)->render($support_template, array("task" => $task, "email" => $email));
 						}
 						if (!empty($from_email_address)) {
 							// Send accepted ticket email
-							$processor->w->Log->debug("Emailing sender");
-							$processor->w->Mail->sendMail($from_email_address, !empty($settings->support_email_address) ? $settings->support_email_address : "support@2pisoftware.com", "Accepted Ticket [{$task->id}] {$subject}", $template_body);
+							LogService::getInstance($processor->w)->debug("Emailing sender");
+							MailService::getInstance($processor->w)->sendMail($from_email_address, !empty($settings->support_email_address) ? $settings->support_email_address : "support@2pisoftware.com", "Accepted Ticket [{$task->id}] {$subject}", $template_body);
 
 							// Send notification email
 							if (!empty($email_address_notify)) {
-								$processor->w->Log->debug("Sending notification email to " . $email_address_notify);
+								LogService::getInstance($processor->w)->debug("Sending notification email to " . $email_address_notify);
 								// Get attachments
-								$attachments = $processor->w->File->getAttachments($task, (!empty($task->id) ? $task->id : null));
+								$attachments = FileService::getInstance($processor->w)->getAttachments($task, (!empty($task->id) ? $task->id : null));
 								$attachments_to_email = array();
 								if (!empty($attachments)) {
 									foreach ($attachments as $a) {
@@ -206,19 +206,19 @@ class TicketEmailProcessor extends ProcessorType {
 											continue;
 										}
 
-										$attachments_to_email[] = $processor->w->File->getFilePath($a->fullpath);
+										$attachments_to_email[] = FileService::getInstance($processor->w)->getFilePath($a->fullpath);
 									}
 								}   
-								$processor->w->Log->debug(json_encode($attachments_to_email));
+								LogService::getInstance($processor->w)->debug(json_encode($attachments_to_email));
 
-								$processor->w->Mail->sendMail($email_address_notify, $email_address_notify, "Ticket: $from_email_address - $subject", 
+								MailService::getInstance($processor->w)->sendMail($email_address_notify, $email_address_notify, "Ticket: $from_email_address - $subject", 
 										"Ticket [{$task->id}]: {$subject}<br/><br/>Email:<br/>{$body}<br/><a href='" . $processor->w->localUrl("/task/edit/" . $task->id) . "'>View the Task</a>", null, null, $attachments_to_email);
 							}
 						} else {
-							$processor->w->Log->setLogger('crm')->error("No from email address found in support ticket");
+							LogService::getInstance($processor->w)->setLogger('crm')->error("No from email address found in support ticket");
 						}
 					} else {
-						$processor->w->Log->error("Support template not found, reply email for task {$task->id} not sent");
+						LogService::getInstance($processor->w)->error("Support template not found, reply email for task {$task->id} not sent");
 					}
 				}
 
@@ -228,12 +228,12 @@ class TicketEmailProcessor extends ProcessorType {
 					}
 
 					if (empty($user->id)) {
-						$processor->w->Auth->createExternalUserForContact($contact->id);
+						AuthService::getInstance($processor->w)->createExternalUserForContact($contact->id);
 					}
 
 					if (!empty($user->id)) {
 						// Add external user as subscriber to task if an instance doesn't already exist
-						$existing_subscriber = $processor->w->Task->getObject('TaskSubscriber', ['user_id' => $user->id, 'task_id' => $task->id, 'is_deleted' => 0]);
+						$existing_subscriber = TaskService::getInstance($processor->w)->getObject('TaskSubscriber', ['user_id' => $user->id, 'task_id' => $task->id, 'is_deleted' => 0]);
 
 						if (empty($existing_subscriber->id)) {
 							$subscriber = new TaskSubscriber($processor->w);
@@ -251,7 +251,7 @@ class TicketEmailProcessor extends ProcessorType {
 				}
 
 				// Move Attachments to Task
-				$attachments = $processor->w->File->getAttachments($message, (!empty($message->id) ? $message->id : null));
+				$attachments = FileService::getInstance($processor->w)->getAttachments($message, (!empty($message->id) ? $message->id : null));
 				if (!empty($attachments) && !empty($task->id)) {
 					echo "Moving attachments to task<br/>";
 					foreach ($attachments as $a) {

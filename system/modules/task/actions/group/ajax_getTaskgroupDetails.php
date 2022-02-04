@@ -6,9 +6,9 @@ function ajax_getTaskgroupDetails_GET(Web $w) {
 	
 	list($taskgroup_id) = $w->pathMatch();
 	
-	$taskgroup = $w->Task->getTaskGroup($taskgroup_id);
+	$taskgroup = TaskService::getInstance($w)->getTaskGroup($taskgroup_id);
 	$taskgroup_type = $taskgroup->getTaskGroupTypeObject();
-	$members = $w->Task->getMembersBeAssigned($taskgroup->id);
+	$members = TaskService::getInstance($w)->getMembersBeAssigned($taskgroup->id);
 			
 	// Normalise taskgroup type fields to be consumed by the Options class
 	$task_type_options_array = [];

@@ -15,7 +15,7 @@
 				<?php foreach($taskgroup->tasks as $task) : ?>
 					<tr>
 						<td width='20%'><?php echo $task->toLink(); ?></td>
-						<td width='60%'><?php echo $w->Auth->getUser($task->assignee_id)->getFullName(); ?></td>
+						<td width='60%'><?php echo AuthService::getInstance($w)->getUser($task->assignee_id)->getFullName(); ?></td>
 						<td width='20%'><?php echo $task->status; ?></td>
 					</tr>
 				<?php endforeach; ?>

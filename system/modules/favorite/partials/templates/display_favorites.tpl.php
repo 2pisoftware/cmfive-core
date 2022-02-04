@@ -7,7 +7,7 @@
 				<h4 style='font-weight: lighter;'><?php echo $category; ?></h4>
 				<?php foreach ($favorites as $object) : ?>
 					<div class='row panel' style='padding: 10px; margin-bottom: 10px;'>
-						<?php echo $w->Favorite->getFavoriteButton($object); ?>
+						<?php echo FavoriteService::getInstance($w)->getFavoriteButton($object); ?>
 						<span style='display: inline-block; padding: 8px;'><?php echo $object->toLink();?></span>
 					</div>
 				<?php

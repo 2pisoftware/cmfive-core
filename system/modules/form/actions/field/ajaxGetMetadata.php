@@ -4,7 +4,7 @@ function ajaxGetMetadata_GET(Web $w) {
 	
 	$w->setLayout(null);
 	$p = $w->pathMatch("id");
-	$type = $w->request("type");
+	$type = Request::string("type");
 	
 	if (empty($p['id']) && empty($type)) {
 		// header("HTTP/1.1 404 Not Found");
@@ -15,7 +15,7 @@ function ajaxGetMetadata_GET(Web $w) {
 	
 	$field = null;
 	if (!empty($p['id'])) {
-		$field = $w->Form->getFormField($p['id']);
+		$field = FormService::getInstance($w)->getFormField($p['id']);
 		if(empty($field->id)) {
 			// header("HTTP/1.1 404 Not Found");
 			return;

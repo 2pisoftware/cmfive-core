@@ -85,7 +85,7 @@ class TaskType_ProgrammingTicket extends TaskType
     {
         $taskdata = null;
         if (!empty($task)) {
-            $taskdata = $this->w->Task->getTaskData($task->id);
+            $taskdata = TaskService::getInstance($this->w)->getTaskData($task->id);
         }
         return [
             [$this->getTaskTypeTitle(), "section"],

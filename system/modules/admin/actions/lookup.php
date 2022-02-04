@@ -1,59 +1,59 @@
 <?php
-function lookup_ALL(Web &$w) {
-	$w->Admin->navigation($w,"Lookup");
+function lookup_ALL(Web &$w)
+{
+    AdminService::getInstance($w)->navigation($w, "Lookup");
 
-	$types = $w->Admin->getLookupTypes();
+    $types = LookupService::getInstance($w)->getLookupTypes();
 
-	$typelist = Html::select("type",$types, $w->request('type'));
-	$w->ctx("typelist",$typelist);
+    $typelist = Html::select("type", $types, Request::string('type'));
+    $w->ctx("typelist", $typelist);
 
-	// tab: Lookup List
-	$where = array();
-        if (NULL == $w->request('reset')) {
-            if ($w->request('type') != "") {
-                    $where['type'] = $w->request('type');
-            }
-        } else {
-            // Reset called, unset vars
-            if ($w->request("type") !== null) {
-                unset($_REQUEST["type"]);
-            }
+    // tab: Lookup List
+    $where = [];
+    if (Request::string('reset') == null) {
+        if (Request::string('type') != "") {
+            $where['type'] = Request::string('type');
         }
-       
-	$lookup = $w->Admin->getAllLookup($where);
+    } else {
+        // Reset called, unset vars
+        if (Request::string("type") !== null) {
+            unset($_REQUEST["type"]);
+        }
+    }
 
-	$line[] = array("Type","Code","Title","Actions");
+    $lookup = LookupService::getInstance($w)->getLookupsWhere($where);
 
-	if ($lookup) {
-		foreach ($lookup as $look) {
-			$line[] = array(
-			$look->type,
-			$look->code,
-			$look->title,
-			Html::box($w->localUrl("/admin/editlookup/".$look->id."/".urlencode($w->request('type')))," Edit ",true) .
-						"&nbsp;&nbsp;&nbsp;" .
-			Html::b($w->webroot()."/admin/deletelookup/".$look->id."/".urlencode($w->request('type'))," Delete ", "Are you sure you wish to DELETE this Lookup item?")
-			);
-		}
-	}
-	else {
-		$line[] = array("No Lookup items to list", null, null, null);
-	}
+    $line[] = ["Type", "Code", "Title", "Actions"];
 
-	// display list of items, if any
-	$w->ctx("listitem",Html::table($line,null,"tablesorter",true));
+    if ($lookup) {
+        foreach ($lookup as $look) {
+            $line[] = [
+                $look->type,
+                $look->code,
+                $look->title,
+                Html::box($w->localUrl("/admin/editlookup/" . $look->id . "/" . urlencode(Request::string('type', ''))), " Edit ", true) .
+                    "&nbsp;&nbsp;&nbsp;" .
+                    Html::b($w->webroot() . "/admin/deletelookup/" . $look->id . "/" . urlencode(Request::string('type', '')), " Delete ", "Are you sure you wish to DELETE this Lookup item?")
+            ];
+        }
+    } else {
+        $line[] = ["No Lookup items to list", null, null, null];
+    }
+
+    // display list of items, if any
+    $w->ctx("listitem", Html::table($line, null, "tablesorter", true));
 
 
-	// tab: new lookup item
-	$types = $w->Admin->getLookupTypes();
+    // tab: new lookup item
+    $types = LookupService::getInstance($w)->getLookupTypes();
 
-	$f = Html::form(array(
-	array("Create a New Entry","section"),
-	array("Type","select","type", null,$types),
-	array("or Add New Type","text","ntype"),
-	array("Code","text","code"),
-	array("Title","text","title"),
-	),$w->localUrl("/admin/newlookup/"),"POST"," Save");
-	 
-	$w->ctx("newitem",$f);
+    $f = Html::form([
+        ["Create a New Entry", "section"],
+        ["Type", "select", "type", null, $types],
+        ["or Add New Type", "text", "ntype"],
+        ["Code", "text", "code"],
+        ["Title", "text", "title"],
+    ], $w->localUrl("/admin/newlookup/"), "POST", " Save");
+
+    $w->ctx("newitem", $f);
 }

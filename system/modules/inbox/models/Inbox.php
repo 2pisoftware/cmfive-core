@@ -28,7 +28,7 @@ class Inbox extends DbObject {
 
     function getSender() {
         if (null !== $this->sender_id) {
-            return $this->Auth->getUser($this->sender_id);
+            return AuthService::getInstance($this->w)->getUser($this->sender_id);
         } else {
             return null;
         }

@@ -24,22 +24,22 @@ class MailQueue extends DbObject
 
     public function send()
     {
-        $batch = $this->w->mail->getBatchForId($this->batch_id);
+        $batch = MailService::getInstance($this->w)->getBatchForId($this->batch_id);
         if (empty($batch)) {
             throw new Exception('No batch found.');
         }
 
-        $to_contact = $this->w->mail->getObject('contact', $this->to_contact_id);
+        $to_contact = MailService::getInstance($this->w)->getObject('contact', $this->to_contact_id);
         if (empty($to_contact)) {
             throw new Exception('No contact found for reciever id.');
         }
 
-        $from_contact = $this->w->auth->getUser($batch->user_to_notify)->getContact();
+        $from_contact = AuthService::getInstance($this->w)->getUser($batch->user_to_notify)->getContact();
         if (empty($from_contact)) {
             throw new Exception('No contact found for sender id');
         }
 
-        $attachments = $this->w->File->getAttachmentsFileList('mail_batch', $this->batch_id);
+        $attachments = FileService::getInstance($this->w)->getAttachmentsFileList('mail_batch', $this->batch_id);
         $data_array = [];
         $data_array['contact'] = $to_contact->toArray();
         $data_array['sender'] = $from_contact->toArray();
@@ -52,9 +52,9 @@ class MailQueue extends DbObject
             $data_array['data'] = $batch->extra_data;
         }
 
-        $message = $this->w->Template->render($batch->template_id, $data_array);
+        $message = TemplateService::getInstance($this->w)->render($batch->template_id, $data_array);
 
-        $this->w->Mail->sendMail(
+        MailService::getInstance($this->w)->sendMail(
             $to_contact->email,
             Config::get('main.company_support_email'),
             $batch->subject,

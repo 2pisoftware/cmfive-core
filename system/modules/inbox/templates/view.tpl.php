@@ -1,6 +1,6 @@
 <?php
 	$empty=[];
-    if ($w->Auth->user()->allowed("/inbox/send")) {
+    if (AuthService::getInstance($w)->user()->allowed("/inbox/send")) {
         echo $w->menuButton("inbox/send/"."$message->id","Reply",$empty,'replybutton');
     }
     $empty=[];
@@ -30,8 +30,8 @@ if ($parent_id) : ?>
             } else {
                 $bgcolor = "white";
             }
-            $parent_message = $w->Inbox->getMessage($parent_id); ?>
-            <div style='padding:3px; background-color: "<?php echo $bgcolor; ?>"'> Message sent by: <i><?php echo $w->Auth->getUser($parent_message->sender_id)->getFullname(); ?></i>  on: <i>" . $parent_message->getDate("dt_created","d/m/Y H:i") . "</i><br/>";
+            $parent_message = InboxService::getInstance($w)->getMessage($parent_id); ?>
+            <div style='padding:3px; background-color: "<?php echo $bgcolor; ?>"'> Message sent by: <i><?php echo AuthService::getInstance($w)->getUser($parent_message->sender_id)->getFullname(); ?></i>  on: <i>" . $parent_message->getDate("dt_created","d/m/Y H:i") . "</i><br/>";
                 <?php echo $parent_message->getMessage(); ?>
             </div>
             <?php $parent_id = $parent_message->parent_message_id ? $parent_message->parent_message_id : null;

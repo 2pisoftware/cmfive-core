@@ -19,7 +19,7 @@ function email_GET(Web $w): void
         return;
     }
 
-    $report = $w->Report->getReport($report_id);
+    $report = ReportService::getInstance($w)->getReport($report_id);
     if (empty($report->id)) {
         LogService::getInstance($w)->setLogger("AUTOMATED_REPORT")->error("Report {$report_id} not found");
         return;

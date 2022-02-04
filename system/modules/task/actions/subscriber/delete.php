@@ -3,7 +3,7 @@
 function delete_GET(Web $w) {
 
 	list($subscriber_id) = $w->pathMatch();
-	$subscriber = $w->Task->getSubscriber($subscriber_id);
+	$subscriber = TaskService::getInstance($w)->getSubscriber($subscriber_id);
 
 	if (!empty($subscriber->id)) {
 		$subscriber->delete();

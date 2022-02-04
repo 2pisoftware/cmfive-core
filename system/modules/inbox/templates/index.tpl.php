@@ -1,5 +1,5 @@
 <?php
-if ($w->Auth->user()->allowed("/inbox/send")) {
+if (AuthService::getInstance($w)->user()->allowed("/inbox/send")) {
     echo Html::b($webroot."/inbox/send","Create Message",null,'createmessagebutton');
 }
 $button = new \Html\button();
@@ -8,7 +8,7 @@ if (!empty($new)) {
     echo $button->id('deletebutton')->text("Delete")->onclick("deleteMessage()")->__toString(); // print "<button onclick='deleteMessage()'>Delete</button>";
 }
 
-if($w->service('Inbox')->inboxCountMarker()){
+if(InboxService::getInstance($w)->inboxCountMarker()){
     echo Html::b($w->localUrl("/inbox/allread"),"Mark all read","Are you sure to mark all messages as read?",'markallreadbutton');
 }
 

@@ -4,7 +4,7 @@ function report_core_web_before_get(Web $w)
 {
     // build Navigation to Reports for current Module
     if (AuthService::getInstance($w)->loggedIn()) {
-        $reports = $w->Report->getReportsforNav();
+        $reports = ReportService::getInstance($w)->getReportsforNav();
         if ($reports) {
             $w->ctx("reports", $reports);
         }

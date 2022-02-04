@@ -19,7 +19,7 @@ function listTags(\Web $w, $params = []) {
 	$w->ctx('object', $params['object']);
 	
 	// Filter tags into a displayable group and a group that only shows on hover
-	$tags = $w->Tag->getTagsByObject($params['object']);
+	$tags = \TagService::getInstance($w)->getTagsByObject($params['object']);
 	$filtered_tags = ['display' => [], 'hover' => []];
 	
 	$tag_str_len = 0;

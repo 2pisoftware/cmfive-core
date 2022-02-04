@@ -1,14 +1,14 @@
 <?php
 
 function showarchive_ALL(Web $w) {
-    $w->Inbox->navigation($w, "Archive");
+    InboxService::getInstance($w)->navigation($w, "Archive");
 
     $p = $w->pathMatch('num');
     $num = $p['num'] ? $p['num'] : 1;
     
-    $new_arch = $w->Inbox->getMessages($num - 1, 40, $w->Auth->user()->id, 1, 1);
-    $arch = $w->Inbox->getMessages($num - 1, 40, $w->Auth->user()->id, 0, 1);
-    $arch_count = $w->Inbox->getArchCount($w->Auth->user()->id);
+    $new_arch = InboxService::getInstance($w)->getMessages($num - 1, 40, AuthService::getInstance($w)->user()->id, 1, 1);
+    $arch = InboxService::getInstance($w)->getMessages($num - 1, 40, AuthService::getInstance($w)->user()->id, 0, 1);
+    $arch_count = InboxService::getInstance($w)->getArchCount(AuthService::getInstance($w)->user()->id);
 
     $table_header = array("<input style='margin: 0px;' type='checkbox' id='allChk' onclick='selectAll()' />", "Subject", "Date", "Sender");
     $table_data = array();

@@ -33,7 +33,7 @@ class TaskGroupMember extends DbObject
 
                 $existing_tasks = $this->fillObjects('Task', $existing_open_tasks_array);
                 if (!empty($existing_tasks)) {
-                    $user = $this->w->Auth->getUser($this->user_id);
+                    $user = AuthService::getInstance($this->w)->getUser($this->user_id);
                     foreach ($existing_tasks as $existing_task) {
                         $existing_task->addSubscriber($user);
                     }

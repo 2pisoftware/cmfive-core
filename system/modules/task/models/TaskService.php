@@ -17,7 +17,7 @@ class TaskService extends DbService
 
     public function getTaskGroupDetailsForUser()
     {
-        $user_id = $this->w->Auth->user()->id;
+        $user_id = AuthService::getInstance($this->w)->user()->id;
 
         // Replacing functionality in favour of speed
         $member_of_task_groups = $this->_db->get("task_group_member")
@@ -33,7 +33,7 @@ class TaskService extends DbService
         }
 
         $taskgroup_statuses = $this->w->db->get("task")->select()->select("DISTINCT status")
-            ->where("task.is_deleted", 0)->order_by("status ASC")->fetchAll();
+            ->where("task.is_deleted", 0)->orderBy("status ASC")->fetchAll();
         $statuses = [];
 
         if (!empty($taskgroup_statuses)) {
@@ -43,7 +43,7 @@ class TaskService extends DbService
         }
 
         $taskgroup_priorities = $this->w->db->get("task")->select()->select("DISTINCT priority")
-            ->where("task.is_deleted", 0)->order_by("priority ASC")->fetchAll();
+            ->where("task.is_deleted", 0)->orderBy("priority ASC")->fetchAll();
         $priorities = [];
 
         if (!empty($taskgroup_priorities)) {
@@ -53,7 +53,7 @@ class TaskService extends DbService
         }
 
         $taskgroup_tasktypes = $this->w->db->get("task")->select()->select("DISTINCT task_type")
-            ->where("task.is_deleted", 0)->order_by("task_type ASC")->fetchAll();
+            ->where("task.is_deleted", 0)->orderBy("task_type ASC")->fetchAll();
         $tasktypes = [];
 
         if (!empty($taskgroup_tasktypes)) {
@@ -85,7 +85,7 @@ class TaskService extends DbService
 
     public function getTaskGroupDetailsForTaskGroup($taskgroup_id)
     {
-        $taskgroup = $this->Task->getTaskGroup($taskgroup_id);
+        $taskgroup = TaskService::getInstance($this->w)->getTaskGroup($taskgroup_id);
 
         $taskgroup_details = ["taskgroups" => [], "statuses" => [], "priorities" => [], "members" => [], "types" => []];
         if (!empty($taskgroup)) {
@@ -370,9 +370,9 @@ class TaskService extends DbService
     public function sendCreationNotificationForTask($task)
     {
         $subject = $task->getHumanReadableAttributeName(TASK_NOTIFICATION_TASK_CREATION) . "[" . $task->id . "]: " . $task->title;
-        $users_to_notify = $this->w->Task->getNotifyUsersForTask($task, TASK_NOTIFICATION_TASK_CREATION);
+        $users_to_notify = TaskService::getInstance($this->w)->getNotifyUsersForTask($task, TASK_NOTIFICATION_TASK_CREATION);
 
-        $this->w->Notification->sendToAllWithCallback($subject, "task", "notification_email", $this->w->Auth->user(), $users_to_notify, function ($user, $existing_template_data) use ($task) {
+        NotificationService::getInstance($this->w)->sendToAllWithCallback($subject, "task", "notification_email", AuthService::getInstance($this->w)->user(), $users_to_notify, function ($user, $existing_template_data) use ($task) {
             $template_data = $existing_template_data;
             $template_data['status'] = "[{$task->id}] New task created";
             $template_data['footer'] = $task->description;
@@ -398,7 +398,7 @@ class TaskService extends DbService
 
             // Get additional details
             if ($user->is_external == 0) {
-                $additional_details = $this->w->Task->getNotificationAdditionalDetails($task);
+                $additional_details = TaskService::getInstance($this->w)->getNotificationAdditionalDetails($task);
                 if (!empty($additional_details)) {
                     $template_data['footer'] .= $additional_details;
                 }
@@ -414,7 +414,7 @@ class TaskService extends DbService
                 $template_data['fields']["Assigned to"] = "No one";
             }
 
-            return new NotificationCallback($user, $template_data, $this->w->file->getAttachmentsFileList($task, null, ['channel_email_raw']));
+            return new NotificationCallback($user, $template_data, FileService::getInstance($this->w)->getAttachmentsFileList($task, null, ['channel_email_raw']));
         });
     }
 
@@ -423,7 +423,7 @@ class TaskService extends DbService
         $subject = "Added as subscriber to: [" . $task->id . "] " . $task->title;
         $users_to_notify = [$user->id => $user->id];
 
-        $this->w->Notification->sendToAllWithCallback($subject, "task", "notification_email", $this->w->Auth->user(), $users_to_notify, function ($user, $existing_template_data) use ($task) {
+        NotificationService::getInstance($this->w)->sendToAllWithCallback($subject, "task", "notification_email", AuthService::getInstance($this->w)->user(), $users_to_notify, function ($user, $existing_template_data) use ($task) {
             $template_data = $existing_template_data;
             $template_data['status'] = "You've been added as a subscriber to: [{$task->id}]{$task->title}";
             $template_data['footer'] = $task->description;
@@ -449,7 +449,7 @@ class TaskService extends DbService
 
             // Get additional details
             if ($user->is_external == 0) {
-                $additional_details = $this->w->Task->getNotificationAdditionalDetails($task);
+                $additional_details = TaskService::getInstance($this->w)->getNotificationAdditionalDetails($task);
                 if (!empty($additional_details)) {
                     $template_data['footer'] .= $additional_details;
                 }
@@ -465,7 +465,7 @@ class TaskService extends DbService
                 $template_data['fields']["Assigned to"] = "No one";
             }
 
-            return new NotificationCallback($user, $template_data, $this->w->file->getAttachmentsFileList($task, null, ['channel_email_raw']));
+            return new NotificationCallback($user, $template_data, FileService::getInstance($this->w)->getAttachmentsFileList($task, null, ['channel_email_raw']));
         });
     }
 
@@ -531,7 +531,7 @@ class TaskService extends DbService
         $where .= " and t.is_deleted = 0 and g.is_active = 1 and g.is_deleted = 0";
 
         // check that task group is active and not deleted
-        $rows = $this->_db->sql("SELECT t.* from " . Task::$_db_table . " as t inner join " . ObjectModification::$_db_table . " as o on t.id = o.object_id inner join " . TaskGroup::$_db_table . " as g on t.task_group_id = g.id where o.creator_id = " . $this->_db->quote($id) . " and o.table_name = '" . Task::$_db_table . "' " . $this->_db->quote($where) . " order by t.id")->fetch_all();
+        $rows = $this->_db->sql("SELECT t.* from " . Task::$_db_table . " as t inner join " . ObjectModification::$_db_table . " as o on t.id = o.object_id inner join " . TaskGroup::$_db_table . " as g on t.task_group_id = g.id where o.creator_id = " . $this->_db->quote($id) . " and o.table_name = '" . Task::$_db_table . "' " . $this->_db->quote($where) . " order by t.id")->fetchAll();
         $rows = $this->fillObjects("Task", $rows);
         return $rows;
     }
@@ -568,7 +568,7 @@ class TaskService extends DbService
         $where .= " and date_format(c.dt_modified,'%Y-%m-%d') >= '" . $this->date2db($from) . "' and date_format(c.dt_modified,'%Y-%m-%d') <= '" . $this->date2db($to) . "'";
 
         // get and return tasks
-        $rows = $this->_db->sql("SELECT t.id, t.title, t.task_group_id, c.comment, c.creator_id, c.dt_modified from " . Task::$_db_table . " as t inner join " . TaskComment::$_db_table . " as c on t.id = c.obj_id and c.obj_table = '" . Task::$_db_table . "' inner join " . TaskGroup::$_db_table . " as g on t.task_group_id = g.id " . $this->_db->quote($where) . " order by c.dt_modified desc")->fetch_all();
+        $rows = $this->_db->sql("SELECT t.id, t.title, t.task_group_id, c.comment, c.creator_id, c.dt_modified from " . Task::$_db_table . " as t inner join " . TaskComment::$_db_table . " as c on t.id = c.obj_id and c.obj_table = '" . Task::$_db_table . "' inner join " . TaskGroup::$_db_table . " as g on t.task_group_id = g.id " . $this->_db->quote($where) . " order by c.dt_modified desc")->fetchAll();
         return $rows;
     }
 
@@ -586,7 +586,7 @@ class TaskService extends DbService
 
     public function getTaskByTaskDataKeyValuePair($key, $value)
     {
-        $taskdata = $this->Task->getObject("TaskData", ["data_key" => $key, "value" => $value]);
+        $taskdata = TaskService::getInstance($this->w)->getObject("TaskData", ["data_key" => $key, "value" => $value]);
         if (!empty($taskdata->id)) {
             return $this->getTask($taskdata->task_id);
         }
@@ -673,7 +673,7 @@ class TaskService extends DbService
     // return a task comment by the COMMENT ID
     public function getComment($id)
     {
-        return $this->w->Auth->getObject("TaskComment", ["obj_table" => Task::$_db_table, "id" => $id]);
+        return AuthService::getInstance($this->w)->getObject("TaskComment", ["obj_table" => Task::$_db_table, "id" => $id]);
     }
 
     // return an array of the owners of a task group from the database
@@ -708,7 +708,7 @@ class TaskService extends DbService
             ->leftJoin("task_group")
             ->where("task_group_member.user_id", $id)->and("task_group_member.is_active", 1)
             ->and("task_group.is_active", 1)->and("task_group.is_deleted", 0);
-        return $this->getObjectsFromRows("TaskGroupMember", $query->fetch_all());
+        return $this->getObjectsFromRows("TaskGroupMember", $query->fetchAll());
     }
 
     public function getTaskGroupsForMember($id = null)
@@ -721,7 +721,7 @@ class TaskService extends DbService
             ->leftJoin("task_group")->select("task_group.*")
             ->where("task_group_member.user_id", $id)->and("task_group_member.is_active", 1)
             ->and("task_group.is_active", 1)->and("task_group.is_deleted", 0);
-        return $this->getObjectsFromRows("TaskGroup", $query->fetch_all());
+        return $this->getObjectsFromRows("TaskGroup", $query->fetchAll());
     }
 
     // return all members of a task group from the database, given the task group ID
@@ -772,7 +772,7 @@ class TaskService extends DbService
     // return a users full name given their user ID
     public function getUserById($id)
     {
-        $u = $this->w->Auth->getUser($id);
+        $u = AuthService::getInstance($this->w)->getUser($id);
         return $u ? $u->getFullName() : "";
     }
 
@@ -1090,7 +1090,7 @@ class TaskService extends DbService
 
         $nav = $nav ? $nav : [];
 
-        if ($w->Auth->loggedIn()) {
+        if (AuthService::getInstance($w)->loggedIn()) {
             $w->menuLink("task/index", "Task Dashboard", $nav);
             $w->menuLink("task/edit", "New Task", $nav);
             $w->menuLink("task/tasklist", "Task List", $nav);

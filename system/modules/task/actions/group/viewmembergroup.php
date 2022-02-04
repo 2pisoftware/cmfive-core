@@ -7,16 +7,16 @@ function viewmembergroup_GET(Web $w) {
 
 	// tab: Members
 	// get all members in a task group given a task group ID
-	$member_group = $w->Task->getMemberGroup($p['id']);
+	$member_group = TaskService::getInstance($w)->getMemberGroup($p['id']);
 
 	// get the group attributes given a task group ID
-	$taskgroup = $w->Task->getTaskGroup($p['id']);
+	$taskgroup = TaskService::getInstance($w)->getTaskGroup($p['id']);
 	if (empty($taskgroup->id)) {
 		$w->error("Taskgroup not found", '/task');
 	}
 
 	// put the group title into the page heading
-	$w->Task->navigation($w, "Task Group - " . $taskgroup->title);
+	TaskService::getInstance($w)->navigation($w, "Task Group - " . $taskgroup->title);
 
 	History::add("Task Group: " . $taskgroup->title, null, $taskgroup);
 
@@ -26,7 +26,7 @@ function viewmembergroup_GET(Web $w) {
 	// if their are members, display their full name, role and buttons to edit or delete the member
 	if ($member_group) {
 		foreach ($member_group as $member) {
-			$line[] = array($w->Task->getUserById($member->user_id), $member->role,
+			$line[] = array(TaskService::getInstance($w)->getUserById($member->user_id), $member->role,
 				Html::box(WEBROOT . "/task-group/viewmember/" . $member->id, " Edit ", true) .
 				"&nbsp;&nbsp;" .
 				Html::box(WEBROOT . "/task-group/deletegroupmember/" . $member->id, " Delete ", true)
@@ -42,7 +42,7 @@ function viewmembergroup_GET(Web $w) {
 	
 	// DEPRECATED IN FAVOUR OF TASK SUBSCRIBERS
 	// tab:  Notify
-	// $notify = $w->Task->getTaskGroupNotify($taskgroup->id);
+	// $notify = TaskService::getInstance($w)->getTaskGroupNotify($taskgroup->id);
 	// 
 	// if ($notify) {
 	// 	foreach ($notify as $n) {

@@ -84,7 +84,7 @@ function import_POST(Web $w) {
 	    	} else {
 	    		$new_title = $content->title;
 	    	}
-	    	$new_title = $w->Form->checkImportedApplicationTitle($new_title);
+	    	$new_title = FormService::getInstance($w)->checkImportedApplicationTitle($new_title);
 
 	    	$new_application = new FormApplication($w);
 	    	$new_application->title = $new_title;
@@ -96,7 +96,7 @@ function import_POST(Web $w) {
 	    		foreach ($content->forms as $form) {
 	    			$new_form_title = $form->form_title;
 
-	    			$new_form = $w->Form->importForm($new_form_title,$form);
+	    			$new_form = FormService::getInstance($w)->importForm($new_form_title,$form);
 
 	    			if (!empty($new_form)) {
 	    				$form_app_map = new FormApplicationMapping($w);

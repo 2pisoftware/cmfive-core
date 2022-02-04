@@ -2,9 +2,9 @@
 
 function index_GET(Web $w)
 {
-    $available = $w->Migration->getAvailableMigrations('all');
-    $installed = $w->Migration->getInstalledMigrations('all');
-    $seeds = $w->Migration->getSeedMigrations();
+    $available = MigrationService::getInstance($w)->getAvailableMigrations('all');
+    $installed = MigrationService::getInstance($w)->getInstalledMigrations('all');
+    $seeds = MigrationService::getInstance($w)->getSeedMigrations();
 
     $batched = [];
     if (!empty($installed)) {
@@ -19,7 +19,7 @@ function index_GET(Web $w)
     if (!empty($available)) {
         foreach ($available as $module => $_available) {
             foreach ($_available as $file => $class) {
-                if (!$w->Migration->isInstalled($class['class_name'])) {
+                if (!MigrationService::getInstance($w)->isInstalled($class['class_name'])) {
                     $not_installed[$module][$file] = array("class" => $class, "path" => $file);
                 }
             }
@@ -28,7 +28,9 @@ function index_GET(Web $w)
 
     // Sort by modules that have a migration first, then alphabetically
     uksort($available, function ($a, $b) use ($available) {
-
+        if (!is_array($available[$a]) || !is_array($available[$b])) {
+            return strcmp($a, $b);
+        }
         if (count($available[$a]) > 0 && count($available[$b]) == 0) {
             return -1;
         } elseif (count($available[$a]) == 0 && count($available[$b]) > 0) {
@@ -42,19 +44,19 @@ function index_GET(Web $w)
     // sort first by installed migration id
     // then by time string in filename
     foreach ($available as $module_name => $module) {
-        if (count($module) > 0) {
+        if (is_array($module) && count($module) > 0) {
             uksort($module, function ($a, $b) use ($module, $w) {
                 //first sort by installed or not
                 //then by istalled migration id
                 //then sort by migration created timestamp in file name
-                if ($w->Migration->isInstalled($module[$a]['class_name']) && !$w->Migration->isInstalled($module[$b]['class_name'])) {
+                if (MigrationService::getInstance($w)->isInstalled($module[$a]['class_name']) && !MigrationService::getInstance($w)->isInstalled($module[$b]['class_name'])) {
                     return -1;
-                } elseif (!$w->Migration->isInstalled($module[$a]['class_name']) && $w->Migration->isInstalled($module[$b]['class_name'])) {
+                } elseif (!MigrationService::getInstance($w)->isInstalled($module[$a]['class_name']) && MigrationService::getInstance($w)->isInstalled($module[$b]['class_name'])) {
                     return 1;
-                } elseif ($w->Migration->isInstalled($module[$a]['class_name']) && $w->Migration->isInstalled($module[$b]['class_name'])) {
+                } elseif (MigrationService::getInstance($w)->isInstalled($module[$a]['class_name']) && MigrationService::getInstance($w)->isInstalled($module[$b]['class_name'])) {
                     //sort by installed id to get order of installation
-                    $a_migration = $w->Migration->getMigrationByClassname($module[$a]['class_name']);
-                    $b_migration = $w->Migration->getMigrationByClassname($module[$b]['class_name']);
+                    $a_migration = MigrationService::getInstance($w)->getMigrationByClassname($module[$a]['class_name']);
+                    $b_migration = MigrationService::getInstance($w)->getMigrationByClassname($module[$b]['class_name']);
                     return $a_migration->id < $b_migration->id ? -1 : 1;
                 } else {
                     //neither migration run sort by timestring
@@ -66,7 +68,7 @@ function index_GET(Web $w)
     }
 
     $seeds = array_filter($seeds, function ($available_seeds) {
-        return count($available_seeds) > 0;
+        return is_array($available_seeds) && count($available_seeds) > 0;
     });
 
     $w->ctx('batched', $batched);

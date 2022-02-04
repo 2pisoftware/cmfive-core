@@ -13,7 +13,7 @@ function editMembers_GET(Web &$w)
 	$member = !empty($p['id']) ? InsightService::getInstance($w)->getMemberForId($p['id']) : new InsightMembers($w);
 
 	//retrieve correct insight to add new member to
-	$insight_class_name = !empty($member->id) ? $member->insight_class_name : $w->request('insight_class');
+	$insight_class_name = !empty($member->id) ? $member->insight_class_name : Request::string('insight_class');
 
 	//action title for adding new memeber and editing existing memeber
 	$insight = InsightService::getInstance($w)->getInsightInstance($insight_class_name);
@@ -42,7 +42,7 @@ function editMembers_GET(Web &$w)
 	// $addMemberForm = array(
 	//     array("","hidden", "insight_class_name", $insight_class_name);
 	// 	array("Add Member","select","user_id",null,$users);
-	//     array("With Role","select","type",$member->type,$w->Insight->getInsightPermissions());
+	//     array("With Role","select","type",$member->type,InsightService::getInstance($w)->getInsightPermissions());
 	// );
 	// else
 	// AuthService::getInstance($w)->getUser($member->user_id)->getContact()->getFullName();
@@ -54,7 +54,7 @@ function editMembers_GET(Web &$w)
 	} else {
 		$addMemberForm[] = array("Add member", "text", "-user_id", AuthService::getInstance($w)->getUser($member->user_id)->getContact()->getFullName());
 	}
-	$addMemberForm[] =  array("With Role", "select", "type", $member->type, $w->Insight->getInsightPermissions());
+	$addMemberForm[] =  array("With Role", "select", "type", $member->type, InsightService::getInstance($w)->getInsightPermissions());
 
 	//if we are editing an existing meber we need to send the id to the post method
 	$postUrl = '/insights-members/editMembers/' . (!empty($member->id) ? $member->id : '');
@@ -74,7 +74,7 @@ function editMembers_POST(Web $w)
 	if (empty($member->id)) {
 		$member->fill($_POST);
 	} else {
-		$member->type = $w->request('type');
+		$member->type = Request::string('type');
 	}
 
 

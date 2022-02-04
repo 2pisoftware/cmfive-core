@@ -1,7 +1,7 @@
 <?php
 
 function index_ALL(Web $w) {
-    $connections = $w->Report->getConnections();
+    $connections = ReportService::getInstance($w)->getConnections();
     
     $table_header = array("Driver", "Host", "Database", "Port", "Username", "Actions");
     $table_body = array();

@@ -9,14 +9,14 @@ function duplicate_ALL(Web $w)
         $w->error("Failed to find Report to duplicate", $failure_redirect_url);
     }
 
-    $db_report = $w->Report->getReport($report_id);
+    $db_report = ReportService::getInstance($w)->getReport($report_id);
     if (empty($db_report)) {
         $w->error("Failed to find Report to duplicate", $failure_redirect_url);
     }
 
     $duplicate_report = $db_report->copy();
     $duplicate_report->title .= " - Copy";
-    $duplicate_report->report_connection_id = intval($w->request("report_connection_id"));
+    $duplicate_report->report_connection_id = intval(Request::int("report_connection_id"));
 
     if (!$duplicate_report->insert()) {
         $w->error("Failed to save duplicated Report", $failure_redirect_url);
@@ -29,7 +29,7 @@ function duplicate_ALL(Web $w)
         $duplicate_member->report_id = $duplicate_report->id;
 
         if (!$duplicate_member->insert()) {
-            $w->Log->setLogger("REPORT")->error("Failed to insert ReportMember when duplicating Report");
+            LogService::getInstance($w)->setLogger("REPORT")->error("Failed to insert ReportMember when duplicating Report");
         }
     }
 

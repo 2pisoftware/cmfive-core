@@ -10,8 +10,8 @@ on:
 
 jobs:
   # Lint
-  php-codesniffer:
-    name: PHP CS
+  php-codesniffer74:
+    name: PHP CS 7.4
     runs-on: ubuntu-latest
     steps:
     - name: Get phpcs
@@ -20,6 +20,26 @@ jobs:
       uses: pipeline-components/php-codesniffer@v0.12.3
       with:
         options: -s -p --colors --extensions=php --runtime-set testVersion 7.4
+  php-codesniffer80:
+    name: PHP CS 8.0
+    runs-on: ubuntu-latest
+    steps:
+    - name: Get phpcs
+      run: wget https://raw.githubusercontent.com/2pisoftware/cmfive-boilerplate/master/phpcs.xml
+    - name: Codesniffer
+      uses: pipeline-components/php-codesniffer@v0.12.3
+      with:
+        options: -s -p --colors --extensions=php --runtime-set testVersion 8.0
+  php-codesniffer81:
+    name: PHP CS 8.1
+    runs-on: ubuntu-latest
+    steps:
+    - name: Get phpcs
+      run: wget https://raw.githubusercontent.com/2pisoftware/cmfive-boilerplate/master/phpcs.xml
+    - name: Codesniffer
+      uses: pipeline-components/php-codesniffer@v0.12.3
+      with:
+        options: -s -p --colors --extensions=php --runtime-set testVersion 8.1
   # Test
   run_test:
     # Checkout Boilerplate
@@ -85,17 +105,17 @@ jobs:
 
       - name: Inject configs into cmfive Test Environment
         run: |
-          echo "Config::set('report.database', ['hostname' => 'mysql-5.7', 'username' => 'cmfive_test', 'password' => 'cmfive_test', 'database' => 'cmfive_test', 'driver' => 'mysql']);" >> config.php;
+          echo "Config::set('report.database', ['hostname' => 'mysql-8', 'username' => 'cmfive_test', 'password' => 'cmfive_test', 'database' => 'cmfive_test', 'driver' => 'mysql']);" >> config.php;
           echo "Config::set('core_template.foundation.reveal.animation_speed', 0);" >> config.php;
           echo "Config::set('core_template.foundation.reveal.animation', 'none');" >> config.php;
 
       - name: Prepare cmfive Test Database
-        run: docker exec nginx-php7.4 bash -c "php cmfive.php testDB setup; exit \$?";
+        run: docker exec nginx-php8.1 bash -c "php cmfive.php testDB setup; exit \$?";
 
       # Run Unit Tests
       - name: "Run unit tests"
         run: |
-          docker exec nginx-php7.4 bash -c "php cmfive.php tests unit all; exit \$?"
+          docker exec nginx-php8.1 bash -c "php cmfive.php tests unit all; exit \$?"
           if [ $? -gt 0 ]; then
             echo "Admin module tests failed"
           fi
@@ -103,43 +123,43 @@ jobs:
       # Run Acceptance Tests
       - name: "Run admin module tests"
         run: |
-          docker exec nginx-php7.4 bash -c "php cmfive.php tests module admin silent; exit \$?"
+          docker exec nginx-php8.1 bash -c "php cmfive.php tests module admin silent; exit \$?"
           if [ $? -gt 0 ]; then
             echo "Admin module tests failed"
           fi
       - name: "Run channels module tests"
         run: |
-          docker exec nginx-php7.4 bash -c "php cmfive.php tests module channels silent; exit \$?"
+          docker exec nginx-php8.1 bash -c "php cmfive.php tests module channels silent; exit \$?"
           if [ $? -gt 0 ]; then
             echo "Channels module tests failed"
           fi
       - name: "Run inbox module tests"
         run: |
-          docker exec nginx-php7.4 bash -c "php cmfive.php tests module inbox silent; exit \$?"
+          docker exec nginx-php8.1 bash -c "php cmfive.php tests module inbox silent; exit \$?"
           if [ $? -gt 0 ]; then
             echo "Inbox module tests failed"
           fi
       - name: "Run report module tests"
         run: |
-          docker exec nginx-php7.4 bash -c "php cmfive.php tests module report silent; exit \$?"
+          docker exec nginx-php8.1 bash -c "php cmfive.php tests module report silent; exit \$?"
           if [ $? -gt 0 ]; then
             echo "Report module tests failed"
           fi
       - name: "Run tag module tests"
         run: |
-          docker exec nginx-php7.4 bash -c "php cmfive.php tests module tag silent; exit \$?"
+          docker exec nginx-php8.1 bash -c "php cmfive.php tests module tag silent; exit \$?"
           if [ $? -gt 0 ]; then
             echo "Tag module tests failed"
           fi
       - name: "Run task module tests"
         run: |
-          docker exec nginx-php7.4 bash -c "php cmfive.php tests module task silent; exit \$?"
+          docker exec nginx-php8.1 bash -c "php cmfive.php tests module task silent; exit \$?"
           if [ $? -gt 0 ]; then
             echo "Task module tests failed"
           fi
       - name: "Run timelog module tests"
         run: |
-          docker exec nginx-php7.4 bash -c "php cmfive.php tests module timelog silent; exit \$?"
+          docker exec nginx-php8.1 bash -c "php cmfive.php tests module timelog silent; exit \$?"
           if [ $? -gt 0 ]; then
             echo "Timelog module tests failed"
           fi

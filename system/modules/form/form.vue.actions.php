@@ -15,7 +15,7 @@ function getFormApplication_VUE(Web $w)
         throw new \Exception('Missing ID');
     }
 
-    $application = $w->FormApplication->getFormApplication($id);
+    $application = FormApplicationService::getInstance($w)->getFormApplication($id);
     if (empty($application->id)) {
         throw new \Exception('Application not found');
     }
@@ -43,9 +43,9 @@ function save_application_POST(Web $w)
         return;
     }
 
-    $is_active = $w->request('is_active');
-    $application->title = $w->request('title');
-    $application->description = $w->request('description');
+    $is_active = Request::string('is_active');
+    $application->title = Request::string('title');
+    $application->description = Request::string('description');
     $application->is_active = ($is_active === "true" || intval($is_active) === 1 ? 1 : 0);
 
     $application->update();
@@ -131,7 +131,7 @@ function get_form_instances_GET(Web $w)
     }
 
     // Get form
-    $form = $w->Form->getForm($form_id);
+    $form = FormService::getInstance($w)->getForm($form_id);
     if (empty($form->id)) {
         $output['message'] = 'Form not found';
         $w->out(json_encode($output));
@@ -139,7 +139,7 @@ function get_form_instances_GET(Web $w)
     }
 
     // Get Object
-    $object = $w->Form->getObject($object_type, $object_id);
+    $object = FormService::getInstance($w)->getObject($object_type, $object_id);
 
     if (empty($object->id)) {
         $output['message'] = 'Object not found';
@@ -149,7 +149,7 @@ function get_form_instances_GET(Web $w)
 
     $output['data'] = array_map(function ($instance) {
         return $instance->toArray();
-    }, $w->Form->getFormInstancesForFormAndObject($form, $object) ?: []);
+    }, FormService::getInstance($w)->getFormInstancesForFormAndObject($form, $object) ?: []);
 
     $output['success'] = true;
     $w->out(json_encode($output));
@@ -172,7 +172,7 @@ function save_form_POST(Web $w)
     $form_id = intval($_POST['id']);
 
     // Get application and validate
-    $application = $w->FormApplication->getFormApplication($application_id);
+    $application = FormApplicationService::getInstance($w)->getFormApplication($application_id);
     if (empty($application->id)) {
         $output['error'] = 'Application not found';
         $w->out(json_encode($output));
@@ -180,7 +180,7 @@ function save_form_POST(Web $w)
     }
 
     // Get form and validate
-    $form = $w->Form->getForm($form_id);
+    $form = FormService::getInstance($w)->getForm($form_id);
     if (empty($form->id)) {
         $output['error'] = 'Form not found';
         $w->out(json_encode($output));
@@ -188,7 +188,7 @@ function save_form_POST(Web $w)
     }
 
     // Validate no existing mapping
-    $existing_mapping = $w->FormApplication->getFormApplicationMapping($application_id, $form_id);
+    $existing_mapping = FormApplicationService::getInstance($w)->getFormApplicationMapping($application_id, $form_id);
     if (empty($existing_mapping->id)) {
         $mapping = new FormApplicationMapping($w);
         $mapping->application_id = $application_id;
@@ -228,7 +228,7 @@ function save_member_POST(Web $w)
     }
 
     // Get application and validate
-    $application = $w->FormApplication->getFormApplication($application_id);
+    $application = FormApplicationService::getInstance($w)->getFormApplication($application_id);
     if (empty($application->id)) {
         $output['error'] = 'Application not found';
         $w->out(json_encode($output));
@@ -236,7 +236,7 @@ function save_member_POST(Web $w)
     }
 
     // Get user and validate
-    $user = $w->Auth->getUser($member_user_id);
+    $user = AuthService::getInstance($w)->getUser($member_user_id);
     if (empty($user)) {
         $output['error'] = 'User not found';
         $w->out(json_encode($output));
@@ -252,21 +252,21 @@ function save_member_POST(Web $w)
 
     // Find/create
     if (!empty($existing_record_id)) {
-        $application_member = $w->FormApplication->getObject("FormApplicationMember", $existing_record_id);
+        $application_member = FormApplicationService::getInstance($w)->getObject("FormApplicationMember", $existing_record_id);
         if (empty($application_member->id)) {
             $output['error'] = 'Existing record not found';
             $w->out(json_encode($output));
             return;
         } else {
             $application_member->member_user_id = $member_user_id;
-            $application_member->role = $w->request('role');
+            $application_member->role = Request::string('role');
             $application_member->update();
         }
     } else {
         $application_member = new FormApplicationMember($w);
         $application_member->application_id = $application_id;
         $application_member->member_user_id = $member_user_id;
-        $application_member->role = $w->request('role');
+        $application_member->role = Request::string('role');
         $application_member->insert();
     }
 
@@ -289,14 +289,14 @@ function delete_form_GET(Web $w)
         return;
     }
 
-    $application = $w->FormApplication->getFormApplication($id);
+    $application = FormApplicationService::getInstance($w)->getFormApplication($id);
     if (empty($application->id)) {
         $output['error'] = 'Application not found';
         $w->out(json_encode($output));
         return;
     }
 
-    $existing_mapping = $w->FormApplication->getFormApplicationMapping($application->id, $form_id);
+    $existing_mapping = FormApplicationService::getInstance($w)->getFormApplicationMapping($application->id, $form_id);
     if (!empty($existing_mapping->id)) {
         $existing_mapping->delete();
     }
@@ -319,14 +319,14 @@ function delete_member_GET(Web $w)
         return;
     }
 
-    $application = $w->FormApplication->getFormApplication($id);
+    $application = FormApplicationService::getInstance($w)->getFormApplication($id);
     if (empty($application->id)) {
         $output['error'] = 'Application not found';
         $w->out(json_encode($output));
         return;
     }
 
-    $existing_member = $w->FormApplication->getObject('FormApplicationMember', $member_id);
+    $existing_member = FormApplicationService::getInstance($w)->getObject('FormApplicationMember', $member_id);
     if (!empty($existing_member->id) && $existing_member->application_id == $id && $existing_member->is_deleted == 0) {
         $existing_member->delete();
     }
@@ -340,10 +340,10 @@ function get_form_instance_rows_GET(Web $w)
     $output = getResponse_VUE();
 
     list($form_id, $object, $object_id) = $w->pathMatch('form_id', 'object', 'object_id');
-    $page = intval($w->request('page')) - 1;
-    $pagesize = intval($w->request('pagesize'));
-    $display_only = intval($w->request('display_only'));
-    $redirect_url = $w->request('redirect_url');
+    $page = intval(Request::string('page')) - 1;
+    $pagesize = intval(Request::string('pagesize'));
+    $display_only = intval(Request::string('display_only'));
+    $redirect_url = Request::string('redirect_url');
 
     // Check object class
     if (!class_exists($object)) {
@@ -353,8 +353,8 @@ function get_form_instance_rows_GET(Web $w)
     }
 
     // Validate objects
-    $form = $w->Form->getForm($form_id);
-    $_object = $w->Form->getObject($object, $object_id);
+    $form = FormService::getInstance($w)->getForm($form_id);
+    $_object = FormService::getInstance($w)->getObject($object, $object_id);
 
     if (empty($form->id) || empty($_object->id)) {
         $output['error'] = 'Form or object not found';
@@ -362,7 +362,7 @@ function get_form_instance_rows_GET(Web $w)
         return;
     }
 
-    $instances = $w->Form->getFormInstancesForFormAndObject($form, $_object, ($page * $pagesize), $pagesize);
+    $instances = FormService::getInstance($w)->getFormInstancesForFormAndObject($form, $_object, ($page * $pagesize), $pagesize);
     $instances_array = [];
     if (!empty($instances)) {
         foreach ($instances as $instance) {

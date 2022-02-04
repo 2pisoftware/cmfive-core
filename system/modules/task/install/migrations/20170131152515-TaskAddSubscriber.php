@@ -44,12 +44,12 @@ class TaskAddSubscriber extends CmfiveMigration {
 			}
 		}
 
-		//$tasks = $this->w->Task->getTasks();
+		//$tasks = TaskService::getInstance($this->w)->getTasks();
 		//$task_ids = $this->w->db->get("task")->select()->select('id')->fetchAll();
 		// var_dump($taskgroup_ids); die;
 		// if (!empty($task_ids)) {
 		// 	foreach($task_ids as $task_id) {
-		// 		$task = $this->w->Task->getTask($task_id);
+		// 		$task = TaskService::getInstance($this->w)->getTask($task_id);
 		// 		if (!empty($task)) {
 		// 			$taskgroup = $task->getTaskGroup();
 

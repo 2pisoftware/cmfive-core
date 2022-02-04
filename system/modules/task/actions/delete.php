@@ -4,11 +4,11 @@ function delete_ALL(Web &$w) {
     $p = $w->pathMatch("id");
 
     // task is to get updated so gather relevant data
-    $task = $w->Task->getTask($p['id']);
+    $task = TaskService::getInstance($w)->getTask($p['id']);
 
 	// if task exists, continue
     if (!empty($task->id)) {
-		if (!$task->canDelete($w->Auth->user())) {
+		if (!$task->canDelete(AuthService::getInstance($w)->user())) {
 			$w->error("You aren't allowed to delete this Task", "/task/edit/" . $task->id);
 			return;
 		}
