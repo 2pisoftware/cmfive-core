@@ -7,6 +7,9 @@ on:
     branches: [ develop, master ]
 
   workflow_dispatch:
+env:
+  TARGET_PHP: 8.1
+  TARGET_MYSQL: 8
 
 jobs:
   # Lint
@@ -100,7 +103,7 @@ jobs:
           echo ${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}};
           cd .build/setup;
           source venv/bin/activate;
-          python install.py --verbose debug provision-test --cmfive_core_ref ${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}};
+          python install.py --verbose debug provision-test --cmfive_core_ref ${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}} --php_version $TARGET_PHP --php_suffix $TARGET_PHP --mysql_version $TARGET_MYSQL --mysql_suffix $TARGET_MYSQL;
           docker start selenium314;
 
       - name: Inject configs into cmfive Test Environment
