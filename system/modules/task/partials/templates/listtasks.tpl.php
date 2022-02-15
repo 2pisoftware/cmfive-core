@@ -5,6 +5,12 @@ if (!empty($tasks)) {
     $table_header = array("Title", "Created By", "Assigned To", "Group", "Type", "Priority", "Status", "Due");
     $table_data = array();
 
+    if ($hide_columns){
+        foreach ($hide_columns as $hide_column){
+            unset($table_header[$hide_column]);
+        }
+    }
+
     // Build table data
     usort($tasks, array("TaskService", "sortTasksbyDue"));
     foreach ($tasks as $task) {
@@ -23,6 +29,11 @@ if (!empty($tasks)) {
                 $task->isTaskLate()
             );
 
+            if ($hide_columns){
+                foreach( $hide_columns as $hide_column){
+                    unset($table_line[$hide_column]);
+                }
+            }
             $table_data[] = $table_line;
         }
     }

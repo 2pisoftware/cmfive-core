@@ -4,7 +4,8 @@ function listtasks(\Web $w, $params = array()) {
     $w->ctx("redirect", $params['redirect']);
     
 	$w->ctx("hide_filter", array_key_exists('hide_filter', $params) ? $params['hide_filter'] : false);
-	
+	$w->ctx("hide_columns", array_key_exists('hide_columns', $params)? $params['hide_columns'] : false);
+
     $taskgroup = null;
     if (!empty($params['task_group_id'])) {
         $task_group_id = $params['task_group_id'];
