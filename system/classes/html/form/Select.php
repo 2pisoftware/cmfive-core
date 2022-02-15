@@ -39,15 +39,21 @@ class Select extends \Html\Form\FormElement
     public function __construct($fields = [])
     {
         // Check for options being set
-        if (array_key_exists('options', $fields)) {
+        if (is_array($fields) && array_key_exists('options', $fields)) {
             $this->setOptions($fields['options']);
             unset($fields['options']);
+        } elseif (is_object($fields)) {
+            $this->setOptions($fields->options);
+            $fields->options = null;
         }
 
         // Check for given selected option
-        if (array_key_exists('selected_option', $fields)) {
+        if (is_array($fields) && array_key_exists('selected_option', $fields)) {
             $this->setSelectedOption($fields['selected_option']);
             unset($fields['selected_option']);
+        } elseif (is_object($fields)) {
+            $this->setSelectedOption($fields->selected_option);
+            $fields->selected_option = null;
         }
 
         parent::__construct($fields);

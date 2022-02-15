@@ -5,7 +5,6 @@
 // provide form by which to add members to an insight
 function editMembers_GET(Web &$w)
 {
-
 	//We now need to check if we are adding a new members or editing an existing member
 	//We will use pathmatch to retrieve a member id from the yrl
 	$p = $w->pathMatch('id');
@@ -66,21 +65,20 @@ function editMembers_GET(Web &$w)
 function editMembers_POST(Web $w)
 {
 
-	//As in the get function we need to check if we are editing an exisiting member
-	$p = $w->pathMatch('id');
-	$member = !empty($p['id']) ? InsightService::getInstance($w)->GetMemberForId($p['id']) : new InsightMembers($w);
+    //As in the get function we need to check if we are editing an exisiting member
+    $p = $w->pathMatch('id');
+    $member = !empty($p['id']) ? InsightService::getInstance($w)->GetMemberForId($p['id']) : new InsightMembers($w);
 
-	//use the fill function to fill input field data into properties with matching names
-	if (empty($member->id)) {
-		$member->fill($_POST);
-	} else {
-		$member->type = Request::string('type');
-	}
+    //use the fill function to fill input field data into properties with matching names
+    if (empty($member->id)) {
+      $member->fill($_POST);
+    } else {
+      $member->type = Request::string('type');
+    }
 
+    // function for saving to database
+    $member->insertOrUpdate();
 
-	// function for saving to database
-	$member->insertOrUpdate();
-
-	// the msg (message) function redirects with a message box
-	$w->msg('Member Permissions Saved', '/insights/manageMembers?insight_class=' . $member->insight_class_name);
+    // the msg (message) function redirects with a message box
+    $w->msg('Member Permissions Saved', '/insights/manageMembers?insight_class=' . $member->insight_class_name);
 }

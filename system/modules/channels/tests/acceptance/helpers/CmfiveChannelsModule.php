@@ -16,10 +16,13 @@ class CmfiveChannelsModule extends \Codeception\Module
      */
     public function createWebChannel($I, $channel_name, $is_active, $do_processing, $web_api_url)
     {
-        $I->click("Add Web Channel");
-        $I->waitForElement("#channelform");
-        $I->wait(1);
-        $I->fillField("#name", $channel_name);
+        // $I->click("Add Web Channel");
+        $I->waitForElement("//button[contains(text(),'Add Web Channel')]");
+        $I->click("//button[contains(text(),'Add Web Channel')]");
+        // $I->waitForElement("#channelform");
+        $I->waitForElement("//div[contains(@style,'visible')][@id='cmfive-modal']");
+        $I->waitForElement("//input[@id='name']");
+        $I->fillField("//input[@id='name']", $channel_name);
         $is_active ? $I->checkOption("#is_active") : $I->uncheckOption("#is_active");
         $do_processing ? $I->checkOption("#do_processing") : $I->uncheckOption("#do_processing");
         $I->fillField("#url", $web_api_url);
@@ -54,9 +57,9 @@ class CmfiveChannelsModule extends \Codeception\Module
     public function createEmailChannel($I, $channel_name, $is_active, $do_processing, $email_protocol, $server_url, $username, $password, $port, $use_auth, $verify_peer, $allow_self_signed_certificates, $folder_directory, $to, $from, $cc, $subject, $body, $post_read_action, $post_read_data)
     {
         $I->click("Add Email Channel");
-        $I->waitForElement("#channelform");
-        $I->wait(1);
-        $I->fillField("#name", $channel_name);
+        $I->waitForElement("//div[contains(@style,'visible')][@id='cmfive-modal']"); //"#channelform"
+        $I->waitForElement("//input[@id='name']");
+        $I->fillField("//input[@id='name']", $channel_name);
         $is_active ? $I->checkOption("#is_active") : $I->uncheckOption("#is_active");
         $do_processing ? $I->checkOption("#do_processing") : $I->uncheckOption("#do_processing");
 
@@ -92,9 +95,10 @@ class CmfiveChannelsModule extends \Codeception\Module
     public function createProcessor($I, $processor_name, $processor_channel, $processor_class)
     {
         $I->click("Add Processor");
-        $I->waitForElement("#processor_form");
-        $I->wait(1);
-        $I->fillField("#name", $processor_name);
+        // $I->waitForElement("#processor_form");
+        $I->waitForElement("//div[contains(@style,'visible')][@id='cmfive-modal']");
+        $I->waitForElement("//input[@id='name']");
+        $I->fillField("//input[@id='name']", $processor_name);
         $I->selectOption("form select[name=channel_id]", $processor_channel);
         $I->selectOption("form select[name=processor_class]", $processor_class);
         $I->click("Save");
@@ -115,8 +119,9 @@ class CmfiveChannelsModule extends \Codeception\Module
         $I->click("Edit");
         // For some reason waitForElement("#channelform")
         // is fine in the createWebChannel function but not here.
-        $I->wait(1);
-        $I->fillField("#name", $channel_name);
+        $I->waitForElement("//div[contains(@style,'visible')][@id='cmfive-modal']");
+        $I->waitForElement("//input[@id='name']");
+        $I->fillField("//input[@id='name']", $channel_name);
         $is_active ? $I->checkOption("#is_active") : $I->uncheckOption("#is_active");
         $do_processing ? $I->checkOption("#do_processing") : $I->uncheckOption("#do_processing");
         $I->fillField("#url", $web_api_url);
@@ -153,8 +158,9 @@ class CmfiveChannelsModule extends \Codeception\Module
         $I->click("Edit");
         // For some reason waitForElement("#channelform")
         // is fine in the createWebChannel function but not here.
-        $I->wait(1);
-        $I->fillField("#name", $channel_name);
+        $I->waitForElement("//div[contains(@style,'visible')][@id='cmfive-modal']");
+        $I->waitForElement("//input[@id='name']");
+        $I->fillField("//input[@id='name']", $channel_name);
         $is_active ? $I->checkOption("#is_active") : $I->uncheckOption("#is_active");
         $do_processing ? $I->checkOption("#do_processing") : $I->uncheckOption("#do_processing");
 
@@ -214,8 +220,10 @@ class CmfiveChannelsModule extends \Codeception\Module
     public function verifyWebChannel($I, $channel_name, $is_active, $do_processing, $web_api_url)
     {
         $I->click("Edit");
-        $I->waitForElement("#channelform");
-        $I->seeInField("#name", $channel_name);
+        // $I->waitForElement("#channelform");
+        $I->waitForElement("//div[contains(@style,'visible')][@id='cmfive-modal']");
+        $I->waitForElement("//input[@id='name']");
+        $I->seeInField("//input[@id='name']", $channel_name);
         $is_active ? $I->seeCheckboxIsChecked("#is_active") : $I->dontSeeCheckboxIsChecked("#is_active");
         $do_processing ? $I->seeCheckboxIsChecked("#do_processing") : $I->dontSeeCheckboxIsChecked("#do_processing");
         $I->seeInField("#url", $web_api_url);
@@ -251,8 +259,10 @@ class CmfiveChannelsModule extends \Codeception\Module
     public function verifyEmailChannel($I, $channel_name, $is_active, $do_processing, $email_protocol, $server_url, $username, $password, $port, $use_auth, $verify_peer, $allow_self_signed_certificates, $folder_directory, $to, $from, $cc, $subject, $body, $post_read_action, $post_read_data)
     {
         $I->click("Edit");
-        $I->waitForElement("#channelform");
-        $I->seeInField("#name", $channel_name);
+        // $I->waitForElement("#channelform");
+        $I->waitForElement("//div[contains(@style,'visible')][@id='cmfive-modal']");
+        $I->waitForElement("//input[@id='name']");
+        $I->seeInField("//input[@id='name']", $channel_name);
         $is_active ? $I->seeCheckboxIsChecked("#is_active") : $I->dontSeeCheckboxIsChecked("#is_active");
         $do_processing ? $I->seeCheckboxIsChecked("#do_processing") : $I->dontSeeCheckboxIsChecked("#do_processing");
 
@@ -289,8 +299,10 @@ class CmfiveChannelsModule extends \Codeception\Module
     public function verifyProcessor($I, $processor_name, $processor_channel, $processor_class)
     {
         $I->click("Edit");
-        $I->waitForElement("#processor_form");
-        $I->seeInField("#name", $processor_name);
+        // $I->waitForElement("#processor_form");
+        $I->waitForElement("//div[contains(@style,'visible')][@id='cmfive-modal']");
+        $I->waitForElement("//input[@id='name']");
+        $I->seeInField("//input[@id='name']", $processor_name);
         $I->seeOptionIsSelected("#channel_id", $processor_channel);
         $I->seeOptionIsSelected("#processor_class", $processor_class);
         $I->click("Cancel");

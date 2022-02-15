@@ -170,5 +170,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: test-output
-          path: test/Codeception/tests/_output/
+          path: |
+            test/Codeception/tests/_output/
+            storage/log/
           retention-days: 5

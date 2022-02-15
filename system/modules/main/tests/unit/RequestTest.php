@@ -183,6 +183,7 @@ class RequestTest extends TestCase
         // Test that a key is found when it does exist.
         $_REQUEST["key-1"] = "value-1";
         $this->assertEquals(true, Request::has("key-1"));
+        unset($_REQUEST["key-1"]);
     }
 
     /**
@@ -209,6 +210,8 @@ class RequestTest extends TestCase
         $_REQUEST["key-2"] = "value-1";
         $_REQUEST["key-3"] = "value-1";
         $this->assertEquals(true, Request::hasAny("key-1", "key-2", "key-3"));
+        unset($_REQUEST["key-2"]);
+        unset($_REQUEST["key-3"]);
     }
 
     /**
@@ -234,5 +237,8 @@ class RequestTest extends TestCase
         $_REQUEST["key-2"] = "value-1";
         $_REQUEST["key-3"] = "value-1";
         $this->assertEquals(true, Request::hasAll("key-1", "key-2", "key-3"));
+        unset($_REQUEST["key-1"]);
+        unset($_REQUEST["key-2"]);
+        unset($_REQUEST["key-3"]);
     }
 }
