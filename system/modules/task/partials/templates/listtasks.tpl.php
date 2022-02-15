@@ -6,9 +6,7 @@ if (!empty($tasks)) {
     $table_data = array();
 
     if ($hide_columns){
-        foreach ($hide_columns as $hide_column){
-            unset($table_header[$hide_column]);
-        }
+        $table_header = array_diff_key($table_header, $hide_columns);
     }
 
     // Build table data
@@ -30,10 +28,8 @@ if (!empty($tasks)) {
             );
 
             if ($hide_columns){
-                foreach( $hide_columns as $hide_column){
-                    unset($table_line[$hide_column]);
+                $table_line = array_diff_key($table_line, $hide_columns);
                 }
-            }
             $table_data[] = $table_line;
         }
     }
