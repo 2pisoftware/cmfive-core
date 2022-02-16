@@ -5,7 +5,7 @@ function listtasks(\Web $w, $params = array())
     $w->ctx("redirect", $params['redirect']);
     
 	$w->ctx("hide_filter", array_key_exists('hide_filter', $params) ? $params['hide_filter'] : false);
-    $w->ctx("hide_columns", array_key_exists('columns_to_hide', $params)? true : false);
+    $w->ctx("hide_columns", array_key_exists('columns_to_hide', $params));
 	$w->ctx("columns_to_hide", array_key_exists('columns_to_hide', $params)? $params['columns_to_hide'] : []);
 
     $taskgroup = null;
