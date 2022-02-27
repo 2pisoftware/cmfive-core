@@ -129,9 +129,6 @@ class DbObject extends DbService
             $reflection->setAccessible($name);
             return $reflection->getValue($this);
         }
-        //  else {
-        //     return $this->w->$name;
-        // }
         return null;
     }
 
@@ -382,7 +379,7 @@ class DbObject extends DbService
      */
     public function isRestricted()
     {
-        $links = $this->w->db->get("restricted_object_user_link")
+        $links = $this->_db->get("restricted_object_user_link")
             ->select()
             ->select("id")
             ->where("object_id", $this->id)
