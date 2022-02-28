@@ -104,6 +104,8 @@ jobs:
       # Pre-requsites Prepare Cmfive Environment
       - name: Setup cmfive Test Environment
         run: |
+          cp config.php.example config.php
+          
           docker-compose up
           docker exec -t mysql-8 bash mysql -u root -proot -c "CREATE DATABASE cmfive_test; CREATE USER cmfive_test@'%' IDENTIFIED BY 'cmfive_test'; GRANT ALL PRIVILEGES ON cmfive_test.* TO cmfive_test@'%'; FLUSH PRIVILEGES;"
           
@@ -111,11 +113,11 @@ jobs:
           docker exec -t nginx-php8.1 bash php cmfive.php install migrations
 
           cd composer/vendor/2pisoftware/cmfive && git switch ${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}} && cd ../../../../;
-
+          
           docker exec -t nginx-php8.1 bash php cmfive.php install core
           docker exec -t nginx-php8.1 bash php cmfive.php install migrations
-
-          cp config.php.example config.php
+          docker exec -t nginx-php8.1 bash php cmfive.php seed encryption
+          docker exec -t nginx-php8.1 bash php cmfive.php seed admin admin admin admin@example.com admin admin
           
           chmod -R 777 cache/ storage/ uploads/
           
