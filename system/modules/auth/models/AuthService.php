@@ -228,7 +228,7 @@ class AuthService extends DbService
      *
      * @return array[Lookup]
      */
-    public function getTitles() : array
+    public function getTitles(): array
     {
         return LookupService::getInstance($this->w)->getLookupByType("title");
     }
@@ -299,11 +299,49 @@ class AuthService extends DbService
             return false;
         }
 
+        // Whitelisted action, or white-bread login session
         if ((function_exists("anonymous_allowed") && anonymous_allowed($this->w, $path)) || ($this->user() && $this->user()->allowed($path))) {
             self::$_cache[$key] = $url ? $url : true;
             return self::$_cache[$key];
         }
 
+        // API token handling - WIP 202203
+
+        // if I have an authentication header: and it has a token -> else fallthrough to original logic
+        // ie: expecting [...curl...etc...] -H "Authorization: Bearer {token}"
+        /*
+                Note! If under Apache & HTTP_AUTHORIZATION is dropped, prove site HTPPS and then patch access:
+                RewriteEngine On
+                RewriteCond %{HTTP:Authorization} ^(.+)$
+                RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+                */
+
+        if (empty($this->user()) && (Config::get('system.use_api') === true) && !empty($_SERVER['HTTP_AUTHORIZATION'])) {
+
+            $speculativeToken = TokensService::getInstance($this->w)->getTokenFromAuthorisationHeader($_SERVER['HTTP_AUTHORIZATION']);
+            
+            if (!empty($speculativeToken)) {
+                // call for a module to assert the token is valid?
+                $hook_results = $this->w->callHook("auth", "get_auth_token_validation", $speculativeToken);
+            }
+
+            // if the token is invalid( jwt fails checks, len == 0 or somesuch) then we stop and don't continue
+            if (empty($speculativeToken) || empty($hook_results)) {
+                $this->Log->error("Key invalid: '" . $_SERVER['HTTP_AUTHORIZATION'] . " was provided");
+                self::$_cache[$key] = false;
+                return false;
+            }
+            foreach ($hook_results as $module => $validatingToken) {
+                if (is_a($validatingToken, "TokensPolicy") && $validatingToken->tokensAllowed($path)) {
+                    self::$_cache[$key] = $url ? $url : true;
+                } else {
+                    $this->Log->info('Handler ' . $module . ' did not provide Auth');
+                }
+            }
+        }
+
+
+        // Allow forced user-login if any module will vouch for web server asserted identity
         if (empty($this->user()) && (Config::get('system.use_passthrough_authentication') === true) && !empty($_SERVER['AUTH_USER'])) {
             // Get the username
             $username = explode('\\', $_SERVER["AUTH_USER"]);
@@ -333,7 +371,7 @@ class AuthService extends DbService
      *
      * @return array of strings
      */
-    public function getAllRoles() : array
+    public function getAllRoles(): array
     {
         $this->_loadRoles();
         if (!$this->_roles) {
