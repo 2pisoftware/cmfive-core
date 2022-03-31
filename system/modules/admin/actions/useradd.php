@@ -14,35 +14,39 @@ function useradd_GET(Web &$w) {
         $w->setLayout(null);
     }
 
-    $form['User Details'][]=array(
-        array("Login","text","login"),
-        array("Admin","checkbox","is_admin"),
-        array("Active","checkbox","is_active"),
-        array("External", "checkbox", "is_external"),
-            array("Language", "select", "language", null, $w->getAvailableLanguages()));
+    $form['User Details'][] = [
+        ["Admin","checkbox","is_admin"],
+        ["Active","checkbox","is_active"],
+        ["External", "checkbox", "is_external"],
+    	["Language", "select", "language", null, $w->getAvailableLanguages()]
+    ];
         
-        $form['User Details'][] = array(
-            array("Password", "password", "password"),
-            array("Repeat Password", "password", "password2"));
-        
-        $form['Contact Details'][] = array(
-            array("First Name", "text", "firstname"),
-            array("Last Name", "text", "lastname"));
-        $form['Contact Details'][] = array(
-            array("Title", "autocomplete", "title", null, LookupService::getInstance($w)->getLookupByType("title")),
-            array("Email", "text", "email"));
-        
-        $roles = AuthService::getInstance($w)->getAllRoles();
-        $roles = array_chunk($roles, 4);
-        foreach ($roles as $r) {
-            $row = array();
-            foreach ($r as $rf) {
-                $row[] = array($rf, "checkbox", "check_" . $rf);
-            }
-            $form['User Roles'][] = $row;
-        }
-        
-        $w->out(Html::multiColForm($form, $w->localUrl("/admin/useradd"), "POST", "Save", null, null, null, "_self", true, array_merge(User::$_validation, ['password' => ['required'], 'password2' => ['required']])));
+	$form['User Details'][] = [
+	    ["Password", "password", "password"],
+	    ["Repeat Password", "password", "password2"]
+	];
+
+	$form['Contact Details'][] = [
+	    ["First Name", "text", "firstname"],
+	    ["Last Name", "text", "lastname"]
+	];
+
+	$form['Contact Details'][] = [
+	    ["Title", "autocomplete", "title", null, LookupService::getInstance($w)->getLookupByType("title")],
+	    ["Email", "text", "email"]
+	];
+
+	$roles = AuthService::getInstance($w)->getAllRoles();
+	$roles = array_chunk($roles, 4);
+	foreach ($roles as $r) {
+	    $row = [];
+	    foreach ($r as $rf) {
+			$row[] = [$rf, "checkbox", "check_" . $rf];
+	    }
+	    $form['User Roles'][] = $row;
+	}
+
+	$w->out(Html::multiColForm($form, $w->localUrl("/admin/useradd"), "POST", "Save", null, null, null, "_self", true, array_merge(User::$_validation, ['password' => ['required'], 'password2' => ['required']])));
         
 }
 
