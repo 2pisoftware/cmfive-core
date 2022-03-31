@@ -59,54 +59,12 @@ jobs:
           repository: '2pisoftware/cmfive-boilerplate'
           ref: 'feature/PHP8.1'
 
-      # # Cache
-      # - name: Cache Python Virtual Environment
-      #   uses: actions/cache@v2
-      #   id: pip
-      #   with:
-      #     path: .build/setup/venv
-      #     key: ${{ runner.os }}-pip-${{ hashFiles('.build/setup/requirements.txt') }}
-
-      # - name: Cache cmfive Docker Image
-      #   uses: actions/cache@v2
-      #   id: cmfive-docker-image
-      #   with:
-      #     path: /tmp/docker-registry
-      #     key: docker-registry-${{ hashFiles('.build/environment/test/config/docker/Dockerfile.template') }}
-
-      # # Pre-requsites Prepare Runtime
-      # - name: Provision Python Virtual Environment
-      #   if: steps.pip.outputs.cache-hit != 'true'
-      #   run: |
-      #     cd .build/setup;
-      #     python3 -m venv venv;
-      #     source venv/bin/activate;
-      #     pip install -r requirements.txt;
-
-      # - name: Prepare cmfive Test Environment
-      #   run: |
-      #     cd .build/setup;
-      #     source venv/bin/activate;
-      #     python install.py prime-environment test
-
-      # - name: Prepare Docker Registry
-      #   run: docker run -d -p 5000:5000 --restart=always --name registry -v /tmp/docker-registry:/var/lib/registry registry:2 && npx wait-on tcp:5000
-
-      # - name: Build and Push Image to Docker Registry
-      #   if: steps.cmfive-docker-image.outputs.cache-hit != 'true'
-      #   run: |
-      #     docker build ./.build/environment/test/ -t cmfive --cache-from=localhost:5000/cmfive;
-      #     docker tag cmfive localhost:5000/cmfive && docker push localhost:5000/cmfive || true;
-
-      # - name: Pull Image from Docker Registry
-      #   run: docker pull localhost:5000/cmfive || true
-
       # Pre-requsites Prepare Cmfive Environment
       - name: Setup cmfive Test Environment
         run: |
           cp config.php.example config.php
           
-          docker-compose up --build
+          docker-compose
           docker exec -t mysql-8 bash mysql -u root -proot -c "CREATE DATABASE cmfive_test; CREATE USER cmfive_test@'%' IDENTIFIED BY 'cmfive_test'; GRANT ALL PRIVILEGES ON cmfive_test.* TO cmfive_test@'%'; FLUSH PRIVILEGES;"
           
           docker exec -t nginx-php8.1 bash php cmfive.php install core
