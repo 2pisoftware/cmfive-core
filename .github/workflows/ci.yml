@@ -19,7 +19,7 @@ jobs:
   # Lint
   php-codesniffer74:
     name: PHP CS 7.4
-    runs-on: ubuntu-20:04
+    runs-on: ubuntu-20.04
     steps:
     - name: Get phpcs
       run: wget https://raw.githubusercontent.com/2pisoftware/cmfive-boilerplate/master/phpcs.xml
@@ -29,7 +29,7 @@ jobs:
         options: -s -p --colors --extensions=php --runtime-set testVersion 7.4
   php-codesniffer80:
     name: PHP CS 8.0
-    runs-on: ubuntu-20:04
+    runs-on: ubuntu-20.04
     steps:
     - name: Get phpcs
       run: wget https://raw.githubusercontent.com/2pisoftware/cmfive-boilerplate/master/phpcs.xml
@@ -39,7 +39,7 @@ jobs:
         options: -s -p --colors --extensions=php --runtime-set testVersion 8.0
   php-codesniffer81:
     name: PHP CS 8.1
-    runs-on: ubuntu-20:04
+    runs-on: ubuntu-20.04
     steps:
     - name: Get phpcs
       run: wget https://raw.githubusercontent.com/2pisoftware/cmfive-boilerplate/master/phpcs.xml
@@ -51,7 +51,7 @@ jobs:
   run_test:
     # Checkout Boilerplate
     name: Unit/Acceptance tests
-    runs-on: ubuntu-20:04
+    runs-on: ubuntu-20.04
     needs: [ php-codesniffer74, php-codesniffer80, php-codesniffer81 ]
     steps:
       - uses: actions/checkout@v2
