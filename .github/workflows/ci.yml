@@ -19,7 +19,7 @@ jobs:
   # Lint
   php-codesniffer74:
     name: PHP CS 7.4
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20:04
     steps:
     - name: Get phpcs
       run: wget https://raw.githubusercontent.com/2pisoftware/cmfive-boilerplate/master/phpcs.xml
@@ -29,7 +29,7 @@ jobs:
         options: -s -p --colors --extensions=php --runtime-set testVersion 7.4
   php-codesniffer80:
     name: PHP CS 8.0
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20:04
     steps:
     - name: Get phpcs
       run: wget https://raw.githubusercontent.com/2pisoftware/cmfive-boilerplate/master/phpcs.xml
@@ -39,7 +39,7 @@ jobs:
         options: -s -p --colors --extensions=php --runtime-set testVersion 8.0
   php-codesniffer81:
     name: PHP CS 8.1
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20:04
     steps:
     - name: Get phpcs
       run: wget https://raw.githubusercontent.com/2pisoftware/cmfive-boilerplate/master/phpcs.xml
@@ -51,7 +51,7 @@ jobs:
   run_test:
     # Checkout Boilerplate
     name: Unit/Acceptance tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20:04
     needs: [ php-codesniffer74, php-codesniffer80, php-codesniffer81 ]
     steps:
       - uses: actions/checkout@v2
@@ -65,7 +65,7 @@ jobs:
           cp config.php.example config.php
           
           docker-compose up --build -d
-          docker exec -t mysql-8 bash mysql -u root -proot -c "CREATE DATABASE cmfive_test; CREATE USER cmfive_test@'%' IDENTIFIED BY 'cmfive_test'; GRANT ALL PRIVILEGES ON cmfive_test.* TO cmfive_test@'%'; FLUSH PRIVILEGES;"
+          docker exec -i mysql-8 mysql -u root -proot <<< "CREATE DATABASE cmfive_test; CREATE USER cmfive_test@'%' IDENTIFIED BY 'cmfive_test'; GRANT ALL PRIVILEGES ON cmfive_test.* TO cmfive_test@'%'; FLUSH PRIVILEGES;"
           
           docker exec -t nginx-php8.1 bash php cmfive.php install core
           docker exec -t nginx-php8.1 bash php cmfive.php install migrations
