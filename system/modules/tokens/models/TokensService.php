@@ -25,35 +25,56 @@ class TokensService extends DbService
 
 
     public function getCoreRolesByDayDateUserPolicy($policy)
-    { 
-        // if the policy is not "CMFIVE" then bail
-        // otherwisee we know the policy id is really a user id...
-
-        // the default CMFIVE stub could be to collect user roles with '_api' in namespace
-        // like : "function role_tokens_request_api_allowed(Web $w,$path) {"
-
-        // elaborated from:
-        /*
-            $rows = $this->getObjects("UserRole", ["user_id" => $this->id]);
-
+    {
+        echo $policy;
+        if ($policy->_validator == "CMFIVE") {
+        
+            // policy is actualyly a user ID
+            // get the roles from the policy
+            $rows = $policy->_role_profile->getObjects("UserRole", ["user_id" => $this->id]);
+            
+            //add role if not present, and ends with _api
             if ($rows) {
                 foreach ($rows as $row) {
-                    if (!in_array($row->role, $this->_roles)) {
+                    if (!in_array($row->role, $this->_roles) && str_ends_with($row->role, "_api")) {
                         $this->_roles[] = $row->role;
                     }
                 }
             }
         }
+
+
         return $this->_roles;
-        */
-        // str_contains() should be OK but watch out for bool pitfall ie !=== false
-        // do we care if positional?
-        
-        return [];
     }
+    //if $policy
+    // if the policy is not "CMFIVE" then bail
+    // otherwisee we know the policy id is really a user id...
+
+    // the default CMFIVE stub could be to collect user roles with '_api' in namespace
+    // like : "function role_tokens_request_api_allowed(Web $w,$path) {"
+
+    // elaborated from:
+    /*
+        $rows = $this->getObjects("UserRole", ["user_id" => $this->id]);
+
+        if ($rows) {
+            foreach ($rows as $row) {
+                if (!in_array($row->role, $this->_roles)) {
+                    $this->_roles[] = $row->role;
+                }
+            }
+        }
+    }
+    return $this->_roles;
+    */
+    // str_contains() should be OK but watch out for bool pitfall ie !=== false
+    // do we care if positional?
+        
+    //return [];
 
     // DEV STUBS ONLY FOR REPRESENTATIVE MODEL //
-    public function getDayDateUserToken($w)    {
+    public function getDayDateUserToken($w)
+    {
         // make a 'fake' JWT looking thing
         // not great, because we have password hidden in there!
         // nice would be build proper 3rd block as sig-verifier
@@ -63,10 +84,10 @@ class TokensService extends DbService
         $bumps = strlen($key)/5;
         $key = substr($key, 0, $bumps) . "." . substr($key, $bumps, $bumps*2) . "." . substr($key, $bumps*3);
         return $key;
-
     }
 
-    public function getDayDateUserTokenCheck($jwt) {
+    public function getDayDateUserTokenCheck($jwt)
+    {
         // as above, we could improve jwt conformance here:
 
         $internal = new TokensPolicy($this->w);
@@ -75,7 +96,7 @@ class TokensService extends DbService
         // because I don't know any better, let's win a user_id here:
         $parts = explode(".", base64_decode(str_replace(".", "", $jwt)));
         $parts[0] = base64_decode($parts[0] ?? null);
-        $parts[1] = str_replace($internal->_validator,"VALID",$parts[1] ?? null);
+        $parts[1] = str_replace($internal->_validator, "VALID", $parts[1] ?? null);
         $parts[2] = base64_decode($parts[2] ?? null);
 
         if ($parts[2] !== date("y-m-d") || $parts[1] !== "VALID") {

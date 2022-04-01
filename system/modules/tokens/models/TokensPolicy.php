@@ -7,18 +7,22 @@ class TokensPolicy extends DbService
     public $_validator;
     public $_role_profile;
 
-    public function getBearersRoles() {
 
+    public function getBearersRoles()
+    {
         // Consider remaining stateless here...
         // we have persisted no concept of the token beyond:
         // - it was asserted valid
         // - the VALIDATOR identified itself (for stubbed purposes, this is CMFIVE)
         // - the VALIDATOR asserted a ROLE PROFILE (for stubbed purposes, this will be a CMFIVE USER)
-        echo print_r($this->_validator,true);
-        echo print_r($this->_role_profile,true);
+        echo print_r($this->_validator, true);
+        echo print_r($this->_role_profile, true);
+        
         
         // So, from here, let's hit another hook, for validators/service models to populate roles from profile?
-       
+        if ($this->_validator == 'CMFIVE') {
+            $roles = TokensService::getCoreRolesByDayDateUserPolicy();
+        }
         // A straight function would give us array of string (roles)
         // A hook response would give as an array of string arrays
         // we would need to merge & de-dupe...
@@ -29,8 +33,7 @@ class TokensPolicy extends DbService
         // listener will interpret profile identifier
         // listern will return conventional/conformed roles list
 
-        return [];
-
+        return $roles;
     }
 
     /**
@@ -61,6 +64,4 @@ class TokensPolicy extends DbService
 
         return false;
     }
-
-
 }
