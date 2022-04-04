@@ -26,13 +26,19 @@ class TokensService extends DbService
 
     public function getCoreRolesByDayDateUserPolicy($policy)
     {
-        echo $policy;
-        if ($policy->_validator == "CMFIVE") {
+        // policy contains _validator and _role_profile, which is user->id
+        $this->Log->info('getCoreRolesByDayDateUserPolicy-Token Validator:' . $policy->_validator);
+        $this->Log->info('getCoreRolesByDayDateUserPolicy-role:' . $policy->_role_profile);
         
-            // policy is actualyly a user ID
+        if ($policy->_validator == "CMFIVE") {
+            $this->_roles = [];
+            // policy is actually a user ID
             // get the roles from the policy
-            $rows = $policy->_role_profile->getObjects("UserRole", ["user_id" => $this->id]);
-            
+            //$this->forceLogin($policy->_role_profile->id) // this probably works, but we didn't want to do it if I recall correctly
+
+            $rows = AuthService::getInstance($policy->w)->getObjects("UserRole", ["user_id" => $policy->_role_profile]);
+            $this->Log->info('getCoreRolesByDayDateUserPolicy - rows ' . $rows);
+
             //add role if not present, and ends with _api
             if ($rows) {
                 foreach ($rows as $row) {

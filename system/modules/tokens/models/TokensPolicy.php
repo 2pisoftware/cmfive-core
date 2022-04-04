@@ -17,12 +17,20 @@ class TokensPolicy extends DbService
         // - the VALIDATOR asserted a ROLE PROFILE (for stubbed purposes, this will be a CMFIVE USER)
         echo print_r($this->_validator, true);
         echo print_r($this->_role_profile, true);
-        
-        
+
         // So, from here, let's hit another hook, for validators/service models to populate roles from profile?
+        // TODO
+        //temporarily a direct call - Dane
         if ($this->_validator == 'CMFIVE') {
-            $roles = TokensService::getCoreRolesByDayDateUserPolicy();
+            $roles = TokensService::getInstance($this->w)->getCoreRolesByDayDateUserPolicy($this);
+            $this->Log->info('roles are ' . $roles);
+            echo print_r($roles, true);
+            //$roles = TokensService::getCoreRolesByDayDateUserPolicy();
         }
+        // TODO will be a hook
+        //$hook_return = $this->w->callHook("auth", "get_roles_from_token")
+
+
         // A straight function would give us array of string (roles)
         // A hook response would give as an array of string arrays
         // we would need to merge & de-dupe...
