@@ -26,57 +26,36 @@ class TokensService extends DbService
 
     public function getCoreRolesByDayDateUserPolicy($policy)
     {
-        // policy contains _validator and _role_profile, which is user->id
-        $this->Log->info('getCoreRolesByDayDateUserPolicy-Token Validator:' . $policy->_validator);
-        $this->Log->info('getCoreRolesByDayDateUserPolicy-role:' . $policy->_role_profile);
-        
+        // policy is actually a user ID
         if ($policy->_validator == "CMFIVE") {
             $this->_roles = [];
-            // policy is actually a user ID
-            // get the roles from the policy
-            //$this->forceLogin($policy->_role_profile->id) // this probably works, but we didn't want to do it if I recall correctly
-
+            
+            //get user roles which end in _api
             $rows = AuthService::getInstance($policy->w)->getObjects("UserRole", ["user_id" => $policy->_role_profile]);
-            $this->Log->info('getCoreRolesByDayDateUserPolicy - rows ' . $rows);
-
-            //add role if not present, and ends with _api
             if ($rows) {
                 foreach ($rows as $row) {
+                    $this->Log->info('    -row:' . $row->role);
                     if (!in_array($row->role, $this->_roles) && str_ends_with($row->role, "_api")) {
                         $this->_roles[] = $row->role;
                     }
                 }
             }
-        }
 
-
-        return $this->_roles;
-    }
-    //if $policy
-    // if the policy is not "CMFIVE" then bail
-    // otherwisee we know the policy id is really a user id...
-
-    // the default CMFIVE stub could be to collect user roles with '_api' in namespace
-    // like : "function role_tokens_request_api_allowed(Web $w,$path) {"
-
-    // elaborated from:
-    /*
-        $rows = $this->getObjects("UserRole", ["user_id" => $this->id]);
-
-        if ($rows) {
-            foreach ($rows as $row) {
-                if (!in_array($row->role, $this->_roles)) {
-                    $this->_roles[] = $row->role;
+            // get group roles which end in _api
+            $groupUsers = AuthService::getInstance($policy->w)->getObjects("GroupUser", ['user_id' => $policy->_role_profile]);
+            if ($groupUsers) {
+                foreach ($groupUsers as $groupUser) {
+                    $groupRoles = $groupUser->getGroupRoles();
+                    foreach ($groupRoles as $groupRole) {
+                        if (!in_array($groupRole, $this->_roles) && str_ends_with($groupRole, "_api")) {
+                            $this->_roles[] = $groupRole;
+                        }
+                    }
                 }
             }
         }
+        return $this->_roles;
     }
-    return $this->_roles;
-    */
-    // str_contains() should be OK but watch out for bool pitfall ie !=== false
-    // do we care if positional?
-        
-    //return [];
 
     // DEV STUBS ONLY FOR REPRESENTATIVE MODEL //
     public function getDayDateUserToken($w)

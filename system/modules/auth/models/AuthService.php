@@ -314,18 +314,14 @@ class AuthService extends DbService
                 RewriteCond %{HTTP:Authorization} ^(.+)$
                 RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
                 */
-        $this->Log->info("In authservice:" . (Config::get('system.use_api') === true));
-
 
         if (empty($this->user()) && (Config::get('system.use_api') === true) && !empty($_SERVER['HTTP_AUTHORIZATION'])) {
-            $this->Log->info("In token handling:" . ($_SERVER['HTTP_AUTHORIZATION']));
             $speculativeToken = TokensService::getInstance($this->w)->getTokenFromAuthorisationHeader($_SERVER['HTTP_AUTHORIZATION']);
-            $this->Log->info("In token handling:" . ($speculativeToken));
             if (!empty($speculativeToken)) {
                 // call for a module to assert the token is valid
                 $hook_results = $this->w->callHook("auth", "get_auth_token_validation", $speculativeToken);
             }
-            $this->Log->info("   count of hook results :" . count($hook_results));
+
             // if the token is invalid( jwt fails checks, len == 0 or somesuch) then we stop and don't continue
             if (empty($speculativeToken) || empty($hook_results)) {
                 $this->Log->error("Key invalid: '" . $_SERVER['HTTP_AUTHORIZATION'] . " was provided");
@@ -333,7 +329,6 @@ class AuthService extends DbService
                 return false;
             }
             foreach ($hook_results as $module => $validatingToken) {
-                $this->Log->error("Validating module: " . $module);
                 if (is_a($validatingToken, "TokensPolicy") && $validatingToken->tokensAllowed($path)) {
                     self::$_cache[$key] = $url ? $url : true;
                 } else {
