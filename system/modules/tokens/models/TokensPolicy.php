@@ -26,37 +26,22 @@ class TokensPolicy extends DbService
             $this->Log->error("No Roles for policy:" . $this->_role_profile);
         }
 
-        //foreach ($hook_results as $module => $roles) {
-        //    echo print_r($roles, true);
-        //}
-        //     if (is_a($validatingToken, "TokensPolicy") && $validatingToken->tokensAllowed($path)) {
-        //         self::$_cache[$key] = $url ? $url : true;
-        //     } else {
-        //         $this->Log->info('Handler ' . $module . ' did not provide Auth');
-        //     }
+        $roles = [];
+        foreach ($hook_results as $module => $_roles) {
+            $roles = array_merge($roles, $_roles);
+        }
+        $roles = array_unique($roles);
 
+        // echo "\n" ;
+        // echo print_r("Roles: ", true);
+        // echo print_r($roles, true);
 
-        // TODO
-        //temporarily a direct call - Dane
-        // if ($this->_validator == 'CMFIVE') {
-        //     $roles = TokensService::getInstance($this->w)->getCoreRolesByDayDateUserPolicy($this);
-        // }
-        return;
-        //echo print_r($roles, true);
-        // TODO will be a hook
-        //
-
-        // A straight function would give us array of string (roles)
-        // A hook response would give as an array of string arrays
-        // we would need to merge & de-dupe...
-        // No panic, PHP hass native functions for such.
+        return $roles;
         
         // broadcast this policy
         // listener will self identify as _validator
         // listener will interpret profile identifier
         // listern will return conventional/conformed roles list
-
-        //return $roles;
     }
 
     /**

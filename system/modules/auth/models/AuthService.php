@@ -331,6 +331,7 @@ class AuthService extends DbService
             foreach ($hook_results as $module => $validatingToken) {
                 if (is_a($validatingToken, "TokensPolicy") && $validatingToken->tokensAllowed($path)) {
                     self::$_cache[$key] = $url ? $url : true;
+                    return self::$_cache[$key]; // added this here, as it seems that if we fall through to the bottom, we
                 } else {
                     $this->Log->info('Handler ' . $module . ' did not provide Auth');
                 }
@@ -352,6 +353,7 @@ class AuthService extends DbService
                     $this->forceLogin($user->id);
                     if ($user->allowed($path)) {
                         self::$_cache[$key] = $url ? $url : true;
+                        return self::$_cache[$key]; // added this here, as it seems that if we fall through to the bottom, we
                     }
                 } else {
                     $this->Log->info($module . ' did not provide passthrough user for:' . $username);

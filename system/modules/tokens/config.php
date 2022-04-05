@@ -4,6 +4,7 @@ Config::set('tokens', array(
     'path' => 'system/modules',
     'topmenu' => true,
     'hooks' => [
-        'auth'
+        'auth',
+        'tokens'
     ],
 ));
