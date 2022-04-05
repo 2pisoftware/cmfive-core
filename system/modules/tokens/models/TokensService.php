@@ -34,7 +34,6 @@ class TokensService extends DbService
             $rows = AuthService::getInstance($policy->w)->getObjects("UserRole", ["user_id" => $policy->_role_profile]);
             if ($rows) {
                 foreach ($rows as $row) {
-                    $this->Log->info('    -row:' . $row->role);
                     if (!in_array($row->role, $this->_roles) && str_ends_with($row->role, "_api")) {
                         $this->_roles[] = $row->role;
                     }

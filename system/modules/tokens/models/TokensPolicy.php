@@ -19,17 +19,32 @@ class TokensPolicy extends DbService
         echo print_r($this->_role_profile, true);
 
         // So, from here, let's hit another hook, for validators/service models to populate roles from profile?
+        
+        $hook_results = $this->w->callHook("tokens", "get_roles_from_policy", $this);
+
+        if (empty($hook_results)) {
+            $this->Log->error("No Roles for policy:" . $this->_role_profile);
+        }
+
+        //foreach ($hook_results as $module => $roles) {
+        //    echo print_r($roles, true);
+        //}
+        //     if (is_a($validatingToken, "TokensPolicy") && $validatingToken->tokensAllowed($path)) {
+        //         self::$_cache[$key] = $url ? $url : true;
+        //     } else {
+        //         $this->Log->info('Handler ' . $module . ' did not provide Auth');
+        //     }
+
+
         // TODO
         //temporarily a direct call - Dane
-        if ($this->_validator == 'CMFIVE') {
-            $roles = TokensService::getInstance($this->w)->getCoreRolesByDayDateUserPolicy($this);
-            $this->Log->info('roles are ' . $roles);
-            echo print_r($roles, true);
-            //$roles = TokensService::getCoreRolesByDayDateUserPolicy();
-        }
+        // if ($this->_validator == 'CMFIVE') {
+        //     $roles = TokensService::getInstance($this->w)->getCoreRolesByDayDateUserPolicy($this);
+        // }
+        return;
+        //echo print_r($roles, true);
         // TODO will be a hook
-        //$hook_return = $this->w->callHook("auth", "get_roles_from_token")
-
+        //
 
         // A straight function would give us array of string (roles)
         // A hook response would give as an array of string arrays
@@ -41,7 +56,7 @@ class TokensPolicy extends DbService
         // listener will interpret profile identifier
         // listern will return conventional/conformed roles list
 
-        return $roles;
+        //return $roles;
     }
 
     /**
