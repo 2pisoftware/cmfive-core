@@ -325,6 +325,7 @@ class AuthService extends DbService
             // if the token is invalid( jwt fails checks, len == 0 or somesuch) then we stop and don't continue
             if (empty($speculativeToken) || empty($hook_results)) {
                 $this->Log->error("Key invalid: '" . $_SERVER['HTTP_AUTHORIZATION'] . " was provided");
+                ApiOutputService::getInstance($this->w)->apiRefuseMessage($this->w, $source=$path, $detail="Token not valid", $status_code="403");
                 self::$_cache[$key] = false;
                 return false;
             }
@@ -336,6 +337,9 @@ class AuthService extends DbService
                     $this->Log->info('Handler ' . $module . ' did not provide Auth');
                 }
             }
+            ApiOutputService::getInstance($this->w)->apiRefuseMessage($this->w, $source=$path, $detail="Token not authenticated", $status_code="403");
+            self::$_cache[$key] = false;
+            return false;
         }
 
 

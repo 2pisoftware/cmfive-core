@@ -15,8 +15,8 @@ class TokensPolicy extends DbService
         // - it was asserted valid
         // - the VALIDATOR identified itself (for stubbed purposes, this is CMFIVE)
         // - the VALIDATOR asserted a ROLE PROFILE (for stubbed purposes, this will be a CMFIVE USER)
-        echo print_r($this->_validator, true);
-        echo print_r($this->_role_profile, true);
+        //echo print_r($this->_validator, true);
+        //echo print_r($this->_role_profile, true);
 
         // So, from here, let's hit another hook, for validators/service models to populate roles from profile?
         
