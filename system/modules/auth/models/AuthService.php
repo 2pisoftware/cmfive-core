@@ -325,19 +325,19 @@ class AuthService extends DbService
             // if the token is invalid( jwt fails checks, len == 0 or somesuch) then we stop and don't continue
             if (empty($speculativeToken) || empty($hook_results)) {
                 $this->Log->error("Key invalid: '" . $_SERVER['HTTP_AUTHORIZATION'] . " was provided");
-                ApiOutputService::getInstance($this->w)->apiRefuseMessage($this->w, $source=$path, $detail="Token not valid", $status_code="403");
+                ApiOutputService::getInstance($this->w)->apiRefuseMessage($path,"Token not valid");
                 self::$_cache[$key] = false;
                 return false;
             }
             foreach ($hook_results as $module => $validatingToken) {
                 if (is_a($validatingToken, "TokensPolicy") && $validatingToken->tokensAllowed($path)) {
                     self::$_cache[$key] = $url ? $url : true;
-                    return self::$_cache[$key]; // added this here, as it seems that if we fall through to the bottom, we
+                    return self::$_cache[$key];
                 } else {
                     $this->Log->info('Handler ' . $module . ' did not provide Auth');
                 }
             }
-            ApiOutputService::getInstance($this->w)->apiRefuseMessage($this->w, $source=$path, $detail="Token not authenticated", $status_code="403");
+            ApiOutputService::getInstance($this->w)->apiRefuseMessage($path.":[".$speculativeToken."]", "Token not authenticated");
             self::$_cache[$key] = false;
             return false;
         }
@@ -357,7 +357,10 @@ class AuthService extends DbService
                     $this->forceLogin($user->id);
                     if ($user->allowed($path)) {
                         self::$_cache[$key] = $url ? $url : true;
-                        return self::$_cache[$key]; // added this here, as it seems that if we fall through to the bottom, we
+                        // hmmm, so we have forced login, 
+                        // but do we expect to still bounce 1x through auth/login as redirect?
+                        // = noting this 'return' is omitted in standing core releases, though is required by new tokens model!
+                        // return self::$_cache[$key]; 
                     }
                 } else {
                     $this->Log->info($module . ' did not provide passthrough user for:' . $username);

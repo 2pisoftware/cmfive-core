@@ -1,8 +1,12 @@
 <?php
+
 /**@author Derek Crannaford */
 
 function loopback_ALL(Web $w)
 {
-    ApiOutputService::getInstance($w)->useNoTemplate($w);
-    echo "should mirror inputs";
+    $testData = [
+        'POST' => TokensService::getInstance($w)->getJsonFromPostRequest()
+    ];
+
+    ApiOutputService::getInstance($w)->apiKeyedResponse($testData, "API loopback endpoint reached");
 }
