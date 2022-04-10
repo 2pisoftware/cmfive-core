@@ -4,7 +4,6 @@
 
 function flowsubmit_ALL(Web $w)
 {
-
     if (empty($_GET['code']) || empty($_GET['state'])) {
         ApiOutputService::getInstance($w)->apiFailMessage("oauth flow response", "Flow is invalid");
     }
@@ -14,7 +13,8 @@ function flowsubmit_ALL(Web $w)
     if (empty($known) || empty($app)) {
         ApiOutputService::getInstance($w)->apiFailMessage("oauth flow response", "State is invalid");
     }
-
+    $known->delete();
+    
     $asserted = $w->callHook(
         "oauth",
         "request_code_submit_flow",
@@ -26,11 +26,29 @@ function flowsubmit_ALL(Web $w)
 
     foreach ($asserted as $check) {
         if (!empty($check['access_token'])) {
+            $appCheck = TokensService::getInstance($w)->getAppFromJwtPayload($check['access_token']);
+            if ($appCheck !== $known->app_id) {
+                ApiOutputService::getInstance($w)->apiFailMessage("oauth flow response", "Client conflict");
+            }
+
+            if (!empty($app['splashpage'])) {
+                $template = OauthFlowService::getInstance($w)->getOauthSplashPageTemplate($app['splashpage']);
+                if (!empty($template)) {
+                    $splashPage = TemplateService::getInstance($w)->render(
+                        $template->id,
+                        [
+                            "app" => $app,
+                            "jwt" => $check,
+                            "payload" => TokensService::getInstance($w)->getJwtPayload($check['access_token'])
+                        ]
+                    );
+                    ApiOutputService::getInstance($w)->apiReturnCmfiveStyledHtml($w, $splashPage);
+                }
+            }
+
             ApiOutputService::getInstance($w)->apiKeyedResponse($check, "Application API key granted for " . $app['title']);
         }
     }
 
     ApiOutputService::getInstance($w)->apiFailMessage("oauth flow response", "No handler");
 }
-
-// eg: https://2piXYZ/tokens/flowtoken/?code=ed32b88f-eada-4e42-bc3e-591c05f4ad43

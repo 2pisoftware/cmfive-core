@@ -48,7 +48,7 @@ class CognitoFlowService extends DbService
                 . "/oauth2/authorize?client_id="
                 . $requested['app_id']
                 . "&response_type=code"
-                . "&redirect_uri=https://apatchofnettles.github.io/"
+                . "&redirect_uri=" . ($app['callback'] ?? null)
                 . "&state=" . $flow->state
                 . "&code_challenge=" . $flow->pkce_challenge
                 . "&code_challenge_method=" . $flow->pkce_method
@@ -80,7 +80,7 @@ class CognitoFlowService extends DbService
         if (empty($known)) {
             return null;
         }
-        
+
         $app = OauthFlowService::getInstance($this->w)->getOauthAppByProvider("cognito", $known->app_id);
         if (empty($app)) {
             return null;
@@ -101,7 +101,7 @@ class CognitoFlowService extends DbService
             'client_id' => $known->app_id,
             'client_secret' => ((empty($app['client_secret'])) ? "" :  $app['client_secret']),
             'grant_type' => "authorization_code",
-            'redirect_uri' => "https://apatchofnettles.github.io/",
+            'redirect_uri' => $app['callback'],
             'code' => $requested['code'],
             'code_verifier' => $known->pkce_verifier,
 
@@ -109,4 +109,21 @@ class CognitoFlowService extends DbService
 
         return json_decode($issued, true);
     }
+
+
+    // public function getCognitoJwtSignatureCheck($jwt)
+    // {
+    //     $parts = explode(".", $jwt);
+
+    //     $header = json_decode(base64_decode($parts[0] ?? ""), true);
+    //     $alg = $header['alg'] ?? "";
+
+    //     if (empty($parts[2]) || !$alg == "HS256") {
+    //         return false;
+    //     }
+
+    //     $signature = hash('sha256', $parts[0] . "." . ($parts[1] ?? ""));
+
+    //     return ($signature == ($parts[2] ?? null));
+    // }
 }

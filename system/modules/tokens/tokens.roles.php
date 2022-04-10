@@ -1,10 +1,5 @@
 <?php
 
-
-// function role_tokens_admin_token_allowed(Web $w,$path) {
-//     return $w->checkUrl($path, "tokens", "*", "*");
-// }
-
 function role_tokens_grant_allowed(Web $w,$path) {
     return $w->checkUrl($path, "tokens", "", "grant");
 }

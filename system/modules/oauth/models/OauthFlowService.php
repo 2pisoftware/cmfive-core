@@ -29,4 +29,15 @@ class OauthFlowService extends DbService
         }
         return null;
     }
+
+    
+    public function getOauthSplashPageTemplate($title)
+    { 
+            $where['module'] = "oauth"; 
+            $where['category'] = "splashpage"; 
+            $where['is_active'] = 1; 
+            $where['is_deleted'] = 0;
+            $where['title'] = $title;
+        return $this->getObject("Template", $where);
+    }
 }

@@ -4,6 +4,70 @@
 
 class TokensService extends DbService
 {
+
+    public function getTokenFromAuthorisationHeader($bearer)
+    {
+        if (!preg_match('/Bearer\s(\S+)/', $bearer, $matches)) {
+            return null;
+        }
+        return $matches[1] ?? null;
+    }
+
+    public function getJsonFromPostRequest()
+    {
+        // Takes raw data from the request
+        $json = file_get_contents('php://input');
+
+        // Converts it into a PHP object
+        return json_decode($json, true) ?? ['error' => "json parse failed"];
+    }
+
+    // This will only work for a vanilla HS256 token!
+    // Key-pair hashed tokens (Cognito etc) will neeed their own check methods
+
+    public function getJwtSignatureCheck($jwt, $asBase64 = false)
+    {
+        $parts = explode(".", $jwt);
+
+        $header = json_decode(base64_decode($parts[0] ?? ""), true);
+        $alg = $header['alg'] ?? "";
+
+        if (empty($parts[2]) || !$alg == "HS256") {
+            return false;
+        }
+
+        $signature = hash('sha256', $parts[0] . "." . ($parts[1] ?? ""));
+        if ($asBase64) {
+            $signature = $this->getBase64URL($signature);
+        }
+
+        return ($signature == ($parts[2] ?? null));
+    }
+
+    public function getJwtPayload($jwt)
+    {
+        $parts = explode(".", $jwt);
+        return json_decode(base64_decode($parts[1] ?? ""), true);
+    }
+
+    public function getAppFromJwtPayload($jwt)
+    {
+        return $this->getJwtPayload($jwt)['client_id'] ?? null;
+    }
+
+    function getBase64URL($plainText)
+    {
+        $base64 = base64_encode($plainText);
+        $base64 = trim($base64, "=");
+        $base64url = strtr($base64, '+/', '-_');
+        return ($base64url);
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////
+    // Use case example, and HOW-TO for handling token event hooks
+    // NOT for deployment !
+    //////////////////////////////////////////////////////////////////////////////////////////////
+    
     /*
     A general model for token (api) support:
 
@@ -33,50 +97,7 @@ class TokensService extends DbService
       curl http://cmfive/tokens-api/loopback  -H 'Content-Type: application/json' -d '{"data1":"setting1","data2":"setting2"}' -H 'Authorization: Bearer MYGRANTEDAPIJWT'
     */
 
-    public function getTokenFromAuthorisationHeader($bearer)
-    {
-        if (!preg_match('/Bearer\s(\S+)/', $bearer, $matches)) {
-            return null;
-        }
-        return $matches[1] ?? null;
-    }
-
-    public function getJsonFromPostRequest()
-    {
-        // Takes raw data from the request
-        $json = file_get_contents('php://input');
-
-        // Converts it into a PHP object
-        return json_decode($json, true) ?? ['error' => "json parse failed"];
-    }
-
-    public function getJwtSignatureCheck($jwt, $asBase64 = false)
-    {
-        $parts = explode(".", $jwt);
-
-        $header = json_decode(base64_decode($parts[0] ?? ""), true);
-        $alg = $header['alg'] ?? "";
-
-        if (empty($parts[2]) || !$alg == "HS256") {
-            return false;
-        }
-
-        $signature = hash('sha256', $parts[0] . "." . ($parts[1] ?? ""));
-        if ($asBase64) {
-            $signature = $this->getBase64URL($signature);
-        }
-
-        return ($signature == ($parts[2] ?? null));
-    }
-
-    function getBase64URL($plainText)
-    {
-        $base64 = base64_encode($plainText);
-        $base64 = trim($base64, "=");
-        $base64url = strtr($base64, '+/', '-_');
-        return ($base64url);
-    }
-
+    // Example code, showing how hook handler builds roles
     public function getCoreRolesByDayDateUserPolicy($policy)
     {
         $built_roles = [];
@@ -108,6 +129,8 @@ class TokensService extends DbService
         return $built_roles;
     }
 
+
+    // Example code, showing how (not!) to grant a token...
     public function getDayDateUserToken($w)
     {
         $header = $this->getBase64URL(json_encode([
@@ -128,6 +151,8 @@ class TokensService extends DbService
         return $header . "." . $payload . "." . $signature;
     }
 
+
+    // Example code, showing how hook handler can validate token
     public function getDayDateUserTokenCheck($jwt)
     {
         if (!$this->getJwtSignatureCheck($jwt)) {
