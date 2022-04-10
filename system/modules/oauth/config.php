@@ -3,6 +3,9 @@ Config::set('oauth', array(
     'active' => true,
     'path' => 'system/modules',
     'topmenu' => false,
+    'dependencies' => [
+        'aws/aws-sdk-php' => '^3.55'
+    ],
     'hooks' => [
         'auth',
         'tokens',
@@ -31,7 +34,8 @@ Config::set('oauth', array(
                 'domain' => "2pi-devpoint-arbitration.auth.ap-southeast-2.amazoncognito.com",
                 'scope' => "aws.cognito.signin.user.admin",
                 'callback' => "https://apatchofnettles.github.io/",
-                'splashpage' => "Prover"
+                'splashpage' => "Prover",
+                'user_pool' => "ap-southeast-2_4c9kTZput"
             ],
 
         ]
@@ -54,7 +58,7 @@ Config::set('oauth', array(
   Grants access for:
 </h2>
 <h1 align="center">
-    {{payload["username"]}}
+    {{display}}
 </h1>
 <h2 align="center">
   Token is:

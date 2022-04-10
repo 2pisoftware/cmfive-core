@@ -1,6 +1,6 @@
 <?php
 
-
+use Aws\CognitoIdentityProvider\CognitoIdentityProviderClient as AwsCognitoClient;
 use Aws\Exception\AwsException as AwsException;
 
 class OauthCognitoClient extends DbService
@@ -81,35 +81,67 @@ class OauthCognitoClient extends DbService
         }
     }
 
+
+    
+    public function getUserByAccessToken($accessToken)
+    {
+        try {
+            $this->makeWarningsCritical();
+            
+            $results = $this->_system->getUser([
+                'AccessToken' => $accessToken, // REQUIRED
+            ]);
+
+            $this->makeWarningsSafe();
+
+            if (empty($results)) {
+                return null;
+            }
+            
+            return $results;
+        } catch (Exception $ex) {
+            $this->makeWarningsSafe();
+            $results = "Internal, network or access error";
+            $this->failHandler(['From' => "Cognito", 'Failed' => "Configuration", 'Info' => $results]);
+            return null;
+        }
+    }
+
+
     public function getSystem()
     {
-        // try {
-        //     $this->makeWarningsCritical();
+        try {
+            $this->makeWarningsCritical();
 
-        //     // get aws client system
-        //     $LambdaClient = LambdaClient::factory(
-        //         [
-        //             // expect we will catch an IAM from the host!
-        //             // 'profile' => 'default',
-        //             'region' => Config::get('cpi.aws.region'), //'ap-southeast-2',
-        //             'version' => 'latest',
-        //             'credentials' => null,
-        //         ]
-        //     );
+            // get aws client system
+            $CognitoClient =  new AwsCognitoClient(
+                [ 
+                // 'credentials' => [
+                //     'key' => '',
+                //     'secret' => '/i+kFWAeyAGfL',
+                // ],
+                'region' => 'ap-southeast-2',
+                'version' => 'latest',
+                
+                // 'app_client_id' => 'xxxyyyzzz',
+                // 'app_client_secret' => 'xxxyyyzzz',
+                // 'user_pool_id' => 'userPool',
+                ]
+            );
 
-        //     $this->makeWarningsSafe();
+            $this->makeWarningsSafe();
 
-        //     if (empty($LambdaClient)) {
-        //         return null;
-        //     }
-        //     $this->_system = $LambdaClient;
-        //     return $this->_system;
-        // } catch (Exception $ex) {
-        //     $this->makeWarningsSafe();
-        //     $results = "Internal, network or access error";
-        //     $this->failHandler(['From' => "Lambda", 'Failed' => "Configuration", 'Info' => $results]);
-        //     return null;
-        // }
+            if (empty($CognitoClient)) {
+                return null;
+            }
+            $this->_system = $CognitoClient;
+            return $this->_system;
+        } catch (Exception $ex) {
+            $this->makeWarningsSafe();
+            $results = "Internal, network or access error";
+            $this->failHandler(['From' => "Cognito", 'Failed' => "Configuration", 'Info' => $results]);
+            return null;
+        }
     }
 
 

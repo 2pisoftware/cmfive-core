@@ -107,22 +107,47 @@ class CognitoFlowService extends DbService
 
         ]);
 
-        return json_decode($issued, true);
+        if ($cognito->failCount() > 0) {
+            return null;
+        }
+
+        $tokenSet = json_decode($issued, true);
+        $tokenSet['user_data'] = $this->getUserDataByTokenValid($tokenSet['access_token']);
+
+        if (empty($tokenSet['user_data']['Username'])) {
+            return null;
+        }
+
+        foreach(($tokenSet['user_data']['UserAttributes'] ?? null) as $att ) {
+            if ($att['Name'] == "email"){
+                $tokenSet['email'] = $att['Value'];
+            }
+        }
+
+        // Usefully returns: [ "access_token" => ..... , "user_data" => as_below , "email" => ifFound]
+        return $tokenSet;
     }
 
+    // Usefully returns:  [" Username" => string, "UserAttributes" => [] ]
+    public function getUserDataByTokenValid($accessToken)
+    {
+        $cognito = new OauthCognitoClient($this->w);
+        $cognito->getSystem();
+        $userValid =  $cognito->getUserByAccessToken($accessToken);
+        if (empty($userValid) || ($cognito->failCount() > 0)) {
+            return null;
+        }
+        $userData = ($userValid->toArray()) ?? null;
 
+        return $userData;
+    }
+
+    // We can live without this, if we rely on GetUser as essential validation...
     // public function getCognitoJwtSignatureCheck($jwt)
     // {
     //     $parts = explode(".", $jwt);
 
-    //     $header = json_decode(base64_decode($parts[0] ?? ""), true);
-    //     $alg = $header['alg'] ?? "";
-
-    //     if (empty($parts[2]) || !$alg == "HS256") {
-    //         return false;
-    //     }
-
-    //     $signature = hash('sha256', $parts[0] . "." . ($parts[1] ?? ""));
+    //     See: https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-using-tokens-verifying-a-jwt.html
 
     //     return ($signature == ($parts[2] ?? null));
     // }
