@@ -15,6 +15,8 @@
         - APP can interpret profile identifier freely (eg: as user_id, group_policy, code-baked app_actions etc)
     */
     
+/*
+
 // Your APP as token/role provider should catch this hook:
 // See example code in TokensService!
 function tokens_auth_get_auth_token_validation(Web $w, $jwt)
@@ -31,3 +33,5 @@ function tokens_tokens_get_roles_from_policy(Web $w, $policy)
         return TokensService::getInstance($w)->getCoreRolesByDayDateUserPolicy($policy);
     }
 }
+
+*/

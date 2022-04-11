@@ -67,7 +67,7 @@ class TokensService extends DbService
     // Use case example, and HOW-TO for handling token event hooks
     // NOT for deployment !
     //////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     /*
     A general model for token (api) support:
 
@@ -101,6 +101,7 @@ class TokensService extends DbService
     public function getCoreRolesByDayDateUserPolicy($policy)
     {
         $built_roles = [];
+        /*
         // The 'CMFIVE' policy is actually a user ID!
 
         //get user roles which end in _api
@@ -125,36 +126,49 @@ class TokensService extends DbService
                 }
             }
         }
+        */
 
         return $built_roles;
     }
 
 
     // Example code, showing how (not!) to grant a token...
+    // These tokens aren't guessable = GOOD
+    // But can be synthesised if you see the source code & DB_user table = BAD
+    // And they die at midnight (not time length) = confusing?
+    // 'better' tokens would need a peristent object store and an isolated synthesis 'seed/key'!
     public function getDayDateUserToken($w)
     {
+        return "NO_TOKEN";
+
+        /*
         $header = $this->getBase64URL(json_encode([
             "alg" => "HS256",
             "typ" => "JWT"
         ]));
 
         $user = AuthService::getInstance($w)->user();
+        $today = date("y-m-d");
 
         $payload = $this->getBase64URL(json_encode([
             "api" => "CMFIVE",
-            "id" => hash('sha256', $user->password),
-            "limit" => date("y-m-d")
+            "id" => hash('sha256', $today . $user->password),
+            "limit" => $today
         ]));
 
         $signature = hash('sha256', $header . "." . $payload);
 
         return $header . "." . $payload . "." . $signature;
+        */
     }
 
 
     // Example code, showing how hook handler can validate token
     public function getDayDateUserTokenCheck($jwt)
     {
+        return null;
+
+        /*
         if (!$this->getJwtSignatureCheck($jwt)) {
             return null;
         };
@@ -164,6 +178,7 @@ class TokensService extends DbService
         $internal->_validator = "CMFIVE";
         $internal->_raw_jwt = $jwt;
         $internal->_app_id = "CMFIVE_API";
+        $today = date("y-m-d");
 
         $parts = explode(".", $jwt);
         $payload = json_decode(base64_decode($parts[1] ?? ""), true);
@@ -175,12 +190,13 @@ class TokensService extends DbService
         // for simplest implementation of policy, our policy_id will be user_id, hence filtered from user->roles
         $candidates = $this->getObjects("User", ['is_active' => true, 'is_external' => false, 'is_deleted' => false, 'is_group' => false]);
         foreach ($candidates as $check) {
-            if ($payload['id'] == hash('sha256', $check->password)) {
+            if ($payload['id'] == hash('sha256', $today . $check->password)) {
                 $internal->_role_profile = $check->id;
                 return $internal;
             }
         }
 
         return null;
+        */
     }
 }

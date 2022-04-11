@@ -25,14 +25,14 @@ class ApiOutputService extends DbService
     public function apiReturnJsonResponse($response)
     {
         $this->useNoTemplate($this->w);
-
+        http_response_code($response['status']);
         // mark header for return content type JSON
         if (substr($response['status'],0,1) == "2") {
             header('Content-Type: application/json');
         } else {
-
             $this->w->Log->info("API request rejected: ".$response['referer']);
-            header($_SERVER["SERVER_PROTOCOL"] . " " . $response['status'] . " " . $response['payload'][0]);
+            // Don't need, already have set response code!
+            // header($_SERVER["SERVER_PROTOCOL"] . " " . $response['status'] . " " . $response['payload'][0]);
         }
 
         echo json_encode(['response' => $response]);
