@@ -6,6 +6,14 @@ form {
         margin-bottom: 2px;
         font-weight: bold;
 
+        @include media-breakpoint-down(md) {
+            flex-direction: column;
+
+            small {
+                padding: 8px 0px 0px !important;
+            }
+        }
+
         small {
             padding: 8px 0 0 8px;
             font-weight: normal;
