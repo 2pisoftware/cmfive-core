@@ -47,10 +47,10 @@ class TokensPolicy extends DbObject
         // which we clean up in case of merged results typical of hooks:
         $roles = [];
         foreach ($hook_results as $_roles) {
-            $roles = array_merge($roles, $_roles);
+            $roles = array_merge($roles, $_roles ?? []);
         }
         $roles = array_unique($roles);
-
+        
         return $roles;
     }
 
