@@ -33,7 +33,7 @@ class TokensPolicy extends DbObject
         // - the VALIDATOR asserted a ROLE PROFILE (for simplest purposes, this could be a CMFIVE USER)
 
         // So, from here, let's hit another hook, for validators/app_service models to populate roles from profile:
-        
+
         // broadcast this policy
         // listener will self identify as _validator and _app_id
         // listener will interpret profile identifier (eg as user_id, group_policy, code-baked app_actions etc)
@@ -50,7 +50,7 @@ class TokensPolicy extends DbObject
             $roles = array_merge($roles, $_roles ?? []);
         }
         $roles = array_unique($roles);
-        
+
         return $roles;
     }
 
@@ -71,12 +71,20 @@ class TokensPolicy extends DbObject
 
         foreach ($roles as $rn) {
             $rolefunc = "role_" . $rn . "_allowed";
-            if (function_exists($rolefunc)) {
-                if ($rolefunc($this->w, $path)) {
-                    return true;
-                }
-            } else {
-                $this->w->Log->error("Role '" . $rn . "' does not exist!");
+            $policyfunc = "token_policy_" . $rn . "_allowed";
+            if (!function_exists($rolefunc) && !function_exists($policyfunc)) {
+                $this->w->Log->error("Role or policy'" . $rn . "' does not exist!");
+                continue;
+            }
+            // These will be visible as user role selectors
+            // Ticked user can navigate to, if logged in!
+            if (function_exists($rolefunc) && $rolefunc($this->w, $path)) {
+                return true;
+            }
+            // These have no visible roles
+            // Only a token policy can grant page access
+            if (function_exists($policyfunc) && $policyfunc($this->w, $path)) {
+                return true;
             }
         }
 
