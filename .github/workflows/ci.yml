@@ -67,7 +67,7 @@ jobs:
           docker-compose up --build -d
           docker ps
           
-          mysql -h mysql-8 -u root -proot -c "CREATE DATABASE cmfive_test; CREATE USER cmfive_test@'%' IDENTIFIED BY 'cmfive_test'; GRANT ALL PRIVILEGES ON cmfive_test.* TO cmfive_test@'%'; FLUSH PRIVILEGES;"
+          mysql -h 127.0.0.1 -P 3006 -u root -proot -c "CREATE DATABASE cmfive_test; CREATE USER cmfive_test@'%' IDENTIFIED BY 'cmfive_test'; GRANT ALL PRIVILEGES ON cmfive_test.* TO cmfive_test@'%'; FLUSH PRIVILEGES;"
           # docker exec -t mysql-8 bash -c "service mysql start"
           #docker exec -t mysql-8 bash -c "which mysql && mysql -h 127.0.0.1 -u root -proot -c \"CREATE DATABASE cmfive_test; CREATE USER cmfive_test@'%' IDENTIFIED BY 'cmfive_test'; GRANT ALL PRIVILEGES ON cmfive_test.* TO cmfive_test@'%'; FLUSH PRIVILEGES;\""
           
