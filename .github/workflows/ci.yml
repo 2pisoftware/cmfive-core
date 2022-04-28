@@ -71,9 +71,9 @@ jobs:
           
           docker exec -t nginx-php8.1 bash -c "php cmfive.php install core"
           echo "Changing core branch to ${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}"
-           docker exec -t nginx-php8.1 bash -c "cd composer/vendor/2pisoftware/cmfive-core/ && git switch ${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}; git pull";
+          docker exec -t nginx-php8.1 bash -c "cd composer/vendor/2pisoftware/cmfive-core/ && git switch ${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}; git pull";
           # docker exec -t nginx-php8.1 bash -c "rm cache/config.cache"
-          docker exec -t nginx-php8.1 bash -c "php cmfive.php install core"
+          docker exec -t nginx-php8.1 bash -c "rm cache/config.cache && php cmfive.php install core"
           docker exec -t nginx-php8.1 bash -c "DB_HOST=${DB_HOST} DB_USERNAME=${DB_USERNAME} DB_PASSWORD=${DB_PASSWORD} DB_DATABASE=${DB_DATABASE} php cmfive.php install migrations"
           
           #docker exec -t nginx-php8.1 bash php cmfive.php install core
