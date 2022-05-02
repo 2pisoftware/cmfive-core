@@ -102,6 +102,7 @@ jobs:
           export DB_USERNAME=cmfive_test
           export DB_PASSWORD=cmfive_test
           export DB_HOST=mysql-8
+          export DB_PORT=3306
           docker exec nginx-php8.1 bash -c "cat config.php && php cmfive.php testDB setup; exit \$?";
 
       # Run Unit Tests
@@ -111,6 +112,7 @@ jobs:
           export DB_USERNAME=cmfive_test
           export DB_PASSWORD=cmfive_test
           export DB_HOST=mysql-8
+          export DB_PORT=3306
           docker exec nginx-php8.1 bash -c "php cmfive.php tests unit all; exit \$?"
           if [ $? -gt 0 ]; then
             echo "Admin module tests failed"
