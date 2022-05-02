@@ -87,7 +87,7 @@ jobs:
 
       - name: Inject configs into cmfive Test Environment
         run: |
-          echo 'Config::set("tests", ["testrunner" => "ENABLED", "config" => '', "yaml" => ["- WebDriver:" => ["url" => "http://webapp:3000", "browser" => "chrome", "wait" => "60", "host" => "selenium314", "port" => "4444", "capabilities" => ["acceptInsecureCerts" => true, "goog:chromeOptions" => "w3c: false"]], "- Db:" => ["dsn" => "mysql:host=mysql-8;dbname=cmfive_test", "user" => "cmfive_test", "password" => "cmfive_test"], "- Asserts:" => ""]]);' >> config.php
+          echo 'Config::set("tests", ["testrunner" => "ENABLED", "config" => "", "yaml" => ["- WebDriver:" => ["url" => "http://webapp:3000", "browser" => "chrome", "wait" => "60", "host" => "selenium314", "port" => "4444", "capabilities" => ["acceptInsecureCerts" => true, "goog:chromeOptions" => "w3c: false"]], "- Db:" => ["dsn" => "mysql:host=mysql-8;dbname=cmfive_test", "user" => "cmfive_test", "password" => "cmfive_test"], "- Asserts:" => ""]]);' >> config.php
           echo 'Config::set('system.environment', 'development');' >> config.php
           echo 'Config::set('core_template.foundation.reveal.animation', 'none');' >> config.php
           echo 'Config::set('core_template.foundation.reveal.animation_speed', 0);' >> config.php
