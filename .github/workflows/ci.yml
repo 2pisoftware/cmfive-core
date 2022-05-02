@@ -71,10 +71,7 @@ jobs:
           #docker exec -t nginx-php8.1 bash -c "php cmfive.php install migrations"
           
           #docker exec -t mysql-8 bash -c "service mysql start"
-          docker exec -t mysql-8 bash -c "mysql -u root -proot -c \"CREATE DATABASE cmfive_test;\""
-          docker exec -t mysql-8 bash -c "mysql -u root -proot -c \"CREATE USER cmfive_test@'%' IDENTIFIED BY 'cmfive_test';\""
-          docker exec -t mysql-8 bash -c "mysql -u root -proot -c \"GRANT ALL PRIVILEGES ON cmfive_test.* TO cmfive_test@'%';\""
-          docker exec -t mysql-8 bash -c "mysql -u root -proot -c \"FLUSH PRIVILEGES;\""
+          docker exec -t mysql-8 bash -c "mysql -u root -proot --execute \"CREATE DATABASE cmfive_test; CREATE USER cmfive_test@'%' IDENTIFIED BY 'cmfive_test'; GRANT ALL PRIVILEGES ON cmfive_test.* TO cmfive_test@'%'; FLUSH PRIVILEGES;\""
           
           # cd composer/vendor/2pisoftware/cmfive && git switch ${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}} && cd ../../../../;
           
