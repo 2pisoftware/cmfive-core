@@ -98,12 +98,12 @@ jobs:
 
       - name: Prepare cmfive Test Database
         run: |
-          docker exec nginx-php8.1 bash -c "cat config.php && DB_HOST=mysql-81 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test php cmfive.php testDB setup; exit \$?";
+          docker exec nginx-php8.1 bash -c "cat config.php && DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test php cmfive.php testDB setup; exit \$?";
 
       # Run Unit Tests
       - name: "Run unit tests"
         run: |
-          docker exec nginx-php8.1 bash -c "DB_HOST=mysql-81 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test php cmfive.php tests unit all; exit \$?"
+          docker exec nginx-php8.1 bash -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test php cmfive.php tests unit all; exit \$?"
           if [ $? -gt 0 ]; then
             echo "Admin module tests failed"
           fi
