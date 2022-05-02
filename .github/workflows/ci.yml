@@ -68,19 +68,15 @@ jobs:
           docker ps
           
           docker exec -t nginx-php8.1 bash -c "php cmfive.php install core ${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}"
-          #docker exec -t nginx-php8.1 bash -c "php cmfive.php install migrations"
-          
-          #docker exec -t mysql-8 bash -c "service mysql start"
+
           docker exec -t mysql-8 bash -c "mysql -h127.0.0.1 -u root -proot --execute \"CREATE DATABASE cmfive_test; CREATE USER cmfive_test@'%' IDENTIFIED BY 'cmfive_test'; GRANT ALL PRIVILEGES ON cmfive_test.* TO cmfive_test@'%'; FLUSH PRIVILEGES;\""
-          
-          # cd composer/vendor/2pisoftware/cmfive && git switch ${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}} && cd ../../../../;
-          
+
           #docker exec -t nginx-php8.1 bash -c "php cmfive.php install core ${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}"
-          docker exec -t nginx-php8.1 bash -c "php cmfive.php install migrations"
+          docker exec -t nginx-php8.1 bash -c "DB_DATABASE=${DB_DATABASE} DB_USERNAME=${DB_USERNAME} DB_PASSWORD=${DB_PASSWORD} DB_HOST=${DH_HOST} php cmfive.php install migrations"
           docker exec -t nginx-php8.1 bash -c "php cmfive.php seed encryption"
           docker exec -t nginx-php8.1 bash -c "php cmfive.php seed admin admin admin admin@example.com admin admin"
           
-          chmod -R 777 cache/ storage/ uploads/
+          docker exec -t nginx-php8.1 bash -c "chmod -R 777 cache/ storage/ uploads/"
           
           docker start selenium314;
 
