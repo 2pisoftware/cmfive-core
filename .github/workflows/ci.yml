@@ -97,7 +97,7 @@ jobs:
           echo "Config::set('core_template.foundation.reveal.animation', 'none');" >> config.php;
 
       - name: Prepare cmfive Test Database
-        run: docker exec nginx-php8.1 bash -c "php cmfive.php testDB setup; exit \$?";
+        run: docker exec nginx-php8.1 bash -c "cat config.php && php cmfive.php testDB setup; exit \$?";
 
       # Run Unit Tests
       - name: "Run unit tests"
