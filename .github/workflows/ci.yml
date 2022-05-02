@@ -78,7 +78,7 @@ jobs:
           docker exec -t mysql-8 bash -c "mysql -h 127.0.0.1 -u root -proot --execute \"CREATE DATABASE cmfive_test; CREATE USER cmfive_test@'%' IDENTIFIED BY 'cmfive_test'; GRANT ALL PRIVILEGES ON cmfive_test.* TO cmfive_test@'%'; FLUSH PRIVILEGES;\""
 
           #docker exec -t nginx-php8.1 bash -c "php cmfive.php install core ${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}"
-          docker exec -t nginx-php8.1 bash -c "php cmfive.php install migrations"
+          docker exec -t nginx-php8.1 bash -c "DB_HOST=mysql-81 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test php cmfive.php install migrations"
           docker exec -t nginx-php8.1 bash -c "php cmfive.php seed encryption"
           docker exec -t nginx-php8.1 bash -c "php cmfive.php seed admin admin admin admin@example.com admin admin"
           
@@ -98,24 +98,12 @@ jobs:
 
       - name: Prepare cmfive Test Database
         run: |
-          export DB_DATABASE=cmfive_test
-          export DB_USERNAME=cmfive_test
-          export DB_PASSWORD=cmfive_test
-          export DB_HOST=mysql-8
-          export DB_PORT=3306
-          
-          docker exec nginx-php8.1 bash -c "cat config.php && php cmfive.php testDB setup; exit \$?";
+          docker exec nginx-php8.1 bash -c "cat config.php && DB_HOST=mysql-81 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test php cmfive.php testDB setup; exit \$?";
 
       # Run Unit Tests
       - name: "Run unit tests"
         run: |
-          export DB_DATABASE=cmfive_test
-          export DB_USERNAME=cmfive_test
-          export DB_PASSWORD=cmfive_test
-          export DB_HOST=mysql-8
-          export DB_PORT=3306
-          
-          docker exec nginx-php8.1 bash -c "php cmfive.php tests unit all; exit \$?"
+          docker exec nginx-php8.1 bash -c "DB_HOST=mysql-81 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test php cmfive.php tests unit all; exit \$?"
           if [ $? -gt 0 ]; then
             echo "Admin module tests failed"
           fi
