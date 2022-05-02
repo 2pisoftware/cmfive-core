@@ -67,12 +67,17 @@ jobs:
           docker-compose up --build -d
           docker ps
           
+          export DB_DATABASE=cmfive_test
+          export DB_USERNAME=cmfive_test
+          export DB_PASSWORD=cmfive_test
+          export DB_HOST=mysql-8
+          
           docker exec -t nginx-php8.1 bash -c "php cmfive.php install core ${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}"
 
           docker exec -t mysql-8 bash -c "mysql -h127.0.0.1 -u root -proot --execute \"CREATE DATABASE cmfive_test; CREATE USER cmfive_test@'%' IDENTIFIED BY 'cmfive_test'; GRANT ALL PRIVILEGES ON cmfive_test.* TO cmfive_test@'%'; FLUSH PRIVILEGES;\""
 
           #docker exec -t nginx-php8.1 bash -c "php cmfive.php install core ${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}"
-          docker exec -t nginx-php8.1 bash -c "DB_DATABASE=${DB_DATABASE} DB_USERNAME=${DB_USERNAME} DB_PASSWORD=${DB_PASSWORD} DB_HOST=${DH_HOST} php cmfive.php install migrations"
+          docker exec -t nginx-php8.1 bash -c "php cmfive.php install migrations"
           docker exec -t nginx-php8.1 bash -c "php cmfive.php seed encryption"
           docker exec -t nginx-php8.1 bash -c "php cmfive.php seed admin admin admin admin@example.com admin admin"
           
@@ -82,12 +87,12 @@ jobs:
 
       - name: Inject configs into cmfive Test Environment
         run: |
-          echo 'Config::set("tests", ["testrunner" => "ENABLED", "config" => '', "yaml" => ["- WebDriver:" => ["url" => "http://webapp:3000", "browser" => "chrome", "wait" => "60", "host" => "selenium314", "port" => "4444", "capabilities" => ["acceptInsecureCerts" => true, "goog:chromeOptions" => "w3c: false"]], "- Db:" => ["dsn" => "mysql:host=${DB_HOST}:3306;dbname=${DB_DATABASE}", "user" => "${DB_USERNAME}", "password" => "${DB_PASSWORD}"], "- Asserts:" => ""]]);' >> config.php
+          echo 'Config::set("tests", ["testrunner" => "ENABLED", "config" => '', "yaml" => ["- WebDriver:" => ["url" => "http://webapp:3000", "browser" => "chrome", "wait" => "60", "host" => "selenium314", "port" => "4444", "capabilities" => ["acceptInsecureCerts" => true, "goog:chromeOptions" => "w3c: false"]], "- Db:" => ["dsn" => "mysql:host=mysql-8;dbname=cmfive_test", "user" => "cmfive_test", "password" => "cmfive_test"], "- Asserts:" => ""]]);' >> config.php
           echo 'Config::set('system.environment', 'development');' >> config.php
           echo 'Config::set('core_template.foundation.reveal.animation', 'none');' >> config.php
           echo 'Config::set('core_template.foundation.reveal.animation_speed', 0);' >> config.php
 
-          echo "Config::set('report.database', ['hostname' => '${DB_HOST}', 'username' => '${DB_USERNAME}', 'password' => '${DB_PASSWORD}', 'database' => '${DB_DATABASE}', 'driver' => 'mysql']);" >> config.php;
+          echo "Config::set('report.database', ['hostname' => 'mysql-8', 'username' => 'cmfive_test', 'password' => 'cmfive_test', 'database' => 'cmfive_test', 'driver' => 'mysql']);" >> config.php;
           echo "Config::set('core_template.foundation.reveal.animation_speed', 0);" >> config.php;
           echo "Config::set('core_template.foundation.reveal.animation', 'none');" >> config.php;
 
