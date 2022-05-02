@@ -112,11 +112,7 @@ jobs:
       # Run Acceptance Tests
       - name: "Run admin module tests"
         run: |
-          export DB_DATABASE=cmfive_test
-          export DB_USERNAME=cmfive_test
-          export DB_PASSWORD=cmfive_test
-          export DB_HOST=mysql-8
-          docker exec nginx-php8.1 bash -c "php cmfive.php tests module admin silent; exit \$?"
+          docker exec nginx-php8.1 bash -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test php cmfive.php tests module admin silent; exit \$?"
           if [ $? -gt 0 ]; then
             echo "Admin module tests failed"
           fi
