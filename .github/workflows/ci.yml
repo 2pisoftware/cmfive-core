@@ -11,6 +11,7 @@ env:
   TARGET_PHP: 8.1
   TARGET_MYSQL: 8
   DB_HOST: mysql-8
+  DB_PORT: 3306
   DB_USERNAME: cmfive_test
   DB_PASSWORD: cmfive_test
   DB_DATABASE: cmfive_test
