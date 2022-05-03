@@ -93,7 +93,7 @@ jobs:
 
       - name: Prepare cmfive Test Database
         run: |
-          docker exec nginx-php8.1 bash -c "cd ./test/ && sh ./.install/install.sh && chmod -R 777 /var/www/html/test && ls -lah /var/www/html/test/Codeception/tests && cd ../"
+          docker exec nginx-php8.1 bash -c "cd ./test/ && sh ./.install/install.sh && chmod -R 777 /var/www/html/test && ls -lah -R /var/www/html/test/Codeception/tests && cd ../"
           docker exec nginx-php8.1 bash -c "cat config.php && DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test php cmfive.php testDB setup; exit \$?";
 
       # Run Unit Tests
@@ -107,7 +107,7 @@ jobs:
       # Run Acceptance Tests
       - name: "Run admin module tests"
         run: |
-          docker exec nginx-php8.1 bash -c "ls -lah /var/www/html/test/Codeception/tests && DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test php cmfive.php tests module admin silent; exit \$?"
+          docker exec nginx-php8.1 bash -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test php cmfive.php tests module admin silent; exit \$?"
           if [ $? -gt 0 ]; then
             echo "Admin module tests failed"
           fi
