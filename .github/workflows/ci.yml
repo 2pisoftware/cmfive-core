@@ -83,7 +83,7 @@ jobs:
 
       - name: Inject configs into cmfive Test Environment
         run: |
-          echo 'Config::set("tests", ["testrunner" => "ENABLED"]);' >> config.php
+          echo 'Config::append("tests", ["testrunner" => "ENABLED"]);' >> config.php
           echo 'Config::set("system.environment", "development");' >> config.php
           echo 'Config::set("core_template.foundation.reveal.animation", "none");' >> config.php
           echo 'Config::set("core_template.foundation.reveal.animation_speed", 0);' >> config.php
