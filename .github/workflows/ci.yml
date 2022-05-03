@@ -63,47 +63,39 @@ jobs:
       # Pre-requsites Prepare Cmfive Environment
       - name: Setup cmfive Test Environment
         run: |
-          cp config.php.example config.php
+          cp .codepipeline/test_agent/configs/test_agent-config.php config.php
           
           docker-compose -f test_agent-compose.yml up --build -d
           sleep 5
           docker ps
           
           echo CoreInstall
-          docker exec -t nginx-php8.1 bash -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test php cmfive.php install core ${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}"
+          docker exec -t nginx-php8.1 bash -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php install core ${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}"
 
           echo DBCreate 
           docker exec -t mysql-8 bash -c "mysql -h 127.0.0.1 -u'root' -p'root' --execute \"CREATE DATABASE cmfive_test; CREATE USER cmfive_test@'%' IDENTIFIED BY 'cmfive_test'; GRANT ALL PRIVILEGES ON cmfive_test.* TO cmfive_test@'%'; FLUSH PRIVILEGES;\""
 
           echo SeedingCmfive
           # docker exec -t nginx-php8.1 bash -c "php cmfive.php install core ${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}"
-          docker exec -t nginx-php8.1 bash -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test php cmfive.php seed encryption"
-          docker exec -t nginx-php8.1 bash -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test php cmfive.php install migrations"
-          docker exec -t nginx-php8.1 bash -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test php cmfive.php seed admin admin admin admin@example.com admin admin"
+          docker exec -t nginx-php8.1 bash -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php seed encryption"
+          docker exec -t nginx-php8.1 bash -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php install migrations"
+          docker exec -t nginx-php8.1 bash -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php seed admin admin admin admin@example.com admin admin"
           
           docker exec -t nginx-php8.1 bash -c "chmod -R 777 cache/ storage/ uploads/"
           
           docker start selenium314;
 
       - name: Inject configs into cmfive Test Environment
-        run: |
-          echo 'Config::append("tests", ["testrunner" => "ENABLED"]);' >> config.php
-          echo 'Config::set("system.environment", "development");' >> config.php
-          echo 'Config::set("core_template.foundation.reveal.animation", "none");' >> config.php
-          echo 'Config::set("core_template.foundation.reveal.animation_speed", 0);' >> config.php
-
-          echo "Config::set('report.database', ['hostname' => 'mysql-8', 'username' => 'cmfive_test', 'password' => 'cmfive_test', 'database' => 'cmfive_test', 'driver' => 'mysql']);" >> config.php;
-
 
       - name: Prepare cmfive Test Database
         run: |
           docker exec nginx-php8.1 bash -c "cd ./test/ && sh ./.install/install.sh && chmod -R 777 /var/www/html/test/Codeception/tests && ls -lah /var/www/html/test/Codeception/tests && cat /var/www/html/test/Codeception/tests/*.yml"
-          docker exec nginx-php8.1 bash -c "cat config.php && DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test php cmfive.php testDB setup; exit \$?";
+          docker exec nginx-php8.1 bash -c "cat config.php && DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php testDB setup; exit \$?";
 
       # Run Unit Tests
       - name: "Run unit tests"
         run: |
-          docker exec nginx-php8.1 bash -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test php cmfive.php tests unit all; exit \$?"
+          docker exec nginx-php8.1 bash -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php tests unit all; exit \$?"
           if [ $? -gt 0 ]; then
             echo "Admin module tests failed"
           fi
@@ -111,7 +103,7 @@ jobs:
       # Run Acceptance Tests
       - name: "Run admin module tests"
         run: |
-          docker exec nginx-php8.1 bash -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test php cmfive.php tests module admin silent; exit \$?"
+          docker exec nginx-php8.1 bash -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php tests module admin silent; exit \$?"
           if [ $? -gt 0 ]; then
             echo "Admin module tests failed"
           fi
