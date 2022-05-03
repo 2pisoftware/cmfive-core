@@ -65,7 +65,7 @@ jobs:
         run: |
           cp config.php.example config.php
           
-          docker-compose up --build -d
+          docker-compose -f test_agent-compose.yml up --build -d
           docker ps
 
           docker exec -t nginx-php8.1 bash -c "php cmfive.php install core ${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}"
@@ -83,7 +83,7 @@ jobs:
 
       - name: Inject configs into cmfive Test Environment
         run: |
-          echo 'Config::set("tests", ["testrunner" => "ENABLED", "config" => "", "yaml" => ["- WebDriver:" => ["url" => "http://webapp:3000", "browser" => "chrome", "wait" => "60", "host" => "selenium314", "port" => "4444", "capabilities" => ["acceptInsecureCerts" => true, "goog:chromeOptions" => "w3c: false"]], "- Db:" => ["dsn" => "mysql:host=mysql-8:3306;dbname=cmfive_test", "user" => "cmfive_test", "password" => "cmfive_test"], "- Asserts:" => ""]]);' >> config.php
+          echo 'Config::set("tests", ["testrunner" => "ENABLED"]);' >> config.php
           echo 'Config::set("system.environment", "development");' >> config.php
           echo 'Config::set("core_template.foundation.reveal.animation", "none");' >> config.php
           echo 'Config::set("core_template.foundation.reveal.animation_speed", 0);' >> config.php
@@ -93,7 +93,7 @@ jobs:
 
       - name: Prepare cmfive Test Database
         run: |
-          docker exec nginx-php8.1 bash -c "ls -lah /var/www/html/test/Codeception/tests && cat /var/www/html/test/Codeception/tests/*.yml"
+          docker exec nginx-php8.1 bash -c "cd ./test/ && sh ./.install/install.sh && chmod -R 777 /var/www/html/test/Codeception/tests && ls -lah /var/www/html/test/Codeception/tests && cat /var/www/html/test/Codeception/tests/*.yml"
           docker exec nginx-php8.1 bash -c "cat config.php && DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test php cmfive.php testDB setup; exit \$?";
 
       # Run Unit Tests
