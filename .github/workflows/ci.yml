@@ -86,6 +86,8 @@ jobs:
           docker start selenium314;
 
       - name: Inject configs into cmfive Test Environment
+        run: |
+          echo "Inheriting test_agent config from PIPELINE"
 
       - name: Prepare cmfive Test Database
         run: |
