@@ -1,6 +1,6 @@
 <?php
 
-namespace Support\Helper;
+namespace Helper;
 
 class CmfiveAdminModule extends \Codeception\Module
 {
