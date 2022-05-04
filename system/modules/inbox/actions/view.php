@@ -1,12 +1,12 @@
 <?php
 function view_GET(Web $w) {
-	$w->Inbox->navigation($w,"Message View");
+	InboxService::getInstance($w)->navigation($w,"Message View");
 	$p = $w->pathMatch("type","id");
-	$msg = $w->Inbox->getMessage($p['id']);
+	$msg = InboxService::getInstance($w)->getMessage($p['id']);
 	if (!$msg) {
 		$w->error("No such message.");
 	}
-	if ($msg->user_id != $w->Auth->user()->id) {
+	if ($msg->user_id != AuthService::getInstance($w)->user()->id) {
 		$w->error("No access.");
 	}
 	$msg->is_new = 0;

@@ -15,14 +15,14 @@ function createseed_GET(Web $w) {
 
 function createseed_POST(Web $w) {
 
-	$module = $w->request('module');
-	$name = $w->request('name');
+	$module = Request::string('module');
+	$name = Request::string('name');
 
 	if (empty($module) || empty($name)) {
 		$w->error('Missing data', '/admin-migration#seed');
 	}
 
-	$response = $w->Migration->createMigrationSeed($module, $name);
+	$response = MigrationService::getInstance($w)->createMigrationSeed($module, $name);
 
 	if ($response) {
 		$w->msg('Migration seed created', '/admin-migration#seed');

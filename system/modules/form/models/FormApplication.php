@@ -21,7 +21,7 @@ class FormApplication extends DbObject {
 									->where('form_application_mapping.application_id', $this->id)->fetchAll();
 
 		return $this->getObjectsFromRows('Form', $forms_mapped);
-		// return $this->w->Form->getFormsMappedToObject($this);
+		// return FormService::getInstance($this->w)->getFormsMappedToObject($this);
 	}
 
 	public function hasForm($form) {
@@ -29,7 +29,7 @@ class FormApplication extends DbObject {
 	}
 	
 	public function getFormInstances($form) {
-		return $this->w->Form->getFormInstancesForFormAndObject($form, $this);
+		return FormService::getInstance($this->w)->getFormInstancesForFormAndObject($form, $this);
 	}
 	
 	public function getMembers() {

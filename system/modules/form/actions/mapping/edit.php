@@ -2,8 +2,8 @@
 
 function edit_POST(Web $w)
 {
-    $form_id = $w->request("form_id");
-    $current_mappings = $w->Form->getObjects("FormMapping", ["form_id" => $form_id, "is_deleted" => 0]) ?? [];
+    $form_id = Request::int("form_id");
+    $current_mappings = FormService::getInstance($w)->getObjects("FormMapping", ["form_id" => $form_id, "is_deleted" => 0]) ?? [];
 
     foreach ($_POST as $key => $value) {
         switch ($value) {
@@ -23,7 +23,7 @@ function edit_POST(Web $w)
                         $current_mapping->is_singleton = true;
 
                         if (!$current_mapping->update()) {
-                            $w->Log->setLogger("FORM")->error("Failed to update FormMapping with id: {$current_mapping->id}");
+                            LogService::getInstance($w)->setLogger("FORM")->error("Failed to update FormMapping with id: {$current_mapping->id}");
                         }
                     }
                 }
@@ -38,7 +38,7 @@ function edit_POST(Web $w)
                 $new_mapping->is_singleton = true;
 
                 if (!$new_mapping->insert()) {
-                    $w->Log->setLogger("FORM")->error("Failed to create new FormMapping for Form with id: {$form_id}");
+                    LogService::getInstance($w)->setLogger("FORM")->error("Failed to create new FormMapping for Form with id: {$form_id}");
                 }
                 break;
             case "multiple":
@@ -50,7 +50,7 @@ function edit_POST(Web $w)
                         $current_mapping->is_singleton = false;
 
                         if (!$current_mapping->update()) {
-                            $w->Log->setLogger("FORM")->error("Failed to update FormMapping with id: {$current_mapping->id}");
+                            LogService::getInstance($w)->setLogger("FORM")->error("Failed to update FormMapping with id: {$current_mapping->id}");
                         }
                     }
                 }
@@ -65,11 +65,11 @@ function edit_POST(Web $w)
                 $new_mapping->is_singleton = false;
 
                 if (!$new_mapping->insert()) {
-                    $w->Log->setLogger("FORM")->error("Failed to create new FormMapping for Form with id: {$form_id}");
+                    LogService::getInstance($w)->setLogger("FORM")->error("Failed to create new FormMapping for Form with id: {$form_id}");
                 }
                 break;
             default:
-                $w->Log->setLogger("FORM")->error("Unknown mapping type: {$value}, no action taken");
+                LogService::getInstance($w)->setLogger("FORM")->error("Unknown mapping type: {$value}, no action taken");
                 break;
         }
     }

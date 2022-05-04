@@ -57,7 +57,7 @@ function login_POST(Web $w)
 
     if ($w->session('orig_path') != "auth/login") {
         $url = $w->session('orig_path');
-        $w->Log->debug("Original path: " . $url);
+        LogService::getInstance($w)->debug("Original path: " . $url);
 
         // If no url specified, go to the users defined url
         if (empty($url) || $url == "/") {

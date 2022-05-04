@@ -1,8 +1,8 @@
 <?php
 function index_GET($w)
 {
-    $w->Admin->navigation($w, "Templates");
-    $templates = $w->Template->findTemplates(null, null, true);
+    AdminService::getInstance($w)->navigation($w, "Templates");
+    $templates = TemplateService::getInstance($w)->findTemplates(null, null, true);
     $table_header = [
         "Title", "Module", "Category",
         ["Active?", true],

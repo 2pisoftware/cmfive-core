@@ -5,7 +5,7 @@ function index_GET(Web $w)
     $w->ctx('title', 'File adapter management');
 
     // Get attachments
-    $attachments = $w->File->getObjects("Attachment", ["is_deleted" => 0]);
+    $attachments = FileService::getInstance($w)->getObjects("Attachment", ["is_deleted" => 0]);
 
     $adapters = array_keys(Config::get('file.adapters'));
 

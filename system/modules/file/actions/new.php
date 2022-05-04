@@ -2,7 +2,7 @@
 
 function new_GET(Web $w)
 {
-    $redirect_url = $w->request("redirect_url");
+    $redirect_url = Request::string"redirect_url");
     $redirect_url = defaultVal($redirect_url, defaultVal($_SERVER["REQUEST_URI"], "/"));
 
     $p = $w->pathMatch("class", "class_id");
@@ -10,13 +10,13 @@ function new_GET(Web $w)
         $w->error("Missing class parameters", $redirect_url);
     }
 
-    $object = $w->File->getObject($p["class"], $p["class_id"]);
-    $users = $w->Auth->getUsers();
+    $object = FileService::getInstance($w)->getObject($p["class"], $p["class_id"]);
+    $users = AuthService::getInstance($w)->getUsers();
     $viewers = [];
 
     if (!empty($object)) {
         foreach (empty($users) ? [] : $users as $user) {
-            if ($user->id === $w->Auth->user()->id) {
+            if ($user->id === AuthService::getInstance($w)->user()->id) {
                 continue;
             }
 
@@ -38,5 +38,5 @@ function new_GET(Web $w)
     $w->ctx("class", $p["class"]);
     $w->ctx("class_id", $p["class_id"]);
     $w->ctx("viewers", json_encode($viewers));
-    $w->ctx("can_restrict", property_exists(new Attachment($w), "_restrictable") && $w->Auth->user()->hasRole("restrict") ? "true" : "false");
+    $w->ctx("can_restrict", property_exists(new Attachment($w), "_restrictable") && AuthService::getInstance($w)->user()->hasRole("restrict") ? "true" : "false");
 }

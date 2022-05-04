@@ -38,7 +38,7 @@ class AspectModifiable
             $mo->table_name = $this->object->getDbTableName();
             $mo->object_id = $this->object->id;
             $mo->dt_created = time();
-            $user = $mo->w->Auth->user();
+            $user = AuthService::getInstance($mo->w)->user();
             $mo->creator_id = (!empty($user->id) ? $user->id : 0);
             $mo->insert();
         }
@@ -51,7 +51,7 @@ class AspectModifiable
     {
         if ($this->getMo()) {
             $this->_mo->dt_modified = time();
-            $user = $this->_mo->w->Auth->user();
+            $user = AuthService::getInstance($this->_mo->w)->user();
             $this->_mo->modifier_id = (!empty($user->id) ? $user->id : 0);
             $this->_mo->update();
         }
@@ -122,7 +122,7 @@ class ObjectModification extends DbObject
     public function getCreator()
     {
         if ($this->creator_id) {
-            return $this->w->Auth->getUser($this->creator_id);
+            return AuthService::getInstance($this->w)->getUser($this->creator_id);
         }
     }
 
@@ -136,7 +136,7 @@ class ObjectModification extends DbObject
     public function getModifier()
     {
         if ($this->modifier_id) {
-            return $this->w->Auth->getUser($this->modifier_id);
+            return AuthService::getInstance($this->w)->getUser($this->modifier_id);
         }
     }
 }

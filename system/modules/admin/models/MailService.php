@@ -9,7 +9,7 @@ class MailService extends DbService
     {
         parent::__construct($w);
         $this->initTransport();
-        $this->w->Log->setLogger(MailService::$logger)->info("Initialised transport: " . get_class($this->transport));
+        LogService::getInstance($this->w)->setLogger(MailService::$logger)->info("Initialised transport: " . get_class($this->transport));
     }
 
     public function getTransport()
@@ -32,11 +32,11 @@ class MailService extends DbService
      */
     public function sendMail($to, $replyto, $subject, $body, $cc = null, $bcc = null, $attachments = [], $headers = [])
     {
-        $this->w->Log->setLogger(MailService::$logger)->info("Sending email to " . $to);
+        LogService::getInstance($this->w)->setLogger(MailService::$logger)->info("Sending email to " . $to);
         if (!empty($this->transport)) {
             $this->transport->send($to, $replyto, $subject, $body, $cc, $bcc, $attachments, $headers);
         } else {
-            $this->w->Log->setLogger(MailService::$logger)->error("Transport layer not found");
+            LogService::getInstance($this->w)->setLogger(MailService::$logger)->error("Transport layer not found");
         }
     }
 
@@ -52,10 +52,10 @@ class MailService extends DbService
         $transport = Config::get('email.transports.' . $layer);
 
         if (class_exists($transport) && array_key_exists("GenericTransport", class_implements($transport))) {
-            $this->w->Log->setLogger(MailService::$logger)->info("Loading " . $layer . " transport");
+            LogService::getInstance($this->w)->setLogger(MailService::$logger)->info("Loading " . $layer . " transport");
             $this->transport = new $transport($this->w, $layer);
         } else {
-            $this->w->Log->setLogger(MailService::$logger)->error("Transport class " . $transport . " does not exist or does not implement GenericTransport");
+            LogService::getInstance($this->w)->setLogger(MailService::$logger)->error("Transport class " . $transport . " does not exist or does not implement GenericTransport");
         }
     }
 
@@ -65,7 +65,7 @@ class MailService extends DbService
     public function getCurrentBatchId()
     {
         return $this->_db->sql('SELECT id FROM mail_batch WHERE is_deleted = 0 '
-            . 'AND status = "Active" LIMIT 1')->fetch_row();
+            . 'AND status = "Active" LIMIT 1')->fetchRow();
     }
 
     /**

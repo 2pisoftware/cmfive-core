@@ -1,5 +1,5 @@
 <?php
-if ($w->Auth->user()->allowed("/inbox/send")) {
+if (AuthService::getInstance($w)->user()->allowed("/inbox/send")) {
     echo Html::b($webroot."/inbox/send","Create Message",null,'createmessagebutton');
 }
 $button = new \Html\button();

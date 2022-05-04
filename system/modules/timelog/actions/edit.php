@@ -17,7 +17,7 @@ function edit_GET(Web $w)
     }
 
     $w->ctx("timelog", $timelog);
-    $w->ctx('redirect', $w->request("redirect", ''));
+    $w->ctx('redirect', Request::string("redirect", ''));
 
     $indexes = TimelogService::getInstance($w)->getLoggableObjects();
     $select_indexes = [];
@@ -28,8 +28,8 @@ function edit_GET(Web $w)
     }
     $w->ctx("select_indexes", $select_indexes);
 
-    $tracking_id = $w->request("id");
-    $tracking_class = $w->request("class");
+    $tracking_id = Request::int("id");
+    $tracking_class = Request::string("class");
     $w->ctx("tracking_id", $tracking_id);
     $w->ctx("tracking_class", $tracking_class);
 
@@ -72,7 +72,7 @@ function edit_GET(Web $w)
 function edit_POST(Web $w)
 {
     $p = $w->pathMatch("id");
-    $redirect = $w->request("redirect", '');
+    $redirect = Request::string("redirect", '');
 
     $timelog = !empty($p['id']) ? TimelogService::getInstance($w)->getTimelog($p['id']) : new Timelog($w);
 

@@ -8,7 +8,7 @@ function reportAjaxListModules_ALL(Web $w) {
 	$where = "";
 
 	// get report categories from available report list
-	$reports = $w->Report->getReportsbyUserWhere($who, $where);
+	$reports = ReportService::getInstance($w)->getReportsbyUserWhere($who, $where);
 	if ($reports) {
 		foreach ($reports as $report) {
 			if (!array_key_exists($report->module, $modules))

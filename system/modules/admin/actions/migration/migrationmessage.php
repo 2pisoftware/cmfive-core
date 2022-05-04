@@ -1,38 +1,34 @@
 <?php
-function migrationmessage_GET(Web $w) {
+function migrationmessage_GET(Web $w)
+{
 
-$w->setLayout("layout-pretext");
+    $w->setLayout("layout-pretext");
 
-$prevpage = $w->request('prevpage');
-$w->ctx("prevpage", $prevpage);
+    $w->ctx("prevpage", Request::string('prevpage'));
 
-// 'Migrate to hear' File
-$_migration_module = $w->request('migmodule');
-$w->ctx("_migration_module", $_migration_module);
+    // 'Migrate to here' File
+    $w->ctx("_migration_module", Request::string('migmodule'));
 
-$_migration_filename = $w->request('migfilename');
-$w->ctx("_migration_filename", $_migration_filename);
+    $w->ctx("_migration_filename", Request::string('migfilename'));
 
-// Pretext Page File
-$migration_module = $w->request('module');
-$w->ctx("migration_module", $migration_module);
+    // Pretext Page File
+    $w->ctx("migration_module", Request::string('module'));
 
-$migration_filename = $w->request('filename');
-$w->ctx("migration_filename", $migration_filename);
+    $w->ctx("migration_filename", Request::string('filename'));
 
-$migration_path = $w->request('path');
+    $migration_path = Request::string('path');
 
-if (file_exists(ROOT_PATH . '/' . $migration_path)) {
-    include_once ROOT_PATH . '/' . $migration_path;
+    if (file_exists(ROOT_PATH . '/' . $migration_path)) {
+        include_once ROOT_PATH . '/' . $migration_path;
 
-    $migration_class = explode('-', $migration_filename)[1];
-    $w->ctx("migration_class", $migration_class);
-    if (class_exists($migration_class)) {
-        $migration = (new $migration_class(1))->setWeb($w);
-        $migration_preText = $migration->preText();
-        $w->ctx("migration_preText", $migration_preText);
-    } else {
-        $w->error("Migration Class not found for message", "/admin-migrations#batch");
+        $migration_class = explode('-', $migration_filename)[1];
+        $w->ctx("migration_class", $migration_class);
+        if (class_exists($migration_class)) {
+            $migration = (new $migration_class(1))->setWeb($w);
+            $migration_preText = $migration->preText();
+            $w->ctx("migration_preText", $migration_preText);
+        } else {
+            $w->error("Migration Class not found for message", "/admin-migrations#batch");
+        }
     }
-}
 }

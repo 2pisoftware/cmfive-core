@@ -11,7 +11,7 @@ function migrate_GET(Web $w) {
 	
 	if (!file_exists($lock_file)) {
 		
-		$tasktimes = $w->Task->getObjects("TaskTime", ["is_deleted" => 0]);
+		$tasktimes = TaskService::getInstance($w)->getObjects("TaskTime", ["is_deleted" => 0]);
 		if (!empty($tasktimes)) {
 			foreach($tasktimes as $tasktime) {
 				$task = $tasktime->getTask();

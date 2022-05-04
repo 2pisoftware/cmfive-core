@@ -1,7 +1,7 @@
 <?php
 
 function tag_core_dbobject_add_to_index($w, $obj) {
-	$tags = $w->Tag->getTagsByObject($obj->id, get_class($obj));
+	$tags = TagService::getInstance($w)->getTagsByObject($obj->id, get_class($obj));
 	$words = array();
 	if(!empty($tags)) {
 		foreach($tags as $tag) {
@@ -17,7 +17,7 @@ function tag_core_dbobject_add_to_index($w, $obj) {
 function tag_core_dbobject_after_delete($w, $obj) {
     // delete any tags attached to deleted object
     $class_name = get_class($obj);
-    $tags = $w->Tag->getTagsByObject($obj->id, $class_name);
+    $tags = TagService::getInstance($w)->getTagsByObject($obj->id, $class_name);
     if (!empty($tags)) {
         foreach ($tags as $tag) {
             $tag->delete();

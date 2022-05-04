@@ -43,7 +43,7 @@ class MyTaskTimeInsight extends InsightBaseClass
     public function run(Web $w, $parameters = []): array
     {
         $timelogs = TimelogService::getInstance($w)->getTimelogsForUserAndClass(
-            $w->Auth->user(),
+            AuthService::getInstance($w)->user(),
             "Task",
             false,
             $parameters['dt_start'],

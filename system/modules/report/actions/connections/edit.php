@@ -4,7 +4,7 @@ function edit_GET(Web $w) {
     $p = $w->pathMatch("id");
     $report_connection = new ReportConnection($w);
     if (!empty($p["id"])) {
-        $report_connection = $w->Report->getConnection($p["id"]);
+        $report_connection = ReportService::getInstance($w)->getConnection($p["id"]);
     }
     
     if (!empty($report_connection->id)) {
@@ -33,7 +33,7 @@ function edit_GET(Web $w) {
 
 function edit_POST(Web $w) {
     $p = $w->pathMatch("id");
-    $report_connection = !empty($p["id"]) ? $w->Report->getConnection($p["id"]) : new ReportConnection($w);
+    $report_connection = !empty($p["id"]) ? ReportService::getInstance($w)->getConnection($p["id"]) : new ReportConnection($w);
     $report_connection->fill($_POST);
     if (empty($_POST["s_db_password"])) {
         $report_connection->s_db_password = NULL;

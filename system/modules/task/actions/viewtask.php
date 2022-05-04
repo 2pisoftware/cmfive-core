@@ -6,12 +6,12 @@ function viewtask_GET(Web &$w) {
 	$btndelete = "";
 
 	// get relevant object for viewing a task given input task ID
-	$task = $w->Task->getTask($p['id']);
+	$task = TaskService::getInstance($w)->getTask($p['id']);
 	$w->ctx("task",$task);
-	$taskdata = $w->Task->getTaskData($p['id']);
-	$group = $w->Task->getTaskGroup($task->task_group_id);
+	$taskdata = TaskService::getInstance($w)->getTaskData($p['id']);
+	$group = TaskService::getInstance($w)->getTaskGroup($task->task_group_id);
 
-	$w->Task->navigation($w, "View Task: " . $task->title);
+	TaskService::getInstance($w)->navigation($w, "View Task: " . $task->title);
 
 	// if task is deleted, say as much and return to task list
 	if ($task->is_deleted != 0) {
@@ -25,12 +25,12 @@ function viewtask_GET(Web &$w) {
 		// if I can assign tasks, provide dropdown of group members else display current assignee.
 		// my role in group Vs group can_assign value
 		if ($task->getCanIAssign()) {
-			$members = ($task) ? $w->Task->getMembersBeAssigned($task->task_group_id) : $w->Auth->getUsers();
+			$members = ($task) ? TaskService::getInstance($w)->getMembersBeAssigned($task->task_group_id) : AuthService::getInstance($w)->getUsers();
 			sort($members);
 			$assign = array("Assigned To","select","assignee_id",$task->assignee_id,$members);
 		}
 		else {
-			$assigned = ($task->assignee_id == "0") ? "Not Assigned" : $w->Task->getUserById($task->assignee_id);
+			$assigned = ($task->assignee_id == "0") ? "Not Assigned" : TaskService::getInstance($w)->getUserById($task->assignee_id);
 			$assign = array("Assigned To","static","assignee_id",$assigned);
 		}
 
@@ -86,7 +86,7 @@ function viewtask_GET(Web &$w) {
 		}
 
 		// got additional form fields for this task type
-		$form = $w->Task->getFormFieldsByTask($task->task_type,$group);
+		$form = TaskService::getInstance($w)->getFormFieldsByTask($task->task_type,$group);
 
 		// if there are additional form fields, display them
 		if ($form) {
@@ -125,7 +125,7 @@ function viewtask_GET(Web &$w) {
 
 		// create 'start time log' button
 		$buttontimelog = "";
-		if ($task->assignee_id == $w->Auth->user()->id) {
+		if ($task->assignee_id == AuthService::getInstance($w)->user()->id) {
                     $buttontimelog = new \Html\Button();
                     $buttontimelog->href("/task/starttimelog/{$task->id}")->setClass("startTime button small")->text("Start Time Log");
                     // $btntimelog = "<button class=\"startTime\" href=\"/task/starttimelog/".$task->id."\"> Start Time Log </button>";
@@ -141,7 +141,7 @@ function viewtask_GET(Web &$w) {
 		// tab: time log
 		// provide button to add time entry
 		$addtime = "";
-		if ($task->assignee_id == $w->Auth->user()->id) {		
+		if ($task->assignee_id == AuthService::getInstance($w)->user()->id) {		
                     $addtime = Html::box(WEBROOT."/task/addtime/".$task->id," Add Time Log entry ",true);
 		}
 		$w->ctx("addtime",$addtime);
@@ -160,7 +160,7 @@ function viewtask_GET(Web &$w) {
 			foreach ($timelog as $log) {
 				// get time difference, start to end
 				$seconds = $log->dt_end - $log->dt_start;
-				$period = $w->Task->getFormatPeriod($seconds);
+				$period = TaskService::getInstance($w)->getFormatPeriod($seconds);
 
 				// if suspect, label button, style period, remove edit button
 				if ($log->is_suspect == "1") {
@@ -176,14 +176,14 @@ function viewtask_GET(Web &$w) {
 				}
 
 				// ony Task Group owner gets to reject/accept time log entries
-				$bsuspect = ($w->Task->getIsOwner($task->task_group_id, $_SESSION['user_id'])) ? Html::b($w->localUrl("/task/suspecttime/".$task->id."/".$log->id),$label) : "";
+				$bsuspect = (TaskService::getInstance($w)->getIsOwner($task->task_group_id, $_SESSION['user_id'])) ? Html::b($w->localUrl("/task/suspecttime/".$task->id."/".$log->id),$label) : "";
 
-				$line[] = array($w->Task->getUserById($log->user_id),
-				$w->Task->getUserById($log->creator_id),
+				$line[] = array(TaskService::getInstance($w)->getUserById($log->user_id),
+				TaskService::getInstance($w)->getUserById($log->creator_id),
 				formatDateTime($log->dt_start),
 				formatDateTime($log->dt_end),
 				$period,
-				!empty($w->Comment->getComment($log->comment_id)) ? $w->Comment->getComment($log->comment_id)->comment:"",					
+				!empty(CommentService::getInstance($w)->getComment($log->comment_id)) ? CommentService::getInstance($w)->getComment($log->comment_id)->comment:"",					
 				$bedit .
 								 
 				Html::b($w->localUrl("/task/deletetime/".$task->id."/".$log->id)," Delete ","Are you sure you wish to DELETE this Time Log Entry?") .
@@ -193,7 +193,7 @@ function viewtask_GET(Web &$w) {
 				Html::box($w->localUrl("/task/popComment/".$task->id."/".$log->comment_id)," Comment ",true)
 				);
 			}
-			$line[] = array("","","","<b>Total</b>", "<b>".$w->Task->getFormatPeriod($totseconds)."</b>","");
+			$line[] = array("","","","<b>Total</b>", "<b>".TaskService::getInstance($w)->getFormatPeriod($totseconds)."</b>","");
 		}
 		else {
 			$line[] = array("No time log entries have been made","","","","","");
@@ -207,7 +207,7 @@ function viewtask_GET(Web &$w) {
 		if ($task->getCanINotify()) {
 				
 			// get User set notifications for this Task
-			$notify = $w->Task->getTaskUserNotify($_SESSION['user_id'],$task->id);
+			$notify = TaskService::getInstance($w)->getTaskUserNotify($_SESSION['user_id'],$task->id);
 			if ($notify) {
 				$task_creation = $notify->task_creation;
 				$task_details = $notify->task_details;
@@ -218,14 +218,14 @@ function viewtask_GET(Web &$w) {
 			// no user notifications, get user set notifications for the Task Group
 			else {
 				// need my role in group
-				$me = $w->Task->getMemberGroupById($task->task_group_id, $_SESSION['user_id']);
+				$me = TaskService::getInstance($w)->getMemberGroupById($task->task_group_id, $_SESSION['user_id']);
 				// get task creator ID
 				$creator_id = $task->getTaskCreatorId();
 
 				// which am i?
 				$assignee = ($task->assignee_id == $_SESSION['user_id']) ? true : false;
 				$creator = ($creator_id == $_SESSION['user_id']) ? true : false;
-				$owner = $w->Task->getIsOwner($task->task_group_id, $_SESSION['user_id']);
+				$owner = TaskService::getInstance($w)->getIsOwner($task->task_group_id, $_SESSION['user_id']);
 
 				// get single type given this is specific to a single Task
 				if ($assignee) {
@@ -242,7 +242,7 @@ function viewtask_GET(Web &$w) {
 
 				if ($type) {
 					// for type, check the User defined notification table
-					$notify = $w->Task->getTaskGroupUserNotifyType($_SESSION['user_id'],$task->task_group_id,$role,$type);
+					$notify = TaskService::getInstance($w)->getTaskGroupUserNotifyType($_SESSION['user_id'],$task->task_group_id,$role,$type);
 
 					// get list of notification flags
 					if ($notify) {
@@ -277,14 +277,14 @@ function viewtask_GET(Web &$w) {
 	else {
 		// if i cannot view task details, return to task list with error message
 		// for display get my role in the group, the group owners, the group title and the minimum membership required to view a task
-		$me = $w->Task->getMemberGroupById($task->task_group_id, $_SESSION['user_id']);
+		$me = TaskService::getInstance($w)->getMemberGroupById($task->task_group_id, $_SESSION['user_id']);
 		$myrole = (!$me) ? "Not a Member" : $me->role;
-		$owners = $w->Task->getTaskGroupOwners($task->task_group_id);
+		$owners = TaskService::getInstance($w)->getTaskGroupOwners($task->task_group_id);
 
 		// get owners names for display
                 $strOwners = "";
 		foreach ($owners as $owner) {
-			$strOwners .= $w->Task->getUserById($owner->user_id) . ", ";
+			$strOwners .= TaskService::getInstance($w)->getUserById($owner->user_id) . ", ";
 		}
 		$strOwners = rtrim($strOwners,", ");
 

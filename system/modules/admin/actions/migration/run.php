@@ -1,8 +1,9 @@
 <?php
 
-function run_GET(Web $w) {
+function run_GET(Web $w)
+{
 
-	$prevpageurlextension = $w->request('prevpage');
+	$prevpageurlextension = Request::string('prevpage');
 
 	$p = $w->pathMatch("module", "file");
 
@@ -10,8 +11,7 @@ function run_GET(Web $w) {
 		$w->error("Missing module parameter required to run migration", "/admin-migration");
 	}
 
-	$response = $w->Migration->runMigrations($p['module'], $p['file'], ($w->request('ignoremessages') != "false"), ($w->request('continuingrunall') == "true"));
+	$response = MigrationService::getInstance($w)->runMigrations($p['module'], $p['file'], (Request::string('ignoremessages') != "false"), (Request::string('continuingrunall') == "true"));
 
 	$w->msg($response, "/admin-migration#" . $prevpageurlextension);
-	
 }

@@ -7,7 +7,7 @@ function ajax_get_mfa_qr_code_GET(Web $w)
 {
     $w->setLayout(null);
 
-    $user_id = $w->request("id");
+    $user_id = Request::int("id");
     if (empty($user_id)) {
         $w->out((new AxiosResponse())->setErrorResponse("Request data missing", null));
         return;

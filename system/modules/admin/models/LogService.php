@@ -76,7 +76,7 @@ class LogService extends \DbService
                 $response = (new HttpRequest("http://169.254.169.254/latest/meta-data/instance-id"))->execute();
 
                 if (!empty($response['error'])) {
-                    // $this->w->Log->error("Could not authenticate instance ID with AWS, falling back to local filesystem");
+                    // LogService::getInstance($this->w)->error("Could not authenticate instance ID with AWS, falling back to local filesystem");
                     syslog(LOG_ERR, "LogService: Could not authenticate instance ID with AWS, falling back to local filesystem");
                     Config::set('admin.logging.target', 'file');
                     $log_destination = 'file';
@@ -157,7 +157,7 @@ class LogService extends \DbService
 
         // In the interest of not breaking system logs, we will return the logger back to cmfive
         // This means for every log that isn't system, the call should look something like this:
-        // $w->Log->setLogger('my_log', true|false)->info('Hello, world!');
+        // LogService::getInstance($w)->setLogger('my_log', true|false)->info('Hello, world!');
         $this->logger = $this->loggers[LogService::$system_logger];
     }
 }

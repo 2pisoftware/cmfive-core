@@ -3,10 +3,10 @@
 function edit_GET(Web $w)
 {
     $p = $w->pathMatch("id");
-    $form_id = $w->request("form_id");
-    $redirect_url = $w->request("redirect_url");
-    $object_class = $w->request("object_class");
-    $object_id = $w->request("object_id");
+    $form_id = Request::int("form_id");
+    $redirect_url = Request::string("redirect_url");
+    $object_class = Request::string("object_class");
+    $object_id = Request::int("object_id");
 
     if (empty($form_id) && empty($p['id'])) {
         $w->msg("Form instance data missing");
@@ -16,10 +16,10 @@ function edit_GET(Web $w)
     $instance = null;
     $form = null;
     if (!empty($p['id'])) {
-        $instance = $w->Form->getFormInstance($p['id']);
+        $instance = FormService::getInstance($w)->getFormInstance($p['id']);
         $form = $instance->getForm();
     } else {
-        $form = $w->Form->getForm($form_id);
+        $form = FormService::getInstance($w)->getForm($form_id);
         $instance = new FormInstance($w);
         $instance->form_id = $form_id;
     }
@@ -33,10 +33,10 @@ function edit_GET(Web $w)
 function edit_POST(Web $w)
 {
     $p = $w->pathMatch("id");
-    $form_id = $w->request("form_id");
-    $redirect_url = $w->request("redirect_url");
-    $object_class = $w->request("object_class");
-    $object_id = $w->request("object_id");
+    $form_id = Request::int("form_id");
+    $redirect_url = Request::string("redirect_url");
+    $object_class = Request::string("object_class");
+    $object_id = Request::int("object_id");
     $form = null;
 
     if (empty($form_id) && empty($p['id'])) {
@@ -49,7 +49,7 @@ function edit_POST(Web $w)
         unset($_POST[CSRF::getTokenID()]);
     }
 
-    $form_instance = $w->Form->saveForm($form_id, $_POST, $_FILES, $p['id'], $object_class, $object_id);
+    $form_instance = FormService::getInstance($w)->saveForm($form_id, $_POST, $_FILES, $p['id'], $object_class, $object_id);
 
     if (empty($p["id"])) {
         $w->callHook("form", "after_create_form", $form_instance);

@@ -6,7 +6,7 @@ function ical_GET(Web $w) {
         return null;
     }
     
-    $task = $w->Task->getTask($p['id']);
+    $task = TaskService::getInstance($w)->getTask($p['id']);
     if (empty($task->id) || empty($task->dt_due)) {
         return null;
     }

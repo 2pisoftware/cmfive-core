@@ -4,7 +4,7 @@ function taskAjaxGrouptoType_ALL(Web &$w) {
 	$types = array();
 
 	// split query string into group and assignee
-	list($group, $assignee) = preg_split('/_/',$w->request('id'));
+	list($group, $assignee) = preg_split('/_/',Request::mixed('id'));
 
 	// organise criteria
 	$who = ($assignee != "") ? $assignee : null;
@@ -15,7 +15,7 @@ function taskAjaxGrouptoType_ALL(Web &$w) {
 	$where .= "is_closed = 0";
 
 	// get task types from available task list
-	$tasks = $w->Task->getTasks($who, $where);
+	$tasks = TaskService::getInstance($w)->getTasks($who, $where);
 	if ($tasks) {
 		foreach ($tasks as $task) {
 			if (!array_key_exists($task->task_type, $types))

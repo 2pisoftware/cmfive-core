@@ -2,14 +2,14 @@
 
 function resetpassword_GET(Web $w)
 {
-    $token = $w->request('token'); // token
+    $token = Request::string('token'); // token
 
     $user = AuthService::getInstance($w)->getUserForToken($token);
     $validData = false;
 
     if (!empty($user->id)) {
         // Check that the password reset hasn't expired
-        $w->Log->setLogger("AUTH")->debug("USER: " . $user->id . " TIME: " . time() . " USER_RESET: " . $user->dt_password_reset_at . " RESULT: " . (time() - $user->dt_password_reset_at));
+        LogService::getInstance($w)->setLogger("AUTH")->debug("USER: " . $user->id . " TIME: " . time() . " USER_RESET: " . $user->dt_password_reset_at . " RESULT: " . (time() - $user->dt_password_reset_at));
         if ((time() - $user->dt_password_reset_at) > 86400) {
             $w->msg("Your token has expired (max 24 hours), please submit for a new one", "/auth/forgotpassword");
             return;
@@ -28,16 +28,16 @@ function resetpassword_GET(Web $w)
     }
 
     if (!$validData) {
-        $w->Log->warn("Password reset attempt failed with token: $token");
+        LogService::getInstance($w)->warn("Password reset attempt failed with token: $token");
         $w->out("Invalid token, this incident has been logged");
     }
 }
 
 function resetpassword_POST(Web $w)
 {
-    $token = $w->request('token'); // token
-    $password = $w->request('password'); // password
-    $password_confirm = $w->request('password_confirm');
+    $token = Request::string('token'); // token
+    $password = Request::string('password'); // password
+    $password_confirm = Request::string('password_confirm');
 
     if ($password !== $password_confirm) {
         $w->error("Passwords do not match", "/auth/resetpassword?token=$token");
@@ -71,7 +71,7 @@ function resetpassword_POST(Web $w)
     }
 
     if (!$validData) {
-        $w->Log->warn("Password reset attempt failed with token: $token");
+        LogService::getInstance($w)->warn("Password reset attempt failed with token: $token");
         $w->out("Invalid token, this incident has been logged");
     } else {
         $w->msg("Your password has been reset", "/auth/login");

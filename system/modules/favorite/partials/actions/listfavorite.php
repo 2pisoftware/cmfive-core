@@ -4,9 +4,9 @@
  * @author Steve Ryan steve@2pisoftware.com 2015
  */
 function listfavorite_ALL(Web $w,$params) {
-	$user = $w->Auth->user();
+	$user = AuthService::getInstance($w)->user();
 	if (!empty($user))  {
-		$results = $w->Favorite->getFavoritesForUser($user->id );
+		$results = FavoriteService::getInstance($w)->getFavoritesForUser($user->id );
 		$favoritesCategorised=array();
 		$service=new DBService($w);
 		if (!empty($results)) {

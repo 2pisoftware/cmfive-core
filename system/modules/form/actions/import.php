@@ -85,7 +85,7 @@ function import_POST(Web $w) {
 	    		$new_title = $content->form_title;
 	    	}
 	    
-	    	$w->Form->importForm($new_title,$content);
+	    	FormService::getInstance($w)->importForm($new_title,$content);
 
 	    }
 	    $w->msg('Form import completed','/form');

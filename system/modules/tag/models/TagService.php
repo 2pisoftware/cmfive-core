@@ -31,7 +31,7 @@ class TagService extends DbService {
 	 */
 	public function getTagsByObject($object) {
 		if (!empty($object->id) && $object instanceof DbObject) {
-			$query = $this->db->get('tag')->leftJoin('tag_assign on tag.id = tag_assign.tag_id')
+			$query = $this->_db->get('tag')->leftJoin('tag_assign on tag.id = tag_assign.tag_id')
 				->where('object_class', get_class($object))->and('object_id', $object->id)
 				->and('tag.is_deleted', 0)->and('tag_assign.is_deleted', 0)->fetchAll();
 			
@@ -47,7 +47,7 @@ class TagService extends DbService {
 	 * @return Array<Tag>
 	 */
 	public function getTagsByObjectClass($object_class) {
-		$query = $this->db->get('tag')->leftJoin('tag_assign on tag.id = tag_assign.tag_id')
+		$query = $this->_db->get('tag')->leftJoin('tag_assign on tag.id = tag_assign.tag_id')
 				->where('object_class', $object_class)
 				->and('tag.is_deleted', 0)->and('tag_assign.is_deleted', 0)->orderBy('tag ASC')->fetchAll();
 		return $this->getObjectsFromRows('Tag', $query);
@@ -56,7 +56,7 @@ class TagService extends DbService {
 	public function getAllTags($returnObjects = false) {
 		//Loads a list of all tags that were ever created
 		
-		return !!$returnObjects ? $this->getObjects('Tag', ['is_deleted' => 0]) : $this->_db->get('tag')->where('is_deleted', 0)->orderBy('tag ASC')->fetch_all();
+		return !!$returnObjects ? $this->getObjects('Tag', ['is_deleted' => 0]) : $this->_db->get('tag')->where('is_deleted', 0)->orderBy('tag ASC')->fetchAll();
 	}
 	
 	public function navigation(Web $w, $title = null, $nav = null) {
@@ -66,7 +66,7 @@ class TagService extends DbService {
 
         $nav = $nav ? $nav : array();
 
-        if ($w->Auth->loggedIn() && $this->w->Auth->user()->hasRole('tag_admin')) {
+        if (AuthService::getInstance($w)->loggedIn() && AuthService::getInstance($this->w)->user()->hasRole('tag_admin')) {
             $w->menuLink("tag/admin", "Tag Admin", $nav);
         }
         $w->ctx("navigation", $nav);

@@ -9,7 +9,7 @@ Config::set('main', [
     'company_url' => 'https://github.com/2pisoftware',
     "dependencies" => [
         // "monolog/monolog" => "1.22.*@dev",
-        "scssphp/scssphp" => "1.2.1"
+        "scssphp/scssphp" => "1.9.0"
     ],
     'hooks' => [
         'core_dbobject',

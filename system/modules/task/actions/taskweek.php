@@ -5,13 +5,13 @@ function taskweek_ALL(Web &$w)
     TaskService::getInstance($w)->navigation($w, "");
 
     // if no group then no group
-    $taskgroup = $w->request('taskgroup');
+    $taskgroup = Request::mixed('taskgroup');
     // if no group member then no group member
-    $assignee = $w->request('assignee');
+    $assignee = Request::mixed('assignee');
     // if no from date then 7 days ago
-    $from = $w->request('dt_from', TaskService::getInstance($w)->getLastWeek());
+    $from = Request::string('dt_from', TaskService::getInstance($w)->getLastWeek());
     // if no to date then today
-    $to = $w->request('dt_to', date("d/m/Y"));
+    $to = Request::string('dt_to', date("d/m/Y"));
     // display
     $w->ctx("from", $from);
     $w->ctx("to", $to);
@@ -78,9 +78,9 @@ function taskweek_ALL(Web &$w)
     }
 
     // load the search filters
-    $a = Html::select("assignee", $members, $w->request('assignee'));
+    $a = Html::select("assignee", $members, Request::mixed('assignee'));
     $w->ctx("assignee", $a);
 
-    $taskgroups = Html::select("taskgroup", $group, $w->request('taskgroup'));
+    $taskgroups = Html::select("taskgroup", $group, Request::mixed('taskgroup'));
     $w->ctx("taskgroups", $taskgroups);
 }

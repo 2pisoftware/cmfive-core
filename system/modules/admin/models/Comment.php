@@ -28,7 +28,7 @@ class Comment extends DbObject
     public function __toString()
     {
         $str = $this->comment;
-        $u = $this->w->Auth->getUser($this->creator_id);
+        $u = AuthService::getInstance($this->w)->getUser($this->creator_id);
         if ($u) {
             $str .= "<br>By <i>" . $u->getFullName() . ",</i>";
         }
@@ -43,11 +43,11 @@ class Comment extends DbObject
     public function getParentObject()
     {
         if ($this->obj_table == 'comment') {
-            return $this->w->Comment->getComment($this->obj_id)->getParentObject();
+            return CommentService::getInstance($this->w)->getComment($this->obj_id)->getParentObject();
         } else {
             $class = str_replace(' ', '', $this->getHumanReadableAttributeName($this->obj_table));
             if (class_exists($class)) {
-                return $this->w->Comment->getObject($class, $this->obj_id);
+                return CommentService::getInstance($this->w)->getObject($class, $this->obj_id);
             } else {
                 return null;
             }

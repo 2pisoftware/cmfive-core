@@ -68,7 +68,7 @@ class Request
     public static function string(string $key, ?string $default = null): ?string
     {
         if (!array_key_exists($key, $_REQUEST) || !is_scalar($_REQUEST[$key])) {
-            return trim($default);
+            return !empty($default) ? trim($default) : '';
         }
 
         return trim(strval($_REQUEST[$key]));

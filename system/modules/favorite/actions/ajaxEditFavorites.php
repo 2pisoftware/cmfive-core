@@ -6,13 +6,14 @@
  * @author Steve Ryan, steve@2pisoftware.com, 2015
  * @author Adam Buckley, adam@2pisoftware.com, 2015
  */
-function ajaxEditFavorites_ALL(Web $w) {
-	$id = $w->request("id");
-	$class = $w->request("class");
-	$user = $w->Auth->user();
+function ajaxEditFavorites_ALL(Web $w)
+{
+	$id = Request::int("id");
+	$class = Request::string("class");
+	$user = AuthService::getInstance($w)->user();
 
 	if (!empty($id) && !empty($class) && !empty($user)) {
-		$favorite = $w->Favorite->getFavoriteForUserAndObject($user->id, $class, $id);
+		$favorite = FavoriteService::getInstance($w)->getFavoriteForUserAndObject($user->id, $class, $id);
 		if (!empty($favorite->id)) {
 			$favorite->delete();
 		} else {

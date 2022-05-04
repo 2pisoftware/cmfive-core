@@ -9,12 +9,12 @@ function ajaxGetTags_GET(Web $w) {
 		return;
 	}
 	
-	$object = $w->Tag->getObject($class, $id);
+	$object = TagService::getInstance($w)->getObject($class, $id);
 	if (empty($object->id)) {
 		return;
 	}
 	
-	$tags = $w->Tag->getTagsByObject($object);
+	$tags = TagService::getInstance($w)->getTagsByObject($object);
 	$filtered_tags = ['display' => [], 'hover' => []];
 	
 	$tag_str_len = 0;

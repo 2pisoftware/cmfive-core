@@ -1,20 +1,21 @@
-<?php 
+<?php
 
-function settings_GET (Web $w) {
-	$w->setLayout(null);
+function settings_GET(Web $w)
+{
+    $w->setLayout(null);
     $p = $w->pathMatch("id");
     if (empty($p['id'])) {
-    	$w->error('No id found');
+        $w->error('No id found');
     }
-    $event = $w->Form->getFormEvent($p['id']);
+    $event = FormService::getInstance($w)->getFormEvent($p['id']);
     if (empty($event->id)) {
         $w->error("Invalid Form Event ID");
     }
-    $form_id = $w->request('form_id');
+    $form_id = Request::int('form_id');
     if (empty($form_id)) {
-    	$w->error('no form id found');
+        $w->error('no form id found');
     }
-    
+
 
     // Instantiate processor
     $class = new $event->class($w);
@@ -28,22 +29,23 @@ function settings_GET (Web $w) {
             $w->error("Form implementation is empty");
         }
     } else {
-    	echo "test";
+        echo "test";
         // $w->error("Generic form settings function is missing");
     }
 }
 
-function settings_POST (Web $w) {
-	$w->setLayout(null);
+function settings_POST(Web $w)
+{
+    $w->setLayout(null);
     $p = $w->pathMatch("id");
     if (empty($p['id'])) {
-    	$w->error('No id found');
+        $w->error('No id found');
     }
-    $form_id = $w->request('form_id');
+    $form_id = Request::int('form_id');
     if (empty($form_id)) {
-    	$w->error('no form id found');
+        $w->error('no form id found');
     }
-    $event = $w->Form->getFormEvent($p['id']);
+    $event = FormService::getInstance($w)->getFormEvent($p['id']);
     if (empty($event->id)) {
         $w->error("Invalid form event ID");
     }
@@ -59,5 +61,4 @@ function settings_POST (Web $w) {
     $event->update();
 
     $w->msg("Form Event settings saved", "/form/show/" . $form_id . '#events');
-
 }

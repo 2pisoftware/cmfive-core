@@ -1,7 +1,7 @@
 <?php
 function useract_GET(Web &$w) {
 	$w->pathMatch("id","active");
-	$user = $w->auth->getObject("User",$w->ctx("id"));
+	$user = AuthService::getInstance($w)->getObject("User",$w->ctx("id"));
 	if ($user) {
 		$user->is_active = $w->ctx("active");
 		$user->update();
