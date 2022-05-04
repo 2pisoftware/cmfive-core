@@ -71,7 +71,7 @@ jobs:
           docker exec -t nginx-php8.1 bash -c "chmod -R 777 ./*"
           
           echo CoreInstall
-          docker exec -t -e DB_HOST=$DB_HOST -e DB_USERNAME=$DB_USERNAME -e DB_PASSWORD=DB_PASSWORD -e DB_DATABASE=$DB_PASSWORD -e DB_PORT=$DB_POST nginx-php8.1 bash -c "php cmfive.php install core ${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}"
+          docker exec -t -e DB_HOST=$DB_HOST -e DB_USERNAME=$DB_USERNAME -e DB_PASSWORD=DB_PASSWORD -e DB_DATABASE=$DB_DATABASE -e DB_PORT=$DB_POST nginx-php8.1 bash -c "php cmfive.php install core ${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}"
 
           echo DBCreate 
           docker exec -t mysql-8 bash -c "mysql -h 127.0.0.1 -u'root' -p'root' --execute \"CREATE DATABASE cmfive_test; CREATE USER cmfive_test@'%' IDENTIFIED BY 'cmfive_test'; GRANT ALL PRIVILEGES ON cmfive_test.* TO cmfive_test@'%'; GRANT PROCESS ON *.* TO cmfive_test@'%'; FLUSH PRIVILEGES;\""
@@ -93,20 +93,20 @@ jobs:
         run: |
           echo SeedingCmfive
           docker exec nginx-php8.1 bash -c "cat config.php"
-          # docker exec -t -e DB_HOST=$DB_HOST -e DB_USERNAME=$DB_USERNAME -e DB_PASSWORD=DB_PASSWORD -e DB_DATABASE=$DB_PASSWORD -e DB_PORT=$DB_POST nginx-php8.1 bash -c "php cmfive.php install core ${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}"
-          docker exec -t -e DB_HOST=$DB_HOST -e DB_USERNAME=$DB_USERNAME -e DB_PASSWORD=DB_PASSWORD -e DB_DATABASE=$DB_PASSWORD -e DB_PORT=$DB_POST nginx-php8.1 bash -c "php cmfive.php seed encryption"
-          docker exec -t -e DB_HOST=$DB_HOST -e DB_USERNAME=$DB_USERNAME -e DB_PASSWORD=DB_PASSWORD -e DB_DATABASE=$DB_PASSWORD -e DB_PORT=$DB_POST nginx-php8.1 bash -c "php cmfive.php install migrations"
-          docker exec -t -e DB_HOST=$DB_HOST -e DB_USERNAME=$DB_USERNAME -e DB_PASSWORD=DB_PASSWORD -e DB_DATABASE=$DB_PASSWORD -e DB_PORT=$DB_POST nginx-php8.1 bash -c "php cmfive.php seed admin admin admin admin@example.com admin admin"
-          docker exec -t -e DB_HOST=$DB_HOST -e DB_USERNAME=$DB_USERNAME -e DB_PASSWORD=DB_PASSWORD -e DB_DATABASE=$DB_PASSWORD -e DB_PORT=$DB_POST nginx-php8.1 bash -c "chmod -R 777 cache/ storage/ uploads/"
+          # docker exec -t -e DB_HOST=$DB_HOST -e DB_USERNAME=$DB_USERNAME -e DB_PASSWORD=DB_PASSWORD -e DB_DATABASE=$DB_DATABASE -e DB_PORT=$DB_POST nginx-php8.1 bash -c "php cmfive.php install core ${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}"
+          docker exec -t -e DB_HOST=$DB_HOST -e DB_USERNAME=$DB_USERNAME -e DB_PASSWORD=DB_PASSWORD -e DB_DATABASE=$DB_DATABASE -e DB_PORT=$DB_POST nginx-php8.1 bash -c "php cmfive.php seed encryption"
+          docker exec -t -e DB_HOST=$DB_HOST -e DB_USERNAME=$DB_USERNAME -e DB_PASSWORD=DB_PASSWORD -e DB_DATABASE=$DB_DATABASE -e DB_PORT=$DB_POST nginx-php8.1 bash -c "php cmfive.php install migrations"
+          docker exec -t -e DB_HOST=$DB_HOST -e DB_USERNAME=$DB_USERNAME -e DB_PASSWORD=DB_PASSWORD -e DB_DATABASE=$DB_DATABASE -e DB_PORT=$DB_POST nginx-php8.1 bash -c "php cmfive.php seed admin admin admin admin@example.com admin admin"
+          docker exec -t -e DB_HOST=$DB_HOST -e DB_USERNAME=$DB_USERNAME -e DB_PASSWORD=DB_PASSWORD -e DB_DATABASE=$DB_DATABASE -e DB_PORT=$DB_POST nginx-php8.1 bash -c "chmod -R 777 cache/ storage/ uploads/"
 
       - name: Prepare cmfive Test DB
         run: |
-          docker exec -e DB_HOST=$DB_HOST -e DB_USERNAME=$DB_USERNAME -e DB_PASSWORD=DB_PASSWORD -e DB_DATABASE=$DB_PASSWORD -e DB_PORT=$DB_POST nginx-php8.1 bash -c "php cmfive.php testDB setup; exit \$?";
+          docker exec -e DB_HOST=$DB_HOST -e DB_USERNAME=$DB_USERNAME -e DB_PASSWORD=DB_PASSWORD -e DB_DATABASE=$DB_DATABASE -e DB_PORT=$DB_POST nginx-php8.1 bash -c "php cmfive.php testDB setup; exit \$?";
         
       # Run Unit Tests
       - name: "Run unit tests"
         run: |
-          docker exec -e DB_HOST=$DB_HOST -e DB_USERNAME=$DB_USERNAME -e DB_PASSWORD=DB_PASSWORD -e DB_DATABASE=$DB_PASSWORD -e DB_PORT=$DB_POST nginx-php8.1 bash -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php tests unit all; exit \$?"
+          docker exec -e DB_HOST=$DB_HOST -e DB_USERNAME=$DB_USERNAME -e DB_PASSWORD=DB_PASSWORD -e DB_DATABASE=$DB_DATABASE -e DB_PORT=$DB_POST nginx-php8.1 bash -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php tests unit all; exit \$?"
           if [ $? -gt 0 ]; then
             echo "Admin module tests failed"
           fi
@@ -114,46 +114,46 @@ jobs:
       # Run Acceptance Tests
       - name: "Confirm Codeception setup"
         run: |        
-          docker exec -e DB_HOST=$DB_HOST -e DB_USERNAME=$DB_USERNAME -e DB_PASSWORD=DB_PASSWORD -e DB_DATABASE=$DB_PASSWORD -e DB_PORT=$DB_POST nginx-php8.1 bash -c "ls -lah -R /var/www/html/test/Codeception/tests && cat /var/www/html/test/Codeception/*.yml && cat /var/www/html/test/Codeception/tests/*.yml"
+          docker exec -e DB_HOST=$DB_HOST -e DB_USERNAME=$DB_USERNAME -e DB_PASSWORD=DB_PASSWORD -e DB_DATABASE=$DB_DATABASE -e DB_PORT=$DB_POST nginx-php8.1 bash -c "ls -lah -R /var/www/html/test/Codeception/tests && cat /var/www/html/test/Codeception/*.yml && cat /var/www/html/test/Codeception/tests/*.yml"
       - name: "Run admin module tests"
         run: |
-          docker exec -e DB_HOST=$DB_HOST -e DB_USERNAME=$DB_USERNAME -e DB_PASSWORD=DB_PASSWORD -e DB_DATABASE=$DB_PASSWORD -e DB_PORT=$DB_POST nginx-php8.1 bash -c "php cmfive.php tests module admin silent; exit \$?"
+          docker exec -e DB_HOST=$DB_HOST -e DB_USERNAME=$DB_USERNAME -e DB_PASSWORD=DB_PASSWORD -e DB_DATABASE=$DB_DATABASE -e DB_PORT=$DB_POST nginx-php8.1 bash -c "php cmfive.php tests module admin silent; exit \$?"
           if [ $? -gt 0 ]; then
             echo "Admin module tests failed"
           fi
       - name: "Run channels module tests"
         run: |
-          docker exec -e DB_HOST=$DB_HOST -e DB_USERNAME=$DB_USERNAME -e DB_PASSWORD=DB_PASSWORD -e DB_DATABASE=$DB_PASSWORD -e DB_PORT=$DB_POST nginx-php8.1 bash -c "php cmfive.php tests module channels silent; exit \$?"
+          docker exec -e DB_HOST=$DB_HOST -e DB_USERNAME=$DB_USERNAME -e DB_PASSWORD=DB_PASSWORD -e DB_DATABASE=$DB_DATABASE -e DB_PORT=$DB_POST nginx-php8.1 bash -c "php cmfive.php tests module channels silent; exit \$?"
           if [ $? -gt 0 ]; then
             echo "Channels module tests failed"
           fi
       - name: "Run inbox module tests"
         run: |
-          docker exec -e DB_HOST=$DB_HOST -e DB_USERNAME=$DB_USERNAME -e DB_PASSWORD=DB_PASSWORD -e DB_DATABASE=$DB_PASSWORD -e DB_PORT=$DB_POST nginx-php8.1 bash -c "php cmfive.php tests module inbox silent; exit \$?"
+          docker exec -e DB_HOST=$DB_HOST -e DB_USERNAME=$DB_USERNAME -e DB_PASSWORD=DB_PASSWORD -e DB_DATABASE=$DB_DATABASE -e DB_PORT=$DB_POST nginx-php8.1 bash -c "php cmfive.php tests module inbox silent; exit \$?"
           if [ $? -gt 0 ]; then
             echo "Inbox module tests failed"
           fi
       - name: "Run report module tests"
         run: |
-          docker exec -e DB_HOST=$DB_HOST -e DB_USERNAME=$DB_USERNAME -e DB_PASSWORD=DB_PASSWORD -e DB_DATABASE=$DB_PASSWORD -e DB_PORT=$DB_POST nginx-php8.1 bash -c "php cmfive.php tests module report silent; exit \$?"
+          docker exec -e DB_HOST=$DB_HOST -e DB_USERNAME=$DB_USERNAME -e DB_PASSWORD=DB_PASSWORD -e DB_DATABASE=$DB_DATABASE -e DB_PORT=$DB_POST nginx-php8.1 bash -c "php cmfive.php tests module report silent; exit \$?"
           if [ $? -gt 0 ]; then
             echo "Report module tests failed"
           fi
       - name: "Run tag module tests"
         run: |
-          docker exec -e DB_HOST=$DB_HOST -e DB_USERNAME=$DB_USERNAME -e DB_PASSWORD=DB_PASSWORD -e DB_DATABASE=$DB_PASSWORD -e DB_PORT=$DB_POST nginx-php8.1 bash -c "php cmfive.php tests module tag silent; exit \$?"
+          docker exec -e DB_HOST=$DB_HOST -e DB_USERNAME=$DB_USERNAME -e DB_PASSWORD=DB_PASSWORD -e DB_DATABASE=$DB_DATABASE -e DB_PORT=$DB_POST nginx-php8.1 bash -c "php cmfive.php tests module tag silent; exit \$?"
           if [ $? -gt 0 ]; then
             echo "Tag module tests failed"
           fi
       - name: "Run task module tests"
         run: |
-          docker exec -e DB_HOST=$DB_HOST -e DB_USERNAME=$DB_USERNAME -e DB_PASSWORD=DB_PASSWORD -e DB_DATABASE=$DB_PASSWORD -e DB_PORT=$DB_POST nginx-php8.1 bash -c "php cmfive.php tests module task silent; exit \$?"
+          docker exec -e DB_HOST=$DB_HOST -e DB_USERNAME=$DB_USERNAME -e DB_PASSWORD=DB_PASSWORD -e DB_DATABASE=$DB_DATABASE -e DB_PORT=$DB_POST nginx-php8.1 bash -c "php cmfive.php tests module task silent; exit \$?"
           if [ $? -gt 0 ]; then
             echo "Task module tests failed"
           fi
       - name: "Run timelog module tests"
         run: |
-          docker exec -e DB_HOST=$DB_HOST -e DB_USERNAME=$DB_USERNAME -e DB_PASSWORD=DB_PASSWORD -e DB_DATABASE=$DB_PASSWORD -e DB_PORT=$DB_POST nginx-php8.1 bash -c "php cmfive.php tests module timelog silent; exit \$?"
+          docker exec -e DB_HOST=$DB_HOST -e DB_USERNAME=$DB_USERNAME -e DB_PASSWORD=DB_PASSWORD -e DB_DATABASE=$DB_DATABASE -e DB_PORT=$DB_POST nginx-php8.1 bash -c "php cmfive.php tests module timelog silent; exit \$?"
           if [ $? -gt 0 ]; then
             echo "Timelog module tests failed"
           fi
