@@ -15,6 +15,7 @@ function useradd_GET(Web &$w) {
     }
 
     $form['User Details'][] = [
+	["Login", "text", "login"],
         ["Admin","checkbox","is_admin"],
         ["Active","checkbox","is_active"],
         ["External", "checkbox", "is_external"],
