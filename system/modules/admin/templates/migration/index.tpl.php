@@ -93,8 +93,8 @@
                                 <?php echo ucfirst($module); ?>
                                 <div class="right">
                                     <?php
-                                    echo count(@$installed[$module]) > 0 ? "<span class='label round success' style='font-size: 14pt;'>" . count($installed[$module]) . "</span>" : "";
-                                    echo (count($available_in_module) - count(@$installed[$module]) > 0 ? '<span class="label round warning" style="font-size: 14pt;">' . (count($available_in_module) - count(@$installed[$module])) . '</span>' : '');
+                                    echo is_array($installed[$module]) && count($installed[$module]) > 0 ? "<span class='label round success' style='font-size: 14pt;'>" . count($installed[$module]) . "</span>" : "";
+                                    echo is_array($installed[$module]) && (count($available_in_module) - count($installed[$module]) > 0 ? '<span class="label round warning" style="font-size: 14pt;">' . (count($available_in_module) - count($installed[$module])) . '</span>' : '');
                                     ?>
                                 </div>
                             </a>
@@ -113,7 +113,7 @@
                                     </thead>
                                     <tbody>
                                         <?php foreach ($available_in_module as $a_migration_path => $migration_data) : ?>
-                                        <tr <?php echo ($w->Migration->isInstalled($migration_data['class_name'])) ? 'style="background-color: #43CD80;"' : ''; ?>>
+                                        <tr <?php echo (MigrationService::getInstance($w)->isInstalled($migration_data['class_name'])) ? 'style="background-color: #43CD80;"' : ''; ?>>
                                             <td><?php echo $migration_data['class_name']; ?></td>
                                             <td>
                                             <?php
@@ -122,10 +122,10 @@
                                             </td>
                                             <td><?php echo $a_migration_path; ?></td>
                                             <td>
-                                                <?php if ($w->Migration->isInstalled($migration_data['class_name'])) :
-                                                    $installedMigration = $w->Migration->getMigrationByClassname($migration_data['class_name']); ?>
+                                                <?php if (MigrationService::getInstance($w)->isInstalled($migration_data['class_name'])) :
+                                                    $installedMigration = MigrationService::getInstance($w)->getMigrationByClassname($migration_data['class_name']); ?>
                                                     <span data-tooltip aria-haspopup="true" title="<?php echo @formatDate($installedMigration->dt_created, "d-M-Y \a\\t H:i"); ?>">
-                                                        Run <?php echo Carbon::createFromTimeStamp($installedMigration->dt_created)->diffForHumans(); ?> by <?php echo !empty($installedMigration->creator_id) && !empty($w->Auth->getUser($installedMigration->creator_id)) ? $w->Auth->getUser($installedMigration->creator_id)->getContact()->getFullName() : "System"; ?>
+                                                        Run <?php echo Carbon::createFromTimeStamp($installedMigration->dt_created)->diffForHumans(); ?> by <?php echo !empty($installedMigration->creator_id) && !empty(AuthService::getInstance($w)->getUser($installedMigration->creator_id)) ? AuthService::getInstance($w)->getUser($installedMigration->creator_id)->getContact()->getFullName() : "System"; ?>
                                                     </span>
                                                 <?php endif; ?>
                                             </td>
@@ -143,7 +143,7 @@
                                             <td>
                                             <?php
                                             $filename = basename($a_migration_path, ".php");
-                                            if ($w->Migration->isInstalled($migration_data['class_name'])) {
+                                            if (MigrationService::getInstance($w)->isInstalled($migration_data['class_name'])) {
                                                 echo Html::b('/admin-migration/rollback/' . $module . '/' . $filename, "Rollback to here", "Are you 110% sure you want to rollback a migration? DATA COULD BE LOST PERMANENTLY!", null, false, "warning expand");
                                             } else {
                                                 echo Html::b('/admin-migration/run/' . $module . '/' . $filename. "?ignoremessages=false&prevpage=individual", "Migrate to here", "Are you sure you want to run a migration?", null, false, "info expand");
@@ -223,7 +223,7 @@
                                             }
                                         }
                                         if (!empty($seed_obj)) :
-                                            $migration_exists = $w->Migration->migrationSeedExists($classname); ?>
+                                            $migration_exists = MigrationService::getInstance($w)->migrationSeedExists($classname); ?>
                                             <tr>
                                                 <td><?php echo $seed_obj->name; ?></td>
                                                 <td><?php echo $seed_obj->description; ?></td>

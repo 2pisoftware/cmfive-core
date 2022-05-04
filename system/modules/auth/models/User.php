@@ -34,24 +34,6 @@ class User extends DbObject
     public $login_attempts;
     public $is_locked;
 
-    /**
-     * Checks if the passed password matches the stored password when hashed.
-     *
-     * @deprecated v3.0.0 - Will be removed in v5.0.0.
-     *
-     * @param string $password
-     *
-     * @return bool
-     */
-    public function checkPassword($password)
-    {
-        if (empty($this->password) || empty($password)) {
-            return false;
-        }
-
-        return password_verify($password, $this->password);
-    }
-
     public function lock()
     {
         $this->is_locked = 1;
@@ -367,7 +349,7 @@ class User extends DbObject
     public function removeRole($role)
     {
         if ($this->hasRole($role)) {
-            $role = $this->admin->getObject("UserRole", ["user_id" => $this->id, "role" => $role]);
+            $role = AdminService::getInstance($this->w)->getObject("UserRole", ["user_id" => $this->id, "role" => $role]);
             if (!empty($role)) {
                 $role->delete();
             }
@@ -409,7 +391,7 @@ class User extends DbObject
                     return true;
                 }
             } else {
-                $this->w->Log->error("Role '" . $rn . "' does not exist!");
+                LogService::getInstance($this->w)->error("Role '" . $rn . "' does not exist!");
             }
         }
 
@@ -421,15 +403,15 @@ class User extends DbObject
      * password hash and the PHP Version.
      *
      * @param string $password
-     * @param boolean $update_salt - Deprecated, will be removed in v5.0.0.
      * @return string
      */
-    public function encryptPassword($password, $update_salt = true)
+    public function encryptPassword($password)
     {
         // If User's password salt is not built into the password hash use SHA1.
-        if (!empty($this->password_salt)) {
-            return sha1($this->password_salt . $password);
-        }
+        // Should not be used in Cmfive v5
+        // if (!empty($this->password_salt)) {
+        //     return sha1($this->password_salt . $password);
+        // }
 
         $hash = false;
         $algorithm = PASSWORD_DEFAULT;
@@ -484,12 +466,12 @@ class User extends DbObject
             $this->password_salt = null;
         }
 
-        $this->setPassword($password);
+        // $this->setPassword($password);
         return $this->update(true);
     }
 
-    public static function generateSalt()
-    {
-        return md5(uniqid(rand(), true));
-    }
+    // public static function generateSalt()
+    // {
+    //     return md5(uniqid(rand(), true));
+    // }
 }

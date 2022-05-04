@@ -18,7 +18,11 @@ class ChannelsModuleCest
 
         $I->wantTo("Verify that Channels and Processors can be created, edited and deleted");
         $I->login($I, "admin", "admin");
-        $I->amOnPage("channels/listchannels");
+
+        // This is a rush ... what if the login is still settling!
+        // $I->amOnPage("channels/listchannels");
+        // Let's be more patient:
+        $I->clickCmfiveNavbar($I, 'Channels', 'List Channels');
 
         $I->createWebChannel($I, $channel_name, false, false, $web_api_url);
         $I->verifyWebChannel($I, $channel_name, false, false, $web_api_url);

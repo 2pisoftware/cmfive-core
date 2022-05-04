@@ -2,12 +2,12 @@
 class InboxService extends DbService {
 
     function addMessage($subject, $message, $user_id = null, $sender_id = null, $parent_id = null, $send_email = true) {
-        $logged_in = !!$this->Auth->loggedIn();
+        $logged_in = !!AuthService::getInstance($this->w)->loggedIn();
         if (!$user_id) {
-            $user_id = $logged_in ? $this->Auth->user()->id : null;
+            $user_id = $logged_in ? AuthService::getInstance($this->w)->user()->id : null;
         }
         if (!$sender_id) {
-            $sender_id = $logged_in ? $this->Auth->user()->id : null;
+            $sender_id = $logged_in ? AuthService::getInstance($this->w)->user()->id : null;
         }
         if (!is_a($message, "DbObject")) {
             $mso = new Inbox_message($this->w);
@@ -28,22 +28,6 @@ class InboxService extends DbService {
         $msg->is_new = 1;
         $msg->is_archived = 0;
         $msg->insert();
-
-		// No need for inbox to send emails with the new NotificationService
-//        $receiver = $this->Auth->getUser($user_id);
-        
-        // Notify users via email if specified and the user isn't sending a message to themselves
-        // $this->w->Log->debug("IDs: " . var_export($msg->user_id, true) . " - " . var_export($msg->sender_id, true));
-//        if (!empty($mso) && !empty($msg) && !empty($receiver)) {
-//			$rContact=$receiver->getContact();
-//			$lSender=$this->w->Auth->getUser($msg->sender_id);
-//			if (!empty($rContact) && !empty($lSender)) {
-//				$lContact=$lSender->getContact();
-//				if (!empty($lContact) && $send_email === true && $msg->user_id !== $msg->sender_id) {
-//					$this->w->Mail->sendMail($rContact->email, $logged_in ? $lContact->email : Config::get('main.company_support_email'), $msg->subject, $mso->message);
-//				}
-//			}
-//		}
     }
 
     function sendMail($to, $cc, $bcc, $from, $replyto, $subject, $message) {
@@ -123,7 +107,7 @@ class InboxService extends DbService {
     }
 
     function inboxCountMarker() {
-        $user_id = $this->w->Auth->user()->id;
+        $user_id = AuthService::getInstance($this->w)->user()->id;
         $count_messages = $this->_db->get("inbox")->where("user_id", $user_id)->where("is_new", 1)->where("is_deleted", 0)->count();
         return ($count_messages > 0) ? "<span class='label secondary round' style='margin-left: 5px;'>" . $count_messages . "</span>" : "";
     }
@@ -136,19 +120,19 @@ class InboxService extends DbService {
         if ($is_arch !== 0 and $is_del !== 1) {
             $rows->where("is_archived", $is_arch);
         }
-        $rows->order_by("dt_created")->limit($offset, $page_size);
-        return $this->fillObjects("Inbox", $rows->fetch_all());
+        $rows->orderBy("dt_created")->limit($offset, $page_size);
+        return $this->fillObjects("Inbox", $rows->fetchAll());
     }
 
     function getDelMessageCount() {
-        $user_id = $this->w->Auth->user()->id;
+        $user_id = AuthService::getInstance($this->w)->user()->id;
         return $this->_db->get('inbox')->where("is_deleted", 1)->where("user_id", $user_id)
                     ->where("del_forever", 0)->count();
     }
 
     function getNewMessageCount() {
         // Get logged in user
-        $user_id = $this->w->Auth->User()->id;
+        $user_id = AuthService::getInstance($this->w)->User()->id;
         if (empty($user_id)) {
             return 0;
         }
@@ -161,7 +145,7 @@ class InboxService extends DbService {
 
     function getReadMessageCount() {
         // Get logged in user
-        $user_id = $this->w->Auth->User()->id;
+        $user_id = AuthService::getInstance($this->w)->User()->id;
         if (empty($user_id)) {
             return 0;
         }
@@ -173,7 +157,7 @@ class InboxService extends DbService {
     }
 
     function getArchCount() {
-        $user_id = $this->w->Auth->user()->id;
+        $user_id = AuthService::getInstance($this->w)->user()->id;
         $new_count = $this->_db->get('inbox')->where("is_deleted", 0)->where("is_new", 1)
                                 ->where("is_archived", 1)->where("user_id", $user_id)
                                 ->where("del_forever", 0)->count();
@@ -190,10 +174,10 @@ class InboxService extends DbService {
     }
 
     function notifyRoleUsers($role, $subject, $message, $sender_id = null) {
-        $users = $this->Auth->getUsersForRole($role);
+        $users = AuthService::getInstance($this->w)->getUsersForRole($role);
 
         // no notification for current user:
-        $logged_uid = $this->w->Auth->user()->id;
+        $logged_uid = AuthService::getInstance($this->w)->user()->id;
 
         while (!is_null($key = key($users))) {
 
@@ -219,7 +203,7 @@ class InboxService extends DbService {
     
     function markAllMessagesRead() {
         return $this->_db->update("inbox", array("is_new" => 0, "dt_read" => formatDate(time(), "Y-m-d H:i:s")))
-                ->where("user_id", $this->Auth->user()->id)->where("is_new", 1)->execute();
+                ->where("user_id", AuthService::getInstance($this->w)->user()->id)->where("is_new", 1)->execute();
     }
 
     public function navigation(Web $w, $title = null, $nav = null) {
@@ -227,7 +211,7 @@ class InboxService extends DbService {
             $w->ctx("title", $title);
         }
         $nav = $nav ? $nav : array();
-        if ($w->Auth->loggedIn()) {
+        if (AuthService::getInstance($w)->loggedIn()) {
             $w->menuLink("inbox", "New Messages", $nav);
             $w->menuLink("inbox/read", "Read Messages", $nav);
             $w->menuLink("inbox/showarchive", "Archive", $nav);
@@ -238,7 +222,7 @@ class InboxService extends DbService {
     }
 
     function menuLink() {
-        return $this->w->Auth->allowed("/inbox", 
+        return AuthService::getInstance($this->w)->allowed("/inbox", 
             Html::a($this->w->localUrl("/inbox"), "Inbox" . $this->inboxCountMarker(), "Inbox", "current active")
         );
     }

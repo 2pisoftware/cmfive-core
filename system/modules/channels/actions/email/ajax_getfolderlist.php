@@ -3,10 +3,10 @@
 function ajax_getfolderlist_ALL(Web $w)
 {
     $emailchannel = new EmailChannelOption($w);
-    $emailchannel->server = urldecode($w->request("server"));
-    $emailchannel->s_username = urldecode($w->request("s_username"));
-    $emailchannel->s_password = urldecode($w->request("s_password"));
-    $emailchannel->use_auth = $w->request("use_auth");
+    $emailchannel->server = urldecode(Request::string("server"));
+    $emailchannel->s_username = urldecode(Request::string("s_username"));
+    $emailchannel->s_password = urldecode(Request::string("s_password"));
+    $emailchannel->use_auth = Request::string("use_auth");
 
     $folders = $emailchannel->getFolderList(false);
 

@@ -4,7 +4,7 @@
 function reportAjaxCategorytoType_ALL(Web $w) {
     $type = array();
 
-    list($category, $module) = preg_split('/_/', $w->request('id'));
+    list($category, $module) = preg_split('/_/', Request::string('id'));
 
     // organise criteria
     $who = $w->session('user_id');
@@ -17,7 +17,7 @@ function reportAjaxCategorytoType_ALL(Web $w) {
     }
 
     // get report categories from available report list
-    $reports = $w->Report->getReportsbyUserWhere($who, $where);
+    $reports = ReportService::getInstance($w)->getReportsbyUserWhere($who, $where);
     if ($reports) {
         foreach ($reports as $report) {
             $arrtype = preg_split("/,/", $report->sqltype);

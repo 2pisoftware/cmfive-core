@@ -15,7 +15,7 @@ function useradd_GET(Web $w)
     $availableLocales = $w->getAvailableLanguages();
 
     if (!$p['box']) {
-        $w->Admin->navigation($w, "Add User");
+        AdminService::getInstance($w)->navigation($w, "Add User");
     } else {
         $w->setLayout(null);
     }
@@ -68,7 +68,7 @@ function useradd_GET(Web $w)
         $form['User Roles'][] = $row;
     }
 
-    $w->ctx('form', $form);
+    $w->out(Html::multiColForm($form, $w->localUrl("/admin/useradd"), "POST", "Save", null, null, null, "_self", true, array_merge(User::$_validation, ['password' => ['required'], 'password2' => ['required']])));
 }
 
 /**
@@ -113,7 +113,7 @@ function useradd_POST(Web &$w)
     $w->ctx("user", $user);
 
     // now saving the roles
-    $roles = $w->Auth->getAllRoles();
+    $roles = AuthService::getInstance($w)->getAllRoles();
     foreach ($roles as $r) {
         if (!empty($_REQUEST["check_" . $r])) {
             if ($_REQUEST["check_" . $r] == 1) {

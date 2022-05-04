@@ -109,7 +109,7 @@ class NotificationService extends DbService
     private function resolveUser($user)
     {
         if (!is_a($user, 'User')) {
-            $user = $this->w->Auth->getUser(intval($user));
+            $user = AuthService::getInstance($this->w)->getUser(intval($user));
         }
 
         return $user;

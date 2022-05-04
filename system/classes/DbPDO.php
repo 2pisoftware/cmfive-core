@@ -1,9 +1,7 @@
 <?php
 
 /**
- * PDO Extension class, some methods exist to emulate methods called from Crystal DB
- * to ensure backwards compatability with older modules. I.e. having both fetch_all()
- * and fetchAll() is NOT a mistake.
+ * PDO Extension class for Cmfive
  *
  * See: http://www.php.net/manual/en/book.pdo.php for the PDO Class reference
  *
@@ -269,15 +267,6 @@ class DbPDO extends PDO
     }
 
     /**
-     * @deprecated v3.0.0 - Will be removed in v5.0.0.
-     * @see DbPDO::orderBy()
-     */
-    public function order_by($orderby)
-    {
-        return $this->orderBy($orderby);
-    }
-
-    /**
      * Limits the results returned in a query (SQL LIMIT)
      *
      * @param mixed $limit how many records to limit the query to
@@ -361,16 +350,6 @@ class DbPDO extends PDO
     }
 
     /**
-     * @deprecated v3.0.0 - Will be removed in v5.0.0.
-     * @see DbPDO::fetchElement()
-     */
-    public function fetch_element($element)
-    {
-        return $this->fetchElement($element);
-    }
-
-
-    /**
      * Fetches the first matching row from the query
      *
      * @return array rowk
@@ -381,18 +360,7 @@ class DbPDO extends PDO
     }
 
     /**
-     * @deprecated v3.0.0 - Will be removed in v5.0.0.
-     * @see DbPDO::fetchRow()
-     */
-    public function fetch_row()
-    {
-        return $this->fetchRow();
-    }
-
-    /**
      * Fetches all matching rows from the query
-     *
-     * Crystal used "fetch_all" whereas PDO uses "fetchAll"
      *
      * @return array rows
      */
@@ -403,15 +371,6 @@ class DbPDO extends PDO
         }
 
         return [];
-    }
-
-    /**
-     * @deprecated v3.0.0 - Will be removed in v5.0.0.
-     * @see DbPDO::fetchAll()
-     */
-    public function fetch_all()
-    {
-        return $this->fetchAll();
     }
 
     /**
@@ -575,15 +534,6 @@ class DbPDO extends PDO
     }
 
     /**
-     * @deprecated v3.0.0 - Will be removed in v5.0.0.
-     * @see DbPDO::clearSql()
-     */
-    public function clear_sql()
-    {
-        return $this->clearSql();
-    }
-
-    /**
      * Warning: do not implement PSR2 rules for last_insert_id. Overriding the
      * PDO::lastInsertId will cause an infinite loop via FluentPDOs use of
      * the same function.
@@ -641,7 +591,7 @@ class DbPDO extends PDO
             return;
         }
         // only the first transaction will be committed
-        if (self::$trx_token == 1) {
+        if (self::$trx_token == 1 && $this->inTransaction()) {
             $this->commit();
         }
         // decrease the transaction counter
@@ -663,7 +613,9 @@ class DbPDO extends PDO
             return;
         }
         $this->clearSql();
-        $this->rollBack();
+        if ($this->inTransaction()) {
+            $this->rollBack();
+        }
         self::$trx_token = 0;
     }
 

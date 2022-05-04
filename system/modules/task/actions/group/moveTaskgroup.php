@@ -12,7 +12,7 @@ function moveTaskGroup_GET(Web $w)
 {
     list($task_id) = $w->pathMatch();
 
-    $task = $w->Task->getTask($task_id);
+    $task = TaskService::getInstance($w)->getTask($task_id);
     $old_taskgroup = $task->getTaskGroup();
 
     $w->ctx("old_taskgroup", $old_taskgroup);

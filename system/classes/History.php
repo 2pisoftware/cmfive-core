@@ -2,20 +2,19 @@
 
 /**
  * This class is designed to manage page traversal (history) by storing values
- * in the $_SESSION Calling History::add($name) will add that name and a 
+ * in the $_SESSION Calling History::add($name) will add that name and a
  * timestamp to an array in session with the current url path as the key. If you
  * also provide an object as the third parameter, the added history object will
  * be automatically removed from the breadcrumbs when you delete the
  * aforementioned object.
- * 
+ *
  * NOTE: this means that any GET/POST parameters CANNOT be stored along with the path
- * 
+ *
  * @author Adam Buckley
  */
 
 class History
 {
-
     // Storage array
     private static $cookie_key = 'cmfive_history';
 

@@ -128,9 +128,8 @@ class DbObject extends DbService
             $reflection = new ReflectionProperty($this, $name);
             $reflection->setAccessible($name);
             return $reflection->getValue($this);
-        } else {
-            return $this->w->$name;
         }
+        return null;
     }
 
     private function establishEncryptionModel()
@@ -142,7 +141,7 @@ class DbObject extends DbService
 
         if (empty($encryption_key)) {
             $err = 'Encryption key is not set';
-            $this->w->Log->error($err);
+            LogService::getInstance($this->w)->error($err);
             throw new Exception($err);
         }
     }
@@ -178,17 +177,6 @@ class DbObject extends DbService
                 }
             }
         }
-    }
-
-    /**
-     * Intermediate method to facilitate transition from
-     * selectTitle to getSelectOptionTitle
-     *
-     * @deprecated v3.6.13 - Will be removed in v5.0.0.
-     */
-    public function _selectOptionTitle()
-    {
-        return $this->getSelectOptionTitle();
     }
 
     /**
@@ -271,7 +259,7 @@ class DbObject extends DbService
     public function toLink($class = null, $target = null, $user = null)
     {
         if (empty($user)) {
-            $user = $this->w->Auth->user();
+            $user = AuthService::getInstance($this->w)->user();
         }
         if ($this->canView($user)) {
             return Html::a($this->w->localUrl($this->printSearchUrl()), $this->printSearchTitle(), null, $class, null, $target);
@@ -391,7 +379,7 @@ class DbObject extends DbService
      */
     public function isRestricted()
     {
-        $links = $this->w->db->get("restricted_object_user_link")
+        $links = $this->_db->get("restricted_object_user_link")
             ->select()
             ->select("id")
             ->where("object_id", $this->id)
@@ -599,7 +587,7 @@ class DbObject extends DbService
     public function propertyHasChanged($prop)
     {
         return property_exists($this, '__old') && property_exists($this, $prop) &&
-        array_key_exists($prop, $this->__old) && $this->__old[$prop] != $this->$prop;
+            array_key_exists($prop, $this->__old) && $this->__old[$prop] != $this->$prop;
     }
 
     /**
@@ -676,16 +664,16 @@ class DbObject extends DbService
                     $this->dt_created = time();
                 }
 
-                if (in_array("creator_id", $columns) && $this->w->Auth->loggedIn() && !isset($this->creator_id)) {
-                    $this->creator_id = $this->w->Auth->user()->id;
+                if (in_array("creator_id", $columns) && AuthService::getInstance($this->w)->loggedIn() && !isset($this->creator_id)) {
+                    $this->creator_id = AuthService::getInstance($this->w)->user()->id;
                 }
 
                 if (in_array("dt_modified", $columns) && !isset($this->dt_modified)) {
                     $this->dt_modified = time();
                 }
 
-                if (in_array("modifier_id", $columns) && $this->w->Auth->loggedIn() && !isset($this->modifier_id)) {
-                    $this->modifier_id = $this->w->Auth->user()->id;
+                if (in_array("modifier_id", $columns) && AuthService::getInstance($this->w)->loggedIn() && !isset($this->modifier_id)) {
+                    $this->modifier_id = AuthService::getInstance($this->w)->user()->id;
                 }
             }
 
@@ -694,7 +682,6 @@ class DbObject extends DbService
                 if (substr($k, 0, 1) != "_" && $k != "w" && $v !== null) {
                     $dbk = $this->getDbColumnName($k);
                     $data[$dbk] = $this->updateConvert($dbk, $v);
-
                 }
             }
 
@@ -732,8 +719,8 @@ class DbObject extends DbService
             $this->commitTransaction();
         } catch (Exception $e) {
             // echo $e->getMessage();
-            $this->w->Log->error("SQL ERROR: " . $e->getMessage());
-            $this->w->Log->error("SQL: " . $this->_db->getSql());
+            LogService::getInstance($this->w)->error("SQL ERROR: " . $e->getMessage());
+            LogService::getInstance($this->w)->error("SQL: " . $this->_db->getSql());
             $this->rollbackTransaction();
             throw $e;
         }
@@ -773,7 +760,7 @@ class DbObject extends DbService
             // check delete attribute
             if (in_array("is_deleted", $columns) && $this->is_deleted === null) {
                 $this->is_deleted = 0;
-            } elseif (in_array("is_deleted", $columns) && $this->is_deleted == 1 && $this->__old["is_deleted"] != 1) {
+            } elseif (in_array("is_deleted", $columns) && $this->is_deleted == 1 && ($this->__old["is_deleted"] ?? null) != 1) {
                 // call delete function if property is_deleted has changed to 1
                 $deletedOnManualUpdate = true;
                 $this->_callHooks("before", "delete");
@@ -787,8 +774,8 @@ class DbObject extends DbService
                 if (in_array("dt_modified", $columns)) {
                     $this->dt_modified = time();
                 }
-                if (in_array("modifier_id", $columns) && $this->w->Auth->user()) {
-                    $this->modifier_id = $this->w->Auth->user()->id;
+                if (in_array("modifier_id", $columns) && AuthService::getInstance($this->w)->user()) {
+                    $this->modifier_id = AuthService::getInstance($this->w)->user()->id;
                 }
             }
 
@@ -846,8 +833,8 @@ class DbObject extends DbService
             $this->commitTransaction();
         } catch (Exception $e) {
             // echo $e->getMessage();
-            $this->w->Log->error("SQL ERROR: " . $e->getMessage());
-            $this->w->Log->error("SQL: " . $this->_db->getSql());
+            LogService::getInstance($this->w)->error("SQL ERROR: " . $e->getMessage());
+            LogService::getInstance($this->w)->error("SQL: " . $this->_db->getSql());
             $this->rollbackTransaction();
             throw $e;
         }
@@ -902,8 +889,8 @@ class DbObject extends DbService
             $this->commitTransaction();
         } catch (Exception $e) {
             // echo $e->getMessage();
-            $this->w->Log->error("SQL ERROR: " . $e->getMessage());
-            $this->w->Log->error("SQL: " . $this->_db->getSql());
+            LogService::getInstance($this->w)->error("SQL ERROR: " . $e->getMessage());
+            LogService::getInstance($this->w)->error("SQL: " . $this->_db->getSql());
             $this->rollbackTransaction();
             throw $e;
         }
@@ -985,31 +972,6 @@ class DbObject extends DbService
     }
 
     /**
-     * Shorthand function for getDbTableName()
-     *
-     * @deprecated v3.6.13 - Will be removed in v5.0.0.
-     *
-     * @return string
-     */
-    public function _tn()
-    {
-        return $this->getDbTableName();
-    }
-
-    /**
-     * Shorthand function for getDbColumnName()
-     *
-     * @deprecated v3.6.13 - Will be removed in v5.0.0.
-     *
-     * @param string $attr
-     * @return string
-     */
-    public function _cn($attr)
-    {
-        return $this->getDbColumnName($attr);
-    }
-
-    /**
      * get Creator user object if creator_id
      * property exists
      *
@@ -1020,7 +982,7 @@ class DbObject extends DbService
         if ($this->_modifiable) {
             return $this->_modifiable->getCreator();
         } elseif (property_exists(get_class($this), "creator_id")) {
-            return $this->w->Auth->getUser($this->creator_id);
+            return AuthService::getInstance($this->w)->getUser($this->creator_id);
         } else {
             return null;
         }
@@ -1037,7 +999,7 @@ class DbObject extends DbService
         if ($this->_modifiable) {
             return $this->_modifiable->getModifier();
         } elseif (property_exists(get_class($this), "modifier_id")) {
-            return $this->w->Auth->getUser($this->modifier_id);
+            return AuthService::getInstance($this->w)->getUser($this->modifier_id);
         } else {
             return null;
         }
@@ -1054,7 +1016,6 @@ class DbObject extends DbService
      */
     public function addToIndex()
     {
-
     }
 
     /**
@@ -1086,9 +1047,10 @@ class DbObject extends DbService
         $exclude = ["dt_created", "dt_modified", "w"];
 
         foreach (get_object_vars($this) as $k => $v) {
-            if (substr($k, 0, 1) != "_" // ignore volatile vars
-                 && (!property_exists($this, "_exclude_index") // ignore properties that should be excluded
-                     || !in_array($k, $this->_exclude_index)) && stripos($k, "_id") === false && !in_array($k, $exclude)
+            if (
+                substr($k, 0, 1) != "_" // ignore volatile vars
+                && (!property_exists($this, "_exclude_index") // ignore properties that should be excluded
+                    || !in_array($k, $this->_exclude_index)) && stripos($k, "_id") === false && !in_array($k, $exclude)
             ) {
                 if ($k == "id") {
                     $str .= "id" . $v . " ";

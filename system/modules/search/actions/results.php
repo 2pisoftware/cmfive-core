@@ -4,12 +4,12 @@ function results_GET(Web $w)
 {
     $response = ["success" => true, "data" => ""];
     $w->setLayout(null);
-    $query = $w->request('q');
-    $index = $w->request('idx');
-    $page = $w->request('p');
-    $page_size = $w->request('ps');
-    $total_results = $w->request('tr');
-    $tags = $w->request('tags');
+    $query = Request::string('q');
+    $index = Request::string('idx');
+    $page = Request::int('p');
+    $page_size = Request::int('ps');
+    $total_results = Request::int('tr');
+    $tags = Request::mixed('tags');
 
     if (($query && strlen($query) >= 3) || (!empty($tags))) {
         if (!empty($tags)) {

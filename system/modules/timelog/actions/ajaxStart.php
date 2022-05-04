@@ -1,8 +1,8 @@
 <?php
 
 function ajaxStart_POST(Web $w) {
-    if ($w->Timelog->hasActiveLog()) {
-        $w->Log->debug("active log exists");
+    if (TimelogService::getInstance($w)->hasActiveLog()) {
+        LogService::getInstance($w)->debug("active log exists");
 		
         return "0";
     }
@@ -11,11 +11,11 @@ function ajaxStart_POST(Web $w) {
     
     
     if (!class_exists($p['class'])) {
-        $w->Log->debug("class " . $p['class'] . " doesnt exist");
+        LogService::getInstance($w)->debug("class " . $p['class'] . " doesnt exist");
         return "0";
     }
     
-    $object = $w->Timelog->getObject($p['class'], $p['id']);
+    $object = TimelogService::getInstance($w)->getObject($p['class'], $p['id']);
     
     //buid start_time timestamp
     $start_time = null;
@@ -40,9 +40,8 @@ function ajaxStart_POST(Web $w) {
             'title'     => $object->getSelectOptionTitle(),
             'start_time'=>$start_time
         ]));
-//        $w->Comment->addComment($timelog, $w->request('description'));
     } else {
-        $w->Log->debug("object not found");
+        LogService::getInstance($w)->debug("object not found");
 		return "0";
     }
 }

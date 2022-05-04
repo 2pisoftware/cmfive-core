@@ -46,7 +46,7 @@ function resetpassword_GET(Web $w)
     }
 
     if (!$validData) {
-        $w->Log->warn("Password reset attempt failed with token: $token");
+        LogService::getInstance($w)->warn("Password reset attempt failed with token: $token");
         $w->out("Invalid token, this incident has been logged");
     }
 }
@@ -95,7 +95,7 @@ function resetpassword_POST(Web $w)
     }
 
     if (!$validData) {
-        $w->Log->warn("Password reset attempt failed with token: $token");
+        LogService::getInstance($w)->warn("Password reset attempt failed with token: $token");
         $w->out("Invalid token, this incident has been logged");
     } else {
         $w->msg("Your password has been reset", "/auth/login");

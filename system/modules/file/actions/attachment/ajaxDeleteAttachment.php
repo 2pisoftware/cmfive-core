@@ -9,7 +9,7 @@ function ajaxDeleteAttachment_POST(Web $w) {
 		return;
 	}
 
-	$attachment = $w->File->getAttachment($request_data->attachment_id);
+	$attachment = FileService::getInstance($w)->getAttachment($request_data->attachment_id);
 	if (empty($attachment)) {
 		$w->out((new AxiosResponse())->setErrorResponse(null, ["error_message" => "Attachment not found"]));
 		return;
@@ -24,7 +24,7 @@ function ajaxDeleteAttachment_POST(Web $w) {
 	try {
 		$file->delete();
 	} catch(\Gaufrette\Exception\FileNotFound $fnf) {
-		$w->Log->setLogger("FILE")->warning("Trying to permanently elete file but it doesn't exist in the " . $attachment->adapter . " adapter");
+		LogService::getInstance($w)->setLogger("FILE")->warning("Trying to permanently elete file but it doesn't exist in the " . $attachment->adapter . " adapter");
 	}
 
 	$attachment->delete(true);

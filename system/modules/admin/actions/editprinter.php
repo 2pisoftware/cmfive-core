@@ -5,7 +5,7 @@ function editprinter_GET(Web $w)
     $p = $w->pathMatch("id");
     $printer = new Printer($w);
     if (!empty($p["id"])) {
-        $printer = $w->Printer->getPrinter($p["id"]);
+        $printer = PrinterService::getInstance($w)->getPrinter($p["id"]);
     }
 
     $form = [
@@ -24,7 +24,7 @@ function editprinter_POST(Web $w)
     $p = $w->pathMatch("id");
     $printer = new Printer($w);
     if (!empty($p["id"])) {
-        $printer = $w->Printer->getPrinter($p["id"]);
+        $printer = PrinterService::getInstance($w)->getPrinter($p["id"]);
     }
 
     $printer->fill($_POST);

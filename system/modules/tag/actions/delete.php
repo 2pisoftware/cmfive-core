@@ -4,7 +4,7 @@ function delete_ALL(Web $w) {
     $p = $w->pathMatch("id");
 
     if (!empty($p["id"])){
-        $tag = $w->Tag->getTag($p["id"]);
+        $tag = TagService::getInstance($w)->getTag($p["id"]);
         if (!empty($tag->id)) {
             $tag->delete();
             $w->msg("Tag deleted", "/tag/admin");

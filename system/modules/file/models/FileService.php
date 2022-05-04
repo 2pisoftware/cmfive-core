@@ -52,37 +52,6 @@ class FileService extends DbService
     }
 
     /**
-     * Return the path adjusted to the currently active adapter.
-     *
-     * @deprecated v3.6.0 - Will be removed in v5.0.0.
-     *
-     * @param string file path
-     *
-     * @return string resulting file path
-     */
-    public function getFilePath($path)
-    {
-        $active_adapter = $this->getActiveAdapter();
-
-        switch ($active_adapter) {
-            case "local":
-                if (strpos($path, FILE_ROOT . "attachments/") !== false) {
-                    return $path;
-                }
-                if (strpos($path, "attachments/") !== false) {
-                    return FILE_ROOT . $path;
-                }
-
-                return FILE_ROOT . "attachments/" . $path;
-            default:
-                if (strpos($path, "uploads/") === false) {
-                    return "uploads/" . $path;
-                }
-                return $path;
-        }
-    }
-
-    /**
      * Create a new Gaufrette File object from a filename and path
      *
      * @param \Gaufrette\Filesystem
@@ -153,29 +122,11 @@ class FileService extends DbService
                 $adapter_obj = new League\Flysystem\InMemory\InMemoryFilesystemAdapter();
                 break;
             case "s3":
-                $args = [
-                    "region" =>  Config::get("file.adapters.s3.region", "ap-southeast-2"),
-                    "version" => Config::get("file.adapters.s3.version", "2006-03-01"),
-                ];
-
-                if (Config::get("system.environment", ENVIRONMENT_PRODUCTION) === ENVIRONMENT_DEVELOPMENT) {
-                    $args["credentials"] = Config::get("file.adapters.s3.credentials");
-                }
-
-                // $adapter = new League\Flysystem\AwsS3V3\AwsS3V3Adapter($client, 'adam-dev-machine');
-                // $filesystem = new League\Flysystem\Filesystem($adapter);
-
-                $client = new Aws\S3\S3Client($args);
-                // $config_options = Config::get('file.adapters.s3.options');
-                // $s3path = (substr($path, -1) == "/") ? substr($path, 0, -1) : $path; // because trailing presence varies with call/object history
-                // $config_options = array_replace(is_array($config_options) ? $config_options : [], ["directory" => $s3path], $options);
-                $adapter_obj = new League\Flysystem\AwsS3V3\AwsS3V3Adapter(
-                    // S3Client
-                    $client,
-                    // Bucket name
-                    Config::get('file.adapters.s3.bucket')
-                );
-                // $adapter_obj = new AwsS3($client, Config::get('file.adapters.s3.bucket'), is_array($config_options) ? $config_options : []);
+                $client = $this->getS3ClientBelowFilesystem();
+                $config_options = Config::get('file.adapters.s3.options');
+                $s3path = (substr($path, -1) == "/") ? substr($path, 0, -1) : $path; // because trailing presence varies with call/object history
+                $config_options = array_replace(is_array($config_options) ? $config_options : [], ["directory" => $s3path], $options);
+                $adapter_obj = new AwsS3($client, Config::get('file.adapters.s3.bucket'), is_array($config_options) ? $config_options : []);
                 break;
         }
 
@@ -207,26 +158,11 @@ class FileService extends DbService
                 $adapter_obj = new League\Flysystem\InMemory\InMemoryFilesystemAdapter();
                 break;
             case "s3":
-                $args = [
-                    "region" =>  Config::get("file.adapters.s3.region", "ap-southeast-2"),
-                    "version" => Config::get("file.adapters.s3.version", "2006-03-01"),
-                ];
+                $config_options = $adapter_config['options'];
+                $config_options = array_replace(is_array($config_options) ? $config_options : [], ["directory" => $path], $options);
 
-                if (Config::get("system.environment", ENVIRONMENT_PRODUCTION) === ENVIRONMENT_DEVELOPMENT) {
-                    $args["credentials"] = Config::get("file.adapters.s3.credentials");
-                }
-
-                $client = new Aws\S3\S3Client($args);
-                $config_options = Config::get('file.adapters.s3.options');
-                $s3path = (substr($path, -1) == "/") ? substr($path, 0, -1) : $path; // because trailing presence varies with call/object history
-                $config_options = array_replace(is_array($config_options) ? $config_options : [], ["directory" => $s3path], $options);
-                $adapter_obj = new League\Flysystem\AwsS3V3\AwsS3V3Adapter(
-                    // S3Client
-                    $client,
-                    // Bucket name
-                    Config::get('file.adapters.s3.bucket')
-                );
-                // $adapter_obj = new AwsS3($client, Config::get('file.adapters.s3.bucket'), is_array($config_options) ? $config_options : []);
+                $client = $this->getS3ClientBelowFilesystem();
+                $adapter_obj = new AwsS3($client, $adapter_config['bucket'], is_array($config_options) ? $config_options : []);
                 break;
         }
 
@@ -479,6 +415,26 @@ class FileService extends DbService
     public function getAttachment($id)
     {
         return $this->getObject("Attachment", $id);
+    }
+
+
+    /**
+     * Get core cmfive s3 client, radically below abstraction of Gaufrette Filesystem
+     *
+     * @return S3Client
+     */
+    public function getS3ClientBelowFilesystem()
+    {
+        $args = [
+            "region" =>  Config::get("file.adapters.s3.region", "ap-southeast-2"),
+            "version" => Config::get("file.adapters.s3.version", "2006-03-01"),
+        ];
+
+        if (Config::get("system.environment", ENVIRONMENT_PRODUCTION) === ENVIRONMENT_DEVELOPMENT) {
+            $args["credentials"] = Config::get("file.adapters.s3.credentials");
+        }
+
+        return new S3Client($args);
     }
 
 
@@ -746,7 +702,7 @@ class FileService extends DbService
         $filesystemPath = "attachments/" . $object->getDbTableName() . '/' . date('Y/m/d') . '/' . $object->id . '/';
         $filesystem = $this->getFilesystem($this->getFilePath($filesystemPath));
         if (empty($filesystem)) {
-            $this->w->Log->setLogger("FILE_SERVICE")->error("Cannot save file, no filesystem returned");
+            LogService::getInstance($this->w)->setLogger("FILE_SERVICE")->error("Cannot save file, no filesystem returned");
             return null;
         }
 

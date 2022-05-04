@@ -19,7 +19,7 @@ class TimelogService extends DbService
     public function getTimelogsForUser(User $user = null, $includeDeleted = false, $page = 1, $page_size = 20)
     {
         if ($user === null) {
-            $user = $this->w->Auth->user();
+            $user = AuthService::getInstance($this->w)->user();
         }
 
         $where = ['user_id' => $user->id];
@@ -61,7 +61,7 @@ class TimelogService extends DbService
     public function countTotalTimelogsForUser(User $user = null, $includeDeleted = false)
     {
         if ($user === null) {
-            $user = $this->w->Auth->user();
+            $user = AuthService::getInstance($this->w)->user();
         }
 
         $where = ['user_id' => $user->id];
@@ -69,7 +69,7 @@ class TimelogService extends DbService
             $where['is_deleted'] = 0;
         }
 
-        return $this->db->get("timelog")->where($where)->count();
+        return $this->_db->get("timelog")->where($where)->count();
     }
 
     public function getTimelogsForObject($object)
@@ -88,7 +88,7 @@ class TimelogService extends DbService
     public function countTimelogsForObject($object)
     {
         if (!empty($object->id)) {
-            return $this->w->db->get('timelog')->where("object_class", get_class($object))->where("object_id", $object->id)
+            return $this->_db->get('timelog')->where("object_class", get_class($object))->where("object_id", $object->id)
                 ->where('is_deleted', 0)->count();
         }
         return 0;
@@ -104,7 +104,7 @@ class TimelogService extends DbService
     public function countTimelogsForUserAndObject($user, $object)
     {
         if (!empty($user) && !empty($object) && is_a($object, 'DbObject')) {
-            return $this->w->db->get('timelog')->where('user_id', $user->id)
+            return $this->_db->get('timelog')->where('user_id', $user->id)
                 ->where("object_class", get_class($object))
                 ->where("object_id", $object->id)
                 ->where('is_deleted', 0)->count();
@@ -129,7 +129,7 @@ class TimelogService extends DbService
 
     public function getActiveTimeLogForUser()
     {
-        return $this->getObject("Timelog", ["is_deleted" => 0, "dt_end" => null, "user_id" => $this->w->Auth->user()->id]);
+        return $this->getObject("Timelog", ["is_deleted" => 0, "dt_end" => null, "user_id" => AuthService::getInstance($this->w)->user()->id]);
     }
 
     public function hasActiveLog()
@@ -210,9 +210,9 @@ class TimelogService extends DbService
 
         $nav = $nav ?: [];
 
-        $trackingObject = $w->Timelog->getTrackingObject();
+        $trackingObject = $this->getTrackingObject();
 
-        if ($w->Auth->loggedIn()) {
+        if (AuthService::getInstance($w)->loggedIn()) {
             $w->menuLink("timelog/index", "Timelog Dashboard", $nav);
             $w->menuBox("timelog/edit" . (!empty($trackingObject) && !empty($trackingObject->id) ? "?class=" . get_class($trackingObject) . "&id=" . $trackingObject->id : ''), "Add Timelog", $nav);
         }

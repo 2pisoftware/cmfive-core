@@ -50,10 +50,10 @@ function exereport_ALL(Web &$w)
                 $w->error($tbl[1][0], "/report/runreport/" . $rep->id);
             } else { // if we have records, present them in the requested format
                 // default to a web page
-                $report_template = ReportService::getInstance($w)->getReportTemplate($w->request('template'));
+                $report_template = ReportService::getInstance($w)->getReportTemplate(Request::int('template'));
 
                 // Below ifs will no longer work
-                $request_format = $w->request('format');
+                $request_format = Request::string('format');
                 // as a cvs file for download
                 if ($request_format == "csv") {
                     $w->setLayout(null);

@@ -5,8 +5,8 @@ function removeUser(\Web $w, $params = []) {
 	$redirect = $params['redirect'];
 	
 	// Get tasks that are assigned to this user
-	$tasks = $w->Task->getObjects("Task", ["is_deleted" => 0, "assignee_id" => $user->id]);
-	$task_group_membership = $w->Task->getObjects("TaskGroupMember", ["user_id" => $user->id]);
+	$tasks = \TaskService::getInstance($w)->getObjects("Task", ["is_deleted" => 0, "assignee_id" => $user->id]);
+	$task_group_membership = \TaskService::getInstance($w)->getObjects("TaskGroupMember", ["user_id" => $user->id]);
 	
 	$default_taskgroup_assignee = 0;
 	$single_member_taskgroups = [];

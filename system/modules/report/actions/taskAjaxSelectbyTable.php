@@ -4,7 +4,7 @@ function taskAjaxSelectbyTable_ALL(Web $w) {
 	$tbl = $_REQUEST['id'];
 
 	// create dropdowns loaded with respective data
-	$dbfields = $w->Report->getFieldsinTable($tbl);
+	$dbfields = ReportService::getInstance($w)->getFieldsinTable($tbl);
 
 	$w->setLayout(null);
 	$w->out(json_encode($dbfields));

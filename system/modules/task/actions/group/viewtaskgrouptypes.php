@@ -1,11 +1,11 @@
 <?php
 function viewtaskgrouptypes_ALL(Web $w) {
-	$w->Task->navigation($w, "Manage Task Groups");
+	TaskService::getInstance($w)->navigation($w, "Manage Task Groups");
 	
 	
 
 	History::add("Manage Task Groups");
-	$task_groups = $w->Task->getTaskGroups();
+	$task_groups = TaskService::getInstance($w)->getTaskGroups();
 	if ($task_groups) {
 		usort($task_groups, array("TaskService","sortbyGroup"));
 	}
@@ -37,14 +37,14 @@ function viewtaskgrouptypes_ALL(Web $w) {
 
 	// tab: new task group
 	// get generic task group permissions
-	$arrassign = $w->Task->getTaskGroupPermissions();
+	$arrassign = TaskService::getInstance($w)->getTaskGroupPermissions();
 	// unset 'ALL' given all can never assign a task
 	unset($arrassign[0]);
 
 	
 
-	$grouptypes = $w->Task->getAllTaskGroupTypes();
-        $assignees = $w->Auth->getUsers();
+	$grouptypes = TaskService::getInstance($w)->getAllTaskGroupTypes();
+        $assignees = AuthService::getInstance($w)->getUsers();
         array_unshift($assignees,array("Unassigned","unassigned"));        
 
 	// build form to create a new task group within the target group type
@@ -53,8 +53,8 @@ function viewtaskgrouptypes_ALL(Web $w) {
 			array("Task Group Type","select","task_group_type",null,$grouptypes),
 			array("Title","text","title"),
 			array("Who Can Assign","select","can_assign",null,$arrassign),
-			array("Who Can View","select","can_view",null,$w->Task->getTaskGroupPermissions()),
-			array("Who Can Create","select","can_create",null,$w->Task->getTaskGroupPermissions()),
+			array("Who Can View","select","can_view",null,TaskService::getInstance($w)->getTaskGroupPermissions()),
+			array("Who Can Create","select","can_create",null,TaskService::getInstance($w)->getTaskGroupPermissions()),
 			
 			array("","hidden","is_deleted","0"),
 			array("Description","textarea","description",null,"26","6"),

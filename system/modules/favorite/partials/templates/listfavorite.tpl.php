@@ -15,9 +15,9 @@ if (!empty($categorisedFavorites)) {
 			$buffer .= "<div class='row search-class'><h4 style='padding-left: 30px; font-weight: lighter;'>{$t_class}</h4>";
 		
 			foreach($objects as $templateData) {
-				//if ($templateData->canList($w->Auth->user())) {
+				//if ($templateData->canList(AuthService::getInstance($w)->user())) {
 					$buffer .= '<div class="panel search-result">';
-					//if ($templateData->canView($w->Auth->user())) {
+					//if ($templateData->canView(AuthService::getInstance($w)->user())) {
 					$buffer .= "<a class=\"row search-title\" href=\"{$w->localUrl($templateData['url'])}\">{$templateData['title']}</a>"
 					. "<div class=\"row search-listing\">{$templateData['listing']}</div>";
 					$buffer .= "</div>";

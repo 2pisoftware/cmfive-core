@@ -114,18 +114,6 @@ abstract class TaskGroupType
     /**
      * By default returns the very first status of the
      * status array if defined. Otherwise "".
-     *
-     * @deprecated v2.0.0 - Will be removed in v5.0.0.
-     * @see TaskGroupType::getDefaultStatus()
-     */
-    public function get_default_status()
-    {
-        return $this->getDefaultStatus();
-    }
-
-    /**
-     * By default returns the very first status of the
-     * status array if defined. Otherwise "".
      * - override in subclass
      * - or specify in config.php with key 'task.<subclassname>.default-status'
      */

@@ -9,7 +9,7 @@ function viewInsight_GET(Web $w)
     // now we need to fetch the correct insight
     // we will use pathMatch to retrieve an insight name from the url.
 
-    // if the insight name exists we will retrieve the data for that insight   
+    // if the insight name exists we will retrieve the data for that insight
     $insight = InsightService::getInstance($w)->getInsightInstance($insight_class);
     if (empty($insight)) {
         $w->error('Insight does not exist', '/insights');
@@ -19,8 +19,6 @@ function viewInsight_GET(Web $w)
         $w->redirect("/insights/runInsight/" . $insight_class);
     }
 
-    // add a title to the action
-    // change the title to reflect viewing insight
     $w->ctx('title', "View Insight for " . $insight->name);
 
     $w->ctx('filterForm', html::multiColForm($insight->getfilters($w, $_REQUEST), "/insights/runInsight/" . $insight_class, "GET", "Run"));

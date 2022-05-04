@@ -5,7 +5,7 @@ function listtimelog(\Web $w, $params) {
 		return;
 	}
 	
-	$timelogs = $w->Timelog->getTimelogsForObjectByClassAndId($params['object_class'], $params['object_id']);
+	$timelogs = \TimelogService::getInstance($w)->getTimelogsForObjectByClassAndId($params['object_class'], $params['object_id']);
 	if (!empty($timelogs)) {
 		$total = array_reduce($timelogs, function($carry, $timelog) {
 			return $carry += $timelog->getDuration();

@@ -178,95 +178,6 @@ class AdminService extends DbService
         return $this->getObjects('Language', $where, false, true, 'name asc');
     }
 
-    /**
-     * @deprecated v4.3.0 - Will be removed in v5.0.0.
-     */
-    public static function sortByType($a, $b)
-    {
-        if ($a->type == $b->type) {
-            return 0;
-        }
-        return ($a->type > $b->type) ? +1 : -1;
-    }
-
-    /**
-     * @deprecated v4.3.0 - Will be removed in v5.0.0.
-     */
-    public function getLookupTypes()
-    {
-        $lookup = $this->getObjects("Lookup", ["is_deleted" => 0]);
-        $types = [];
-        if ($lookup) {
-            foreach ($lookup as $l) {
-                $types[$l->type] = [$l->type, $l->type];
-            }
-        }
-        return $types;
-    }
-
-    /**
-     * @deprecated v4.3.0 - Will be removed in v5.0.0.
-     * @see LookupService->getLookupByType()
-     */
-    public function getLookupItemsbyType($type)
-    {
-        $lookup = $this->getObjects("Lookup", ["type" => $type, "is_deleted" => 0], true);
-        $items = [];
-        if ($lookup) {
-            foreach ($lookup as $l) {
-                $items[$l->id] = [$l->title, $l->id];
-            }
-        }
-
-        return $items;
-    }
-
-    /**
-     * @deprecated v4.3.0 - Will be removed in v5.0.0.
-     */
-    public function getLookupItembyId($id)
-    {
-        $lookup = $this->getObjects("Lookup", ["id" => $id]);
-        $item = null;
-        foreach ($lookup as $l) {
-            $item = [$l->code, $l->title];
-        }
-        return $item;
-    }
-
-    /**
-     * @deprecated v4.3.0 - Will be removed in v5.0.0.
-     * @see LookupService->getLookupByTypeAndCode()
-     */
-    public function getLookupbyTypeCode($type, $code)
-    {
-        return $this->getObject("Lookup", ["type" => $type, "code" => $code, "is_deleted" => 0]);
-    }
-
-    /**
-     * @deprecated v4.3.0 - Will be removed in v5.0.0.
-     * @see LookupService->getLookup()
-     */
-    public function getLookupbyId($id)
-    {
-        return $this->getObject("Lookup", ["id" => $id]);
-    }
-
-    /**
-     * @deprecated v4.3.0 - Will be removed in v5.0.0.
-     * @see LookupService->getLookups()
-     */
-    public function getAllLookup($where = [])
-    {
-        $where["is_deleted"] = 0;
-
-        $lookups = $this->getObjects("Lookup", $where);
-        if ($lookups) {
-            usort($lookups, ["AdminService", "sortbyType"]);
-        }
-        return $lookups;
-    }
-
     public function navigation(Web $w, $title = null, $prenav = null)
     {
         if ($title) {
@@ -274,7 +185,7 @@ class AdminService extends DbService
         }
 
         $nav = $prenav ? $prenav : [];
-        if ($w->Auth->loggedIn()) {
+        if (AuthService::getInstance($w)->loggedIn()) {
             $w->menuLink("admin/index", "Admin Dashboard", $nav);
             $w->menuLink("admin/users", "List Users", $nav);
             $w->menuLink("admin/groups", "List Groups", $nav);

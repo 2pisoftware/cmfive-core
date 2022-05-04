@@ -6,7 +6,7 @@ function manageMembers_ALL(Web $w)
 {
 
 
-    $insight_class = $w->request('insight_class');
+    $insight_class = Request::string('insight_class');
     //var_dump($insight_class);
     //die;
 

@@ -1,7 +1,7 @@
 <div class='row-fluid'>
     <?php if (!empty($time_entries)) : ?>
         <?php foreach($time_entries as $date => $entry_struct) : ?>
-            <h4 style='border-bottom: 1px solid #777;'><?php echo $date; ?><span class='right'><?php echo $w->Task->getFormatPeriod($entry_struct['total']); ?></span></h4>
+            <h4 style='border-bottom: 1px solid #777;'><?php echo $date; ?><span class='right'><?php echo TaskService::getInstance($w)->getFormatPeriod($entry_struct['total']); ?></span></h4>
             <table class='small-12'>
                 <thead><tr><th width="10%">From</th><th width="10%">To</th><th width="20%">Object</th><th width="40%">Description</th><th>Actions</th></tr></thead>
                 <tbody>
@@ -13,9 +13,9 @@
                             <td><pre class="break-pre" style="font-family: sans-serif;"><?php echo $time_entry->getComment()->comment; ?></pre></td>
                             <td>
                                 <?php echo $time_entry->object_class == "Task" ? Html::b('/task/edit/' . $time_entry->object_id . "#timelog", "View Time Log") : ""; ?>
-                                <?php echo $time_entry->canEdit($w->Auth->user()) ? Html::box('/timelog/edit/' . $time_entry->id, 'Edit', true) : ''; ?>
+                                <?php echo $time_entry->canEdit(AuthService::getInstance($w)->user()) ? Html::box('/timelog/edit/' . $time_entry->id, 'Edit', true) : ''; ?>
                                 <?php $confirmation_message = implode("", $w->callHook("timelog", "before_display_timelog", $time_entry)); ?>
-								<?php echo $time_entry->canDelete($w->Auth->user()) ? Html::b('/timelog/delete/' . $time_entry->id, 'Delete', empty($confirmation_message) ? 'Are you sure you want to delete this timelog?' : $confirmation_message) : ''; ?>
+								<?php echo $time_entry->canDelete(AuthService::getInstance($w)->user()) ? Html::b('/timelog/delete/' . $time_entry->id, 'Delete', empty($confirmation_message) ? 'Are you sure you want to delete this timelog?' : $confirmation_message) : ''; ?>
                             </td>
                         </tr>
                     <?php endforeach; ?>

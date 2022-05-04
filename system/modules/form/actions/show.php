@@ -12,7 +12,7 @@ function show_GET(Web $w)
     VueComponentRegister::registerComponent('metadata-subform', new VueComponent('metadata-subform', '/system/modules/form/assets/js/metadata-subform.vue.js'));
     VueComponentRegister::registerComponent('metadata-select', new VueComponent('metadata-select', '/system/modules/form/assets/js/metadata-select.vue.js', '/system/modules/form/assets/js/metadata-select.vue.css'));
 
-    $_form_object = $w->Form->getForm($p['id']);
+    $_form_object = FormService::getInstance($w)->getForm($p['id']);
 
     $w->ctx("title", "Form: " . $_form_object->printSearchTitle());
     $w->ctx("form", $_form_object);
@@ -28,7 +28,7 @@ function show_GET(Web $w)
             $row[] = $event->title;
             $row[] = $event->event_type;
             $row[] = $event->is_active ? 'ON' : 'OFF';
-            $row[] = !empty($event->form_application_id) ? $w->Form->getFormApplication($event->form_application_id)->title : 'None';
+            $row[] = !empty($event->form_application_id) ? FormService::getInstance($w)->getFormApplication($event->form_application_id)->title : 'None';
             $row[] = $event->module . '.' . $event->class;
             // add settings
             $row[] = str_replace(',', ',<br>', $event->settings);

@@ -1,5 +1,5 @@
 <?php
 function allread_GET(Web &$w) {
-	$w->Inbox->markAllMessagesRead();
+	InboxService::getInstance($w)->markAllMessagesRead();
 	$w->msg("All messages marked as read.","/inbox/index");
 }

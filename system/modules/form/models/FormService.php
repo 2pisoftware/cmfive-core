@@ -489,10 +489,10 @@ class FormService extends DbService
         $instance = null;
         $form = null;
         if (!empty($form_instance_id)) {
-            $instance = $this->w->Form->getFormInstance($form_instance_id);
+            $instance = FormService::getInstance($this->w)->getFormInstance($form_instance_id);
             $form = $instance->getForm();
         } else {
-            $form = $this->w->Form->getForm($form_id);
+            $form = FormService::getInstance($this->w)->getForm($form_id);
             $instance = new FormInstance($this->w);
             $instance->form_id = $form_id;
         }
@@ -528,7 +528,7 @@ class FormService extends DbService
         // Add new POST values
         if (!empty($field_values)) {
             foreach ($field_values as $key => $value) {
-                $field = $this->w->Form->getFormFieldByFormIdAndTitle($form->id, $key);
+                $field = FormService::getInstance($this->w)->getFormFieldByFormIdAndTitle($form->id, $key);
                 // if post variables don't match form fields, ignore them
                 if (!empty($field)) {
                     $instance_value = new FormValue($this->w);
@@ -543,7 +543,7 @@ class FormService extends DbService
         // Add new FILE values
         if (!empty($file_values)) {
             foreach ($file_values as $key => $value) {
-                $field = $this->w->Form->getFormFieldByFormIdAndTitle($form->id, $key);
+                $field = FormService::getInstance($this->w)->getFormFieldByFormIdAndTitle($form->id, $key);
                 // if post variables don't match form fields, ignore them
                 if (!empty($field)) {
                     $instance_value = new FormValue($this->w);
@@ -599,7 +599,7 @@ class FormService extends DbService
         }
 
         $nav = $prenav ? $prenav : [];
-        if ($w->Auth->loggedIn()) {
+        if (AuthService::getInstance($w)->loggedIn()) {
             $w->menuLink("form-application", "Applications", $nav);
             $w->menuLink("form", "Forms", $nav);
         }

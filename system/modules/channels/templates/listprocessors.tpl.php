@@ -35,7 +35,7 @@
                                 }
                             }
                         } else {
-                            $w->Log->setLogger('CHANNEL')->error('Processor class ' . $p->class . ' not found');
+                            LogService::getInstance($w)->setLogger('CHANNEL')->error('Processor class ' . $p->class . ' not found');
                         }
                         ?>
                     </td>

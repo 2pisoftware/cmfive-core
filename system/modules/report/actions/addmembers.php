@@ -4,11 +4,11 @@ function addmembers_GET(Web &$w)
 {
     $p = $w->pathMatch("id");
 
-    $editors = $w->Auth->getUsersForRole("report_editor");
-    $users = $w->Auth->getUsersForRole("report_user");
+    $editors = AuthService::getInstance($w)->getUsersForRole("report_editor");
+    $users = AuthService::getInstance($w)->getUsersForRole("report_user");
 
     $possibleMembers = array_unique(array_merge($users, $editors));
-    $currentReportMembers = $w->Report->getReportMembers($p["id"]);
+    $currentReportMembers = ReportService::getInstance($w)->getReportMembers($p["id"]);
     $currentMembers = [];
 
     for ($i = 0; $i <= count($currentReportMembers) - 1; $i++) {
@@ -21,7 +21,7 @@ function addmembers_GET(Web &$w)
     $addUserForm = array(
         array("", "hidden", "report_id", $p['id']),
         array("Add Member", "select", "member", null, $members),
-        array("With Role", "select", "role", "", $w->Report->getReportPermissions()),
+        array("With Role", "select", "role", "", ReportService::getInstance($w)->getReportPermissions()),
     );
 
     $w->setLayout(null);

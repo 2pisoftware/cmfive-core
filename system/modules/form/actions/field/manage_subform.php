@@ -8,7 +8,7 @@ function manage_subform_GET(Web $w)
         $w->ctx('error_message', 'No ID given');
     }
 
-    $form_value = $w->Form->getFormValue($form_value_id);
+    $form_value = FormService::getInstance($w)->getFormValue($form_value_id);
     if (empty($form_value->id)) {
         $w->ctx('error_message', 'Subform not found');
     }
@@ -30,7 +30,7 @@ function manage_subform_GET(Web $w)
     $subform = null;
     foreach ($metadata as $metadata_row) {
         if ($metadata_row->meta_key === "associated_form") {
-            $subform = $w->Form->getForm($metadata_row->meta_value);
+            $subform = FormService::getInstance($w)->getForm($metadata_row->meta_value);
         }
     }
 
@@ -48,7 +48,7 @@ function manage_subform_GET(Web $w)
         $form = $form_instance->getForm();
 
         if (!empty($form)) {
-            $form_mapping = $w->Form->getFormMapping($form, $form_instance->object_class);
+            $form_mapping = FormService::getInstance($w)->getFormMapping($form, $form_instance->object_class);
             if (!empty($form_mapping) && $form_mapping->is_singleton) {
                 $is_singleton = true;
             }
@@ -57,6 +57,6 @@ function manage_subform_GET(Web $w)
 
     $w->ctx('subform', $subform);
     $w->ctx("form_value", $form_value);
-    $w->ctx('display_only', !!$w->request('display_only'));
+    $w->ctx('display_only', !!Request::bool('display_only'));
     $w->ctx("is_singleton", $is_singleton);
 }

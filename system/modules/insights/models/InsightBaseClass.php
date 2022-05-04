@@ -12,7 +12,7 @@ abstract class InsightBaseClass
 
     /**
      * runs the insight report. The returned array() should have the following structure:
-     * [ 
+     * [
      *  [ "title" -> "The title of a sub report",
      *    "header" -> ["Column Header 1", "Column Header 2", ..],
      *    "data" -> [

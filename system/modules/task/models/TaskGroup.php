@@ -56,7 +56,7 @@ class TaskGroup extends DbObject
                 $new_notify->insert();
             }
         } else {
-            $this->w->Log->setLogger('TASK')->warn('$saveToDb is false, skipping copy of task group notify objects');
+            LogService::getInstance($this->w)->setLogger('TASK')->warn('$saveToDb is false, skipping copy of task group notify objects');
         }
 
         return $new_taskgroup;
@@ -100,7 +100,7 @@ class TaskGroup extends DbObject
     // Only owner of taskgroup or admin can edit
     public function canEdit(\User $user)
     {
-        if ($this->Auth->user()->is_admin == 1) {
+        if (AuthService::getInstance($this->w)->user()->is_admin == 1) {
             return true;
         }
 
@@ -110,7 +110,7 @@ class TaskGroup extends DbObject
     // Only owner of taskgroup or admin can delete
     public function canDelete(\User $user)
     {
-        if ($this->Auth->user()->is_admin == 1) {
+        if (AuthService::getInstance($this->w)->user()->is_admin == 1) {
             return true;
         }
 
@@ -132,63 +132,63 @@ class TaskGroup extends DbObject
     // get my member object. compare my role with group role required to view task group
     public function getCanIView()
     {
-        if ($this->Auth->user()->is_admin == 1) {
+        if (AuthService::getInstance($this->w)->user()->is_admin == 1) {
             return true;
         }
 
-        $me = $this->Task->getMemberGroupById($this->id, $this->Auth->user()->id);
+        $me = TaskService::getInstance($this->w)->getMemberGroupById($this->id, AuthService::getInstance($this->w)->user()->id);
         if (empty($me)) {
             return false;
         }
-        return ($this->can_view == "ALL") ? true : $this->Task->getMyPerms($me->role, $this->can_view);
+        return ($this->can_view == "ALL") ? true : TaskService::getInstance($this->w)->getMyPerms($me->role, $this->can_view);
     }
 
     // get my member object. compare my role with group role required to create tasks in this group
     public function getCanICreate()
     {
-        if ($this->Auth->user()->is_admin == 1) {
+        if (AuthService::getInstance($this->w)->user()->is_admin == 1) {
             return true;
         }
 
-        $me = $this->Task->getMemberGroupById($this->id, $this->w->Auth->user()->id);
+        $me = TaskService::getInstance($this->w)->getMemberGroupById($this->id, AuthService::getInstance($this->w)->user()->id);
         if (empty($me)) {
             return false;
         }
-        return ($this->can_create == "ALL") ? true : $this->Task->getMyPerms($me->role, $this->can_create);
+        return ($this->can_create == "ALL") ? true : TaskService::getInstance($this->w)->getMyPerms($me->role, $this->can_create);
     }
 
     // get my member object. compare my role with group role required to assign tasks in this group
     public function getCanIAssign()
     {
-        if ($this->Auth->user()->is_admin == 1) {
+        if (AuthService::getInstance($this->w)->user()->is_admin == 1) {
             return true;
         }
 
-        $me = $this->Task->getMemberGroupById($this->id, $this->w->Auth->user()->id);
+        $me = TaskService::getInstance($this->w)->getMemberGroupById($this->id, AuthService::getInstance($this->w)->user()->id);
         if (empty($me)) {
             return false;
         }
-        return ($this->can_assign == "ALL") ? true : $this->w->Task->getMyPerms($me->role, $this->can_assign);
+        return ($this->can_assign == "ALL") ? true : TaskService::getInstance($this->w)->getMyPerms($me->role, $this->can_assign);
     }
 
     // get task group title given task group type
     public function getTypeTitle()
     {
-        $c = $this->Task->getTaskGroupTypeObject($this->task_group_type);
+        $c = TaskService::getInstance($this->w)->getTaskGroupTypeObject($this->task_group_type);
         return $c ? $c->getTaskGroupTypeTitle() : null;
     }
 
     // get task group description given task group type
     public function getTypeDescription()
     {
-        $c = $this->Task->getTaskGroupTypeObject($this->task_group_type);
+        $c = TaskService::getInstance($this->w)->getTaskGroupTypeObject($this->task_group_type);
         return $c ? $c->getTaskGroupTypeDescription() : null;
     }
 
     // get fullname of default assignee for this task group
     public function getDefaultAssigneeName()
     {
-        $assign = $this->Auth->getUser($this->default_assignee_id);
+        $assign = AuthService::getInstance($this->w)->getUser($this->default_assignee_id);
         return $assign ? $assign->getFullName() : "";
     }
 
@@ -221,32 +221,32 @@ class TaskGroup extends DbObject
     // Task replacement functions
     public function getTypes()
     {
-        return $this->Task->getTaskTypes($this);
+        return TaskService::getInstance($this->w)->getTaskTypes($this);
     }
 
     public function getTypeStatus()
     {
-        return $this->Task->getTaskTypeStatus($this->task_group_type);
+        return TaskService::getInstance($this->w)->getTaskTypeStatus($this->task_group_type);
     }
 
     public function getTaskGroupTypeObject()
     {
-        return $this->Task->getTaskGroupTypeObject($this->task_group_type);
+        return TaskService::getInstance($this->w)->getTaskGroupTypeObject($this->task_group_type);
     }
 
     public function getTaskReopen()
     {
-        return $this->Task->getCanTaskReopen($this->task_group_type);
+        return TaskService::getInstance($this->w)->getCanTaskReopen($this->task_group_type);
     }
 
     public function getStatus()
     {
-        return $this->Task->getTaskStatus($this->task_group_type);
+        return TaskService::getInstance($this->w)->getTaskStatus($this->task_group_type);
     }
 
     public function getPriority()
     {
-        return $this->Task->getTaskPriority($this->task_group_type);
+        return TaskService::getInstance($this->w)->getTaskPriority($this->task_group_type);
     }
 
     /**

@@ -1,7 +1,7 @@
 <?php
 
 function ajaxSearch_GET(Web $w) {
-    $results = $w->Search->getResults($w->request("term"), $w->request("index"));
+    $results = SearchService::getInstance($w)->getResults(Request::string("term"), Request::string("index"));
     $result_ids = [];
     $result_objects = [];
 
@@ -26,11 +26,11 @@ function ajaxSearch_GET(Web $w) {
 					$where['is_deleted'] = 0;
 				}
 				
-                $query = $w->db->get($inst_class->getDbTableName())->where($where)->fetch_all();
+                $query = $w->db->get($inst_class->getDbTableName())->where($where)->fetchAll();
                 if (!empty($query)) {
                     $query_objects = $inst_class->getObjectsFromRows($class, $query);
                     foreach($query_objects as $query_object) {
-                        if ($query_object->canList($w->Auth->user()) || $query_object->canView($w->Auth->user())) {
+                        if ($query_object->canList(AuthService::getInstance($w)->user()) || $query_object->canView(AuthService::getInstance($w)->user())) {
                             $autocomplete = new stdClass();
                             $autocomplete->value = $query_object->id . " - " . $query_object->getSelectOptionTitle();
                             $autocomplete->id = $query_object->id; //getSelectOptionValue();

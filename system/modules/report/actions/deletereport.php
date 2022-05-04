@@ -9,7 +9,7 @@ function deletereport_ALL(Web &$w) {
 	// if there is  report ID in the URL ...
 	if ($p['id']) {
 		// get report details
-		$rep = $w->Report->getReportInfo($p['id']);
+		$rep = ReportService::getInstance($w)->getReportInfo($p['id']);
 
 		// if report exists, delete
 		if ($rep) {
@@ -17,7 +17,7 @@ function deletereport_ALL(Web &$w) {
 			$rep->update();
 
 			// need to check if there is a feed associated with this report
-			$feed = $w->Report->getFeedInfobyReportId($rep->id);
+			$feed = ReportService::getInstance($w)->getFeedInfobyReportId($rep->id);
 				
 			// if feed exists, set is_deleted flag. ie. delete feed as well as report
 			if ($feed) {

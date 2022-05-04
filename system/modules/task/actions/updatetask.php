@@ -3,15 +3,15 @@ function updatetask_POST(Web &$w) {
 	$p = $w->pathMatch("id");
 
 	// task is to get updated so gather relevant data
-	$task = $w->Task->getTask($p['id']);
-	$taskdata = $w->Task->getTaskData($p['id']);
+	$task = TaskService::getInstance($w)->getTask($p['id']);
+	$taskdata = TaskService::getInstance($w)->getTaskData($p['id']);
 
 	// if task exists, first gather changes for display in comments
 	if ($task) {
 		// if no due date, make 1 month from now
-		$dt_due = $w->request('dt_due');
+		$dt_due = Request::string('dt_due');
 		if (empty($dt_due)) { 
-			$_POST['dt_due'] = $w->Task->getNextMonth();
+			$_POST['dt_due'] = TaskService::getInstance($w)->getNextMonth();
 		}
 
 		// convert dates to d/m/y for display. if assignee changes, get name of new assignee
@@ -25,7 +25,7 @@ function updatetask_POST(Web &$w) {
 				if (startsWith($name,"dt_"))
 				$value = Date("d/m/Y",$value);
 				if ($name == "assignee_id")
-				$value = $w->Task->getUserById($value);
+				$value = TaskService::getInstance($w)->getUserById($value);
 
 				$comments .= $name . " updated to: " . $value . "\n";
 			}
@@ -56,7 +56,7 @@ function updatetask_POST(Web &$w) {
 	// if there is current no task data, but relevant input in the REQUEST object, create the task data
 	if ($taskdata) {
 		foreach ($taskdata as $td) {
-			$arr = array("value"=>$w->request($td->key));
+			$arr = array("value"=>Request::string($td->key));
 			$td->fill($arr);
 			$td->update();
 			unset($arr);

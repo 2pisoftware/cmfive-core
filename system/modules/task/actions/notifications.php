@@ -2,21 +2,21 @@
 
 function notifications_GET(Web $w) {
 	$line = array(array("Task Group", "Your Role", "Creator", "Assignee", "All Others", ""));
-    $user_taskgroup_members = $w->Task->getMemberGroups($w->Auth->user()->id);
+    $user_taskgroup_members = TaskService::getInstance($w)->getMemberGroups(AuthService::getInstance($w)->user()->id);
     if ($user_taskgroup_members) {
         usort($user_taskgroup_members, array("TaskService", "sortbyRole"));
 
         foreach ($user_taskgroup_members as $member) {
             $taskgroup = $member->getTaskGroup();
             $value_array = array();
-            $notify = $w->Task->getTaskGroupUserNotify($w->Auth->user()->id, $member->task_group_id);
+            $notify = TaskService::getInstance($w)->getTaskGroupUserNotify(AuthService::getInstance($w)->user()->id, $member->task_group_id);
             if ($notify) {
                 foreach ($notify as $n) {
                     $value = ($n->value == "0") ? "No" : "Yes";
                     $value_array[$n->role][$n->type] = $value;
                 }
             } else {
-                $notify = $w->Task->getTaskGroupNotify($member->task_group_id);
+                $notify = TaskService::getInstance($w)->getTaskGroupNotify($member->task_group_id);
                 if ($notify) {
                     foreach ($notify as $n) {
                         $value = ($n->value == "0") ? "No" : "Yes";
@@ -26,7 +26,7 @@ function notifications_GET(Web $w) {
             }
 
             if ($taskgroup->getCanIView()) {
-                $title = $w->Task->getTaskGroupTitleById($member->task_group_id);
+                $title = TaskService::getInstance($w)->getTaskGroupTitleById($member->task_group_id);
                 $role = strtolower($member->role);
 
                 $line[] = array(

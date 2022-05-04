@@ -1,6 +1,6 @@
 <?php
 function newlookup_POST(Web &$w) {
-	$w->Admin->navigation($w,"Lookup");
+	AdminService::getInstance($w)->navigation($w,"Lookup");
 
 	$_REQUEST['type'] = ($_REQUEST['ntype'] != "") ? $_REQUEST['ntype'] : $_REQUEST['type'];
 
@@ -11,7 +11,7 @@ function newlookup_POST(Web &$w) {
 	$err .= "Please enter a KEY<br>";
 	if ($_REQUEST['title'] == "")
 	$err .= "Please enter a VALUE<br>";
-	if ($w->Admin->getLookupbyTypeCode($_REQUEST['type'],$_REQUEST['code']))
+	if (LookupService::getInstance($w)->getLookupByTypeAndCode($_REQUEST['type'],$_REQUEST['code']))
 	$err .= "Type and Key combination already exists";
 
 	if ($err != "") {

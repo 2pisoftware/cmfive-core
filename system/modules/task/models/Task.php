@@ -171,7 +171,7 @@ class Task extends DbObject
     public function getDataValue($key)
     {
         if ($this->id) {
-            $c = $this->Task->getObject("TaskData", ["task_id" => $this->id, "data_key" => $key]);
+            $c = TaskService::getInstance($this->w)->getObject("TaskData", ["task_id" => $this->id, "data_key" => $key]);
             if ($c) {
                 return $c->value;
             }
@@ -188,7 +188,7 @@ class Task extends DbObject
     public function setDataValue($key, $value)
     {
         if ($this->id) {
-            $c = $this->Task->getObject("TaskData", ["task_id" => $this->id, "data_key" => $key]);
+            $c = TaskService::getInstance($this->w)->getObject("TaskData", ["task_id" => $this->id, "data_key" => $key]);
             if ($c) {
                 $c->value = $value;
                 $c->update();
@@ -221,7 +221,7 @@ class Task extends DbObject
             return true;
         }
 
-        $me = $this->Task->getMemberGroupById($this->task_group_id, $user->id);
+        $me = TaskService::getInstance($this->w)->getMemberGroupById($this->task_group_id, $user->id);
 
         if (empty($me)) {
             return false;
@@ -235,8 +235,8 @@ class Task extends DbObject
             return true;
         }
 
-        $group = $this->Task->getTaskGroup($this->task_group_id);
-        return $this->Task->getMyPerms($me->role, $group->can_view);
+        $group = TaskService::getInstance($this->w)->getTaskGroup($this->task_group_id);
+        return TaskService::getInstance($this->w)->getMyPerms($me->role, $group->can_view);
     }
 
     /**
@@ -320,24 +320,24 @@ class Task extends DbObject
     // get my membership object and compare my role with that required to assigne tasks given a task group ID
     public function getCanIAssign()
     {
-        if ($this->Auth->user()->is_admin == 1) {
+        if (AuthService::getInstance($this->w)->user()->is_admin == 1) {
             return true;
         }
-        $me = $this->Task->getMemberGroupById($this->task_group_id, $_SESSION['user_id']);
-        $group = $this->Task->getTaskGroup($this->task_group_id);
+        $me = TaskService::getInstance($this->w)->getMemberGroupById($this->task_group_id, $_SESSION['user_id']);
+        $group = TaskService::getInstance($this->w)->getTaskGroup($this->task_group_id);
 
-        return $this->Task->getMyPerms($me->role, $group->can_assign);
+        return TaskService::getInstance($this->w)->getMyPerms($me->role, $group->can_assign);
     }
 
     // if i am assignee, creator or task group owner, i can set notifications for this Task
     public function getCanINotify()
     {
-        if ($this->Auth->user()->is_admin == 1) {
+        if (AuthService::getInstance($this->w)->user()->is_admin == 1) {
             return true;
         }
 
         $logged_in_user_id = AuthService::getInstance($this->w)->user()->id;
-        $me = $this->Task->getMemberGroupById($this->task_group_id, $logged_in_user_id);
+        $me = TaskService::getInstance($this->w)->getMemberGroupById($this->task_group_id, $logged_in_user_id);
 
         if (($logged_in_user_id == $this->assignee_id) || ($logged_in_user_id == $this->getTaskCreatorId()) || (!empty($me->role) && TaskService::getInstance($this->w)->getMyPerms($me->role, "OWNER"))) {
             return true;
@@ -348,7 +348,7 @@ class Task extends DbObject
     // return the ID of the task creator given a task ID
     public function getTaskCreatorId()
     {
-        $c = $this->Task->getObject("ObjectModification", ["object_id" => $this->id, "table_name" => $this->getDbTableName()]);
+        $c = TaskService::getInstance($this->w)->getObject("ObjectModification", ["object_id" => $this->id, "table_name" => $this->getDbTableName()]);
         return $c ? $c->creator_id : "";
     }
 
@@ -358,12 +358,12 @@ class Task extends DbObject
         // I've moved the creator_id to tasks but this is for backwards compatability
         $creator = null;
         if (empty($this->creator_id)) {
-            $c = $this->Task->getObject("ObjectModification", ["object_id" => $this->id, "table_name" => $this->getDbTableName()]);
+            $c = TaskService::getInstance($this->w)->getObject("ObjectModification", ["object_id" => $this->id, "table_name" => $this->getDbTableName()]);
             if (!empty($c->creator_id)) {
-                $creator = $this->Auth->getUser($c->creator_id);
+                $creator = AuthService::getInstance($this->w)->getUser($c->creator_id);
             }
         } else {
-            $creator = $this->Auth->getUser($this->creator_id);
+            $creator = AuthService::getInstance($this->w)->getUser($this->creator_id);
         }
 
         return $creator ? $creator->getFullName() : "";
@@ -372,14 +372,14 @@ class Task extends DbObject
     // return the task group title given a task group type
     public function getTypeTitle()
     {
-        $c = $this->Task->getTaskTypeObject($this->task_type);
+        $c = TaskService::getInstance($this->w)->getTaskTypeObject($this->task_type);
         return (!empty($c) ? $c->getTaskTypeTitle() : null);
     }
 
     // return the task group description given the task group type
     public function getTypeDescription()
     {
-        $c = $this->Task->getTaskTypeObject($this->task_type);
+        $c = TaskService::getInstance($this->w)->getTaskTypeObject($this->task_type);
         return (!empty($c) ? $c->getTaskTypeDescription() : null);
     }
 
@@ -467,7 +467,7 @@ class Task extends DbObject
     public function getTaskTypeObject()
     {
         if ($this->task_type) {
-            return $this->Task->getTaskTypeObject($this->task_type);
+            return TaskService::getInstance($this->w)->getTaskTypeObject($this->task_type);
         }
     }
 
@@ -479,7 +479,7 @@ class Task extends DbObject
 
     public function printSearchListing()
     {
-        $tg = $this->Task->getTaskGroup($this->task_group_id);
+        $tg = TaskService::getInstance($this->w)->getTaskGroup($this->task_group_id);
         $assignee = $this->getAssignee();
         $buf = $tg->title;
         if ($assignee) {
@@ -783,7 +783,7 @@ class Task extends DbObject
 
     public function getTaskGroup()
     {
-        return $this->Task->getTaskGroup($this->task_group_id);
+        return TaskService::getInstance($this->w)->getTaskGroup($this->task_group_id);
     }
 
     public function getIcal()

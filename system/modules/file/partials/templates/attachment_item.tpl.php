@@ -6,10 +6,14 @@
             </button>
         </div>
         <div class="row-fluid">
-            <?php echo Html::box("/file/edit/" . $attachment->id . "?redirect_url=" . urlencode($redirect), "Edit", true, null, null, null, null, null, "button expand secondary"); ?>
+            <?php echo ($is_mutable)
+                ? (Html::box("/file/edit/" . $attachment->id . "?redirect_url=" . urlencode($redirect), "Edit", true, null, null, null, null, null, "button expand secondary"))
+                : ""; ?>
         </div>
         <div class="row-fluid">
-            <?php echo Html::b("/file/delete/" . $attachment->id . "?redirect_url=" . urlencode($redirect), "Delete", "Are you sure you want to delete this attachment?", null, false, "expand alert "); ?>
+            <?php echo ($is_mutable)
+                ? (Html::b("/file/delete/" . $attachment->id . "?redirect_url=" . urlencode($redirect), "Delete", "Are you sure you want to delete this attachment?", null, false, "expand alert "))
+                : ""; ?>
         </div>
     </div>
     <?php if ($attachment->isImage()) { ?>
@@ -21,10 +25,10 @@
     <?php } ?>
 </div>
 <a href="#" data-reveal-id="attachment_modal_<?php echo $attachment->id; ?>">
-    <div class="row-fluid clearfix text-center">
+    <div class="row-fluid clearfix text-center" style="overflow: hidden;">
         <b>Title: </b><?php echo $attachment->title; ?>
     </div>
-    <div class="row-fluid clearfix text-center">
+    <div class="row-fluid clearfix text-center" style="overflow: hidden;">
         <b>Description: </b><?php echo strip_tags($attachment->description); ?>
     </div>
     <div class="row-fluid clearfix text-center">
@@ -44,13 +48,13 @@
             <i class="fi-page" style="font-size: 90pt;"></i>
         <?php } ?>
     </div>
-    <h2 id="firstModalTitle" style="font-weight: lighter; text-align: center; border-bottom: 1px solid #777;"><?php echo $attachment->title; ?></h2>
+    <h2 id="firstModalTitle" style="overflow-wrap: anywhere; font-weight: lighter; text-align: center; border-bottom: 1px solid #777;"><?php echo $attachment->title; ?></h2>
     <p style="text-align: center;"><?php echo $attachment->description; ?></p>
     <div class="row-fluid">
         <div class="column small-12 medium-<?php echo $attachment->isImage() ? '4' : '6'; ?>">
             <a href="/file/atfile/<?php echo $attachment->id; ?>" target="_blank" class="button expand" onclick="$('#attachment_modal_<?php echo $attachment->id; ?>').foundation('reveal', 'close');">Open in new tab</a>
         </div>
-        <?php if ($attachment->isImage()) { ?>
+        <?php if ($attachment->isImage() && !$image_data_blocked) { ?>
             <div class="column small-12 medium-4">
                 <a href="/file-image/metadata/<?php echo $attachment->id; ?>" target="_blank" class="button expand" onclick="$('#attachment_modal_<?php echo $attachment->id; ?>').foundation('reveal', 'close');">View metadata</a>
             </div>

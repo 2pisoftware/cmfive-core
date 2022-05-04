@@ -5,7 +5,7 @@
 //////////////////////////////////////////
 
 function index_ALL(Web $w) {
-    $w->Task->navigation($w, "Task Dashboard");
+    TaskService::getInstance($w)->navigation($w, "Task Dashboard");
         
     // I want to see:
     //   Number of open tasks assigned to me (out of total open tasks) \/
@@ -15,14 +15,14 @@ function index_ALL(Web $w) {
     
     $total_tasks = $w->db->get("task")->where("is_deleted", 0)->count();
     $task_rows = $w->db->get("task")->leftJoin("task_group")
-			->where("task.assignee_id", $w->Auth->user()->id)
+			->where("task.assignee_id", AuthService::getInstance($w)->user()->id)
 			->where("task.is_deleted", array(0, null))
 			->where("task_group.is_active", 1)
 			->where("task_group.is_deleted", 0)
-			->fetch_all();
-    $tasks = !empty($task_rows) ? $w->Task->getObjectsFromRows('Task', $task_rows) : [];
+			->fetchAll();
+    $tasks = !empty($task_rows) ? TaskService::getInstance($w)->getObjectsFromRows('Task', $task_rows) : [];
     
-    $taskgroups = $w->Task->getTaskGroupsForMember($w->Auth->user()->id);
+    $taskgroups = TaskService::getInstance($w)->getTaskGroupsForMember(AuthService::getInstance($w)->user()->id);
     
     $count_overdue = 0;
     $count_due_soon = 0;

@@ -13,7 +13,7 @@ if (AuthService::getInstance($w)->user()->hasRole("file_upload")) {
         $redirect,
         null,
         "asc",
-        "attachment__{$object->id}__page",
+        "attachment__" . hash("crc32", get_class($object) . $object->id) . "__page",
         "attachment__page-size"
     ); ?>
 </div>
@@ -54,7 +54,7 @@ if (AuthService::getInstance($w)->user()->hasRole("file_upload")) {
         padding: 10px;
     }
 
-    div.image-container-overlay > .row-fluid {
+    div.image-container-overlay>.row-fluid {
         height: 75px;
     }
 

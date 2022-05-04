@@ -4,7 +4,7 @@ function editComment_GET(Web &$w) {
     $p = $w->pathMatch("taskid", "comm_id");
 
     // get the relevant comment
-    $comm = $w->Task->getComment($p['comm_id']);
+    $comm = TaskService::getInstance($w)->getComment($p['comm_id']);
 
     // build the comment for edit
     $form = array(
@@ -22,7 +22,7 @@ function popComment_GET(Web &$w) {
     $p = $w->pathMatch("taskid", "comm_id");
 
     // get the relevant comment
-    $comm = $w->Task->getComment($p['comm_id']);
+    $comm = TaskService::getInstance($w)->getComment($p['comm_id']);
 
     // build the comment for display
     $form = array(
@@ -38,13 +38,13 @@ function popComment_GET(Web &$w) {
 
 function editComment_POST(Web $w) {
     $p = $w->pathMatch("taskid", "comm_id");
-    $task = $w->Task->getTask($p['taskid']);
+    $task = TaskService::getInstance($w)->getTask($p['taskid']);
 
     // convert any HTML to entities for display
     $_REQUEST['comment'] = htmlspecialchars($_REQUEST['comment']);
 
     // get the relevant comment
-    $comm = $w->Task->getComment($p['comm_id']);
+    $comm = TaskService::getInstance($w)->getComment($p['comm_id']);
 
     // if comment exists, update it. if not, create it.
     if ($comm) {
@@ -71,7 +71,7 @@ function attachForm_GET(Web $w) {
     $p = $w->pathMatch("id");
 
     // get relevant task
-    $task = $w->Task->getTask($p['id']);
+    $task = TaskService::getInstance($w)->getTask($p['id']);
 
     // build form to upload document/attachment
     $form = array(
@@ -91,11 +91,11 @@ function attachForm_POST(Web $w) {
     $p = $w->pathMatch("id");
 
     // get relevant task
-    $task = $w->Task->getTask($p['id']);
+    $task = TaskService::getInstance($w)->getTask($p['id']);
 
     // if task exists get REQUEST and FILE object for insert into attachment database against this task
     if ($task) {
-        $description = $w->request('description');
+        $description = Request::string('description');
 
         if ($_FILES['form']['size'] > 0) {
             $filename = strtolower($_FILES['form']['name']);
@@ -103,7 +103,7 @@ function attachForm_POST(Web $w) {
             $n = count($parts) - 1;
             $ext = $parts[$n];
 
-            $attach = $w->File->uploadAttachment("form", $task, null, $description);
+            $attach = FileService::getInstance($w)->uploadAttachment("form", $task, null, $description);
             if (!$attach) {
                 $message = "There was an error. The document could not be saved.";
             } else {
@@ -127,62 +127,63 @@ function attachForm_POST(Web $w) {
     $w->msg($message, "/task/edit/" . $task->id . "#attachments");
 }
 
-function addpage_GET(Web &$w) {
-    $p = $w->pathMatch("id");
+// @todo: PageService doesn't exist!
+// function addpage_GET(Web &$w) {
+//     $p = $w->pathMatch("id");
 
-    // get list of pages accessible to me
-    $pages = $w->Page->getUserPageTitles();
+//     // get list of pages accessible to me
+//     $pages = $w->Page->getUserPageTitles();
 
-    // create form
-    $f = array(
-        array("Select a Page", "section"),
-        array("Page", "autocomplete", "page", null, $pages)
-    );
+//     // create form
+//     $f = array(
+//         array("Select a Page", "section"),
+//         array("Page", "autocomplete", "page", null, $pages)
+//     );
 
-    $form = Html::form($f, $w->localUrl("/task/addpage/" . $p['id']), "POST", "Save");
+//     $form = Html::form($f, $w->localUrl("/task/addpage/" . $p['id']), "POST", "Save");
 
-    // return and display form
-    $w->setLayout(null);
-    $w->out($form);
-}
+//     // return and display form
+//     $w->setLayout(null);
+//     $w->out($form);
+// }
 
-function addpage_POST(Web &$w) {
-    $p = $w->pathMatch("id");
+// function addpage_POST(Web &$w) {
+//     $p = $w->pathMatch("id");
 
-    if ($_POST['page'] == "0") {
-        // 'blank' selected so return
-        $w->msg("Please select a PAGE", "/task/edit/" . $p['id'] . "#documents");
-    } else {
-        // get relevant task
-        $task = $w->Task->getTask($p['id']);
-        // get page
-        $page = $w->Page->getPage($w, $_REQUEST['page']);
-        // get first 100 characters, minus HTML tags, for display as 'description'
-        $content = substr(strip_tags($page->body), 0, 100);
+//     if ($_POST['page'] == "0") {
+//         // 'blank' selected so return
+//         $w->msg("Please select a PAGE", "/task/edit/" . $p['id'] . "#documents");
+//     } else {
+//         // get relevant task
+//         $task = TaskService::getInstance($w)->getTask($p['id']);
+//         // get page
+//         $page = $w->Page->getPage($w, $_REQUEST['page']);
+//         // get first 100 characters, minus HTML tags, for display as 'description'
+//         $content = substr(strip_tags($page->body), 0, 100);
 
-        // create Task Object
-        $obj = new TaskObject($w);
-        $obj->task_id = $p['id'];
-        $obj->key = $content;
-        $obj->table_name = "page";
-        $obj->object_id = $_REQUEST['page'];
-        $obj->insert();
+//         // create Task Object
+//         $obj = new TaskObject($w);
+//         $obj->task_id = $p['id'];
+//         $obj->key = $content;
+//         $obj->table_name = "page";
+//         $obj->object_id = $_REQUEST['page'];
+//         $obj->insert();
 
-        // create comment
-        $comm = new TaskComment($w);
-        $comm->obj_table = $task->getDbTableName();
-        $comm->obj_id = $task->id;
-        $comm->comment = "Page Attached to Task: " . $page->subject;
-        $comm->insert();
+//         // create comment
+//         $comm = new TaskComment($w);
+//         $comm->obj_table = $task->getDbTableName();
+//         $comm->obj_id = $task->id;
+//         $comm->comment = "Page Attached to Task: " . $page->subject;
+//         $comm->insert();
 
-        // add to context for notifications post listener
-        $w->ctx("TaskComment", $comm);
-        $w->ctx("TaskEvent", "task_pages");
+//         // add to context for notifications post listener
+//         $w->ctx("TaskComment", $comm);
+//         $w->ctx("TaskEvent", "task_pages");
 
-        // return
-        $w->msg("Page Added to Task", "/task/edit/" . $p['id'] . "#documents");
-    }
-}
+//         // return
+//         $w->msg("Page Added to Task", "/task/edit/" . $p['id'] . "#documents");
+//     }
+// }
 
 //////////////////////////////////
 //			TIME LOG			//
@@ -195,8 +196,8 @@ function addtime_GET(Web &$w) {
     $mins = array("00", "05", "10", "15", "20", "25", "30", "35", "40", "45", "50", "55");
 
     // get the relevant comment
-    $log = $w->Task->getTimeLogEntry($p['log_id']);
-    $task = $w->Task->getTask($p['taskid']);
+    $log = TaskService::getInstance($w)->getTimeLogEntry($p['log_id']);
+    $task = TaskService::getInstance($w)->getTask($p['taskid']);
 
     // if log entry exists, populate form with values
     if ($log) {
@@ -204,7 +205,7 @@ function addtime_GET(Web &$w) {
         $s = date("d/m/Y g:i a", $log->dt_start);
         $e = date("d/m/Y g:i a", $log->dt_end);
 
-        $comm = $w->Task->getComment($log->comment_id);
+        $comm = TaskService::getInstance($w)->getComment($log->comment_id);
         $comment = $comm->comment;
     }
     // if new entry, set current date and time
@@ -222,7 +223,7 @@ function addtime_GET(Web &$w) {
     
     $f = array(
         array("Add Time Log Entry", "section"),
-        array("Assignee", "select", "user_id", $who, $w->Task->getMembersBeAssigned($task->task_group_id)),
+        array("Assignee", "select", "user_id", $who, TaskService::getInstance($w)->getMembersBeAssigned($task->task_group_id)),
         array("Select the Start Date & Time", "section"),
         array("Date/Time", "datetime", "dt_start", $s),
         array("Select the End Date & Time, or Period worked", "section"),
@@ -249,7 +250,7 @@ function edittime_POST(Web $w) {
     $_REQUEST["dt_end"] = ($_REQUEST["dt_end"] != "") ? $_REQUEST["dt_end"] : date("d/m/Y G:i");
 
     // get the relevant log entry
-    $log = $w->Task->getTimeLogEntry($p['log_id']);
+    $log = TaskService::getInstance($w)->getTimeLogEntry($p['log_id']);
 
     // set time log values
     $arr["task_id"] = $p["taskid"];
@@ -259,7 +260,7 @@ function edittime_POST(Web $w) {
     $arr["time_type"] = $_REQUEST["time_type"];
 
     list ($date, $time, $ampm) = preg_split("/\s/", $_REQUEST['dt_start']);
-    $start = $w->Task->date2db($date) . " " . $time . " " . $ampm;
+    $start = TaskService::getInstance($w)->date2db($date) . " " . $time . " " . $ampm;
     $arr["dt_start"] = date("Y-m-d G:i", strtotime($start));
 
     if (($_REQUEST['per_hour'] != "") || ($_REQUEST['per_minute'] != "")) {
@@ -269,7 +270,7 @@ function edittime_POST(Web $w) {
         $arr["dt_end"] = date("Y-m-d G:i", mktime(date("G", $s) + $phour, date("i", $s) + $pmin, 0, date("m", $s), date("d", $s), date("Y", $s)));
     } else {
         list ($date, $time, $ampm) = preg_split("/\s/", $_REQUEST['dt_end']);
-        $end = $w->Task->date2db($date) . " " . $time . " " . $ampm;
+        $end = TaskService::getInstance($w)->date2db($date) . " " . $time . " " . $ampm;
         $arr["dt_end"] = date("Y-m-d G:i", strtotime($end));
     }
 
@@ -280,7 +281,7 @@ function edittime_POST(Web $w) {
         $logmsg = ($log) ? "Time Log Entry updated." : "Time Log Entry created.";
 
         // add comment
-        $comm = ($log) ? $w->Task->getObject("Comment", $log->comment_id) : new TaskComment($w);
+        $comm = ($log) ? TaskService::getInstance($w)->getObject("Comment", $log->comment_id) : new TaskComment($w);
         $comm->obj_table = "Task";
         $comm->obj_id = $arr["task_id"];
         $comm->comment = $_REQUEST['comments'];
@@ -312,7 +313,7 @@ function suspecttime_ALL(Web &$w) {
     $p = $w->pathMatch("taskid", "log_id");
 
     // get the relevant log entry
-    $log = $w->Task->getTimeLogEntry($p['log_id']);
+    $log = TaskService::getInstance($w)->getTimeLogEntry($p['log_id']);
 
     // toggle database field based on current setting
     if ($log->is_suspect == "0") {
@@ -342,7 +343,7 @@ function deletetime_ALL(Web &$w) {
     $p = $w->pathMatch("taskid", "log_id");
 
     // get the relevant log entry
-    $log = $w->Task->getTimeLogEntry($p['log_id']);
+    $log = TaskService::getInstance($w)->getTimeLogEntry($p['log_id']);
 
     // if log entry exists, continue
     if ($log) {
@@ -354,7 +355,7 @@ function deletetime_ALL(Web &$w) {
         $comm = new TaskComment($w);
         $comm->obj_table = "Task";
         $comm->obj_id = $log->task_id;
-        $comm->comment = "Time Log Entry deleted: " . $w->Task->getUserById($log->user_id) . " - " . formatDateTime($log->dt_start) . " to " . formatDateTime($log->dt_end);
+        $comm->comment = "Time Log Entry deleted: " . TaskService::getInstance($w)->getUserById($log->user_id) . " - " . formatDateTime($log->dt_start) . " to " . formatDateTime($log->dt_end);
         $comm->insert();
 
         // add to context for notifications post listener
@@ -373,7 +374,7 @@ function starttimelog_ALL(Web &$w) {
 
     if (!empty($_POST['started']) && ($_POST["started"] == "yes")) {
         // get time log
-        $log = $w->Task->getTimeLogEntry($_POST['logid']);
+        $log = TaskService::getInstance($w)->getTimeLogEntry($_POST['logid']);
 
         // update time log entry
         $log->dt_end = date("Y-m-d G:i");
@@ -387,7 +388,7 @@ function starttimelog_ALL(Web &$w) {
         $logid = $_POST['logid'];
     } else {
         // get the task
-        $task = $w->Task->getTask($p['id']);
+        $task = TaskService::getInstance($w)->getTask($p['id']);
 
         // set time log values
         $arr["task_id"] = $task->id;
@@ -474,9 +475,9 @@ function starttimelog_ALL(Web &$w) {
 
 function endtimelog_ALL(Web &$w) {
     // get time log
-    $log = $w->Task->getTimeLogEntry($_REQUEST['logid']);
+    $log = TaskService::getInstance($w)->getTimeLogEntry($_REQUEST['logid']);
     // get the task
-    $task = $w->Task->getTask($_REQUEST["taskid"]);
+    $task = TaskService::getInstance($w)->getTask($_REQUEST["taskid"]);
     $tasktitle = $task->title;
 
     if ($log) {
@@ -484,7 +485,7 @@ function endtimelog_ALL(Web &$w) {
         $log->dt_end = date("Y-m-d G:i");
 
         // set comment
-        $comment = "Time Log Entry: " . $w->Task->getUserById($log->user_id) . " - " . formatDateTime($log->dt_start) . " to " . formatDateTime($log->dt_end);
+        $comment = "Time Log Entry: " . TaskService::getInstance($w)->getUserById($log->user_id) . " - " . formatDateTime($log->dt_start) . " to " . formatDateTime($log->dt_end);
         if ($_REQUEST['comments'] != "")
             $comment .= " - Comments: " . htmlspecialchars($_REQUEST['comments']);
 
@@ -554,13 +555,13 @@ function updateusergroupnotify_GET(Web &$w) {
     $p = $w->pathMatch("id");
 
     // get task title
-    $title = $w->Task->getTaskGroupTitleById($p['id']);
+    $title = TaskService::getInstance($w)->getTaskGroupTitleById($p['id']);
 
     // get member
-    $member = $w->Task->getMemberGroupById($p['id'], $_SESSION['user_id']);
+    $member = TaskService::getInstance($w)->getMemberGroupById($p['id'], $_SESSION['user_id']);
 
     // get user notify settings for Task Group
-    $notify = $w->Task->getTaskGroupUserNotify($_SESSION['user_id'], $p['id']);
+    $notify = TaskService::getInstance($w)->getTaskGroupUserNotify($_SESSION['user_id'], $p['id']);
     if ($notify) {
         foreach ($notify as $n) {
             $v[$n->role][$n->type] = $n->value;
@@ -574,7 +575,7 @@ function updateusergroupnotify_GET(Web &$w) {
     }
     // no user notify? get default group settings. set all task events on
     else {
-        $notify = $w->Task->getTaskGroupNotify($p['id']);
+        $notify = TaskService::getInstance($w)->getTaskGroupNotify($p['id']);
         if ($notify) {
             foreach ($notify as $n) {
                 $v[$n->role][$n->type] = $n->value;
@@ -654,7 +655,7 @@ function updateusergroupnotify_POST(Web &$w) {
     foreach ($arr as $role => $types) {
         foreach ($types as $type => $value) {
             // is there a record for this user > taskgroup > role > type?
-            $notify = $w->Task->getTaskGroupUserNotifyType($_SESSION['user_id'], $p['id'], $role, $type);
+            $notify = TaskService::getInstance($w)->getTaskGroupUserNotifyType($_SESSION['user_id'], $p['id'], $role, $type);
 
             // if yes, update, if no, insert
             if ($notify) {
@@ -700,7 +701,7 @@ function updateusertasknotify_POST(Web &$w) {
     $task_pages = $_REQUEST['task_pages'] ? $_REQUEST['task_pages'] : "0";
 
     // is there a record for this user > task?
-    $notify = $w->Task->getTaskUserNotify($_SESSION['user_id'], $p['id']);
+    $notify = TaskService::getInstance($w)->getTaskUserNotify($_SESSION['user_id'], $p['id']);
 
     // if yes, update, if no, insert
     if ($notify) {
