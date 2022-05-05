@@ -104,11 +104,12 @@ jobs:
           docker exec nginx-php8.1 bash -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php testDB setup; exit \$?";
         
       # Build new layout
-      - name: Build new designs
       - uses: actions/setup-node@v3
         with:
           node-version: 14
-      - run: |
+        
+      - name: Build new designs  
+        run: |
           docker exec -t nginx-php8.1 bash -c "chmod -R 777 system/templates/base"
           cd system/templates/base
           npm i
