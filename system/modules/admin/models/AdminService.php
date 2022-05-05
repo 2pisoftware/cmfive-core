@@ -43,7 +43,7 @@ class AdminService extends DbService
      */
     public function countUsers(array $where = []): int
     {
-        return $this->db->get('user')->where($where)->count();
+        return $this->w->db->get('user')->where($where)->count();
     }
 
     /**

@@ -9,39 +9,39 @@
     <title><?php echo ucfirst($w->currentModule()); ?><?php echo !empty($title) ? ' - ' . $title : ''; ?></title>
 
     <?php
-    $w->enqueueStyle(array("name" => "normalize.css", "uri" => "/system/templates/js/foundation-5.5.0/css/normalize.css", "weight" => 1010));
-    $w->enqueueStyle(array("name" => "foundation.css", "uri" => "/system/templates/js/foundation-5.5.0/css/foundation.css", "weight" => 1005));
-    $w->enqueueStyle(array("name" => "style.css", "uri" => "/system/templates/css/style.css", "weight" => 1000));
-    $w->enqueueStyle(array("name" => "print.css", "uri" => "/system/templates/css/print.css", "weight" => 995));
-    $w->enqueueStyle(array("name" => "tablesorter.css", "uri" => "/system/templates/css/tablesorter.css", "weight" => 990));
-    $w->enqueueStyle(array("name" => "datePicker.css", "uri" => "/system/templates/css/datePicker.css", "weight" => 980));
-    $w->enqueueStyle(array("name" => "jquery-ui-1.8.13.custom.css", "uri" => "/system/templates/js/jquery-ui-new/css/custom-theme/jquery-ui-1.8.13.custom.css", "weight" => 970));
-    $w->enqueueStyle(array("name" => "liveValidation.css", "uri" => "/system/templates/css/liveValidation.css", "weight" => 960));
-    $w->enqueueStyle(array("name" => "colorbox.css", "uri" => "/system/templates/js/colorbox/colorbox/colorbox.css", "weight" => 950));
-    $w->enqueueStyle(array("name" => "jquery.asmselect.css", "uri" => "/system/templates/css/jquery.asmselect.css", "weight" => 940));
-    $w->enqueueStyle(array("name" => "foundation-icons.css", "uri" => "/system/templates/font/foundation-icons/foundation-icons.css", "weight" => 930));
-    $w->enqueueStyle(array("name" => "codemirror.css", "uri" => "/system/templates/js/codemirror-4.4/lib/codemirror.css", "weight" => 900));
+    $w->enqueueStyle(["name" => "normalize.css", "uri" => "/system/templates/js/foundation-5.5.0/css/normalize.css", "weight" => 1010]);
+    $w->enqueueStyle(["name" => "foundation.css", "uri" => "/system/templates/js/foundation-5.5.0/css/foundation.css", "weight" => 1005]);
+    $w->enqueueStyle(["name" => "style.css", "uri" => "/system/templates/css/style.css", "weight" => 1000]);
+    $w->enqueueStyle(["name" => "print.css", "uri" => "/system/templates/css/print.css", "weight" => 995]);
+    $w->enqueueStyle(["name" => "tablesorter.css", "uri" => "/system/templates/css/tablesorter.css", "weight" => 990]);
+    $w->enqueueStyle(["name" => "datePicker.css", "uri" => "/system/templates/css/datePicker.css", "weight" => 980]);
+    $w->enqueueStyle(["name" => "jquery-ui-1.8.13.custom.css", "uri" => "/system/templates/js/jquery-ui-new/css/custom-theme/jquery-ui-1.8.13.custom.css", "weight" => 970]);
+    $w->enqueueStyle(["name" => "liveValidation.css", "uri" => "/system/templates/css/liveValidation.css", "weight" => 960]);
+    $w->enqueueStyle(["name" => "colorbox.css", "uri" => "/system/templates/js/colorbox/colorbox/colorbox.css", "weight" => 950]);
+    $w->enqueueStyle(["name" => "jquery.asmselect.css", "uri" => "/system/templates/css/jquery.asmselect.css", "weight" => 940]);
+    $w->enqueueStyle(["name" => "foundation-icons.css", "uri" => "/system/templates/font/foundation-icons/foundation-icons.css", "weight" => 930]);
+    $w->enqueueStyle(["name" => "codemirror.css", "uri" => "/system/templates/js/codemirror-4.4/lib/codemirror.css", "weight" => 900]);
 
     $w->enqueueScript(['name' => 'vue.js', 'uri' => '/system/templates/js/vue.js', 'weight' => 2000]);
 
-    $w->enqueueScript(array("name" => "modernizr.js", "uri" => "/system/templates/js/foundation-5.5.0/js/vendor/modernizr.js", "weight" => 1010));
-    $w->enqueueScript(array("name" => "jquery.js", "uri" => "/system/templates/js/foundation-5.5.0/js/vendor/jquery.js", "weight" => 1000));
-    $w->enqueueScript(array("name" => "jquery.tablesorter.js", "uri" => "/system/templates/js/tablesorter/jquery.tablesorter.js", "weight" => 990));
-    $w->enqueueScript(array("name" => "jquery.tablesorter.pager.js", "uri" => "/system/templates/js/tablesorter/addons/pager/jquery.tablesorter.pager.js", "weight" => 980));
-    $w->enqueueScript(array("name" => "jquery.colorbox-min.js", "uri" => "/system/templates/js/colorbox/colorbox/jquery.colorbox-min.js", "weight" => 970));
-    $w->enqueueScript(array("name" => "jquery-ui-1.10.4.custom.min.js", "uri" => "/system/templates/js/jquery-ui-1.10.4.custom/js/jquery-ui-1.10.4.custom.min.js", "weight" => 960));
+    $w->enqueueScript(["name" => "modernizr.js", "uri" => "/system/templates/js/foundation-5.5.0/js/vendor/modernizr.js", "weight" => 1010]);
+    $w->enqueueScript(["name" => "jquery.js", "uri" => "/system/templates/js/foundation-5.5.0/js/vendor/jquery.js", "weight" => 1000]);
+    $w->enqueueScript(["name" => "jquery.tablesorter.js", "uri" => "/system/templates/js/tablesorter/jquery.tablesorter.js", "weight" => 990]);
+    $w->enqueueScript(["name" => "jquery.tablesorter.pager.js", "uri" => "/system/templates/js/tablesorter/addons/pager/jquery.tablesorter.pager.js", "weight" => 980]);
+    $w->enqueueScript(["name" => "jquery.colorbox-min.js", "uri" => "/system/templates/js/colorbox/colorbox/jquery.colorbox-min.js", "weight" => 970]);
+    $w->enqueueScript(["name" => "jquery-ui-1.10.4.custom.min.js", "uri" => "/system/templates/js/jquery-ui-1.10.4.custom/js/jquery-ui-1.10.4.custom.min.js", "weight" => 960]);
 
-    $w->enqueueScript(array("name" => "jquery-ui-timepicker-addon.js", "uri" => "/system/templates/js/jquery-ui-timepicker-addon.js", "weight" => 950));
-    $w->enqueueScript(array("name" => "livevalidation.js", "uri" => "/system/templates/js/livevalidation.js", "weight" => 940));
-    $w->enqueueScript(array("name" => "main.js", "uri" => "/system/templates/js/main.js", "weight" => 995));
-    $w->enqueueScript(array("name" => "jquery.asmselect.js", "uri" => "/system/templates/js/jquery.asmselect.js", "weight" => 920));
-    $w->enqueueScript(array("name" => "boxover.js", "uri" => "/system/templates/js/boxover.js", "weight" => 910));
-    $w->enqueueScript(array("name" => "ckeditor.js", "uri" => "/system/templates/js/ckeditor/ckeditor.js", "weight" => 900));
-    $w->enqueueScript(array("name" => "Chart.js", "uri" => "/system/templates/js/chart-js/dist/Chart.min.js", "weight" => 890));
-    $w->enqueueScript(array("name" => "moment.js", "uri" => "/system/templates/js/moment.min.js", "weight" => 880));
+    $w->enqueueScript(["name" => "jquery-ui-timepicker-addon.js", "uri" => "/system/templates/js/jquery-ui-timepicker-addon.js", "weight" => 950]);
+    $w->enqueueScript(["name" => "livevalidation.js", "uri" => "/system/templates/js/livevalidation.js", "weight" => 940]);
+    $w->enqueueScript(["name" => "main.js", "uri" => "/system/templates/js/main.js", "weight" => 995]);
+    $w->enqueueScript(["name" => "jquery.asmselect.js", "uri" => "/system/templates/js/jquery.asmselect.js", "weight" => 920]);
+    $w->enqueueScript(["name" => "boxover.js", "uri" => "/system/templates/js/boxover.js", "weight" => 910]);
+    $w->enqueueScript(["name" => "ckeditor.js", "uri" => "/system/templates/js/ckeditor/ckeditor.js", "weight" => 900]);
+    $w->enqueueScript(["name" => "Chart.js", "uri" => "/system/templates/js/chart-js/dist/Chart.min.js", "weight" => 890]);
+    $w->enqueueScript(["name" => "moment.js", "uri" => "/system/templates/js/moment.min.js", "weight" => 880]);
 
     // Code mirror
-    $w->enqueueScript(array("name" => "codemirror.js", "uri" => "/system/templates/js/codemirror-4.4/codemirror-compressed.js", "weight" => 880));
+    $w->enqueueScript(["name" => "codemirror.js", "uri" => "/system/templates/js/codemirror-4.4/codemirror-compressed.js", "weight" => 880]);
 
     CmfiveScriptComponentRegister::registerComponent('ES6Promise', new CmfiveScriptComponent('/system/templates/js/es6-promise.auto.js'));
     CmfiveScriptComponentRegister::registerComponent('AxiosJS', new CmfiveScriptComponent('/system/templates/js/axios.min.js'));
@@ -176,7 +176,7 @@
 
 <body>
     <?php /** @var Web */ ?>
-    <div class="loading_overlay" <?php echo $w->request('show_overlay') == null ? 'style="display:none;"' : ''; ?>>
+    <div class="loading_overlay" <?php echo Request::bool('show_overlay') == null ? 'style="display:none;"' : ''; ?>>
         <div class="circle"></div>
         <img class="center_image" width="100px" height="100px" src="/system/templates/img/cmfive_V_logo.png" />
         <h4 class="subheader">Please wait</h4>
@@ -232,9 +232,9 @@
                         <li><?php echo Html::box("/search", "<span class='fi-magnifying-glass show-for-medium-up'></span><span class='show-for-small'>Search</span>", false, false, null, null, null, "cmfive_search_button"); ?></li>
                     <?php endif; ?>
 
-                    <?php if ($w->Auth->user()) : ?>
+                    <?php if (AuthService::getInstance($w)->user()) : ?>
                     <!-- Clear cache button -->
-                        <?php if ($w->Auth->user()->is_admin) : ?>
+                        <?php if (AuthService::getInstance($w)->user()->is_admin) : ?>
                         <li>
                             <a id="admin_clear_cache" href="/admin/ajaxClearCache" onclick="return false;" title="Clear configuration cache">
                                 <span class="clear_cache_icon fi-refresh show-for-medium-up"></span>
@@ -251,7 +251,7 @@
                             <?php
                             echo Html::ul(
                                 [
-                                    $w->menuLink("auth/profile", $w->Auth->user()->getShortName()),
+                                    $w->menuLink("auth/profile", AuthService::getInstance($w)->user()->getShortName()),
                                     $w->menuLink("auth/logout", "Logout")
                                 ],
                                 null,
@@ -264,21 +264,21 @@
 
                 <!-- Left Nav Section -->
                 <ul class="left">
-                    <?php if ($w->Auth->loggedIn()) : ?>
-                        <li><?php echo $w->menuLink($w->Main->getUserRedirectURL(), "<span class='fi-home show-for-medium-up'></span><span class='show-for-small'>Home</span>"); ?></li>
+                    <?php if (AuthService::getInstance($w)->loggedIn()) : ?>
+                        <li><?php echo $w->menuLink(MainService::getInstance($w)->getUserRedirectURL(), "<span class='fi-home show-for-medium-up'></span><span class='show-for-small'>Home</span>"); ?></li>
                         <li class="divider"></li>
                         <?php foreach ($w->modules() as $module) {
                                 // Check if config is set to display on topmenu
                             if (Config::get("{$module}.topmenu") && Config::get("{$module}.active")) :
                                 // Check for navigation
-                                $service_module = ucfirst($module);
-                                $menu_link = method_exists($w->$service_module, "menuLink") ? $w->$service_module->menuLink() : $w->menuLink($module, is_bool(Config::get("{$module}.topmenu")) ? ucfirst($module) : Config::get("{$module}.topmenu"));
+                                $service_module = ucfirst($module) . "Service";
+                                $menu_link = method_exists($service_module, "menuLink") ? $service_module::getInstance($w)->menuLink() : $w->menuLink($module, is_bool(Config::get("{$module}.topmenu")) ? ucfirst($module) : Config::get("{$module}.topmenu"));
                                 if ($menu_link !== false) :
                                     if (method_exists($module . "Service", "navigation")) : ?>
                                         <li class="has-dropdown <?php echo $w->_module == $module ? 'active' : ''; ?>" id="topnav_<?php echo $module; ?>">
                                         <?php // Try and get a badge count for the menu item
                                         echo $menu_link;
-                                        $module_navigation = $w->service($module)->navigation($w);
+                                        $module_navigation = $service_module::getInstance($w)->navigation($w);
 
                                         // Invoke hook to inject extra navigation
                                         $hook_navigation_items = $w->callHook($module, "extra_navigation_items", $module_navigation);
@@ -301,7 +301,7 @@
                             endif;
                         }
 
-                        if (Config::get('system.help_enabled', true) && $w->Auth->allowed('/help/view')) : ?>
+                        if (Config::get('system.help_enabled', true) && AuthService::getInstance($w)->allowed('/help/view')) : ?>
                             <li><?php echo Html::box(WEBROOT . "/help/view/" . $w->_module . ($w->_submodule ? "-" . $w->_submodule : "") . "/" . $w->_action, "<span class='fi-q show-for-medium-up'>?</span><span class='show-for-small'>Help</span>", false, true, 750, 500, "isbox", null, null, null, 'cmfive-help-modal'); ?> </li>
                         <?php endif;
                     endif; ?>
