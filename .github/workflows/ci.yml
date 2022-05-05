@@ -103,6 +103,13 @@ jobs:
         run: |
           docker exec nginx-php8.1 bash -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php testDB setup; exit \$?";
         
+      # Build new layout
+      - name: Build new designs
+        run: |
+          cd system/templates/base
+          npm i
+          npm run build
+        
       # Run Unit Tests
       - name: "Run unit tests"
         run: |
