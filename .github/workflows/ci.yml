@@ -109,7 +109,7 @@ jobs:
           docker exec -t nginx-php8.1 bash -c "chmod -R 777 system/templates/base"
           cd system/templates/base
           npm i
-          npm run build
+          npm run prod
         
       # Run Unit Tests
       - name: "Run unit tests"
