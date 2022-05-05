@@ -105,7 +105,10 @@ jobs:
         
       # Build new layout
       - name: Build new designs
-        run: |
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 14
+      - run: |
           docker exec -t nginx-php8.1 bash -c "chmod -R 777 system/templates/base"
           cd system/templates/base
           npm i
