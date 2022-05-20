@@ -1780,11 +1780,17 @@ class Web
      */
     public function templateExists($name)
     {
-        if ($this->_submodule) {
-            $paths[] = implode("/", [rtrim($this->getModuleDir($this->_module), '/'), $this->_templatePath, $this->_submodule]);
+        $trimmed_module = "";
+        if (!is_null($this->getModuleDir($this->_module))) {
+            $trimmed_module = rtrim($this->getModuleDir($this->_module), '/');
         }
-        $paths[] = implode("/", [rtrim($this->getModuleDir($this->_module), '/'), $this->_templatePath]);
-        $paths[] = implode("/", [rtrim($this->getModuleDir($this->_module), '/')]);
+
+        if ($this->_submodule) {
+            $paths[] = implode("/", [$trimmed_module, $this->_templatePath, $this->_submodule]);
+        }
+        
+        $paths[] = implode("/", [$trimmed_module, $this->_templatePath]);
+        $paths[] = implode("/", [$trimmed_module]);
         $paths[] = implode("/", [$this->_templatePath, $this->_module]);
         $paths[] = $this->_templatePath;
         // Add system fallback
