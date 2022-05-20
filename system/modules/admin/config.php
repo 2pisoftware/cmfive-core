@@ -27,7 +27,7 @@ Config::set('admin', [
         "twig/twig" => "3.3.*",
         "nesbot/carbon" => "2.55.2",
         "robmorgan/phinx" => "0.8.*",
-        "sendgrid/sendgrid" => "^7.11.5",
+        "sendgrid/sendgrid" => "^8.0.0",
         "softark/creole" => "~1.2",
         "monolog/monolog" => "^1.22",
         "aws/aws-sdk-php" => "^3.24",
