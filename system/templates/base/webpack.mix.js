@@ -29,14 +29,14 @@ async function loadAssets() {
     // Compile vue components separately
     mixGlob
         // .ts('src/js/components/*.vue', 'components/')
-        .ts('../../../../../../../modules/*/assets/ts/*', 'dist/', null, {
+        .ts('../../../../../../../modules/*/assets/ts/*.ts', 'dist/', null, {
             base: function (file, ext, mm) { // mm => micromatch instance
                 return 'dist/' + path.dirname(file).split(path.sep).reverse()[2] + '/';
             }
         })
         .sass('../../../../../../../modules/*/assets/scss/*', 'dist/', {
             sassOptions: {
-                includePaths: [__dirname + '/src/scss/']
+                includePaths: [__dirname + '/src/scss/', __dirname + '/node_modules']
             }
         })
         .vue()

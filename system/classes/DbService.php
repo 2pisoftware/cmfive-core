@@ -134,9 +134,9 @@ class DbService
      * or by passing an array of key,value
      * to be used in a where condition
      *
-     * @param <type> $table
-     * @param <type> $idOrWhere
-     * @return DbObject|null
+     * @param string $table
+     * @param scalar|array $idOrWhere
+     * @return $class|null
      */
     public function getObject($class, $idOrWhere, $use_cache = true, $order_by = null, $includeDeleted = false)
     {

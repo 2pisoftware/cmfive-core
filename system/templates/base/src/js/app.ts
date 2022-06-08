@@ -4,8 +4,6 @@ import { QuillEditor, InputWithOther, MultiFileUpload, MultiSelect, Overlay } fr
 
 import { Modal, Tooltip } from 'bootstrap';
 
-import Vue from 'vue';
-
 class Cmfive {
     static THEME_KEY = 'theme';
     static currentModal: Modal;
@@ -80,12 +78,12 @@ class Cmfive {
         }
     }
 
-    static openModal(url: string) {
+    static openModal(url: string, target: string = '#cmfive-modal') {
         Cmfive.currentModal = new Modal(document.getElementById('cmfive-modal')) //, options
     
-        let modalContent = document.querySelector('#cmfive-modal .modal-content');
+        let modalContent = document.querySelector(target + ' .modal-content');
         if (modalContent) {
-            modalContent.innerHTML = '<button type="button" class="btn-close" data-bs-dismiss="modal" data-bs-target="#cmfive-modal" aria-label="Close"></button>';
+            modalContent.innerHTML = '<button type="button" class="btn-close" data-bs-dismiss="modal" data-bs-target="' + target + '" aria-label="Close"></button>';
         }
     
         Cmfive.currentModal.show();
