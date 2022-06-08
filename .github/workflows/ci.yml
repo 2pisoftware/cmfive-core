@@ -69,6 +69,7 @@ jobs:
           sleep 5
           docker ps
           docker exec -t nginx-php8.1 bash -c "chmod -R 777 ./*"
+          docker exec -t nginx-php8.1 bash -c "rm -rf ./system && ln -s ./composer/vendor/2pisoftware/cmfive-core/system ./system"
           
           echo CoreInstall
           docker exec -t nginx-php8.1 bash -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php install core ${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}"
@@ -101,7 +102,7 @@ jobs:
 
       - name: Prepare cmfive Test DB
         run: |
-          docker exec nginx-php8.1 bash -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php testDB setup; exit \$?";
+          docker exec -t nginx-php8.1 bash -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php testDB setup; exit \$?";
         
       # Build new layout
       - uses: actions/setup-node@v3
