@@ -21,13 +21,14 @@ class DateTimeVsTimeZone extends TestCase //\Codeception\Test\Unit
 
         $creation = new Contact($w);
         $creation->firstname = "initForDtTest";
+        $creation->lastname = 'test';
         $creation->insert();
 
-        $created = authService::getInstance($w)->getObject("contact",['firstname' => "initForDtTest"]);
+        $created = AuthService::getInstance($w)->getObject("contact", ['firstname' => "initForDtTest"]);
         $stamp = $created->dt_created;
 
         for ($i = 0; $i < 20; $i++) {
-            $created = authService::getInstance($w)->getObject("contact",['firstname' => "initForDtTest"]);
+            $created = AuthService::getInstance($w)->getObject("contact", ['firstname' => "initForDtTest"]);
             $created->firstname = "looped_" . $i;
             $created->update();
         }

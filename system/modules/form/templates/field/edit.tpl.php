@@ -57,7 +57,7 @@
             types: <?php echo json_encode(FormField::getFieldTypes()); ?>,
             loading_metadata: false,
             metadata: <?php echo json_encode(array_map(function ($metadata) { return $metadata->toArray(); }, $field->getMetadata() ?: [])); ?>,
-            form_list: <?php echo json_encode(array_map(function ($form) { return $form->toArray(); }, $w->Form->getForms() ?: [])); ?>,
+            form_list: <?php echo json_encode(array_map(function ($form) { return $form->toArray(); }, FormService::getInstance($w)->getForms() ?: [])); ?>,
             metadata_form: ''
         },
         computed: {

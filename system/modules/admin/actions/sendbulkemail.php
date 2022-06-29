@@ -8,13 +8,13 @@
 
 function sendbulkemail_ALL (Web $w) {
     //force authentication for getting attachments
-    $w->auth->forceLogin(Config::get('admin.bulkemail.auth_user'));
+    AuthService::getInstance($w)->forceLogin(Config::get('admin.bulkemail.auth_user'));
     //get current batch id
-    $batch_id = $w->mail->getCurrentBatchId();
+    $batch_id = MailService::getInstance($w)->getCurrentBatchId();
     
     if (!empty($batch_id)) {
-        $batch = $w->mail->getBatchForId($batch_id['id']);
-        $emails = $w->mail->getNextEmailsForBatch($batch_id['id'],Config::get('admin.bulkemail.number_per_cron'));
+        $batch = MailService::getInstance($w)->getBatchForId($batch_id['id']);
+        $emails = MailService::getInstance($w)->getNextEmailsForBatch($batch_id['id'],Config::get('admin.bulkemail.number_per_cron'));
         if (empty($emails)) {
             //batch is finished
             $batch->completed();
@@ -22,7 +22,7 @@ function sendbulkemail_ALL (Web $w) {
             //send emails
             foreach ($emails as $email_id) {
                 //print_r($email_id);
-                $email = $w->mail->getQueueObjForId($email_id['id']);
+                $email = MailService::getInstance($w)->getQueueObjForId($email_id['id']);
                 if (!empty($email)) {
                     try {
                         $email->send();

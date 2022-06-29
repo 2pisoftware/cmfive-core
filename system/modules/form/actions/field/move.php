@@ -4,7 +4,7 @@ function move_POST(Web $w) {
 	
 	list($form_id) = $w->pathMatch();
 	
-	$form = $w->Form->getForm($form_id);
+	$form = FormService::getInstance($w)->getForm($form_id);
 	
 	if (empty($form->id)) {
 		return;
@@ -12,7 +12,7 @@ function move_POST(Web $w) {
 	
 	$fields = $form->getFields();
 	
-	$ordering = $w->request("ordering");
+	$ordering = Request::mixed("ordering");
 	if (empty($fields) || empty($ordering)) {
 		return;
 	}

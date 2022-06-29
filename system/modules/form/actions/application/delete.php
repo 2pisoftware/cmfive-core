@@ -8,7 +8,7 @@ function delete_GET(Web $w) {
 		$w->error('No Application ID found', '/form-application');
 	}
 
-	$application = $w->FormApplication->getFormApplication($id);
+	$application = FormService::getInstance($w)->getFormApplication($id);
 	if (empty($application->id)) {
 		$w->error('Application not found', '/form-application');
 	}

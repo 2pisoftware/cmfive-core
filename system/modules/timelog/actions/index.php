@@ -5,12 +5,12 @@ define('TIMELOG_DEFAULT_PAGE_SIZE', 20);
 
 function index_GET(Web $w)
 {
-    $page = $w->request("p", TIMELOG_DEFAULT_PAGE);
-    $pagesize = $w->request("ps", TIMELOG_DEFAULT_PAGE_SIZE);
+    $page = Request::int("p", TIMELOG_DEFAULT_PAGE);
+    $pagesize = Request::int("ps", TIMELOG_DEFAULT_PAGE_SIZE);
 
     // Get paged timelogs
-    $timelog = $w->Timelog->getTimelogsForUser($w->Auth->user(), false, $page, $pagesize);
-    $totalresults = $w->Timelog->countTotalTimelogsForUser($w->Auth->user(), false);
+    $timelog = TimelogService::getInstance($w)->getTimelogsForUser(AuthService::getInstance($w)->user(), false, $page, $pagesize);
+    $totalresults = TimelogService::getInstance($w)->countTotalTimelogsForUser(AuthService::getInstance($w)->user(), false);
 
     $w->ctx('pagination', Html::pagination($page, (ceil($totalresults / $pagesize)), $pagesize, $totalresults, '/timelog'));
 

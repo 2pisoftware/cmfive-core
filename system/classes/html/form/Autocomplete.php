@@ -199,7 +199,7 @@ class Autocomplete extends \Html\Form\FormElement {
 
 		$prefix = static::$_prefix;
 
-		$displayValue = htmlentities(!empty($this->title) ? $this->title : $this->value, ENT_QUOTES);
+		$displayValue = htmlentities($this->title ?? $this->value ?? '', ENT_QUOTES);
 
 		return <<<BUFFER
 <input type='text' style='display: none;' id='{$this->id}'  name='{$this->name}' value='{$this->value}' {$attribute_buffer} />

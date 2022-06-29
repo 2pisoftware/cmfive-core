@@ -2,7 +2,7 @@
 
 function timelog_core_template_menu(Web $w)
 {
-    if ($w->Timelog->shouldShowTimer()) {
+    if (TimelogService::getInstance($w)->shouldShowTimer()) {
         return $w->partial('timelogwidget', null, 'timelog');
     }
 }
@@ -10,7 +10,7 @@ function timelog_core_template_menu(Web $w)
 // delete any timelogs attached to deleted object
 function timelog_core_dbobject_after_delete($w, $obj)
 {
-    $timelogs = $w->Timelog->getTimelogsForObject($obj);
+    $timelogs = TimelogService::getInstance($w)->getTimelogsForObject($obj);
     if (!empty($timelogs)) {
         foreach ($timelogs as $timelog) {
             $timelog->delete();

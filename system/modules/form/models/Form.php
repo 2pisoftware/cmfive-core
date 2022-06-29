@@ -112,7 +112,7 @@ class Form extends DbObject
                 }
             }
 
-            return $this->w->Template->render($this->summary_template, ["form" => $structure]);
+            return TemplateService::getInstance($this->w)->render($this->summary_template, ["form" => $structure]);
         }
         return '';
     }
@@ -158,7 +158,7 @@ class Form extends DbObject
      */
     public function getFormInstancesForObject($object)
     {
-        return $this->w->Form->getFormInstancesForFormAndObject($this, $object);
+        return FormService::getInstance($this->w)->getFormInstancesForFormAndObject($this, $object);
     }
 
     /**
@@ -169,7 +169,7 @@ class Form extends DbObject
      */
     public function countFormInstancesForObject($object)
     {
-        return $this->w->Form->countFormInstancesForFormAndObject($this, $object);
+        return FormService::getInstance($this->w)->countFormInstancesForFormAndObject($this, $object);
     }
 
     /**

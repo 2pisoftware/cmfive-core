@@ -21,7 +21,7 @@
 					<div v-show="is_restricted"><strong>Select the users that can view this attachment</strong>
 						<ul class="small-block-grid-1 medium-block-grid-3 large-block-grid-3">
 							<li v-for="viewer in viewers" style="padding-bottom: 0;">
-								<label class="cmfive__checkbox-container" v-if="viewer.id != <?php echo $w->Auth->user()->id; ?>">{{ viewer.name }}
+								<label class="cmfive__checkbox-container" v-if="viewer.id != <?php echo AuthService::getInstance($w)->user()->id; ?>">{{ viewer.name }}
 									<input type="checkbox" v-model="viewer.can_view">
 									<span class="cmfive__checkbox-checkmark" ></span>
 								</label>
@@ -55,7 +55,7 @@
 				file_directory: "<?php echo $file_directory; ?>",
 				file: null,
 				is_restricted: ("<?php echo $is_restricted; ?>" == "true"),
-				max_upload_size: "<?php echo @$w->File->getMaxFileUploadSize() ? : (2 * 1024 * 1024); ?>",
+				max_upload_size: "<?php echo @FileService::getInstance($w)->getMaxFileUploadSize() ? : (2 * 1024 * 1024); ?>",
 				redirect_url: "<?php echo $redirect_url; ?>",
 			}
 		},

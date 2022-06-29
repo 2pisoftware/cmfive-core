@@ -12,12 +12,12 @@ function add_GET(Web $w)
         $w->error('Task ID not found', '/task');
     }
 
-    $task = $w->Task->getTask($task_id);
+    $task = TaskService::getInstance($w)->getTask($task_id);
     if (empty($task->id)) {
         $w->error('Task not found', '/task');
     }
 
-    $contacts = $w->Auth->getContacts();
+    $contacts = AuthService::getInstance($w)->getContacts();
     uasort($contacts, function ($a, $b) {
         return strcasecmp($a->getFullName(), $b->getFullName());
     });
@@ -68,13 +68,13 @@ function add_POST(Web $w)
         $w->error('Task ID not found', '/task');
     }
 
-    $task = $w->Task->getTask($task_id);
+    $task = TaskService::getInstance($w)->getTask($task_id);
     if (empty($task->id)) {
         $w->error('Task not found', '/task');
     }
 
     if (!empty($_POST['contact'])) {
-        $contact = $w->Auth->getContact(intval($_POST['contact']));
+        $contact = AuthService::getInstance($w)->getContact(intval($_POST['contact']));
         if (empty($contact->id)) {
             $w->error('Contact not found', '/task/edit/' . $task->id);
         }
@@ -84,7 +84,7 @@ function add_POST(Web $w)
             $w->error('Insufficient view permissions for user. Consider adding them to the relevant task group.', '/task/edit/' . $task->id);
         }
 
-        $user_id = $w->Auth->createExernalUserForContact($contact->id);
+        $user_id = AuthService::getInstance($w)->createExernalUserForContact($contact->id);
 
         if ($task->addSubscriber(AuthService::getInstance($w)->getUser($user_id))) {
             $w->callHook(
@@ -100,10 +100,10 @@ function add_POST(Web $w)
             $w->msg('This contact is already a subscriber for this task', '/task/edit/' . $task->id);
         }
     } else {
-        $firstname = $w->request("firstname");
-        $lastname = $w->request('lastname');
-        $email = $w->request('email');
-        $phone = $w->request('work_number');
+        $firstname = Request::string("firstname");
+        $lastname = Request::string('lastname');
+        $email = Request::string('email');
+        $phone = Request::string('work_number');
 
         if (empty($firstname) || empty($lastname) || (empty($email) || empty($phone))) {
             $w->error("All contact fields are required", '/task/edit/' . $task->id);
@@ -116,9 +116,9 @@ function add_POST(Web $w)
         $contact->workphone = $phone;
         $contact->insert();
 
-        $user_id = $w->Auth->createExernalUserForContact($contact->id);
+        $user_id = AuthService::getInstance($w)->createExernalUserForContact($contact->id);
 
-        $task->addSubscriber($w->Auth->getUser($user_id));
+        $task->addSubscriber(AuthService::getInstance($w)->getUser($user_id));
         $w->msg('New contact subscribed', '/task/edit/' . $task->id);
     }
 }

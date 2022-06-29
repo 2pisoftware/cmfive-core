@@ -7,13 +7,13 @@ function ajaxGetExtraDetails_ALL(Web $w) {
         return;
     }
     
-    $task = $w->Task->getTask($p["task_id"]);
+    $task = TaskService::getInstance($w)->getTask($p["task_id"]);
     if (empty($task->id)) {
         return;
     }
     
-    $task_type = $w->Task->getTaskTypeObject($p['task_type']);
-    if (empty($task_type)) {
+    $task_type = TaskService::getInstance($w)->getTaskTypeObject($p['task_type']);
+    if (empty($task_type) || !method_exists($task_type, "displayExtraDetails")) {
         return;
     }
     

@@ -8,12 +8,12 @@ function ajaxGetFieldForm_ALL(Web $w)
         return;
     }
 
-    $task_type = $w->Task->getTaskTypeObject($p['task_type']);
+    $task_type = TaskService::getInstance($w)->getTaskTypeObject($p['task_type']);
     if (empty($task_type)) {
         return;
     }
 
-    $task_group = $w->Task->getTaskgroup($p['task_group_id']);
+    $task_group = TaskService::getInstance($w)->getTaskgroup($p['task_group_id']);
     if (empty($task_group->id)) {
         return;
     }
@@ -22,7 +22,7 @@ function ajaxGetFieldForm_ALL(Web $w)
         return;
     }
 
-    $task = $w->Task->getTask($p['task_id']);
+    $task = TaskService::getInstance($w)->getTask($p['task_id']);
     if (empty($task)) {
         return;
     }

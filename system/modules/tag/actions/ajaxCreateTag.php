@@ -4,7 +4,7 @@ function ajaxCreateTag_GET(Web $w) {
 	$w->setLayout(null);
 	
 	list($class, $id) = $w->pathMatch();
-	$new_tag = $w->request('tag');
+	$new_tag = Request::string('tag');
 	
 	if (empty($class) || empty($id) || empty($new_tag)) {
 		return;
@@ -15,7 +15,7 @@ function ajaxCreateTag_GET(Web $w) {
 	}
 	
 	// Check if tag exists
-	$tag = $w->Tag->getObject("Tag", ['tag' => trim(strip_tags($new_tag)), 'is_deleted' => 0]);
+	$tag = TagService::getInstance($w)->getObject("Tag", ['tag' => trim(strip_tags($new_tag)), 'is_deleted' => 0]);
 
 	if (empty($tag->id)) {
 		$tag = new Tag($w);
@@ -24,7 +24,7 @@ function ajaxCreateTag_GET(Web $w) {
 	}
 
 	// Check that tag is not already assigned
-	$tag_assign = $w->Tag->getObject('TagAssign', ['tag_id' => $tag->id, 'object_class' => $class, 'object_id' => $id, 'is_deleted' => 0]);
+	$tag_assign = TagService::getInstance($w)->getObject('TagAssign', ['tag_id' => $tag->id, 'object_class' => $class, 'object_id' => $id, 'is_deleted' => 0]);
 	
 	if (empty($tag_assign->id)) {
 		// Assign object to tag

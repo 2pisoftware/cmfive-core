@@ -7,7 +7,7 @@ function archive_ALL(Web $w) {
 		unset($check[0]);
 	}
 	foreach($check as $message){
-		$mess_obj = $w->Inbox->getMessage($message);
+		$mess_obj = InboxService::getInstance($w)->getMessage($message);
 		$mess_obj->is_archived = 1;
 		$mess_obj->dt_archived = time();
 		$mess_obj->is_new= 0;

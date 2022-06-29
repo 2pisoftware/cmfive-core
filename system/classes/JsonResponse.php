@@ -87,19 +87,6 @@ class JsonResponse
     }
 
     /**
-     * Shorthand function for creating a not found (404) response
-     *
-     * @deprecated v3.6.13 - Will be removed in v5.0.0.
-     *
-     * @param string $message
-     * @return self
-     */
-    public function setMissingResponse(?string $message)
-    {
-        return $this->setNotFoundResponse($message);
-    }
-
-    /**
      * Shorthand function for creating a server error response
      *
      * @param string $message

@@ -9,19 +9,19 @@ function ajaxEditAttachment_POST(Web $w) {
 		return;
 	}
 
-	$user = $w->Auth->user();
+	$user = AuthService::getInstance($w)->user();
 	if (isset($request_data->is_restricted) && $request_data->is_restricted && !$user->hasRole("restrict")) {
 		$w->out((new AxiosResponse())->setErrorResponse(null, ["error_message" => "User not authorised to restrict objects"]));
 		return;
 	}
 
-	$attachment = $w->File->getAttachment($request_data->id);
+	$attachment = FileService::getInstance($w)->getAttachment($request_data->id);
 	if (empty($attachment)) {
 		$w->out((new AxiosResponse())->setErrorResponse(null, ["error_message" => "Missing attachment"]));
 		return;
 	}
 
-	$owner = $w->Restrictable->getOwner($attachment);
+	$owner = RestrictableService::getInstance($w)->getOwner($attachment);
 	if (!empty($owner) && $owner->id !== $user->id) {
 		$w->out((new AxiosResponse())->setErrorResponse(null, ["error_message" => "User not authorised to restrict objects"]));
 		return;
@@ -34,23 +34,23 @@ function ajaxEditAttachment_POST(Web $w) {
 	$attachment->update();
 
 	if (property_exists($request_data, "is_restricted") && $request_data->is_restricted) {
-		$w->Restrictable->setOwner($attachment, $request_data->new_owner->id);
+		RestrictableService::getInstance($w)->setOwner($attachment, $request_data->new_owner->id);
 
-		$current_viewers = $w->Restrictable->getViewerLinks($attachment);
+		$current_viewers = RestrictableService::getInstance($w)->getViewerLinks($attachment);
 		foreach (empty($current_viewers) ? [] : $current_viewers as $current_viewer) {
 			$current_viewer->delete();
 		}
 
 		foreach (!empty($request_data->viewers) ? $request_data->viewers : [] as $viewer) {
-			$w->Restrictable->addViewer($attachment, $viewer->id);
+			RestrictableService::getInstance($w)->addViewer($attachment, $viewer->id);
 		}
 	} else {
-		$owner = $w->Restrictable->getOwnerLink($attachment);
+		$owner = RestrictableService::getInstance($w)->getOwnerLink($attachment);
 		if (!empty($owner)) {
 			$owner->delete();
 		}
 
-		$viewers = $w->Restrictable->getViewerLinks($attachment);
+		$viewers = RestrictableService::getInstance($w)->getViewerLinks($attachment);
 		foreach (empty($viewers) ? [] : $viewers as $viewer) {
 			$viewer->delete();
 		}

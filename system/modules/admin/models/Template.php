@@ -24,7 +24,7 @@ class Template extends DbObject
     public function renderTitle($data)
     {
         if (is_array($data)) {
-            return $this->Template->render($this->template_title, $data);
+            return TemplateService::getInstance($this->w)->render($this->template_title, $data);
         } else {
             return null;
         }
@@ -32,7 +32,7 @@ class Template extends DbObject
     public function renderBody($data)
     {
         if (is_array($data)) {
-            return $this->Template->render($this->template_body, $data);
+            return TemplateService::getInstance($this->w)->render($this->template_body, $data);
         } else {
             return null;
         }

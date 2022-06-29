@@ -55,9 +55,9 @@ class FormInstance extends DbObject
                 if ($form_field->type == "subform") {
                     $field_metadata = $form_field->findMetadataByKey('associated_form');
                     if (!empty($field_metadata)) {
-                        $sub_form = $this->w->Form->getForm($field_metadata->meta_value);
+                        $sub_form = FormService::getInstance($this->w)->getForm($field_metadata->meta_value);
                         if (!empty($sub_form)) {
-                            $sub_instances = $this->w->Form->getFormInstancesForFormAndObject($sub_form, $value);
+                            $sub_instances = FormService::getInstance($this->w)->getFormInstancesForFormAndObject($sub_form, $value);
                             $sub_form_data = [];
                             if (!empty($sub_instances)) {
                                 foreach ($sub_instances as $sub_instance) {
@@ -71,25 +71,13 @@ class FormInstance extends DbObject
                     if (!isset($fields['attachments'])) {
                         $fields['attachments'] = [];
                     }
-                    $fields['attachments'][$value->getFieldName()] = $this->w->File->getAttachmentsFileList($value);
+                    $fields['attachments'][$value->getFieldName()] = FileService::getInstance($this->w)->getAttachmentsFileList($value);
                 } else {
                     $fields[$value->getFieldName()] = $value->value;
                 }
             }
         }
         return $fields;
-    }
-
-    /**
-     * Returns an array of values from an SQL view.
-     *
-     * @deprecated v3.0.0 - Will be removed in v5.0.0.
-     *
-     * @return array
-     */
-    public function getValuesArray()
-    {
-        return $this->_db->get(str_replace(' ', '_', $this->getForm()->title) . '_view')->where("instance_id", $this->id)->fetchAll();
     }
 
     /**
@@ -120,7 +108,7 @@ class FormInstance extends DbObject
                 }
             }
 
-            return $this->w->Template->render($form->row_template, $template_data);
+            return TemplateService::getInstance($this->w)->render($form->row_template, $template_data);
         }
         // NO TEMPLATE
         $table_row = '';
@@ -186,7 +174,7 @@ class FormInstance extends DbObject
 
     public function delete($force = false)
     {
-        $this->w->Form->processEvents($this, 'On Deleted', $this->getForm());
+        FormService::getInstance($this->w)->processEvents($this, 'On Deleted', $this->getForm());
 
         $values = $this->getSavedValues();
 

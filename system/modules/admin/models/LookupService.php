@@ -3,6 +3,14 @@
 class LookupService extends DbService
 {
 
+    public function getLookupsWhere(array $where = []): array
+    {
+        if (!array_key_exists("is_deleted", $where)) {
+            $where['is_deleted'] = 0;
+        }
+        return $this->getObjects("Lookup", $where);
+    }
+
     public function getLookups()
     {
         return $this->getObjects("Lookup", ["is_deleted" => 0]);
@@ -39,5 +47,14 @@ class LookupService extends DbService
             }
         }
         return $select;
+    }
+
+    public function getLookupTypes(): array
+    {
+        $types = $this->w->db->get('lookup')->select()->select('DISTINCT type')->fetchAll();
+
+        return array_map(function ($t) {
+            return [$t['type'], $t['type']];
+        }, $types);
     }
 }

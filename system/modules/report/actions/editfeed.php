@@ -1,19 +1,19 @@
 <?php
 function editfeed_GET(Web &$w) {
-	$w->Report->navigation($w, "Edit Feed");
+	ReportService::getInstance($w)->navigation($w, "Edit Feed");
 
 	$p = $w->pathMatch("id");
 
-	$feed = $w->Report->getFeedInfobyId($p["id"]);
+	$feed = ReportService::getInstance($w)->getFeedInfobyId($p["id"]);
 
 	// get list of reports for logged in user. sort to list unapproved reports first
-	$reports = $w->Report->getReportsbyUserId($w->session('user_id'));
+	$reports = ReportService::getInstance($w)->getReportsbyUserId($w->session('user_id'));
 
 	// if i am a member of a list of reports, lets display them
-	if (($reports) && ($w->Auth->user()->hasRole("report_editor")  || $w->Auth->user()->hasRole("report_admin"))) {
+	if (($reports) && (AuthService::getInstance($w)->user()->hasRole("report_editor")  || AuthService::getInstance($w)->user()->hasRole("report_admin"))) {
 		foreach ($reports as $report) {
 			// get report data
-			$rep = $w->Report->getReportInfo($report->report_id);
+			$rep = ReportService::getInstance($w)->getReportInfo($report->report_id);
 			$myrep[] = array($rep->title, $rep->id);
 		}
 	}
@@ -34,11 +34,11 @@ function editfeed_GET(Web &$w) {
 }
 
 function editfeed_POST(Web &$w) {
-	$w->Report->navigation($w, "Create a Feed");
+	ReportService::getInstance($w)->navigation($w, "Create a Feed");
 
 	$p = $w->pathMatch("id");
 
-	$feed = $w->Report->getFeedInfobyId($p["id"]);
+	$feed = ReportService::getInstance($w)->getFeedInfobyId($p["id"]);
 
 	$arr["report_id"] = $_REQUEST["rid"];
 	$arr["title"] = $_REQUEST["title"];

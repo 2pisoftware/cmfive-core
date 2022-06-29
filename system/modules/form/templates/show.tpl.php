@@ -74,7 +74,7 @@
         </div>
         <div id="preview">
             <div class="row-fluid clearfix">
-                <?php echo Html::multiColForm($w->Form->buildForm(new FormInstance($w), $form), "/form/show/" . $form->id . "?preview=1"); ?>
+                <?php echo Html::multiColForm(FormService::getInstance($w)->buildForm(new FormInstance($w), $form), "/form/show/" . $form->id . "?preview=1"); ?>
             </div>
         </div>
         <div id="mapping">
@@ -86,7 +86,7 @@
                             $mapping_names = Config::get('form.mapping');
                             if (!empty($mapping_names)) {
                                 foreach ($mapping_names as $mapping_name) {
-                                    $mapping = $w->Form->getFormMapping($form, $mapping_name);
+                                    $mapping = FormService::getInstance($w)->getFormMapping($form, $mapping_name);
                                     $type = empty($mapping) ? "none" : $mapping->getMappingType();
 
                                     echo "<h3>$mapping_name</h3>";

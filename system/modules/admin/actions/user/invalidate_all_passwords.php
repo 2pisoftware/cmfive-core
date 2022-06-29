@@ -2,7 +2,7 @@
 
 function invalidate_all_passwords_ALL(Web $w)
 {
-    $users = $w->Auth->getUsers();
+    $users = AuthService::getInstance($w)->getUsers();
     if (empty($users)) {
         $w->error("Users not found", "/admin/users");
     }

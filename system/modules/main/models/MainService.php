@@ -5,8 +5,8 @@ class MainService extends DbService {
     public function getUserRedirectURL() {
         // Redirect to users redirect_url
         $redirect_url = "main/index";
-        if (!empty($this->w->Auth->user()->redirect_url)) {
-            $redirect_url = $this->w->Auth->user()->redirect_url;
+        if (!empty(AuthService::getInstance($this->w)->user()->redirect_url)) {
+            $redirect_url = AuthService::getInstance($this->w)->user()->redirect_url;
         }
 
         // Filter out everything except the path so that users cant make redirect urls out of cmfive

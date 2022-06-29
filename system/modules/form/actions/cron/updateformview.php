@@ -2,7 +2,7 @@
 
 function updateformview_ALL(Web $w) {
 
-	$forms = $w->Form->getForms();
+	$forms = FormService::getInstance($w)->getForms();
 
 	if (!empty($forms)) {
 		foreach ($forms as $form) {

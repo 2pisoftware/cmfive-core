@@ -11,7 +11,7 @@
         </thead>
         <tbody>
             <?php foreach ($statuses as $s) : ?>
-                <?php $message = $w->Channel->getMessage($s->message_id); ?>
+                <?php $message = ChannelService::getInstance($w)->getMessage($s->message_id); ?>
                 <tr>
                     <td><?php echo $s->processor_id; ?></td>
                     <td><?php echo $s->message; ?></td>

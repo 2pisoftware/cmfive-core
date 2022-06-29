@@ -80,7 +80,7 @@ class Contact extends DbObject
 
     public function getUser()
     {
-        return $this->w->Auth->getUserForContact($this->id);
+        return AuthService::getInstance($this->w)->getUserForContact($this->id);
     }
 
     public function printSearchTitle()
@@ -135,7 +135,7 @@ class Contact extends DbObject
     public function canView(User $user = null)
     {
         if (null === $user) {
-            $user = $this->w->Auth->user();
+            $user = AuthService::getInstance($this->w)->user();
         }
 
         // only owners or admin can see private contacts

@@ -2,7 +2,7 @@
 
 function index_ALL(Web &$w)
 {
-    $w->Report->navigation($w, "Reports");
+    ReportService::getInstance($w)->navigation($w, "Reports");
     History::add("List Reports");
     // report approval flag: display appropriate image
     $app[0] = "<img alt=\"No\" src=\"/system/templates/img/no.gif\" style=\"display: block; margin-left: auto; margin-right: auto;\">";
@@ -11,8 +11,8 @@ function index_ALL(Web &$w)
     // organise criteria
     $who = $w->session('user_id');
 
-    $module = $w->request("module");
-    $reset = $w->request("reset");
+    $module = Request::string("module");
+    $reset = Request::string("reset");
 
     $where = '';
     if (empty($reset)) {
@@ -23,7 +23,7 @@ function index_ALL(Web &$w)
     }
 
     // get report categories from available report list
-    $reports = $w->Report->getReportsbyUserWhere($who, $where);
+    $reports = ReportService::getInstance($w)->getReportsbyUserWhere($who, $where);
 
     // set headings based on role: 'user' sees only approved reports and no approval status
     $line = [["Title", "Module", "Description", ""]];
@@ -31,26 +31,26 @@ function index_ALL(Web &$w)
     // if i am a member of a list of reports, lets display them
     if ($reports) {
         foreach ($reports as $rep) {
-            $member = $w->Report->getReportMember($rep->id, $who);
+            $member = ReportService::getInstance($w)->getReportMember($rep->id, $who);
 
             $edit_button = "";
             $duplicate_button = "";
 
             // editor & admin get EDIT button
-            if ((!empty($member->role) && $member->role == "EDITOR") || ($w->Auth->user()->hasRole("report_admin"))) {
+            if ((!empty($member->role) && $member->role == "EDITOR") || (AuthService::getInstance($w)->user()->hasRole("report_admin"))) {
                 $edit_button = Html::b($w->localUrl("/report/edit/" . $rep->id), "Edit");
                 $duplicate_button = Html::b($w->localUrl("/report/duplicate/{$rep->id}"), "Duplicate");
             }
 
             // admin also gets DELETE button
-            if ($w->Auth->user()->hasRole("report_admin")) {
+            if (AuthService::getInstance($w)->user()->hasRole("report_admin")) {
                 $btndelete = Html::b($w->localUrl("/report/deletereport/" . $rep->id), "Delete", "Are you sure you want to delete this Report?", null, false, "alert");
             } else {
                 $btndelete = "";
             }
 
             // if 'report user' only list approved reports with no approval status flag
-            if (($w->Auth->user()->hasRole("report_user")) && (!$w->Auth->user()->hasRole("report_editor")) && (!$w->Auth->user()->hasRole("report_admin"))) {
+            if ((AuthService::getInstance($w)->user()->hasRole("report_user")) && (!AuthService::getInstance($w)->user()->hasRole("report_editor")) && (!AuthService::getInstance($w)->user()->hasRole("report_admin"))) {
                 if ($rep->is_approved == "1") {
                     $line[] = [
                         Html::a($w->localUrl("/report/runreport/" . $rep->id), $rep->title),
@@ -75,7 +75,7 @@ function index_ALL(Web &$w)
     }
 
     // populate search dropdowns
-    $modules = $w->Report->getModules();
+    $modules = ReportService::getInstance($w)->getModules();
     $w->ctx("modules", $modules);
     $type = [];
     $w->ctx("type", Html::select("type", $type));

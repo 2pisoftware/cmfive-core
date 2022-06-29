@@ -18,7 +18,7 @@ class AdminSecurityAesToOpenssl extends CmfiveMigration {
         $db = Config::get("database.database");
         if (empty($db)) {
             $err = 'Database config not set';
-            $this->w->Log->error($err);
+            LogService::getInstance($this->w)->error($err);
             throw new Exception($err);
         }
 
@@ -27,7 +27,7 @@ class AdminSecurityAesToOpenssl extends CmfiveMigration {
 
         if (empty($encryption_key)) { // || empty($encryption_iv)) {
             $err = 'Encryption key/iv is not set';
-            $this->w->Log->error($err);
+            LogService::getInstance($this->w)->error($err);
             throw new Exception($err);
         }
 
@@ -108,7 +108,7 @@ class AdminSecurityAesToOpenssl extends CmfiveMigration {
             && $this->checkPHPversion()['pass'] // <5.3 and SSL won't work! >7.0 AES wont work!
             && $this->checkSSLKeys()['pass'] )) { // no SSL without a key
                 $err = "System is not suitable for ".get_class($this)." migration";
-                $this->w->Log->error($err);
+                LogService::getInstance($this->w)->error($err);
                 throw new Exception($err);
         }
          $this->w->migrating = true;
@@ -128,7 +128,7 @@ class AdminSecurityAesToOpenssl extends CmfiveMigration {
             // regardless that encryption was not reversed
             // BECAUSE : down() cannot return failure!
             $err = "System cannot rollback ".get_class($this)." migration";
-                $this->w->Log->error($err);
+                LogService::getInstance($this->w)->error($err);
                 throw new Exception($err);
         } else {
             $this->w->migrating = true;
@@ -224,7 +224,7 @@ class AdminSecurityAesToOpenssl extends CmfiveMigration {
          $db = Config::get("database.database");
          if (empty($db)) {
              $err = 'Database config not set';
-             $this->w->Log->error($err);
+             LogService::getInstance($this->w)->error($err);
              throw new Exception($err);
          }         
          

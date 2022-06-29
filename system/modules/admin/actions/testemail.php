@@ -1,10 +1,10 @@
 <?php
 
 function testemail_GET(Web $w) {
-    $user = $w->Auth->user();
+    $user = AuthService::getInstance($w)->user();
     if (!empty($user)) {
         $contact = $user->getContact();
-        $w->Mail->sendMail($contact->email, $contact->email, "Test email", "Test email, ignore");
+        MailService::getInstance($w)->sendMail($contact->email, $contact->email, "Test email", "Test email, ignore");
         $w->out("An email has been sent to your address");
     }
 }

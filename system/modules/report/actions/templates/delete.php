@@ -6,7 +6,7 @@ function delete_GET(Web $w) {
         $w->error("Report template not found", "/report-templates");
     }
     
-    $report_template = $w->Report->getReportTemplate($p['id']);
+    $report_template = ReportService::getInstance($w)->getReportTemplate($p['id']);
     if (empty($report_template->id)) {
         $w->error("Report template not found", "/report-templates");
     }

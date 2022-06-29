@@ -7,13 +7,48 @@
  */
 function useradd_GET(Web &$w) {
 	$p = $w->pathMatch("box");
-	$w->ctx('availableLocales', $w->getAvailableLanguages());
 
     if (!$p['box']) {
-        $w->Admin->navigation($w, "Add User");
+        AdminService::getInstance($w)->navigation($w, "Add User");
     } else {
         $w->setLayout(null);
     }
+
+    $form['User Details'][] = [
+	["Login", "text", "login"],
+        ["Admin","checkbox","is_admin"],
+        ["Active","checkbox","is_active"],
+        ["External", "checkbox", "is_external"],
+    	["Language", "select", "language", null, $w->getAvailableLanguages()]
+    ];
+        
+	$form['User Details'][] = [
+	    ["Password", "password", "password"],
+	    ["Repeat Password", "password", "password2"]
+	];
+
+	$form['Contact Details'][] = [
+	    ["First Name", "text", "firstname"],
+	    ["Last Name", "text", "lastname"]
+	];
+
+	$form['Contact Details'][] = [
+	    ["Title", "autocomplete", "title", null, LookupService::getInstance($w)->getLookupByType("title")],
+	    ["Email", "text", "email"]
+	];
+
+	$roles = AuthService::getInstance($w)->getAllRoles();
+	$roles = array_chunk($roles, 4);
+	foreach ($roles as $r) {
+	    $row = [];
+	    foreach ($r as $rf) {
+			$row[] = [$rf, "checkbox", "check_" . $rf];
+	    }
+	    $form['User Roles'][] = $row;
+	}
+
+	$w->out(Html::multiColForm($form, $w->localUrl("/admin/useradd"), "POST", "Save", null, null, null, "_self", true, array_merge(User::$_validation, ['password' => ['required'], 'password2' => ['required']])));
+        
 }
 
 /**
@@ -58,7 +93,7 @@ function useradd_POST(Web &$w)
     $w->ctx("user", $user);
 
     // now saving the roles
-    $roles = $w->Auth->getAllRoles();
+    $roles = AuthService::getInstance($w)->getAllRoles();
     foreach ($roles as $r) {
         if (!empty($_REQUEST["check_" . $r])) {
             if ($_REQUEST["check_" . $r] == 1) {

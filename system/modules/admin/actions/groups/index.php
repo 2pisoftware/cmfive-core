@@ -6,11 +6,11 @@
 */
 function index_GET(Web &$w)
 {
-	$w->Admin->navigation($w,"Groups");
+	AdminService::getInstance($w)->navigation($w,"Groups");
 
 	$table = array(array("Title","Parent Groups","Operations"));
 
-	$groups = $w->Auth->getGroups();
+	$groups = AuthService::getInstance($w)->getGroups();
 
 	if ($groups) {
             foreach ($groups as $group) {
@@ -18,7 +18,7 @@ function index_GET(Web &$w)
 
                 $line = array();
 
-                $line[] = $w->Auth->user()->is_admin ? Html::box($w->localUrl("/admin/groupedit/".$group->id),"<u>".$group->login."</u>") : $group->login;
+                $line[] = AuthService::getInstance($w)->user()->is_admin ? Html::box($w->localUrl("/admin/groupedit/".$group->id),"<u>".$group->login."</u>") : $group->login;
                 //if it is a sub group from other group;
                 $groupUsers = $group->isInGroups();
 
@@ -31,7 +31,7 @@ function index_GET(Web &$w)
 
                 $operations = Html::b("/admin-groups/edit/".$group->id,"Edit");
 
-                if ($w->Auth->user()->is_admin)
+                if (AuthService::getInstance($w)->user()->is_admin)
                 $operations .= Html::b("/admin-groups/delete/".$group->id,"Delete","Are you sure you want to delete this group?");
 
                 $line[] = $operations;
@@ -40,7 +40,7 @@ function index_GET(Web &$w)
             }
 	}
 
-	if ($w->Auth->user()->is_admin) {
+	if (AuthService::getInstance($w)->user()->is_admin) {
             $w->out(Html::box("/admin/groupadd", "New Group", true));
 	}
         

@@ -156,7 +156,8 @@
                                     <li class="accordion-navigation <?php echo $w->_module == $module ? 'active' : ''; ?>" id="topnav_<?php echo $module; ?>">
                                         <a href='#side_menu_panel-<?php echo $module; ?>'><?php echo is_bool(Config::get("{$module}.topmenu")) ? ucfirst($module) : Config::get("{$module}.topmenu"); ?><?php // echo $menu_link; ?></a>
                                     <?php // Try and get a badge count for the menu item
-                                        $module_navigation = $w->service($module)->navigation($w);
+                                        $service_class = $module . 'Service';
+                                        $module_navigation = $service_class::getInstance($w)->navigation($w);
                                         
                                         // Invoke hook to inject extra navigation
                                         $hook_navigation_items = $w->callHook($module, "extra_navigation_items", $module_navigation);
@@ -195,7 +196,7 @@
             </div>
         </nav>
         <main id='cmfive-main-content' class='slideout-panel slideout-panel-left'>
-            <div class="loading_overlay" <?php echo $w->request('show_overlay') == null ? 'style="display:none;"' : ''; ?>>
+            <div class="loading_overlay" <?php echo Request::int('show_overlay') == null ? 'style="display:none;"' : ''; ?>>
                 <div class="circle"></div>
     			<img class="center_image" width="100px" height="100px" src="/system/templates/img/cmfive_V_logo.png" />
                 <h4 class="subheader">Please wait</h4>
@@ -246,7 +247,7 @@
                         </li>
                         
                         <li>
-                            <a href='<?php echo $w->Main->getUserRedirectURL(); ?>'>
+                            <a href='<?php echo MainService::getInstance($w)->getUserRedirectURL(); ?>'>
                                 <?php if (!empty(Config::get('main.application_logo'))) : ?>
                                     <img class='home_logo' src='<?php echo Config::get('main.application_logo'); ?>' />
                                 <?php else: ?>
@@ -256,12 +257,12 @@
                         </li>
                         <li class="has-dropdown">
                             <a href="#">
-                                <img class='comment_avatar' src='https://www.gravatar.com/avatar/<?php echo md5(strtolower(trim(@$w->Auth->user()->getContact()->email))); ?>?d=identicon' />
+                                <img class='comment_avatar' src='https://www.gravatar.com/avatar/<?php echo md5(strtolower(trim(@AuthService::getInstance($w)->user()->getContact()->email))); ?>?d=identicon' />
                             </a>
                             <?php
                             echo Html::ul(
                                 array(
-                                    $w->menuBox("auth/profile/box", $w->Auth->user()->getShortName()),
+                                    $w->menuBox("auth/profile/box", AuthService::getInstance($w)->user()->getShortName()),
                                     $w->menuLink("auth/logout", "Logout")
                                 ), null, "dropdown");
                             ?>    
@@ -279,7 +280,7 @@
             <div class="row-fluid breadcrumb-container">
                 <?php echo Html::breadcrumbs([], $w); ?>
                 <span class='icon-container'>
-                    <?php if ($w->Auth->allowed('help/view')) {
+                    <?php if (AuthService::getInstance($w)->allowed('help/view')) {
                             echo Html::box(WEBROOT . "/help/view/" . $w->_module . ($w->_submodule ? "-" . $w->_submodule : "") . "/" . $w->_action, "<span class='fas fa-info show-for-medium-up'></span><span class='show-for-small-only'>Help</span>", false, true, 750, 500, "isbox", null, null, null, 'cmfive-help-modal');
                         }
                         echo Html::box("/search", "<span class='fas fa-search show-for-medium-up'></span><span class='show-for-small-only'>Search</span>", false, false, null, null, null, "cmfive_search_button"); ?>

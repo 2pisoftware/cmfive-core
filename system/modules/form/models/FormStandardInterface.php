@@ -187,7 +187,7 @@ class FormStandardInterface extends FormFieldInterface
                             $filter = $metadata['object_filter'];
                         }
                     }
-                    $options = $w->Form->getObjects($metadata['object_type'], $filter);
+                    $options = FormService::getInstance($w)->getObjects($metadata['object_type'], $filter);
                     foreach ($options as $option) {
                         if ($option->id == $value) {
                             return $option->getSelectOptionTitle();

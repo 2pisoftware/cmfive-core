@@ -3,7 +3,7 @@
 function index_GET(Web $w) {
 
 	$w->ctx('title', 'Form Applications');
-	$applications = $w->FormApplication->getFormApplications();
+	$applications = FormService::getInstance($w)->getFormApplications();
 
 	$application_table_data = [];
 	if (!empty($applications)) {

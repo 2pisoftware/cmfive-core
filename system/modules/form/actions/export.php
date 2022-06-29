@@ -5,12 +5,12 @@ function export_ALL(Web $w) {
 	if (empty($p['id'])) {
 		$w->error("No form id found", "/form/index");
 	}
-	$form = $w->Form->getForm($p['id']);
+	$form = FormService::getInstance($w)->getForm($p['id']);
 	if (empty($form)) {
 		$w->error("No form found for id", "/form/index");
 	}
 
-	$export = $w->Form->getFormForExport($form->id);
+	$export = FormService::getInstance($w)->getFormForExport($form->id);
 
 	$export_json = json_encode($export);
 	$zip = new ZipArchive();

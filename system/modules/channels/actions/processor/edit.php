@@ -40,7 +40,7 @@ function edit_POST(Web $w)
     $processor_id = $p["id"];
 
     // Break the selected processor up into module and class
-    $processor_class = $w->request("processor_class");
+    $processor_class = Request::string("processor_class");
     $processor_expl = explode(".", $processor_class);
 
     // Make sure we only have two values
@@ -57,7 +57,7 @@ function edit_POST(Web $w)
 
     $processor_object = $processor_id ? ChannelService::getInstance($w)->getProcessor($processor_id) : new ChannelProcessor($w);
     $processor_object->fill($_POST);
-    $processor_object->channel_id = $w->request("channel_id");
+    $processor_object->channel_id = Request::int("channel_id");
     $processor_object->module = $processor_expl[0];
     $processor_object->class = $processor_expl[1];
     $processor_object->insertOrUpdate();

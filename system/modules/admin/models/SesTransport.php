@@ -51,7 +51,7 @@ class SesTransport implements GenericTransport
         if (!empty($to) && strlen($to) > 0) {
             try {
                 if ($this->transport === null) {
-                    $this->w->Log->error("Could not send mail to {$to} from {$replyto} about {$subject} no email transport defined!");
+                    LogService::getInstance($this->w)->error("Could not send mail to {$to} from {$replyto} about {$subject} no email transport defined!");
                     return;
                 }
 
@@ -67,7 +67,7 @@ class SesTransport implements GenericTransport
                 $message = new Swift_Message($subject);
                 $fromCompany = Config::get("main.company_support_email");
                 if (empty($fromCompany)) {
-                    $this->w->Log->error("Failed to send mail to: {$to}, from: {$replyto}, about: {$subject}: main.company_support_email not set in config");
+                    LogService::getInstance($this->w)->error("Failed to send mail to: {$to}, from: {$replyto}, about: {$subject}: main.company_support_email not set in config");
                     return;
                 }
 
@@ -105,17 +105,17 @@ class SesTransport implements GenericTransport
                 // Set any extra headers
                 if (!empty($headers)) {
                     foreach ($headers as $header => $value) {
-                        $this->w->Log->setLogger(MailService::$logger)->info("Added header {$header} {$value}");
+                        LogService::getInstance($this->w)->setLogger(MailService::$logger)->info("Added header {$header} {$value}");
                         $message->getHeaders()->addTextHeader($header, $value);
                     }
                 }
-                $this->w->Log->setLogger(MailService::$logger)->info("Sending email to {$to} from {$replyto} with {$subject} (" . count($attachments) . " attachments)");
+                LogService::getInstance($this->w)->setLogger(MailService::$logger)->info("Sending email to {$to} from {$replyto} with {$subject} (" . count($attachments) . " attachments)");
                 $mailer_status = $mailer->send($message, $failures);
                 if (!empty($failures)) {
-                    $this->w->Log->setLogger(MailService::$logger)->error("Failed to send email: " . serialize($failures));
+                    LogService::getInstance($this->w)->setLogger(MailService::$logger)->error("Failed to send email: " . serialize($failures));
                 }
             } catch (Exception $e) {
-                $this->w->Log->setLogger(MailService::$logger)->error("Failed to send email: " . $e);
+                LogService::getInstance($this->w)->setLogger(MailService::$logger)->error("Failed to send email: " . $e);
             }
             // failure to end
             return 1;

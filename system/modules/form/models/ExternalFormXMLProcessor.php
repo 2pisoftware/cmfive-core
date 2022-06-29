@@ -13,8 +13,8 @@ class ExternalFormXMLProcessor extends ProcessorType
         }
 
         return ["Settings" => [
-            [["Target Form Application", "select", "target_application_id", @$current_settings->target_application_id, $this->w->FormApplication->getFormApplications()]],
-            [["Target Form", "select", "target_form_id", @$current_settings->target_form_id, $this->w->Form->getForms()]],
+            [["Target Form Application", "select", "target_application_id", @$current_settings->target_application_id, FormService::getInstance($this->w)Application->getFormApplications()]],
+            [["Target Form", "select", "target_form_id", @$current_settings->target_form_id, FormService::getInstance($this->w)->getForms()]],
         ]];
     }
 
@@ -36,24 +36,24 @@ class ExternalFormXMLProcessor extends ProcessorType
         }
 
         if (empty($settings->target_application_id)) {
-            $processor->w->Log->setLogger("EXTERNAL_FORM_PROCESSOR")->error("Invalid settings for processor, application must be selected");
+            LogService::getInstance($processor->w)->setLogger("EXTERNAL_FORM_PROCESSOR")->error("Invalid settings for processor, application must be selected");
             return;
         }
 
-        $application = $processor->w->FormApplication->getFormApplication($settings->target_application_id);
+        $application = FormApplicationService::getInstance($processor->w)->getFormApplication($settings->target_application_id);
         if (empty($application->id)) {
-            $processor->w->Log->setLogger("EXTERNAL_FORM_PROCESSOR")->error("Cannot find application with ID: " . $settings->target_application_id);
+            LogService::getInstance($processor->w)->setLogger("EXTERNAL_FORM_PROCESSOR")->error("Cannot find application with ID: " . $settings->target_application_id);
             return;
         }
 
         if (empty($settings->target_form_id)) {
-            $processor->w->Log->setLogger("EXTERNAL_FORM_PROCESSOR")->error("Invalid settings for processor, form must be selected");
+            LogService::getInstance($processor->w)->setLogger("EXTERNAL_FORM_PROCESSOR")->error("Invalid settings for processor, form must be selected");
             return;
         }
 
-        $form = $processor->w->Form->getForm($settings->target_form_id);
+        $form = FormService::getInstance($processor->w)->getForm($settings->target_form_id);
         if (empty($form->id)) {
-            $processor->w->Log->setLogger("EXTERNAL_FORM_PROCESSOR")->error("Cannot find form with ID: " . $settings->target_form_id);
+            LogService::getInstance($processor->w)->setLogger("EXTERNAL_FORM_PROCESSOR")->error("Cannot find form with ID: " . $settings->target_form_id);
             return;
         }
 
@@ -72,7 +72,7 @@ class ExternalFormXMLProcessor extends ProcessorType
                 $messagestatus->message = '';
 
                 // Get attached form
-                $attachments = $processor->w->File->getAttachments($message);
+                $attachments = FileService::getInstance($processor->w)->getAttachments($message);
 
                 if (!empty($attachments)) {
                     $non_standard_attachments = array_filter($attachments, function ($attachment) {
@@ -86,7 +86,7 @@ class ExternalFormXMLProcessor extends ProcessorType
                                 $xml = file_get_contents(FILE_ROOT . $attachment->fullpath);
 
                                 if (empty($xml)) {
-                                    $processor->w->Log->setLogger("EXTERNAL_FORM_PROCESSOR")->error("Cannot validate XML attachment for form: " . $form->title);
+                                    LogService::getInstance($processor->w)->setLogger("EXTERNAL_FORM_PROCESSOR")->error("Cannot validate XML attachment for form: " . $form->title);
                                     $messagestatus->message = "Cannot validate XML attachment for form: " . $form->title;
                                     $messagestatus->is_successful = 0;
                                     $messagestatus->insertOrUpdate();
@@ -111,7 +111,7 @@ class ExternalFormXMLProcessor extends ProcessorType
                                 $messagestatus->insertOrUpdate();
 
                             } catch (Exception $e) {
-                                $processor->w->Log->setLogger("EXTERNAL_FORM_PROCESSOR")->error("Exception: " . $e->getMessage());
+                                LogService::getInstance($processor->w)->setLogger("EXTERNAL_FORM_PROCESSOR")->error("Exception: " . $e->getMessage());
                             }
 
                             break;
@@ -216,7 +216,7 @@ class ExternalFormXMLProcessor extends ProcessorType
                         $subform = null;
                         foreach ($metadata as $metadata_row) {
                             if ($metadata_row->meta_key === "associated_form") {
-                                $subform = $form->w->Form->getForm($metadata_row->meta_value);
+                                $subform = FormService::getInstance($form->w)->getForm($metadata_row->meta_value);
                             }
                         }
 
@@ -268,10 +268,10 @@ class ExternalFormXMLProcessor extends ProcessorType
         //run 'on created' or 'on modified' processors here
         if ($is_existing_instance) {
             //run 'on modified processor'
-            $form->w->Form->processEvents($instance, 'On Modified', $form);
+            FormService::getInstance($form->w)->processEvents($instance, 'On Modified', $form);
         } else {
             //run 'on created processor'
-            $form->w->Form->processEvents($instance, 'On Created', $form);
+            FormService::getInstance($form->w)->processEvents($instance, 'On Created', $form);
         }
     }
 
@@ -279,7 +279,7 @@ class ExternalFormXMLProcessor extends ProcessorType
     {
         $form_value = null;
         if ($is_existing_instance) {
-            $form_value = $w->Form->getFormValueForInstanceAndField($instance->id, $field->id);
+            $form_value = FormService::getInstance($w)->getFormValueForInstanceAndField($instance->id, $field->id);
 
             if (!empty($form_value->id)) {
                 $form_value->value = $value;

@@ -4,8 +4,8 @@ function index_ALL(Web $w) {
 
 	header('Location: /tag/admin');
 
- //    $w->Tag->navigation($w, "Tag Admin");
-	// $tags = $w->Tag->getTags();
+ //    TagService::getInstance($w)->navigation($w, "Tag Admin");
+	// $tags = TagService::getInstance($w)->getTags();
 	// $table_header = array("Tag", "Actions");
 	
 	// $table_data = [];

@@ -1,7 +1,7 @@
 <?php
 
 function start_GET(Web $w) {
-    $indexes = $w->search->getIndexes();
+    $indexes = SearchService::getInstance($w)->getIndexes();
     $select_indexes = [];
     if (!empty($indexes)) {
         foreach($indexes as $friendly_name => $search_name) {

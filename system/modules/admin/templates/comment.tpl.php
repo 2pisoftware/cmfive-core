@@ -143,7 +143,7 @@
             },
             canRestrictViewers: function() {
                 return this.viewers.filter(function(viewer) {
-                    return viewer.id != <?php echo $w->Auth->user()->id; ?>;
+                    return viewer.id != <?php echo AuthService::getInstance($w)->user()->id; ?>;
                 });
             },
             canNotifyViewers: function() {
@@ -151,7 +151,7 @@
                 return _this.viewers.filter(function(viewer) {
                     if (!_this.is_restricted && (viewer.is_original_notify || viewer.is_notify)) {
                         return true;
-                    } else if (!_this.is_restricted && viewer.id == <?php echo $w->Auth->user()->id; ?>) {
+                    } else if (!_this.is_restricted && viewer.id == <?php echo AuthService::getInstance($w)->user()->id; ?>) {
                         return true;
                     } else if (_this.is_restricted && viewer.can_view) {
                         return true;

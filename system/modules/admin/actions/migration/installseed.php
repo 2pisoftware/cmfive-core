@@ -2,14 +2,14 @@
 
 function installseed_GET(Web $w) {
 
-	$url = $w->request('url');
+	$url = Request::string('url');
 
 	if (empty($url)) {
 		$w->msg('Cannot find requested seed', '/admin-migration');
 	}
 
 	$url = urldecode($url);
-	$seeds = $w->Migration->getSeedMigrations();
+	$seeds = MigrationService::getInstance($w)->getSeedMigrations();
 
 	if (empty($seeds)) {
 		$w->msg("Cannot find seed migrations", '/admin-migration');
@@ -22,7 +22,7 @@ function installseed_GET(Web $w) {
 		}
 
 		foreach($available_seeds as $path => $classname) {
-			if (!$w->Migration->migrationSeedExists($classname)) {
+			if (!MigrationService::getInstance($w)->migrationSeedExists($classname)) {
 				if ($path == $url) {
 					require_once($path);
 					$runSeed = $classname;

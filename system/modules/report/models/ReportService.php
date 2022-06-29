@@ -44,12 +44,12 @@ class ReportService extends DbService
     public function canUserEditReport($report, $member)
     {
         // First, is logged in user a system admin
-        if ($this->w->Auth->user()->is_admin == 1) {
+        if (AuthService::getInstance($this->w)->user()->is_admin == 1) {
             return true;
         }
 
         // Check if logged in user is report_admin
-        if ($this->w->Auth->user()->hasRole("report_admin")) {
+        if (AuthService::getInstance($this->w)->user()->hasRole("report_admin")) {
             return true;
         }
 
@@ -58,14 +58,14 @@ class ReportService extends DbService
         }
 
         // Then check if the user has report_editor role
-        if (!$this->w->Auth->user()->hasRole("report_editor")) {
+        if (!AuthService::getInstance($this->w)->user()->hasRole("report_editor")) {
             return false;
         }
 
         // Check that the member given is for the given report
         if ($report->id !== $member->report_id) {
             // Log this event
-            $this->w->Log->error("Wrong member given for report (In ReportService, line: " . __LINE__ . ")");
+            LogService::getInstance($this->w)->error("Wrong member given for report (In ReportService, line: " . __LINE__ . ")");
             return false;
         }
 
@@ -176,22 +176,11 @@ class ReportService extends DbService
       
         $filter = $this->unitaryWhereToAndClause($where);
 
-        // the sql statement below return duplicate reports if they have multiple members
-
-        /*
-        $results = $this->_db->get("report")->select("report.*")
-        ->leftJoin("report_member on report_member.report_id = report.id")
-        ->where("report_member.user_id", $myid)->where($where)
-        ->where("report.is_deleted", 0)->where("report_member.is_deleted", 0)
-        ->order_by("report.is_approved desc, report.title")->fetch_all();
-         */
-
-        // this sql below statement may not be as nifty as the above .. but it works!
         $rows = $this->_db->sql("SELECT distinct r.* from " . ReportMember::$_db_table . " as m inner join " .
             Report::$_db_table . " as r on m.report_id = r.id " .
             " where m.user_id in (" . $theid . ") " . $filter .
             " and r.is_deleted = 0 and m.is_deleted = 0 " .
-            " order by r.is_approved desc,r.title")->fetch_all();
+            " order by r.is_approved desc,r.title")->fetchAll();
         return $this->fillObjects("Report", $rows);
     }
 
@@ -242,11 +231,11 @@ class ReportService extends DbService
         $myid[] = $id;
 
         // need to check all groups given group member could be a group
-        $groups = $this->w->Auth->getGroups();
+        $groups = AuthService::getInstance($this->w)->getGroups();
 
         if ($groups) {
             foreach ($groups as $group) {
-                if ($this->w->Auth->user()->inGroup($group)) {
+                if (AuthService::getInstance($this->w)->user()->inGroup($group)) {
                     $myid[$group->id] = $group->id;
                 }
             }
@@ -257,7 +246,7 @@ class ReportService extends DbService
             ->leftJoin("report on report_member.report_id = report.id")
             ->where("report_member.user_id", $myid)
             ->where("report.is_deleted", 0)->where("report_member.is_deleted", 0)
-            ->order_by("report.is_approved desc, report.title")->fetch_all();
+            ->orderBy("report.is_approved desc, report.title")->fetchAll();
         return $this->fillObjects("ReportMember", $results);
     }
 
@@ -269,11 +258,11 @@ class ReportService extends DbService
         $myid[] = $this->w->session('user_id');
 
         // need to check all groups given group member could be a group
-        $groups = $this->w->Auth->getGroups();
+        $groups = AuthService::getInstance($this->w)->getGroups();
 
         if ($groups) {
             foreach ($groups as $group) {
-                $flg = $this->w->Auth->user()->inGroup($group);
+                $flg = AuthService::getInstance($this->w)->user()->inGroup($group);
                 if ($flg) {
                     $myid[$group->id] = $group->id;
                 }
@@ -288,7 +277,7 @@ class ReportService extends DbService
             ->leftJoin("report on report_member.report_id = report.id")
             ->where("report_member.user_id", $myid)->where("report.module", $module)
             ->where("report.is_deleted", 0)->where("report_member.is_deleted", 0)
-            ->order_by("report.is_approved desc, report.title")->fetch_all();
+            ->orderBy("report.is_approved desc, report.title")->fetchAll();
 
         return $this->fillObjects("Report", $results);
     }
@@ -310,7 +299,7 @@ class ReportService extends DbService
     // return a users full name given their user ID
     public function getUserById($id)
     {
-        $u = $this->w->Auth->getUser($id);
+        $u = AuthService::getInstance($this->w)->getUser($id);
         return $u ? $u->getFullName() : "";
     }
 
@@ -372,7 +361,7 @@ class ReportService extends DbService
         }
 
         if ($table != "") {
-            $fields = $this->_db->sql("show columns in " . $this->_db->quote($table))->fetch_all();
+            $fields = $this->_db->sql("show columns in " . $this->_db->quote($table))->fetchAll();
 
             if ($fields) {
                 $output = "<table><tr><td><b>Field</b></td><td><b>Type</b></td></tr>";
@@ -545,7 +534,7 @@ class ReportService extends DbService
                 }
 
                 if (!empty($report_template) && !empty($templatedata)) {
-                    $results = $this->w->Template->render(
+                    $results = TemplateService::getInstance($this->w)->render(
                         $report_template->template_id,
                         array("data" => $templatedata, "w" => $this->w, "POST" => $_POST));
 
@@ -609,7 +598,7 @@ class ReportService extends DbService
             $replace = array();
 
             // get user roles
-            $usr = $this->w->Auth->user();
+            $usr = AuthService::getInstance($this->w)->user();
             $roles = '';
             if (!empty($usr)) {
                 foreach ($usr->getRoles() as $role) {
@@ -661,10 +650,10 @@ class ReportService extends DbService
 
         $nav = $nav ? $nav : array();
 
-        if ($w->Auth->loggedIn()) {
+        if (AuthService::getInstance($w)->loggedIn()) {
             $w->menuLink("report/index", "Report Dashboard", $nav);
 
-            if ($w->Auth->user()->hasRole("report_editor") || $w->Auth->user()->hasRole("report_admin")) {
+            if (AuthService::getInstance($w)->user()->hasRole("report_editor") || AuthService::getInstance($w)->user()->hasRole("report_admin")) {
                 $w->menuLink("report/edit", "Create a Report", $nav);
                 $w->menuLink("report-connections", "Connections", $nav);
                 $w->menuLink("report/listfeed", "Feeds Dashboard", $nav);

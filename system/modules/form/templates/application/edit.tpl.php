@@ -136,7 +136,7 @@
             active_form: {id: '', title: '',application_id: '<?php echo $application->id; ?>'},
             user_list: <?php echo json_encode(array_map(function ($user) {
                     return ['id' => $user->id, 'name' => $user->getFullName()];
-                }, array_filter($w->Auth->getUsers(), function($user) {return !empty($user->id) && $user->is_active == 1 && $user->is_deleted == 0;})), true); ?>
+                }, array_filter(AuthService::getInstance($w)->getUsers(), function($user) {return !empty($user->id) && $user->is_active == 1 && $user->is_deleted == 0;})), true); ?>
         },
         methods: {
             setSelectedValue: function(selectedValue) {
