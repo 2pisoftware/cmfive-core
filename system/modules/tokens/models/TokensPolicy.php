@@ -73,7 +73,7 @@ class TokensPolicy extends DbObject
             $rolefunc = "role_" . $rn . "_allowed";
             $policyfunc = "token_policy_" . $rn . "_allowed";
             if (!function_exists($rolefunc) && !function_exists($policyfunc)) {
-                $this->w->Log->error("Role or policy'" . $rn . "' does not exist!");
+                LogService::getInstance($this->w)->error("Role or policy'" . $rn . "' does not exist!");
                 continue;
             }
             // These will be visible as user role selectors
