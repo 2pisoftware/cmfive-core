@@ -294,7 +294,7 @@ class AuthService extends DbService
         }
         $parts = $this->w->parseUrl($path);
         if (!in_array($parts['module'], $this->w->modules())) {
-            $this->Log->error("Denied access: module '" . urlencode($parts['module']) . "' doesn't exist");
+            LogService::getInstance($this->w)->Log->error("Denied access: module '" . urlencode($parts['module']) . "' doesn't exist");
             self::$_cache[$key] = false;
             return false;
         }
@@ -325,7 +325,7 @@ class AuthService extends DbService
 
             // if the token is invalid( jwt fails checks, len == 0 or somesuch) then we stop and don't continue
             if (empty($speculativeToken) || empty($hook_results)) {
-                $this->Log->error("Key invalid: '" . $_SERVER['HTTP_AUTHORIZATION'] . " was provided");
+                LogService::getInstance($this->w)->error("Key invalid: '" . $_SERVER['HTTP_AUTHORIZATION'] . " was provided");
                 ApiOutputService::getInstance($this->w)->apiRefuseMessage($path,"Token not valid");
                 self::$_cache[$key] = false;
                 return false;
@@ -335,7 +335,7 @@ class AuthService extends DbService
                     self::$_cache[$key] = $url ? $url : true;
                     return self::$_cache[$key];
                 } else {
-                    $this->Log->info('Handler ' . $module . ' did not provide Auth');
+                    LogService::getInstance($this->w)->info('Handler ' . $module . ' did not provide Auth');
                 }
             }
             ApiOutputService::getInstance($this->w)->apiRefuseMessage($path.":[".$speculativeToken."]", "Token not authenticated");
@@ -364,7 +364,7 @@ class AuthService extends DbService
                         // return self::$_cache[$key]; 
                     }
                 } else {
-                    $this->Log->info($module . ' did not provide passthrough user for:' . $username);
+                    LogService::getInstance($this->w)->Log->info($module . ' did not provide passthrough user for:' . $username);
                 }
             }
         }
