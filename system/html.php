@@ -359,8 +359,8 @@ class Html
             $readonly = "";
 
             // handle disabled fields
-            if (substr($name, 0, 1) == '-') {
-                $name = substr($name, 1);
+            if (substr(($name??""), 0, 1) == '-') {
+                $name = substr(($name??""), 1);
                 $readonly = " readonly='true' ";
             }
             // Add title field
@@ -659,8 +659,8 @@ class Html
                     $buffer .= ($type !== "hidden" ? "<div>" : "");
 
                     // handle disabled fields
-                    if (substr($name, 0, 1) == '-') {
-                        $name = substr($name, 1);
+                    if (substr(($name??""), 0, 1) == '-') {
+                        $name = substr(($name??""), 1);
                         $readonly = " readonly='true' ";
                     }
 
@@ -963,7 +963,7 @@ class Html
                 }
             }
             // Remove trailing comma
-            $source = substr($source, 0, -1);
+            $source = substr(($source??""), 0, -1);
             $source .= "]";
         } else {
             $source = "'" . $options . "'";
@@ -1329,8 +1329,8 @@ class Html
             }
 
             // handle disabled fields
-            if (substr($name, 0, 1) == '-') {
-                $name = substr($name, 1);
+            if (substr(($name??""), 0, 1) == '-') {
+                $name = substr(($name??""), 1);
                 $readonly = " readonly='true' ";
             }
 
