@@ -204,7 +204,7 @@ function defaultVal($val, $default = null)
  */
 function toSlug($title)
 {
-    return strtolower(str_replace([' ', '_', ',', '.', '/'], '-', $title));
+    return strtolower(str_replace([' ', '_', ',', '.', '/'], '-', ($title ?? "")));
 }
 
 /**
