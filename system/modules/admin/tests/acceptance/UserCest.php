@@ -45,7 +45,7 @@ class UserCest
         $I->deleteUserGroup($I, 'Test User Group');
         $I->clickCmfiveNavbar($I, 'Admin', 'List Users');
         $row = $I->findTableRowMatching(1, $this->username);
-        $I->click('Permissions', ".table-responsive ul:nth-child({$row}) li:nth-child(6)");
+        $I->click('Permissions', ".table-responsive tbody tr:nth-child({$row}) td:nth-child(7)");
         $I->dontSeeCheckboxIsChecked('#check_comment');
         $disabledStatus = $I->grabAttributeFrom('#check_comment', 'disabled');
         $I->assertEquals($disabledStatus, null);
