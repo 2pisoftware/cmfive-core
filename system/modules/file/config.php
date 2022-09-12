@@ -7,7 +7,7 @@ Config::set('file', [
     'topmenu' => false,
     "dependencies" => [
         "knplabs/gaufrette" => "~0.8",
-        "aws/aws-sdk-php" => "~3.69"
+        "aws/aws-sdk-php" => "3.224"
     ],
     'hooks' => [
         'admin',
