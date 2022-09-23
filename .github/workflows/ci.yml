@@ -75,7 +75,7 @@ jobs:
           sudo cp .codepipeline/local-dev/configs/supervisord/supervisord.conf /etc/supervisord.conf
           cp .codepipeline/test_agent/configs/test_agent-config.php config.php
 
-          rm ./system
+          rm -rf ./system
           php cmfive.php install core ${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}
           ln -s ./composer/vendor/2pisoftware/cmfive-core/system ./system
 
