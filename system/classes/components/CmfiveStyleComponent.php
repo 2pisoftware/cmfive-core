@@ -63,7 +63,7 @@ class CmfiveStyleComponent extends CmfiveComponent {
 				}
 
 				try {
-					$compiled_css = $scss->compile(file_get_contents(ROOT_PATH . $this->_dirname . '/' . $this->_filename . '.' . $this->_extension));
+					$compiled_css = $scss->compileString(file_get_contents(ROOT_PATH . $this->_dirname . '/' . $this->_filename . '.' . $this->_extension));
 				} catch (Exception $e) {
 					// Could not compile SCSS
 					echo $e->getMessage();
