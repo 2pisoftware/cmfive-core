@@ -846,10 +846,10 @@ class Html
                     $buf .= '<option value="' . htmlspecialchars($item) . '"' . $selected . '>' . htmlentities($item) . '</option>';
                 } elseif ($item instanceof DbObject) {
                     $selected = $value == $item->getSelectOptionValue() ? ' selected = "true" ' : "";
-                    $buf .= '<option value="' . htmlspecialchars($item->getSelectOptionValue()) . '"' . $selected . '>' . htmlentities($item->getSelectOptionTitle() ?? '') . '</option>';
+                    $buf .= '<option value="' . htmlspecialchars($item->getSelectOptionValue() ?? '') . '"' . $selected . '>' . htmlentities($item->getSelectOptionTitle() ?? '') . '</option>';
                 } elseif (is_array($item)) {
                     $selected = $value == $item[1] ? ' selected = "true" ' : "";
-                    $buf .= '<option value="' . htmlspecialchars($item[1]) . '"' . $selected . '>' . htmlentities($item[0]) . '</option>';
+                    $buf .= '<option value="' . htmlspecialchars($item[1] ?? '') . '"' . $selected . '>' . htmlentities($item[0] ?? '') . '</option>';
                 }
             }
         }
