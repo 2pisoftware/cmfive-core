@@ -79,7 +79,7 @@ jobs:
           php cmfive.php install core ${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}
           ln -s ./composer/vendor/2pisoftware/cmfive-core/system ./system
 
-          mysql -h 127.0.0.1 -u'root' -p'root' --execute "CREATE DATABASE cmfive_test; CREATE USER cmfive_test@'%' IDENTIFIED BY 'cmfive_test'; GRANT ALL PRIVILEGES ON cmfive_test.* TO cmfive_test@'%'; GRANT PROCESS ON *.* TO cmfive_test@'%'; FLUSH PRIVILEGES;"
+          sudo mysql -u'root' -p'root' --execute "CREATE DATABASE cmfive_test; CREATE USER cmfive_test@'%' IDENTIFIED BY 'cmfive_test'; GRANT ALL PRIVILEGES ON cmfive_test.* TO cmfive_test@'%'; GRANT PROCESS ON *.* TO cmfive_test@'%'; FLUSH PRIVILEGES;"
           chmod -R 777 cache/ storage/ uploads/
 
           docker run selenium/standalone-chrome
