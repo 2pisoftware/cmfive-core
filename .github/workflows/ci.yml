@@ -151,15 +151,15 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 14
-        
-      - name: Build new designs  
+
+      - name: Build new designs
         run: |
           chmod -R 777 system/templates/base 
         # docker exec -t nginx-php8.1 bash -c ""
           cd system/templates/base
           npm i
           npm run prod
-        
+
       # Run Unit Tests
       - name: "Run unit tests"
         run: |
