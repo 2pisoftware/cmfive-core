@@ -96,57 +96,6 @@ jobs:
           DB_HOST=localhost DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php install migrations
           DB_HOST=localhost DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php testDB setup;
 
-
-
-
-
-
-
-
-      # Pre-requisites Prepare Cmfive Environment
-      # - name: Setup cmfive Test Environment
-      #   run: |
-      #     cp .codepipeline/test_agent/configs/test_agent-config.php config.php
-          
-      #     docker-compose -f test_agent-compose.yml up --build -d
-      #     sleep 5
-      #     docker ps
-      #     docker exec -t nginx-php8.1 bash -c "chmod -R 777 ./*"
-      #     docker exec -t nginx-php8.1 bash -c "rm -rf ./system && ln -s ./composer/vendor/2pisoftware/cmfive-core/system ./system"
-          
-      #     echo CoreInstall
-      #     docker exec -t nginx-php8.1 bash -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php install core ${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}"
-
-      #     echo DBCreate 
-      #     docker exec -t mysql-8 bash -c "mysql -h 127.0.0.1 -u'root' -p'root' --execute \"CREATE DATABASE cmfive_test; CREATE USER cmfive_test@'%' IDENTIFIED BY 'cmfive_test'; GRANT ALL PRIVILEGES ON cmfive_test.* TO cmfive_test@'%'; GRANT PROCESS ON *.* TO cmfive_test@'%'; FLUSH PRIVILEGES;\""
-
-      #     docker exec -t nginx-php8.1 bash -c "chmod -R 777 cache/ storage/ uploads/"
-          
-      #     docker start selenium314;
-
-      # - name: Inject configs into cmfive Test Environment
-      #   run: |
-      #     echo "Inheriting test_agent config from PIPELINE"
-      #     echo 'Config::append("tests", ["testrunner" => "ENABLED"]);' >> config.php
-
-      # - name: Prepare cmfive Test Backend
-      #   run: |
-      #     docker exec nginx-php8.1 bash -c "cd ./test/ && sh ./.install/install.sh && chmod -R 777 /var/www/html/test/Codeception/tests"
-      
-      # - name: Apply cmfive Test Config to Core install
-      #   run: |
-      #     echo SeedingCmfive
-      #     docker exec nginx-php8.1 bash -c "cat config.php"
-      #     # docker exec -t nginx-php8.1 bash -c "php cmfive.php install core ${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}"
-      #     docker exec -t nginx-php8.1 bash -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php seed encryption"
-      #     docker exec -t nginx-php8.1 bash -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php install migrations"
-      #     docker exec -t nginx-php8.1 bash -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php seed admin admin admin admin@example.com admin admin"
-      #     docker exec -t nginx-php8.1 bash -c "chmod -R 777 cache/ storage/ uploads/"
-
-      # - name: Prepare cmfive Test DB
-      #   run: |
-      #     docker exec -t nginx-php8.1 bash -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php testDB setup; exit \$?";
-        
       # Build new layout
       - uses: actions/setup-node@v3
         with:
