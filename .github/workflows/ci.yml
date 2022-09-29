@@ -86,7 +86,7 @@ jobs:
           docker run -t -d selenium/standalone-chrome
           echo 'Config::append("tests", ["testrunner" => "ENABLED"]);' >> config.php
 
-          cd ./test/.install/ && sh ./install.sh && ls -laR /var/www/html/test/Codeception # && chmod -R 777 /var/www/html/test/Codeception/tests
+          cd ./test/.install/ && sh ./install.sh && chmod -R 777 ../Codeception/tests
 
           cat config.php
           DB_HOST=127.0.0.1 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php seed encryption
