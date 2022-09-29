@@ -2142,7 +2142,7 @@ class Web
         if (!headers_sent($file, $line)) {
             header($string);
         } else {
-            $this->log->error("Attempted to resend header {$string}, output started in {$file} on line {$line}");
+           LogService::getInstance($this)->error("Attempted to resend header {$string}, output started in {$file} on line {$line}");
         }
     }
 

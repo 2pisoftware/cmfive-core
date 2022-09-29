@@ -480,10 +480,43 @@ class FileService extends DbService
                 $this->w->header('Pragma: public');
 
                 $filesystem = $att->getFileSystem();
-                $this->w->header('Content-Length: ' . $filesystem->fileSize('/' . $att->getFilePath() . DS . $att->filename));
-                echo $filesystem->read('/' . $att->getFilePath() . DS . $att->filename);
+                try {
+                    $this->w->header('Content-Length: ' . $filesystem->fileSize($att->filename));
+                } catch (Exception $e) {
+                    LogService::getInstance($this->w)->error('Attachment write out error: ' . $e->getMessage());
+                }
+                echo $filesystem->read($att->filename);
                 exit(0);
         // }
+    }
+
+    /**
+     * Return the path adjusted to the currently active adapter.
+     *
+     * @param string file path
+     *
+     * @return string resulting file path
+     */
+    public function getFilePath($path)
+    {
+        $active_adapter = $this->getActiveAdapter();
+
+        switch ($active_adapter) {
+            case "local":
+                if (strpos($path, FILE_ROOT . "attachments/") !== false) {
+                    return $path;
+                }
+                if (strpos($path, "attachments/") !== false) {
+                    return FILE_ROOT . $path;
+                }
+
+                return FILE_ROOT . "attachments/" . $path;
+            default:
+                if (strpos($path, "uploads/") === false) {
+                    return "uploads/" . $path;
+                }
+                return $path;
+        }
     }
 
     /**
@@ -527,6 +560,7 @@ class FileService extends DbService
         $att->description = $description;
         $att->type_code = $type_code;
         $att->is_public = $is_public;
+        $att->adapter = $this->getActiveAdapter();
 
         $filesystemPath = "attachments/" . $parentObject->getDbTableName() . '/' . date('Y/m/d') . '/' . $parentObject->id . '/';
         $filesystem = $this->getFilesystem($this->getFilePath($filesystemPath));
@@ -534,7 +568,7 @@ class FileService extends DbService
             LogService::getInstance($this->w)->setLogger("FILE_SERVICE")->error("Cannot save file, no filesystem returned");
             return null;
         }
-
+        
         if (!empty($filter_types)) {
             if (!$this->fileIsInAllowedMimetypes($_FILES[$request_key]['tmp_name'], $filter_types, true)) {
                 LogService::getInstance($this->w)->error('File upload is of a restricted type');
@@ -542,10 +576,6 @@ class FileService extends DbService
             }
         }
 
-        // The FilesystemOperator
-        // $file = new File($filename, $filesystem);
-
-        $att->adapter = $this->getActiveAdapter();
         $att->fullpath = str_replace(FILE_ROOT, "", $filesystemPath . $filename);
 
         //Check for posted content
@@ -555,18 +585,17 @@ class FileService extends DbService
             $mime_type = $mime[1];
             $content = base64_decode($data);
 
-            // $file->setContent($content, ['contentType' => $mime_type]);
+            $filesystem->write('/uploads/' . $att->fullpath, $content);
         } else {
             $local_filesystem = $this->getSpecificFilesystemWithCustomAdapter('local', null, '/tmp');
 
             try {
-                $filesystem->writeStream('/uploads/' . $att->fullpath, $local_filesystem->readStream(basename($_FILES[$request_key]['tmp_name'])));
+                $filesystem->writeStream($att->filename, $local_filesystem->readStream(basename($_FILES[$request_key]['tmp_name'])));
             } catch (Exception $exception) {
                 // handle the error
                 throw $exception;
             }
 
-            
             // $file->setContent($content);
             switch ($att->adapter) {
                 case "local":
@@ -628,7 +657,7 @@ class FileService extends DbService
                         return null;
                     }
                     
-                    $file = new FilePolyfill('/uploads/' . $filesystemPath . $filename, $filesystem);
+                    $file = new FilePolyfill($filename, $filesystem);
                     
                     $att->adapter = $this->getActiveAdapter();
                     $att->fullpath = str_replace(FILE_ROOT, "", $filesystemPath . $filename);

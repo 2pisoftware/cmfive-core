@@ -106,7 +106,7 @@ class HtmlBootstrap5 extends Html
                     // Check if the row is an object like an InputField
                     if (!is_array($field) && is_object($field)) {
                         $label_class = 'form-label';
-                        $field->setClass(str_replace(['small-12', 'columns', 'column'], '', $field->class));
+                        $field->setClass(str_replace(['small-12', 'columns', 'column'], '', $field->class ?? ''));
                         switch (get_class($field)) {
                             case 'Html\Form\Select':
                             case 'Html\Cmfive\SelectWithOther':

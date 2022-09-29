@@ -227,7 +227,7 @@ class Attachment extends DbObject
             return ROOT_PATH . "/" . Attachment::CACHE_PATH . "/" . Attachment::TEMP_PATH . "/" . FileService::getCacheRuntimePath() . "/" . $this->id . "/" . $this->dt_created;
         }
 
-        $path = dirname($this->fullpath);
+        $path = dirname($this->fullpath ?? '');
 
         switch ($this->adapter) {
             case "s3":

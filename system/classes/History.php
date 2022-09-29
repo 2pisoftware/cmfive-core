@@ -127,7 +127,7 @@ class History
      */
     private static function sort($a, $b)
     {
-        return $a['time'] < $b['time'];
+        return $a['time'] - $b['time'];
     }
 
     /**
