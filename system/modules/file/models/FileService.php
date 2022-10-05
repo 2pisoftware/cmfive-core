@@ -590,7 +590,7 @@ class FileService extends DbService
             $local_filesystem = $this->getSpecificFilesystemWithCustomAdapter('local', null, '/tmp');
 
             try {
-                $filesystem->writeStream($att->filename, $local_filesystem->readStream(basename($_FILES[$request_key]['tmp_name'])));
+                $filesystem->writeStream('/uploads/' . $att->filename, $local_filesystem->readStream(basename($_FILES[$request_key]['tmp_name'])));
             } catch (Exception $exception) {
                 // handle the error
                 throw $exception;
