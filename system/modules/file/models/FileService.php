@@ -5,7 +5,7 @@ use Gaufrette\File as File;
 // use Gaufrette\Adapter\Local as LocalAdapter;
 // use Gaufrette\Adapter\InMemory as InMemoryAdapter;
 // use Gaufrette\Adapter\AwsS3 as AwsS3;
-// use Aws\S3\S3Client as S3Client;
+use Aws\S3\S3Client as S3Client;
 // use Gaufrette\StreamWrapper as StreamWrapper;
 
 /**
