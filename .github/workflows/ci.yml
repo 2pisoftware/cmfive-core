@@ -78,14 +78,15 @@ jobs:
           rm -rf ./system
           php cmfive.php install core ${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}
           ln -s ./composer/vendor/2pisoftware/cmfive-core/system ./system
-
+  
+          sudo service mysql start
           mysql -u'root' -p'root' --execute "CREATE DATABASE cmfive_test; CREATE USER cmfive_test@'%' IDENTIFIED BY 'cmfive_test'; GRANT ALL PRIVILEGES ON cmfive_test.* TO cmfive_test@'%'; GRANT PROCESS ON *.* TO cmfive_test@'%'; FLUSH PRIVILEGES;"
           chmod -R 777 cache/ storage/ uploads/
 
-          docker run selenium/standalone-chrome
+          docker run -t -d selenium/standalone-chrome
           echo 'Config::append("tests", ["testrunner" => "ENABLED"]);' >> config.php
 
-          cd ./test/ && sh ./.install/install.sh && chmod -R 777 /var/www/html/test/Codeception/tests
+          cd ./test/.install/ && sh ./install.sh && chmod -R 777 ../Codeception/tests && cd ../../
 
           cat config.php
           DB_HOST=127.0.0.1 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php seed encryption
@@ -106,18 +107,18 @@ jobs:
       # Run Unit Tests
       - name: "Run unit tests"
         run: |
-          DB_HOST=localhost DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php tests unit all
+          DB_HOST=127.0.0.1 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php tests unit all
           if [ $? -gt 0 ]; then
             echo "Admin module tests failed"
           fi
 
       # Run Acceptance Tests
-      - name: "Confirm Codeception setup"
-        run: |        
-          docker exec nginx-php8.1 bash -c "ls -lah -R /var/www/html/test/Codeception/tests && cat /var/www/html/test/Codeception/*.yml && cat /var/www/html/test/Codeception/tests/*.yml"
+      #- name: "Confirm Codeception setup"
+      #  run: |        
+      #    docker exec nginx-php8.1 bash -c "ls -lah -R /var/www/html/test/Codeception/tests && cat /var/www/html/test/Codeception/*.yml && cat /var/www/html/test/Codeception/tests/*.yml"
       - name: "Run admin module tests"
         run: |
-          docker exec nginx-php8.1 bash -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php tests module admin silent; exit \$?"
+          DB_HOST=127.0.0.1 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php tests module admin silent
           if [ $? -gt 0 ]; then
             echo "Admin module tests failed"
           fi
