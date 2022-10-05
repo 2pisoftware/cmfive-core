@@ -123,10 +123,10 @@ class FileService extends DbService
                 break;
             case "s3":
                 $client = $this->getS3ClientBelowFilesystem();
-                $config_options = Config::get('file.adapters.s3.options');
+                // $config_options = Config::get('file.adapters.s3.options');
                 $s3path = (substr($path, -1) == "/") ? substr($path, 0, -1) : $path; // because trailing presence varies with call/object history
-                $config_options = array_replace(is_array($config_options) ? $config_options : [], ["directory" => $s3path], $options);
-                $adapter_obj = new AwsS3($client, Config::get('file.adapters.s3.bucket'), is_array($config_options) ? $config_options : []);
+                // $config_options = array_replace(is_array($config_options) ? $config_options : [], ["directory" => $s3path], $options);
+                $adapter_obj = new League\Flysystem\AwsS3V3\AwsS3V3Adapter($client, Config::get('file.adapters.s3.bucket'), $s3path); // , is_array($config_options) ? $config_options : []);
                 break;
         }
 
