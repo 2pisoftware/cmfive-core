@@ -7,8 +7,8 @@ class FileAddingAttachmentExifXmpData extends CmfiveMigration
     public function up()
     {
         if ($this->hasTable("attachment")) {
-            $this->addColumnToTable("attachment", "exif_data", "string", ["limit" => MysqlAdapter::TEXT_MEDIUM, "null" => true, "default" => null]);
-            $this->addColumnToTable("attachment", "xmp_data", "string", ["limit" => MysqlAdapter::TEXT_MEDIUM, "null" => true, "default" => null]);
+            $this->addColumnToTable("attachment", "exif_data", "text", ["limit" => MysqlAdapter::TEXT_MEDIUM, "null" => true, "default" => null]);
+            $this->addColumnToTable("attachment", "xmp_data", "text", ["limit" => MysqlAdapter::TEXT_MEDIUM, "null" => true, "default" => null]);
         }
     }
 
