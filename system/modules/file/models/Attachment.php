@@ -88,7 +88,6 @@ class Attachment extends DbObject
 
     public function delete($force = false)
     {
-
         if ($this->hasCachedThumbnail()) {
             unlink($this->getThumbnailCachePath());
         }
@@ -286,10 +285,10 @@ class Attachment extends DbObject
         $cached_file_path = $cache_directory . "/" . $this->filename;
 
         if (file_exists($cached_file_path)) {
-            return new FilePolyfill($this->getFilePath() . DS . $this->filename, FileService::getInstance($this->w)->getSpecificFilesystem("local", $cache_directory));
+            return new FilePolyfill($this->filename, FileService::getInstance($this->w)->getSpecificFilesystem("local", $cache_directory));
         }
 
-        return new FilePolyfill($this->getFilePath() . DS . $this->filename, $this->getFilesystem());
+        return new FilePolyfill($this->filename, $this->getFilesystem());
     }
 
     /**

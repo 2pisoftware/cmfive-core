@@ -126,7 +126,7 @@ class FileService extends DbService
                 // $config_options = Config::get('file.adapters.s3.options');
                 $s3path = (substr($path, -1) == "/") ? substr($path, 0, -1) : $path; // because trailing presence varies with call/object history
                 // $config_options = array_replace(is_array($config_options) ? $config_options : [], ["directory" => $s3path], $options);
-                $adapter_obj = new League\Flysystem\AwsS3V3\AwsS3V3Adapter($client, Config::get('file.adapters.s3.bucket'), $s3path); // , is_array($config_options) ? $config_options : []);
+                $adapter_obj = new League\Flysystem\AwsS3V3\AwsS3V3Adapter($client, Config::get('file.adapters.s3.bucket'), $s3path); // , $s3path, is_array($config_options) ? $config_options : []);
                 break;
         }
 
@@ -502,7 +502,12 @@ class FileService extends DbService
         $active_adapter = $this->getActiveAdapter();
 
         switch ($active_adapter) {
-            case "local":
+            case "s3":
+                if (strpos($path, "uploads/") === false) {
+                    return "uploads/" . $path;
+                }
+                return $path;
+            default:
                 if (strpos($path, FILE_ROOT . "attachments/") !== false) {
                     return $path;
                 }
@@ -511,11 +516,6 @@ class FileService extends DbService
                 }
 
                 return FILE_ROOT . "attachments/" . $path;
-            default:
-                if (strpos($path, "uploads/") === false) {
-                    return "uploads/" . $path;
-                }
-                return $path;
         }
     }
 
@@ -564,6 +564,7 @@ class FileService extends DbService
 
         $filesystemPath = "attachments/" . $parentObject->getDbTableName() . '/' . date('Y/m/d') . '/' . $parentObject->id . '/';
         $filesystem = $this->getFilesystem($this->getFilePath($filesystemPath));
+
         if (empty($filesystem)) {
             LogService::getInstance($this->w)->setLogger("FILE_SERVICE")->error("Cannot save file, no filesystem returned");
             return null;
@@ -590,7 +591,7 @@ class FileService extends DbService
             $local_filesystem = $this->getSpecificFilesystemWithCustomAdapter('local', null, '/tmp');
 
             try {
-                $filesystem->writeStream('/uploads/' . $att->filename, $local_filesystem->readStream(basename($_FILES[$request_key]['tmp_name'])));
+                $filesystem->writeStream($att->filename, $local_filesystem->readStream(basename($_FILES[$request_key]['tmp_name'])));
             } catch (Exception $exception) {
                 // handle the error
                 throw $exception;
