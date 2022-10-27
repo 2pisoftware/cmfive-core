@@ -86,9 +86,9 @@ jobs:
           mysql -u'cmfive_test' -p'cmfive_test' --execute "show databases;"
           chmod -R 777 cache/ storage/ uploads/
 
-          docker run -t -d selenium/standalone-chrome
+          docker run -t -d selenium/standalone-chrome --name selenium314
           echo 'Config::append("tests", ["testrunner" => "ENABLED"]);' >> config.php
-          sed -i 's/selenium314/127.0.0.1/g' config.php
+          #           sed -i 's/selenium314/127.0.0.1/g' config.php
           cd ./test/.install/ && sh ./install.sh && chmod -R 777 ../Codeception/tests && cd ../../
 
           cat config.php
