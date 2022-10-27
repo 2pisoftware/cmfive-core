@@ -82,6 +82,7 @@ jobs:
           echo "Setting up MySQL"
           sudo service mysql start
           mysql -u'root' -p'root' --execute "CREATE DATABASE cmfive_test; CREATE USER cmfive_test@'%' IDENTIFIED BY 'cmfive_test'; GRANT ALL PRIVILEGES ON cmfive_test.* TO cmfive_test@'%'; GRANT PROCESS ON *.* TO cmfive_test@'%'; FLUSH PRIVILEGES;"
+          mysql -u'cmfive_test' -p'cmfive_test' --execute "show databases;"
           chmod -R 777 cache/ storage/ uploads/
 
           docker run -t -d selenium/standalone-chrome
