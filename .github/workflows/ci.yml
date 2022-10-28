@@ -93,7 +93,8 @@ jobs:
           ls -la
           java -Dwebdriver.chrome.driver=chromedriver -jar selenium-server-standalone-3.141.59.jar &
           sleep 5 # wait for selenium to start
-          wget https://github.com/scheib/chromium-latest-linux/blob/master/update.sh | bash
+          wget https://github.com/scheib/chromium-latest-linux/blob/master/update.sh
+          chmox a+x update.sh && ./update.sh
           ./latest --headless --no-gpu &
           
           echo 'Config::append("tests", ["testrunner" => "ENABLED"]);' >> config.php
