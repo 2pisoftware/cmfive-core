@@ -132,7 +132,8 @@ jobs:
       #  run: |        
       #    docker exec nginx-php8.1 bash -c "ls -lah -R /var/www/html/test/Codeception/tests && cat /var/www/html/test/Codeception/*.yml && cat /var/www/html/test/Codeception/tests/*.yml"
       - name: "Run admin module tests"
-        run: | 
+        run: |
+          ./latest/chrome --headless --no-gpu
           ps -ef
           DB_HOST=127.0.0.1 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php tests module admin silent
           if [ $? -gt 0 ]; then
