@@ -90,7 +90,8 @@ jobs:
           wget https://selenium-release.storage.googleapis.com/3.141/selenium-server-standalone-3.141.59.jar
           wget https://chromedriver.storage.googleapis.com/107.0.5304.62/chromedriver_linux64.zip
           unzip chromedriver_linux64.zip
-          java -Dwebdriver.chrome.driver=chromedriver -jar selenium-server-standalone-3.141.59.jar
+          java -Dwebdriver.chrome.driver=chromedriver -jar selenium-server-standalone-3.141.59.jar &
+          sleep 5 # wait for selenium to start
           
           echo 'Config::append("tests", ["testrunner" => "ENABLED"]);' >> config.php
           sed -i 's/selenium314/127.0.0.1/g' config.php
