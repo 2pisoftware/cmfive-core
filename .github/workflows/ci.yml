@@ -90,8 +90,7 @@ jobs:
           wget https://selenium-release.storage.googleapis.com/3.141/selenium-server-standalone-3.141.59.jar
           wget https://chromedriver.storage.googleapis.com/107.0.5304.62/chromedriver_linux64.zip
           unzip chromedriver_linux64.zip
-          java -jar selenium-server-standalone-3.9.1.jar &
-
+          
           echo 'Config::append("tests", ["testrunner" => "ENABLED"]);' >> config.php
           sed -i 's/selenium314/127.0.0.1/g' config.php
           sed -i 's/webapp/127.0.0.1/g' config.php
@@ -127,13 +126,14 @@ jobs:
       #    docker exec nginx-php8.1 bash -c "ls -lah -R /var/www/html/test/Codeception/tests && cat /var/www/html/test/Codeception/*.yml && cat /var/www/html/test/Codeception/tests/*.yml"
       - name: "Run admin module tests"
         run: | 
-          ps -ef
-          DB_HOST=localhost DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php tests module admin silent
+          java -jar selenium-server-standalone-3.9.1.jar &
+          DB_HOST=127.0.0.1 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php tests module admin silent
           if [ $? -gt 0 ]; then
             echo "Admin module tests failed"
           fi
       - name: "Run channels module tests"
         run: |
+          java -jar selenium-server-standalone-3.9.1.jar &
           DB_HOST=127.0.0.1 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php tests module channels silent
           if [ $? -gt 0 ]; then
             echo "Channels module tests failed"
