@@ -127,7 +127,7 @@ jobs:
       - name: "Run admin module tests"
         run: | 
           java -jar selenium-server-standalone-3.9.1.jar -port 4444 2&>1 &
-          
+          ps -ef
           DB_HOST=127.0.0.1 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php tests module admin silent
           if [ $? -gt 0 ]; then
             echo "Admin module tests failed"
