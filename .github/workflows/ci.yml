@@ -95,9 +95,8 @@ jobs:
           sleep 5 # wait for selenium to start
           wget https://raw.githubusercontent.com/scheib/chromium-latest-linux/master/update.sh
           chmod a+x update.sh && ./update.sh
-          
-          ls -laR ./latest
-          ./latest/chrome-linux/chrome --headless --no-gpu &
+
+          ./latest/chrome --headless --no-gpu &
           
           echo 'Config::append("tests", ["testrunner" => "ENABLED"]);' >> config.php
           sed -i 's/selenium314/127.0.0.1/g' config.php
