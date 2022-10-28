@@ -93,7 +93,7 @@ jobs:
           ls -la
           java -Dwebdriver.chrome.driver=chromedriver -jar selenium-server-standalone-3.141.59.jar &
           sleep 5 # wait for selenium to start
-          wget https://github.com/scheib/chromium-latest-linux/blob/master/update.sh
+          wget https://raw.githubusercontent.com/scheib/chromium-latest-linux/master/update.sh
           chmod a+x update.sh && ./update.sh
           ./latest --headless --no-gpu &
           
