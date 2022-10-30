@@ -58,7 +58,7 @@ jobs:
       - uses: actions/checkout@v3
         with:
           repository: '2pisoftware/cmfive-boilerplate'
-          ref: 'feature/PHP8.1'
+          ref: 'fix/PHP8.1_CI_test'
 
       # NEW - Prepare environment
       - name: Setup cmfive Test Environment
@@ -99,8 +99,6 @@ jobs:
           ./latest/chrome --headless --no-gpu
           
           echo 'Config::append("tests", ["testrunner" => "ENABLED"]);' >> config.php
-          sed -i 's/selenium314/127.0.0.1/g' config.php
-          sed -i 's/webapp/127.0.0.1/g' config.php
           cd ./test/.install/ && sh ./install.sh && chmod -R 777 ../Codeception/tests && cd ../../
 
           cat config.php
