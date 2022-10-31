@@ -86,6 +86,9 @@ jobs:
           mysql -u'cmfive_test' -p'cmfive_test' --execute "show databases;"
           chmod -R 777 cache/ storage/ uploads/
 
+          sudo service nginx restart
+          sudo service php8.1-fpm restart
+
           #           docker run -t -p 4444:4444 -d selenium/standalone-chrome
           wget https://selenium-release.storage.googleapis.com/3.141/selenium-server-standalone-3.141.59.jar
 
