@@ -88,15 +88,19 @@ jobs:
 
           #           docker run -t -p 4444:4444 -d selenium/standalone-chrome
           wget https://selenium-release.storage.googleapis.com/3.141/selenium-server-standalone-3.141.59.jar
-          wget https://chromedriver.storage.googleapis.com/107.0.5304.62/chromedriver_linux64.zip
+
+          # annoying, hard to guess which 'chrome' version properly belongs to ChromiumLatest:
+          # wget https://chromedriver.storage.googleapis.com/107.0.5304.62/chromedriver_linux64.zip
+          wget https://chromedriver.storage.googleapis.com/106.0.5249.61/chromedriver_linux64.zip
           unzip chromedriver_linux64.zip
+
           ls -la
           java -Dwebdriver.chrome.driver=chromedriver -jar selenium-server-standalone-3.141.59.jar &
           sleep 5 # wait for selenium to start
           wget https://raw.githubusercontent.com/scheib/chromium-latest-linux/master/update.sh
           chmod a+x update.sh && ./update.sh
 
-          ./latest/chrome --headless --no-gpu
+          # Codeception/Selenium will know to launch ./latest/chrome --headless --no-gpu
           
           echo 'Config::append("tests", ["testrunner" => "ENABLED"]);' >> config.php
           cd ./test/.install/ && sh ./install.sh && chmod -R 777 ../Codeception/tests && cd ../../
@@ -131,7 +135,7 @@ jobs:
       #    docker exec nginx-php8.1 bash -c "ls -lah -R /var/www/html/test/Codeception/tests && cat /var/www/html/test/Codeception/*.yml && cat /var/www/html/test/Codeception/tests/*.yml"
       - name: "Run admin module tests"
         run: |
-          ./latest/chrome --headless --no-gpu
+          # Codeception/Selenium will know to launch ./latest/chrome --headless --no-gpu
           ps -ef
           DB_HOST=127.0.0.1 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php tests module admin silent
           if [ $? -gt 0 ]; then
