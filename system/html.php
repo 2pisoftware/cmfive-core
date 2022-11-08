@@ -1323,7 +1323,7 @@ class Html
             $title = !empty($row[0]) ? $row[0] : null;
             $type = !empty($row[1]) ? $row[1] : null;
             $name = !empty($row[2]) ? $row[2] : null;
-            $value = !empty($row[3]) ? $row[3] : null;
+            $value = !empty($row[3]) ? $row[3] : " ";
 
             $readonly = "";
 
