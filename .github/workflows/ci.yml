@@ -93,6 +93,7 @@ jobs:
           sudo service nginx restart
           sudo service php8.1-fpm restart
           
+          ls -la /etc/nginx/conf.d/
           cat /etc/nginx/conf.d/default.conf
 
           #           docker run -t -p 4444:4444 -d selenium/standalone-chrome
