@@ -637,10 +637,10 @@ class Html
                         continue;
                     }
 
-                    $title = !empty($field[0]) ? $field[0] : null;
-                    $type = !empty($field[1]) ? $field[1] : null;
-                    $name = !empty($field[2]) ? $field[2] : null;
-                    $value = !empty($field[3]) ? $field[3] : null;
+                    $title = !empty($field[0]) ? $field[0] : "";
+                    $type = !empty($field[1]) ? $field[1] : "";
+                    $name = !empty($field[2]) ? $field[2] : "";
+                    $value = !empty($field[3]) ? $field[3] : "";
 
                     // Exploit HTML5s inbuilt form validation
                     $required = null;
@@ -1322,8 +1322,8 @@ class Html
             // Get row parameters
             $title = !empty($row[0]) ? $row[0] : null;
             $type = !empty($row[1]) ? $row[1] : null;
-            $name = !empty($row[2]) ? $row[2] : null;
-            $value = !empty($row[3]) ? $row[3] : " ";
+            $name = !empty($row[2]) ? $row[2] : "";
+            $value = !empty($row[3]) ? $row[3] : "";
 
             $readonly = "";
 
