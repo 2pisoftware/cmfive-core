@@ -174,7 +174,7 @@ class Html
     /**
      * Create an a link styled as a button
      * */
-    public static function ab($href, $title, $class = null, $id = null, $confirm = null)
+    public static function ab($href, $title, $class = "", $id = "", $confirm = "")
     {
         $classParam = ' button tiny ';
         if (strlen($class) > 0) {
