@@ -69,6 +69,8 @@ jobs:
           sudo apt-get install -y locales-all mysql-server
           sudo apt-get install -y vim supervisor nginx gnupg2 php8.1-fpm php8.1-zip php8.1-curl php8.1-gd php8.1-mysql php8.1-xml php8.1-bcmath php8.1-mbstring php8.1-intl git iputils-ping curl mysql-client-8.0 phpunit php8.1-xdebug
 
+          sed -e 's?/var/www/html?'`pwd`'?g' .codepipeline/local-dev/configs/nginx/default.conf > .codepipeline/local-dev/configs/nginx/default.conf
+
           sudo cp .codepipeline/local-dev/configs/fpm/* /etc/php/8.1/fpm/
           sudo cp .codepipeline/local-dev/configs/nginx/nginx.conf /etc/nginx/nginx.conf
           sudo cp .codepipeline/local-dev/configs/nginx/default.conf /etc/nginx/conf.d/default.conf
@@ -85,8 +87,6 @@ jobs:
           mysql -u'root' -p'root' --execute "CREATE DATABASE cmfive_test; CREATE USER cmfive_test@'%' IDENTIFIED BY 'cmfive_test'; GRANT ALL PRIVILEGES ON cmfive_test.* TO cmfive_test@'%'; GRANT PROCESS ON *.* TO cmfive_test@'%'; FLUSH PRIVILEGES;"
           mysql -u'cmfive_test' -p'cmfive_test' --execute "show databases;"
           chmod -R 777 cache/ storage/ uploads/
-
-          sudo sed -e 's?/var/www/html?'`pwd`'?g' /etc/nginx/conf.d/default.conf > /etc/nginx/conf.d/default.conf
 
           sudo service nginx restart
           sudo service php8.1-fpm restart
