@@ -75,10 +75,6 @@ jobs:
           sudo cp .codepipeline/local-dev/configs/supervisord/supervisord.conf /etc/supervisord.conf
           cp .codepipeline/test_agent/configs/test_agent-config.php config.php
 
-          PWD=`pwd`
-          sed 's?/var/www/html?'`pwd`'?' /etc/nginx/conf.d/default.conf
-          #sed "s+/var/www/html+$PWD+g" 
-
           rm -rf ./system
           php cmfive.php install core ${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}
           ln -s ./composer/vendor/2pisoftware/cmfive-core/system ./system
@@ -90,7 +86,8 @@ jobs:
           mysql -u'cmfive_test' -p'cmfive_test' --execute "show databases;"
           chmod -R 777 cache/ storage/ uploads/
 
-          
+          PWD=`pwd`
+          sed 's?/var/www/html?'`pwd`'?' /etc/nginx/conf.d/default.conf
 
           sudo service nginx restart
           sudo service php8.1-fpm restart
