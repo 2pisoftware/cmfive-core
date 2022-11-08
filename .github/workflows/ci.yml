@@ -69,7 +69,7 @@ jobs:
           sudo apt-get install -y locales-all mysql-server
           sudo apt-get install -y vim supervisor nginx gnupg2 php8.1-fpm php8.1-zip php8.1-curl php8.1-gd php8.1-mysql php8.1-xml php8.1-bcmath php8.1-mbstring php8.1-intl git iputils-ping curl mysql-client-8.0 phpunit php8.1-xdebug
 
-          sed -e 's?/var/www/html?'`pwd`'?g' .codepipeline/local-dev/configs/nginx/default.conf > .codepipeline/local-dev/configs/nginx/default.conf
+          sed -i -e 's?/var/www/html?'`pwd`'?g' .codepipeline/local-dev/configs/nginx/default.conf
 
           echo "NGINX CONFIG:"
           cat .codepipeline/local-dev/configs/nginx/default.conf
