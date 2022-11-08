@@ -88,7 +88,7 @@ jobs:
           mysql -u'cmfive_test' -p'cmfive_test' --execute "show databases;"
           chmod -R 777 cache/ storage/ uploads/
 
-          sed 's?/var/www/html?'`pwd`'?g' /etc/nginx/conf.d/default.conf
+          sed -e 's?/var/www/html?'`pwd`'?g' /etc/nginx/conf.d/default.conf
 
           sudo service nginx restart
           sudo service php8.1-fpm restart
