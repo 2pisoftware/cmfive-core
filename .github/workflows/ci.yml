@@ -71,6 +71,9 @@ jobs:
 
           sed -e 's?/var/www/html?'`pwd`'?g' .codepipeline/local-dev/configs/nginx/default.conf > .codepipeline/local-dev/configs/nginx/default.conf
 
+          echo "NGINX CONFIG:"
+          cat .codepipeline/local-dev/configs/nginx/default.conf
+
           sudo cp .codepipeline/local-dev/configs/fpm/* /etc/php/8.1/fpm/
           sudo cp .codepipeline/local-dev/configs/nginx/nginx.conf /etc/nginx/nginx.conf
           sudo cp .codepipeline/local-dev/configs/nginx/default.conf /etc/nginx/conf.d/default.conf
