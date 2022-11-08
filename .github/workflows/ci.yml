@@ -76,7 +76,8 @@ jobs:
           cp .codepipeline/test_agent/configs/test_agent-config.php config.php
 
           PWD=`pwd`
-          sed "s+/var/www/html+$PWD+g" /etc/nginx/conf.d/default.conf
+          sed 's?/var/www/html?'`pwd`'?' /etc/nginx/conf.d/default.conf
+          #sed "s+/var/www/html+$PWD+g" 
 
           rm -rf ./system
           php cmfive.php install core ${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}
@@ -89,13 +90,12 @@ jobs:
           mysql -u'cmfive_test' -p'cmfive_test' --execute "show databases;"
           chmod -R 777 cache/ storage/ uploads/
 
+          
+
           sudo service nginx restart
           sudo service php8.1-fpm restart
-          sudo service nginx status
-          sudo service php8.1-fpm status
           
           cat /etc/nginx/conf.d/default.conf
-          ls -la /run/php/
 
           #           docker run -t -p 4444:4444 -d selenium/standalone-chrome
           wget https://selenium-release.storage.googleapis.com/3.141/selenium-server-standalone-3.141.59.jar
