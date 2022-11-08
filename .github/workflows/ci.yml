@@ -93,6 +93,9 @@ jobs:
           sudo service php8.1-fpm restart
           sudo service nginx status
           sudo service php8.1-fpm status
+          
+          cat /etc/nginx/conf.d/default.conf
+          ls -la /run/php/
 
           #           docker run -t -p 4444:4444 -d selenium/standalone-chrome
           wget https://selenium-release.storage.googleapis.com/3.141/selenium-server-standalone-3.141.59.jar
