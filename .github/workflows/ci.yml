@@ -69,6 +69,8 @@ jobs:
           sudo apt-get install -y locales-all mysql-server
           sudo apt-get install -y vim supervisor nginx gnupg2 php8.1-fpm php8.1-zip php8.1-curl php8.1-gd php8.1-mysql php8.1-xml php8.1-bcmath php8.1-mbstring php8.1-intl git iputils-ping curl mysql-client-8.0 phpunit php8.1-xdebug
 
+          cat .codepipeline/local-dev/configs/nginx/default.conf
+
           sudo cp .codepipeline/local-dev/configs/fpm/* /etc/php/8.1/fpm/
           sudo cp .codepipeline/local-dev/configs/nginx/nginx.conf /etc/nginx/nginx.conf
           sudo cp .codepipeline/local-dev/configs/nginx/default.conf /etc/nginx/conf.d/default.conf
