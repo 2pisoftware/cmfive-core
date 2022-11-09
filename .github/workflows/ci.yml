@@ -71,6 +71,8 @@ jobs:
 
           sed -i -e 's?/var/www/html?'`pwd`'?g' .codepipeline/local-dev/configs/nginx/default.conf
 
+          ls -la
+
           echo "NGINX CONFIG:"
           cat .codepipeline/local-dev/configs/nginx/default.conf
 
