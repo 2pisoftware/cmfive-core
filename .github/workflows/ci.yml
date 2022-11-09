@@ -60,116 +60,89 @@ jobs:
           repository: '2pisoftware/cmfive-boilerplate'
           ref: 'feature/PHP8.1'
 
-      # NEW - Prepare environment
+      # Pre-requisites Prepare Cmfive Environment
       - name: Setup cmfive Test Environment
         run: |
-          sudo apt-get update
-          sudo apt-get install -y software-properties-common
-          sudo add-apt-repository ppa:ondrej/php
-          sudo apt-get install -y locales-all mysql-server
-          sudo apt-get install -y vim supervisor nginx gnupg2 php8.1-fpm php8.1-zip php8.1-curl php8.1-gd php8.1-mysql php8.1-xml php8.1-bcmath php8.1-mbstring php8.1-intl git iputils-ping curl mysql-client-8.0 phpunit php8.1-xdebug
-
-          sed -i -e 's?/var/www/html?'`pwd`'?g' .codepipeline/local-dev/configs/nginx/default.conf
-
-          ls -la
-
-          echo "NGINX CONFIG:"
-          cat .codepipeline/local-dev/configs/nginx/default.conf
-
-          sudo cp .codepipeline/local-dev/configs/fpm/* /etc/php/8.1/fpm/
-          sudo cp .codepipeline/local-dev/configs/nginx/nginx.conf /etc/nginx/nginx.conf
-          sudo cp .codepipeline/local-dev/configs/nginx/default.conf /etc/nginx/conf.d/default.conf
-          sudo cp .codepipeline/local-dev/configs/supervisord/supervisord.conf /etc/supervisord.conf
           cp .codepipeline/test_agent/configs/test_agent-config.php config.php
-
-          rm -rf ./system
-          php cmfive.php install core ${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}
-          ln -s ./composer/vendor/2pisoftware/cmfive-core/system ./system
-  
-          echo "Setting up MySQL"
-          sudo service mysql start
-          mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql -u'root' -p'root' mysql
-          mysql -u'root' -p'root' --execute "CREATE DATABASE cmfive_test; CREATE USER cmfive_test@'%' IDENTIFIED BY 'cmfive_test'; GRANT ALL PRIVILEGES ON cmfive_test.* TO cmfive_test@'%'; GRANT PROCESS ON *.* TO cmfive_test@'%'; FLUSH PRIVILEGES;"
-          mysql -u'cmfive_test' -p'cmfive_test' --execute "show databases;"
-          chmod -R 777 cache/ storage/ uploads/
-
-          sudo service nginx restart
-          sudo service php8.1-fpm restart
           
-          sudo ls -laR /etc/nginx
-          cat /etc/nginx/nginx.conf
-          cat /etc/nginx/conf.d/default.conf
-          sudo ls -laR /etc/php/8.1/fpm
-          cat /etc/php/8.1/fpm/php-fpm.conf
-          cat /etc/php/8.1/fpm/php.ini
-
-          chmod -R 777 ./*
-
-          #           docker run -t -p 4444:4444 -d selenium/standalone-chrome
-          wget https://selenium-release.storage.googleapis.com/3.141/selenium-server-standalone-3.141.59.jar
-
-          # annoying, hard to guess which 'chrome' version properly belongs to ChromiumLatest:
-          # wget https://chromedriver.storage.googleapis.com/107.0.5304.62/chromedriver_linux64.zip
-          wget https://chromedriver.storage.googleapis.com/106.0.5249.61/chromedriver_linux64.zip
-          unzip chromedriver_linux64.zip
-
-          ls -la
-          java -Dwebdriver.chrome.driver=chromedriver -jar selenium-server-standalone-3.141.59.jar &
-          sleep 5 # wait for selenium to start
-          wget https://raw.githubusercontent.com/scheib/chromium-latest-linux/master/update.sh
-          chmod a+x update.sh && ./update.sh
-
-          # Codeception/Selenium will know to launch ./latest/chrome --headless --no-gpu
+          docker-compose -f test_agent-compose.yml up --build -d
+          sleep 5
+          docker ps
+          docker exec -t nginx-php8.1 bash -c "chmod -R 777 ./*"
+          docker exec -t nginx-php8.1 bash -c "rm -rf ./system && ln -s ./composer/vendor/2pisoftware/cmfive-core/system ./system"
           
+          echo CoreInstall
+          docker exec -t nginx-php8.1 bash -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php install core ${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}"
+
+          echo DBCreate 
+          docker exec -t mysql-8 bash -c "mysql -h 127.0.0.1 -u'root' -p'root' --execute \"CREATE DATABASE cmfive_test; CREATE USER cmfive_test@'%' IDENTIFIED BY 'cmfive_test'; GRANT ALL PRIVILEGES ON cmfive_test.* TO cmfive_test@'%'; GRANT PROCESS ON *.* TO cmfive_test@'%'; FLUSH PRIVILEGES;\""
+
+          docker exec -t nginx-php8.1 bash -c "chmod -R 777 cache/ storage/ uploads/"
+          
+          docker start selenium314;
+
+      - name: Inject configs into cmfive Test Environment
+        run: |
+          echo "Inheriting test_agent config from PIPELINE"
           echo 'Config::append("tests", ["testrunner" => "ENABLED"]);' >> config.php
-          cd ./test/.install/ && sh ./install.sh && chmod -R 777 ../Codeception/tests && cd ../../
 
-          cat config.php
-          DB_HOST=127.0.0.1 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php seed encryption
-          DB_HOST=127.0.0.1 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php install migrations
-          DB_HOST=127.0.0.1 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php testDB setup;
+      - name: Prepare cmfive Test Backend
+        run: |
+          docker exec nginx-php8.1 bash -c "cd ./test/ && sh ./.install/install.sh && chmod -R 777 /var/www/html/test/Codeception/tests"
+      
+      - name: Apply cmfive Test Config to Core install
+        run: |
+          echo SeedingCmfive
+          docker exec nginx-php8.1 bash -c "cat config.php"
+          # docker exec -t nginx-php8.1 bash -c "php cmfive.php install core ${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}"
+          docker exec -t nginx-php8.1 bash -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php seed encryption"
+          docker exec -t nginx-php8.1 bash -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php install migrations"
+          docker exec -t nginx-php8.1 bash -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php seed admin admin admin admin@example.com admin admin"
+          docker exec -t nginx-php8.1 bash -c "chmod -R 777 cache/ storage/ uploads/"
 
+      - name: Prepare cmfive Test DB
+        run: |
+          docker exec -t nginx-php8.1 bash -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php testDB setup; exit \$?";
+        
       # Build new layout
       - uses: actions/setup-node@v3
         with:
           node-version: 14
-      - name: Build new designs
+        
+      - name: Build new designs  
         run: |
-          chmod -R 777 system/templates/base 
+          docker exec -t nginx-php8.1 bash -c "chmod -R 777 system/templates/base"
           cd system/templates/base
           npm i
           npm run prod
-
+        
       # Run Unit Tests
       - name: "Run unit tests"
         run: |
-          DB_HOST=127.0.0.1 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php tests unit all
+          docker exec nginx-php8.1 bash -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php tests unit all; exit \$?"
           if [ $? -gt 0 ]; then
             echo "Admin module tests failed"
           fi
 
       # Run Acceptance Tests
-      #- name: "Confirm Codeception setup"
-      #  run: |        
-      #    docker exec nginx-php8.1 bash -c "ls -lah -R /var/www/html/test/Codeception/tests && cat /var/www/html/test/Codeception/*.yml && cat /var/www/html/test/Codeception/tests/*.yml"
+      - name: "Confirm Codeception setup"
+        run: |        
+          docker exec nginx-php8.1 bash -c "ls -lah -R /var/www/html/test/Codeception/tests && cat /var/www/html/test/Codeception/*.yml && cat /var/www/html/test/Codeception/tests/*.yml"
       - name: "Run admin module tests"
         run: |
-          # Codeception/Selenium will know to launch ./latest/chrome --headless --no-gpu
-          ps -ef
-          DB_HOST=127.0.0.1 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php tests module admin silent
+          docker exec nginx-php8.1 bash -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php tests module admin silent; exit \$?"
           if [ $? -gt 0 ]; then
             echo "Admin module tests failed"
           fi
       - name: "Run channels module tests"
         run: |
-          java -jar selenium-server-standalone-3.9.1.jar &
-          DB_HOST=127.0.0.1 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php tests module channels silent
+          docker exec nginx-php8.1 bash -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php tests module channels silent; exit \$?"
           if [ $? -gt 0 ]; then
             echo "Channels module tests failed"
           fi
       - name: "Run inbox module tests"
         run: |
-          DB_HOST=localhost DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test php cmfive.php tests module inbox silent
+          docker exec nginx-php8.1 bash -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php tests module inbox silent; exit \$?"
           if [ $? -gt 0 ]; then
             echo "Inbox module tests failed"
           fi
