@@ -96,9 +96,14 @@ jobs:
           sudo service nginx restart
           sudo service php8.1-fpm restart
           
+          sudo ls -laR /etc/nginx
+          cat /etc/nginx/nginx.conf
           cat /etc/nginx/conf.d/default.conf
+          sudo ls -laR /etc/php/8.1/fpm
+          cat /etc/php/8.1/fpm/php-fpm.conf
+          cat /etc/php/8.1/fpm/php.ini
 
-          chmod -R a+x ./*.php
+          chmod -R 777 ./*
 
           #           docker run -t -p 4444:4444 -d selenium/standalone-chrome
           wget https://selenium-release.storage.googleapis.com/3.141/selenium-server-standalone-3.141.59.jar
