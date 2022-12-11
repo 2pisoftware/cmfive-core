@@ -40,7 +40,8 @@ class CmfiveTimelogModule extends \Codeception\Module
     {
         $I->clickCmfiveNavbar($I, 'Timelog', 'Add Timelog');
         $I->waitForElementVisible('#cmfive-modal');
-        $I->fillForm(['date:date_start' => strtotime($date)]);
+        // $I->fillForm(['date:date_start' => strtotime($date)]);
+        $I->fillField('#date_start', strtotime($date));
         $I->fillField('#time_start', $start_time);
         $I->fillField('#time_end', $end_time);
         $I->fillForm(['select:object_class' => "Task"]);
@@ -69,7 +70,7 @@ class CmfiveTimelogModule extends \Codeception\Module
         $I->wait(1);
         $I->click("Edit");
         $I->waitForElement("#timelog_edit_form");
-        $I->fillForm(["date:date_start" => strtotime($date)]);
+        $I->fillField("#date_start", strtotime($date));
         $I->fillField("#time_start", $start_time);
         $I->fillField("#time_end", $end_time);
         $I->click("Save", "#timelog_edit_form");

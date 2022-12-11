@@ -11,16 +11,16 @@ function createfeed_GET(Web &$w)
         foreach ($reports as $report) {
             // get report data
             $rep = ReportService::getInstance($w)->getReportInfo($report->report_id);
-            $myrep[] = array($rep->title, $rep->id);
+            $myrep[] = [$rep->title, $rep->id];
         }
     }
 
-    $f = Html::form(array(
-        array("Create a Feed from a Report", "section"),
-        array("Select Report", "select", "rid", null, $myrep),
-        array("Feed Title", "text", "title"),
-        array("Description", "textarea", "description", null, "40", "6"),
-    ), $w->localUrl("/report/createfeed"), "POST", "Save");
+    $f = Html::form([
+        ["Create a Feed from a Report", "section"],
+        ["Select Report", "select", "rid", null, $myrep],
+        ["Feed Title", "text", "title"],
+        ["Description", "textarea", "description", null, "40", "6"],
+    ], $w->localUrl("/report/createfeed"), "POST", "Save");
 
     $w->ctx("createfeed", $f);
 }

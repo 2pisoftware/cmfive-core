@@ -185,7 +185,7 @@ class TaskService extends DbService
     {
         if (is_numeric($seconds)) {
             $hours = intval($seconds / 3600);
-            $mins = intval(($seconds / 60) % 60);
+            $mins = intval(intval($seconds / 60) % 60);
             $mins = str_pad($mins, 2, "0", STR_PAD_LEFT);
             return $hours . ":" . $mins;
         }

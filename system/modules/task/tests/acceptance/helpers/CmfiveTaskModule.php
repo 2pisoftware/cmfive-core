@@ -190,7 +190,7 @@ class CmfiveTaskModule extends \Codeception\Module
             'title' => $task,
             'select:status' => !empty($data['status']) ? $data['status'] : '',
             'select:priority' => !empty($data['priority']) ? $data['priority'] : '',
-            'date:dt_due' => $data['dt_due'],
+            'dt_due' => $data['dt_due'],
             'select:assignee_id' => !empty($data['assignee_id']) ? $data['assignee_id'] : '',
             'estimate_hours' => !empty($data['estimate_hours']) ?  $data['estimate_hours'] : '',
             'effort' => !empty($data['effort']) ? $data['effort'] : '',
@@ -231,7 +231,7 @@ class CmfiveTaskModule extends \Codeception\Module
      */
     public function deleteTask($I, $url)
     {
-        $I->amOnUrl($url);
+        $I->amOnPage($url);
         $I->click('Delete');
         $I->acceptPopup();
     }

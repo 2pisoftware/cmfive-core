@@ -259,7 +259,7 @@ MIGRATION;
             foreach ($alreadyRunMigrations as $module => $alreadyRunMigrationList) {
                 if (!empty($alreadyRunMigrationList)) {
                     foreach ($alreadyRunMigrationList as $migrationsAlreadyRun) {
-                        if (array_key_exists($migrationsAlreadyRun['path'], $availableMigrations[$module])) {
+                        if (array_key_exists($migrationsAlreadyRun['path'], $availableMigrations[$module] ?? [])) {
                             unset($availableMigrations[$module][$migrationsAlreadyRun['path']]);
                         }
                     }
