@@ -95,7 +95,7 @@ class CmfiveTaskModule extends \Codeception\Module
         $I->see('To be able to delete a task group, please ensure there are no active tasks');
         $I->click('.close-reveal-modal');
         $taskgroup_url = $I->grabFromCurrentUrl();
-        $tasks = $I->grabMultiple('h4 + table td:nth-child(1) a', 'href');
+        $tasks = $I->grabMultiple('#members h4+table td:nth-child(1) a', 'href');
         foreach ($tasks as $task) {
             $I->deleteTask($I, $task);
         }
