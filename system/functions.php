@@ -20,6 +20,24 @@ function array_unique_multidimensional(array $input)
 }
 
 /**
+ * Formats currency based on locale
+ *
+ * @param int|float|string $amount
+ * @param string $locale = 'en_AU'
+ * @param string $currency = 'AUD'
+ * @return string
+ */
+function formatMoney(int|float|string $amount, string $locale = 'en_AU', string $currency = 'AUD'): string
+{
+    $fmt = numfmt_create($locale, NumberFormatter::CURRENCY);
+    $formatted_amount = numfmt_format_currency($fmt, $amount, $currency);
+    if ($formatted_amount === false) {
+        return '';
+    }
+    return $formatted_amount;
+}
+
+/**
  * Translations shortcuts (for POT marker identification
  */
 

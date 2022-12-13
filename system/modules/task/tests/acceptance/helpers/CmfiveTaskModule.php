@@ -231,7 +231,7 @@ class CmfiveTaskModule extends \Codeception\Module
      */
     public function deleteTask($I, $url)
     {
-        $I->amOnPage($url);
+        $I->amOnURL($url);
         $I->click('Delete');
         $I->acceptPopup();
     }
