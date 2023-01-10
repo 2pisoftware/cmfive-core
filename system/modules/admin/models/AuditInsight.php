@@ -39,7 +39,7 @@ class AuditInsight extends InsightBaseClass
         $data = AuditService::getInstance($w)->getAudits(($parameters['dt_from']), ($parameters['dt_to']), ($parameters['user_id']), ($parameters['module']), ($parameters['action']));
 
         if (!$data) {
-            $results[] = new InsightReportInterface('Audit Report', ['Results'], [['No data returned for selections']]);
+             $results[] = new InsightReportInterface('Audit Report', ['Results'], [['No data returned for selections']]);
         } else {
             // convert $data from list of objects to array of values
             $convertedData = [];
