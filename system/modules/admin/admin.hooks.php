@@ -46,7 +46,9 @@ function admin_core_dbobject_after_insert(Web $w, DbObject $object): void
  */
 function admin_core_web_before(Web $w): void
 {
-    AuditService::getInstance($w)->addAuditLogEntry();
+    if (Config::get('system.audit.skip_audit', false) === true) {
+        AuditService::getInstance($w)->addAuditLogEntry();
+    }
 }
 
 function admin_core_dbobject_after_update_Contact(Web $w, Contact $contact): void

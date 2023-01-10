@@ -41,7 +41,7 @@ function forgotpassword_POST(Web $w)
     $message .= "Please go to this link to reset your password:<br/>\n";
     $message .= "<a href=\"https://" . $_SERVER["HTTP_HOST"] . "/auth/resetpassword?email={$user_contact->email}&token={$user->password_reset_token}\">https://"
         . $_SERVER["HTTP_HOST"] . "/auth/resetpassword?token={$user->password_reset_token}</a>\n<br/>You have 24 hours to reset your password.<br/><br/>";
-    $message .= "Thank you,\n<br/>cmfive support";
+    $message .= "Thank you,\n<br/>". Config::get('main.company_name', 'Cosine');
 
     $result = MailService::getInstance($w)->sendMail($user_contact->email, $support_email, Config::get("main.application_name") . " password reset", $message);
     if ($result !== 0) {

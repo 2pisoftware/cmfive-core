@@ -1,0 +1,14 @@
+
+@function fade-in-transitions() {
+    @return opacity $animation-duration $animation-path, margin-top $animation-duration $animation-path, height $animation-duration $animation-path;
+}
+
+@mixin fade-in {
+    opacity: 0;
+    margin-top: 20px;
+    
+    &.show {
+        margin-top: 0;
+        opacity: 1;
+    }
+}

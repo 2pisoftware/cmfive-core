@@ -1,0 +1,30 @@
+
+.alert {
+    display: block;
+    padding: 12px 20px;
+    border-radius: 2px;
+    margin-bottom: 1rem;
+    @include font-size('body');
+
+    @include theme-colours();
+
+    i {
+        float: right;
+    }
+
+    .close {
+        float: right;
+        @include theme((color: 'white-black'));
+        @include font-size('h4');
+    }
+    
+    &:last-child {
+        margin-bottom: 1rem;
+    }
+
+    &.opens-modal {
+        &:hover {
+            cursor: pointer;
+        }
+    }
+}

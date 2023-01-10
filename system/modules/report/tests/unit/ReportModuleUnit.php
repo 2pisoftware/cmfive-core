@@ -2,7 +2,7 @@
 
 use PHPUnit\Framework\TestCase;
 
-class ReportModuleUnit extends TestCase //\Codeception\Test\Unit
+class report_ReportModuleUnit extends TestCase //\Codeception\Test\Unit
 {
     public function testSQLI()
     {
@@ -16,7 +16,7 @@ class ReportModuleUnit extends TestCase //\Codeception\Test\Unit
         // non malicious cases:  $and = $serve->unitaryWhereToAndClause($sqli);
 
         $and = $serve->unitaryWhereToAndClause("");
-        echo $and."\n";
+        echo $and . "\n";
         $this->assertSame($and, "");
 
         $try = [
@@ -29,7 +29,7 @@ class ReportModuleUnit extends TestCase //\Codeception\Test\Unit
         ];
         foreach ($try as $sqli) {
             $and = $serve->unitaryWhereToAndClause($sqli);
-            echo $and."\n";
+            echo $and . "\n";
             $this->assertSame($and, " and r.dog = 'cat' ");
         }
 
@@ -44,23 +44,23 @@ class ReportModuleUnit extends TestCase //\Codeception\Test\Unit
         ];
         foreach ($try as $sqli) {
             $and = $serve->unitaryWhereToAndClause($sqli);
-            echo $and."\n";
+            echo $and . "\n";
             $this->assertSame($and, " and r.dog = 'cat' ");
         }
 
-        $try=
-        [
-            "dog" => "cat",
-            "pig" => "fish",
-        ];
+        $try =
+            [
+                "dog" => "cat",
+                "pig" => "fish",
+            ];
         $and = $serve->unitaryWhereToAndClause($try);
-        echo $and."\n";
+        echo $and . "\n";
         $this->assertSame($and, " and r.dog = 'cat'  and r.pig = 'fish' ");
 
         //  malicious cases:  $and = $serve->unitaryWhereToAndClause($sqli);
 
         $and = $serve->unitaryWhereToAndClause("");
-        echo $and."\n";
+        echo $and . "\n";
         $this->assertSame($and, "");
 
         $try = [
@@ -72,17 +72,15 @@ class ReportModuleUnit extends TestCase //\Codeception\Test\Unit
         ];
         foreach ($try as $sqli) {
             $and = $serve->unitaryWhereToAndClause($sqli);
-            echo $and."\n";
-            $terms = explode("=",str_replace(" and ","",$and));
-            $this->assertEquals(count($terms),2);
-            $this->assertEquals(substr(trim($terms[1]),0,1),"'");
-            $this->assertEquals(substr(trim($terms[1]),-1,1),"'");
-            $terms = explode(".",$terms[0]);
-            $this->assertEquals(count($terms),2);
-            $terms = explode(" ",trim($terms[1]));
-            $this->assertEquals(count($terms),1);
-
+            echo $and . "\n";
+            $terms = explode("=", str_replace(" and ", "", $and));
+            $this->assertEquals(count($terms), 2);
+            $this->assertEquals(substr(trim($terms[1]), 0, 1), "'");
+            $this->assertEquals(substr(trim($terms[1]), -1, 1), "'");
+            $terms = explode(".", $terms[0]);
+            $this->assertEquals(count($terms), 2);
+            $terms = explode(" ", trim($terms[1]));
+            $this->assertEquals(count($terms), 1);
         }
-
     }
 }

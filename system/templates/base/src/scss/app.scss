@@ -1,0 +1,72 @@
+// Variable overrides here
+
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap');
+
+@import 'variables';
+@import 'bootstrap_overrides';
+
+// Required
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+@import "~bootstrap/scss/mixins";
+@import "~bootstrap/scss/utilities";
+@import "~bootstrap/scss/bootstrap-grid";
+
+// Optional bootstrap extras
+$accordion-button-active-icon: $accordion-button-icon;
+@import "~bootstrap/scss/bootstrap";
+@import "~bootstrap-icons/font/bootstrap-icons";
+
+// Cmfive styles
+@import 'cmfive/mixins';
+
+@import 'cmfive/breadcrumb';
+@import 'cmfive/buttons';
+@import 'cmfive/cards';
+@import 'cmfive/forms';
+@import 'cmfive/menu';
+@import 'cmfive/modal';
+@import 'cmfive/multi_file_uploads';
+@import 'cmfive/overlay';
+@import 'cmfive/tables';
+@import 'cmfive/toast';
+@import 'cmfive/type';
+
+
+// Foundation adaptation styles
+// @import "cmfive/adaptations/accordion";
+@import "cmfive/adaptations/alerts";
+@import "cmfive/adaptations/buttons";
+@import 'cmfive/adaptations/favourites';
+@import 'cmfive/adaptations/filter';
+@import 'cmfive/adaptations/forms';
+@import 'cmfive/adaptations/grid';
+@import 'cmfive/adaptations/panel';
+@import "cmfive/adaptations/tabs";
+@import "cmfive/adaptations/tables";
+
+// Quill styles
+@import "~quill/dist/quill.snow.css";
+.quill-editor {
+    min-height: 200px;
+    height: 200px;
+}
+
+// Tom Select styles
+@import '~tom-select/src/scss/tom-select.bootstrap5.scss';
+
+// There is a collision in styles between quill and tom-select - this is a patch for this:
+.ts-control {
+    .item {
+        margin-top: 0 !important;
+    }
+}
+
+body {
+    min-height: 100vh;
+    @include theme((color: 'mid-grey', background-color: 'light-grey'));
+}
+
+.clearfix {
+    @include clearfix();
+}

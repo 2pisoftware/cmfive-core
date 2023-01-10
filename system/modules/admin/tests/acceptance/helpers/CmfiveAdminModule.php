@@ -171,7 +171,7 @@ class CmfiveAdminModule extends \Codeception\Module
         $I->clickCmfiveNavbar($I, 'Admin', 'Templates');
         $I->wait(1);
         $rowIndex = $I->findTableRowMatching(1, $title);
-        $I->click('Edit', 'tbody tr:nth-child(' . $rowIndex . ')');
+        $I->click('Edit', '.tablesorter tbody tr:nth-child(' . $rowIndex . ') td:nth-child(5)');
         $I->wait(1);
         $I->click("Test Output");
         $I->amOnPage("/admin-templates/rendertemplate/1");

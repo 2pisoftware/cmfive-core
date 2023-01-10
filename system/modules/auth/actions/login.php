@@ -40,8 +40,15 @@ function login_POST(Web $w)
 
     $user = AuthService::getInstance($w)->getUserForLogin($login);
     if (empty($user)) {
-        $w->out((new AxiosResponse())->setErrorResponse("Incorrect login details", null));
+        $w->out((new AxiosResponse())->setErrorResponse("Incorrect login details", "Incorrect login details"));
         return;
+    }
+
+    if (Config::get('auth.login.attempts.track_attempts', false) == true) {
+        if ($user->is_locked == 1) {
+            $w->out((new AxiosResponse())->setErrorResponse("This account is locked, most likely due to too many login attempts. Please contact an Administrator to get your account unlocked", "This account is locked, most likely due to too many login attempts. Please contact an Administrator to get your account unlocked"));
+            return;
+        }
     }
 
     if ($user->is_mfa_enabled && empty($mfa_code)) {
@@ -51,10 +58,15 @@ function login_POST(Web $w)
 
     $user = AuthService::getInstance($w)->login($login, $password, "Australia/Sydney", false, $mfa_code);
     if (empty($user)) {
-        $w->out((new AxiosResponse())->setErrorResponse("Incorrect login details", null));
+        if (Config::get('auth.login.attempts.track_attempts', false) === true) {
+            AuthService::getInstance($w)->recordLoginAttempt($login);
+        }
+        $w->out((new AxiosResponse())->setErrorResponse("Incorrect login details", "Incorrect login details"));
         return;
     }
 
+    $user->resetAttempts();
+    
     if ($w->session('orig_path') != "auth/login") {
         $url = $w->session('orig_path');
         LogService::getInstance($w)->debug("Original path: " . $url);

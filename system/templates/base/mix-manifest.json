@@ -1,0 +1,12 @@
+{
+    "/dist/src/js/app.js": "/dist/src/js/app.js",
+    "/modules/bridge/assets/ts/manage_curriculum.js": "/modules/bridge/assets/ts/manage_curriculum.js",
+    "/modules/facilitator/assets/ts/curriculum.js": "/modules/facilitator/assets/ts/curriculum.js",
+    "/modules/facilitator/assets/ts/event_edit_curriculum_handler.js": "/modules/facilitator/assets/ts/event_edit_curriculum_handler.js",
+    "/modules/facilitator/assets/ts/event_view.js": "/modules/facilitator/assets/ts/event_view.js",
+    "/dist/src/scss/app.css": "/dist/src/scss/app.css",
+    "/modules/facilitator/assets/scss/event_edit_curriculum_handler.css": "/modules/facilitator/assets/scss/event_edit_curriculum_handler.css",
+    "/modules/facilitator/assets/scss/app.css": "/modules/facilitator/assets/scss/app.css",
+    "/modules/bridge/assets/scss/app.css": "/modules/bridge/assets/scss/app.css",
+    "/modules/facilitator/assets/scss/event_view.css": "/modules/facilitator/assets/scss/event_view.css"
+}

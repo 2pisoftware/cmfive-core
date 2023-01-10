@@ -1,4 +1,4 @@
-# Cmfive
+# Cmfive &nbsp;&nbsp;&nbsp;[![CI](https://github.com/2pisoftware/cmfive-core/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/2pisoftware/cmfive-core/actions/workflows/ci.yml)
 
 ## The core code base for Cmfive
 

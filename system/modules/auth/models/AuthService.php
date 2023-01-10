@@ -104,6 +104,34 @@ class AuthService extends DbService
         $this->w->session('user_id', $user->id);
     }
 
+    public function recordLoginAttempt(string $login)
+    {
+        if (Config::get('auth.login.attempts.track_attempts', false) !== true) {
+            return;
+        }
+
+        $max_attempts = Config::get('auth.login.attempts.max_attempts', 5);
+
+        $user = $this->getUserForLogin($login);
+
+        if (!empty($user->id)) {
+            if (empty($user->login_attempts)) {
+                if ($max_attempts == 1) {
+                    // Lock the account after one failed attempt
+                    $user->lock();
+                }
+                $user->login_attempts = 1;
+                $user->update();
+            } else {
+                if ($max_attempts <= ++$user->login_attempts) {
+                    $user->lock();
+                } else {
+                    $user->update();
+                }
+            }
+        }
+    }
+
     public function _web_init()
     {
         $this->_loadRoles();
@@ -476,5 +504,12 @@ class AuthService extends DbService
             return $groupMember->role;
         }
         return null;
+    }
+
+    public function getSettingByKey(string $key)
+    {
+        if ($this->loggedIn()) {
+            return $this->getObject('UserSetting', ['user_id' => $this->user()->id, 'setting_key' => $key]);
+        }
     }
 }

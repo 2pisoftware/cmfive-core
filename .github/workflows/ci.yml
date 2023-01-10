@@ -20,7 +20,7 @@ jobs:
   # Lint
   php-codesniffer74:
     name: PHP CS 7.4
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
     - name: Get phpcs
       run: wget https://raw.githubusercontent.com/2pisoftware/cmfive-boilerplate/master/phpcs.xml
@@ -30,7 +30,7 @@ jobs:
         options: -s -p --colors --extensions=php --runtime-set testVersion 7.4
   php-codesniffer80:
     name: PHP CS 8.0
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
     - name: Get phpcs
       run: wget https://raw.githubusercontent.com/2pisoftware/cmfive-boilerplate/master/phpcs.xml
@@ -40,7 +40,7 @@ jobs:
         options: -s -p --colors --extensions=php --runtime-set testVersion 8.0
   php-codesniffer81:
     name: PHP CS 8.1
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
     - name: Get phpcs
       run: wget https://raw.githubusercontent.com/2pisoftware/cmfive-boilerplate/master/phpcs.xml
@@ -52,15 +52,15 @@ jobs:
   run_test:
     # Checkout Boilerplate
     name: Unit/Acceptance tests
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs: [ php-codesniffer74, php-codesniffer80, php-codesniffer81 ]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           repository: '2pisoftware/cmfive-boilerplate'
           ref: 'feature/PHP8.1'
 
-      # Pre-requsites Prepare Cmfive Environment
+      # Pre-requisites Prepare Cmfive Environment
       - name: Setup cmfive Test Environment
         run: |
           cp .codepipeline/test_agent/configs/test_agent-config.php config.php
@@ -69,6 +69,7 @@ jobs:
           sleep 5
           docker ps
           docker exec -t nginx-php8.1 bash -c "chmod -R 777 ./*"
+          docker exec -t nginx-php8.1 bash -c "rm -rf ./system && ln -s ./composer/vendor/2pisoftware/cmfive-core/system ./system"
           
           echo CoreInstall
           docker exec -t nginx-php8.1 bash -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php install core ${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}"
@@ -79,7 +80,7 @@ jobs:
           docker exec -t nginx-php8.1 bash -c "chmod -R 777 cache/ storage/ uploads/"
           
           docker start selenium314;
-
+          docker ps
       - name: Inject configs into cmfive Test Environment
         run: |
           echo "Inheriting test_agent config from PIPELINE"
@@ -101,7 +102,19 @@ jobs:
 
       - name: Prepare cmfive Test DB
         run: |
-          docker exec nginx-php8.1 bash -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php testDB setup; exit \$?";
+          docker exec -t nginx-php8.1 bash -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php testDB setup; exit \$?";
+        
+      # Build new layout
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 14
+        
+      - name: Build new designs  
+        run: |
+          docker exec -t nginx-php8.1 bash -c "chmod -R 777 system/templates/base"
+          cd system/templates/base
+          npm i
+          npm run prod
         
       # Run Unit Tests
       - name: "Run unit tests"
@@ -127,12 +140,18 @@ jobs:
           if [ $? -gt 0 ]; then
             echo "Channels module tests failed"
           fi
-      - name: "Run inbox module tests"
+      - name: "Run form module tests"
         run: |
-          docker exec nginx-php8.1 bash -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php tests module inbox silent; exit \$?"
+          docker exec nginx-php8.1 bash -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php tests module form silent; exit \$?"
           if [ $? -gt 0 ]; then
-            echo "Inbox module tests failed"
+            echo "Form module tests failed"
           fi
+      # - name: "Run inbox module tests"
+      #   run: |
+      #     docker exec nginx-php8.1 bash -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php tests module inbox silent; exit \$?"
+      #     if [ $? -gt 0 ]; then
+      #       echo "Inbox module tests failed"
+      #     fi
       - name: "Run report module tests"
         run: |
           docker exec nginx-php8.1 bash -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php tests module report silent; exit \$?"

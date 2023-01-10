@@ -63,6 +63,7 @@ function edit_GET(Web $w)
             "is_admin" => $user->is_admin,
             "is_active" => $user->is_active,
             "is_external" => $user->is_external,
+            "is_locked" => $user->is_locked,
             "new_password" => "",
             "repeat_new_password" => "",
             "is_mfa_enabled" => $user->is_mfa_enabled,

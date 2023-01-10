@@ -22,6 +22,8 @@ class Select extends \Html\Form\FormElement
     public $required;
     public $size;
 
+    public $_selected_option;
+
     // Cmfive attributes
     public $options = [];
 
@@ -50,6 +52,7 @@ class Select extends \Html\Form\FormElement
         // Check for given selected option
         if (is_array($fields) && array_key_exists('selected_option', $fields)) {
             $this->setSelectedOption($fields['selected_option']);
+            $this->_selected_option = $fields['selected_option'];
             unset($fields['selected_option']);
         } elseif (is_object($fields)) {
             $this->setSelectedOption($fields->selected_option);
@@ -121,7 +124,7 @@ class Select extends \Html\Form\FormElement
         $buffer = '<select ';
 
         foreach (get_object_vars($this) as $field => $value) {
-            if (!is_null($value) && !in_array($field, static::$_excludeFromOutput)) {
+            if (!is_null($value) && !in_array($field, static::$_excludeFromOutput) && $field[0] !== "_") {
                 $buffer .= $field . '=\'' . $this->{$field} . '\' ';
             }
         }

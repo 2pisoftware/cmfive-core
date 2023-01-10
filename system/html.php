@@ -174,7 +174,7 @@ class Html
     /**
      * Create an a link styled as a button
      * */
-    public static function ab($href, $title, $class = null, $id = null, $confirm = null)
+    public static function ab($href, $title, $class = "", $id = "", $confirm = "")
     {
         $classParam = ' button tiny ';
         if (strlen($class) > 0) {
@@ -220,14 +220,10 @@ class Html
      * Creates a link (or button) which will pop up a colorbox
      * containing the contents of the url
      *
-     * @param <type> $href   (M) the url to display in the colorbox
-     * @param <type> $title  (M) the link title
-     * @param <type> $button (O) if true create a button instead of a link
-     * @param <type> $iframe (O) whether to use an iframe to display the html contents (default: false)
      */
     public static function box($href, $title, $button = false, $iframe = false, $width = null, $height = null, $param = "isbox", $id = null, $class = null, $confirm = null, $modal_window_id = 'cmfive-modal')
     {
-        $onclick = Html::boxOnClick($href, $iframe, $width, $height, $param, $confirm, false, $modal_window_id);
+        // $onclick = Html::boxOnClick($href, $iframe, $width, $height, $param, $confirm, false, $modal_window_id);
         $element = null;
         if ($button) {
             // $tag = "button";
@@ -235,10 +231,20 @@ class Html
         } else {
             $element = new \Html\a();
         }
-        $element->id($id)->setClass($class)->onclick($onclick)->text($title);
+        $element->id($id)->setClass($class)->setAttribute('data-modal-target', $href)->text($title);
+        if (!empty($confirm)) {
+            $element->setAttribute('data-modal-confirm', $confirm);
+        }
         return $element->__toString();
     }
 
+    /**
+     * Returns onclick event for inline html attribute
+     *
+     * This should no longer be used as JS click binding is the best way to do this
+     *
+     * @deprecated v4.0.x
+     */
     public static function boxOnClick($href, $iframe = false, $width = null, $height = null, $param = "isbox", $confirm = null, $include_tag = true, $modal_window_id = 'cmfive-modal')
     {
         if ($iframe) {
@@ -262,7 +268,7 @@ class Html
             $tag_end = "";
         }
 
-        return $tag_start . "{$confirm_str}modal_history.push(&quot;{$href}&quot;); \$(&quot;#{$modal_window_id}&quot;).foundation(&quot;reveal&quot;, &quot;open&quot;, &quot;{$href}&quot;);return false;" . ($confirm ? "}" : "") . $tag_end;
+        return $tag_start . "openModal(&quot;{$href}&quot;);return false;" . ($confirm ? "}" : "") . $tag_end;
     }
 
     /**
@@ -534,7 +540,7 @@ class Html
                     // Add title field
                     $buffer .= "<tr class='" . toSlug($title) . "' >";
                     if (!empty($title)) {
-                        $buffer .= "<td class='small-6 large-4'><b>{$title}</b></td>";
+                        $buffer .= "<td class='small-6 large-4'>{$title}</td>";
                     }
 
                     $buffer .= "<td class='small-6 large-8 type_" . toSlug($type) . "'>{$value}</td></tr>";
@@ -631,10 +637,10 @@ class Html
                         continue;
                     }
 
-                    $title = !empty($field[0]) ? $field[0] : null;
-                    $type = !empty($field[1]) ? $field[1] : null;
-                    $name = !empty($field[2]) ? $field[2] : null;
-                    $value = !empty($field[3]) ? $field[3] : null;
+                    $title = !empty($field[0]) ? $field[0] : "";
+                    $type = !empty($field[1]) ? $field[1] : "";
+                    $name = !empty($field[2]) ? $field[2] : "";
+                    $value = !empty($field[3]) ? $field[3] : "";
 
                     // Exploit HTML5s inbuilt form validation
                     $required = null;
@@ -840,10 +846,10 @@ class Html
                     $buf .= '<option value="' . htmlspecialchars($item) . '"' . $selected . '>' . htmlentities($item) . '</option>';
                 } elseif ($item instanceof DbObject) {
                     $selected = $value == $item->getSelectOptionValue() ? ' selected = "true" ' : "";
-                    $buf .= '<option value="' . htmlspecialchars($item->getSelectOptionValue()) . '"' . $selected . '>' . htmlentities($item->getSelectOptionTitle()) . '</option>';
+                    $buf .= '<option value="' . htmlspecialchars($item->getSelectOptionValue() ?? '') . '"' . $selected . '>' . htmlentities($item->getSelectOptionTitle() ?? '') . '</option>';
                 } elseif (is_array($item)) {
                     $selected = $value == $item[1] ? ' selected = "true" ' : "";
-                    $buf .= '<option value="' . htmlspecialchars($item[1]) . '"' . $selected . '>' . htmlentities($item[0]) . '</option>';
+                    $buf .= '<option value="' . htmlspecialchars($item[1] ?? '') . '"' . $selected . '>' . htmlentities($item[0] ?? '') . '</option>';
                 }
             }
         }
@@ -1316,8 +1322,8 @@ class Html
             // Get row parameters
             $title = !empty($row[0]) ? $row[0] : null;
             $type = !empty($row[1]) ? $row[1] : null;
-            $name = !empty($row[2]) ? $row[2] : null;
-            $value = !empty($row[3]) ? $row[3] : null;
+            $name = !empty($row[2]) ? $row[2] : "";
+            $value = !empty($row[3]) ? $row[3] : "";
 
             $readonly = "";
 
@@ -1351,7 +1357,7 @@ class Html
             switch ($type) {
                 case "text":
                 case "password":
-                    $buffer .= '<input' . $readonly . ' style="width:100%;"  type="' . $type . '" name="' . $name . '" value="' . htmlspecialchars($value) . '" size="' . (!empty($row[4]) ? $row[4] : null) . '" id="' . $name . '"/>';
+                    $buffer .= '<input' . $readonly . ' style="width:100%;"  type="' . $type . '" name="' . $name . '" value="' . htmlspecialchars($value ?? '') . '" size="' . (!empty($row[4]) ? $row[4] : null) . '" id="' . $name . '"/>';
                     break;
                 case "autocomplete":
                     $minlength = !empty($row[5]) ? $row[5] : null;
@@ -1425,16 +1431,19 @@ class Html
         // Filter button (optional... though optional is pointless)
         if (!empty($action)) {
             $button = new \Html\button();
-            $buffer .= "<li><div class='small-12 columns'><label>Actions<br/>";
+            $buffer .= "<li><div class='small-12 columns'><label>Actions<div class='filter-button-container'>";
             if ($submitTitle !== null && !$should_autosubmit) {
-                $buffer .= $button->type("submit")->text($submitTitle)->__toString();
+                $buffer .= $button->type("submit")->text($submitTitle)->setClass('btn btn-sm btn-primary')->__toString();
             }
             if (!empty($id)) {
-                $buffer .= $button->text("Reset")->id("filter_reset_{$id}")->name("filter_reset_{$id}")->value("reset")->__toString() . "</label></div></li>";
+                $buffer .= $button->text("Reset")->id("filter_reset_{$id}")->name("filter_reset_{$id}")->value("reset")->setClass('btn btn-sm btn-secondary')->__toString();
             } else {
-                $buffer .= $button->text("Reset")->name("reset")->value("reset")->__toString() . "</label></div></li>";
+                $buffer .= $button->text("Reset")->name("reset")->value("reset")->setClass('btn btn-sm btn-secondary')->__toString();
             }
+
+            $buffer .= "</div></label></div></li>";
         }
+        
         $buffer .= "</ul>"; // </div>
         $buffer .= "\n</fieldset>\n";
         $buffer .= $hidden . "</form>\n";
@@ -1611,7 +1620,7 @@ UPLOAD;
             $type = "info";
         }
 
-        return "<div data-alert class='alert-box {$type}'>{$msg}<a href='#' class='close'>&times;</a></div>";
+        return "<div data-alert class='alert alert-box {$type}'>{$msg}<a href='#' class='close'>&times;</a></div>";
     }
 
     /**

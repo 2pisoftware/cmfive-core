@@ -33,7 +33,7 @@ class TimelogModuleCest
             "task_type" => "To Do",
             "status" => "New",
             "priority" => "Normal",
-            "dt_due" => strtotime("27/05/1988"),
+            "dt_due" => "1988-05-27",
             "assignee_id" => "$user_first_name $user_last_name",
             "estimate_hours" => 10,
             "effort" => 11,
@@ -41,11 +41,11 @@ class TimelogModuleCest
         ]);
 
         $I->createTimelogFromTimer($I, $task_name);
-        $I->editTimelog($I, $task_name, "+24 hours", "09:30", "17:30");
+        $I->editTimelog($I, $task_name, "+1 day", "09:30", "17:30");
         $I->deleteTimelog($I, $task_name);
 
         $I->createTimelog($I, "$task_count - $task_name", "now", "09:00", "17:00");
-        $I->editTimelog($I, $task_name, "+24 hours", "09:30", "17:30");
+        $I->editTimelog($I, $task_name, "+1 day", "09:30", "17:30");
         $I->deleteTimelog($I, $task_name);
     }
 }

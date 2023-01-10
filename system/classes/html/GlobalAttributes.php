@@ -10,6 +10,7 @@
 trait GlobalAttributes
 {
 
+    public $_attributeList = [];
     public $accesskey;
     public $class;
     public $contenteditable;
@@ -53,7 +54,9 @@ trait GlobalAttributes
      */
     public function setAttribute($name, $value)
     {
+        // @todo: does this cause issues with names that aren't valid php?
         $this->{$name} = $value;
+        array_push($this->_attributeList, [$name => $value]);
 
         return $this;
     }

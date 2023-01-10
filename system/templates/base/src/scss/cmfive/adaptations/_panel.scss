@@ -1,0 +1,22 @@
+
+.panel {
+    @include theme((background-color: 'white-black', color: 'black-grey'));
+    padding: 1rem;
+    margin: 0;
+    // @include theme((background-color: 'light-grey'));
+    &:not(.flat) {
+        @include shadow-flat();
+    }
+
+    &:not(:first-child) {
+        margin-top: 1.5rem;
+    }
+
+    // .section-header {
+    //     // padding: 0.3rem 1rem 0;
+    // }
+}
+
+.modal .panel {
+    box-shadow: none;
+}
