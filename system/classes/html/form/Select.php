@@ -45,7 +45,7 @@ class Select extends \Html\Form\FormElement
             $this->setOptions($fields['options']);
             unset($fields['options']);
         } elseif (is_object($fields)) {
-            $this->setOptions($fields->options);
+            $this->setOptions($fields->options ?? []);
             $fields->options = null;
         }
 
@@ -55,7 +55,7 @@ class Select extends \Html\Form\FormElement
             $this->_selected_option = $fields['selected_option'];
             unset($fields['selected_option']);
         } elseif (is_object($fields)) {
-            $this->setSelectedOption($fields->selected_option);
+            $this->setSelectedOption($fields->selected_option ?? "");
             $fields->selected_option = null;
         }
 
