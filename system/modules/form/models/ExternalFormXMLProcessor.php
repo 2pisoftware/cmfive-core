@@ -13,7 +13,7 @@ class ExternalFormXMLProcessor extends ProcessorType
         }
 
         return ["Settings" => [
-            [["Target Form Application", "select", "target_application_id", @$current_settings->target_application_id, FormService::getInstance($this->w)Application->getFormApplications()]],
+            [["Target Form Application", "select", "target_application_id", @$current_settings->target_application_id, FormService::getInstance($this->w)->getFormApplications()]],
             [["Target Form", "select", "target_form_id", @$current_settings->target_form_id, FormService::getInstance($this->w)->getForms()]],
         ]];
     }

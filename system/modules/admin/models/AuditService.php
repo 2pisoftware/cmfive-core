@@ -136,12 +136,12 @@ class AuditService extends DbService
             $query->where('action', $action);
         }
         if (!empty($dt_from)) {
-            $query->where("dt_created >= ?", formatDateTime($dt_from, "Y-m-d 00:00:00"));
+            $query->where("dt_created >= ?", formatDateTime ($dt_from, "Y-m-d 00:00:00"));
         }
         if (!empty($dt_to)) {
-            $query->where("dt_created <= ?", formatDateTime($dt_to, "Y-m-d 59:59:59"));
+            $query->where("dt_created <= ?", formatDateTime ($dt_to, "Y-m-d 23:59:00"));
         }
-
+        
         return $query->fetchAll();
     }
 }

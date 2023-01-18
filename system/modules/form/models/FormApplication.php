@@ -16,7 +16,7 @@ class FormApplication extends DbObject {
 	public $is_deleted;
 	
 	public function getForms() {
-		$forms_mapped = $this->db->get('form')->leftJoin('form_application_mapping on form_application_mapping.form_id = form.id')
+		$forms_mapped = $this->w->db->get('form')->leftJoin('form_application_mapping on form_application_mapping.form_id = form.id')
 									->where('form.is_deleted', 0)->where('form_application_mapping.is_deleted', 0)
 									->where('form_application_mapping.application_id', $this->id)->fetchAll();
 
