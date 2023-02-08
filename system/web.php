@@ -1,4 +1,5 @@
 <?php
+
 // ========= Session ========================
 if (!headers_sent()) {
     ini_set('session.gc_maxlifetime', 21400);
@@ -1314,7 +1315,8 @@ class Web
      */
     public function localUrl($link = null)
     {
-        if (strpos($link, "/") !== 0) {
+        // PHP8: strpos null param is deprecated
+        if (!empty($link) && strpos($link, "/") !== 0) {
             $link = "/" . $link;
         }
         return $this->webroot() . $link;
@@ -1421,7 +1423,7 @@ class Web
     public function fatalErrorPage()
     {
         http_response_code(500);
-        
+
         if ($this->isAjax()) {
             return;
         }
@@ -1788,7 +1790,7 @@ class Web
         if ($this->_submodule) {
             $paths[] = implode("/", [$trimmed_module, $this->_templatePath, $this->_submodule]);
         }
-        
+
         $paths[] = implode("/", [$trimmed_module, $this->_templatePath]);
         $paths[] = implode("/", [$trimmed_module]);
         $paths[] = implode("/", [$this->_templatePath, $this->_module]);
@@ -2142,7 +2144,7 @@ class Web
         if (!headers_sent($file, $line)) {
             header($string);
         } else {
-           LogService::getInstance($this)->error("Attempted to resend header {$string}, output started in {$file} on line {$line}");
+            LogService::getInstance($this)->error("Attempted to resend header {$string}, output started in {$file} on line {$line}");
         }
     }
 
