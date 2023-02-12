@@ -17,7 +17,7 @@ class Report extends DbObject
     /**
      * Returns a DbPDO connection persistent for the whole requestw
      *
-     * @return DbPDO|null 
+     * @return DbPDO|null
      */
     public function getReadOnlyDbConnection()
     {
@@ -183,7 +183,7 @@ class Report extends DbObject
         // foreach ($rows[1] as $form_row) {
         //     $form[$section_name][] = $this->getSingleColFormCriteria($form_row, true);
         // }
-            
+
         return $parsed_report_form;
     }
 
@@ -386,6 +386,7 @@ class Report extends DbObject
                                     } catch (Exception $e) {
                                         // SQL returns errors so clean up and return error
                                         $this->rollbackTransaction();
+                                        LogService::getInstance($this->w)->error($e->getMessage());
                                         $line = array(array("ERROR", "A SQL error was encountered: " . $e->getMessage()));
                                     }
                                     $tbl = array_merge($crumbs, $title, $hds, $line);
@@ -421,7 +422,7 @@ class Report extends DbObject
         if (!empty($connection)) {
             return $connection->query($sql)->fetchAll(PDO::FETCH_ASSOC);
         }
-        
+
         LogService::getInstance($this->w)->error("No database connection details found for report");
         return null;
     }
