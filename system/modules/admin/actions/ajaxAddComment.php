@@ -39,7 +39,7 @@ function ajaxAddComment_POST(Web $w)
 
     $comment->obj_table = $top_object_table_name;
     $comment->obj_id = $request_data->top_object_id;
-    $comment->comment = strip_tags($request_data->comment);
+    $comment->comment = strip_tags($request_data->comment ?? "");
     $comment->creator_id = $request_data->new_owner->id;
     $comment->insertOrUpdate();
 
