@@ -1313,7 +1313,7 @@ class Web
      * @param string $link
      * @return string html code
      */
-    public function localUrl($link = null)
+    public function localUrl($link = "")
     {
         // PHP8: strpos null param is deprecated
         if (!empty($link) && strpos($link, "/") !== 0) {

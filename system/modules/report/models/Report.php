@@ -311,7 +311,7 @@ class Report extends DbObject
                         // do not use $_REQUEST because it includes unwanted cookies
                         foreach (array_merge($params, $_GET, $_POST) as $name => $value) {
                             // convert input dates to yyyy-mm-dd for query
-                            if (startsWith($name, "dt_")) {
+                            if (startsWith($name, "dt_") && !empty($value)) {
                                 $value = ReportService::getInstance($this->w)->date2db($value);
                             }
 

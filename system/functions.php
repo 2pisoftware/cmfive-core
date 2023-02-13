@@ -30,7 +30,7 @@ function array_unique_multidimensional(array $input)
 function formatMoney(int|float|string $amount, string $locale = 'en_AU', string $currency = 'AUD'): string
 {
     $fmt = numfmt_create($locale, NumberFormatter::CURRENCY);
-    $formatted_amount = numfmt_format_currency($fmt, $amount, $currency);
+    $formatted_amount = numfmt_format_currency($fmt, floatval($amount), $currency);
     if ($formatted_amount === false) {
         return '';
     }
