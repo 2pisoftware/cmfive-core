@@ -1,7 +1,7 @@
 <?php
 
 function edit_GET(Web $w) {
-	$redirect_url = Request::string"redirect_url");
+	$redirect_url = Request::string("redirect_url");
 	$redirect_url = defaultVal($redirect_url, defaultVal($_SERVER["REQUEST_URI"], "/"));
 
 	list($attachment_id) = $w->pathMatch("id");

@@ -2,7 +2,7 @@
 
 function new_GET(Web $w)
 {
-    $redirect_url = Request::string"redirect_url");
+    $redirect_url = Request::string("redirect_url");
     $redirect_url = defaultVal($redirect_url, defaultVal($_SERVER["REQUEST_URI"], "/"));
 
     $p = $w->pathMatch("class", "class_id");
