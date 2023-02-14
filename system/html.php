@@ -416,7 +416,7 @@ class Html
                         $custom_class = $field[6];
                     }
                     $buffer .= '<textarea' . $readonly . ' style="width:100%; height:auto; " name="' . $name . '" rows="' . $r . '" cols="' . $c . '" ' .
-                    (!empty($custom_class) ? ($custom_class === true ? "class='ckeditor'" : "class='$custom_class' ") : '') . ' id="' . $name . '">' . $value . '</textarea>';
+                        (!empty($custom_class) ? ($custom_class === true ? "class='ckeditor'" : "class='$custom_class' ") : '') . ' id="' . $name . '">' . $value . '</textarea>';
                     break;
                 case "select":
                     $items = !empty($field[4]) ? $field[4] : '';
@@ -630,7 +630,7 @@ class Html
                     if (!is_array($field) && is_object($field)) {
                         if ((property_exists($field, "type") && $field->type !== "hidden") || !property_exists($field, "type")) {
                             $buffer .= '<li><label class=\'small-12 columns\'>' . $field->label . ($field->required ? " <small>Required</small>" : "") .
-                            $field->__toString() . '</label></li>';
+                                $field->__toString() . '</label></li>';
                         } else {
                             $buffer .= $field->__toString();
                         }
@@ -640,7 +640,7 @@ class Html
                     $title = !empty($field[0]) ? $field[0] : "";
                     $type = !empty($field[1]) ? $field[1] : "";
                     $name = !empty($field[2]) ? $field[2] : "";
-                    $value = !empty($field[3]) ? $field[3] : "";
+                    $value = (key_exists(3, $field) && ($field[3] === 0 || !empty($field[3]))) ? $field[3] : "";
 
                     // Exploit HTML5s inbuilt form validation
                     $required = null;
@@ -677,7 +677,7 @@ class Html
                         case "tel":
                             $size = !empty($field[4]) ? $field[4] : null;
                             $buffer .= '<input' . $readonly . ' style="width:100%;" type="' . $type . '" name="' . $name . '" value="' . htmlspecialchars($value ?? '') .
-                            '" size="' . $size . '" id="' . $name . '" ' . $required . " />";
+                                '" size="' . $size . '" id="' . $name . '" ' . $required . " />";
                             break;
                         case "autocomplete":
                             $options = !empty($field[4]) ? $field[4] : null;
@@ -708,8 +708,8 @@ class Html
                                 $custom_class = $field[6];
                             }
                             $buffer .= '<textarea' . $readonly . ' style="width:100%; height: auto; " name="' . $name . '" rows="' . $r . '" cols="' . $c .
-                            '" ' . (!empty($custom_class) ? ($custom_class === true ? "class='ckeditor'" : "class='$custom_class' ") : '') . ' id="' . $name
-                            . '" ' . $required . '>' . $value . '</textarea>';
+                                '" ' . (!empty($custom_class) ? ($custom_class === true ? "class='ckeditor'" : "class='$custom_class' ") : '') . ' id="' . $name
+                                . '" ' . $required . '>' . $value . '</textarea>';
                             break;
                         case "select":
                             $items = !empty($field[4]) ? $field[4] : null;
@@ -1103,7 +1103,7 @@ class Html
         string $total_results_query_param = "total_results",
         string $sort_query_param = "sort",
         string $sort_direction_param = "sort_direction"
-    ) : string {
+    ): string {
         // Build URL for pagination.
         $url_parsed = parse_url($base_url);
         $url_string = $url_parsed["path"];
@@ -1443,7 +1443,7 @@ class Html
 
             $buffer .= "</div></label></div></li>";
         }
-        
+
         $buffer .= "</ul>"; // </div>
         $buffer .= "\n</fieldset>\n";
         $buffer .= $hidden . "</form>\n";
@@ -1614,7 +1614,7 @@ UPLOAD;
      * @param string $class
      * @return string
      */
-    public static function alertBox($msg, $type = "info") : string
+    public static function alertBox($msg, $type = "info"): string
     {
         if ($type !== "info" && $type !== "warning" && $type !== "alert" && $type !== "success") {
             $type = "info";
