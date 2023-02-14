@@ -758,7 +758,7 @@ class Html
         $buffer .= "<script>$(function(){try{\$('.codemirror').each(function(){var editor = CodeMirror.fromTextArea($(this), {lineNumbers: true, mode: 'text/html', matchBrackets: true, viewportMargin: Infinity}); editor.refresh()})}catch(err){}});</script>";
 
         // Expermiental
-        if (strpos($class, "prompt") !== false) {
+        if (strpos($class ?? "", "prompt") !== false) {
             $buffer .= "<script>"
                 . "$(function() {"
                 . "		var confirmOnPageExit = function (e) {

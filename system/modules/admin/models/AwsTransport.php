@@ -85,15 +85,15 @@ class AwsTransport implements GenericTransport
             $to = array_map("trim", explode(",", $to));
         }
 
-        if (strpos($cc, ",") !== false) {
+        if (strpos($cc ?? "", ",") !== false) {
             $cc = array_map("trim", explode(",", $cc));
         }
 
-        if (strpos($bcc, ",") !== false) {
+        if (strpos($bcc ?? "", ",") !== false) {
             $bcc = array_map("trim", explode(",", $bcc));
         }
 
-        if (strpos($reply_to, ",") !== false) {
+        if (strpos($reply_to ?? "", ",") !== false) {
             $reply_to = array_map("trim", explode(",", $reply_to));
         }
 

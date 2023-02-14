@@ -66,7 +66,7 @@ class TicketEmailProcessor extends ProcessorType {
 
 				$from = $email->from;
 				// Validate email
-				if (strpos($from, '@') === FALSE) {
+				if (strpos($from ?? "", '@') === FALSE) {
 					LogService::getInstance($processor->w)->error("From field is not an email address");
 					continue;
 				}
@@ -100,7 +100,7 @@ class TicketEmailProcessor extends ProcessorType {
                 	$contact = new Contact($processor->w);
 
                 	// Get login from contacts name, or email address if it doesn't exist
-                	if (strpos($from, '<') !== FALSE) {
+                	if (strpos($from ?? "", '<') !== FALSE) {
                 		$contact_name = @trim(explode('<', $from)[0]);
                 	} else {
                 		$contact_name = @trim(explode('@', $from_email_address)[0]);
