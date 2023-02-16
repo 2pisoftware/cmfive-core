@@ -598,7 +598,7 @@ class Task extends DbObject
             }
 
             if (empty($this->title)) {
-                $this->Log->debug("Inserting Task: title is empty, calling update");
+                LogService::getInstance($this->w)->debug("Inserting Task: title is empty, calling update");
                 $this->update();
             }
 
@@ -630,7 +630,7 @@ class Task extends DbObject
 
             $this->commitTransaction();
         } catch (Exception $ex) {
-            $this->Log->error("Inserting Task: " . $ex->getMessage());
+            LogService::getInstance($this->w)->error("Inserting Task: " . $ex->getMessage());
             $this->rollbackTransaction();
         }
     }
@@ -697,7 +697,7 @@ class Task extends DbObject
             $validation_response = parent::update($force, $force_validation);
             if ($validation_response !== true) {
                 $this->rollbackTransaction();
-                $this->Log->error("Task update failed validation, rolling back transaction");
+                LogService::getInstance($this->w)->error("Task update failed validation, rolling back transaction");
                 $this->w->errorMessage($this, "Task", $validation_response, false, "/tasks/edit/" . $this->id);
             }
 
@@ -720,7 +720,7 @@ class Task extends DbObject
 
             $this->commitTransaction();
         } catch (Exception $ex) {
-            $this->Log->error("Updating Task(" . $this->id . "): " . $ex->getMessage());
+            LogService::getInstance($this->w)->error("Updating Task(" . $this->id . "): " . $ex->getMessage());
             $this->rollbackTransaction();
         }
     }
@@ -766,7 +766,7 @@ class Task extends DbObject
 
             $this->commitTransaction();
         } catch (Exception $ex) {
-            $this->Log->error("Deleting Task(" . $this->id . "): " . $ex->getMessage());
+            LogService::getInstance($this->w)->error("Deleting Task(" . $this->id . "): " . $ex->getMessage());
             $this->rollbackTransaction();
         }
     }
