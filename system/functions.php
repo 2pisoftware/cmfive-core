@@ -30,7 +30,7 @@ function array_unique_multidimensional(array $input)
 function formatMoney(int|float|string $amount, string $locale = 'en_AU', string $currency = 'AUD'): string
 {
     $fmt = numfmt_create($locale, NumberFormatter::CURRENCY);
-    $formatted_amount = numfmt_format_currency($fmt, $amount, $currency);
+    $formatted_amount = numfmt_format_currency($fmt, floatval($amount), $currency);
     if ($formatted_amount === false) {
         return '';
     }
@@ -851,15 +851,15 @@ function cast($destination, $sourceObject)
  */
 function delete_all_between($beginning, $end, $string, $remove_every_instance = false): string
 {
-    $beginningPos = strpos($string, $beginning);
-    $endPos = strpos($string, $end);
+    $beginningPos = strpos($string ?? "", $beginning);
+    $endPos = strpos($string ?? "", $end);
 
     if ($beginningPos === false || $endPos === false) {
         return $string;
     }
 
     if (!$remove_every_instance) {
-        return trim(str_replace(substr($string, $beginningPos, ($endPos + strlen($end)) - $beginningPos), '', $string));
+        return trim(str_replace(substr($string ?? "", $beginningPos, ($endPos + strlen($end)) - $beginningPos), '', $string));
     } else {
         while (($beginningPos !== false && $endPos !== false)) {
             $string = trim(str_replace(substr($string, $beginningPos, ($endPos + strlen($end)) - $beginningPos), '', $string));

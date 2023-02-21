@@ -323,7 +323,7 @@ class AuthService extends DbService
         }
         $parts = $this->w->parseUrl($path);
         if (!in_array($parts['module'], $this->w->modules())) {
-            $this->Log->error("Denied access: module '" . urlencode($parts['module']) . "' doesn't exist");
+            LogService::getInstance($this->w)->error("Denied access: module '" . urlencode($parts['module']) . "' doesn't exist");
             self::$_cache[$key] = false;
             return false;
         }
@@ -348,7 +348,7 @@ class AuthService extends DbService
                         self::$_cache[$key] = $url ? $url : true;
                     }
                 } else {
-                    $this->Log->info($module . ' did not provide passthrough user for:' . $username);
+                    LogService::getInstance($this->w)->info($module . ' did not provide passthrough user for:' . $username);
                 }
             }
         }

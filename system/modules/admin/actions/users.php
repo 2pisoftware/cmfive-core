@@ -66,7 +66,7 @@ function users_GET(Web $w)
         }
     }
 
-    $internal_header = [['login', "Login"], ['name', "Name"], ['is_admin', "Admin"], ['is_active', "Active"], ['is_mfa_enabled', "MFA"], ['dt_last_login', "Last Login"], "Actions"];
+    $internal_header = [['login', "Login"], ['name', "Name"], ['is_admin', "Admin"], ['is_active', "Active"], ['is_mfa_enabled', "MFA"], ['dt_lastlogin', "Last Login"], "Actions"];
     $external_header = [['login', "Login"], ['name', "Name"], ['dt_created', "Created"], "Actions"];
 
     $w->ctx("internal_table", HtmlBootstrap5::paginatedTable(

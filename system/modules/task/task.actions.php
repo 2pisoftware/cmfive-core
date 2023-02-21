@@ -9,7 +9,7 @@ function editComment_GET(Web &$w) {
     // build the comment for edit
     $form = array(
         array("Comment", "section"),
-        array("", "textarea", "comment", strip_tags($comm->comment), 45, 25),
+        array("", "textarea", "comment", strip_tags($comm->comment ?? ""), 45, 25),
     );
 
     // return the comment for display and edit
@@ -27,7 +27,7 @@ function popComment_GET(Web &$w) {
     // build the comment for display
     $form = array(
         array("Comment", "section"),
-        array("", "textarea", "comment", strip_tags($comm->comment), 45, 25),
+        array("", "textarea", "comment", strip_tags($comm->comment ?? ""), 45, 25),
     );
 
     // return the comment for display

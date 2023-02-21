@@ -14,7 +14,8 @@ class ReportService extends DbService
         return $this->getObjects("Report", array("is_deleted" => 0));
     }
 
-    public function getReportByModuleAndCategory($module, $category) {
+    public function getReportByModuleAndCategory($module, $category)
+    {
         return $this->getObject('Report', ['module' => $module, 'category' => $category, 'is_deleted' => 0]);
     }
 
@@ -152,7 +153,6 @@ class ReportService extends DbService
     // return list of APPROVED and NOT DELETED report IDs for a given a user ID and a where clause
     public function getReportsbyUserWhere($id, $where)
     {
-
         // Clause for admin user
         if (AuthService::getInstance($this->w)->user()->hasRole("report_admin")) {
             return $this->getReports();
@@ -173,7 +173,7 @@ class ReportService extends DbService
 
         // list of IDs to check for report membership, my ID and my group IDs
         $theid = implode(",", $myid);
-      
+
         $filter = $this->unitaryWhereToAndClause($where);
 
         $rows = $this->_db->sql("SELECT distinct r.* from " . ReportMember::$_db_table . " as m inner join " .
@@ -266,7 +266,6 @@ class ReportService extends DbService
                 if ($flg) {
                     $myid[$group->id] = $group->id;
                 }
-
             }
         }
         // list of IDs to check for report membership, my ID and my group IDs
@@ -308,7 +307,7 @@ class ReportService extends DbService
     public function getFormDatafromSQL($sql, $connection)
     {
         $rows = $connection->query(trim($sql))->fetchAll();
-        
+
         $arr = [];
         if ($rows) {
             foreach ($rows as $row) {
@@ -342,7 +341,7 @@ class ReportService extends DbService
             $dbtbl[] = $table[0];
         }
         ReportService::$tables = $dbtbl;
-        
+
         return $dbtbl;
     }
 
@@ -427,7 +426,7 @@ class ReportService extends DbService
                 $title = array_shift($row);
                 $hds = array_shift($row);
                 $hvals = array_values($hds);
-                
+
                 // find key of any links
                 foreach ($hvals as $h) {
                     if (stripos($h, "_link")) {
@@ -457,10 +456,10 @@ class ReportService extends DbService
                 // can't use this way without commenting out header section, which composer won't like
                 // $this->w->out($csv->output($filename, $row, $hds));
                 unset($ukey);
-            } 
+            }
             $this->w->sendHeader("Content-type", "application/csv");
             $this->w->sendHeader("Content-Disposition", "attachment; filename=" . $filename);
-            $this->w->setLayout(null); 
+            $this->w->setLayout(null);
         }
     }
 
@@ -536,7 +535,8 @@ class ReportService extends DbService
                 if (!empty($report_template) && !empty($templatedata)) {
                     $results = TemplateService::getInstance($this->w)->render(
                         $report_template->template_id,
-                        array("data" => $templatedata, "w" => $this->w, "POST" => $_POST));
+                        array("data" => $templatedata, "w" => $this->w, "POST" => $_POST)
+                    );
 
                     $pdf->writeHTML($results, true, false, true, false);
                 }
@@ -604,7 +604,7 @@ class ReportService extends DbService
                 foreach ($usr->getRoles() as $role) {
                     $roles .= "'" . $role . "',";
                 }
-            $roles = rtrim($roles, ",");
+                $roles = rtrim($roles, ",");
             }
 
             // $special must be in terms of a regexp for preg_match
@@ -632,6 +632,7 @@ class ReportService extends DbService
             return true;
         } catch (Exception $e) {
             $connection->rollBack();
+            LogService::getInstance($this->w)->error($e->getMessage());
             return false;
         }
     }
@@ -663,5 +664,4 @@ class ReportService extends DbService
         $w->ctx("navigation", $nav);
         return $nav;
     }
-
 }

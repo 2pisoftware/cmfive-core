@@ -384,7 +384,7 @@ class EmailChannelOption extends DbObject
             );
             return [true, $mail];
         } catch (Exception $e) {
-            $this->Log->setLogger('EmailChannel')->error("Error connecting to mail server: " . $e->getMessage());
+            LogService::getInstance($this->w)->setLogger('EmailChannel')->error("Error connecting to mail server: " . $e->getMessage());
             return [false, $e->getMessage()];
         }
     }

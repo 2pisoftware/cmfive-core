@@ -147,7 +147,7 @@ class FilePolyfill {
      */
     public function exists()
     {
-        echo "{$this->key} - " . ($this->filesystem->fileExists($this->key) ? 'exists' : 'not exists');
+        // echo "{$this->key} - " . ($this->filesystem->fileExists($this->key) ? 'exists' : 'not exists');
         return $this->filesystem->fileExists($this->key);
     }
 
