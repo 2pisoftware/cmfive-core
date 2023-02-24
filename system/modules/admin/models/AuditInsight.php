@@ -54,7 +54,11 @@ class AuditInsight extends InsightBaseClass
                 $row['URL'] = $datarow['path'];
                 $row['Class'] = $datarow['db_class'];
                 $row['Action'] = $datarow['db_action'];
-                $row['DB Id'] = $datarow['db_id'];
+                $row['DB Id'] = html::a(
+                    "/insights/runInsight/AuditInsightObject?"
+                    ."class=".$row['Class']
+                    ."&id=".$datarow['db_id']
+                    ,$datarow['db_id']);
                 $convertedData[] = $row;
             }
             $results[] = new InsightReportInterface('Audit Report', ['Date', 'User', 'Module', 'URL', 'Class', 'Action', 'DB Id'], $convertedData);
@@ -62,3 +66,4 @@ class AuditInsight extends InsightBaseClass
         return $results;
     }
 }
+
