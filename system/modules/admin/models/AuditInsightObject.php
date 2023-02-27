@@ -29,7 +29,7 @@ class AuditInsightObject extends InsightBaseClass
     public function run(Web $w, $parameters = []): array
     {
         //below service is referred to as $where in subsequent notes in this block for purpose of examples
-        $data = AuditService::getInstance($w)->getObject(($parameters['class']), ($parameters['id']));
+        $data = AuditService::getInstance($w)->getObject(($parameters['class']), ($parameters['id']),false);
 
 $cached =   $obj = !empty(self::$_cache[$parameters['class']][$parameters['id']]) ? self::$_cache[$parameters['class']][$parameters['id']] : null;
 
@@ -42,7 +42,7 @@ $o = new $parameters['class']($w);
       
 
       $result = AuditService::getInstance($w)->_db->fetchRow();
- $o->fill($result, true);
+ $o->fill($result, false);
 
 
         if (!$data) {
@@ -53,17 +53,20 @@ $o = new $parameters['class']($w);
             foreach (get_object_vars($data) as $k => $v) {
             
             if ('_' !== substr($k, 0, 1) && 'w' !== $k) {
+$asUI = ('dt_' === substr($k ?? "",0,3))?(" :Formatted: ".formatDate($v)." : ".formatDateTime($v)):"";
                 $row = [];
                 $row[] = $k;
-                $row[] = $v;
+                $row[] = $v . $asUI;
                 $row[] = $data->updateConvert($k, $v);
 $row[] = (empty($cached)?"---":$cached->{$k});
-$row[] = (empty($o)?"---":$o->{$k});
+
+$asUI = ('dt_' === substr($k ?? "",0,3))?(" :Formatted: ".formatDate($o->{$k})." : ".formatDateTime($o->{$k})):"";
+$row[] = (empty($o)?"---":$o->{$k}.$asUI);
 $row[] = (empty($result)?"---":$result[$k]);
                 $convertedData[] = $row;
 }
             }
-            $results[] = new InsightReportInterface('Audit Report', ['All Properties','GetObject','PutAsReadConvert','Cached','FillBypassedBuildSelect','RawBypassedBuildSelect'], $convertedData);
+            $results[] = new InsightReportInterface('Audit Report', ['All Properties','GetObject','PutAsUpdateConvert','Cached','FillAfterBypassedBuildSelect','RawFromBypassedBuildSelect'], $convertedData);
         }
         return $results;
     }
