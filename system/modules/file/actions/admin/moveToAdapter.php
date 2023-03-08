@@ -7,7 +7,7 @@ function moveToAdapter_GET(Web $w)
     $max_count = Request::string('max_count');
 
     if (empty($max_count)) {
-        $max_count = 1500;
+        $max_count = -1;
     }
 
     if (!empty(Config::get('file.adapters.' . $to_adapter)) && Config::get('file.adapters.' . $to_adapter . '.active') === true) {
@@ -21,15 +21,15 @@ function moveToAdapter_GET(Web $w)
         $attachments = FileService::getInstance($w)->getAttachmentsForAdapter($from_adapter);
         if (!empty($attachments)) {
             foreach ($attachments as $attachment) {
+                if ($max_count >= 0 && $count >= $max_count) {
+                    break;
+                }
                 try {
                     $attachment->moveToAdapter($to_adapter);
                     $count++;
                 } catch (Exception $e) {
                     LogService::getInstance($w)->error($e->getMessage());
                     $skipped++;
-                }
-                if ($count > $max_count) {
-                    break;
                 }
             }
         }
