@@ -17,14 +17,15 @@
 					<td><pre class="break-pre" style="font-family: sans-serif;"><?php echo $timelog->getComment()->comment; ?></pre></td>
 					<td>
 						<?php
-						if ($timelog->canEdit(AuthService::getInstance($w)->user())) {
-							echo Html::box('/timelog/edit/' . $timelog->id . (!empty($redirect) ? "?redirect=$redirect" : ''), 'Edit', true);
-						} 
-						if ($timelog->canDelete(AuthService::getInstance($w)->user())) {
-							$confirmation_message = implode("", $w->callHook("timelog", "before_display_timelog", $timelog));
-							echo Html::b('/timelog/delete/' . $timelog->id . (!empty($redirect) ? "?redirect=$redirect" : ''), 'Delete', empty($confirmation_message) ? 'Are you sure you want to delete this timelog?' : $confirmation_message, null, false, "warning");
-						}
-						?>
+                        if ($timelog->canEdit(AuthService::getInstance($w)->user())) {
+                            echo Html::box('/timelog/edit/' . $timelog->id . (!empty($redirect) ? "?redirect=$redirect" : ''), 'Edit', true);
+                            echo Html::box('/timelog/move/' . $timelog->id . (!empty($redirect) ? "?redirect=$redirect" : ''), 'Move', true);
+                        }
+                        if ($timelog->canDelete(AuthService::getInstance($w)->user())) {
+                            $confirmation_message = implode("", $w->callHook("timelog", "before_display_timelog", $timelog));
+                            echo Html::b('/timelog/delete/' . $timelog->id . (!empty($redirect) ? "?redirect=$redirect" : ''), 'Delete', empty($confirmation_message) ? 'Are you sure you want to delete this timelog?' : $confirmation_message, null, false);
+                        }
+			    ?>
 					</td>
 				</tr>
 			<?php endforeach; ?>
