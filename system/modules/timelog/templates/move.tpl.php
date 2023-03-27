@@ -38,17 +38,6 @@ echo (new \Html\Form\Autocomplete([
                 </li>
                 <?php echo (new \Html\Form\InputField(["type" => "hidden", "id|name" => "object_id", "value" => $timelog->object_id ?: $tracking_id])); ?>
             </ul>
-            <ul class="small-block-grid-1 medium-block-grid-1 section-body">
-                <li>
-                    <label class="small-12 columns">Description
-                        <?php echo (new \Html\Form\Textarea([
-                            "id|name"        => "description",
-                            "value"            => !empty($timelog->id) ? $timelog->getComment()->comment : null,
-                            "rows"            => 8
-                        ])); ?>
-                    </label>
-                </li>
-            </ul>
             <?php if (!empty($form)) : ?>
                 <?php foreach ($form as $form_section_heading => $form_array) : ?>
                     <?php foreach ($form_array as $form_element_key => $form_elements) : ?>
@@ -75,7 +64,7 @@ echo (new \Html\Form\Autocomplete([
     </div>
 </form>
 <script type="text/javascript">
-    // Input values are module, search and description
+    // Input values are module and search
     $(document).ready(function() {
         // If there is no task group selected, we disable submit
         if ($("#object_id").val() == "") {
@@ -131,22 +120,6 @@ echo (new \Html\Form\Autocomplete([
 
             },
             minLength: 3
-        });
-
-        $("#timelogForm").on("submit", function() {
-            $.ajax({
-                url: "/timelog/ajaxStart",
-                method: "POST",
-                data: {
-                    "object": $("#object_class").val(),
-                    "object_id": $("#object_id").val(),
-                    "description": $("#description").val()
-                },
-                success: function(result) {
-                    alert(result);
-                }
-            });
-            return false;
         });
 
         // Need to simulate change to module type to set url

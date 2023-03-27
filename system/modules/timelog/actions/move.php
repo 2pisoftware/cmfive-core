@@ -4,16 +4,21 @@ function move_GET(Web $w)
 {
     $p = $w->pathMatch("id");
 
-    if (!empty($p["id"])) {
-        $timelog = TimelogService::getInstance($w)->getTimelog($p["id"]);
-        if (empty($timelog)) {
-            $w->msg("Timelog not found", "/timelog");
-        }
-        if (!$timelog->canEdit(AuthService::getInstance($w)->user())) {
-            $w->msg("You cannot edit this Timelog", "/timelog");
-        }
-    } else {
-        $w->msg("No Timelog to move", "/timelog");
+    $redirect = Request::string("redirect", "");
+    if (empty($p["id"])) {
+        $w->msg("No Timelog to move", $redirect);
+        return;
+    }
+
+    $timelog = TimelogService::getInstance($w)->getTimelog($p["id"]);
+    if (empty($timelog)) {
+        $w->msg("Timelog not found", $redirect);
+        return;
+    }
+
+    if (!$timelog->canEdit(AuthService::getInstance($w)->user())) {
+        $w->msg("You cannot edit this Timelog", $redirect);
+        return;
     }
 
     $w->ctx("timelog", $timelog);
@@ -59,14 +64,6 @@ function move_GET(Web $w)
         }
     }
     $w->ctx("form", $form);
-
-    if (AuthService::getInstance($w)->user()->is_admin) {
-        $users = AuthService::getInstance($w)->getUsers();
-        usort($users, function ($a, $b) {
-            return strcmp($a->getContact()->getFullName(), $b->getContact()->getFullName());
-        });
-        $w->ctx("options", $users);
-    }
 }
 
 function move_POST(Web $w)
@@ -75,18 +72,18 @@ function move_POST(Web $w)
     $redirect = Request::string("redirect", "");
 
     if (empty($p["id"])) {
-        $w->out("No Timelog to move");
+        $w->error("No Timelog to move", $redirect);
         return;
     }
 
     $timelog = TimelogService::getInstance($w)->getTimelog($p["id"]);
     if (empty($timelog)) {
-        $w->out("Timelog not found");
+        $w->error("Timelog not found", $redirect);
         return;
     }
 
     if (!$timelog->canEdit(AuthService::getInstance($w)->user())) {
-        $w->out("You cannot edit this Timelog");
+        $w->error("You cannot edit this Timelog", $redirect);
         return;
     }
 
@@ -94,8 +91,6 @@ function move_POST(Web $w)
     $timelog->object_id = Request::int("object_id");
 
     $timelog->update();
-
-    $timelog->setComment(Request::string("description"));
 
     $w->msg("<div id='saved_record_id' data-id='" . $timelog->id . "' >Timelog saved</div>", (!empty($redirect) ? $redirect . "#timelog" : "/timelog"));
 }
