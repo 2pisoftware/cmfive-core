@@ -1,5 +1,5 @@
-<form action='/timelog/move/<?php echo $timelog->id; ?><?php echo $redirect ? '?redirect=' . $redirect : ''; ?>'
-    method='POST' name='timelog_move_form' target='_self' id='timelog_move_form' class=' small-12 columns'>
+<form action="/timelog/move/<?php echo $timelog->id; ?><?php echo $redirect ? "?redirect=" . $redirect : ""; ?>"
+    method="POST" name="timelog_move_form" target="_self" id="timelog_move_form" class=" small-12 columns">
     <div class="row-fluid clearfix small-12 multicolform">
 
         <div class="panel clearfix">
@@ -23,8 +23,8 @@
                         $usable_class = !empty($timelog->object_class) ? $timelog->object_class : (!empty($tracking_class) ? $tracking_class : (empty($select_indexes) ? null : $select_indexes[0][1]));
 $where_clause = [];
 if (!empty($usable_class)) {
-    if (in_array('is_deleted', (new $usable_class($w))->getDbTableColumnNames())) {
-        $where['is_deleted'] = 0;
+    if (in_array("is_deleted", (new $usable_class($w))->getDbTableColumnNames())) {
+        $where["is_deleted"] = 0;
     }
 }
 
@@ -33,7 +33,7 @@ echo (new \Html\Form\Autocomplete([
     "title"            => !empty($object) ? $object->getSelectOptionTitle() : null,
     "value"            => !empty($timelog->object_id) ? $timelog->object_id : $tracking_id,
     "required"        => "true"
-]))->setOptions(!empty($usable_class) ? TimelogService::getInstance($w)->getObjects($usable_class, $where) : ''); ?>
+]))->setOptions(!empty($usable_class) ? TimelogService::getInstance($w)->getObjects($usable_class, $where) : ""); ?>
                     </label>
                 </li>
                 <?php echo (new \Html\Form\InputField(["type" => "hidden", "id|name" => "object_id", "value" => $timelog->object_id ?: $tracking_id])); ?>
@@ -78,7 +78,7 @@ echo (new \Html\Form\Autocomplete([
     // Input values are module, search and description
     $(document).ready(function() {
         // If there is no task group selected, we disable submit
-        if ($("#object_id").val() == '') {
+        if ($("#object_id").val() == "") {
             $(".savebutton").prop("disabled", true);
             $("#acp_search").attr("readonly", "true");
         }
@@ -86,14 +86,14 @@ echo (new \Html\Form\Autocomplete([
 
         // If there is already a value in #object_class, that is, we are
         // editing, then set the searchURL
-        var searchUrl = '';
-        if ($("#object_class").val !== '') {
+        var searchUrl = "";
+        if ($("#object_class").val !== "") {
             $("#acp_search").removeAttr("readonly");
             searchUrl = searchBaseUrl + "?index=" + $("#object_class").val();
         }
         $("#object_class").change(function() {
-            console.log('object class changed');
-            $("#acp_search").val('');
+            console.log("object class changed");
+            $("#acp_search").val("");
             $("#timelog_move_form .panel + .panel").remove();
             if ($(this).val() !== "") {
                 $("#acp_search").removeAttr("readonly");
@@ -120,9 +120,9 @@ echo (new \Html\Form\Autocomplete([
                 // Task is chosen, allow submit
                 $(".savebutton").prop("disabled", false);
                 $("#timelog_move_form .panel + .panel").remove();
-                $.get('/timelog/ajaxGetExtraData/' + $("#object_class").val() + '/' + $("#object_id").val())
+                $.get("/timelog/ajaxGetExtraData/" + $("#object_class").val() + "/" + $("#object_id").val())
                     .done(function(response) {
-                        if (response != '') {
+                        if (response != "") {
                             var append_panel = "<div class='panel'><div class='row-fluid section-header'><h4>Additional Fields" + $("#object_class").val() +
                                 "</h4></div><ul class='small-block-grid-1 medium-block-grid-1 section-body'><li>" + response + "</li></ul></div>";
                             $("#timelog_move_form .panel").after(append_panel);
@@ -135,12 +135,12 @@ echo (new \Html\Form\Autocomplete([
 
         $("#timelogForm").on("submit", function() {
             $.ajax({
-                url: '/timelog/ajaxStart',
-                method: 'POST',
+                url: "/timelog/ajaxStart",
+                method: "POST",
                 data: {
-                    'object': $("#object_class").val(),
-                    'object_id': $("#object_id").val(),
-                    'description': $("#description").val()
+                    "object": $("#object_class").val(),
+                    "object_id": $("#object_id").val(),
+                    "description": $("#description").val()
                 },
                 success: function(result) {
                     alert(result);

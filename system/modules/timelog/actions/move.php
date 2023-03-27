@@ -4,8 +4,8 @@ function move_GET(Web $w)
 {
     $p = $w->pathMatch("id");
 
-    if (!empty($p['id'])) {
-        $timelog = TimelogService::getInstance($w)->getTimelog($p['id']);
+    if (!empty($p["id"])) {
+        $timelog = TimelogService::getInstance($w)->getTimelog($p["id"]);
         if (empty($timelog)) {
             $w->msg("Timelog not found", "/timelog");
         }
@@ -17,7 +17,7 @@ function move_GET(Web $w)
     }
 
     $w->ctx("timelog", $timelog);
-    $w->ctx('redirect', Request::string("redirect", ''));
+    $w->ctx("redirect", Request::string("redirect", ""));
 
     $indexes = TimelogService::getInstance($w)->getLoggableObjects();
     $select_indexes = [];
@@ -37,7 +37,7 @@ function move_GET(Web $w)
     $validation = Timelog::$_validation;
     if (!empty($validation["object_id"])) {
         if (in_array("required", $validation["object_id"])) {
-            $validation["search"] = ['required'];
+            $validation["search"] = ["required"];
         }
     }
 
@@ -52,9 +52,9 @@ function move_GET(Web $w)
     if (!empty($object)) {
         $additional_form_fields = $w->callHook("timelog", "type_options_for_" . get_class($object), $object);
         if (!empty($additional_form_fields[0])) {
-            $form['Additional Fields'] = [];
+            $form["Additional Fields"] = [];
             foreach ($additional_form_fields as $form_fields) {
-                $form['Additional Fields'][] = $form_fields;
+                $form["Additional Fields"][] = $form_fields;
             }
         }
     }
@@ -72,14 +72,14 @@ function move_GET(Web $w)
 function move_POST(Web $w)
 {
     $p = $w->pathMatch("id");
-    $redirect = Request::string("redirect", '');
+    $redirect = Request::string("redirect", "");
 
-    if (empty($p['id'])) {
+    if (empty($p["id"])) {
         $w->out("No Timelog to move");
         return;
     }
 
-    $timelog = TimelogService::getInstance($w)->getTimelog($p['id']);
+    $timelog = TimelogService::getInstance($w)->getTimelog($p["id"]);
     if (empty($timelog)) {
         $w->out("Timelog not found");
         return;
@@ -90,12 +90,12 @@ function move_POST(Web $w)
         return;
     }
 
-    $timelog->object_class = Request::string('object_class');
-    $timelog->object_id = Request::int('object_id');
+    $timelog->object_class = Request::string("object_class");
+    $timelog->object_id = Request::int("object_id");
 
     $timelog->update();
 
-    $timelog->setComment(Request::string('description'));
+    $timelog->setComment(Request::string("description"));
 
     $w->msg("<div id='saved_record_id' data-id='" . $timelog->id . "' >Timelog saved</div>", (!empty($redirect) ? $redirect . "#timelog" : "/timelog"));
 }
