@@ -74,8 +74,21 @@ function move_POST(Web $w)
     $p = $w->pathMatch("id");
     $redirect = Request::string("redirect", '');
 
-    // what if timelog was deleted before move_POST runs?
+    if (empty($p['id'])) {
+        $w->out("No Timelog to move");
+        return;
+    }
+
     $timelog = TimelogService::getInstance($w)->getTimelog($p['id']);
+    if (empty($timelog)) {
+        $w->out("Timelog not found");
+        return;
+    }
+
+    if (!$timelog->canEdit(AuthService::getInstance($w)->user())) {
+        $w->out("You cannot edit this Timelog");
+        return;
+    }
 
     $timelog->object_class = Request::string('object_class');
     $timelog->object_id = Request::int('object_id');
