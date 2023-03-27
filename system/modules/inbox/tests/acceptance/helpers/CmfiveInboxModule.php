@@ -1,5 +1,5 @@
 <?php
-namespace Helper;
+namespace Tests\Support\Helper;
 
 class CmfiveInboxModule extends \Codeception\Module
 {
