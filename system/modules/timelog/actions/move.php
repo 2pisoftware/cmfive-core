@@ -4,25 +4,29 @@ function move_GET(Web $w)
 {
     $p = $w->pathMatch("id");
 
-    $redirect = Request::string("redirect", "");
+    $redirect = Request::string("redirect", "/timelog");
+    if ($redirect !== "/timelog") {
+        $redirect = $redirect . "#timelog";
+    }
+
     if (empty($p["id"])) {
-        $w->msg("No Timelog to move", $redirect);
+        $w->out("No Timelog to move", $redirect);
         return;
     }
 
     $timelog = TimelogService::getInstance($w)->getTimelog($p["id"]);
     if (empty($timelog)) {
-        $w->msg("Timelog not found", $redirect);
+        $w->out("Timelog not found", $redirect);
         return;
     }
 
     if (!$timelog->canEdit(AuthService::getInstance($w)->user())) {
-        $w->msg("You cannot edit this Timelog", $redirect);
+        $w->out("You cannot edit this Timelog", $redirect);
         return;
     }
 
     $w->ctx("timelog", $timelog);
-    $w->ctx("redirect", Request::string("redirect", ""));
+    $w->ctx("redirect", $redirect);
 
     $indexes = TimelogService::getInstance($w)->getLoggableObjects();
     $select_indexes = [];
@@ -69,7 +73,11 @@ function move_GET(Web $w)
 function move_POST(Web $w)
 {
     $p = $w->pathMatch("id");
-    $redirect = Request::string("redirect", "");
+
+    $redirect = Request::string("redirect", "/timelog");
+    if ($redirect !== "/timelog") {
+        $redirect = $redirect . "#timelog";
+    }
 
     if (empty($p["id"])) {
         $w->error("No Timelog to move", $redirect);
@@ -92,5 +100,5 @@ function move_POST(Web $w)
 
     $timelog->update();
 
-    $w->msg("<div id='saved_record_id' data-id='" . $timelog->id . "' >Timelog saved</div>", (!empty($redirect) ? $redirect . "#timelog" : "/timelog"));
+    $w->msg("<div id='saved_record_id' data-id='" . $timelog->id . "' >Timelog saved</div>", $redirect);
 }
