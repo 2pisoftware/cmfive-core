@@ -71,7 +71,7 @@ echo (new \Html\Form\Autocomplete([
             $(".savebutton").prop("disabled", true);
             $("#acp_search").attr("readonly", "true");
         }
-        var searchBaseUrl = '/timelog/ajaxSearch';
+        var searchBaseUrl = "/timelog/ajaxSearch";
 
         // If there is already a value in #object_class, that is, we are
         // editing, then set the searchURL

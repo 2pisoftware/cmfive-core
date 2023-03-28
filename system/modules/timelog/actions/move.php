@@ -4,6 +4,7 @@ function move_GET(Web $w)
 {
     $p = $w->pathMatch("id");
 
+    // get redirect, defaults to "/timelog"
     $redirect = Request::string("redirect", "/timelog");
     if ($redirect !== "/timelog") {
         $redirect = $redirect . "#timelog";
@@ -74,6 +75,7 @@ function move_POST(Web $w)
 {
     $p = $w->pathMatch("id");
 
+    // get redirect, defaults to "/timelog"
     $redirect = Request::string("redirect", "/timelog");
     if ($redirect !== "/timelog") {
         $redirect = $redirect . "#timelog";
