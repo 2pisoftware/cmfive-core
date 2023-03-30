@@ -12,15 +12,7 @@
 					<td><?php echo $timelog->getFullName(); ?></td>
 					<td><?php echo formatDate($timelog->dt_start, "d-m-Y H:i:s"); ?></td>
 					<td><?php echo formatDate($timelog->dt_end, "d-m-Y H:i:s"); ?></td>
-					<td>
-						<?php
-                        if($timelog->isRunning()) {
-                            echo "See Timer";
-                        } else {
-                            echo $timelog->getHoursWorked() . ':' . str_pad($timelog->getMinutesWorked(), 2, '0', STR_PAD_LEFT);
-                        }
-			    ?>
-					</td>
+					<td><?php echo($timelog->isRunning() ? "See Timer" : $timelog->getHoursWorked() . ':' . str_pad($timelog->getMinutesWorked(), 2, '0', STR_PAD_LEFT));?></td>
 					<td><?php echo $timelog->time_type; ?></td>
 					<td><pre class="break-pre" style="font-family: sans-serif;"><?php echo $timelog->getComment()->comment; ?></pre></td>
 					<td>
