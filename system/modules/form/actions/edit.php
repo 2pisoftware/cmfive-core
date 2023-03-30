@@ -3,7 +3,7 @@
 function edit_GET(Web $w)
 {
     $p = $w->pathMatch("id");
-    $_form_object = $p['id'] ? $w->Form->getForm($p['id']) : new Form($w);
+    $_form_object = $p['id'] ? FormService::getInstance($w)->getForm($p['id']) : new Form($w);
 
     $form = [
         "Form" => [
@@ -24,12 +24,12 @@ function edit_GET(Web $w)
 function edit_POST(Web $w)
 {
     $p = $w->pathMatch("id");
-    $_form_object = $p['id'] ? $w->Form->getForm($p['id']) : new Form($w);
+    $_form_object = $p['id'] ? FormService::getInstance($w)->getForm($p['id']) : new Form($w);
 
     $_form_object->fill($_POST);
 
     $_form_object->insertOrUpdate();
 
-    $redirect_url = $w->request("redirect_url");
+    $redirect_url = Request::string("redirect_url");
     $w->msg("Form " . ($p['id'] ? 'updated' : 'created'), !empty($redirect_url) ? $redirect_url : "/form");
 }

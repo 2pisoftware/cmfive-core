@@ -2,7 +2,7 @@
     <div class="small-12 medium-6 large-4 columns">
         <label>Select new Taskgroup
             <?php
-            $task_groups = array_filter($w->Task->getTaskGroups(), function ($task_group) {
+            $task_groups = array_filter(TaskService::getInstance($w)->getTaskGroups(), function ($task_group) {
                 return $task_group->getCanICreate();
             });
             echo Html::autocomplete("taskgroup", $task_groups);
@@ -90,7 +90,7 @@
         <div class="row-fluid clearfix">
             <div class="small-12 medium-6 large-4 columns">
                 <label>Select new Assignee <?php
-                                            $user = $w->Auth->getUser($task->assignee_id);
+                                            $user = AuthService::getInstance($w)->getUser($task->assignee_id);
                                             echo "(was " . (!empty($user) ? $user->getFullName() : "unassigned") . ")"; ?>
                     <div id="new_assignee_placeholder">
                         <?php echo (new \Html\Form\Select())->setName("new_assignee")->setId("new_assignee"); ?>

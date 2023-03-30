@@ -95,7 +95,7 @@ class CmfiveTaskModule extends \Codeception\Module
         $I->see('To be able to delete a task group, please ensure there are no active tasks');
         $I->click('.close-reveal-modal');
         $taskgroup_url = $I->grabFromCurrentUrl();
-        $tasks = $I->grabMultiple('h4 + table td:nth-child(1) a', 'href');
+        $tasks = $I->grabMultiple('#members h4+table td:nth-child(1) a', 'href');
         foreach ($tasks as $task) {
             $I->deleteTask($I, $task);
         }
@@ -190,7 +190,7 @@ class CmfiveTaskModule extends \Codeception\Module
             'title' => $task,
             'select:status' => !empty($data['status']) ? $data['status'] : '',
             'select:priority' => !empty($data['priority']) ? $data['priority'] : '',
-            'date:dt_due' => $data['dt_due'],
+            'dt_due' => $data['dt_due'],
             'select:assignee_id' => !empty($data['assignee_id']) ? $data['assignee_id'] : '',
             'estimate_hours' => !empty($data['estimate_hours']) ?  $data['estimate_hours'] : '',
             'effort' => !empty($data['effort']) ? $data['effort'] : '',
@@ -231,7 +231,7 @@ class CmfiveTaskModule extends \Codeception\Module
      */
     public function deleteTask($I, $url)
     {
-        $I->amOnUrl($url);
+        $I->amOnURL($url);
         $I->click('Delete');
         $I->acceptPopup();
     }

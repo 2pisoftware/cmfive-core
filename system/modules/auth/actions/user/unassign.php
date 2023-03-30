@@ -3,7 +3,7 @@
 function unassign_POST(Web $w) {
 	
 	$user_id = $w->pathMatch();
-	$redirect = $w->request("redirect");
+	$redirect = Request::string("redirect");
 	
 	$group_membership = AuthService::getInstance($w)->getObjects("GroupUser", ["user_id" => $user_id]);
 	

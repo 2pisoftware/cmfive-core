@@ -4,15 +4,15 @@ function feed_ALL(Web &$w) {
 	// check for feed key in request
 	if (array_key_exists("key",$_REQUEST)) {
 		// get feed
-		$feed = $w->Report->getFeedInfobyKey($_REQUEST["key"]);
+		$feed = ReportService::getInstance($w)->getFeedInfobyKey($_REQUEST["key"]);
 
 		// if feed, then get respective report details
 		if ($feed) {
-			$rep = $w->Report->getReportInfo($feed->report_id);
+			$rep = ReportService::getInstance($w)->getReportInfo($feed->report_id);
 				
 			// if report exists, execute it
 			if ($rep) {
-				$w->Report->navigation($w, $rep->title);
+				ReportService::getInstance($w)->navigation($w, $rep->title);
 
 				// prepare and execute the report
 				$tbl = $rep->getReportData();
@@ -35,15 +35,15 @@ function feed_ALL(Web &$w) {
 				else {
 					// as a cvs file for download
 					if ($_REQUEST['format'] == "csv") {
-						$w->Report->exportcsv($tbl, $rep->title);
+						ReportService::getInstance($w)->exportcsv($tbl, $rep->title);
 					}
 					// as a PDF file for download
 					elseif ($_REQUEST['format'] == "pdf") {
-						$w->Report->exportpdf($tbl, $rep->title);
+						ReportService::getInstance($w)->exportpdf($tbl, $rep->title);
 					}
 					// as XML document for download
 					elseif ($_REQUEST['format'] == "xml") {
-						$w->Report->exportxml($tbl, $rep->title);
+						ReportService::getInstance($w)->exportxml($tbl, $rep->title);
 					}
 					// if confused, display a web page in the usual manner
 					else {

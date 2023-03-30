@@ -2,19 +2,19 @@
 
 // list available feeds in the feed dashboard
 function listfeed_ALL(Web &$w) {
-    $w->Report->navigation($w, "Feeds");
+    ReportService::getInstance($w)->navigation($w, "Feeds");
 
     // get all feeds
-    $feeds = $w->Report->getFeeds();
+    $feeds = ReportService::getInstance($w)->getFeeds();
 
     // prepare table headings
     $line = array(array("Feed", "Report", "Description", "Created", ""));
 
     // if feeds exists and i am suitably authorised, list them
-    if (($feeds) && ($w->Auth->user()->hasRole("report_editor") || $w->Auth->user()->hasRole("report_admin"))) {
+    if (($feeds) && (AuthService::getInstance($w)->user()->hasRole("report_editor") || AuthService::getInstance($w)->user()->hasRole("report_admin"))) {
         foreach ($feeds as $feed) {
             // get report data
-            $rep = $w->Report->getReportInfo($feed->report_id);
+            $rep = ReportService::getInstance($w)->getReportInfo($feed->report_id);
 
             // display the details
             if ($rep) {

@@ -1,6 +1,6 @@
 <?php echo Html::box("/timelog/edit?class={$class}&id={$id}" . (!empty($redirect) ? "&redirect=$redirect" : ''), "Add new timelog", true); ?>
 <h4 style="display: inline; padding: 0px 5px;" class="right">
-	<?php echo $w->Task->getFormatPeriod($total); ?>
+	<?php echo TaskService::getInstance($w)->getFormatPeriod($total); ?>
 </h4>
 
 <?php if (!empty($timelogs)) : ?>
@@ -17,10 +17,10 @@
 					<td><pre class="break-pre" style="font-family: sans-serif;"><?php echo $timelog->getComment()->comment; ?></pre></td>
 					<td>
 						<?php
-						if ($timelog->canEdit($w->Auth->user())) {
+						if ($timelog->canEdit(AuthService::getInstance($w)->user())) {
 							echo Html::box('/timelog/edit/' . $timelog->id . (!empty($redirect) ? "?redirect=$redirect" : ''), 'Edit', true);
 						} 
-						if ($timelog->canDelete($w->Auth->user())) {
+						if ($timelog->canDelete(AuthService::getInstance($w)->user())) {
 							$confirmation_message = implode("", $w->callHook("timelog", "before_display_timelog", $timelog));
 							echo Html::b('/timelog/delete/' . $timelog->id . (!empty($redirect) ? "?redirect=$redirect" : ''), 'Delete', empty($confirmation_message) ? 'Are you sure you want to delete this timelog?' : $confirmation_message, null, false, "warning");
 						}

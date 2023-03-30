@@ -16,12 +16,12 @@ class FormApplication extends DbObject {
 	public $is_deleted;
 	
 	public function getForms() {
-		$forms_mapped = $this->db->get('form')->leftJoin('form_application_mapping on form_application_mapping.form_id = form.id')
+		$forms_mapped = $this->w->db->get('form')->leftJoin('form_application_mapping on form_application_mapping.form_id = form.id')
 									->where('form.is_deleted', 0)->where('form_application_mapping.is_deleted', 0)
 									->where('form_application_mapping.application_id', $this->id)->fetchAll();
 
 		return $this->getObjectsFromRows('Form', $forms_mapped);
-		// return $this->w->Form->getFormsMappedToObject($this);
+		// return FormService::getInstance($this->w)->getFormsMappedToObject($this);
 	}
 
 	public function hasForm($form) {
@@ -29,7 +29,7 @@ class FormApplication extends DbObject {
 	}
 	
 	public function getFormInstances($form) {
-		return $this->w->Form->getFormInstancesForFormAndObject($form, $this);
+		return FormService::getInstance($this->w)->getFormInstancesForFormAndObject($form, $this);
 	}
 	
 	public function getMembers() {

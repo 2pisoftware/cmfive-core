@@ -16,7 +16,7 @@ function runreport_ALL(Web &$w)
 
             // if report exists, first check status and user role before displaying
             if (!empty($rep)) {
-                if (($rep->is_approved == "0") && ($member->role != "EDITOR") && (!$w->Auth->user()->hasRole("report_admin"))) {
+                if (($rep->is_approved == "0") && ($member->role != "EDITOR") && (!AuthService::getInstance($w)->user()->hasRole("report_admin"))) {
                     $w->msg($rep->title . ": Report is yet to be approved", "/report/index/");
                 } else {
                     // display form

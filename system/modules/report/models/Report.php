@@ -17,7 +17,7 @@ class Report extends DbObject
     /**
      * Returns a DbPDO connection persistent for the whole requestw
      *
-     * @return DbPDO|null 
+     * @return DbPDO|null
      */
     public function getReadOnlyDbConnection()
     {
@@ -71,6 +71,7 @@ class Report extends DbObject
         if (empty($this->report_connection_id)) {
             return $this->getReadOnlyDbConnection();
         } else {
+            /** @var ReportConnection */
             $dbc = $this->getObject("ReportConnection", $this->report_connection_id);
             if (!empty($dbc)) {
                 return $dbc->getDb();
@@ -81,7 +82,7 @@ class Report extends DbObject
     // return a category title using lookup with type: ReportCategory
     public function getCategoryTitle()
     {
-        $c = $this->Report->getObject("Lookup", array("type" => "ReportCategory", "code" => $this->category));
+        $c = ReportService::getInstance($this->w)->getObject("Lookup", array("type" => "ReportCategory", "code" => $this->category));
         if (!empty($c)) {
             return property_exists($c, "title") ? $c->title : null;
         } else {
@@ -182,7 +183,7 @@ class Report extends DbObject
         // foreach ($rows[1] as $form_row) {
         //     $form[$section_name][] = $this->getSingleColFormCriteria($form_row, true);
         // }
-            
+
         return $parsed_report_form;
     }
 
@@ -215,7 +216,7 @@ class Report extends DbObject
                         $sql = trim(!empty($split_arr[3]) ? $split_arr[3] : '');
 
                         if ($sql !== "") {
-                            $sql = $this->Report->putSpecialSQL($sql);
+                            $sql = ReportService::getInstance($this->w)->putSpecialSQL($sql);
                         }
 
                         if (empty($arr) && !$skip_section_header) {
@@ -224,17 +225,16 @@ class Report extends DbObject
                         // do something different based on form element type
                         switch ($type) {
                             case "autocomplete":
-                                $minValue = 3;
                                 // Fallthrough.
                             case "select":
                                 if ($sql != "") {
                                     // if sql exists, check SQL is valid
-                                    $flgsql = $this->Report->getcheckSQL($sql, $this->getDb());
+                                    $flgsql = ReportService::getInstance($this->w)->getcheckSQL($sql, $this->getDb());
 
                                     // if valid SQL ...
                                     if ($flgsql) {
                                         //get returns for display as dropdown
-                                        $values = $this->Report->getFormDatafromSQL($sql, $this->getDb());
+                                        $values = ReportService::getInstance($this->w)->getFormDatafromSQL($sql, $this->getDb());
                                     } else {
                                         // there is a problem, say as much
                                         $values = array("SQL error");
@@ -244,14 +244,14 @@ class Report extends DbObject
                                     $values = array("No SQL statement");
                                 }
                                 // complete array which becomes form dropdown
-                                $arr[] = array($label, $type, $name, $this->w->request($name), $values, ($type === "autocomplete" ? $minValue : null));
+                                $arr[] = array($label, $type, $name, Request::string($name), $values, ($type === "autocomplete" ? 3 : null));
                                 break;
                             case "checkbox":
                             case "text":
                             case "date":
                             default:
                                 // complete array which becomes other form element type
-                                $arr[] = array($label, $type, $name, $this->w->request($name));
+                                $arr[] = array($label, $type, $name, Request::string($name));
                         }
                     }
                 }
@@ -259,7 +259,7 @@ class Report extends DbObject
         }
 
         // get the selection of output formats as array
-        //      $format = $this->Report->selectReportFormat();
+        //      $format = ReportService::getInstance($this->w)->selectReportFormat();
 
         $templates = $this->getTemplates();
         $template_values = array();
@@ -311,8 +311,8 @@ class Report extends DbObject
                         // do not use $_REQUEST because it includes unwanted cookies
                         foreach (array_merge($params, $_GET, $_POST) as $name => $value) {
                             // convert input dates to yyyy-mm-dd for query
-                            if (startsWith($name, "dt_")) {
-                                $value = $this->Report->date2db($value);
+                            if (startsWith($name, "dt_") && !empty($value)) {
+                                $value = ReportService::getInstance($this->w)->date2db($value);
                             }
 
                             // substitute place holder with form value
@@ -327,9 +327,9 @@ class Report extends DbObject
                         // if our SQL is still intact ...
                         if ($sql != "") {
                             // check the SQL statement for special parameter replacements
-                            $sql = $this->Report->putSpecialSQL($sql);
+                            $sql = ReportService::getInstance($this->w)->putSpecialSQL($sql);
                             // check the SQL statement for validity
-                            $flgsql = $this->Report->getcheckSQL($sql, $this->getDb());
+                            $flgsql = ReportService::getInstance($this->w)->getcheckSQL($sql, $this->getDb());
 
                             // if valid SQL ...
                             if ($flgsql) {
@@ -380,12 +380,13 @@ class Report extends DbObject
                                     // other SQL types do not return recordset so treat differently from SELECT
                                     try {
                                         $this->startTransaction();
-                                        $rows = $this->Report->getExefromSQL($sql, $this->getDb());
+                                        $rows = ReportService::getInstance($this->w)->getExefromSQL($sql, $this->getDb());
                                         $this->rollbackTransaction();
                                         $line = array(array("SUCCESS", "SQL has completed successfully"));
                                     } catch (Exception $e) {
                                         // SQL returns errors so clean up and return error
                                         $this->rollbackTransaction();
+                                        LogService::getInstance($this->w)->error($e->getMessage());
                                         $line = array(array("ERROR", "A SQL error was encountered: " . $e->getMessage()));
                                     }
                                     $tbl = array_merge($crumbs, $title, $hds, $line);
@@ -421,7 +422,7 @@ class Report extends DbObject
         if (!empty($connection)) {
             return $connection->query($sql)->fetchAll(PDO::FETCH_ASSOC);
         }
-        
+
         LogService::getInstance($this->w)->error("No database connection details found for report");
         return null;
     }

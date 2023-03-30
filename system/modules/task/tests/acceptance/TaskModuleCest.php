@@ -41,7 +41,7 @@ class TaskModuleCest
             'title' => 'testTasks_test task',
             'status' => 'New',
             'priority' => 'Normal',
-            'dt_due' => strtotime('27/05/1988'),
+            'dt_due' => '2022-11-28',
             'assignee_id' => 'testTasks_test user',
             'estimate_hours' => 10,
             'effort' => 11,

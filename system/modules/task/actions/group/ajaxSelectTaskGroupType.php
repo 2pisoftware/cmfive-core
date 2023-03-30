@@ -9,8 +9,8 @@ function ajaxSelectTaskGroupType_ALL(Web $w) {
         return;
     }
 
-    $tasktypes = ($taskgrouptype != "") ? $w->Task->getTaskTypes($taskgrouptype) : array();
-    $priorities = ($taskgrouptype != "") ? $w->Task->getTaskPriority($taskgrouptype) : array();
+    $tasktypes = ($taskgrouptype != "") ? TaskService::getInstance($w)->getTaskTypes($taskgrouptype) : array();
+    $priorities = ($taskgrouptype != "") ? TaskService::getInstance($w)->getTaskPriority($taskgrouptype) : array();
  
     // create dropdowns loaded with respective data
     $result = array();

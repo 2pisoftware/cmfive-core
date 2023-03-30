@@ -6,7 +6,7 @@
  */
 function delete_GET(Web $w) {
 	$p = $w->pathMatch("id");
-	$redirect = $w->request("redirect", '');
+	$redirect = Request::string("redirect", '');
 	
 	// Check for parameter
 	if (empty($p['id'])) {
@@ -14,13 +14,13 @@ function delete_GET(Web $w) {
 	}
 	
 	// Check for object
-	$timelog = $w->Timelog->getTimelog($p['id']);
+	$timelog = TimelogService::getInstance($w)->getTimelog($p['id']);
 	if (empty($timelog->id)) {
 		$w->error("Timelog not found", "/timelog");
 	}
 	
 	// Check permissions
-	if (!$timelog->canDelete($w->Auth->user())) {
+	if (!$timelog->canDelete(AuthService::getInstance($w)->user())) {
 		$w->error("You cannot delete this Timelog", "/timelog");
 	}
 	

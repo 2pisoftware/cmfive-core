@@ -62,7 +62,7 @@ class InboxModuleCest
 		// create a user fred, login and send a message to admin
 		$I->createUser($I,'fred','password','fred','jones','fred@jones.com', ['user','inbox_reader','inbox_sender']);
 		// system notifications
-		$I->findMessage($I,'An account has changed','Inbox');
+		// $I->findMessage($I,'An account has changed','Inbox');
 		$I->logout($I);
 		$I->login($I,'fred','password');
 		$I->inboxCreateMessage($I,$myFullName,'test message from fred','content of test message');

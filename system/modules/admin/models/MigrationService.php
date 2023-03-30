@@ -14,7 +14,7 @@ class MigrationService extends DbService
     public function getAvailableMigrations($module_name)
     {
         $_this = $this;
-        set_error_handler(function ($errno, $errstr, $errfile, $errline, $errcontext) use ($_this) {
+        set_error_handler(function ($errno, $errstr, $errfile, $errline) use ($_this) {
             if (!(error_reporting() & $errno)) {
                 return;
             }
@@ -66,7 +66,7 @@ class MigrationService extends DbService
         foreach ($migration_paths as $migration_path) {
             if (is_dir(ROOT_PATH . DS . $migration_path)) {
                 foreach (scandir(ROOT_PATH . DS . $migration_path) as $file) {
-                    if (!is_dir($file) && $file[0] !== '.') {
+                    if (!is_dir(ROOT_PATH . DS . $migration_path . DS . $file) && $file[0] !== '.') {
                         $classname = explode('.', str_replace('-', '.', $file));
                         if (!empty($classname[1])) {
                             if ($this->isInstalled($classname[1])) {
@@ -127,7 +127,7 @@ class MigrationService extends DbService
         if (!empty($module) && $module !== "all") {
             $migrations_query->where('module', strtolower($module));
         }
-        $migrations = $migrations_query->orderBy('dt_created ASC')->fetch_all();
+        $migrations = $migrations_query->orderBy('dt_created ASC')->fetchAll();
         $migrationsInstalled = [];
 
         if (!empty($migrations)) {
@@ -259,7 +259,7 @@ MIGRATION;
             foreach ($alreadyRunMigrations as $module => $alreadyRunMigrationList) {
                 if (!empty($alreadyRunMigrationList)) {
                     foreach ($alreadyRunMigrationList as $migrationsAlreadyRun) {
-                        if (array_key_exists($migrationsAlreadyRun['path'], $availableMigrations[$module])) {
+                        if (array_key_exists($migrationsAlreadyRun['path'], $availableMigrations[$module] ?? [])) {
                             unset($availableMigrations[$module][$migrationsAlreadyRun['path']]);
                         }
                     }
@@ -316,9 +316,9 @@ MIGRATION;
                         // Class name must match filename after timestamp and hyphen
                         if (class_exists($migration['class_name'])) {
                             LogService::getInstance($this->w)->setLogger("MIGRATION")->info("Running migration: " . $migration['class_name']);
-
+                            
+                            $this->w->db->startTransaction();
                             try {
-                                $this->w->db->startTransaction();
                                 // Set migration class
                                 $migration_class = (new $migration['class_name'](1))->setWeb($this->w);
                                 $migration_class->setAdapter($mysql_adapter);
@@ -336,7 +336,7 @@ MIGRATION;
                                         $batchedMigrations = [];
                                         foreach ($availableMigrations as $avmigration) {
                                             // If the avmigration array has elements in it that means it's part of the current batch
-                                            if (count($avmigration) > 0) {
+                                            if (is_array($avmigration) && count($avmigration) > 0) {
                                                 //Add it to the batched migration variable
                                                 $batchedMigrations[] = $avmigration;
                                             }
@@ -395,7 +395,11 @@ MIGRATION;
                                 LogService::getInstance($this->w)->setLogger("MIGRATION")->info("Migration has run");
                             } catch (Exception $e) {
                                 $this->w->db->rollbackTransaction();
-                                $this->w->out("Error with a migration: " . $e->getMessage() . "<br/>More info: " . var_export($e));
+                                if (defined('STDIN')) {
+                                    echo "Error with a migration: " . $e->getMessage() . "<br/>More info: " . var_export($e);
+                                } else {
+                                    $this->w->out("Error with a migration: " . $e->getMessage() . "<br/>More info: " . var_export($e));
+                                }
                                 LogService::getInstance($this->w)->setLogger("MIGRATION")->error("Error with a migration: " . $e->getMessage());
 
                                 // Skip current modules migrations
@@ -419,7 +423,7 @@ MIGRATION;
     public function getNextBatchNumber()
     {
         if (empty($this->_NEXT_BATCH)) {
-            $current_no = $this->w->db->get("migration")->select()->select("batch")->orderBy("batch DESC")->limit("1")->fetch_element("batch");
+            $current_no = $this->w->db->get("migration")->select()->select("batch")->orderBy("batch DESC")->limit("1")->fetchElement("batch");
             $this->_NEXT_BATCH = !empty($current_no) ? $current_no + 1 : 1;
         }
 

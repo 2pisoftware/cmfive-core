@@ -136,28 +136,6 @@ class ChannelService extends DbService
         return $this->getObjects("ChannelMessage", $where, false, true, "dt_created desc");
     }
 
-    /**
-     * Get new messages using a sql query
-     *
-     * @deprecated v2.12.1 - Will be removed in v5.0.0.
-     * @see ChannelProcessor->getnewmessages()
-     *
-     * @param  int $channel_id   [description]
-     * @param  int $processor_id [description]
-     */
-    public function getNewMessages($channel_id, $processor_id)
-    {
-        $query = $this->w->db->get("channel_message")->where("channel_message.channel_id", $channel_id)
-            ->leftJoin("channel_message_status on channel_message_status.message_id = channel_message.id")
-            ->where("channel_message_status.id IS NULL OR (channel_message_status.processor_id != ? AND channel_message_status.is_successful != 1)", $processor_id)
-            ->fetch_all();
-
-        if (!empty($query)) {
-            return $this->getObjectsFromRows("ChannelMessage", $query);
-        }
-        return null;
-    }
-
     public function getMessage($id)
     {
         return $this->getObject("ChannelMessage", $id);
@@ -194,7 +172,7 @@ class ChannelService extends DbService
         // Get list of failed messages
         $failed_messages = $this->_db->get("channel_message")
             ->leftJoin("channel_message_status on channel_message.id = channel_message_status.message_id")
-            ->where("channel_message_status.is_successful", 0)->fetch_all();
+            ->where("channel_message_status.is_successful", 0)->fetchAll();
         if (!empty($failed_messages)) {
             foreach ($failed_messages as $fm) {
                 $failed_ids[] = $fm['id'];
@@ -203,7 +181,7 @@ class ChannelService extends DbService
 
         // Get the message statuses
         if (!empty($failed_ids)) {
-            $message_statuses = $this->_db->get("channel_message_status")->where("message_id", $failed_ids)->fetch_all();
+            $message_statuses = $this->_db->get("channel_message_status")->where("message_id", $failed_ids)->fetchAll();
             $message_statuses_objects = $this->fillObjects("ChannelMessageStatus", $message_statuses);
         }
 
@@ -223,7 +201,7 @@ class ChannelService extends DbService
         }
 
         // Get new messages
-        $new_messages = $this->_db->sql("select channel_message.* from channel_message left join channel_message_status on channel_message.id = channel_message_status.message_id where channel_message_status.id IS NULL")->fetch_all();
+        $new_messages = $this->_db->sql("select channel_message.* from channel_message left join channel_message_status on channel_message.id = channel_message_status.message_id where channel_message_status.id IS NULL")->fetchAll();
         $new_message_objects = [];
         if (!empty($new_messages)) {
             $new_message_objects = $this->fillObjects("ChannelMessage", $new_messages);
@@ -234,7 +212,7 @@ class ChannelService extends DbService
 
     public function markMessagesAsProcessed($channel_id)
     {
-        $this->db->update('channel_message', ['is_processed' => 1])->where('channel_id', $channel_id)
+        $this->w->db->update('channel_message', ['is_processed' => 1])->where('channel_id', $channel_id)
             ->where('is_deleted', 0)->execute();
     }
 
@@ -248,7 +226,7 @@ class ChannelService extends DbService
             $w->ctx("title", $title);
         }
         $nav = $prenav ? $prenav : [];
-        if ($w->Auth->loggedIn()) {
+        if (AuthService::getInstance($w)->loggedIn()) {
             $w->menuLink("channels/listchannels", "List Channels", $nav);
             $w->menuLink("channels/listprocessors", "List Processors", $nav);
             $w->menuLink("channels/listmessages", "List Messages", $nav);

@@ -8,7 +8,7 @@ use \Html\Form\Autocomplete as Autocomplete;
 function edit_GET($w)
 {
     $p = $w->pathMatch("id");
-    $task = (!empty($p["id"]) ? $w->Task->getTask($p["id"]) : new Task($w));
+    $task = (!empty($p["id"]) ? TaskService::getInstance($w)->getTask($p["id"]) : new Task($w));
 
     if ($task->is_deleted == 1) {
         $w->error('Task not found', "/task/tasklist/");
@@ -16,17 +16,17 @@ function edit_GET($w)
 
     // Register for timelog if not new task
     if (!empty($task->id)) {
-        $w->Timelog->registerTrackingObject($task);
+        TimelogService::getInstance($w)->registerTrackingObject($task);
     }
 
-    if (!empty($task->id) && !$task->canView($w->Auth->user())) {
+    if (!empty($task->id) && !$task->canView(AuthService::getInstance($w)->user())) {
         $w->error("You do not have permission to edit this Task", "/task/tasklist");
     }
 
     // Get a list of the taskgroups and filter by what can be used
-    $taskgroup_list = $w->Task->getTaskGroups();
+    $taskgroup_list = TaskService::getInstance($w)->getTaskGroups();
     if (empty($taskgroup_list)) {
-        if ((new Taskgroup($w))->canEdit($w->Auth->user())) {
+        if ((new Taskgroup($w))->canEdit(AuthService::getInstance($w)->user())) {
             $w->msg('Please set up a taskgroup before continuing', '/task-group/viewtaskgrouptypes');
         } else {
             $w->error('There are no Tasks currently set up, please notify an Administrator', '/task');
@@ -43,15 +43,15 @@ function edit_GET($w)
 
     // Try and prefetch the taskgroup by given id
     $taskgroup = null;
-    $taskgroup_id = $w->request("gid");
+    $taskgroup_id = Request::int("gid");
     $assigned = 0;
     if (!empty($taskgroup_id) || !empty($task->task_group_id)) {
-        $taskgroup = $w->Task->getTaskGroup(!empty($task->task_group_id) ? $task->task_group_id : $taskgroup_id);
+        $taskgroup = TaskService::getInstance($w)->getTaskGroup(!empty($task->task_group_id) ? $task->task_group_id : $taskgroup_id);
 
         if (!empty($taskgroup->id)) {
-            $tasktypes = $w->Task->getTaskTypes($taskgroup->task_group_type);
-            $priority = $w->Task->getTaskPriority($taskgroup->task_group_type);
-            $members = $w->Task->getMembersBeAssigned($taskgroup->id);
+            $tasktypes = TaskService::getInstance($w)->getTaskTypes($taskgroup->task_group_type);
+            $priority = TaskService::getInstance($w)->getTaskPriority($taskgroup->task_group_type);
+            $members = TaskService::getInstance($w)->getMembersBeAssigned($taskgroup->id);
             sort($members);
             array_unshift($members, ["Unassigned", "0"]);
             $assigned = (empty($task->assignee_id)) ? "unassigned" : $task->assignee_id;
@@ -142,23 +142,23 @@ function edit_GET($w)
     // If I am assignee, creator or task group owner, I can get notifications for this task
     if (!empty($task->id) && $task->getCanINotify()) {
         // get User set notifications for this Task
-        $notify = $w->Task->getTaskUserNotify($w->Auth->user()->id, $task->id);
+        $notify = TaskService::getInstance($w)->getTaskUserNotify(AuthService::getInstance($w)->user()->id, $task->id);
         if (empty($notify)) {
-            $logged_in_user_id = $w->Auth->user()->id;
+            $logged_in_user_id = AuthService::getInstance($w)->user()->id;
             // Get my role in this task group
-            $me = $w->Task->getMemberGroupById($task->task_group_id, $logged_in_user_id);
+            $me = TaskService::getInstance($w)->getMemberGroupById($task->task_group_id, $logged_in_user_id);
 
             $type = "";
             if ($task->assignee_id == $logged_in_user_id) {
                 $type = "assignee";
             } elseif ($task->getTaskCreatorId() == $logged_in_user_id) {
                 $type = "creator";
-            } elseif ($w->Task->getIsOwner($task->task_group_id, $logged_in_user_id)) {
+            } elseif (TaskService::getInstance($w)->getIsOwner($task->task_group_id, $logged_in_user_id)) {
                 $type = "other";
             }
 
             if (!empty($type) && !empty($me)) {
-                $notify = $w->Task->getTaskGroupUserNotifyType($logged_in_user_id, $task->task_group_id, strtolower($me->role), $type);
+                $notify = TaskService::getInstance($w)->getTaskGroupUserNotifyType($logged_in_user_id, $task->task_group_id, strtolower($me->role), $type);
             }
         }
 
@@ -211,10 +211,10 @@ function edit_GET($w)
 function edit_POST($w)
 {
     $p = $w->pathMatch("id");
-    $task = (!empty($p["id"]) ? $w->Task->getTask($p["id"]) : new Task($w));
+    $task = (!empty($p["id"]) ? TaskService::getInstance($w)->getTask($p["id"]) : new Task($w));
     $taskdata = null;
     if (!empty($p["id"])) {
-        $taskdata = $w->Task->getTaskData($p['id']);
+        $taskdata = TaskService::getInstance($w)->getTaskData($p['id']);
     }
 
     $task->fill($_POST['edit']);
@@ -222,7 +222,7 @@ function edit_POST($w)
     $task->assignee_id = intval($_POST['edit']['assignee_id']);
 
     if (empty($task->dt_due)) {
-        $task->dt_due = $w->Task->getNextMonth();
+        $task->dt_due = TaskService::getInstance($w)->getNextMonth();
     }
     $task->estimate_hours = !empty($task->estimate_hours) ? $task->estimate_hours : null;
     $task->effort = empty($task->effort) ? null : floatval($task->effort);
@@ -234,7 +234,7 @@ function edit_POST($w)
     $w->out($task->id);
 
     // Get existing task_data objects for this task and update them
-    $existing_task_data = $w->Task->getTaskData($task->id);
+    $existing_task_data = TaskService::getInstance($w)->getTaskData($task->id);
     if (!empty($existing_task_data)) {
         foreach ($existing_task_data as $e_task_data) {
             // Autocomplete fields
@@ -275,8 +275,8 @@ function edit_POST($w)
 
     if (empty($p['id']) && Config::get('task.ical.send') == true) {
         $data = $task->getIcal();
-        $user = $w->Auth->getUser($task->assignee_id);
-        $contact = !empty($user->id) ? $user->getContact() : $w->Auth->user()->getContact();
+        $user = AuthService::getInstance($w)->getUser($task->assignee_id);
+        $contact = !empty($user->id) ? $user->getContact() : AuthService::getInstance($w)->user()->getContact();
 
         $messageObject = new Swift_Message("Invite to: " . $task->title);
         $messageObject->setTo([$contact->email]);

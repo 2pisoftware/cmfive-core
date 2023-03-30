@@ -2,7 +2,7 @@
 
 function file_admin_extra_navigation_items(Web $w)
 {
-    if ($w->Auth->user()->is_admin == 1) {
+    if (AuthService::getInstance($w)->user()->is_admin == 1) {
         return [
             $w->menuLink("file-admin", "File transfer"),
             $w->menuLink("file/deletedfiles", "Deleted files")
@@ -33,7 +33,7 @@ function file_core_web_cleanup(Web $w)
         try {
             $file->isDir() ? rmdir($file->getRealPath()) : unlink($file->getRealPath());
         } catch (Throwable $t) {
-            $w->Log->setLogger("FILE")->error("Failed to remove directory at {$directory_path}: " . $t->getMessage());
+            LogService::getInstance($w)->setLogger("FILE")->error("Failed to remove directory at {$directory_path}: " . $t->getMessage());
         }
     }
 

@@ -38,11 +38,11 @@
                 "value" => CSRF::getTokenValue(),
             ]));
             ?>
-            <label>Login
+            <label><?php echo Config::get('auth.login_label', 'Login'); ?>
                 <?php
                 echo (new \Html\Form\InputField([
                     "id|name" => "login",
-                    "placeholder" => "Your login",
+                    "placeholder" => Config::get('auth.login_label', 'Login'),
                     "required" => true,
                 ]))->setAttribute("v-model", "login");
                 ?>
@@ -106,7 +106,7 @@
                     _this.password = null,
                     _this.mfa_code = null,
                     _this.is_mfa_enabled = false;
-                    _this.error_message = "Incorrect login details";
+                    _this.error_message = error.response.data;
                 }).finally(function() {
                     _this.is_loading = false;
                 });

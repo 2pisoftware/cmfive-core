@@ -11,7 +11,7 @@ function edit_GET(Web $w)
         $w->error("Unable to find User", $redirect_url);
     }
 
-    $user = $w->Auth->getUser($user_id);
+    $user = AuthService::getInstance($w)->getUser($user_id);
     if (empty($user)) {
         $w->error("Unable to find User", $redirect_url);
     }
@@ -36,7 +36,7 @@ function edit_GET(Web $w)
 
     $titles_array = [];
 
-    foreach ($w->Auth->getTitles() as $title) {
+    foreach (AuthService::getInstance($w)->getTitles() as $title) {
         $titles_array[] = [
             "id" => $title->id,
             "name" => $title->title,
@@ -63,6 +63,7 @@ function edit_GET(Web $w)
             "is_admin" => $user->is_admin,
             "is_active" => $user->is_active,
             "is_external" => $user->is_external,
+            "is_locked" => $user->is_locked,
             "new_password" => "",
             "repeat_new_password" => "",
             "is_mfa_enabled" => $user->is_mfa_enabled,

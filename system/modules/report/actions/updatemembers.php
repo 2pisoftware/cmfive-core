@@ -11,7 +11,7 @@ function updatemembers_POST(Web &$w) {
 
 	$arrdb['user_id'] = $member;
 	// find member against report ID
-	$mem = $w->Report->getReportMember($arrdb['report_id'], $arrdb['user_id']);
+	$mem = ReportService::getInstance($w)->getReportMember($arrdb['report_id'], $arrdb['user_id']);
 
 	// if no membership, create it, otherwise update and continue
 	if (!$mem) {

@@ -14,7 +14,7 @@ function toc_GET(Web $w) {
 		}
 	}
 	foreach($tocs as $module => $path) {
-		if ($w->Auth->allowed($module.'/index')) {
+		if (AuthService::getInstance($w)->allowed($module.'/index')) {
 			$content = file_get_contents($path);
 			$title = HelpLib::extractTitle($content);
 			$ul[]=Html::a(WEBROOT.'/help/view/'.$module.'/'.$module.'_toc',$title?$title:ucfirst($module));

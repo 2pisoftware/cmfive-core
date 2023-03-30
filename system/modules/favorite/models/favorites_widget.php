@@ -20,7 +20,7 @@ class favorites_widget extends ModuleWidget {
 	
 	public function canView(User $user) {
 		if (empty($user)) {
-			$user = $this->w->Auth->user();
+			$user = AuthService::getInstance($this->w)->user();
 		}
 		
 		return $user->hasRole("favorites_user");

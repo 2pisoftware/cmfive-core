@@ -68,7 +68,7 @@ class CommentService extends DbService
         $comment = new Comment($this->w);
         $comment->obj_table = $object->getDbTableName();
         $comment->obj_id = $object->id;
-        $comment->comment = strip_tags($message);
+        $comment->comment = strip_tags($message ?? "");
         $comment->is_deleted = 0;
         $comment->insert();
     }

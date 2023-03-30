@@ -13,7 +13,7 @@ function show_form(\Web $w, $params)
     }
 
     $form_instance = null;
-    $form_instances = $w->Form->getFormInstancesForFormAndObject($form, $params['object']);
+    $form_instances = FormService::getInstance($w)->getFormInstancesForFormAndObject($form, $params['object']);
 
     // If there happens to be more than once FormInstance show the most recent one.
     if (!empty($form_instances) && count($form_instances) > 0) {
@@ -25,7 +25,7 @@ function show_form(\Web $w, $params)
         $form_instance_field_value = null;
 
         if (!empty($form_instance)) {
-            $form_instance_field_value = $w->Form->getFormValueForInstanceAndField($form_instance->id, $form_field->id);
+            $form_instance_field_value = FormService::getInstance($w)->getFormValueForInstanceAndField($form_instance->id, $form_field->id);
         }
 
         $table_rows[] = [$form_field->name, "static", $form_field->technical_name, empty($form_instance_field_value) ? null : $form_instance_field_value->getMaskedValue()];

@@ -2,7 +2,7 @@
 function deletefeed_ALL(Web &$w) {
 	$p = $w->pathMatch("id");
 
-	$feed = $w->Report->getFeedInfobyId($p["id"]);
+	$feed = ReportService::getInstance($w)->getFeedInfobyId($p["id"]);
 
 	$arr["is_deleted"] = 1;
 

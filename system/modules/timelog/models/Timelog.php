@@ -32,7 +32,7 @@ class Timelog extends DbObject
     public function getDateStart()
     {
         if (!empty($this->dt_start)) {
-            return date('d/m/Y', $this->dt_start);
+            return date('Y-m-d', $this->dt_start);
         }
         return null;
     }

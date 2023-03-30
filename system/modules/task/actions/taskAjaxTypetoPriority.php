@@ -4,7 +4,7 @@ function taskAjaxTypetoPriority_ALL(Web &$w) {
 	$priority = array();
 
 	// split the query string into type, group and assignee
-	list($type, $group, $assignee) = preg_split('/_/',$w->request('id'));
+	list($type, $group, $assignee) = preg_split('/_/',Request::mixed('id'));
 
 	// organise criteria
 	$who = ($assignee != "") ? $assignee : null;
@@ -17,7 +17,7 @@ function taskAjaxTypetoPriority_ALL(Web &$w) {
 	$where .= "is_closed = 0";
 
 	// get priorities from available task list
-	$tasks = $w->Task->getTasks($who, $where);
+	$tasks = TaskService::getInstance($w)->getTasks($who, $where);
 	if ($tasks) {
 		foreach ($tasks as $task) {
 			if (!array_key_exists($task->priority, $priority))

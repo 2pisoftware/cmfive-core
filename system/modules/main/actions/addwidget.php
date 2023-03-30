@@ -7,7 +7,7 @@ function addwidget_GET(Web $w) {
 
 	$modulelist = $w->modules();
 	$modules = array_filter($modulelist, function ($module) use (&$w) {
-		$names = $w->Widget->getWidgetNamesForModule($module);
+		$names = WidgetService::getInstance($w)->getWidgetNamesForModule($module);
 		return !empty($names);
 	});
 
@@ -27,8 +27,8 @@ function addwidget_POST(Web $w) {
 	$module = $p["module"];
 	// $id = $p["id"];
 
-	// $widget = $w->Widget->getWidget($_POST["destination_module"], $_POST["source_module"], $_POST["widget_name"]);
-	// $widget = $w->Widget->getWidgetByID($)
+	// $widget = WidgetService::getInstance($w)->getWidget($_POST["destination_module"], $_POST["source_module"], $_POST["widget_name"]);
+	// $widget = WidgetService::getInstance($w)->getWidgetByID($)
 	// if (null !== $widget) {
 	// 	$w->error("This entry already exists!", "/{$module}/index");
 	// }
@@ -36,7 +36,7 @@ function addwidget_POST(Web $w) {
 	$widget = new WidgetConfig($w);
 	$widget->destination_module = $module;
 	$widget->fill($_POST);
-	$widget->user_id = $w->Auth->user()->id;
+	$widget->user_id = AuthService::getInstance($w)->user()->id;
 	$response = $widget->insert();
 
 	if ($response === true) {

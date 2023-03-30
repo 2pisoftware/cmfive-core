@@ -50,7 +50,7 @@ and ('{{user_id}}' = '' or a.creator_id = '{{user_id}}')
 
     	$member = new ReportMember($this->w);
     	$member->report_id = $report->id;
-    	$member->user_id = $this->w->Auth->user()->id;
+    	$member->user_id = AuthService::getInstance($this->w)->user()->id;
     	$member->role = 'OWNER';
     	$member->insert();
     }

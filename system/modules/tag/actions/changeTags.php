@@ -9,7 +9,7 @@ function changeTags_GET(Web $w) {
 		return;		
 	}
 	
-	$object = $w->Tag->getObject($object_class, $id);
+	$object = TagService::getInstance($w)->getObject($object_class, $id);
 	if (empty($object->id)) {
 		$w->ctx('error', 'Could not find object to tag');
 		return;
@@ -20,8 +20,8 @@ function changeTags_GET(Web $w) {
 	$w->ctx('id', $id);
 	
 	// Get current tags
-	$w->ctx('tags', $w->Tag->getTagsByObject($object));
-	$w->ctx('object_tags', $w->Tag->getTagsByObjectClass($object_class));
-	$w->ctx('all_tags', $w->Tag->getTags());
+	$w->ctx('tags', TagService::getInstance($w)->getTagsByObject($object));
+	$w->ctx('object_tags', TagService::getInstance($w)->getTagsByObjectClass($object_class));
+	$w->ctx('all_tags', TagService::getInstance($w)->getTags());
 	
 }

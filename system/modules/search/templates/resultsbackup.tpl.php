@@ -9,11 +9,11 @@ if (!empty($results)): ?>
             <?php $count = 0; 
     	endif;
 
-        $object = $w->Search->getObject($res['class_name'], $res['object_id']);
+        $object = SearchService::getInstance($w)->getObject($res['class_name'], $res['object_id']);
 
-        if ($object && $object->canList($w->Auth->user())): ?>
+        if ($object && $object->canList(AuthService::getInstance($w)->user())): ?>
             <div class="search-result">
-                <?php if ($object->canView($w->Auth->user())): ?>
+                <?php if ($object->canView(AuthService::getInstance($w)->user())): ?>
                     <a class="search-title" href="<?php echo $webroot; ?>/<?php echo $object->printSearchUrl(); ?>">
                         <?php echo $object->printSearchTitle(); ?>
                     </a>

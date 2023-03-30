@@ -15,7 +15,7 @@ function forgotpassword_POST(Web $w)
 {
     $support_email = Config::get('main.company_support_email');
     if (empty($support_email)) {
-        $w->Log->error("Cannot send recovery email. This site has not been configured with a default email address. Th project config needs a main.company_support_email record.");
+        LogService::getInstance($w)->error("Cannot send recovery email. This site has not been configured with a default email address. Th project config needs a main.company_support_email record.");
         $w->error("Cannot send recovery email. This site has not been configured with a default email address", "/auth/login");
     }
 
@@ -41,9 +41,9 @@ function forgotpassword_POST(Web $w)
     $message .= "Please go to this link to reset your password:<br/>\n";
     $message .= "<a href=\"https://" . $_SERVER["HTTP_HOST"] . "/auth/resetpassword?email={$user_contact->email}&token={$user->password_reset_token}\">https://"
         . $_SERVER["HTTP_HOST"] . "/auth/resetpassword?token={$user->password_reset_token}</a>\n<br/>You have 24 hours to reset your password.<br/><br/>";
-    $message .= "Thank you,\n<br/>cmfive support";
+    $message .= "Thank you,\n<br/>". Config::get('main.company_name', 'Cosine');
 
-    $result = $w->Mail->sendMail($user_contact->email, $support_email, Config::get("main.application_name") . " password reset", $message);
+    $result = MailService::getInstance($w)->sendMail($user_contact->email, $support_email, Config::get("main.application_name") . " password reset", $message);
     if ($result !== 0) {
         $w->msg($responseString, "/auth/login");
     } else {

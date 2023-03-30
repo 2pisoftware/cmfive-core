@@ -21,7 +21,7 @@ class TaskTime extends  DbObject {
     
     public function getComment() {
         if (!empty($this->comment_id)) {
-            return $this->w->Comment->getComment($this->comment_id);
+            return CommentService::getInstance($this->w)->getComment($this->comment_id);
         }
     }
     

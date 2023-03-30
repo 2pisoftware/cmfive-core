@@ -4,6 +4,7 @@ class AdminAddLanguageTable extends CmfiveMigration
 {
     public function up(): void
     {
+        if (!$this->hasTable('language')) {
         $this->tableWithId('language')
             ->addStringColumn('name')
             ->addStringColumn('native_name')
@@ -11,12 +12,15 @@ class AdminAddLanguageTable extends CmfiveMigration
             ->addStringColumn('iso_639_2')
             ->addCmfiveParameters()
             ->create();
+        }
 
+        if (!$this->hasTable('country_language')) {
         $this->tableWithId('country_language')
             ->addIdColumn('country_id')
             ->addIdColumn('language_id')
             ->addCmfiveParameters()
             ->create();
+        }
     }
 
     public function down(): void

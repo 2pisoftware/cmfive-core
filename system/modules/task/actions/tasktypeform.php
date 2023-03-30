@@ -2,14 +2,14 @@
 // Step II in creating a task. This function gets the additional fields by tasktype.
 // Serialise REQUEST object from step one and store in hidden form element: 'formone'
 function tasktypeform_POST(Web $w) {
-	$w->Task->navigation($w, "Create Task");
+	TaskService::getInstance($w)->navigation($w, "Create Task");
 
 	// get task type, serialise REQUEST object from step 1 of creating a new task
-	$tid = $w->request('task_type');
-	$tg = $w->Task->getTaskGroup($w->request('task_group_id'));
+	$tid = Request::string('task_type');
+	$tg = TaskService::getInstance($w)->getTaskGroup(Request::int('task_group_id'));
 	// if no due date given, make 1 month from today
-	if ($w->request('dt_due') == "") {
-		$_POST['dt_due'] = $w->Task->getNextMonth();
+	if (Request::string('dt_due') == "") {
+		$_POST['dt_due'] = TaskService::getInstance($w)->getNextMonth();
 	}
 
 	$req = serialize($_POST);
@@ -17,7 +17,7 @@ function tasktypeform_POST(Web $w) {
 	// get the additional form fields based on type type
 	$theform = array();
 	if ($tid != "") {
-		$theform = $w->Task->getFormFieldsByTask($tid,$tg);
+		$theform = TaskService::getInstance($w)->getFormFieldsByTask($tid,$tg);
 	}
 
 	if (!$theform) {

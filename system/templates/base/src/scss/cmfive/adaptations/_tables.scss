@@ -1,0 +1,99 @@
+
+table {
+    width: 100%;
+    @include theme((background-color: 'white-black'));
+
+    th {
+        @include font-size('body');
+        @include theme((color: 'dark-grey'));
+    }
+
+    td {
+        @include font-size('body');
+        @include theme((color: 'dark-grey', background-color: 'white-black'));
+    }
+}
+
+
+table.tablesorter {
+    @include shadow-flat();
+    margin-top: 12px;
+    padding: 20px;
+
+    thead {
+        tr {
+            th {
+                
+                font-weight: 400;
+                padding: 12px 20px;
+
+                &:before {
+                    content: "";
+                    display: block;
+                    background: url("~bootstrap-icons/icons/chevron-down.svg") no-repeat;
+                    width: 20px;
+                    height: 20px;
+                    float: left;
+                    margin: 6px 6px 0 0;
+                }
+
+                &.sorted-asc {
+                    &:before {
+                        background: url("~bootstrap-icons/icons/chevron-up.svg") no-repeat !important;
+                    }
+                }
+            }
+        }
+    }
+    tbody {
+        tr {
+            td {
+                padding: 0px 20px;
+            }
+
+            &:first-child, &:nth-child(2n + 1) {
+                td {
+                    @include theme((background-color: 'light-grey'));
+                }
+            }
+        }
+    }
+}
+
+.table-responsive {
+    table {
+        margin-top: 12px;
+        padding: 20px;
+        
+        thead {
+            tr {
+                th {
+                    @include font-size('body');
+                    font-weight: 400;
+                    padding: 12px 20px;
+                }
+            }
+        }
+        tbody {
+            tr {
+                td {
+                    padding: 0px 20px;
+                }
+    
+                &:first-child, &:nth-child(2n + 1) {
+                    td {
+                        @include theme((background-color: 'light-grey'));
+                    }
+                }
+            }
+        }
+    }
+}
+
+.item {
+    margin-top: 1rem;
+
+    .panel {
+        margin-bottom: 2rem;
+    }
+}

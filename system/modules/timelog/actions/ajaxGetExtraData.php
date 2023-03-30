@@ -7,7 +7,7 @@ function ajaxGetExtraData_GET(Web $w) {
 		return;
 	}
 	
-	$object = $w->Timelog->getObject($p['class'], $p['id']);
+	$object = TimelogService::getInstance($w)->getObject($p['class'], $p['id']);
 	
 	if (empty($object->id)) {
 		return;
@@ -64,12 +64,12 @@ function ajaxGetExtraData_GET(Web $w) {
 //	
 //	$task = null;
 //	if (class_exists("Task") || class_exists("TaskService")) {
-//		$task = $w->Task->getTask($p['id']);
+//		$task = TaskService::getInstance($w)->getTask($p['id']);
 //		if (empty($task->id)) {
 //			return;
 //		}
 //		
-//		$task_type = $w->Task->getTaskTypeObject($task->task_type);
+//		$task_type = TaskService::getInstance($w)->getTaskTypeObject($task->task_type);
 //		$time_types = $task_type->getTimeTypes();
 //		
 //		$form = [

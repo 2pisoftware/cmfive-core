@@ -1,0 +1,33 @@
+@use 'sass:map';
+
+// Modal theme colours
+$themes: map.deep-merge($themes, (
+    default: (
+        modal-background: $white
+    ),
+    dark: (
+        modal-background: $white--dark
+    )
+));
+
+.modal {
+    .modal-dialog {
+        .modal-content {
+            padding: 20px;
+            @include theme((background-color: 'modal-background'));
+
+            @include media-breakpoint-down(md) {
+                padding: 0;
+            }
+        }
+
+        .btn-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 2000;
+
+            @include dark-theme-rule('filter', invert(1) grayscale(100%) brightness(200%));
+        }
+    }
+}

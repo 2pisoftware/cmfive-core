@@ -24,7 +24,7 @@ function update_password_POST(Web $w)
 
     // Check if the User's password hash is depricated and update if so.
     if ($user->updatePasswordHash($password)) {
-        $w->Log->info("User with ID: " . $user->id . " password hash was updated");
+        LogService::getInstance($w)->info("User with ID: " . $user->id . " password hash was updated");
     }
 
     // Set the User's password to be valid again.
@@ -37,7 +37,7 @@ function update_password_POST(Web $w)
     }
 
     $url = $w->session('orig_path');
-    $w->Log->debug("Original path: " . $url);
+    LogService::getInstance($w)->debug("Original path: " . $url);
 
     if (empty($url) || $url == "/") {
         $url = $user->redirect_url;

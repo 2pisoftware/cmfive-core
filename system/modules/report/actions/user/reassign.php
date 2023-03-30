@@ -3,14 +3,14 @@
 function reassign_GET(Web $w) {
 	
 	list($user_id) = $w->pathMatch();
-	$redirect = $w->request("redirect");
+	$redirect = Request::string("redirect");
 	
 	if (empty($user_id)) {
 		$w->error("No user specified", $redirect ? : "/admin/users");
 	}
 	
 	// Get a list of users whoare report_admins/editors and aren't the person being reassigned
-	$report_editors = array_filter($w->Auth->getUsers() ? : [], function($user) use ($user_id) {
+	$report_editors = array_filter(AuthService::getInstance($w)->getUsers() ? : [], function($user) use ($user_id) {
 		return $user->hasAnyRole(["report_admin", "report_editor"]) && ($user->id != $user_id);
 	});
 	
@@ -26,14 +26,14 @@ function reassign_GET(Web $w) {
 function reassign_POST(Web $w) {
 	
 	list($user_id) = $w->pathMatch();
-	$redirect = $w->request("redirect");
+	$redirect = Request::string("redirect");
 	
 	if (empty($user_id)) {
 		$w->error("No user specified", $redirect ? : "/admin/users");
 	}
 	
 	// Get the user to reassign to
-	$reassign_user = $w->Auth->getUser($_POST['reassign_to']);
+	$reassign_user = AuthService::getInstance($w)->getUser($_POST['reassign_to']);
 	if (empty($reassign_user->id)) {
 		$w->error("Reassign to user not found", $redirect ? : "/admin/users");
 	}
@@ -45,16 +45,16 @@ function reassign_POST(Web $w) {
 			->where("report_member.is_deleted", 0)->fetchAll();
 	
 	if (!empty($reports)) {
-		$report_objects = $w->Report->getObjectsFromRows("Report", $reports);
+		$report_objects = ReportService::getInstance($w)->getObjectsFromRows("Report", $reports);
 		foreach($report_objects as $report) {
 			// Get the user to removes membership
-			$user_membership = $w->Report->getObject("ReportMember", ["user_id" => $user_id, "report_id" => $report->id, "is_deleted" => 0]);
+			$user_membership = ReportService::getInstance($w)->getObject("ReportMember", ["user_id" => $user_id, "report_id" => $report->id, "is_deleted" => 0]);
 			if (empty($user_membership->id)){
 				continue;
 			}
 			
 			// Try and get a membership from the reassign user for the current report
-			$potential_assignee = $w->Report->getObject("ReportMember", ["user_id" => $reassign_user->id, "report_id" => $report->id, "is_deleted" => 0]);
+			$potential_assignee = ReportService::getInstance($w)->getObject("ReportMember", ["user_id" => $reassign_user->id, "report_id" => $report->id, "is_deleted" => 0]);
 			if (!empty($potential_assignee->id)) {
 				// Force existing member to be an owner
 				$potential_assignee->role = ($potential_assignee->role != "OWNER" && $user_membership->role != "GUEST" ? $potential_assignee->role = $user_membership->role : $potential_assignee->role);
@@ -69,7 +69,7 @@ function reassign_POST(Web $w) {
 			}
 		}
 	} else {
-		$w->Log->warn("No reports found for user " . $user_id);
+		LogService::getInstance($w)->warn("No reports found for user " . $user_id);
 	}
 	
 	$w->msg("Users reports reassigned to " . $reassign_user->getFullName(), $redirect ? : "/admin/users");

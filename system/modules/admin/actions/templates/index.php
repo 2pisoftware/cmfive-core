@@ -1,13 +1,14 @@
 <?php
 function index_GET($w)
 {
-    $w->Admin->navigation($w, "Templates");
-    $templates = $w->Template->findTemplates(null, null, true);
+    $w->setLayout('layout-bootstrap-5');
+    AdminService::getInstance($w)->navigation($w, "Templates");
+    $templates = TemplateService::getInstance($w)->findTemplates(null, null, true);
     $table_header = [
         "Title", "Module", "Category",
         ["Active?", true],
-        ["Created", true],
-        ["Modified", true],
+        // ["Created", true],
+        // ["Modified", true],
         "Actions",
     ];
 
@@ -17,8 +18,8 @@ function index_GET($w)
             $table_data[]  = [
                 $t->title, $t->module, $t->category,
                 [$t->is_active ? "Active" : "Inactive", true],
-                [Date("H:i d-m-Y", $t->dt_created), true],
-                [Date("H:i d-m-Y", $t->dt_modified), true],
+                // [Date("H:i d-m-Y", $t->dt_created), true],
+                // [Date("H:i d-m-Y", $t->dt_modified), true],
                 Html::b("/admin-templates/edit/" . $t->id, "Edit", false),
             ];
         }

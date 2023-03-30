@@ -14,3 +14,8 @@ i.favorite_flag:hover {
 i.favorite_flag.favorite_on {
 	color: gold;
 }
+
+i.favourite_flag.new-favourite-button {
+    display: none !important;
+    visibility: hidden !important;
+}

@@ -19,7 +19,7 @@ function task_timelog_type_options_for_Task(Web $w, $object)
         return;
     }
 
-    $task_type = $w->Task->getTaskTypeObject($object->task_type);
+    $task_type = TaskService::getInstance($w)->getTaskTypeObject($object->task_type);
     if (empty($task_type)) {
         return;
     }
@@ -62,12 +62,12 @@ function task_timelog_type_options_for_Task(Web $w, $object)
  */
 function task_core_dbobject_after_insert_Task(Web $w, $task)
 {
-    $w->Log->setLogger("TASK")->debug("task_core_dbobject_after_insert_Task");
+    LogService::getInstance($w)->setLogger("TASK")->debug("task_core_dbobject_after_insert_Task");
     $task->addTaskGroupAsSubscribers();
     if (!$task->_skip_creation_notification) {
-        $w->Task->sendCreationNotificationForTask($task);
+        TaskService::getInstance($w)->sendCreationNotificationForTask($task);
     } else {
-        $w->Log->setLogger("TASK")->debug("Task creation notification skipped because _skip_creation_notification was set on the task object");
+        LogService::getInstance($w)->setLogger("TASK")->debug("Task creation notification skipped because _skip_creation_notification was set on the task object");
     }
 }
 
@@ -79,16 +79,16 @@ function task_core_dbobject_after_insert_Task(Web $w, $task)
  */
 function task_core_dbobject_after_update_Task(Web $w, $task)
 {
-    $w->Log->setLogger("TASK")->debug("task_core_dbobject_after_update_Task");
+    LogService::getInstance($w)->setLogger("TASK")->debug("task_core_dbobject_after_update_Task");
     $subject = "Task " . $task->title . " [" . $task->id . "][" . $task->status . "] - " . $task->getHumanReadableAttributeName(TASK_NOTIFICATION_TASK_DETAILS);
-    $users_to_notify = $w->Task->getNotifyUsersForTask($task, TASK_NOTIFICATION_TASK_DETAILS);
+    $users_to_notify = TaskService::getInstance($w)->getNotifyUsersForTask($task, TASK_NOTIFICATION_TASK_DETAILS);
 
     // Only send emails where the status has changed
     if ($task->status == $task->__old['status']) {
         return;
     }
 
-    $w->Notification->sendToAllWithCallback($subject, "task", "notification_email", $w->Auth->user(), $users_to_notify, function ($user, $existing_template_data) use ($task, $w) {
+    NotificationService::getInstance($w)->sendToAllWithCallback($subject, "task", "notification_email", AuthService::getInstance($w)->user(), $users_to_notify, function ($user, $existing_template_data) use ($task, $w) {
         if ($user->is_external) {
             return null;
         }
@@ -112,7 +112,7 @@ function task_core_dbobject_after_update_Task(Web $w, $task)
 
         // Get additional details
         if ($user->is_external == 0) {
-            $additional_details = $w->Task->getNotificationAdditionalDetails($task);
+            $additional_details = TaskService::getInstance($w)->getNotificationAdditionalDetails($task);
             if (!empty($additional_details)) {
                 $template_data['footer'] .= $additional_details;
             }
@@ -127,7 +127,7 @@ function task_core_dbobject_after_update_Task(Web $w, $task)
         } else {
             $template_data['fields']["Assigned to"] = "No one";
         }
-        return new NotificationCallback($user, $template_data, $w->file->getAttachmentsFileList($task, null, ['channel_email_raw']));
+        return new NotificationCallback($user, $template_data, FileService::getInstance($w)->getAttachmentsFileList($task, null, ['channel_email_raw']));
     });
 }
 
@@ -222,7 +222,7 @@ function task_comment_get_notification_recipients_task(Web $w, $params)
     $results = [];
     $internal_only = array_key_exists('internal_only', $params) ? $params['internal_only'] : false;
 
-    $task = $w->task->getTask($params['object_id']);
+    $task = TaskService::getInstance($w)->getTask($params['object_id']);
     if (!empty($task)) {
         $subscribers = $task->getSubscribers();
 
@@ -233,7 +233,7 @@ function task_comment_get_notification_recipients_task(Web $w, $params)
                 if (!empty($subscriber->user_id)) {
                     $user = $subscriber->getUser();
                     if ($internal_only === false || $internal_only === true && $user->is_external == 0) {
-                        $results[$subscriber->user_id] = ($w->Auth->user()->id != $subscriber->user_id);
+                        $results[$subscriber->user_id] = (AuthService::getInstance($w)->user()->id != $subscriber->user_id);
                     }
                 }
             }
@@ -255,15 +255,15 @@ function task_comment_get_notification_recipients_task(Web $w, $params)
 function task_comment_send_notification_recipients_task(Web $w, $params)
 {
 
-    $task = $w->task->getTask($params['object_id']);
-    $commenter = $w->Auth->getUser($params['commenter_id']);
+    $task = TaskService::getInstance($w)->getTask($params['object_id']);
+    $commenter = AuthService::getInstance($w)->getUser($params['commenter_id']);
 
     // make sure that people who comment become subscribers
     $task->addSubscriber($commenter);
 
     $subject = (!empty($commenter->id) ? $commenter->getFullName() : 'Someone') . ' has commented on a task that you\'re a part of (' . $task->title . ' [' . $task->id . '])';
 
-    $w->Notification->sendToAllWithCallback($subject, "task", "notification_email", $w->auth->getUser($params['commenter_id']), $params['recipients'], function ($user, $existing_template_data) use ($params, $task, $w) {
+    NotificationService::getInstance($w)->sendToAllWithCallback($subject, "task", "notification_email", AuthService::getInstance($w)->getUser($params['commenter_id']), $params['recipients'], function ($user, $existing_template_data) use ($params, $task, $w) {
         $template_data = $existing_template_data;
         $template_data['status'] = "[{$task->id}] New comment";
         $template_data['footer'] = $task->description;
@@ -291,7 +291,7 @@ function task_comment_send_notification_recipients_task(Web $w, $params)
 
         // Get additional details
         if ($user->is_external == 0) {
-            $additional_details = $w->Task->getNotificationAdditionalDetails($task);
+            $additional_details = TaskService::getInstance($w)->getNotificationAdditionalDetails($task);
             if (!empty($additional_details)) {
                 $template_data['footer'] .= $additional_details;
             }
@@ -306,7 +306,7 @@ function task_comment_send_notification_recipients_task(Web $w, $params)
         } else {
             $template_data['fields']["Assigned to"] = "No one";
         }
-        return new NotificationCallback($user, $template_data, $w->file->getAttachmentsFileList($task, null, ['channel_email_raw']));
+        return new NotificationCallback($user, $template_data, FileService::getInstance($w)->getAttachmentsFileList($task, null, ['channel_email_raw']));
     });
 }
 

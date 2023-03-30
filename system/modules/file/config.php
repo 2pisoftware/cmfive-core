@@ -7,7 +7,9 @@ Config::set('file', [
     'topmenu' => false,
     "dependencies" => [
         "knplabs/gaufrette" => "~0.8",
-        "aws/aws-sdk-php" => "3.224"
+        "aws/aws-sdk-php" => "~3.69",
+        "league/flysystem-aws-s3-v3" => "^2.0",
+        "league/flysystem-memory" => "^2.0",
     ],
     'hooks' => [
         'admin',

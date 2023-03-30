@@ -6,7 +6,7 @@ function delete_GET(Web $w) {
         $w->error("No connection ID specified", "/report-connections");
     }
     
-    $connection = $w->Report->getConnection($p["id"]);
+    $connection = ReportService::getInstance($w)->getConnection($p["id"]);
     if (empty($connection->id)) {
         $w->error("Connection could not be found", "/report-connections");
     }

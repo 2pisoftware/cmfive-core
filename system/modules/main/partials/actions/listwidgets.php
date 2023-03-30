@@ -9,7 +9,7 @@ function listwidgets(\Web $w, $params) {
         $module = $w->_module ? : "main";
     }
 
-    $widgets = $w->Widget->getWidgetsForModule($module, $w->Auth->user()->id);
+    $widgets = \WidgetService::getInstance($w)->getWidgetsForModule($module, \AuthService::getInstance($w)->user()->id);
     $filter_widgets = array();
     
     if (!empty($widgets)) {

@@ -6,9 +6,9 @@ class TaskTicketService extends DbService {
     public $taskgroup_name = "Cmfive Support Tickets";
     
     public function getTaskGroup() {
-        $taskgroup = $this->w->Task->getTaskGroupTypeObject("CmfiveSupport");
+        $taskgroup = TaskService::getInstance($this->w)->getTaskGroupTypeObject("CmfiveSupport");
         if (empty($taskgroup->id)) {
-            return $this->w->Task->createTaskGroup($this->taskgroup_type, $this->taskgroup_name, "Tickets", $this->Auth->user()->id);
+            return TaskService::getInstance($this->w)->createTaskGroup($this->taskgroup_type, $this->taskgroup_name, "Tickets", AuthService::getInstance($this->w)->user()->id);
         }
         return $taskgroup;
     }

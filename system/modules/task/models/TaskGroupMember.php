@@ -29,11 +29,11 @@ class TaskGroupMember extends DbObject
         if ($this->role !== "GUEST") {
             $taskgroup = $this->getTaskGroup();
             if (!empty($taskgroup->id) && $taskgroup->shouldAutomaticallySubscribe()) {
-                $existing_open_tasks_array = $this->db->get('task')->where('task_group_id', $this->task_group_id)->where('is_deleted', 0)->where('is_closed', 0)->fetchAll(); // $this->getTaskGroup()->getTasks();
+                $existing_open_tasks_array = $this->w->db->get('task')->where('task_group_id', $this->task_group_id)->where('is_deleted', 0)->where('is_closed', 0)->fetchAll(); // $this->getTaskGroup()->getTasks();
 
                 $existing_tasks = $this->fillObjects('Task', $existing_open_tasks_array);
                 if (!empty($existing_tasks)) {
-                    $user = $this->w->Auth->getUser($this->user_id);
+                    $user = AuthService::getInstance($this->w)->getUser($this->user_id);
                     foreach ($existing_tasks as $existing_task) {
                         $existing_task->addSubscriber($user);
                     }

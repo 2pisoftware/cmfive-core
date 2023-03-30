@@ -1,4 +1,5 @@
 <?php
+
 // ========= Session ========================
 if (!headers_sent()) {
     ini_set('session.gc_maxlifetime', 21400);
@@ -53,7 +54,7 @@ class PermissionDeniedException extends Exception
  */
 class Web
 {
-    public $_buffer = null;
+    public string $_buffer = '';
     public $_template = null;
     public $_templatePath;
     public $_templateExtension;
@@ -65,19 +66,19 @@ class Web
     public $_layoutContentMarker;
     public $_notFoundTemplate;
     public $_fatalErrorTemplate;
-    public $_layout;
+    public ?string $_layout;
     public $_headers;
-    public $_module = null;
-    public $_submodule = null;
+    public ?string $_module;
+    public ?string $_submodule;
     public $_modulePath;
     public $_moduleExtension;
     public $_modules;
-    public $_hooks;
-    public $_requestMethod;
-    public $_action_executed = false;
-    public $_action_redirected = false;
+    public array $_hooks = [];
+    public string $_requestMethod = '';
+    public bool $_action_executed = false;
+    public bool $_action_redirected = false;
     public $_services;
-    public $_paths;
+    public array $_paths = [];
     public $_loginpath = 'auth/login';
     public $_is_mfa_enabled_path = "auth/ajax_is_mfa_enabled";
     public $_partialsdir = "partials";
@@ -106,7 +107,7 @@ class Web
         $this->_defaultAction = "index";
         $this->_layoutContentMarker = "body";
         $this->_notFoundTemplate = "404";
-        $this->_paths = null;
+        $this->_paths = [];
         $this->_services = [];
         $this->_layout = "layout";
         $this->_headers = null;
@@ -132,7 +133,7 @@ class Web
         // If a domain whitelist has been set then implement it and forbid any request that does not match a domain given
         $domain_whitelist = Config::get('system.domain_whitelist');
         if (!empty($domain_whitelist)) {
-            if (!in_array($sHttpHost, $domain_whitelist)) {
+            if (!in_array($this->getHostName(), $domain_whitelist)) { // @todo: test this
                 $this->header('HTTP/1.0 403 Forbidden');
                 exit();
             }
@@ -409,7 +410,7 @@ class Web
                 try {
                     CmfiveScriptComponentRegister::registerComponent($script['name'], new CmfiveScriptComponent($script['uri'], ['weight' => $script['weight']]));
                 } catch (Exception $e) {
-                    $this->Log->error($e->getMessage());
+                    LogService::getInstance($this)->error($e->getMessage());
                 }
             }
         }
@@ -433,7 +434,7 @@ class Web
                 try {
                     CmfiveStyleComponentRegister::registerComponent($style['name'], (new CmfiveStyleComponent($style['uri'], ['/system/templates/scss/']))->setProps(['weight' => $style['weight']]));
                 } catch (Exception $e) {
-                    $this->Log->error($e->getMessage());
+                    LogService::getInstance($this)->error($e->getMessage());
                 }
             }
         }
@@ -441,26 +442,9 @@ class Web
         CmfiveStyleComponentRegister::outputStyles();
     }
 
-    /**
-     * Performs comparison for weights (for the enqueue functions above) to sort
-     * by the "weight" key in descending order.
-     *
-     * @deprecated v3.6.13 - Will be removed in v5.0.0.
-     *
-     * @param Array $a
-     * @param Array $b
-     * @return int
-     */
-    public function cmp_weights($a, $b)
-    {
-        $aw = intval($a["weight"]);
-        $bw = intval($b["weight"]);
-        return ($aw === $bw ? 0 : ($aw < $bw ? 1 : -1));
-    }
-
     public function initLocale()
     {
-        $user = $this->Auth->user();
+        $user = AuthService::getInstance($this)->user();
 
         // default language
         $language = Config::get('system.language');
@@ -477,7 +461,7 @@ class Web
             $language = 'en_AU';
         }
 
-        $this->Log->info('init locale ' . $language);
+        LogService::getInstance($this)->info('init locale ' . $language);
 
         $all_locale = getAllLocaleValues($language);
 
@@ -485,7 +469,7 @@ class Web
         $results = setlocale(LC_ALL, $all_locale);
 
         if (empty($results)) {
-            $this->Log->info('setlocale failed: locale function is not available on this platform, or the given locale (' . $language . ') does not exist in this environment');
+            LogService::getInstance($this)->info('setlocale failed: locale function is not available on this platform, or the given locale (' . $language . ') does not exist in this environment');
         }
         $langParts = explode(".", $language);
         $this->currentLocale = $langParts[0];
@@ -514,7 +498,7 @@ class Web
      * Set the default translation domain (module name)
      * Initialise gettext for this module if not already loaded
      */
-    public function setTranslationDomain($domain)
+    public function setTranslationDomain(string $domain)
     {
         $path = ROOT_PATH . DS . $this->getModuleDir($domain) . "translations";
         $translationFile = $path . DS . $this->currentLocale . DS . "LC_MESSAGES" . DS . $domain . ".mo";
@@ -543,7 +527,7 @@ class Web
             }
         }
 
-        bind_textdomain_codeset($domain, 'UTF-8');
+        bind_textdomain_codeset($domain ?? '', 'UTF-8');
         textdomain($domain);
     }
 
@@ -558,7 +542,7 @@ class Web
             if (Config::get("system.environment") !== "development") {
                 set_error_handler(function ($errno, $errstr, $errfile, $errline) {
                     $logger = empty($this->currentModule()) ? "CMFIVE" : strtoupper($this->currentModule());
-                    $this->Log->setLogger($logger)->error("Number: {$errno}, String: {$errstr}, File: {$errfile}, Line: {$errline}");
+                    LogService::getInstance($this)->setLogger($logger)->error("Number: {$errno}, String: {$errstr}, File: {$errfile}, Line: {$errline}");
                     $this->ctx('error', "An error occoured, if this message persists please contact your administrator.");
                 });
             }
@@ -640,14 +624,25 @@ class Web
                 }
                 session_start();
             } catch (Exception $e) {
-                $this->Log->info("Error starting session " . $e->getMessage());
+                LogService::getInstance($this)->info("Error starting session " . $e->getMessage());
+            }
+
+            // Log out if timeout is set
+            if (Config::get('auth.logout.logout_after_inactivity', false) === true && AuthService::getInstance($this)->loggedIn()) {
+                if (array_key_exists('logout_timestamp', $_SESSION) && time() - $_SESSION['logout_timestamp'] > Config::get('auth.logout.timeout', 900)) {
+                    $this->sessionDestroy();
+                    $this->error('Your session has timed out, please log in again', '/auth/login');
+                    exit;
+                } else {
+                    $_SESSION['logout_timestamp'] = time(); //set new timestamp
+                }
             }
 
             // Initialise the logger (needs to log "info" to include the request data, see LogService __call function)
-            $this->Log->info("info");
+            LogService::getInstance($this)->info("info");
 
             // Reset the session when a user is not logged in. This will ensure the CSRF tokens are always "fresh"
-            if ($_SERVER['REQUEST_METHOD'] == "GET" && empty($this->Auth->loggedIn())) {
+            if ($_SERVER['REQUEST_METHOD'] == "GET" && empty(AuthService::getInstance($this)->loggedIn())) {
                 CSRF::regenerate();
             }
 
@@ -704,7 +699,7 @@ class Web
                 $this->setTranslationDomain('main');
                 $this->setTranslationDomain($this->currentModule());
             } catch (Exception $e) {
-                $this->Log->setLogger('I18N')->error($e->getMessage());
+                LogService::getInstance($this)->setLogger('I18N')->error($e->getMessage());
             }
 
             if (!$this->_action) {
@@ -739,7 +734,7 @@ class Web
                 if (!empty($allowed[$this->_module]) || (!empty($this->_submodule) && !empty($allowed[$this->_module . '-' . $this->_submodule]))) {
                     if (in_array($this->_action, $allowed[$this->_module]) || (!empty($this->_submodule) && in_array($this->_action, $allowed[$this->_module . '-' . $this->_submodule]))) {
                         // If we get here then we are configured to enforce CSRF checking
-                        $this->Log->debug("Checking CSRF");
+                        LogService::getInstance($this)->debug("Checking CSRF");
                         try {
                             $this->validateCSRF();
                         } catch (Exception $e) {
@@ -762,7 +757,7 @@ class Web
                 // load the module file
                 require_once $reqpath;
             } else {
-                $this->Log->error("System: No Action found for: " . $reqpath);
+                LogService::getInstance($this)->error("System: No Action found for: " . $reqpath);
                 $this->notFoundPage();
             }
 
@@ -775,7 +770,7 @@ class Web
             }
 
             if ($action_found) {
-                $this->ctx("loggedIn", $this->Auth->loggedIn());
+                $this->ctx("loggedIn", AuthService::getInstance($this)->loggedIn());
 
                 if ($this->session('error') !== null) {
                     $this->ctx("error", $this->session('error'));
@@ -847,11 +842,11 @@ class Web
                 // but always check for layout
                 // if ajax call don't do the layout
                 if ($this->_layout && !$this->isAjax()) {
-                    $this->_buffer = null;
+                    $this->_buffer = '';
                     $this->ctx($this->_layoutContentMarker, $body);
                     $this->templateOut($this->_layout);
                 } else {
-                    $this->_buffer = $body;
+                    $this->_buffer = $body ?? '';
                 }
 
                 echo $this->_buffer;
@@ -860,7 +855,7 @@ class Web
             }
         } catch (Throwable $t) {
             $logger = empty($this->currentModule()) ? "CMFIVE" : strtoupper($this->currentModule());
-            $this->Log->setLogger($logger)->error("Throwable caught in Web: {$t->getMessage()} Trace: {$t->getTraceAsString()}");
+            LogService::getInstance($this)->setLogger($logger)->error("Throwable caught in Web: {$t->getMessage()} Trace: {$t->getTraceAsString()}");
             echo Html::alertBox("An error occurred, if this message persists please contact your administrator.", "alert");
         } finally {
             $this->_callWebHooks("cleanup");
@@ -918,20 +913,6 @@ class Web
         } else {
             $this->callHook("core_web", $type . "_" . $request_method . "_" . $this->_module . "_" . $this->_action); // GET /module/action
         }
-    }
-
-    /**
-     * Returns a service class instance that matches the name given,
-     * E.g. $w->Inbox->... would return an InboxService class instance.
-     *
-     * @deprecated v3.6.0 - Will be removed in v5.0.0.
-     *
-     * @param string $name
-     * @return mixed|null
-     */
-    public function __get($name)
-    {
-        return $this->service($name);
     }
 
     /**
@@ -1047,7 +1028,7 @@ class Web
                     try {
                         ConfigDependencyLoader::load();
                     } catch (Exception $e) {
-                        $this->Log->error($e->getMessage());
+                        LogService::getInstance($this)->error($e->getMessage());
                         echo "Module config load error: " . $e->getMessage();
                         die;
                     }
@@ -1100,7 +1081,9 @@ class Web
 
     public function isAjax()
     {
-        return isset($_SERVER['HTTP_X_REQUESTED_WITH']);
+        return isset($_SERVER['HTTP_X_REQUESTED_WITH']) ||
+            (array_key_exists('CONTENT_TYPE', $_SERVER) && $_SERVER['CONTENT_TYPE'] == "application/json") ||
+            $this->_layout === null;
     }
 
     /**
@@ -1123,20 +1106,20 @@ class Web
             $actual_path = $this->_action;
         }
 
-        if ($this->Auth && $this->Auth->user()) {
-            $user = $this->Auth->user();
+        if (AuthService::getInstance($this) && AuthService::getInstance($this)->user()) {
+            $user = AuthService::getInstance($this)->user();
 
             if ($user->is_password_invalid && $path !== "auth/update_password") {
-                $this->Log->info("Redirecting to reset password page, user password is invalid");
+                LogService::getInstance($this)->info("Redirecting to reset password page, user password is invalid");
                 $this->redirect($this->localUrl("/auth/update_password"));
             }
 
             $usrmsg = $user ? " for " . $user->login : "";
-            if (!$this->Auth->allowed($path)) {
-                $this->Log->info("System: Access Denied to " . $path . $usrmsg . " from " . $this->requestIpAddress());
+            if (!AuthService::getInstance($this)->allowed($path)) {
+                LogService::getInstance($this)->info("System: Access Denied to " . $path . $usrmsg . " from " . $this->requestIpAddress());
                 // redirect to the last allowed page
                 $lastAllowed = (is_array($_SESSION) && array_key_exists('LAST_ALLOWED_URI', $_SESSION)) ? $_SESSION['LAST_ALLOWED_URI'] : '';
-                if ($this->Auth->allowed($lastAllowed)) {
+                if (AuthService::getInstance($this)->allowed($lastAllowed)) {
                     $this->error($msg, $lastAllowed);
                 } else {
                     // Logout user
@@ -1144,9 +1127,9 @@ class Web
                     $this->error($msg, $this->_loginpath);
                 }
             }
-        } elseif ($this->Auth && !$this->Auth->loggedIn() && ($actual_path != $this->_loginpath && $actual_path != $this->_is_mfa_enabled_path) && !$this->Auth->allowed($path)) {
+        } elseif (AuthService::getInstance($this) && !AuthService::getInstance($this)->loggedIn() && ($actual_path != $this->_loginpath && $actual_path != $this->_is_mfa_enabled_path) && !AuthService::getInstance($this)->allowed($path)) {
             $_SESSION['orig_path'] = $_SERVER['REQUEST_URI'];
-            $this->Log->info("Redirecting to login, user not logged in or not allowed");
+            LogService::getInstance($this)->info("Redirecting to login, user not logged in or not allowed");
             $this->redirect($this->localUrl($this->_loginpath));
         }
         // Saving the last allowed path so we can
@@ -1263,33 +1246,6 @@ class Web
     }
 
     /**
-     * Send the contents of the file to the client browser
-     * as raw data.
-     *
-     * @deprecated v0.8.5 - Will be removed in v5.0.0.
-     *
-     * @param string $filename
-     */
-    public function sendFile($filename)
-    {
-        $filename = str_replace(FILE_ROOT, "", $filename);
-
-        $filesystem = $this->File->getFilesystem(dirname($filename));
-        $file = $this->File->getFileObject($filesystem, $filename);
-
-        if ($file->exists()) {
-            $content = $file->getContent();
-            $this->header("Content-Type: " . $this->getMimetypeFromString($content)); // $this->getMimetype($filename));
-            echo $content;
-        } else {
-            $this->header("HTTP/1.1 404 Not Found");
-            echo basename($filename) . " not found.";
-        }
-
-        exit;
-    }
-
-    /**
      * Convenience Method for creating menu's
      * This will check if $path is allowed
      * and will then return an html link or nothing
@@ -1301,13 +1257,12 @@ class Web
      * @param array $array
      * @return string
      */
-    public function menuLink($path, $title, &$array = null, $confirm = null, $target = null)
+    public function menuLink($path, $title, &$array = null, $confirm = null, $target = null, $class = "")
     {
-        $class = "";
         if (startsWith($path, $this->currentModule())) {
-            $class = "current active";
+            $class .= " current active";
         }
-        $link = $this->Auth->allowed($path, Html::a($this->localUrl($path), $title, $title, $class, $confirm, $target));
+        $link = AuthService::getInstance($this)->allowed($path, Html::a($this->localUrl($path), $title, $title, $class, $confirm, $target));
         if ($array !== null) {
             $array[] = $link;
         }
@@ -1323,7 +1278,7 @@ class Web
      */
     public function menuButton($path, $title, &$array = null, $id = '')
     {
-        $link = $this->Auth->allowed($path, Html::b($this->localUrl($path), $title, null, $id));
+        $link = AuthService::getInstance($this)->allowed($path, Html::b($this->localUrl($path), $title, null, $id));
         if ($array !== null) {
             $array[] = $link;
         }
@@ -1345,7 +1300,7 @@ class Web
      */
     public function menuBox($path, $title, &$array = null)
     {
-        $link = $this->Auth->allowed($path, Html::box($this->localUrl($path), $title));
+        $link = AuthService::getInstance($this)->allowed($path, Html::box($this->localUrl($path), $title));
         if ($array !== null) {
             $array[] = $link;
         }
@@ -1358,9 +1313,10 @@ class Web
      * @param string $link
      * @return string html code
      */
-    public function localUrl($link = null)
+    public function localUrl($link = "")
     {
-        if (strpos($link, "/") !== 0) {
+        // PHP8: strpos null param is deprecated
+        if (!empty($link) && strpos($link, "/") !== 0) {
             $link = "/" . $link;
         }
         return $this->webroot() . $link;
@@ -1409,10 +1365,10 @@ class Web
                         $errorMsg .= $object->getHumanReadableAttributeName($property) . ": $r <br/>\n";
                     }
                 }
-                $this->Log->error("System: Saving " . get_class($object) . " error: " . $errorMsg);
+                LogService::getInstance($this)->error("System: Saving " . get_class($object) . " error: " . $errorMsg);
                 $this->error($errorMsg, $returnUrl);
             } else {
-                $this->Log->error("System: " . ($isUpdating ? "Updating" : "Creating") . " this $type failed.");
+                LogService::getInstance($this)->error("System: " . ($isUpdating ? "Updating" : "Creating") . " this $type failed.");
                 $this->error(($isUpdating ? "Updating" : "Creating") . " this $type failed.", $returnUrl);
             }
         }
@@ -1438,16 +1394,18 @@ class Web
      */
     public function notFoundPage()
     {
-        $this->service('log')->warn("System: Action not found: " . $this->_module . "/" . $this->_action);
+        LogService::getInstance($this)->warn("System: Action not found: " . $this->_module . "/" . $this->_action);
+        $this->ctx("w", $this);
+
         // We want to fail gracefully for ajax requests
         if ($this->isAjax()) {
             echo "The page requested could not be found.";
         } else {
             if ($this->templateExists($this->_notFoundTemplate)) {
                 $this->header("HTTP/1.0 404 Not Found");
-                $this->ctx("w", $this);
+                // $this->ctx("w", $this);
 
-                if (empty($this->Auth->user())) {
+                if (empty(AuthService::getInstance($this)->user())) {
                     echo $this->fetchTemplate($this->_notFoundTemplate);
                 } else {
                     $this->ctx($this->_layoutContentMarker, $this->fetchTemplate($this->_notFoundTemplate));
@@ -1480,7 +1438,7 @@ class Web
 
     public function internalLink($title, $module, $action = null, $params = null)
     {
-        if (!$this->Auth->allowed($module, $action)) {
+        if (!AuthService::getInstance($this)->allowed($module, $action)) {
             return null;
         } else {
             return "<a href='" . $this->localUrl("/" . $module . "/" . $action . $params) . "'>" . $title . "</a>";
@@ -1500,9 +1458,9 @@ class Web
      * Returns the file path for a module if it exists,
      * otherwise returns null
      * @param string $module
-     * @return Ambigous <NULL, string>
+     * @return string|null
      */
-    public function getModuleDir($module = null)
+    public function getModuleDir($module = null): ?string
     {
         if ($module == null) {
             $module = $this->_module;
@@ -1520,28 +1478,6 @@ class Web
     public function moduleUrl($module)
     {
         return $this->webroot() . '/' . $this->getModuleDir($module);
-    }
-
-    /**
-     * Return a preloaded Service as
-     * defined in a model.php inside
-     * as module.
-     *
-     * @deprecated v3.6.0 - Will be removed in v5.0.0.
-     *
-     * @param string $name
-     * @return mixed|null
-     */
-    public function service($name)
-    {
-        // Check if the module if active or not
-        // This function will need to reject service calls when the active flag is false
-        // To do this we need to check the config for the module housing the service call
-        // As the service may not be the module, see Log in Main
-        $name = ucfirst($name) . "Service";
-
-        // Checks if class exists and that the module active flag is true
-        return $this->isClassActive($name) ? $name::getInstance($this) : null;
     }
 
     /**
@@ -1607,13 +1543,13 @@ class Web
             try {
                 $this->setTranslationDomain($module);
             } catch (Exception $e) {
-                $this->Log->setLogger('I18N')->error($e->getMessage());
+                LogService::getInstance($this)->setLogger('I18N')->error($e->getMessage());
             }
         }
 
         // save current output buffer
         $oldbuf = $this->_buffer;
-        $this->_buffer = null;
+        $this->_buffer = '';
 
         // save the current context
         $oldctx = $this->_context;
@@ -1648,8 +1584,8 @@ class Web
             // The following will call:
             // 1. \System\Modules\$module\$action_ALL()
             // 2. \System\Modules\$module\$action()
-            // 3. removeUser_ALL()
-            // 4. removeUser()
+            // 3. $action_ALL()
+            // 4. $action()
 
             $partial_action = $name . '_' . $method;
             if (function_exists($namespace . $partial_action)) {
@@ -1663,10 +1599,10 @@ class Web
             } elseif (function_exists($name)) {
                 $name($this, $params);
             } else {
-                $this->Log->error("Required partial action not found, expected {$partial_action}");
+                LogService::getInstance($this)->error("Required partial action not found, expected {$partial_action}");
             }
         } else {
-            $this->Log->error("Could not find partial file at: {$partial_action_file}");
+            LogService::getInstance($this)->error("Could not find partial file at: {$partial_action_file}");
         }
 
         $currentbuf = $this->_buffer;
@@ -1678,13 +1614,13 @@ class Web
             if (file_exists($partial_template_file)) {
                 $tpl = new WebTemplate();
                 $this->ctx("w", $this);
-                $tpl->set_vars($this->_context);
+                $tpl->setVars($this->_context);
                 $currentbuf = $tpl->fetch($partial_template_file);
             }
         }
 
         // restore output buffer and context
-        $this->_buffer = $oldbuf;
+        $this->_buffer = $oldbuf ?? '';
         $this->_context = $oldctx;
 
         // restore translations module
@@ -1692,7 +1628,7 @@ class Web
             try {
                 $this->setTranslationDomain($oldModule);
             } catch (Exception $e) {
-                $this->Log->setLogger('I18N')->error($e->getMessage());
+                LogService::getInstance($this)->setLogger('I18N')->error($e->getMessage());
             }
         }
 
@@ -1719,7 +1655,7 @@ class Web
             try {
                 $this->setTranslationDomain($module);
             } catch (Exception $e) {
-                $this->Log->setLogger('I18N')->error($e->getMessage());
+                LogService::getInstance($this)->setLogger('I18N')->error($e->getMessage());
             }
         }
 
@@ -1796,9 +1732,9 @@ class Web
         // restore translations module
         if ($oldModule != $module) {
             try {
-                $this->setTranslationDomain($oldModule);
+                $this->setTranslationDomain($oldModule ?? '');
             } catch (Exception $e) {
-                $this->Log->setLogger('I18N')->error($e->getMessage());
+                LogService::getInstance($this)->setLogger('I18N')->error($e->getMessage());
             }
         }
 
@@ -1846,11 +1782,17 @@ class Web
      */
     public function templateExists($name)
     {
-        if ($this->_submodule) {
-            $paths[] = implode("/", [rtrim($this->getModuleDir($this->_module), '/'), $this->_templatePath, $this->_submodule]);
+        $trimmed_module = "";
+        if (!is_null($this->getModuleDir($this->_module))) {
+            $trimmed_module = rtrim($this->getModuleDir($this->_module), '/');
         }
-        $paths[] = implode("/", [rtrim($this->getModuleDir($this->_module), '/'), $this->_templatePath]);
-        $paths[] = implode("/", [rtrim($this->getModuleDir($this->_module), '/')]);
+
+        if ($this->_submodule) {
+            $paths[] = implode("/", [$trimmed_module, $this->_templatePath, $this->_submodule]);
+        }
+
+        $paths[] = implode("/", [$trimmed_module, $this->_templatePath]);
+        $paths[] = implode("/", [$trimmed_module]);
         $paths[] = implode("/", [$this->_templatePath, $this->_module]);
         $paths[] = $this->_templatePath;
         // Add system fallback
@@ -1919,7 +1861,7 @@ class Web
             return null;
         }
         $tpl = new WebTemplate();
-        $tpl->set_vars($this->_context);
+        $tpl->setVars($this->_context);
         return $tpl->fetch($this->getTemplateRealFilename($template));
     }
 
@@ -1950,7 +1892,7 @@ class Web
      */
     public function out($txt)
     {
-        $this->_buffer .= $txt;
+        $this->_buffer .= $txt ?? '';
     }
 
     public function webroot()
@@ -1998,26 +1940,6 @@ class Web
         return $match;
     }
 
-    /**
-     * Returns the request value in a safe way
-     * without generating warning.
-     *
-     * @deprecated v4.3.0 - Will be removed in v5.0.0.
-     * @see Request class.
-     *
-     * @param <type> $key
-     * @param <type> $default
-     * @return <type>
-     */
-    public function request($key, $default = null)
-    {
-        if (array_key_exists($key, $_REQUEST) && is_array($_REQUEST[$key])) {
-            return $_REQUEST[$key];
-        }
-
-        return array_key_exists($key, $_REQUEST) ? $_REQUEST[$key] : $default;
-    }
-
     public function requestIpAddress()
     {
         return array_key_exists('REMOTE_ADDR', $_SERVER) ? $_SERVER['REMOTE_ADDR'] : '';
@@ -2047,41 +1969,6 @@ class Web
     public function currentAction()
     {
         return $this->_action;
-    }
-
-    /**
-     * Call all PRE ACTION listeners
-     *
-     * @deprecated v3.6.13 - Will be removed in v5.0.0, "pre listeners" should not be used anymore.
-     */
-    public function _callPreListeners()
-    {
-        foreach ($this->modules() as $module) {
-            $lfile = $this->getModuleDir($module) . $module . ".listeners.php";
-            if (Config::get("{$module}.active") === true && file_exists($lfile)) {
-                require_once $lfile;
-                $action = $module . "_listener_PRE_ACTION";
-                if (function_exists($action)) {
-                    $action($this);
-                }
-            }
-        }
-    }
-
-    /**
-     * Call all POST ACTION listeners
-     * (rely on listener files included from pre_listener call!
-     *
-     * @deprecated v3.6.13 - Will be removed in v5.0.0, "post listeners" should not be used anymore.
-     */
-    public function _callPostListeners()
-    {
-        foreach ($this->modules() as $h) {
-            $action = $h . "_listener_POST_ACTION";
-            if (function_exists($action)) {
-                $action($this);
-            }
-        }
     }
 
     /**
@@ -2145,7 +2032,7 @@ class Web
     public function ctx($key, $value = null, $append = false)
     {
         if (!is_numeric($key) && !is_scalar($key)) {
-            $this->Log->error("Key given to ctx() was not numeric or scalar");
+            LogService::getInstance($this)->error("Key given to ctx() was not numeric or scalar");
             return;
         }
 
@@ -2184,7 +2071,7 @@ class Web
      */
     public function sessionOrRequest($key, $default = null)
     {
-        return $this->session($key, $this->request($key, !is_null($this->session($key)) ? $this->session($key) : $default));
+        return $this->session($key, Request::mixed($key, !is_null($this->session($key)) ? $this->session($key) : $default));
     }
 
     public function sessionUnset($key)
@@ -2231,7 +2118,6 @@ class Web
         // a role check or pre module/listener
         if ($this->_action_executed) {
             $this->_callWebHooks("after");
-            $this->_callPostListeners();
         }
 
         $this->header("Location: " . trim($url));
@@ -2258,7 +2144,7 @@ class Web
         if (!headers_sent($file, $line)) {
             header($string);
         } else {
-            $this->log->error("Attempted to resend header {$string}, output started in {$file} on line {$line}");
+            LogService::getInstance($this)->error("Attempted to resend header {$string}, output started in {$file} on line {$line}");
         }
     }
 
@@ -2341,7 +2227,7 @@ class Web
                 $paths['submodule'] = $domainsubmodules;
             }
 
-            if (!$this->Auth->loggedIn()) {
+            if (!AuthService::getInstance($this)->loggedIn()) {
                 $paths['action'] = 'login';
                 return $paths;
             }
@@ -2358,7 +2244,7 @@ class Web
 
         // then find the action
         $paths['action'] = null;
-        if ($this->Auth->loggedIn() && $this->Auth->user()->redirect_url == $url) {
+        if (AuthService::getInstance($this)->loggedIn() && AuthService::getInstance($this)->user()->redirect_url == $url) {
             $paths['action'] = 'index';
         }
         if (!empty($split)) {
@@ -2471,7 +2357,7 @@ class WebTemplate
      *
      * @return void
      */
-    public function set_vars($vars, $clear = false)
+    public function setVars($vars, $clear = false)
     {
         if ($clear) {
             $this->vars = $vars;
@@ -2504,108 +2390,108 @@ class WebTemplate
  * An extension to Template that provides automatic caching of
  * template contents.
  */
-class CachedTemplate extends WebTemplate
-{
-    public $cache_id;
-    public $expire;
-    public $cached;
+// class CachedTemplate extends WebTemplate
+// {
+//     public $cache_id;
+//     public $expire;
+//     public $cached;
 
-    /**
-     * Constructor.
-     *
-     * @param string $path path to template files
-     * @param string $cache_id unique cache identifier
-     * @param int $expire number of seconds the cache will live
-     *
-     * @return void
-     */
-    public function __construct($path, $cache_id = null, $expire = 900)
-    {
-        $this->WebTemplate($path);
-        $this->cache_id = $cache_id ? 'cache/' . md5($cache_id) : $cache_id;
-        $this->expire = $expire;
-    }
+//     /**
+//      * Constructor.
+//      *
+//      * @param string $path path to template files
+//      * @param string $cache_id unique cache identifier
+//      * @param int $expire number of seconds the cache will live
+//      *
+//      * @return void
+//      */
+//     public function __construct($path, $cache_id = null, $expire = 900)
+//     {
+//         $this->WebTemplate($path);
+//         $this->cache_id = $cache_id ? 'cache/' . md5($cache_id) : $cache_id;
+//         $this->expire = $expire;
+//     }
 
-    /**
-     * Test to see whether the currently loaded cache_id has a valid
-     * corrosponding cache file.
-     *
-     * @return bool
-     */
-    public function is_cached()
-    {
-        if ($this->cached) {
-            return true;
-        }
+//     /**
+//      * Test to see whether the currently loaded cache_id has a valid
+//      * corrosponding cache file.
+//      *
+//      * @return bool
+//      */
+//     public function is_cached()
+//     {
+//         if ($this->cached) {
+//             return true;
+//         }
 
-        // Passed a cache_id?
-        if (!$this->cache_id) {
-            return false;
-        }
+//         // Passed a cache_id?
+//         if (!$this->cache_id) {
+//             return false;
+//         }
 
-        // Cache file exists?
-        if (!file_exists($this->cache_id)) {
-            return false;
-        }
+//         // Cache file exists?
+//         if (!file_exists($this->cache_id)) {
+//             return false;
+//         }
 
-        // Can get the time of the file?
-        if (!($mtime = filemtime($this->cache_id))) {
-            return false;
-        }
+//         // Can get the time of the file?
+//         if (!($mtime = filemtime($this->cache_id))) {
+//             return false;
+//         }
 
-        // Cache expired?
-        if (($mtime + $this->expire) < time()) {
-            @unlink($this->cache_id);
-            return false;
-        } else {
-            /**
-             * Cache the results of this is_cached() call.  Why?  So
-             * we don't have to double the overhead for each template.
-             * If we didn't cache, it would be hitting the file system
-             * twice as much (file_exists() & filemtime() [twice each]).
-             */
-            $this->cached = true;
-            return true;
-        }
-    }
+//         // Cache expired?
+//         if (($mtime + $this->expire) < time()) {
+//             @unlink($this->cache_id);
+//             return false;
+//         } else {
+//             /**
+//              * Cache the results of this is_cached() call.  Why?  So
+//              * we don't have to double the overhead for each template.
+//              * If we didn't cache, it would be hitting the file system
+//              * twice as much (file_exists() & filemtime() [twice each]).
+//              */
+//             $this->cached = true;
+//             return true;
+//         }
+//     }
 
-    /**
-     * This function returns a cached copy of a template (if it exists),
-     * otherwise, it parses it as normal and caches the content.
-     *
-     * @param $file string the template file
-     *
-     * @return string
-     */
-    public function fetch_cache($file)
-    {
-        if ($this->is_cached()) {
-            $fp = @fopen($this->cache_id, 'r');
-            $contents = fread($fp, filesize($this->cache_id));
-            fclose($fp);
-            return $contents;
-        } else {
-            $contents = $this->fetch($file);
+//     /**
+//      * This function returns a cached copy of a template (if it exists),
+//      * otherwise, it parses it as normal and caches the content.
+//      *
+//      * @param $file string the template file
+//      *
+//      * @return string
+//      */
+//     public function fetch_cache($file)
+//     {
+//         if ($this->is_cached()) {
+//             $fp = @fopen($this->cache_id, 'r');
+//             $contents = fread($fp, filesize($this->cache_id));
+//             fclose($fp);
+//             return $contents;
+//         } else {
+//             $contents = $this->fetch($file);
 
-            // Write the cache
-            if ($fp = @fopen($this->cache_id, 'w')) {
-                fwrite($fp, $contents);
-                fclose($fp);
-            } else {
-                die('Unable to write cache.');
-            }
+//             // Write the cache
+//             if ($fp = @fopen($this->cache_id, 'w')) {
+//                 fwrite($fp, $contents);
+//                 fclose($fp);
+//             } else {
+//                 die('Unable to write cache.');
+//             }
 
-            return $contents;
-        }
-    }
-}
+//             return $contents;
+//         }
+//     }
+// }
 
 /**
  * License for Template and CachedTemplate classes:
  *
  * Copyright (c) 2003 Brian E. Lozier (brian@massassi.net)
  *
- * set_vars() method contributed by Ricardo Garcia (Thanks!)
+ * setVars() method contributed by Ricardo Garcia (Thanks!)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to

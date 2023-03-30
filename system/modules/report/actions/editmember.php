@@ -3,14 +3,14 @@
 function editmember_GET(Web &$w) {
 	$p = $w->pathMatch("repid","userid");
 	// get member details for edit
-	$member = $w->Report->getReportMember($p['repid'], $p['userid']);
+	$member = ReportService::getInstance($w)->getReportMember($p['repid'], $p['userid']);
 
 	// build editable form for a member allowing change of membership type
 	$f = Html::form(array(
 		array("Member Details","section"),
 		array("","hidden", "report_id",$p['repid']),
-		array("Name","static", "name", $w->Report->getUserById($member->user_id)),
-		array("Role","select","role",$member->role,$w->Report->getReportPermissions()),
+		array("Name","static", "name", ReportService::getInstance($w)->getUserById($member->user_id)),
+		array("Role","select","role",$member->role,ReportService::getInstance($w)->getReportPermissions()),
 		array("Is email recipient", "checkbox", "is_email_recipient", $member->is_email_recipient)
 	),$w->localUrl("/report/editmember/".$p['userid']),"POST"," Update ");
 
@@ -21,7 +21,7 @@ function editmember_GET(Web &$w) {
 
 function editmember_POST(Web &$w) {
 	$p = $w->pathMatch("id");
-	$member = $w->Report->getReportMember($_POST['report_id'], $p['id']);
+	$member = ReportService::getInstance($w)->getReportMember($_POST['report_id'], $p['id']);
 
 	$member->fill($_POST);
 	$member->is_email_recipient = intval(!empty($_POST['is_email_recipient']));
