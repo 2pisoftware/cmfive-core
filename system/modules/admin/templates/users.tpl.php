@@ -1,5 +1,9 @@
 <div class="mb-3">
-    <?php echo Html::box($webroot . "/admin/useradd/box", "Add New User", true); ?>
+    
+    <?php 
+    echo Html::box($webroot . "/admin/useradd/box", "Add New User", true); 
+    echo Html::filter("Filter Users", $filterData, "/admin/users", "GET", "Filter", "users_filter");
+    ?>
 </div>
 <div class='tabs'>
     <div class='tab-head'>
