@@ -80,11 +80,11 @@ function users_GET(Web $w)
         ["Email", "text", "admin/user__filter-email", $email]
     ];
 
-    $internal_page_size = $w->sessionOrRequest('cmfive-internal-users__page-size', 2);
+    $internal_page_size = $w->sessionOrRequest('cmfive-internal-users__page-size', 50);
     $internal_sort = $w->sessionOrRequest('cmfive-internal-users__sort', 'login');
     $internal_sort_direction = $w->sessionOrRequest('cmfive-internal-users__sort-direction', 'asc');
 
-    $external_page_size = $w->sessionOrRequest('cmfive-external-users__page-size', 2);
+    $external_page_size = $w->sessionOrRequest('cmfive-external-users__page-size', 50);
     $external_sort = $w->sessionOrRequest('cmfive-external-users__sort', 'login');
     $external_sort_direction = $w->sessionOrRequest('cmfive-external-users__sort-direction', 'asc');
 
