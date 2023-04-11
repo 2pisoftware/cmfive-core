@@ -2,13 +2,13 @@
 // update status using dropdowns provided on Task List
 function updatestatus_ALL(Web &$w) {
 	// check for required REQUEST elements
-	if (($w->request('id')) && ($w->request('status'))) {
+	if ((Request::int('id')) && (Request::string('status'))) {
 		// task is to get updated so gather relevant data
-		$task = $w->Task->getTask($w->request('id'));
+		$task = TaskService::getInstance($w)->getTask(Request::int('id'));
 
 		// if task exists, first gather changes for display in comments
 		if ($task) {
-			$comments = "status updated to: " . $w->request('status') . "\n";
+			$comments = "status updated to: " . Request::string('status') . "\n";
 
 			$task->fill($_REQUEST);
 
@@ -37,7 +37,7 @@ function updatestatus_ALL(Web &$w) {
 			$w->ctx("TaskEvent","task_details");
 		}
 		// return
-		$w->msg("Task: " . $task->title . " updated.","/task/tasklist/?assignee=".$w->request('assignee')."&creator=".$w->request('creator')."&taskgroups=".$w->request('taskgroups')."&tasktypes=".$w->request('tasktypes')."&tpriority=".$w->request('tpriority')."&status=".$w->request('tstatus')."&dt_from=".$w->request('dt_from')."&dt_to=".$w->request('dt_to'));
+		$w->msg("Task: " . $task->title . " updated.","/task/tasklist/?assignee=".Request::string('assignee')."&creator=".Request::string('creator')."&taskgroups=".Request::string('taskgroups')."&tasktypes=".Request::string('tasktypes')."&tpriority=".Request::string('tpriority')."&status=".Request::string('tstatus')."&dt_from=".Request::string('dt_from')."&dt_to=".Request::string('dt_to'));
 	}
 
 	// return

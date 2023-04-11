@@ -4,8 +4,8 @@ function showtaskgroup(\Web $w, $params) {
 	$taskgroup = $params["taskgroup"];
 
 	if (!empty($taskgroup)) {
-		$taskgroup->tasks = $w->Task->getTasksbyGroupId($taskgroup->id);
-		$taskgroup->statuses = $w->Task->getTaskTypeStatus($taskgroup->task_group_type);
+		$taskgroup->tasks = TaskService::getInstance($w)->getTasksbyGroupId($taskgroup->id);
+		$taskgroup->statuses = TaskService::getInstance($w)->getTaskTypeStatus($taskgroup->task_group_type);
 		$w->ctx("taskgroup", $taskgroup);
 	}
 

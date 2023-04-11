@@ -3,11 +3,11 @@
 function comment_GET(Web $w)
 {
     $p = $w->pathMatch("comment_id", "object_class", "object_id");
-    $is_internal_only = intval($w->request("internal_only", 0));
-    $has_notification_selection = $w->request("has_notification_selection", 1);
+    $is_internal_only = intval(Request::int("internal_only", 0));
+    $has_notification_selection = Request::int("has_notification_selection", 1);
 
     $comment_id = intval($p["comment_id"]);
-    $comment = $comment_id > 0 ? $w->Comment->getComment($comment_id) : new Comment($w);
+    $comment = $comment_id > 0 ? CommentService::getInstance($w)->getComment($comment_id) : new Comment($w);
 
     $is_restricted = false;
     $is_parent_restricted = false;
@@ -19,7 +19,7 @@ function comment_GET(Web $w)
     $parent_comment = null;
 
     if (strtolower($parent_object_class_name) == "comment") {
-        $parent_comment = $w->Comment->getComment($p["object_id"]);
+        $parent_comment = CommentService::getInstance($w)->getComment($p["object_id"]);
         if (!empty($parent_comment)) {
             $root_object = $parent_comment->getParentObject();
         }
@@ -28,7 +28,7 @@ function comment_GET(Web $w)
             $is_parent_restricted = true;
         }
     } else {
-        $root_object = $w->Comment->getObject(str_replace(" ", "", ucwords(str_replace("_", " ", $parent_object_class_name))), $parent_object_id);
+        $root_object = CommentService::getInstance($w)->getObject(str_replace(" ", "", ucwords(str_replace("_", " ", $parent_object_class_name))), $parent_object_id);
     }
 
     if ($is_parent_restricted || (!empty($comment->id) && $comment->isRestricted())) {
@@ -57,10 +57,10 @@ function comment_GET(Web $w)
     $viewers = [];
 
     if (!empty($root_object) && $is_internal_only) {
-        $users = $w->Auth->getUsers();
+        $users = AuthService::getInstance($w)->getUsers();
 
         foreach (empty($users) ? [] : $users as $user) {
-            $link = $w->Main->getObject("RestrictedObjectUserLink", ["object_id" => $comment->id, "user_id" => $user->id, "type" => "viewer"]);
+            $link = AdminService::getInstance($w)->getObject("RestrictedObjectUserLink", ["object_id" => $comment->id, "user_id" => $user->id, "type" => "viewer"]);
 
             if ($root_object->canView($user)) {
                 if (!empty($parent_comment) && !$parent_comment->canView($user)) {
@@ -69,7 +69,7 @@ function comment_GET(Web $w)
                 $is_notify = false;
 
                 foreach ($notify_recipients as $key => $notify_recipient) {
-                    if ($key == $user->id && !$is_restricted && $w->Auth->user()->id != $user->id) {
+                    if ($key == $user->id && !$is_restricted && AuthService::getInstance($w)->user()->id != $user->id) {
                         $is_notify = true;
                     }
                 }
@@ -77,15 +77,15 @@ function comment_GET(Web $w)
                 $viewers[] = [
                     "id" => $user->id,
                     "name" => $user->getFullName(),
-                    "can_view" => (!empty($link) || $user->id === $w->Auth->user()->id) ? true : false,
+                    "can_view" => (!empty($link) || $user->id === AuthService::getInstance($w)->user()->id) ? true : false,
                     "is_notify" => $is_notify,
                     "is_original_notify" => $is_notify,
                 ];
             }
         }
     } else {
-        $users = $w->Admin->getObjects("User");
-        $notify_recipients[$w->Auth->user()->id] = false;
+        $users = AdminService::getInstance($w)->getObjects("User");
+        $notify_recipients[AuthService::getInstance($w)->user()->id] = false;
 
         foreach (empty($users) ? [] : $users as $user) {
             foreach ($notify_recipients as $key => $notify_recipient) {
@@ -94,7 +94,7 @@ function comment_GET(Web $w)
                         "id" => $user->id,
                         "name" => $user->getFullName() . ($user->is_external ? " (EXTERNAL)" : ""),
                         "can_view" => true,
-                        "is_notify" => $w->Auth->user()->id != $user->id ? true : false,
+                        "is_notify" => AuthService::getInstance($w)->user()->id != $user->id ? true : false,
                         "is_original_notify" => empty($is_notify) ? null : $is_notify,
                     ];
                 }
@@ -106,7 +106,7 @@ function comment_GET(Web $w)
         return strcmp($a["name"], $b["name"]);
     });
 
-    $user = $w->Auth->user();
+    $user = AuthService::getInstance($w)->user();
     $new_owner = [
         "id" => $user->id,
         "name" => $user->getFullName(),
@@ -125,5 +125,5 @@ function comment_GET(Web $w)
     $w->ctx("has_notification_selection", $has_notification_selection);
     $w->ctx("is_restricted", json_encode($is_restricted));
     $w->ctx("is_parent_restricted", json_encode($is_parent_restricted));
-    $w->ctx("can_restrict", property_exists($comment, '_restrictable') && $is_internal_only && $w->Auth->user()->hasRole("restrict") ? "true" : "false");
+    $w->ctx("can_restrict", property_exists($comment, '_restrictable') && $is_internal_only && AuthService::getInstance($w)->user()->hasRole("restrict") ? "true" : "false");
 }

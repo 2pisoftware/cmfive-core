@@ -174,7 +174,7 @@ class Html
     /**
      * Create an a link styled as a button
      * */
-    public static function ab($href, $title, $class = null, $id = null, $confirm = null)
+    public static function ab($href, $title, $class = "", $id = "", $confirm = "")
     {
         $classParam = ' button tiny ';
         if (strlen($class) > 0) {
@@ -220,14 +220,10 @@ class Html
      * Creates a link (or button) which will pop up a colorbox
      * containing the contents of the url
      *
-     * @param <type> $href   (M) the url to display in the colorbox
-     * @param <type> $title  (M) the link title
-     * @param <type> $button (O) if true create a button instead of a link
-     * @param <type> $iframe (O) whether to use an iframe to display the html contents (default: false)
      */
     public static function box($href, $title, $button = false, $iframe = false, $width = null, $height = null, $param = "isbox", $id = null, $class = null, $confirm = null, $modal_window_id = 'cmfive-modal')
     {
-        $onclick = Html::boxOnClick($href, $iframe, $width, $height, $param, $confirm, false, $modal_window_id);
+        // $onclick = Html::boxOnClick($href, $iframe, $width, $height, $param, $confirm, false, $modal_window_id);
         $element = null;
         if ($button) {
             // $tag = "button";
@@ -235,10 +231,20 @@ class Html
         } else {
             $element = new \Html\a();
         }
-        $element->id($id)->setClass($class)->onclick($onclick)->text($title);
+        $element->id($id)->setClass($class)->setAttribute('data-modal-target', $href)->text($title);
+        if (!empty($confirm)) {
+            $element->setAttribute('data-modal-confirm', $confirm);
+        }
         return $element->__toString();
     }
 
+    /**
+     * Returns onclick event for inline html attribute
+     *
+     * This should no longer be used as JS click binding is the best way to do this
+     *
+     * @deprecated v4.0.x
+     */
     public static function boxOnClick($href, $iframe = false, $width = null, $height = null, $param = "isbox", $confirm = null, $include_tag = true, $modal_window_id = 'cmfive-modal')
     {
         if ($iframe) {
@@ -262,7 +268,7 @@ class Html
             $tag_end = "";
         }
 
-        return $tag_start . "{$confirm_str}modal_history.push(&quot;{$href}&quot;); \$(&quot;#{$modal_window_id}&quot;).foundation(&quot;reveal&quot;, &quot;open&quot;, &quot;{$href}&quot;);return false;" . ($confirm ? "}" : "") . $tag_end;
+        return $tag_start . "openModal(&quot;{$href}&quot;);return false;" . ($confirm ? "}" : "") . $tag_end;
     }
 
     /**
@@ -352,10 +358,10 @@ class Html
                 continue;
             }
 
-            $title = !empty($field[0]) ? $field[0] : null;
-            $type = !empty($field[1]) ? $field[1] : null;
-            $name = !empty($field[2]) ? $field[2] : null;
-            $value = !empty($field[3]) ? $field[3] : null;
+            $title = !empty($field[0]) ? $field[0] : '';
+            $type = !empty($field[1]) ? $field[1] : '';
+            $name = !empty($field[2]) ? $field[2] : '';
+            $value = !empty($field[3]) ? $field[3] : '';
             $readonly = "";
 
             // handle disabled fields
@@ -376,46 +382,46 @@ class Html
             switch ($type) {
                 case "text":
                 case "password":
-                    $size = !empty($field[4]) ? $field[4] : null;
-                    $required = !empty($field[5]) ? $field[5] : null;
+                    $size = !empty($field[4]) ? $field[4] : '';
+                    $required = !empty($field[5]) ? $field[5] : '';
                     $buffer .= '<input' . $readonly . ' style="width:100%;" type="' . $type . '" name="' . $name . '" value="' . htmlspecialchars($value) . '" size="' . $size . '" id="' . $name . '"  ' . $required . '/>';
                     break;
                 case "autocomplete":
-                    $options = !empty($field[4]) ? $field[4] : null;
+                    $options = !empty($field[4]) ? $field[4] : '';
                     $minValue = !empty($field[5]) ? $field[5] : 1;
-                    $required = !empty($field[6]) ? $field[6] : null;
+                    $required = !empty($field[6]) ? $field[6] : '';
                     $buffer .= Html::autocomplete($name, $options, $value, null, "width: 100%;", $minValue, $required);
                     break;
                 case "date":
-                    $size = !empty($field[4]) ? $field[4] : null;
+                    $size = !empty($field[4]) ? $field[4] : '';
                     $buffer .= Html::datePicker($name, $value, $size);
                     break;
                 case "datetime":
-                    $size = !empty($field[4]) ? $field[4] : null;
+                    $size = !empty($field[4]) ? $field[4] : '';
                     $buffer .= Html::datetimePicker($name, $value, $size);
                     break;
                 case "time":
-                    $size = !empty($field[4]) ? $field[4] : null;
+                    $size = !empty($field[4]) ? $field[4] : '';
                     $buffer .= Html::timePicker($name, $value, $size);
                     break;
                 case "static":
-                    $size = !empty($field[4]) ? $field[4] : null;
+                    $size = !empty($field[4]) ? $field[4] : '';
                     $buffer .= "<div class='small-6 medium-3 columns'>{$title}</div><div class='small-6 medium-9 columns'>{$value}</div>";
                     break;
                 case "textarea":
-                    $c = !empty($field[4]) ? $field[4] : null;
-                    $r = !empty($field[5]) ? $field[5] : null;
+                    $c = !empty($field[4]) ? $field[4] : '';
+                    $r = !empty($field[5]) ? $field[5] : '';
                     $custom_class = true;
                     if (isset($field[6])) {
                         $custom_class = $field[6];
                     }
                     $buffer .= '<textarea' . $readonly . ' style="width:100%; height:auto; " name="' . $name . '" rows="' . $r . '" cols="' . $c . '" ' .
-                    (!empty($custom_class) ? ($custom_class === true ? "class='ckeditor'" : "class='$custom_class' ") : '') . ' id="' . $name . '">' . $value . '</textarea>';
+                        (!empty($custom_class) ? ($custom_class === true ? "class='ckeditor'" : "class='$custom_class' ") : '') . ' id="' . $name . '">' . $value . '</textarea>';
                     break;
                 case "select":
-                    $items = !empty($field[4]) ? $field[4] : null;
-                    $default = !empty($field[5]) ? ($field[5] == "null" ? null : $field[5]) : "-- Select --";
-                    $class = !empty($field[6]) ? $field[6] : null;
+                    $items = !empty($field[4]) ? $field[4] : '';
+                    $default = !empty($field[5]) ? ($field[5] == "null" ? '' : $field[5]) : "-- Select --";
+                    $class = !empty($field[6]) ? $field[6] : '';
                     if ($readonly == "") {
                         $buffer .= Html::select($name, $items, $value, $class, "width: 100%;", $default, $readonly != "");
                     } else {
@@ -423,7 +429,7 @@ class Html
                     }
                     break;
                 case "multiSelect":
-                    $items = !empty($field[4]) ? $field[4] : null;
+                    $items = !empty($field[4]) ? $field[4] : '';
                     if ($readonly == "") {
                         $buffer .= Html::multiSelect($name, $items, $value, null, "width: 100%;");
                     } else {
@@ -431,21 +437,21 @@ class Html
                     }
                     break;
                 case "checkbox":
-                    $defaultValue = !empty($field[4]) ? $field[4] : null;
-                    $class = !empty($field[5]) ? $field[5] : null;
+                    $defaultValue = !empty($field[4]) ? $field[4] : '';
+                    $class = !empty($field[5]) ? $field[5] : '';
                     $buffer .= Html::checkbox($name, $value, $defaultValue, $class);
                     break;
                 case "radio":
-                    $group = !empty($field[4]) ? $field[4] : null;
-                    $defaultValue = !empty($field[5]) ? $field[5] : null;
-                    $class = !empty($field[6]) ? $field[6] : null;
+                    $group = !empty($field[4]) ? $field[4] : '';
+                    $defaultValue = !empty($field[5]) ? $field[5] : '';
+                    $class = !empty($field[6]) ? $field[6] : '';
                     $buffer .= Html::radio($name, $group, $value, $defaultValue, $class) . "&nbsp;" . htmlentities($title);
                     break;
                 case "hidden":
                     $buffer .= '<input type="hidden" name="' . $name . '" value="' . htmlspecialchars($value) . '" id="' . $name . '"/>';
                     break;
                 case "file":
-                    $size = !empty($field[4]) ? $field[4] : null;
+                    $size = !empty($field[4]) ? $field[4] : '';
                     $buffer .= '<input style="width:100%;"  type="' . $type . '" name="' . $name . '" size="' . $size . '" id="' . $name . '"/>';
                     break;
                 case "multifile":
@@ -534,7 +540,7 @@ class Html
                     // Add title field
                     $buffer .= "<tr class='" . toSlug($title) . "' >";
                     if (!empty($title)) {
-                        $buffer .= "<td class='small-6 large-4'><b>{$title}</b></td>";
+                        $buffer .= "<td class='small-6 large-4'>{$title}</td>";
                     }
 
                     $buffer .= "<td class='small-6 large-8 type_" . toSlug($type) . "'>{$value}</td></tr>";
@@ -624,17 +630,17 @@ class Html
                     if (!is_array($field) && is_object($field)) {
                         if ((property_exists($field, "type") && $field->type !== "hidden") || !property_exists($field, "type")) {
                             $buffer .= '<li><label class=\'small-12 columns\'>' . $field->label . ($field->required ? " <small>Required</small>" : "") .
-                            $field->__toString() . '</label></li>';
+                                $field->__toString() . '</label></li>';
                         } else {
                             $buffer .= $field->__toString();
                         }
                         continue;
                     }
 
-                    $title = !empty($field[0]) ? $field[0] : null;
-                    $type = !empty($field[1]) ? $field[1] : null;
-                    $name = !empty($field[2]) ? $field[2] : null;
-                    $value = !empty($field[3]) ? $field[3] : null;
+                    $title = !empty($field[0]) ? $field[0] : "";
+                    $type = !empty($field[1]) ? $field[1] : "";
+                    $name = !empty($field[2]) ? $field[2] : "";
+                    $value = (key_exists(3, $field) && ($field[3] === 0 || !empty($field[3]))) ? $field[3] : "";
 
                     // Exploit HTML5s inbuilt form validation
                     $required = null;
@@ -670,8 +676,8 @@ class Html
                         case "email":
                         case "tel":
                             $size = !empty($field[4]) ? $field[4] : null;
-                            $buffer .= '<input' . $readonly . ' style="width:100%;" type="' . $type . '" name="' . $name . '" value="' . htmlspecialchars($value) .
-                            '" size="' . $size . '" id="' . $name . '" ' . $required . " />";
+                            $buffer .= '<input' . $readonly . ' style="width:100%;" type="' . $type . '" name="' . $name . '" value="' . htmlspecialchars($value ?? '') .
+                                '" size="' . $size . '" id="' . $name . '" ' . $required . " />";
                             break;
                         case "autocomplete":
                             $options = !empty($field[4]) ? $field[4] : null;
@@ -702,8 +708,8 @@ class Html
                                 $custom_class = $field[6];
                             }
                             $buffer .= '<textarea' . $readonly . ' style="width:100%; height: auto; " name="' . $name . '" rows="' . $r . '" cols="' . $c .
-                            '" ' . (!empty($custom_class) ? ($custom_class === true ? "class='ckeditor'" : "class='$custom_class' ") : '') . ' id="' . $name
-                            . '" ' . $required . '>' . $value . '</textarea>';
+                                '" ' . (!empty($custom_class) ? ($custom_class === true ? "class='ckeditor'" : "class='$custom_class' ") : '') . ' id="' . $name
+                                . '" ' . $required . '>' . $value . '</textarea>';
                             break;
                         case "select":
                             $items = !empty($field[4]) ? $field[4] : null;
@@ -729,10 +735,10 @@ class Html
                             $group = !empty($field[4]) ? $field[4] : null;
                             $defaultValue = !empty($field[5]) ? $field[5] : null;
                             $rd_class = !empty($field[6]) ? $field[6] : null;
-                            $buffer .= Html::radio($name, $group, $value, $defaultValue, $rd_class) . "&nbsp;" . htmlentities($title);
+                            $buffer .= Html::radio($name, $group, $value, $defaultValue, $rd_class) . "&nbsp;" . htmlentities($title ?? '');
                             break;
                         case "hidden":
-                            $buffer .= '<input type="hidden" name="' . $name . '" value="' . htmlspecialchars($value) . '" id="' . $name . '"/>';
+                            $buffer .= '<input type="hidden" name="' . $name . '" value="' . htmlspecialchars($value ?? '') . '" id="' . $name . '"/>';
                             break;
                         case "file":
                             $size = !empty($row[4]) ? $row[4] : null;
@@ -752,7 +758,7 @@ class Html
         $buffer .= "<script>$(function(){try{\$('.codemirror').each(function(){var editor = CodeMirror.fromTextArea($(this), {lineNumbers: true, mode: 'text/html', matchBrackets: true, viewportMargin: Infinity}); editor.refresh()})}catch(err){}});</script>";
 
         // Expermiental
-        if (strpos($class, "prompt") !== false) {
+        if (strpos($class ?? "", "prompt") !== false) {
             $buffer .= "<script>"
                 . "$(function() {"
                 . "		var confirmOnPageExit = function (e) {
@@ -840,10 +846,10 @@ class Html
                     $buf .= '<option value="' . htmlspecialchars($item) . '"' . $selected . '>' . htmlentities($item) . '</option>';
                 } elseif ($item instanceof DbObject) {
                     $selected = $value == $item->getSelectOptionValue() ? ' selected = "true" ' : "";
-                    $buf .= '<option value="' . htmlspecialchars($item->getSelectOptionValue()) . '"' . $selected . '>' . htmlentities($item->getSelectOptionTitle()) . '</option>';
+                    $buf .= '<option value="' . htmlspecialchars($item->getSelectOptionValue() ?? '') . '"' . $selected . '>' . htmlentities($item->getSelectOptionTitle() ?? '') . '</option>';
                 } elseif (is_array($item)) {
                     $selected = $value == $item[1] ? ' selected = "true" ' : "";
-                    $buf .= '<option value="' . htmlspecialchars($item[1]) . '"' . $selected . '>' . htmlentities($item[0]) . '</option>';
+                    $buf .= '<option value="' . htmlspecialchars($item[1] ?? '') . '"' . $selected . '>' . htmlentities($item[0] ?? '') . '</option>';
                 }
             }
         }
@@ -1097,7 +1103,7 @@ class Html
         string $total_results_query_param = "total_results",
         string $sort_query_param = "sort",
         string $sort_direction_param = "sort_direction"
-    ) : string {
+    ): string {
         // Build URL for pagination.
         $url_parsed = parse_url($base_url);
         $url_string = $url_parsed["path"];
@@ -1260,7 +1266,7 @@ class Html
 
     /**
      *  Filter function returns formatted form for declaring filters. Data is the same
-     *  as how Html::form is used. Filter parameters can be retrieved with $w->request
+     *  as how Html::form is used. Filter parameters can be retrieved with Request::string
      *  and it may be a good idea to prefix input names with 'filter_' to avoid naming
      *  collisions in requests
      *
@@ -1316,8 +1322,8 @@ class Html
             // Get row parameters
             $title = !empty($row[0]) ? $row[0] : null;
             $type = !empty($row[1]) ? $row[1] : null;
-            $name = !empty($row[2]) ? $row[2] : null;
-            $value = !empty($row[3]) ? $row[3] : null;
+            $name = !empty($row[2]) ? $row[2] : "";
+            $value = !empty($row[3]) ? $row[3] : "";
 
             $readonly = "";
 
@@ -1351,7 +1357,7 @@ class Html
             switch ($type) {
                 case "text":
                 case "password":
-                    $buffer .= '<input' . $readonly . ' style="width:100%;"  type="' . $type . '" name="' . $name . '" value="' . htmlspecialchars($value) . '" size="' . (!empty($row[4]) ? $row[4] : null) . '" id="' . $name . '"/>';
+                    $buffer .= '<input' . $readonly . ' style="width:100%;"  type="' . $type . '" name="' . $name . '" value="' . htmlspecialchars($value ?? '') . '" size="' . (!empty($row[4]) ? $row[4] : null) . '" id="' . $name . '"/>';
                     break;
                 case "autocomplete":
                     $minlength = !empty($row[5]) ? $row[5] : null;
@@ -1425,16 +1431,19 @@ class Html
         // Filter button (optional... though optional is pointless)
         if (!empty($action)) {
             $button = new \Html\button();
-            $buffer .= "<li><div class='small-12 columns'><label>Actions<br/>";
+            $buffer .= "<li><div class='small-12 columns'><label>Actions<div class='filter-button-container'>";
             if ($submitTitle !== null && !$should_autosubmit) {
-                $buffer .= $button->type("submit")->text($submitTitle)->__toString();
+                $buffer .= $button->type("submit")->text($submitTitle)->setClass('btn btn-sm btn-primary')->__toString();
             }
             if (!empty($id)) {
-                $buffer .= $button->text("Reset")->id("filter_reset_{$id}")->name("filter_reset_{$id}")->value("reset")->__toString() . "</label></div></li>";
+                $buffer .= $button->text("Reset")->id("filter_reset_{$id}")->name("filter_reset_{$id}")->value("reset")->setClass('btn btn-sm btn-secondary')->__toString();
             } else {
-                $buffer .= $button->text("Reset")->name("reset")->value("reset")->__toString() . "</label></div></li>";
+                $buffer .= $button->text("Reset")->name("reset")->value("reset")->setClass('btn btn-sm btn-secondary')->__toString();
             }
+
+            $buffer .= "</div></label></div></li>";
         }
+
         $buffer .= "</ul>"; // </div>
         $buffer .= "\n</fieldset>\n";
         $buffer .= $hidden . "</form>\n";
@@ -1522,7 +1531,7 @@ class Html
                     $isFirst = true && ($_SERVER['REQUEST_URI'] === key($breadcrumbs));
                     foreach ($breadcrumbs as $path => $value) {
                         if (!empty($w) && $w instanceof Web) {
-                            if (!$w->Auth->allowed($path)) {
+                            if (!AuthService::getInstance($w)->allowed($path)) {
                                 continue;
                             }
                         }
@@ -1605,13 +1614,13 @@ UPLOAD;
      * @param string $class
      * @return string
      */
-    public static function alertBox($msg, $type = "info") : string
+    public static function alertBox($msg, $type = "info"): string
     {
         if ($type !== "info" && $type !== "warning" && $type !== "alert" && $type !== "success") {
             $type = "info";
         }
 
-        return "<div data-alert class='alert-box {$type}'>{$msg}<a href='#' class='close'>&times;</a></div>";
+        return "<div data-alert class='alert alert-box {$type}'>{$msg}<a href='#' class='close'>&times;</a></div>";
     }
 
     /**

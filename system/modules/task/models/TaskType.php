@@ -113,30 +113,7 @@ abstract class TaskType
             $task->w->callHook("task", get_class($this) . "_on_after_delete", $task);
         }
     }
-
-    /**
-     * Return a html string which will be displayed alongside
-     * the generic task details.
-     *
-     * @deprecated v2.0.0 - Will be removed in v5.0.0.
-     *
-     * @param Task $task
-     */
-    public function displayExtraDetails(Task $task)
-    {
-    }
-
-    /**
-     * Return a Html string which will be appended to the row of buttons in the viewtask screen.
-     *
-     * @deprecated v2.0.0 - Will be removed in v5.0.0.
-     *
-     * @param Task $task
-     */
-    public function displayExtraButtons(Task $task)
-    {
-    }
-
+    
     /**
      * Return an array of options for time types
      * - override in subclass

@@ -186,20 +186,20 @@ class Autocomplete extends \Html\Form\FormElement {
 	public function __toString() {
 
 		// Get necessary fields for HTML
-                $readonly = !is_null($this->readonly) ? 'readonly="true"' : '';
+		$readonly = !is_null($this->readonly) ? 'readonly="true"' : '';
 		$required = !is_null($this->required) ? 'required="required"' : '';
 		$source = !empty($this->source) ? '"' . $this->source . '"' : json_encode($this->options);
 		$using_source = !empty($this->source) ? 'true' : 'false';
 		$attribute_buffer = '';
 		foreach(get_object_vars($this) as $field => $value) {
-			if (!is_null($value) && !in_array($field, static::$_excludeFromOutput)) {
+			if (!is_null($value) && !in_array($field, static::$_excludeFromOutput) && $field[0] !== "_") {
 				$attribute_buffer .= $field . '=\'' . $this->{$field} . '\' ';
 			}
 		}
 
 		$prefix = static::$_prefix;
 
-		$displayValue = htmlentities(!empty($this->title) ? $this->title : $this->value, ENT_QUOTES);
+		$displayValue = htmlentities($this->title ?? $this->value ?? '', ENT_QUOTES);
 
 		return <<<BUFFER
 <input type='text' style='display: none;' id='{$this->id}'  name='{$this->name}' value='{$this->value}' {$attribute_buffer} />

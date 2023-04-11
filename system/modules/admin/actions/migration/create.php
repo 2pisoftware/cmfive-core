@@ -23,9 +23,9 @@ function create_POST(Web $w) {
 		$w->error("Missing specified module or it doesn't exist", "/admin-migration");
 	}
 	
-	$name = $w->request('name', 'migration');
+	$name = Request::string('name', 'migration');
 	
-	$response = $w->Migration->createMigration($p['module'], $name);
+	$response = MigrationService::getInstance($w)->createMigration($p['module'], $name);
 	
 	$w->msg($response, "/admin-migration");
 }

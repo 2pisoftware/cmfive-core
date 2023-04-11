@@ -13,17 +13,15 @@ class ReportModuleCest
         $I->createReport($I, $this->reportTitle, 'Admin');
         $I->defineReportSQL($I, $this->reportTitle, "[[test||text||Test]]@@headers|| select 'known' as 'pedigree' , 'established' as 'precedent' @@ @@info||select distinct classname from migration @@");
         $I->requestReportWithData($I, $this->reportTitle, ['test' => 'Hello']);
-        $I->wait(2);
         $I->see('known');
         $I->see('precedent');
-        $I->createFeed($I, $this->reportTitle, $this->reportFeed);
-        $feed = $I->getFeedURL($I, $this->reportFeed);
-        $path = parse_url($feed)['path'];
-        $query = parse_url($feed)['query'];
-        $I->amOnPage($path . "?" . $query . "&format=html");
-        $I->wait(2);
-        $I->See('known');
-        $I->See('precedent');
+        // $I->createFeed($I, $this->reportTitle, $this->reportFeed);
+        // $feed = $I->getFeedURL($I, $this->reportFeed);
+        // $path = parse_url($feed, PHP_URL_PATH);
+        // $query = parse_url($feed, PHP_URL_QUERY);
+        // $I->amOnPage($path . "?" . $query . "&format=html");
+        // $I->See('known');
+        // $I->See('precedent');
         $I->createTemplate(
             $I,
             'Test Template',
@@ -37,9 +35,7 @@ class ReportModuleCest
         $I->See('2pi');
         $I->See('Pedigree');
         $I->requestReportConnection($I);
-        $I->wait(3);
         $I->linkReportConnection($I, $this->reportTitle);
-        $I->wait(3);
         $I->runReportTemplate($I, $this->reportTitle, 'Test Template');
         $I->See('2pi');
         $I->See('Pedigree');

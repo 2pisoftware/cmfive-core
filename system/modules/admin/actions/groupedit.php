@@ -8,7 +8,7 @@ function groupedit_GET(Web $w)
 {
 	$option = $w->pathMatch("group_id");
 
-	$user = $w->Auth->getUser($option['group_id']);
+	$user = AuthService::getInstance($w)->getUser($option['group_id']);
 
 	$template['Edit Group'] = array(array(array("Group Title: ","text","title",$user->login)));
 
@@ -21,7 +21,7 @@ function groupedit_POST(Web $w)
 {
 	$option = $w->pathMatch("group_id");
 
-	$user = $w->Auth->getUser($option['group_id']);
+	$user = AuthService::getInstance($w)->getUser($option['group_id']);
 	$user->login = $_REQUEST['title'];
 	$user->update();
 

@@ -14,7 +14,7 @@ function showReport(\Web $w, $params = [])
 
     CmfiveStyleComponentRegister::registerComponent('styles', new CmfiveStyleComponent('/system/templates/scss/redesign.scss', ['/system/templates/scss/']));
 
-    $report = $w->Report->getReportByModuleAndCategory($params['module'], $params['category']);
+    $report = ReportService::getInstance($w)->getReportByModuleAndCategory($params['module'], $params['category']);
     $form = $report->getReportCriteria(true);
 
     // Determine if it's a multicolform

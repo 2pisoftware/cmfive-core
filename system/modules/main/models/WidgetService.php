@@ -21,7 +21,7 @@ class WidgetService extends DbService {
 
 	public function getWidgetNamesForModule($module) {
 		$w = $this->w;
-		$user = $w->Auth->user();
+		$user = AuthService::getInstance($w)->user();
 		
 		return array_filter($this->w->moduleConf($module, "widgets") ? : [], function($widget) use ($w, $user) {
 			return $w->isClassActive($widget) && (new $widget($w))->canView($user);

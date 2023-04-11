@@ -200,6 +200,7 @@ class Select extends Common implements \Countable
      *
      * @return int
      */
+    #[\ReturnTypeWillChange]
     public function count()
     {
         $fluent = clone $this;

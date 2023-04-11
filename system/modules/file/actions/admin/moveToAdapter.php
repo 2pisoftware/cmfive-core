@@ -2,8 +2,8 @@
 
 function moveToAdapter_GET(Web $w)
 {
-    $from_adapter = $w->request('from_adapter');
-    $to_adapter = $w->request('to_adapter');
+    $from_adapter = Request::string('from_adapter');
+    $to_adapter = Request::string('to_adapter');
 
     if (!empty(Config::get('file.adapters.' . $to_adapter)) && Config::get('file.adapters.' . $to_adapter . '.active') === true) {
         if (empty(Config::get('file.adapters.' . $from_adapter))) {
@@ -12,7 +12,7 @@ function moveToAdapter_GET(Web $w)
 
         // From index
         $count = 0;
-        $attachments = $w->File->getAttachmentsForAdapter($from_adapter);
+        $attachments = FileService::getInstance($w)->getAttachmentsForAdapter($from_adapter);
         if (!empty($attachments)) {
             foreach ($attachments as $attachment) {
                 $attachment->moveToAdapter($to_adapter);

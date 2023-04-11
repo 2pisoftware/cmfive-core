@@ -12,7 +12,7 @@ function edit_GET(Web $w)
         $application->insert();
         $w->redirect('/form-application/edit/' . $application->id);
     } else {
-        $application = $w->FormApplication->getFormApplication($id);
+        $application = FormService::getInstance($w)->getFormApplication($id);
     }
 
     $form = [
@@ -23,7 +23,7 @@ function edit_GET(Web $w)
         ]
     ];
 
-    $available_forms = $w->Form->getForms();
+    $available_forms = FormService::getInstance($w)->getForms();
 
     $w->ctx('available_forms', $available_forms);
     $w->ctx('application', $application);
@@ -36,7 +36,7 @@ function edit_POST(Web $w)
     $w->setLayout(null);
     list($id) = $w->pathMatch('id');
 
-    $application = !empty($id) ? $w->FormApplication->getFormApplication($id) : new FormApplication($w);
+    $application = !empty($id) ? FormService::getInstance($w)->getFormApplication($id) : new FormApplication($w);
     $application->fill($_POST);
     $application->is_active = !empty($_POST['is_active']);
     $application->insertOrUpdate();

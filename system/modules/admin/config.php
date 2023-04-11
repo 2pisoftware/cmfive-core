@@ -24,13 +24,13 @@ Config::set('admin', [
     ],
     "dependencies" => [
         "swiftmailer/swiftmailer" => "~6.2",
-        "twig/twig" => "3.0.*",
-        "nesbot/carbon" => "1.22.1",
+        "twig/twig" => "3.3.*",
+        "nesbot/carbon" => "2.55.2",
         "robmorgan/phinx" => "0.8.*",
-        "sendgrid/sendgrid" => "~5.5",
+        "sendgrid/sendgrid" => "^8.0.0",
         "softark/creole" => "~1.2",
         "monolog/monolog" => "^1.22",
-        "aws/aws-sdk-php" => "^3.24",
+        "aws/aws-sdk-php" => "3.224",
         "aws/aws-php-sns-message-validator" => "^1.1",
         "maxbanton/cwh" => "^1.0"
     ],

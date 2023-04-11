@@ -9,18 +9,18 @@ function ajaxSetNewOwner_POST(Web $w) {
 		return;
 	}
 
-	$viewer_links = $w->Main->getObjects("RestrictedObjectUserLink", ["user_id" => $request_data->deleting_user_id, "type" => "viewer"]);
+	$viewer_links = MainService::getInstance($w)->getObjects("RestrictedObjectUserLink", ["user_id" => $request_data->deleting_user_id, "type" => "viewer"]);
 	foreach (empty($viewer_links) ? [] : $viewer_links as $viewer_link) {
 		$viewer_link->delete();
 	}
 
 	$owned_object = [];
 	foreach ($request_data->owner_links as $owner_links) {
-		$owned_object[] = $w->Main->getObject($owner_links->object_class, $owner_links->object_id);
+		$owned_object[] = MainService::getInstance($w)->getObject($owner_links->object_class, $owner_links->object_id);
 	}
 
 	foreach ($owned_object as $owned_object) {
-		$w->Restrictable->setOwner($owned_object, $request_data->new_owner_id);
+		RestrictableService::getInstance($w)->setOwner($owned_object, $request_data->new_owner_id);
 	}
 
 	$w->out((new AxiosResponse())->setSuccessfulResponse("OK", []));

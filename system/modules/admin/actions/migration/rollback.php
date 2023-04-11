@@ -8,7 +8,7 @@ function rollback_GET(Web $w) {
 		$w->error("Missing parameters required for rollback", "/admin-migration");
 	}
 	
-	$response = $w->Migration->rollback($p['module'], $p['file']);
+	$response = MigrationService::getInstance($w)->rollback($p['module'], $p['file']);
 	
 	$w->msg($response, "/admin-migration#individual");
 	

@@ -6,7 +6,7 @@ function delete_ALL(Web $w) {
         $w->error("Group not found", "/admin-groups");
     }
     
-    $group = $w->Auth->getUser($p['id']);
+    $group = AuthService::getInstance($w)->getUser($p['id']);
     if (empty($group->id)) {
         $w->error("Group not found", "/admin-groups");
     }
@@ -19,7 +19,7 @@ function delete_ALL(Web $w) {
             $group->removeRole($role);
         }
     }
-    $members = $w->Auth->getGroupMembers($option['group_id']);
+    $members = AuthService::getInstance($w)->getGroupMembers($option['group_id']);
 
     if ($members) {
         foreach ($members as $member) {

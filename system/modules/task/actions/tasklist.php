@@ -6,11 +6,11 @@ function tasklist_ALL(Web $w)
     $w->ctx("title", "Task List");
 
     // Look for reset
-    $reset = $w->request("reset");
+    $reset = Request::string("reset");
     $is_closed = 0;
     if (empty($reset)) {
         // Get filter values
-        $assignee_id = $w->sessionOrRequest("task__assignee-id", $w->Auth->user()->id);
+        $assignee_id = $w->sessionOrRequest("task__assignee-id", AuthService::getInstance($w)->user()->id);
         $creator_id = $w->sessionOrRequest("task__creator-id");
 
         $task_group_id = $w->sessionOrRequest("task__task-group-id");
@@ -26,7 +26,7 @@ function tasklist_ALL(Web $w)
     // First get the taskgroup
     $taskgroup = null;
     if (!empty($task_group_id)) {
-        $taskgroup = $w->Task->getTaskGroup($task_group_id);
+        $taskgroup = TaskService::getInstance($w)->getTaskGroup($task_group_id);
     }
 
     // Make the query manually
@@ -87,8 +87,8 @@ function tasklist_ALL(Web $w)
     $query_object->where("task.is_deleted", [0, null]); //->where("task_group.is_active", 1)->where("task_group.is_deleted", 0);
 
     // Fetch dataset and get model objects for them
-    $tasks_result_set = $query_object->orderBy('task.id DESC')->fetch_all();
-    $task_objects = $w->Task->getObjectsFromRows("Task", $tasks_result_set);
+    $tasks_result_set = $query_object->orderBy('task.id DESC')->fetchAll();
+    $task_objects = TaskService::getInstance($w)->getObjectsFromRows("Task", $tasks_result_set);
 
     // Filter in or out closed tasks based on given is_closed filter parameter
     if (!empty($task_objects) && empty($reset)) {
@@ -112,7 +112,7 @@ function tasklist_ALL(Web $w)
     $w->ctx("tasks", $task_objects);
 
     // Build the filter and its data
-    $taskgroup_data = $w->Task->getTaskGroupDetailsForUser();
+    $taskgroup_data = TaskService::getInstance($w)->getTaskGroupDetailsForUser();
     $filter_assignees = $taskgroup_data["members"];
     array_unshift($filter_assignees, ["Unassigned", "unassigned"]);
     $filter_data = [

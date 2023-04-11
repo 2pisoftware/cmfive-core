@@ -3,8 +3,8 @@
 function configwidget_GET(Web $w) {
 
 	$p = $w->pathMatch("origin", "id"); // "origin", "source", "widget");
-	// $widget = $w->Widget->getWidget($p["origin"], $p["source"], $p["widget"]);
-	$widget = $w->Widget->getWidgetById($p["id"]);
+	// $widget = WidgetService::getInstance($w)->getWidget($p["origin"], $p["source"], $p["widget"]);
+	$widget = WidgetService::getInstance($w)->getWidgetById($p["id"]);
 	// $widgetname = $p["widget"];
 
 	if (empty($widget->id)) {
@@ -26,8 +26,8 @@ function configwidget_GET(Web $w) {
 function configwidget_POST(Web $w) {
 
 	$p = $w->pathMatch("origin", "id"); // "origin", "source", "widget");
-	// $widget = $w->Widget->getWidget($p["origin"], $p["source"], $p["widget"]);
-	$widget = $w->Widget->getWidgetById($p["id"]);
+	// $widget = WidgetService::getInstance($w)->getWidget($p["origin"], $p["source"], $p["widget"]);
+	$widget = WidgetService::getInstance($w)->getWidgetById($p["id"]);
 	// $widgetname = $p["widget"];
 
 	if (empty($widget->id)) {

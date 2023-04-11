@@ -17,7 +17,7 @@ if (!empty($tasks)) {
 			// Append the rest of the data
 			$table_line += array(null, null,
 				$task->getTaskGroupTypeTitle(),
-				$w->Task->getUserById($task->assignee_id),
+				TaskService::getInstance($w)->getUserById($task->assignee_id),
 				$task->getTypeTitle(),
 				$task->priority,
 				$task->status,

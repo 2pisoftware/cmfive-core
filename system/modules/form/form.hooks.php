@@ -7,11 +7,11 @@ function form_core_template_tab_headers(Web $w, $object)
     }
 
     // Check and see if there are any forms mapped to the object
-    if ($w->Form->areFormsMappedToObject($object)) {
+    if (FormService::getInstance($w)->areFormsMappedToObject($object)) {
         $tabHeaders = [];
-        $forms = $w->Form->getFormsMappedToObject($object);
+        $forms = FormService::getInstance($w)->getFormsMappedToObject($object);
         foreach ($forms as $form) {
-            $form_mapping = $w->Form->getFormMapping($form, get_class($object)) ?? $w->Form->getFormApplicationMapping($form, $object);
+            $form_mapping = FormService::getInstance($w)->getFormMapping($form, get_class($object)) ?? FormService::getInstance($w)->getFormApplicationMapping($form, $object);
 
             if ($form->is_deleted == 0) {
                 $tabHeaders[] = "<a href='#" . toSlug($form->title) . "'>$form->title" . " <span class='secondary round label cmfive__tab-label'>" .  $form->countFormInstancesForObject($object) . "</span></a>";
@@ -30,11 +30,11 @@ function form_core_template_tab_content(Web $w, $params)
 
     $forms_list = "";
 
-    $form_mappings = $w->Form->getFormMappingsForObject($params['object']);
+    $form_mappings = FormService::getInstance($w)->getFormMappingsForObject($params['object']);
     $form_application_mappings = null;
 
     if ($params['object'] instanceof FormApplication) {
-        $form_application_mappings = $w->Form->getFormApplicationMappingsForObject($params['object']);
+        $form_application_mappings = FormService::getInstance($w)->getFormApplicationMappingsForObject($params['object']);
     }
 
     if (!empty($form_application_mappings)) {
@@ -43,7 +43,7 @@ function form_core_template_tab_content(Web $w, $params)
 
     foreach ($form_mappings ?? [] as $form_mapping) {
         $form = $form_mapping->getForm();
-        if (empty($form) || !$form->canList($w->Auth->user())) {
+        if (empty($form) || !$form->canList(AuthService::getInstance($w)->user())) {
             continue;
         }
 
@@ -81,11 +81,12 @@ function form_core_dbobject_after_insert_FormValue(Web $w, FormValue $form_value
 
     // Turn a comma separated string of attachment ids into an array of attachment objects
     $attachments = array_map(function ($attachment_id) use ($form_value) {
-        return $form_value->w->File->getAttachment($attachment_id);
+        return FileService::getInstance($form_value->w)->getAttachment($attachment_id);
     }, explode(',', $form_value->value));
 
     if (!empty($attachments)) {
         // Reassign them to the given form value if needed
+        /** @var Attachment $attachment */
         foreach ($attachments as $attachment) {
             if ($attachment->parent_table != 'form_value' && $attachment->parent_id != $form_value->id) {
                 $attachment->parent_table = 'form_value';
@@ -119,11 +120,12 @@ function form_core_dbobject_after_update_FormValue(Web $w, FormValue $form_value
 
     // Turn a comma separated string of attachment ids into an array of attachment objects
     $attachments = array_map(function ($attachment_id) use ($form_value) {
-        return $form_value->w->File->getAttachment($attachment_id);
+        return FileService::getInstance($form_value->w)->getAttachment($attachment_id);
     }, explode(',', $form_value->value));
 
     if (!empty($attachments)) {
         // Reassign them to the given form value if needed
+        /** @var Attachment $attachment */
         foreach ($attachments as $attachment) {
             if (!empty($attachment) && $attachment->parent_table != 'form_value' && $attachment->parent_id != $form_value->id) {
                 $attachment->parent_table = 'form_value';

@@ -3,9 +3,9 @@ class ReportLib {
 	
 	static function viewMemberstab(Web &$w, $id) {
 		// return list of members of given report
-		$members = $w->Report->getReportMembers($id);
+		$members = ReportService::getInstance($w)->getReportMembers($id);
 		// get report details
-		$report = $w->Report->getReportInfo($id);
+		$report = ReportService::getInstance($w)->getReportInfo($id);
 	
 		// set columns headings for display of members
 		$line[] = array("Member","Role","");
@@ -14,7 +14,7 @@ class ReportLib {
 		if ($members) {
 			foreach ($members as $member) {
 				$line[] = array(
-				$w->Report->getUserById($member->user_id),
+				ReportService::getInstance($w)->getUserById($member->user_id),
 				$member->role,
 				Html::box("/report/editmember/".$report->id . "/". $member->user_id," Edit ", true) .
 					"&nbsp;&nbsp;" . 

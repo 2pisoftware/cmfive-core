@@ -3,6 +3,7 @@
 
 function index_ALL(Web $w)
 {
+    // $w->setLayout('layout-2021');
     $w->ctx("title", "Insights List");
 
     //get userId for logged in user

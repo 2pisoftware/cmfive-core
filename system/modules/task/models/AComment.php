@@ -43,7 +43,7 @@ class AComment extends DbObject{
 	{
 		$str = $this->comment;
 			
-		$u = $this->w->Auth->getUser($this->creator_id);
+		$u = AuthService::getInstance($this->w)->getUser($this->creator_id);
         if ($u) 
         {
            $str .= "<br>By <i>".$u->getFullName().",</i>";

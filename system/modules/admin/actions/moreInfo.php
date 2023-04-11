@@ -8,9 +8,9 @@ function moreInfo_GET(Web &$w)
 {
 	$option = $w->pathMatch("group_id");
 
-	$w->Admin->navigation($w, $w->Auth->getUser($option['group_id'])->login);
+	AdminService::getInstance($w)->navigation($w, AuthService::getInstance($w)->getUser($option['group_id'])->login);
 
-	if ($w->Auth->user()->is_admin || $w->Auth->getRoleForLoginUser($option['group_id'], $w->Auth->user()->id) == "owner")
+	if (AuthService::getInstance($w)->user()->is_admin || AuthService::getInstance($w)->getRoleForLoginUser($option['group_id'], AuthService::getInstance($w)->user()->id) == "owner")
 	{
 		$w->ctx("addMember", Html::box("/admin/groupmember/".$option['group_id'],"New Member",true));
 	}
@@ -19,7 +19,7 @@ function moreInfo_GET(Web &$w)
 	//fill in member table;
 	$table = array(array("Name","Role","Operations"));
 
-	$groupMembers = $w->Auth->getGroupMembers($option['group_id']);
+	$groupMembers = AuthService::getInstance($w)->getGroupMembers($option['group_id']);
 		
 	if ($groupMembers)
 	{
@@ -34,7 +34,7 @@ function moreInfo_GET(Web &$w)
 			$line[] = $style.$name."</div>";
 			$line[] = $style.$groupMember->role."</div>";
 				
-			if ($w->Auth->user()->is_admin || $w->Auth->getRoleForLoginUser($option['group_id'], $w->Auth->user()->id) == "owner")
+			if (AuthService::getInstance($w)->user()->is_admin || AuthService::getInstance($w)->getRoleForLoginUser($option['group_id'], AuthService::getInstance($w)->user()->id) == "owner")
 			{
 				$line[] = Html::a("/admin/memberdelete/".$option['group_id']."/".$groupMember->id,"Delete",null,null,"Are you sure you want to delete this member?");
 			}

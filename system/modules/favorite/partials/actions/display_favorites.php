@@ -4,7 +4,7 @@ namespace System\Modules\Favorite;
 
 function display_favorites(\Web $w)
 {
-    $results = $w->Favorite->getFavoritesForUser($w->Auth->user()->id);
+    $results = FavoriteService::getInstance($w)->getFavoritesForUser(AuthService::getInstance($w)->user()->id);
     $categorisedFavorites = array();
     if (!empty($results)) {
         foreach ($results as $k => $favorite) {

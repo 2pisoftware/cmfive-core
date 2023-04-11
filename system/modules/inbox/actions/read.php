@@ -1,11 +1,11 @@
 <?php
 function read_GET(Web $w){
-	$w->Inbox->navigation($w,"Read Messages");
+	InboxService::getInstance($w)->navigation($w,"Read Messages");
 	$p = $w->pathMatch('num');
 	$num = $p['num'];
 	$num ? $num : $num = 1;
-	$read = $w->Inbox->getMessages($num-1,40,$w->Auth->user()->id,0);
-	$read_total = $w->Inbox->getReadMessageCount($w->Auth->user()->id);
+	$read = InboxService::getInstance($w)->getMessages($num-1,40,AuthService::getInstance($w)->user()->id,0);
+	$read_total = InboxService::getInstance($w)->getReadMessageCount(AuthService::getInstance($w)->user()->id);
         
         $table_header = array("<input style='margin: 0px;' type='checkbox' id='allChk' onclick='selectAll()' />","Subject","Date","Sender");
         $table_data = array();

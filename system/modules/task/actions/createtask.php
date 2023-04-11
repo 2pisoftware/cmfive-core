@@ -1,7 +1,7 @@
 <?php
 // Step I in creating a task. This function displays the default task creation form
 function createtask_GET(Web &$w) {
-	$w->Task->navigation($w, "Create Task");
+	TaskService::getInstance($w)->navigation($w, "Create Task");
 
 	// set default dropdowns for these task attributes as empty arrays
 	// dropdowns are populated dynamically via JSON based upon task group type selected
@@ -10,7 +10,7 @@ function createtask_GET(Web &$w) {
 	$members = array();
 
 	// get list of all task groups
-	$taskgroups = $w->Task->getTaskGroups();
+	$taskgroups = TaskService::getInstance($w)->getTaskGroups();
 
 	// whittle list of task groups down to only those in which i have role appropriate for creating tasks
 	if ($taskgroups){
@@ -20,12 +20,12 @@ function createtask_GET(Web &$w) {
 			}
 		}
 
-		if ($w->request(!empty($key) ? $key : null) != "") {
-			$t = $w->Task->getTaskGroup($w->request('gid'));
+		if (Request::mixed(!empty($key) ? $key : null) != "") {
+			$t = TaskService::getInstance($w)->getTaskGroup(Request::int('gid'));
 
-			$tasktypes = ($t != "") ? $w->Task->getTaskTypes($t->task_group_type) : array();
-			$priority = ($t != "") ? $w->Task->getTaskPriority($t->task_group_type) : array();
-			$members = ($t != "") ? $w->Task->getMembersBeAssigned($t->id) : array();
+			$tasktypes = ($t != "") ? TaskService::getInstance($w)->getTaskTypes($t->task_group_type) : array();
+			$priority = ($t != "") ? TaskService::getInstance($w)->getTaskPriority($t->task_group_type) : array();
+			$members = ($t != "") ? TaskService::getInstance($w)->getMembersBeAssigned($t->id) : array();
 			sort($members);
 				
 			$tasktext = "<table>" .
@@ -41,7 +41,7 @@ function createtask_GET(Web &$w) {
 		// build form
 		$f = Html::form(array(
 		array("Create a New Task - Step One","section"),
-		array("Task Group","select","task_group_id",$w->request('gid'),$mytaskgroups),
+		array("Task Group","select","task_group_id",Request::int('gid'),$mytaskgroups),
 		array("Task Title","text","title"),
 		array("Task Type","select","task_type",null,$tasktypes),
 		array("Priority","select","priority",null,$priority),
@@ -55,10 +55,10 @@ function createtask_GET(Web &$w) {
 }
 
 function createtask_POST(Web &$w) {
-	$w->Task->navigation($w, "Create Task");
+	TaskService::getInstance($w)->navigation($w, "Create Task");
 
 	// unserialise input from step I and store in array: arr_req
-	$arr_req = unserialize($w->request('formone'));
+	$arr_req = unserialize(Request::mixed('formone'));
 
 	// insert Task into database
 	$task = new Task($w);

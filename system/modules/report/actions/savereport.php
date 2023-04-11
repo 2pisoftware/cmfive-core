@@ -1,10 +1,10 @@
 <?php
 // save newly created form
 function savereport_POST(Web &$w) {
-	$w->Report->navigation($w, "Create Report");
+	ReportService::getInstance($w)->navigation($w, "Create Report");
 
 	// get type of statement: select/insert/update/delete
-	$_POST['sqltype'] = $w->Report->getSQLStatementType($_POST['report_code']);
+	$_POST['sqltype'] = ReportService::getInstance($w)->getSQLStatementType($_POST['report_code']);
 
 	// insert report into database
 	$report = new Report($w);

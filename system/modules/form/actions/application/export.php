@@ -5,7 +5,7 @@ function export_ALL(Web $w) {
 	if (empty($p['id'])) {
 		$w->error("No form id found", "/form/index");
 	}
-	$application = $w->Form->getFormApplication($p['id']);
+	$application = FormService::getInstance($w)->getFormApplication($p['id']);
 	if (empty($application)) {
 		$w->error("No application found for id", "/form/index");
 	}
@@ -17,7 +17,7 @@ function export_ALL(Web $w) {
 	$forms = $application->getForms();
 	if (!empty($forms)) {
 		foreach ($forms as $form) {
-			$exp_form = $w->Form->getFormForExport($form->id);
+			$exp_form = FormService::getInstance($w)->getFormForExport($form->id);
 			$export['forms'][] = $exp_form;
 		}
 	}

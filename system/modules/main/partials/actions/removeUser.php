@@ -25,7 +25,7 @@ function removeUser_ALL(\Web $w, $params = []) {
 		}
 	}
 
-	$users = $w->Auth->getUsers();
+	$users = AuthService::getInstance($w)->getUsers();
 	$users_array = [];
 
 	foreach ($users as $user) {

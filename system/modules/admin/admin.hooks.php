@@ -9,7 +9,7 @@
 function admin_core_dbobject_after_delete(Web $w, DbObject $object): void
 {
     if (!empty($object->id) && $object->__use_auditing === true) {
-        $w->Audit->addDbAuditLogEntry("delete", get_class($object), $object->id);
+        AuditService::getInstance($w)->addDbAuditLogEntry("delete", get_class($object), $object->id);
     }
 }
 
@@ -22,7 +22,7 @@ function admin_core_dbobject_after_delete(Web $w, DbObject $object): void
 function admin_core_dbobject_after_update(Web $w, DbObject $object): void
 {
     if (!empty($object->id) && $object->__use_auditing === true) {
-        $w->Audit->addDbAuditLogEntry("update", get_class($object), $object->id);
+        AuditService::getInstance($w)->addDbAuditLogEntry("update", get_class($object), $object->id);
     }
 }
 
@@ -35,7 +35,7 @@ function admin_core_dbobject_after_update(Web $w, DbObject $object): void
 function admin_core_dbobject_after_insert(Web $w, DbObject $object): void
 {
     if (!empty($object->id) && $object->__use_auditing === true) {
-        $w->Audit->addDbAuditLogEntry("insert", get_class($object), $object->id);
+        AuditService::getInstance($w)->addDbAuditLogEntry("insert", get_class($object), $object->id);
     }
 }
 
@@ -46,7 +46,9 @@ function admin_core_dbobject_after_insert(Web $w, DbObject $object): void
  */
 function admin_core_web_before(Web $w): void
 {
-    $w->Audit->addAuditLogEntry();
+    if (Config::get('system.audit.skip_audit', false) === true) {
+        AuditService::getInstance($w)->addAuditLogEntry();
+    }
 }
 
 function admin_core_dbobject_after_update_Contact(Web $w, Contact $contact): void

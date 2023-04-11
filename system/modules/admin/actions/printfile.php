@@ -6,7 +6,7 @@ function printfile_GET(Web $w) {
     }
     $form = array(
         "Print to" => array(
-            array(array("Printer", "select", "printer_id", null, $w->Printer->getPrinters(), "null")),
+            array(array("Printer", "select", "printer_id", null, PrinterService::getInstance($w)->getPrinters(), "null")),
             array(array("Filename", "hidden", "file", $_GET["filename"])))
     );
     
@@ -14,11 +14,11 @@ function printfile_GET(Web $w) {
 }
 
 function printfile_POST(Web $w) {
-    $printer = $w->Printer->getPrinter($_POST["printer_id"]);
+    $printer = PrinterService::getInstance($w)->getPrinter($_POST["printer_id"]);
     if (empty($printer->id)) {
         $w->out("Printer does not exist");
     }
     
-    $w->Printer->printJob(urldecode($_POST["file"]), $printer);
+    PrinterService::getInstance($w)->printJob(urldecode($_POST["file"]), $printer);
     $w->msg("File has been sent to the printer", "/admin/printqueue");
 }

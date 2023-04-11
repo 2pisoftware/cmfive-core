@@ -6,10 +6,10 @@ class TaskTaskAllowMemberNotificationsFix extends CmfiveMigration {
         // UP
         if ($this->hasTable("task_group_notify")) {
             
-            $task_groups = $this->w->Task->getTaskGroups();
+            $task_groups = TaskService::getInstance($this->w)->getTaskGroups();
             foreach ($task_groups as $task_group) {
                 //If this permission doesn't already exist
-                if (empty($notify = $this->w->Task->getTaskGroupNotifyType($task_group->id, "member", "other"))) {
+                if (empty($notify = TaskService::getInstance($this->w)->getTaskGroupNotifyType($task_group->id, "member", "other"))) {
                     //Create the permission to allow members to get the "other" notifications
                     $notify = new TaskGroupNotify($this->w);
                     $notify->task_group_id = $task_group->id;
@@ -25,10 +25,10 @@ class TaskTaskAllowMemberNotificationsFix extends CmfiveMigration {
 
     public function down() {
         // DOWN
-        $task_groups = $this->w->Task->getTaskGroups();
+        $task_groups = TaskService::getInstance($this->w)->getTaskGroups();
         if (!empty($task_groups)) {
             foreach ($task_groups as $task_group) {
-                $notify = $this->w->Task->getTaskGroupNotifyType($task_group->id, "member", "other");
+                $notify = TaskService::getInstance($this->w)->getTaskGroupNotifyType($task_group->id, "member", "other");
                 $notify->delete();
              }
         }

@@ -45,8 +45,8 @@ class MailBatch extends DbObject
             $message .= 'This batch encounted these issues: <br>' . $this->details;
         }
         $message .= "</p>";
-        $this->w->Mail->sendMail(
-            $this->w->auth->getUser($this->user_to_notify)->getContact()->email,
+        MailService::getInstance($this->w)->sendMail(
+            AuthService::getInstance($this->w)->getUser($this->user_to_notify)->getContact()->email,
             Config::get('main.company_support_email'),
             $subject,
             $message,

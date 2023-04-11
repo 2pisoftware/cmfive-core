@@ -21,6 +21,7 @@ class DbService
     private static $_cache = []; // used for single objects
     public static $_cache2 = []; // used for lists of objects
     public static $_select_cache = [];
+    private static $instances = [];
 
     /**
      * This variable keeps track of active transactions
@@ -30,19 +31,6 @@ class DbService
     public static $_active_trx = false;
 
     /**
-     * Magic get implementation to pass to Web, returns a {$name}Service singleton
-     *
-     * @deprecated v3.6.0 - Will be removed in v5.0.0.
-     *
-     * @param string
-     * @return mixed|null
-     */
-    public function __get($name)
-    {
-        return $this->w->$name;
-    }
-
-    /**
      * Gets a new instance of the class.
      *
      * @param Web $w
@@ -50,18 +38,16 @@ class DbService
      */
     public static function getInstance(Web $w)
     {
-        static $instance = null;
         $class = get_called_class();
+        if (!isset(self::$instances[$class])) {
+            self::$instances[$class] = new $class($w);
 
-        if ($instance === null) {
-            $instance = new $class($w);
-
-            if (method_exists($instance, "_web_init")) {
-                $instance->_web_init();
+            if (method_exists(self::$instances[$class], "_web_init")) {
+                self::$instances[$class]->_web_init();
             }
         }
 
-        return $instance;
+        return self::$instances[$class];
     }
 
     public static function getCache()
@@ -148,9 +134,9 @@ class DbService
      * or by passing an array of key,value
      * to be used in a where condition
      *
-     * @param <type> $table
-     * @param <type> $idOrWhere
-     * @return DbObject|null
+     * @param string $table
+     * @param scalar|array $idOrWhere
+     * @return $class|null
      */
     public function getObject($class, $idOrWhere, $use_cache = true, $order_by = null, $includeDeleted = false)
     {
@@ -191,7 +177,7 @@ class DbService
                 $this->_db->get($table)->where($idOrWhere);
             } else {
                 // Warning! If this condition is met it means someone has given a non-complete associative array
-                $this->w->Log->setLogger(get_class($this))->error("(getObject) The WHERE condition: " . json_encode($idOrWhere) . " has non-associative elements, this has security implications and is not allowed");
+                LogService::getInstance($this->w)->setLogger(get_class($this))->error("(getObject) The WHERE condition: " . json_encode($idOrWhere) . " has non-associative elements, this has security implications and is not allowed");
                 return null;
             }
 
@@ -296,7 +282,7 @@ class DbService
                 $this->_db->where($dbwhere);
             } else {
                 // Warning! If this condition is met it means someone has given a non-complete associative array
-                $this->w->Log->setLogger(get_class($this))->error("(getObjects) The WHERE condition: " . json_encode($where) . " has non-associative elements, this has security implications and is not allowed");
+                LogService::getInstance($this->w)->setLogger(get_class($this))->error("(getObjects) The WHERE condition: " . json_encode($where) . " has non-associative elements, this has security implications and is not allowed");
                 return null;
             }
         } elseif ($where && is_scalar($where)) {
@@ -327,7 +313,7 @@ class DbService
         }
 
         $this->buildSelect($o, $table, $class);
-        $result = $this->_db->fetch_all();
+        $result = $this->_db->fetchAll();
         if ($result) {
             $objects = $this->getObjectsFromRows($class, $result, true);
 
@@ -435,7 +421,7 @@ class DbService
 
     public function lookupArray($type)
     {
-        $rows = $this->_db->get("lookup")->where("type", $type)->fetch_all(); // select("code,title")->from
+        $rows = $this->_db->get("lookup")->where("type", $type)->fetchAll(); // select("code,title")->from
         foreach ($rows as $row) {
             $select[$row['code']] = $row['title'];
         }

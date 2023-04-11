@@ -1,11 +1,11 @@
 <?php
 
-use \Laminas\Mail\Message as Zend_Mail_Message;
+use \Laminas\Mail\Message as LaminasMailMessage;
 
 //
 // The purpose of this class is to expose protocol
 //
-class Zend_Mail_Storage_Imap extends \Laminas\Mail\Storage\Imap
+class ZendMailStorageImap extends \Laminas\Mail\Storage\Imap
 {
     public $protocol;
 
@@ -17,18 +17,18 @@ class Zend_Mail_Storage_Imap extends \Laminas\Mail\Storage\Imap
 
         $this->has['flags'] = true;
 
-        if ($params instanceof Protocol\Imap) {
+        if ($params instanceof \Laminas\Mail\Protocol\Imap) {
             $this->protocol = $params;
             try {
                 $this->selectFolder('INBOX');
-            } catch (Exception\ExceptionInterface $e) {
-                throw new Exception\RuntimeException('cannot select INBOX, is this a valid transport?', 0, $e);
+            } catch (\Exception $e) {
+                throw new \Laminas\Mail\Exception\RuntimeException('cannot select INBOX, is this a valid transport?', 0, $e);
             }
             return;
         }
 
         if (!isset($params->user)) {
-            throw new Exception\InvalidArgumentException('need at least user in params');
+            throw new \Laminas\Mail\Exception\InvalidArgumentException('need at least user in params');
         }
 
         $host     = isset($params->host)     ? $params->host     : 'localhost';
@@ -37,7 +37,7 @@ class Zend_Mail_Storage_Imap extends \Laminas\Mail\Storage\Imap
         $ssl      = isset($params->ssl)      ? $params->ssl      : false;
         $options  = isset($params->options)  ? $params->options  : null;
 
-        $this->protocol = new Zend_Mail_Protocol_Imap();
+        $this->protocol = new ZendMailProtocolImap();
         $this->protocol->connect($host, $port, $ssl, $options);
         if (!$this->protocol->login($params->user, $password)) {
             throw new \Laminas\Mail\Exception\RuntimeException('cannot login, user or password wrong');
@@ -48,7 +48,7 @@ class Zend_Mail_Storage_Imap extends \Laminas\Mail\Storage\Imap
 
 use Laminas\Stdlib\ErrorHandler;
 
-class Zend_Mail_Protocol_Imap extends \Laminas\Mail\Protocol\Imap
+class ZendMailProtocolImap extends \Laminas\Mail\Protocol\Imap
 {
 
     public function connect($host, $port = null, $ssl = false, $options = [])
@@ -208,7 +208,7 @@ class EmailChannelOption extends DbObject
                     /**create a regular zend_mail_message to use toString()
                      * this is required because the storage mail class doesn't support this method
                      */
-                    $zend_message = new Zend_Mail_Message();
+                    $zend_message = new LaminasMailMessage();
                     $zend_message->setHeaders($message->getHeaders());
                     $zend_message->setBody($message->getContent());
 
@@ -316,7 +316,7 @@ class EmailChannelOption extends DbObject
                                             $contentType
                                         );
                                 }
-                            } catch (Zend_Mail_Exception $e) {
+                            } catch (\Exception $e) {
                                 LogService::getInstance($this->w)->setLogger('EmailChannel')->error("Zend_Mail_Exception {$e}");
                             }
                         }
@@ -372,7 +372,7 @@ class EmailChannelOption extends DbObject
                 }
             }
 
-            $mail = new Zend_Mail_Storage_Imap(
+            $mail = new ZendMailStorageImap(
                 [
                     'host' => $this->server,
                     'user' => $this->s_username,
@@ -384,7 +384,7 @@ class EmailChannelOption extends DbObject
             );
             return [true, $mail];
         } catch (Exception $e) {
-            $this->Log->setLogger('EmailChannel')->error("Error connecting to mail server: " . $e->getMessage());
+            LogService::getInstance($this->w)->setLogger('EmailChannel')->error("Error connecting to mail server: " . $e->getMessage());
             return [false, $e->getMessage()];
         }
     }

@@ -6,7 +6,7 @@ function view_GET(Web &$w) {
 	$action = $p['a'];
 
 	// check if help is allowed for this topic
-	if (!$w->Auth->allowed($p['m'].'/'.$p['a'])) {
+	if (!AuthService::getInstance($w)->allowed($p['m'].'/'.$p['a'])) {
 		$w->ctx("help_content","Sorry, there is no help for this topic.");
 	}
 
@@ -60,7 +60,7 @@ function pruneRestricted($w,$content) {
 	foreach (explode("\r\n", $content) as $l) {
 		if (preg_match_all("/\[\[restricted\|(.*?)\]\]/", $l, $matches)) {
 			$roles = explode(',',$matches[1][0]);
-			if (!$w->Auth->user()->hasAnyRole($roles)) {
+			if (!AuthService::getInstance($w)->user()->hasAnyRole($roles)) {
 				$restricted = true;
 			}
 		} else if (startsWith($l, "[[endrestricted]]")) {

@@ -11,11 +11,11 @@ class EmailNotificationEventProcessor extends EventProcessorType {
             }
         }
 
-        $template_select_opotions = $this->w->Template->findTemplates('form', 'event');
+        $template_select_options = TemplateService::getInstance($this->w)->findTemplates('form', 'event');
 
         return ["Settings" => [
         	[["Email To Notify", "text", "email_to_notify", @$current_settings->email_to_notify],
-            ["Template (Optional)", "select", "template_id", @$current_settings->template_id, $template_select_opotions ]]
+            ["Template (Optional)", "select", "template_id", @$current_settings->template_id, $template_select_options ]]
 
         ]];
 	}
@@ -36,7 +36,7 @@ class EmailNotificationEventProcessor extends EventProcessorType {
         }
 
         //check if form has a summary template
-        $form = $this->w->Form->getForm($form_instance->form_id);
+        $form = FormService::getInstance($this->w)->getForm($form_instance->form_id);
         if (empty($form)) {
         	return;
         }
@@ -65,10 +65,10 @@ class EmailNotificationEventProcessor extends EventProcessorType {
         $template = '';
         $data['fields'] = $form_instance->getValuesForGenericTemplate();
         if (!empty($settings->template_id)) {
-            $template = $this->w->Template->getTemplate($settings->template_id);
+            $template = TemplateService::getInstance($this->w)->getTemplate($settings->template_id);
         }
         if (!empty($template)) {
-            $tmp_message .= $this->w->Template->render($template, $data);
+            $tmp_message .= TemplateService::getInstance($this->w)->render($template, $data);
         } else {
             if (!empty($data['fields'])) {
                 foreach ($data['fields'] as $key=>$value) {
@@ -110,7 +110,7 @@ class EmailNotificationEventProcessor extends EventProcessorType {
         } else {
             $final_message = $message;
         }
-        $this->w->Mail->sendMail(
+        MailService::getInstance($this->w)->sendMail(
                             $settings->email_to_notify, 
                             Config::get('main.company_support_email'),
                             $subject, $final_message,null,null,$attachments

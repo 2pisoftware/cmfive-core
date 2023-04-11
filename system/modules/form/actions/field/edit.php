@@ -3,7 +3,7 @@
 function edit_GET(Web $w)
 {
     $p = $w->pathMatch("id");
-    $form_id = $w->request("form_id");
+    $form_id = Request::int("form_id");
 
     if (empty($form_id)) {
         $w->error("Form not found", "/form");
@@ -12,7 +12,7 @@ function edit_GET(Web $w)
     VueComponentRegister::registerComponent('metadata-subform', new VueComponent('metadata-subform', '/system/modules/form/assets/js/metadata-subform.vue.js'));
     VueComponentRegister::registerComponent('metadata-select', new VueComponent('metadata-select', '/system/modules/form/assets/js/metadata-select.vue.js', '/system/modules/form/assets/js/metadata-select.vue.css'));
 
-    $_form_field_object = $p['id'] ? $w->Form->getFormField($p['id']) : new FormField($w);
+    $_form_field_object = $p['id'] ? FormService::getInstance($w)->getFormField($p['id']) : new FormField($w);
     $w->ctx('title', (!empty($_form_field_object->id) ? 'Edit' : 'Create') . ' form field');
     $w->ctx("form_id", $form_id ?: $_form_field_object->form_id);
     $w->ctx("field", $_form_field_object);
@@ -21,13 +21,13 @@ function edit_GET(Web $w)
 function edit_POST(Web $w)
 {
     $p = $w->pathMatch("id");
-    $form_id = $w->request("form_id");
+    $form_id = Request::int("form_id");
 
-    $_form_field_object = $p['id'] ? $w->Form->getFormField($p['id']) : new FormField($w);
+    $_form_field_object = $p['id'] ? FormService::getInstance($w)->getFormField($p['id']) : new FormField($w);
 
-    $_form_field_object->name           = $w->request('name');
-    $_form_field_object->technical_name = $w->request('technical_name');
-    $_form_field_object->type           = $w->request('type');
+    $_form_field_object->name           = Request::string('name');
+    $_form_field_object->technical_name = Request::string('technical_name');
+    $_form_field_object->type           = Request::string('type');
     $_form_field_object->form_id        = intval($form_id);
     $_form_field_object->insertOrUpdate();
 

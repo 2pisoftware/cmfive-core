@@ -1,7 +1,7 @@
 <?php
 
 function printers_GET(Web $w) {
-    $printers = $w->Printer->getPrinters();
+    $printers = PrinterService::getInstance($w)->getPrinters();
     $table_data = array();
     $table_header = array("Name", "Server", "Port", "Actions");
     if (!empty($printers)) {

@@ -2,7 +2,7 @@
 // when creating a feed, display the details of a report when it is selected as the feed input
 function feedAjaxGetReportText_ALL(Web $w) {
 	// get the relevant report
-	$rep = $w->Report->getReportInfo($_REQUEST["id"]);
+	$rep = ReportService::getInstance($w)->getReportInfo($_REQUEST["id"]);
 
 	if ($rep) {
 		$feedtext = "<table border=0 class=form>" .

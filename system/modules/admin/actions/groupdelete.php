@@ -3,7 +3,7 @@ function groupdelete_GET(Web &$w)
 {
 	$option = $w->pathMatch("group_id");
 
-	$user = $w->Auth->getUser($option['group_id']);
+	$user = AuthService::getInstance($w)->getUser($option['group_id']);
 	$user->delete();
 
 	$roles = $user->getRoles();
@@ -12,7 +12,7 @@ function groupdelete_GET(Web &$w)
 	{
 		$user->removeRole($role);
 	}
-	$members = $w->Auth->getGroupMembers($option['group_id']);
+	$members = AuthService::getInstance($w)->getGroupMembers($option['group_id']);
 
 	if ($members)
 	{

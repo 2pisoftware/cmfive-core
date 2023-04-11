@@ -5,6 +5,8 @@
  * Given an array of arrays, this function will return an array containing only
  * unique arrays having removed any duplicate arrays.
  *
+ * Note: this will preserve keys
+ *
  * Thanks to http://stackoverflow.com/a/308955/1082633
  *
  * @param array $input
@@ -15,6 +17,24 @@ function array_unique_multidimensional(array $input)
     $serialized = array_map('serialize', $input);
     $unique = array_unique($serialized);
     return array_intersect_key($input, $unique);
+}
+
+/**
+ * Formats currency based on locale
+ *
+ * @param int|float|string $amount
+ * @param string $locale = 'en_AU'
+ * @param string $currency = 'AUD'
+ * @return string
+ */
+function formatMoney(int|float|string $amount, string $locale = 'en_AU', string $currency = 'AUD'): string
+{
+    $fmt = numfmt_create($locale, NumberFormatter::CURRENCY);
+    $formatted_amount = numfmt_format_currency($fmt, floatval($amount), $currency);
+    if ($formatted_amount === false) {
+        return '';
+    }
+    return $formatted_amount;
 }
 
 /**
@@ -164,39 +184,6 @@ function humanReadableBytes($input, $rounding = 2, $bytesValue = true)
 }
 
 /**
- * Returns the extension for given content type.
- *
- * @deprecated v3.0.0 - Will be removed in v5.0.0.
- *
- * @param string contentType
- * @return string extension
- */
-function getFileExtension($contentType)
-{
-    $map = [
-        'application/pdf' => '.pdf',
-        'application/zip' => '.zip',
-        'image/gif' => '.gif',
-        'image/jpeg' => '.jpg',
-        'image/png' => '.png',
-        'text/css' => '.css',
-        'text/html' => '.html',
-        'text/javascript' => '.js',
-        'text/plain' => '.txt',
-        'text/xml' => '.xml',
-    ];
-
-    if (isset($map[$contentType])) {
-        return $map[$contentType];
-    }
-
-    // HACKISH CATCH ALL (WHICH IN MY CASE IS
-    // PREFERRED OVER THROWING AN EXCEPTION)
-    $pieces = explode('/', $contentType);
-    return '.' . array_pop($pieces);
-}
-
-/**
  * Small helper function to test for isset and is_numeric
  *
  * @param mixed|null var
@@ -204,7 +191,7 @@ function getFileExtension($contentType)
  */
 function isNumber($var)
 {
-    return (!empty($var) && is_numeric($var));
+    return is_numeric($var);
 }
 
 /**
@@ -327,51 +314,7 @@ function rotateImage($img, $rotation)
 }
 
 /**
- * Returns a lookup by type from the database and formats
- * it ready for a Html::select field.
- *
- * @deprecated v3.0.0 - Will be removed in v5.0.0.
- * @see LookupService::lookupForSelect()
- *
- * @param Web $w
- * @param string type
- * @return array lookup for select
- */
-function lookupForSelect($w, $type)
-{
-    $select = [];
-    $rows = $w->db->get("lookup")->where("type", $type)->fetch_all();
-    if ($rows) {
-        foreach ($rows ?? [] as $row) {
-            $select[] = [$row['title'], $row['code']];
-        }
-    }
-    return $select;
-}
-
-/**
- * Returns a list of states of Australia structured for a Html::select field.
- *
- * @deprecated v3.0.0 - Will be removed in v5.0.0, define this whenever needed in your module.
- *
- * @return Array states
- */
-function getStateSelectArray()
-{
-    return [
-        ["ACT", "ACT"],
-        ["NSW", "NSW"],
-        ["NT", "NT"],
-        ["QLD", "QLD"],
-        ["SA", "SA"],
-        ["TAS", "TAS"],
-        ["VIC", "VIC"],
-        ["WA", "WA"]
-    ];
-}
-
-/**
- * Iterates over $needle_array and applies $func to $haystack and $current_needle.
+ * Iterates over $needle_array and applies stripos to $haystack and $current_needle.
  *
  * @param string $haystack
  * @param array $needles
@@ -537,23 +480,6 @@ function formatCurrency(float $value, string $locale = "en_AU", string $currency
 }
 
 /**
- * A replacement function for the money_format PHP function that is only
- * available on most Linux based systems with the strfmon C function.
- *
- * For those that do not (Windows), then the function is imitated with code.
- *
- * @deprecated v4.0.6 - Will be removed in v5.0.0.
- * @see formatCurrency()
- *
- * @param string format
- * @param float|mixed number
- */
-function formatMoney($format, $number)
-{
-    return formatCurrency($number);
-}
-
-/**
  * Recursively searches though given haystack for a given needle
  *
  * @param array haystack
@@ -578,60 +504,7 @@ function recursiveArraySearch($haystack, $needle, $index = null)
 }
 
 /**
- * This function will return the correct dates using date picker or a custom month picker.
- * If you have a from date and to date criteria, this function changes the to date based on
- * the dm_var. parse in 'm' for month selection and 'd' for day selection.
- * With date pickers, they always return the beginning of that day. i.e. 00:00:00 10/11/2010
- * this will change the to date to: 23:59:59 10/11/2010.
- *
- * To use this function, use the list function, calling this function.
- * i.e. list($from_date, $to_date) = returncorrectdates($w,$dm_var,$from_date,$to_date);
- *
- * @deprecated v3.0.0 - Will be removed in v5.0.0.
- *
- * @param Web $w
- * @param string $dm_var
- * @param string $from_date
- * @param string $to_date
- */
-function returncorrectdates(Web $w, $dm_var, $from_date, $to_date)
-{
-    if ($dm_var == 'm') {
-        $from_date = strtotime(str_replace("/", "-", $from_date));
-        $to_date = strtotime(str_replace("/", "-", $to_date));
-        $accepted_date = getDate($to_date);
-        $month_number = $accepted_date['mon'];
-        $accepted_year = $accepted_date['year'];
-
-        if (date('I')) {
-            $minus_var = "3601";
-        } else {
-            $minus_var = '1';
-        }
-
-        if ($to_date) {
-            $to_date = $to_date + ((60 * 60 * 24 * cal_days_in_month(CAL_GREGORIAN, $month_number, $accepted_year)) - $minus_var);
-        }
-
-        return [$from_date, $to_date];
-    }
-
-    if ($dm_var == 'd') {
-        $from_date = strtotime(str_replace("/", "-", $_GET['from_date']));
-        $to_date = strtotime(str_replace("/", "-", $_GET['to_date']));
-        $accepted_date = getDate($to_date);
-        $month_number = $accepted_date['mon'];
-        $accepted_year = $accepted_date['year'];
-        if ($to_date) {
-            $to_date = $to_date + 86399;
-        }
-
-        return [$from_date, $to_date];
-    }
-}
-
-/**
- * Find a value in a multidimension array
+ * Find a value in a multidimensional array
  * NOTE: This function uses strict type comparison, with one exception where
  * a string $value will match it's integer equivalent (i.e. '1' == 1, but '1s' != 1)
  *
@@ -705,7 +578,10 @@ function objectPropertyHasValueInMultiArray($object, $property, $value, $multiar
     if (!empty($multiarray)) {
         foreach ($multiarray as $array_key => $array_value) {
             if (is_array($array_value)) {
-                return objectPropertyHasValueInMultiArray($object, $property, $value, $array_value);
+                $response = objectPropertyHasValueInMultiArray($object, $property, $value, $array_value);
+                if ($response) {
+                    return $response;
+                }
             }
 
             if (is_object($array_value) && is_a($array_value, $object, true) && property_exists($array_value, $property) && $array_value->$property === $value) {
@@ -751,36 +627,6 @@ function in_modified_multiarray($value, $array, $levels = 3)
         }
     }
     return false;
-}
-
-/**
- * Returns AES encrypted string.
- *
- * @deprecated v3.0.0 - Will be removed in v5.0.0.
- * @see SSLEncrypt()
- *
- * @param mixed text to encrypt
- * @param mixed password (unused)
- * @return string encrypted text
- */
-function AESencrypt($text, $password)
-{
-    return SSLencrypt($text);
-}
-
-/**
- * Decrypts AES string.
- *
- * @deprecated v3.0.0 - Will be removed in v5.0.0.
- * @see SSLDecrypt()
- *
- * @param mixed text to decrypt
- * @param mixed password (unused)
- * @return string decrypted text
- */
-function AESdecrypt($text, $password)
-{
-    return SSLdecrypt($text);
 }
 
 /**
@@ -1005,15 +851,15 @@ function cast($destination, $sourceObject)
  */
 function delete_all_between($beginning, $end, $string, $remove_every_instance = false): string
 {
-    $beginningPos = strpos($string, $beginning);
-    $endPos = strpos($string, $end);
+    $beginningPos = strpos($string ?? "", $beginning);
+    $endPos = strpos($string ?? "", $end);
 
     if ($beginningPos === false || $endPos === false) {
         return $string;
     }
 
     if (!$remove_every_instance) {
-        return trim(str_replace(substr($string, $beginningPos, ($endPos + strlen($end)) - $beginningPos), '', $string));
+        return trim(str_replace(substr($string ?? "", $beginningPos, ($endPos + strlen($end)) - $beginningPos), '', $string));
     } else {
         while (($beginningPos !== false && $endPos !== false)) {
             $string = trim(str_replace(substr($string, $beginningPos, ($endPos + strlen($end)) - $beginningPos), '', $string));

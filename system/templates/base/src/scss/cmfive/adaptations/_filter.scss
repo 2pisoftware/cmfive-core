@@ -1,0 +1,16 @@
+
+fieldset {
+    @include theme((background-color: 'white-black', color: 'black-grey'));
+    @include shadow-flat();
+    margin-top: 1rem;
+    padding: 1rem 1rem 0;
+
+    legend {
+        @include font-size('5');
+    }
+
+    .filter-button-container {
+        display: flex;
+        flex-direction: row;
+    }
+}

@@ -4,7 +4,7 @@
 
 function edit_GET(Web $w) {
     $p = $w->pathMatch("id");
-    $user = (!empty($p['id']) ? $w->Auth->getUser($p['id']) : new User($w));
+    $user = (!empty($p['id']) ? AuthService::getInstance($w)->getUser($p['id']) : new User($w));
     
     $template[($user->id ? "Edit" : "Create") . ' Group'] = array(array(array("Group Title","text", "title", $user->login)));
     $w->out(Html::multiColForm($template,"/admin-groups/edit/".$user->id));
@@ -14,8 +14,8 @@ function edit_GET(Web $w) {
 function edit_POST(Web $w) {
     $p = $w->pathMatch("id");
 
-    $group = !empty($p['id']) ? $w->Auth->getUser($p['group_id']) : new User($w);
-    $group->login = $w->request('title');
+    $group = !empty($p['id']) ? AuthService::getInstance($w)->getUser($p['group_id']) : new User($w);
+    $group->login = Request::string('title');
     $group->is_group = 1;
     $group->insertOrUpdate();
 

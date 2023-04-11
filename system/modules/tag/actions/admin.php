@@ -2,8 +2,8 @@
 
 function admin_ALL(Web $w) {
 
-	$w->Tag->navigation($w, "Tag Admin");
-	$tags = $w->Tag->getTags();
+	TagService::getInstance($w)->navigation($w, "Tag Admin");
+	$tags = TagService::getInstance($w)->getTags();
 	$table_header = ["Tag", "# Assigned", "Actions"];
 
 	$table_data = [];

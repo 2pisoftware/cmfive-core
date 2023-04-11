@@ -1,12 +1,12 @@
 <?php
 
-use Gaufrette\Filesystem;
+// use Gaufrette\Filesystem;
 use Gaufrette\File as File;
-use Gaufrette\Adapter\Local as LocalAdapter;
-use Gaufrette\Adapter\InMemory as InMemoryAdapter;
-use Gaufrette\Adapter\AwsS3 as AwsS3;
-use Gaufrette\StreamWrapper as StreamWrapper;
+// use Gaufrette\Adapter\Local as LocalAdapter;
+// use Gaufrette\Adapter\InMemory as InMemoryAdapter;
+// use Gaufrette\Adapter\AwsS3 as AwsS3;
 use Aws\S3\S3Client as S3Client;
+// use Gaufrette\StreamWrapper as StreamWrapper;
 
 /**
  * Service class with functions to help managing files and attachment records.
@@ -52,37 +52,6 @@ class FileService extends DbService
     }
 
     /**
-     * Return the path adjusted to the currently active adapter.
-     *
-     * @deprecated v3.6.0 - Will be removed in v5.0.0.
-     *
-     * @param string file path
-     *
-     * @return string resulting file path
-     */
-    public function getFilePath($path)
-    {
-        $active_adapter = $this->getActiveAdapter();
-
-        switch ($active_adapter) {
-            case "local":
-                if (strpos($path, FILE_ROOT . "attachments/") !== false) {
-                    return $path;
-                }
-                if (strpos($path, "attachments/") !== false) {
-                    return FILE_ROOT . $path;
-                }
-
-                return FILE_ROOT . "attachments/" . $path;
-            default:
-                if (strpos($path, "uploads/") === false) {
-                    return "uploads/" . $path;
-                }
-                return $path;
-        }
-    }
-
-    /**
      * Create a new Gaufrette File object from a filename and path
      *
      * @param \Gaufrette\Filesystem
@@ -125,7 +94,7 @@ class FileService extends DbService
      * @param mixed $content content to load into the filesystem (mainly used for the "memory" adapter
      * @param array $options options to give to the filesystem
      *
-     * @return \Gaufrette\Filesystem
+     * @return League\Flysystem\Filesystem
      */
     public function getFilesystem($path = null, $content = null, $options = [])
     {
@@ -140,29 +109,29 @@ class FileService extends DbService
      * @param mixed $content content to load into the filesystem (mainly used for the "memory" adapter
      * @param array $options options to give to the filesystem
      *
-     * @return FileSystem
+     * @return League\Flysystem\Filesystem
      */
     public function getSpecificFilesystem($adapter = "local", $path = null, $content = null, $options = [])
     {
         $adapter_obj = null;
         switch ($adapter) {
             case "local":
-                $adapter_obj = new LocalAdapter($path, true);
+                $adapter_obj = new League\Flysystem\Local\LocalFilesystemAdapter($path);
                 break;
             case "memory":
-                $adapter_obj = new InMemoryAdapter([basename($path) => $content]);
+                $adapter_obj = new League\Flysystem\InMemory\InMemoryFilesystemAdapter();
                 break;
             case "s3":
                 $client = $this->getS3ClientBelowFilesystem();
-                $config_options = Config::get('file.adapters.s3.options');
+                // $config_options = Config::get('file.adapters.s3.options');
                 $s3path = (substr($path, -1) == "/") ? substr($path, 0, -1) : $path; // because trailing presence varies with call/object history
-                $config_options = array_replace(is_array($config_options) ? $config_options : [], ["directory" => $s3path], $options);
-                $adapter_obj = new AwsS3($client, Config::get('file.adapters.s3.bucket'), is_array($config_options) ? $config_options : []);
+                // $config_options = array_replace(is_array($config_options) ? $config_options : [], ["directory" => $s3path], $options);
+                $adapter_obj = new League\Flysystem\AwsS3V3\AwsS3V3Adapter($client, Config::get('file.adapters.s3.bucket'), $s3path); // , $s3path, is_array($config_options) ? $config_options : []);
                 break;
         }
 
         if ($adapter_obj !== null) {
-            return new Filesystem($adapter_obj);
+            return new League\Flysystem\Filesystem($adapter_obj);
         }
         return null;
     }
@@ -176,17 +145,17 @@ class FileService extends DbService
      * @param mixed $content content to load into the filesystem (mainly used for the "memory" adapter
      * @param array $options options to give to the filesystem
      *
-     * @return FileSystem
+     * @return League\Flysystem\Filesystem
      */
     public function getSpecificFilesystemWithCustomAdapter($adapter = 'local', $adapter_config = null, $path = null, $content = null, $options = [])
     {
         $adapter_obj = null;
         switch ($adapter) {
             case "local":
-                $adapter_obj = new LocalAdapter($path, true);
+                $adapter_obj = new League\Flysystem\Local\LocalFilesystemAdapter($path);
                 break;
             case "memory":
-                $adapter_obj = new InMemoryAdapter([basename($path) => $content]);
+                $adapter_obj = new League\Flysystem\InMemory\InMemoryFilesystemAdapter();
                 break;
             case "s3":
                 $config_options = $adapter_config['options'];
@@ -198,9 +167,26 @@ class FileService extends DbService
         }
 
         if ($adapter_obj !== null) {
-            return new Filesystem($adapter_obj);
+            return new League\Flysystem\Filesystem($adapter_obj);
         }
         return null;
+    }
+
+    /**
+     * 
+     */
+    public function getS3Client(): Aws\S3\S3Client
+    {
+        $args = [
+            "region" =>  Config::get("file.adapters.s3.region", "ap-southeast-2"),
+            "version" => Config::get("file.adapters.s3.version", "2006-03-01"),
+        ];
+
+        if (Config::get("system.environment", ENVIRONMENT_PRODUCTION) === ENVIRONMENT_DEVELOPMENT) {
+            $args["credentials"] = Config::get("file.adapters.s3.credentials");
+        }
+
+        return new Aws\S3\S3Client($args);
     }
 
     /**
@@ -464,22 +450,21 @@ class FileService extends DbService
      */
     public function writeOutAttachment(Attachment $att, ?string $saveAs = null): void
     {
-        switch ($att->adapter) {
+        // switch ($att->adapter) {
+        //     case "s3":
+        //         $client = $this->getS3Client();
+        //         $cmd = $client->getCommand('GetObject', [
+        //             'Bucket' => Config::get('file.adapters.s3.bucket'),
+        //             'Key' => $att->getFilePath() . DS . $att->filename
+        //         ]);
 
-            case "s3":
-                $client = $this->getS3ClientBelowFilesystem();
-                $cmd = $client->getCommand('GetObject', [
-                    'Bucket' => Config::get('file.adapters.s3.bucket'),
-                    'Key' => $att->fullpath
-                ]);
+        //         $request = $client->createPresignedRequest($cmd, '+300 minutes');
 
-                $request = $client->createPresignedRequest($cmd, '+300 minutes');
+        //         // Get the actual presigned-url
+        //         $this->w->redirect((string)$request->getUri());
+        //         break;
 
-                // Get the actual presigned-url
-                $this->w->redirect((string)$request->getUri());
-                break;
-
-            default:
+        //     default:
                 $this->w->setLayout(null);
                 // per : https://www.php.net/manual/en/function.readfile.php
                 // readfile() will not present any memory issues on its own.
@@ -488,28 +473,49 @@ class FileService extends DbService
                     ob_end_clean();
                 }
                 $this->w->header('Content-Description: File Transfer');
-                $this->w->header(
-                    'Content-Type: '
-                        . (empty($att->mimetype) ? "application/octet-stream" : $att->mimetype)
-                );
-                $this->w->header(
-                    'Content-Disposition: attachment; filename="'
-                        . ($saveAs ?? $att->filename) . '"'
-                );
+                $this->w->header('Content-Type: ' . (empty($att->mimetype) ? "application/octet-stream" : $att->mimetype));
+                $this->w->header('Content-Disposition: attachment; filename="' . ($saveAs ?? $att->filename) . '"');
                 $this->w->header('Expires: 0');
                 $this->w->header('Cache-Control: must-revalidate');
                 $this->w->header('Pragma: public');
 
                 $filesystem = $att->getFileSystem();
-
-                $map = StreamWrapper::getFilesystemMap();
-                $map->set('mandated_stream', $filesystem);
-
-                StreamWrapper::register();
-                $streamFrom = 'gaufrette://mandated_stream/' . $att->filename;
-                $this->w->header('Content-Length: ' . filesize($streamFrom));
-                readfile($streamFrom);
+                try {
+                    $this->w->header('Content-Length: ' . $filesystem->fileSize($att->filename));
+                } catch (Exception $e) {
+                    LogService::getInstance($this->w)->error('Attachment write out error: ' . $e->getMessage());
+                }
+                echo $filesystem->read($att->filename);
                 exit(0);
+        // }
+    }
+
+    /**
+     * Return the path adjusted to the currently active adapter.
+     *
+     * @param string file path
+     *
+     * @return string resulting file path
+     */
+    public function getFilePath($path)
+    {
+        $active_adapter = $this->getActiveAdapter();
+
+        switch ($active_adapter) {
+            case "s3":
+                if (strpos($path, "uploads/") === false) {
+                    return "uploads/" . $path;
+                }
+                return $path;
+            default:
+                if (strpos($path, FILE_ROOT . "attachments/") !== false) {
+                    return $path;
+                }
+                if (strpos($path, "attachments/") !== false) {
+                    return FILE_ROOT . $path;
+                }
+
+                return FILE_ROOT . "attachments/" . $path;
         }
     }
 
@@ -525,7 +531,7 @@ class FileService extends DbService
      *
      * @return mixed the id of the attachment object or null
      */
-    public function uploadAttachment($request_key, $parentObject, $title = null, $description = null, $type_code = null, $is_public = false)
+    public function uploadAttachment($request_key, $parentObject, $title = null, $description = null, $type_code = null, $is_public = false, $filter_types = [])
     {
         if (empty($_POST[$request_key]) && (empty($_FILES[$request_key]) || $_FILES[$request_key]['size'] <= 0)) {
             return false;
@@ -554,17 +560,23 @@ class FileService extends DbService
         $att->description = $description;
         $att->type_code = $type_code;
         $att->is_public = $is_public;
+        $att->adapter = $this->getActiveAdapter();
 
         $filesystemPath = "attachments/" . $parentObject->getDbTableName() . '/' . date('Y/m/d') . '/' . $parentObject->id . '/';
         $filesystem = $this->getFilesystem($this->getFilePath($filesystemPath));
+
         if (empty($filesystem)) {
             LogService::getInstance($this->w)->setLogger("FILE_SERVICE")->error("Cannot save file, no filesystem returned");
             return null;
         }
+        
+        if (!empty($filter_types)) {
+            if (!$this->fileIsInAllowedMimetypes($_FILES[$request_key]['tmp_name'], $filter_types, true)) {
+                LogService::getInstance($this->w)->error('File upload is of a restricted type');
+                return null;
+            }
+        }
 
-        $file = new File($filename, $filesystem);
-
-        $att->adapter = $this->getActiveAdapter();
         $att->fullpath = str_replace(FILE_ROOT, "", $filesystemPath . $filename);
 
         //Check for posted content
@@ -573,16 +585,25 @@ class FileService extends DbService
             $data = substr($_POST[$request_key], strpos($_POST[$request_key], ",") + 1);
             $mime_type = $mime[1];
             $content = base64_decode($data);
-            $file->setContent($content, ['contentType' => $mime_type]);
+
+            $filesystem->write('/uploads/' . $att->fullpath, $content);
         } else {
-            $content = file_get_contents($_FILES[$request_key]['tmp_name']);
-            $file->setContent($content);
+            $local_filesystem = $this->getSpecificFilesystemWithCustomAdapter('local', null, '/tmp');
+
+            try {
+                $filesystem->writeStream($att->filename, $local_filesystem->readStream(basename($_FILES[$request_key]['tmp_name'])));
+            } catch (Exception $exception) {
+                // handle the error
+                throw $exception;
+            }
+
+            // $file->setContent($content);
             switch ($att->adapter) {
                 case "local":
                     $mime_type = $this->w->getMimetype(FILE_ROOT . $att->fullpath);
                     break;
                 default:
-                    $mime_type = $this->w->getMimetypeFromString($content);
+                    $mime_type = $local_filesystem->mimeType(basename($_FILES[$request_key]['tmp_name']));
             }
         }
 
@@ -605,13 +626,13 @@ class FileService extends DbService
      *
      * @return bool if upload was successful
      */
-    public function uploadMultiAttachment($request_key, $parentObject, $titles = null, $descriptions = null, $type_codes = null)
+    public function uploadMultiAttachment($request_key, $parentObject, $titles = null, $descriptions = null, $type_codes = null, $filter_types = [])
     {
         if (!is_a($parentObject, "DbObject")) {
             $this->w->error("Parent object not found.");
             return false;
         }
-
+        
         $rpl_nil = ["..", "'", '"', ",", "\\", "/"];
         $rpl_ws = [" ", "&", "+", "$", "?", "|", "%", "@", "#", "(", ")", "{", "}", "[", "]", ",", ";", ":"];
 
@@ -619,9 +640,8 @@ class FileService extends DbService
             $file_index = 0;
             foreach ($_FILES[$request_key]['name'] as $FILE_filename) {
                 // Files can be empty
-                if (!empty($FILE_filename['file'])) {
-                    $filename = str_replace($rpl_ws, "_", str_replace($rpl_nil, "", basename($FILE_filename['file'])));
-
+                if (!empty($FILE_filename)) {
+                    $filename = str_replace($rpl_ws, "_", str_replace($rpl_nil, "", basename($FILE_filename)));
                     $att = new Attachment($this->w);
                     $att->filename = $filename;
                     $att->fullpath = null;
@@ -630,22 +650,57 @@ class FileService extends DbService
                     $att->title = (!empty($titles[$file_index]) ? $titles[$file_index] : '');
                     $att->description = (!empty($descriptions[$file_index]) ? $descriptions[$file_index] : '');
                     $att->type_code = (!empty($type_codes) ? $type_codes[$file_index] : '');
-                    $att->insert();
-
-                    $filesystemPath = FILE_ROOT . "attachments/" . $parentObject->getDbTableName() . '/' . date('Y/m/d') . '/' . $att->id . '/';
-                    $filesystem = $this->getFilesystem($filesystemPath);
-                    $file = new File($filename, $filesystem);
-                    $file->setContent(file_get_contents($_FILES[$request_key]['tmp_name'][$file_index]['file']));
-
+                    
+                    $filesystemPath = "attachments/" . $parentObject->getDbTableName() . '/' . date('Y/m/d') . '/' . $parentObject->id . '/';
+                    $filesystem = $this->getFilesystem($this->getFilePath($filesystemPath));
+                    if (empty($filesystem)) {
+                        LogService::getInstance($this->w)->setLogger("FILE_SERVICE")->error("Cannot save file, no filesystem returned");
+                        return null;
+                    }
+                    
+                    $file = new FilePolyfill($filename, $filesystem);
+                    
+                    $att->adapter = $this->getActiveAdapter();
                     $att->fullpath = str_replace(FILE_ROOT, "", $filesystemPath . $filename);
-                    $att->update();
-                }
+                    
+                    $content = file_get_contents($_FILES[$request_key]['tmp_name'][$file_index]);
 
+                    if (!empty($filter_types) && !$this->fileIsInAllowedMimetypes($_FILES[$request_key]['tmp_name'][$file_index], $filter_types, true)) {
+                        LogService::getInstance($this->w)->error('File upload is of a restricted type');
+                    } else {
+                        $file->setContent($content);
+                        switch ($att->adapter) {
+                            case "local":
+                                $att->mimetype = $this->w->getMimetype(FILE_ROOT . $att->fullpath);
+                                break;
+                            default:
+                                $att->mimetype = $this->w->getMimetypeFromString($content);
+                        }
+                        $att->insert();
+                    }
+                }
                 $file_index++;
             }
         }
 
         return true;
+    }
+
+    /**
+     * Removes a list of attachments by ID from an object
+     *
+     * @param DbObject $object
+     * @param array $attachment_ids
+     * @return void
+     */
+    public function removeAttachmentsByID(DbObject $object, array $attachment_ids)
+    {
+        foreach ($attachment_ids as $attachment_id) {
+            $attachment = $this->getAttachment($attachment_id);
+            if ($attachment->parent_table = $object->getDbTableName() && $attachment->parent_id == $object->id && $attachment->canDelete(AuthService::getInstance($this->w)->user())) {
+                $attachment->delete();
+            }
+        }
     }
 
     /**
@@ -659,7 +714,7 @@ class FileService extends DbService
      *
      * @return int Attachment ID
      */
-    public function saveFileContent($object, $content, $name = null, $type_code = null, $content_type = null, $description = null)
+    public function saveFileContent($object, $content, $name = null, $type_code = null, $content_type = null, $description = null, $filter_types = [])
     {
         $filename = (!empty($name) ? $name : (str_replace(".", "", microtime()) . getFileExtension($content_type)));
 
@@ -677,14 +732,30 @@ class FileService extends DbService
         $filesystemPath = "attachments/" . $object->getDbTableName() . '/' . date('Y/m/d') . '/' . $object->id . '/';
         $filesystem = $this->getFilesystem($this->getFilePath($filesystemPath));
         if (empty($filesystem)) {
-            $this->w->Log->setLogger("FILE_SERVICE")->error("Cannot save file, no filesystem returned");
+            LogService::getInstance($this->w)->setLogger("FILE_SERVICE")->error("Cannot save file, no filesystem returned");
             return null;
         }
 
-        $file = new File($filename, $filesystem);
+        $file = new FilePolyfill($filename, $filesystem);
 
         $att->adapter = $this->getActiveAdapter();
         $att->fullpath = str_replace(FILE_ROOT, "", $filesystemPath . $filename);
+
+        if (!empty($filter_types)) {
+            $file_type_data = '';
+            switch ($this->getActiveAdapter()) {
+                case "local":
+                    $file_type_data = FILE_ROOT . $att->fullpath;
+                    break;
+                default:
+                    $file_type_data = $content;
+            }
+
+            if (!$this->fileIsInAllowedMimetypes($file_type_data, $filter_types)) {
+                LogService::getInstance($this->w)->error('File upload is of a restricted type');
+                return null;
+            }
+        }
 
         //Check for posted content
         $file->setContent($content);
@@ -756,5 +827,112 @@ class FileService extends DbService
         }
 
         return self::$cache_runtime_path;
+    }
+
+    public function fileIsInAllowedMimetypes($file, $allowed_extensions = [], $force_local = false)
+    {
+        $mimetype = '';
+        if ($force_local) {
+            $mimetype = $this->w->getMimetype($file);
+        } else {
+            switch ($this->getActiveAdapter()) {
+                case "local":
+                    $mimetype = $this->w->getMimetype($file);
+                    break;
+                default:
+                    $mimetype = $this->w->getMimetypeFromString($file);
+            }
+        }
+
+        $current_list = $this->getMimetypeList();
+        foreach ($allowed_extensions as $ext) {
+            if (array_key_exists($ext, $current_list) && ((is_array($current_list[$ext]) && in_array($mimetype, $current_list[$ext])) || $mimetype == $current_list[$ext])) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function getMimetypeList(): array
+    {
+       return [
+            '.aac'  => 'audio/aac',
+            '.abw'  => 'application/x-abiword',
+            '.arc'  => 'application/x-freearc',
+            '.avi'  => 'video/x-msvideo',
+            '.azw'  => 'application/vnd.amazon.ebook',
+            '.bin'  => 'application/octet-stream',
+            '.bmp'  => 'image/bmp',
+            '.bz'   => 'application/x-bzip',
+            '.bz2'  => 'application/x-bzip2',
+            '.cda'  => 'application/x-cdf',
+            '.csh'  => 'application/x-csh',
+            '.css'  => 'text/css',
+            '.csv'  => 'text/csv',
+            '.doc'  => 'application/msword',
+            '.docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            '.eot'  => 'application/vnd.ms-fontobject',
+            '.epub' => 'application/epub+zip',
+            '.gz'   => 'application/gzip',
+            '.gif'  => 'image/gif',
+            '.htm'  => 'text/html',
+            '.html' => 'text/html',
+            '.ico'  => 'image/vnd.microsoft.icon',
+            '.ics'  => 'text/calendar',
+            '.jar'  => 'application/java-archive',
+            '.jpg'  => 'image/jpeg',
+            '.jpeg' => 'image/jpeg',
+            '.js'   => 'text/javascript',
+            '.json' => 'application/json',
+            '.jsonld'   => 'application/ld+json',
+            '.mid'  => 'audio/midi',
+            '.midi' => 'audio/x-midi',
+            '.mjs'  => 'text/javascript',
+            '.mp3'  => 'audio/mpeg',
+            '.mp4'  => 'video/mp4',
+            '.mpeg' => 'video/mpeg',
+            '.mpkg' => 'application/vnd.apple.installer+xml',
+            '.odp'  => 'application/vnd.oasis.opendocument.presentation',
+            '.ods'  => 'application/vnd.oasis.opendocument.spreadsheet',
+            '.odt'  => 'application/vnd.oasis.opendocument.text',
+            '.oga'  => 'audio/ogg',
+            '.ogv'  => 'video/ogg',
+            '.ogx'  => 'application/ogg',
+            '.opus' => 'audio/opus',
+            '.otf'  => 'font/otf',
+            '.png'  => 'image/png',
+            '.pdf'  => 'application/pdf',
+            '.php'  => 'application/x-httpd-php',
+            '.ppt'  => 'application/vnd.ms-powerpoint',
+            '.pptx' => 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+            '.rar'  => 'application/vnd.rar',
+            '.rtf'  => 'application/rtf',
+            '.sh'   => 'application/x-sh',
+            '.svg'  => 'image/svg+xml',
+            '.swf'  => 'application/x-shockwave-flash',
+            '.tar'  => 'application/x-tar',
+            '.tif'  => 'image/tiff',
+            '.tiff' => 'image/tiff',
+            '.ts'   => 'video/mp2t',
+            '.ttf'  => 'font/ttf',
+            '.txt'  => 'text/plain',
+            '.vsd'  => 'application/vnd.visio',
+            '.wav'  => 'audio/wav',
+            '.weba' => 'audio/webm',
+            '.webm' => 'video/webm',
+            '.webp' => 'image/webp',
+            '.woff' => 'font/woff',
+            '.woff2'    => 'font/woff2',
+            '.xhtml'    => 'application/xhtml+xml',
+            '.xls'  => 'application/vnd.ms-excel',
+            '.xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            '.xml'  => 'application/xml',
+            '.xul'  => 'application/vnd.mozilla.xul+xml',
+            '.zip'  => 'application/zip',
+            '.3gp' => ['video/3gpp', 'audio/3gpp'],
+            '.3g2' => ['video/3gpp2', 'audio/3gpp2'],
+            '.7z'   => 'application/x-7z-compressed',
+        ];
     }
 }
