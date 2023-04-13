@@ -6,7 +6,8 @@ function users_GET(Web $w)
     AdminService::getInstance($w)->navigation($w, "Users");
 
     //if filter applied unset the page number
-    if (array_key_exists("admin/user__filter-lastname", $_REQUEST) ||
+    if (array_key_exists("admin/user__filter-login", $_REQUEST) ||
+        array_key_exists("admin/user__filter-name", $_REQUEST) ||
         array_key_exists("admin/user__filter-email", $_REQUEST)
     ) {
         $filter_applied = true;
@@ -20,13 +21,18 @@ function users_GET(Web $w)
     $external_page_number = $w->sessionOrRequest('cmfive-external-users__page-number', 1);
 
     // Get filter parameters
-    $lastname = $w->sessionOrRequest("admin/user__filter-lastname");
+    $login = $w->sessionOrRequest("admin/user__filter-login");
+    $name = $w->sessionOrRequest("admin/user__filter-name");
     $email = $w->sessionOrRequest("admin/user__filter-email");
     $reset = Request::string("filter_reset_users_filter");
 
+    $filter_url = "";
+
     if (!empty($reset)) {
-        $lastname = null;
-        $w->sessionUnset("admin/user__filter-lastname");
+        $login = null;
+        $w->sessionUnset("admin/user__filter-login");
+        $name = null;
+        $w->sessionUnset("admin/user__filter-name");
         $email = null;
         $w->sessionUnset("admin/user__filter-email");
         $filter_applied = false;
@@ -41,8 +47,9 @@ function users_GET(Web $w)
             foreach ($users as $user) {
                 $contact = CrmService::getInstance($w)->getObject("Contact", $user->contact_id);
                 if (!empty($contact) &&
-                    str_starts_with(strtoupper($contact->lastname), strtoupper($lastname)) &&
-                    str_starts_with(strtoupper($contact->email), strtoupper($email))) {
+                    str_contains(strtoupper($user->login), strtoupper($login)) &&
+                    str_contains(strtoupper($contact->firstname . $contact->lastname), strtoupper($name)) &&
+                    str_contains(strtoupper($contact->email), strtoupper($email))) {
                     $filtered_int_user_ids[$i++] = $user->id;
                 }
             }
@@ -56,27 +63,42 @@ function users_GET(Web $w)
             foreach ($users as $user) {
                 $contact = AdminService::getInstance($w)->getObject("Contact", $user->contact_id);
                 if (!empty($contact) &&
-                    str_starts_with(strtoupper($contact->lastname), strtoupper($lastname)) &&
-                    str_starts_with(strtoupper($contact->email), strtoupper($email))) {
+                    str_contains(strtoupper($user->login), strtoupper($login)) &&
+                    str_contains(strtoupper($contact->firstname . $contact->lastname), strtoupper($name)) &&
+                    str_contains(strtoupper($contact->email), strtoupper($email))) {
                     $filtered_ext_user_ids[$i++] = $user->id;
                 }
             }
         }
 
-        // Set up the filtered base urls
-        $internal_base_url = "/admin/users" . ((!empty($lastname) || !empty($email)) ? "?" : "") . (empty($lastname) ? "" : "admin%2Fuser__filter-lastname=" . $lastname) . (!empty($lastname) && !empty($email) ? "&" : "") . (empty($email) ? "" : "admin%2Fuser__filter-email=" . $email);
-        $external_base_url = "/admin/users" . ((!empty($lastname) || !empty($email)) ? "?" : "") . (empty($lastname) ? "" : "admin%2Fuser__filter-lastname=" . $lastname) . (!empty($lastname) && !empty($email) ? "&" : "") . (empty($email) ? "" : "admin%2Fuser__filter-email=" . $email);
-        $external_base_url .= "#external";
-
-    } else {
-
-        // Set up default filtered base urls
-        $internal_base_url = "/admin/users";
-        $external_base_url = "/admin/users#external";
+        // Set up the filtered part of the url
+        if (!(empty($login) && empty($name) && empty($email))) {
+            $filter_url = "?";
+            if (!empty($login))  {
+                $filter_url .= "admin%2Fuser__filter-login=" . $login;
+                if (!(empty($name) && empty($email))) {
+                    $filter_url .= "&";
+                }
+            }
+            if (!empty($name))  {
+                $filter_url .= "admin%2Fuser__filter-name=" . $name;
+                if (!(empty($email))) {
+                    $filter_url .= "&";
+                }
+            }
+            if (!empty($email)) {
+                $filter_url .= "admin%2Fuser__filter-email=" . $email;
+            }
+        }
     }
 
+    // Set up base urls
+    $internal_base_url = "/admin/users" . $filter_url;
+    $external_base_url = $internal_base_url . "#external";
+
     $filterData = [
-        ["Last Name", "text", "admin/user__filter-lastname", $lastname],
+        ["Login", "text", "admin/user__filter-login", $login],
+        ["Name", "text", "admin/user__filter-name", $name],
         ["Email", "text", "admin/user__filter-email", $email]
     ];
 
