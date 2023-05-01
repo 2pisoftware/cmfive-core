@@ -186,7 +186,7 @@ jobs:
       # Store Test Results
       - name: Test results
         if: ${{ failure() }} || ${{ success() }}
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: test-output
           path: |
