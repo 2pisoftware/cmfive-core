@@ -60,7 +60,7 @@ class Contact extends DbObject
     public function setTitle($title)
     {
         if (!empty($title)) {
-            $title_lookup = LookupService::getInstance($this->w)->getLookupByTypeAndCode('title', $title);
+            $title_lookup = LookupService::getInstance($this->w)->getLookupByTypeAndCodeV2('title', $title);
             if (empty($title_lookup)) {
                 $title_lookup = new Lookup($this->w);
                 $title_lookup->fill(['type' => 'title', 'code' => $title, 'title' => $title]);
