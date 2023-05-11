@@ -10,7 +10,7 @@ namespace Html\Form;
  *
  * @author Jareem Wheeler jareem@2pisoftware.com
  */
-class Banner extends \Html\Form\FormElement
+class Line extends \Html\Form\FormElement
 {
 
     use \Html\GlobalAttributes, \Html\Events;
@@ -23,25 +23,19 @@ class Banner extends \Html\Form\FormElement
     static $_excludeFromOutput = ["value", "label"];
 
     /**
-    * Returns built string of Banner field
+    * Returns built string of a Line
     *
     * @return string representation
     */
     public function __toString()
     {
-        $buffer = ' <div class="alert alert-warning" role="alert" ';
+        $buffer = '<hr>';
 
-        foreach (get_object_vars($this) as $field => $value) {
-            if (!is_null($value) && !is_array($this->{$field}) && !in_array($field, static::$_excludeFromOutput)) {
-                $buffer .= $field . '=\'' . $this->{$field} . '\' ';
-            }
-        }
-
-        return $buffer . '>' . $this->value . '</div>';
+        return $buffer;
     }
 
     /**
-     * The form element that the Banner is associated with (its
+     * The form element that the Line is associated with (its
      * "form owner"). The value of the attribute must be the ID of a form
      * element in the same document. If this attribute is not specified, the
      * <textarea> element must be a descendant of a form element. This attribute
@@ -49,7 +43,7 @@ class Banner extends \Html\Form\FormElement
      * just as descendants of their form elements.
      *
      * @param string $form
-     * @return \Html\Form\Banner
+     * @return \Html\Form\Line
      */
     public function setForm($form)
     {
@@ -62,7 +56,7 @@ class Banner extends \Html\Form\FormElement
      * The name of the control.
      *
      * @param string $name
-     * @return \Html\Form\Banner
+     * @return \Html\Form\Line
      */
     public function setname($name)
     {
@@ -75,7 +69,7 @@ class Banner extends \Html\Form\FormElement
      * This attribute is required by HtmlBootstrap5::multiColForm(...)
      *
      * @param string $required
-     * @return \Html\Form\Banner
+     * @return \Html\Form\Line
      */
     public function setRequired($required)
     {
@@ -88,7 +82,7 @@ class Banner extends \Html\Form\FormElement
      * The raw value contained in the control.
      *
      * @param string $value
-     * @return \Html\Form\Banner
+     * @return \Html\Form\Line
      */
     public function setValue($value)
     {
