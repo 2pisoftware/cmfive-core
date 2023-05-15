@@ -28,7 +28,7 @@ function migrationmessage_GET(Web $w)
             $migration_preText = $migration->preText();
             $w->ctx("migration_preText", $migration_preText);
         } else {
-            $w->error("Migration Class not found for message", "/admin-migrations#batch");
+            $w->error("Migration Class not found for message", "/admin-migration#batch");
         }
     }
 }
