@@ -14,7 +14,8 @@ function migrationmessage_GET(Web $w)
     // Pretext Page File
     $w->ctx("migration_module", Request::string('module'));
 
-    $w->ctx("migration_filename", Request::string('filename'));
+    $migration_filename = Request::string('filename');
+    $w->ctx("migration_filename", $migration_filename );
 
     $migration_path = Request::string('path');
 
