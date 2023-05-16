@@ -1,5 +1,13 @@
 <?php
+/***
+ * Deprecated at 202305 / v5.0 / PHP 8.1
+ * This migration nolonger viable, because:
+ *  - it errors out depending on case sensitivity settings of MySQL DB
+ *  - the error state is intermittent depending on sequence of module installation vs migration execution
+ *  - it can't run anyway, from any recent merged branches, because "system->functions->AES_encryption" code has been purged * 
+ */
 
+ 
 class AdminSecurityAesToOpenssl extends CmfiveMigration
 {
 
