@@ -162,7 +162,7 @@ class HtmlBootstrap5 extends Html
                     // $buffer .= ($type !== "hidden" ? "<div>" : "");
 
                     // handle disabled fields
-                    if (substr($name, 0, 1) == '-') {
+                    if (!empty($name) && substr($name, 0, 1) == '-') {
                         $name = substr($name, 1);
                         $readonly = " readonly='true' ";
                     }
