@@ -1,5 +1,5 @@
 <?php
-namespace Helper;
+namespace Tests\Support\Helper;
 
 class CmfiveReportModule extends \Codeception\Module
 {
