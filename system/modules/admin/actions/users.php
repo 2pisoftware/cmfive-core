@@ -45,7 +45,7 @@ function users_GET(Web $w)
         if (!empty($users)) {
             $i = 0;
             foreach ($users as $user) {
-                $contact = CrmService::getInstance($w)->getObject("Contact", $user->contact_id);
+                $contact = AdminService::getInstance($w)->getObject("Contact", $user->contact_id);
                 if (!empty($contact) &&
                     str_contains(strtoupper($user->login), strtoupper($login)) &&
                     str_contains(strtoupper($contact->firstname . $contact->lastname), strtoupper($name)) &&
