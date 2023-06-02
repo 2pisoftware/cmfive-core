@@ -25,5 +25,5 @@ function deleteMembers_ALL(Web $w)
     // delete the member
     $member->delete();
     // redirect the user back to the Member list with a message
-    $w->msg('member deleted', '/insights/manageMembers?insight_class='.$member->insight_class_name);
+    $w->msg('Member deleted', '/insights/manageMembers?insight_class='.$member->insight_class_name);
 }

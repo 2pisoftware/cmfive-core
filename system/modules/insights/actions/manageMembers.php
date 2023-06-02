@@ -5,6 +5,7 @@
 function manageMembers_ALL(Web $w)
 {
 
+    $w->setLayout('layout-bootstrap-5');
 
     $insight_class = Request::string('insight_class');
     //var_dump($insight_class);
@@ -25,7 +26,7 @@ function manageMembers_ALL(Web $w)
 
     // build the table array adding the headers and the row data
     $table = [];
-    $tableHeaders = ['Memeber', 'Is Email Recipient', 'Role', 'Actions'];
+    $tableHeaders = ['Member', 'Is Email Recipient', 'Role', 'Actions'];
     if (!empty($memberList)) {
         foreach ($memberList as $member) {
             $row = [];
@@ -35,8 +36,10 @@ function manageMembers_ALL(Web $w)
             $row[] = $member->type;
             // the actions column is used to hold buttons that link to actions per item. Note the item id is added to the href on these buttons.
             $actions = [];
-            $actions[] = Html::box("/insights-members/editMembers/$member->id?" . $member->insight_class, 'Edit', true);
-            $actions[] = Html::b("/insights-members/deleteMembers/$member->id?" . $member->insight_class, 'Delete', 'Are you sure you want to delete this member?');
+            $actions[] = HtmlBootstrap5::buttonGroup(
+                HtmlBootstrap5::box("/insights-members/editMembers/$member->id?" . $member->insight_class, "Edit", true, false, null, null, "isbox", "editbutton", 'btn-sm btn-primary') . 
+                HtmlBootstrap5::b("/insights-members/deleteMembers/$member->id?" . $member->insight_class, "Delete", 'Are you sure you want to delete this member?', "deletebutton", false, 'btn-sm btn-danger')
+            );
             $row[] = implode('', $actions);
             $table[] = $row;
         }

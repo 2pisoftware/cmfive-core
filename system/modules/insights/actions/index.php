@@ -3,6 +3,7 @@
 
 function index_ALL(Web $w)
 {
+    $w->setLayout('layout-bootstrap-5');
     // $w->setLayout('layout-2021');
     $w->ctx("title", "Insights List");
 
@@ -26,17 +27,17 @@ function index_ALL(Web $w)
                     //die;
                     if (InsightService::getInstance($w)->IsMember(Get_class($insight), $user_id)) {
                         $row = [];
-                      // add values to the row in the same order as the table headers
+                        // add values to the row in the same order as the table headers
                         $row[] = $insight->name;
                         $row[] = $modulename;
                         $row[] = $insight->description;
-                      // the actions column is used to hold buttons that link to actions per insight. Note the insight id is added to the href on these buttons.
+                        // the actions column is used to hold buttons that link to actions per insight. Note the insight id is added to the href on these buttons.
                         $actions = [];
-                        $actions[] = Html::b('/insights/viewInsight/' . Get_class($insight), 'View');
-                        if (InsightService::getInstance($w)->isInsightOwner($user_id, get_class($insight))
-                        ) {
-                            $actions[] = Html::b('/insights/manageMembers?insight_class=' . Get_class($insight), 'Manage Members');
+                        $button_group = HtmlBootstrap5::b("/insights/viewInsight/" . Get_class($insight), "View", null, "viewbutton", false, 'btn-sm btn-primary');
+                        if (InsightService::getInstance($w)->isInsightOwner($user_id, get_class($insight))) {
+                            $button_group .= HtmlBootstrap5::b("/insights/manageMembers?insight_class=" . Get_class($insight), "Manage Members", null, " viewbutton", false, "btn-sm btn-secondary");
                         }
+                        $actions[] =  HtmlBootstrap5::buttonGroup($button_group);
                         $row[] = implode('', $actions);
                         $table[] = $row;
                     }
@@ -46,5 +47,5 @@ function index_ALL(Web $w)
     }
 
     //send the table to the template using ctx
-    $w->ctx('insightTable', Html::table($table, 'insight_table', 'tablesorter', $tableHeaders));
+    $w->ctx('insightTable', HtmlBootstrap5::table($table, 'insight_table', 'tablesorter', $tableHeaders));
 }
