@@ -160,6 +160,8 @@ class InsightService extends DbService
                     $hds[$hd] = $hd;
                 }
                 $csv = new ParseCsv\Csv();
+                $csv->convert_encoding = true;
+                $csv->encoding('UTF-8', 'UTF-8');
                 $csv->output_filename = $filename;
                 // ignore lib wrapper csv->output, to keep control over header re-sends!
 
