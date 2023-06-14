@@ -212,7 +212,7 @@ class ChannelService extends DbService
 
     public function markMessagesAsProcessed($channel_id)
     {
-        $this->db->update('channel_message', ['is_processed' => 1])->where('channel_id', $channel_id)
+        $this->w->db->update('channel_message', ['is_processed' => 1])->where('channel_id', $channel_id)
             ->where('is_deleted', 0)->execute();
     }
 

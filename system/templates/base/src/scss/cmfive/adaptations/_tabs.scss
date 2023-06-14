@@ -1,0 +1,37 @@
+
+.tabs {
+    .tab-head {
+        a {
+            @include font-size("body");
+            @include theme((color: 'caption', background-color: 'white-black'));
+            padding: 12px;
+            margin-right: 4px;
+            
+            &.active {
+                @include theme((color: 'dark-grey', background-color: 'light-grey', border-color: 'caption'));
+                border-width: 1px;
+                border-bottom-width: 0px;
+                border-style: solid;
+
+                display: inline-block;
+                margin-bottom: -1px;
+                padding: 10px 11px 12px 11px;
+            }
+        }
+    }
+
+    .tab-body {
+        @include theme((border-top-color: 'caption'));
+        border-top-width: 1px;
+        border-top-style: solid;
+        
+        & > div {
+            padding-top: 36px;
+            display: none;
+
+            &.active {
+                display: block;
+            }
+        }
+    }
+}

@@ -9,11 +9,12 @@
                         <tr>
                             <td><?php echo formatDate($time_entry->dt_start, "H:i:s"); ?></td>
                             <td><?php echo formatDate($time_entry->dt_end, "H:i:s"); ?></td>
-                            <td><?php echo ($time_entry->getLinkedObject() ? get_class($time_entry->getLinkedObject()) . ": " . $time_entry->getLinkedObject()->toLink() : ''); ?></td>
+                            <td><?php echo($time_entry->getLinkedObject() ? get_class($time_entry->getLinkedObject()) . ": " . $time_entry->getLinkedObject()->toLink() : ''); ?></td>
                             <td><pre class="break-pre" style="font-family: sans-serif;"><?php echo $time_entry->getComment()->comment; ?></pre></td>
                             <td>
                                 <?php echo $time_entry->object_class == "Task" ? Html::b('/task/edit/' . $time_entry->object_id . "#timelog", "View Time Log") : ""; ?>
                                 <?php echo $time_entry->canEdit(AuthService::getInstance($w)->user()) ? Html::box('/timelog/edit/' . $time_entry->id, 'Edit', true) : ''; ?>
+                                <?php echo $time_entry->canEdit(AuthService::getInstance($w)->user()) ? Html::box('/timelog/move/' . $time_entry->id, 'Move', true) : ''; ?>
                                 <?php $confirmation_message = implode("", $w->callHook("timelog", "before_display_timelog", $time_entry)); ?>
 								<?php echo $time_entry->canDelete(AuthService::getInstance($w)->user()) ? Html::b('/timelog/delete/' . $time_entry->id, 'Delete', empty($confirmation_message) ? 'Are you sure you want to delete this timelog?' : $confirmation_message) : ''; ?>
                             </td>

@@ -66,7 +66,7 @@ class MigrationService extends DbService
         foreach ($migration_paths as $migration_path) {
             if (is_dir(ROOT_PATH . DS . $migration_path)) {
                 foreach (scandir(ROOT_PATH . DS . $migration_path) as $file) {
-                    if (!is_dir($file) && $file[0] !== '.') {
+                    if (!is_dir(ROOT_PATH . DS . $migration_path . DS . $file) && $file[0] !== '.') {
                         $classname = explode('.', str_replace('-', '.', $file));
                         if (!empty($classname[1])) {
                             if ($this->isInstalled($classname[1])) {
@@ -259,7 +259,7 @@ MIGRATION;
             foreach ($alreadyRunMigrations as $module => $alreadyRunMigrationList) {
                 if (!empty($alreadyRunMigrationList)) {
                     foreach ($alreadyRunMigrationList as $migrationsAlreadyRun) {
-                        if (array_key_exists($migrationsAlreadyRun['path'], $availableMigrations[$module])) {
+                        if (array_key_exists($migrationsAlreadyRun['path'], $availableMigrations[$module] ?? [])) {
                             unset($availableMigrations[$module][$migrationsAlreadyRun['path']]);
                         }
                     }

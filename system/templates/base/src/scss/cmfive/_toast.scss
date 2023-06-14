@@ -1,0 +1,38 @@
+
+.cmfive-toast-message {
+	visibility: hidden;
+	opacity: 0;
+    $t: bottom $animation-duration $animation-path, 
+        opacity $animation-duration $animation-path, 
+        visibility $animation-duration $animation-path;
+    @include theme((background-color: 'dark-grey', color: 'white-black'), $t);
+    border-radius: 2px;
+	text-align: center;
+	padding: 16px;
+	z-index: 1000000;
+	left: 50%;
+	bottom: 0px;
+	min-width: 320px;
+	margin-left: -160px;
+	position: absolute;
+
+	@include media-breakpoint-down(md) {
+		position: fixed;
+		width: 100%;
+		left: 0px;
+		right: 0px;
+		margin: 0px;
+		bottom: -80px;
+        border-radius: 0px;
+	}
+
+	&.cmfive-toast-message-appear {
+		bottom: 20px;
+		opacity: 1;
+		visibility: visible;
+
+		@include media-breakpoint-down(md) {
+			bottom: 0px;
+		}
+	}
+}

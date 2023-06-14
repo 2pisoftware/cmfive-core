@@ -1,0 +1,42 @@
+
+select {
+    margin: 4px 0px;
+    border: 1px solid #ccc;
+    // padding: 3px 10px !important;
+    background-color: $white;
+}
+
+form {
+    label {
+        display: flex;
+        flex-direction: column;
+
+        input {
+            margin: 4px 0px;
+            border: 1px solid #ccc;
+            padding: 0 10px !important;
+
+            &.input-large {
+                width: 100%;
+            }
+
+            &[type='color'] {
+                max-width: 40px;
+                display: block;
+            }
+        }
+    }
+
+    select {
+        width: 100%;
+    }
+
+    .form-button-container {
+        padding: 1rem;
+    }
+
+    .ql-snow {
+        background-color: white;
+        color: black;
+    }
+}

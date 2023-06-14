@@ -20,6 +20,24 @@ function array_unique_multidimensional(array $input)
 }
 
 /**
+ * Formats currency based on locale
+ *
+ * @param int|float|string $amount
+ * @param string $locale = 'en_AU'
+ * @param string $currency = 'AUD'
+ * @return string
+ */
+function formatMoney(int|float|string $amount, string $locale = 'en_AU', string $currency = 'AUD'): string
+{
+    $fmt = numfmt_create($locale, NumberFormatter::CURRENCY);
+    $formatted_amount = numfmt_format_currency($fmt, floatval($amount), $currency);
+    if ($formatted_amount === false) {
+        return '';
+    }
+    return $formatted_amount;
+}
+
+/**
  * Translations shortcuts (for POT marker identification
  */
 
@@ -560,7 +578,10 @@ function objectPropertyHasValueInMultiArray($object, $property, $value, $multiar
     if (!empty($multiarray)) {
         foreach ($multiarray as $array_key => $array_value) {
             if (is_array($array_value)) {
-                return objectPropertyHasValueInMultiArray($object, $property, $value, $array_value);
+                $response = objectPropertyHasValueInMultiArray($object, $property, $value, $array_value);
+                if ($response) {
+                    return $response;
+                }
             }
 
             if (is_object($array_value) && is_a($array_value, $object, true) && property_exists($array_value, $property) && $array_value->$property === $value) {
@@ -830,15 +851,15 @@ function cast($destination, $sourceObject)
  */
 function delete_all_between($beginning, $end, $string, $remove_every_instance = false): string
 {
-    $beginningPos = strpos($string, $beginning);
-    $endPos = strpos($string, $end);
+    $beginningPos = strpos($string ?? "", $beginning);
+    $endPos = strpos($string ?? "", $end);
 
     if ($beginningPos === false || $endPos === false) {
         return $string;
     }
 
     if (!$remove_every_instance) {
-        return trim(str_replace(substr($string, $beginningPos, ($endPos + strlen($end)) - $beginningPos), '', $string));
+        return trim(str_replace(substr($string ?? "", $beginningPos, ($endPos + strlen($end)) - $beginningPos), '', $string));
     } else {
         while (($beginningPos !== false && $endPos !== false)) {
             $string = trim(str_replace(substr($string, $beginningPos, ($endPos + strlen($end)) - $beginningPos), '', $string));

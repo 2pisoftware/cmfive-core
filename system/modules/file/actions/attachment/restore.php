@@ -9,7 +9,7 @@ function restore_GET(Web $w) {
 	
 	list($attachment_id) = $w->pathMatch();
 	
-	$redirect_url = Request::string"redirect_url", "/file");
+	$redirect_url = Request::string("redirect_url", "/file");
 	
 	if (empty($attachment_id)) {
 		$w->error("No Attachment ID given", $redirect_url);

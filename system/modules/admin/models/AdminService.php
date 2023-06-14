@@ -3,6 +3,50 @@
 class AdminService extends DbService
 {
     /**
+     * Returns a list of users for paginated tables
+     *
+     * @param array $where
+     * @param integer|null $page_number
+     * @param integer|null $page_size
+     * @param string|null $sort
+     * @param string|null $sort_direction
+     * @return array
+     */
+    public function getUsers(array $where = [], ?int $page_number = null, ?int $page_size = null, ?string $sort = null, ?string $sort_direction = null): array
+    {
+        $query = $this->_db->get('user')->leftJoin('contact on user.contact_id = contact.id');
+
+        foreach ($where as $key => $value) {
+            $query->where($key, $value);
+        }
+
+        if (!empty($page_number) && !empty($page_size)) {
+            $query->paginate($page_number, $page_size);
+        }
+
+        if (!empty($sort) && !empty($sort_direction)) {
+            if ($sort == 'name') {
+                $query->sort('contact.firstname', $sort_direction)->sort('contact.lastname', $sort_direction);
+            } else {
+                $query->sort($sort, $sort_direction);
+            }
+        }
+
+        return $this->getObjectsFromRows('User', $query->fetchAll());
+    }
+
+    /**
+     * Returns a count of users with a where clause
+     *
+     * @param array $where
+     * @return integer
+     */
+    public function countUsers(array $where = []): int
+    {
+        return $this->w->db->get('user')->where($where)->count();
+    }
+
+    /**
      * Returns a country via the $id parameter.
      *
      * @param string $id
@@ -33,6 +77,29 @@ class AdminService extends DbService
     public function getCountries(array $where = []): array
     {
         return $this->getObjects('Country', $where);
+    }
+
+    /**
+     * Returns the country name represented by either alpha 2 or 3 code
+     *
+     * @param string $code
+     * @param string $type
+     * @return string
+     */
+    public function getCountryNameForISOCode(string $code, ?string $type = Country::_ALPHA_2_CODE): string
+    {
+        $query = $this->_db->get('country')
+            ->select()
+            ->select('name')
+            ->where('is_deleted', 0);
+
+        if ($type == Country::_ALPHA_2_CODE) {
+            $query->where('alpha_2_code', $code);
+        } else {
+            $query->where('alpha_3_code', $code);
+        }
+
+        return $query->fetchElement('name');
     }
 
     /**
@@ -108,7 +175,7 @@ class AdminService extends DbService
      */
     public function getLanguages(array $where = []): array
     {
-        return $this->getObjects('Language', $where);
+        return $this->getObjects('Language', $where, false, true, 'name asc');
     }
 
     public function navigation(Web $w, $title = null, $prenav = null)
@@ -125,7 +192,7 @@ class AdminService extends DbService
             $w->menuLink('admin-maintenance', 'Maintenance', $nav);
             $w->menuLink("admin/lookup", "Lookup", $nav);
             $w->menuLink("admin-templates", "Templates", $nav);
-            $w->menuLink("admin/composer", "Update composer.json", $nav, null, "_blank");
+            // $w->menuLink("admin/composer", "Update composer.json", $nav, null, "_blank");
             $w->menuLink("admin-migration", "Migrations", $nav);
         }
 

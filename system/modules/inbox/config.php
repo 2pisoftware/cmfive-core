@@ -1,9 +1,8 @@
 <?php
 
-Config::set('inbox', array(
-    'version' => '0.8.0',
-    'active' => true,
+Config::set('inbox', [
+    'active' => false,
     'path' => 'system/modules',
     'topmenu' => true,
-    'hooks' => array('admin', 'inbox'),
-));
+    'hooks' => ['admin', 'inbox'],
+]);

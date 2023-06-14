@@ -1,9 +1,12 @@
 <?php
 
+use Html\Form\InputField\Password;
+
 function resetpassword_GET(Web $w)
 {
     $token = Request::string('token'); // token
 
+    /** @var User $user */
     $user = AuthService::getInstance($w)->getUserForToken($token);
     $validData = false;
 
@@ -15,12 +18,27 @@ function resetpassword_GET(Web $w)
             return;
         }
 
+        $password_field = (new Password([
+            'id|name' => 'password',
+            'label' => 'New password'
+        ]));
+
+        $password_confirm_field = (new Password([
+            'id|name' => 'password_confirm',
+            'label' => 'Confirm password'
+        ]));
+
+        if (Config::get('auth.login.password.enforce_length') === true) {
+            $password_field->setMinlength(Config::get('auth.login.password.min_length', 8));
+            $password_confirm_field->setMinlength(Config::get('auth.login.password.min_length', 8));
+        }
+
         $user_contact = $user->getContact();
         if (!empty($user_contact)) {
             $password_form = Html::form([
                 ["Enter new password", "section"],
-                ["New password", "password", "password"],
-                ["Confirm password", "password", "password_confirm"],
+                $password_field,
+                $password_confirm_field,
             ], $w->localUrl("auth/resetpassword?token=$token"), "POST", "Reset");
             $w->out($password_form);
             $validData = true;
@@ -42,6 +60,12 @@ function resetpassword_POST(Web $w)
     if ($password !== $password_confirm) {
         $w->error("Passwords do not match", "/auth/resetpassword?token=$token");
         return;
+    }
+
+    if (Config::get('auth.login.password.enforce_length') === true) {
+        if (strlen($password) < Config::get('auth.login.password.min_length', 8)) {
+            $w->error('Password does not meet minimum length requirements', "/auth/resetpassword?token=$token");
+        }
     }
 
     $user = AuthService::getInstance($w)->getUserForToken($token);

@@ -29,7 +29,7 @@
         <b>Title: </b><?php echo $attachment->title; ?>
     </div>
     <div class="row-fluid clearfix text-center" style="overflow: hidden;">
-        <b>Description: </b><?php echo strip_tags($attachment->description); ?>
+        <b>Description: </b><?php echo strip_tags($attachment->description ?? ""); ?>
     </div>
     <div class="row-fluid clearfix text-center">
         <?php if (!empty($owner)) {

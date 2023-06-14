@@ -4,6 +4,7 @@ class AdminAddCountryTable extends CmfiveMigration
 {
     public function up(): void
     {
+        if (!$this->hasTable('country')) {
         $this->tableWithId('country')
             ->addStringColumn('name')
             ->addStringColumn('alpha_2_Code')
@@ -14,6 +15,7 @@ class AdminAddCountryTable extends CmfiveMigration
             ->addStringColumn('demonym')
             ->addCmfiveParameters()
             ->create();
+        }
     }
 
     public function down(): void

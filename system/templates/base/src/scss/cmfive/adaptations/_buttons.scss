@@ -1,0 +1,42 @@
+@use "sass:map";
+
+.button {
+    @include font-size('body');
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 2px;
+    border: $btn-border-width solid transparent;
+    text-align: center;
+    text-decoration: if($link-decoration == none, null, none);
+    white-space: $btn-white-space;
+    vertical-align: middle; 
+    user-select: none;
+
+    // Primary colour default
+    color: $white;
+    background-color: $twopi-blue;
+
+    margin: 4px 0px;
+
+    &.small, &.tiny {
+        // @include font-size("body");
+        // padding: 4px 8px;
+    }
+
+    &:not(:first-of-type) {
+        margin-left: 8px;
+    }
+
+    @each $key, $value in $colours {
+        &.#{$key} {
+            background-color: map-get($value, "background-color");
+            color: map-get($value, "color");
+
+            &.outline {
+                background-color: $white;
+                border: 1px solid map-get($value, "background-color");
+                color: map-get($value, "background-color");
+            }
+        }
+    }
+}

@@ -81,13 +81,13 @@ class SesTransport implements GenericTransport
                     $message->setReplyTo([$replyto]);
                 }
                 if (!empty($cc)) {
-                    if (strpos($cc, ",") !== false) {
+                    if (strpos($cc ?? "", ",") !== false) {
                         $cc = array_map("trim", explode(',', $cc));
                     }
                     $message->setCc($cc);
                 }
                 if (!empty($bcc)) {
-                    if (strpos($bcc, ",") !== false) {
+                    if (strpos($bcc ?? "", ",") !== false) {
                         $bcc = array_map("trim", explode(',', $bcc));
                     }
                     $message->setBcc($bcc);

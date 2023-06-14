@@ -43,20 +43,21 @@ class AuditInsight extends InsightBaseClass
         } else {
             // convert $data from list of objects to array of values
             $convertedData = [];
-            
-            foreach ($data as $datarow) {
+            while ($datarow = array_pop($data)) {
+            // foreach ($data as $datarow) {
                 $row = [];
-                $row['Date'] = formatDateTime($datarow->dt_created);
-                $creator = AuthService::getInstance($w)->getUser($datarow->creator_id);
+                $row['Date'] = formatDateTime($datarow['dt_created']);
+                $creator = AuthService::getInstance($w)->getUser($datarow['creator_id']);
                 $row['User'] = empty($creator) ? '' : $creator->getFullName();
-                $row['Module'] = $datarow->module;
-                $row['URL'] = $datarow->path;
-                $row['Class'] = $datarow->db_class;
-                $row['Action'] = $datarow->db_action;
-                $row['DB_Id'] = $datarow->db_id;
+                unset($creator);
+                $row['Module'] = $datarow['module'];
+                $row['URL'] = $datarow['path'];
+                $row['Class'] = $datarow['db_class'];
+                $row['Action'] = $datarow['db_action'];
+                $row['DB Id'] = $datarow['db_id'];
                 $convertedData[] = $row;
             }
-             $results[] = new InsightReportInterface('Audit Report', ['Date', 'User', 'Module', 'URL', 'Class', 'Action', 'DB Id'], $convertedData);
+            $results[] = new InsightReportInterface('Audit Report', ['Date', 'User', 'Module', 'URL', 'Class', 'Action', 'DB Id'], $convertedData);
         }
         return $results;
     }

@@ -1,0 +1,24 @@
+
+// $primary:       $twopi-blue;
+// $secondary:     $mid-grey;
+// $success:       $success;
+// $info:          $caption;
+// $warning:       $warning;
+// $danger:        $danger;
+// $light:         $light-grey;
+// $dark:          $dark-grey;
+
+// Type
+$font-family-base: 'Source Sans Pro', sans-serif;
+
+// $body-bg: $light;
+$primary: map-get($colours, 'primary', 'background-color');
+$secondary: map-get($colours, 'secondary', 'background-color');
+$success: map-get($colours, 'success', 'background-color');
+$danger: map-get($colours, 'danger', 'background-color');
+$warning: map-get($colours, 'warning', 'background-color');
+$info: map-get($colours, 'info', 'background-color');
+$light: map-get($colours, 'light', 'background-color');
+$dark: map-get($colours, 'dark', 'background-color');
+
+$btn-link-color: $white;

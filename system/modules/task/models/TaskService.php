@@ -185,7 +185,7 @@ class TaskService extends DbService
     {
         if (is_numeric($seconds)) {
             $hours = intval($seconds / 3600);
-            $mins = intval(($seconds / 60) % 60);
+            $mins = intval(intval($seconds / 60) % 60);
             $mins = str_pad($mins, 2, "0", STR_PAD_LEFT);
             return $hours . ":" . $mins;
         }
@@ -568,7 +568,10 @@ class TaskService extends DbService
         $where .= " and date_format(c.dt_modified,'%Y-%m-%d') >= '" . $this->date2db($from) . "' and date_format(c.dt_modified,'%Y-%m-%d') <= '" . $this->date2db($to) . "'";
 
         // get and return tasks
-        $rows = $this->_db->sql("SELECT t.id, t.title, t.task_group_id, c.comment, c.creator_id, c.dt_modified from " . Task::$_db_table . " as t inner join " . TaskComment::$_db_table . " as c on t.id = c.obj_id and c.obj_table = '" . Task::$_db_table . "' inner join " . TaskGroup::$_db_table . " as g on t.task_group_id = g.id " . $this->_db->quote($where) . " order by c.dt_modified desc")->fetchAll();
+        $rowQry = "SELECT t.id, t.title, t.task_group_id, c.comment, c.creator_id, c.dt_modified from " . Task::$_db_table . " as t inner join "
+         . TaskComment::$_db_table . " as c on t.id = c.obj_id and c.obj_table = '" . Task::$_db_table . "' inner join "
+          . TaskGroup::$_db_table . " as g on t.task_group_id = g.id " . $where . " order by c.dt_modified desc";
+        $rows = $this->_db->sql($rowQry)->fetchAll();
         return $rows;
     }
 

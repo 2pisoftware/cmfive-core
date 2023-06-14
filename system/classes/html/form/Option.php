@@ -19,7 +19,10 @@ class Option extends \Html\Form\FormElement
         $buffer = '<option ';
 
         foreach (get_object_vars($this) as $field => $value) {
-            if (!is_null($value) && !in_array($field, static::$_excludeFromOutput)) {
+            if (!is_null($value) && !in_array($field, static::$_excludeFromOutput) && $field[0] !== "_") {
+                if (is_array($this->{$field})) {
+                    continue;
+                }
                 $buffer .= $field . '=\'' . $this->{$field} . '\' ';
             }
         }

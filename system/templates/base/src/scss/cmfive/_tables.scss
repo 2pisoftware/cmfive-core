@@ -1,0 +1,9 @@
+
+.paginated-table-container {
+    margin-top: 2rem;
+    
+    table {
+        margin-bottom: 1rem;
+        @include shadow-flat();
+    }
+}

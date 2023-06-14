@@ -75,6 +75,23 @@ class Request
     }
 
     /**
+     * Returns the value that is tied to the $key parameter as an array. If the value is
+     * no an array or doesn't exist the $default parameter will be returned instead.
+     *
+     * @param string $key
+     * @param array $default
+     * @return array
+     */
+    public static function array(string $key, array $default = []): array
+    {
+        if (!array_key_exists($key, $_REQUEST) || !is_array($_REQUEST[$key])) {
+            return $default;
+        }
+
+        return $_REQUEST[$key];
+    }
+
+    /**
      * Returns the value that is tied to the $key parameter. If the value doesn't
      * exist the $default parameter will be returned instead.
      *

@@ -2,20 +2,19 @@
 
 /**
  * This class is designed to manage page traversal (history) by storing values
- * in the $_SESSION Calling History::add($name) will add that name and a 
+ * in the $_SESSION Calling History::add($name) will add that name and a
  * timestamp to an array in session with the current url path as the key. If you
  * also provide an object as the third parameter, the added history object will
  * be automatically removed from the breadcrumbs when you delete the
  * aforementioned object.
- * 
+ *
  * NOTE: this means that any GET/POST parameters CANNOT be stored along with the path
- * 
+ *
  * @author Adam Buckley
  */
 
 class History
 {
-
     // Storage array
     private static $cookie_key = 'cmfive_history';
 
@@ -50,8 +49,8 @@ class History
         }
 
         // Sometimes the slash is on, sometimes its not, which creates multiple
-        // entries for the same place, solution is to strip the end slash
-        $_SESSION[self::$cookie_key][rtrim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/')] = $array;
+        // entries for the same place, solution is to strip the end slash and "/index" if it exists
+        $_SESSION[self::$cookie_key][preg_replace("/\/index$/", '', rtrim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/'))] = $array;
     }
 
     /**
@@ -98,7 +97,9 @@ class History
     public static function remove($object = null)
     {
         // Load cookie storage into array to be manipulated
-        if (empty($_SESSION[self::$cookie_key]) || empty($object) || !is_a($object, "DbObject") || !property_exists($object, "id")) {
+        if (empty($_SESSION[self::$cookie_key]) || empty($object)
+            || !is_a($object, "DbObject") || !property_exists($object, "id")
+        ) {
             return;
         }
 
@@ -126,7 +127,7 @@ class History
      */
     private static function sort($a, $b)
     {
-        return $b['time'] - $a['time'];
+        return $a['time'] - $b['time'];
     }
 
     /**

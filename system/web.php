@@ -1,4 +1,5 @@
 <?php
+
 // ========= Session ========================
 if (!headers_sent()) {
     ini_set('session.gc_maxlifetime', 21400);
@@ -626,6 +627,17 @@ class Web
                 LogService::getInstance($this)->info("Error starting session " . $e->getMessage());
             }
 
+            // Log out if timeout is set
+            if (Config::get('auth.logout.logout_after_inactivity', false) === true && AuthService::getInstance($this)->loggedIn()) {
+                if (array_key_exists('logout_timestamp', $_SESSION) && time() - $_SESSION['logout_timestamp'] > Config::get('auth.logout.timeout', 900)) {
+                    $this->sessionDestroy();
+                    $this->error('Your session has timed out, please log in again', '/auth/login');
+                    exit;
+                } else {
+                    $_SESSION['logout_timestamp'] = time(); //set new timestamp
+                }
+            }
+
             // Initialise the logger (needs to log "info" to include the request data, see LogService __call function)
             LogService::getInstance($this)->info("info");
 
@@ -1069,7 +1081,9 @@ class Web
 
     public function isAjax()
     {
-        return isset($_SERVER['HTTP_X_REQUESTED_WITH']);
+        return isset($_SERVER['HTTP_X_REQUESTED_WITH']) ||
+            (array_key_exists('CONTENT_TYPE', $_SERVER) && $_SERVER['CONTENT_TYPE'] == "application/json") ||
+            $this->_layout === null;
     }
 
     /**
@@ -1243,11 +1257,10 @@ class Web
      * @param array $array
      * @return string
      */
-    public function menuLink($path, $title, &$array = null, $confirm = null, $target = null)
+    public function menuLink($path, $title, &$array = null, $confirm = null, $target = null, $class = "")
     {
-        $class = "";
         if (startsWith($path, $this->currentModule())) {
-            $class = "current active";
+            $class .= " current active";
         }
         $link = AuthService::getInstance($this)->allowed($path, Html::a($this->localUrl($path), $title, $title, $class, $confirm, $target));
         if ($array !== null) {
@@ -1300,9 +1313,10 @@ class Web
      * @param string $link
      * @return string html code
      */
-    public function localUrl($link = null)
+    public function localUrl($link = "")
     {
-        if (strpos($link, "/") !== 0) {
+        // PHP8: strpos null param is deprecated
+        if (!empty($link) && strpos($link, "/") !== 0) {
             $link = "/" . $link;
         }
         return $this->webroot() . $link;
@@ -1409,7 +1423,7 @@ class Web
     public function fatalErrorPage()
     {
         http_response_code(500);
-        
+
         if ($this->isAjax()) {
             return;
         }
@@ -1768,11 +1782,17 @@ class Web
      */
     public function templateExists($name)
     {
-        if ($this->_submodule) {
-            $paths[] = implode("/", [rtrim($this->getModuleDir($this->_module), '/'), $this->_templatePath, $this->_submodule]);
+        $trimmed_module = "";
+        if (!is_null($this->getModuleDir($this->_module))) {
+            $trimmed_module = rtrim($this->getModuleDir($this->_module), '/');
         }
-        $paths[] = implode("/", [rtrim($this->getModuleDir($this->_module), '/'), $this->_templatePath]);
-        $paths[] = implode("/", [rtrim($this->getModuleDir($this->_module), '/')]);
+
+        if ($this->_submodule) {
+            $paths[] = implode("/", [$trimmed_module, $this->_templatePath, $this->_submodule]);
+        }
+
+        $paths[] = implode("/", [$trimmed_module, $this->_templatePath]);
+        $paths[] = implode("/", [$trimmed_module]);
         $paths[] = implode("/", [$this->_templatePath, $this->_module]);
         $paths[] = $this->_templatePath;
         // Add system fallback
@@ -2124,7 +2144,7 @@ class Web
         if (!headers_sent($file, $line)) {
             header($string);
         } else {
-            $this->log->error("Attempted to resend header {$string}, output started in {$file} on line {$line}");
+            LogService::getInstance($this)->error("Attempted to resend header {$string}, output started in {$file} on line {$line}");
         }
     }
 

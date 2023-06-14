@@ -32,10 +32,14 @@ Config::set('system.password_salt', md5('override this in your project config'))
 /**
  * Otherwise, SSL will be used with KEY & IV from config,
  * if system has been upgraded per this migration:
+ * Config::set('system.encryptionMigration', 'AdminSecurityAesToOpenssl');
+ * OR simply by key, for systems > PHP8 where no forward path from AES can be migrated!
  */
 
-Config::set('system.encryptionMigration', 'AdminSecurityAesToOpenssl');
 
+// Adds ability to disable help and search
+Config::set('system.help_enabled', true);
+Config::set('system.search_enabled', true);
 
 /**
  * Syntax for csrf config

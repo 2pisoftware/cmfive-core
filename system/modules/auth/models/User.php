@@ -31,6 +31,27 @@ class User extends DbObject
     public $is_password_invalid;
     public $is_mfa_enabled;
     public $mfa_secret;
+    public $login_attempts;
+    public $is_locked;
+
+    public function lock()
+    {
+        $this->is_locked = 1;
+        $this->update();
+    }
+
+    public function unlock()
+    {
+        $this->is_locked = 0;
+        $this->login_attempts = 0;
+        $this->update();
+    }
+
+    public function resetAttempts()
+    {
+        $this->login_attempts = 0;
+        $this->update();
+    }
 
     /**
      * Check if the passed MFA code is correct.
@@ -264,13 +285,13 @@ class User extends DbObject
      * @param string $role
      * @return true if and only if the user has this role
      */
-    public function hasRole($role)
+    public function hasRole($role, $strict = false)
     {
-        if ($this->is_admin) {
+        if ($this->is_admin && !$strict) {
             return true;
         }
         if ($this->getRoles(true)) {
-            return in_array($role, $this->_roles);
+            return is_array($this->_roles) && in_array($role, $this->_roles);
         } else {
             return false;
         }
@@ -282,9 +303,9 @@ class User extends DbObject
      * @param array $roles
      * @return true if the user has any one of these roles
      */
-    public function hasAnyRole($roles)
+    public function hasAnyRole($roles, $strict = false)
     {
-        if ($this->is_admin) {
+        if ($this->is_admin && !$strict) {
             return true;
         }
         if (!empty($roles)) {
@@ -349,6 +370,11 @@ class User extends DbObject
      */
     public function allowed($path)
     {
+        if ($this->is_locked) {
+            unset($_SESSION['user_id']);
+            $this->w->error("This account is locked, most likely due to too many login attempts. Please contact an Administrator to get your account unlocked", "/auth/login");
+        }
+        
         if (!$this->is_active) {
             return false;
         }
