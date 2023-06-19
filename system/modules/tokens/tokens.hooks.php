@@ -17,20 +17,20 @@
     
 /*
 
-// Your APP as token/role provider should catch this hook:
-// See example code in TokensService!
-function tokens_auth_get_auth_token_validation(Web $w, $jwt)
+// Your AUTH MODEL supporting API APP as token provider should catch this hook:
+
+function [MySmartAuthModule]_auth_get_auth_token_validation(Web $w, $jwt)
 {
-    return TokensService::getInstance($w)->getDayDateUserTokenCheck($jwt);
+    return [MySmartAuthModule]::getInstance($w)->getResultOfAppliedTokenCheck($jwt);
 }
 
 
-// Your APP as token/role provider should catch this hook:
-// See example code in TokensService!
-function tokens_tokens_get_roles_from_policy(Web $w, $policy)
+// Your API APP as role provider should catch this hook:
+
+function [MyUsefulAPIModule]_tokens_get_roles_from_policy(Web $w, $policy)
 {
-    if ($policy->_validator == "CMFIVE" && $policy->_app_id == "CMFIVE_API") {
-        return TokensService::getInstance($w)->getCoreRolesByDayDateUserPolicy($policy);
+    if ($policy->_validator == "MyAuthWasResponsible" && $policy->_app_id == "MyAppShouldHandleThis") {
+        return [MyUsefulAPIModule]::getInstance($w)->getAppropriateRolesByTokenResolvedToUserPolicy($policy);
     }
 }
 

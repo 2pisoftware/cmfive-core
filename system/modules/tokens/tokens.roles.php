@@ -1,18 +1,15 @@
 <?php
 
-function role_tokens_grant_allowed(Web $w,$path) {
-    return $w->checkUrl($path, "tokens", "", "grant");
-}
+// // Make 'magic' roles, which will allow $w to serve API content,
+// // But which are never navigated by a logged in user.
+// // These are indicated by a prefix/postfix pattern:
 
-function role_tokens_info_api_allowed(Web $w,$path) {
-    return $w->checkUrl($path, "tokens", "api", "info");
-}
+// // // token_policy_[DescriptorBuiltbyMyTokenRolesHook]_allowed
 
-function role_tokens_test_api_allowed(Web $w,$path) {
-    return $w->checkUrl($path, "tokens", "api", "test");
-}
+// function token_policy_[DescriptorBuiltbyMyTokenRolesHook]_allowed(Web $w,$path) {
+//     return $w->checkUrl($path, "MyUsefulAPIModule", "MyUsefulAPIModuleActions", "MyAction")
+//     || $w->checkUrl($path, "MyUsefulAPIModule", "MyUsefulAPIModuleActions", "MyOtherAction")
+//     || $w->checkUrl($path, "MyUsefulAPIModule", "MyUsefulAPIModuleActions", "MyAlternateAction");
+// }
 
-function role_tokens_request_api_allowed(Web $w,$path) {
-    return $w->checkUrl($path, "tokens", "api", "loopback");
-}
 
