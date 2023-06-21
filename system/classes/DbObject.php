@@ -1250,7 +1250,10 @@ class DbObject extends DbService
                     case "in":
                         // Case insensitive field check against an array of predefined values
                         if (is_array($rule_array)) {
-                            $this->$vr_key = filter_var($this->$vr_key, FILTER_SANITIZE_STRING);
+                            // Note! FILTER_SANITIZE_STRING was not ideal here & is deprecated
+                            // https://www.php.net/manual/en/filter.filters.sanitize.php
+                            // FILTER_SANITIZE_FULL_SPECIAL_CHARS is a reasonable swap:
+                            $this->$vr_key = filter_var($this->$vr_key, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
                             if (!in_array($this->$vr_key, $rule_array)) {
                                 $response["invalid"]["$vr_key"][] = "Invalid value, allowed are " . implode(", ", $rule_array);
                             } else {
