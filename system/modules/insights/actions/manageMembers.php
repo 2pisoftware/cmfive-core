@@ -25,12 +25,13 @@ function manageMembers_ALL(Web $w)
 
     // build the table array adding the headers and the row data
     $table = [];
-    $tableHeaders = ['Memeber', 'Is Email Recipient', 'Role', 'Actions'];
+    $tableHeaders = ['Member', 'Is Email Recipient', 'Role', 'Actions'];
     if (!empty($memberList)) {
         foreach ($memberList as $member) {
             $row = [];
             // add values to the row in the same order as the table headers
-            $row[] = AuthService::getInstance($w)->getUser($member->user_id)->getContact()->getFullName();
+            $user = AuthService::getInstance($w)->getUser($member->user_id);
+            $row[] = $user->is_group ?  $user->login : $user->getContact()->getFullName();
             $row[] = $member->recieves_emails;
             $row[] = $member->type;
             // the actions column is used to hold buttons that link to actions per item. Note the item id is added to the href on these buttons.

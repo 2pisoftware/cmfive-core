@@ -16,13 +16,12 @@ function editMembers_GET(Web &$w)
     //retrieve correct insight to add new member to
     $insight_class_name = !empty($member->id) ? $member->insight_class_name : Request::string('insight_class');
 
-    //action title for adding new memeber and editing existing memeber
+    //action title for adding new member and editing existing member
     $insight = InsightService::getInstance($w)->getInsightInstance($insight_class_name);
     $w->ctx('title', (!empty($p['id']) ? 'Edit member' : 'Add new member') . " for $insight->name");
 
-
-    // get the list of users that can be added to the insight
-    $userstoadd = array_filter(AuthService::getInstance($w)->getUsers(), function ($u) {
+    // get the list of users and/or groups that can be added to the insight
+    $userstoadd = array_filter(AuthService::getInstance($w)->getUsersAndGroups(), function ($u) {
         return $u->hasAnyRole(['insights_user', 'insights_admin']);
     });
     $members = $insight->getMembers($w);
@@ -42,7 +41,8 @@ function editMembers_GET(Web &$w)
     if (empty($p['id'])) {
         $addMemberForm[] = ["Add Member", "select", "user_id", null, $users];
     } else {
-        $addMemberForm[] = ["Add member", "text", "-user_id", AuthService::getInstance($w)->getUser($member->user_id)->getContact()->getFullName()];
+        $user = AuthService::getInstance($w)->getUser($member->user_id);
+        $addMemberForm[] = ["Add Member", "text", "-user_id", $user->is_group ?  $user->login : $user->getContact()->getFullName()];
     }
     $addMemberForm[] =  ["With Role", "select", "type", $member->type, InsightService::getInstance($w)->getInsightPermissions()];
 
