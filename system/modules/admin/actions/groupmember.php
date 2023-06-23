@@ -15,13 +15,13 @@ function groupmember_GET(Web $w)
     foreach ($users as $user) {
         // We do not list ourselves as an option 
         if ($user->id != $option["group_id"]) {
-            $name = $user->is_group == 1 ? strtoupper($user->login) : $user->getContact()->getFullName();
+            $name = $user->is_group == 1 ? strtoupper($user->login) : ucwords($user->getContact()->getFullName(), " \t\r\n\f\v'");
             $select[!empty($user->is_group)][$name] = array($name, $user->id);
         }
     }
-
-    ksort($select[0]);
-    ksort($select[1]);
+    // Sort ignoring case
+    ksort($select[0], SORT_STRING | SORT_FLAG_CASE);
+    ksort($select[1], SORT_STRING | SORT_FLAG_CASE);
 
     $template['New Member'] = [[["Select Member: ", "select", "member_id", null, $select[0] + $select[1]]]];
     if (AuthService::getInstance($w)->user()->is_admin) {
