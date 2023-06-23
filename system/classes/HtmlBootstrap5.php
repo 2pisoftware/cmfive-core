@@ -52,7 +52,7 @@ class HtmlBootstrap5 extends Html
      * @param <type> $extrabuttons
      * @return <type>
      */
-    public static function multiColForm($data, $action = null, $method = "POST", $submitTitle = "Save", $id = null, $class = null, $extrabuttons = null, $target = "_self", $includeFormTag = true, $validation = null)
+    public static function multiColForm($data, $action = null, $method = "POST", $submitTitle = "Save", $id = null, $class = null, $extrabuttons = null, $target = "_self", $includeFormTag = true, $validation = null, $displayOverlay = true)
     {
         if (empty($data)) {
             return;
@@ -64,7 +64,7 @@ class HtmlBootstrap5 extends Html
         // If form tag is needed print it
         if ($includeFormTag) {
             $class .= " col";
-            $form->id($id)->name($id)->setClass($class)->method($method)->action($action)->target($target);
+            $form->id($id)->name($id)->setClass($class)->method($method)->action($action)->target($target)->displayOverlay($displayOverlay);
 
             if (in_multiarray("file", $data) || objectPropertyHasValueInMultiArray("\Html\Form\InputField", "type", "file", $data)) {
                 $form->enctype("multipart/form-data");

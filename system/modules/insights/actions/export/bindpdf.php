@@ -51,32 +51,11 @@ function bindpdf_GET(Web $w)
         "/insights-export/pdf/" . $p['insight_class'] . "?" . $refreshedParameters,
         "POST",
         "Export",
-        "template_select_form"
+        "template_select_form",
+        null, null,
+        "_self",
+        true, null, $displayOverlay = false
     );
-/*    
-    $template_select = Html::form(
-        [
-            ["Select template for PDF layout (optional)", "section"],
-            [
-                "",
-                "select",
-                "template_id",
-                $requestedTemplate,
-                $templates
-            ],
-            ["&nbsp", "section"],
-            ["Select page layout", "section"],
-            [Html::radio("layout_P", "layout_selection", "P", "P") . " Portrait"],
-            [Html::radio("layout_L", "layout_selection", null, "L") . " Landscape"],
 
-        ],
-        "/insights-export/pdf/" . $p['insight_class'] . "?" . $refreshedParameters,
-        "POST",
-        "",
-        "template_select_form"
-    );
-*/
-    //$w->ctx('template_select', $template_select);
-    //$w->ctx('target_url', "/insights-export/pdf/" . $p['insight_class'] . "?" . $refreshedParameters);
     $w->out($template_select);
 }
