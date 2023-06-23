@@ -57,7 +57,8 @@ function editMembers_GET(Web &$w)
                     'required' => true,
                 ]));
     } else {
-        $addMemberForm[] = ["Add Member", "text", "-user_id", AuthService::getInstance($w)->getUser($member->user_id)->getContact()->getFullName()];
+        $user = AuthService::getInstance($w)->getUser($member->user_id);
+        $addMemberForm[] = ["Add Member", "text", "-user_id", $user->is_group ?  $user->login : $user->getContact()->getFullName()];
     }
     $addMemberForm[] = (new Select([
         'id|name' => 'type',

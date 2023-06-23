@@ -9,8 +9,6 @@ function index_ALL(Web $w)
 
     //get userId for logged in user
     $user_id = AuthService::getInstance($w)->user()->id;
-    //var_dump($user_id);
-    //die;
 
     // access service functions using the Web $w object and the module name
     $modules = InsightService::getInstance($w)->getAllInsights('all');
@@ -23,12 +21,23 @@ function index_ALL(Web $w)
         foreach ($modules as $modulename => $insights) {
             if (!empty($insights)) {
                 foreach ($insights as $insight) {
-                    //var_dump($insight);
-                    //die;
+                    $userHasAccess = false;
                     if (InsightService::getInstance($w)->IsMember(Get_class($insight), $user_id)) {
+                        $userHasAccess = true;
+                    } else {
+                        // check if this user is a member of a group (or parent group) with access to this insight report
+                        $allMembers = InsightService::getInstance($w)->getAllMembersForInsightClass(Get_class($insight));
+                        foreach ($allMembers as $member) {
+                            $userHasAccess = checkUserAccess($w, $member->user_id, $user_id);  // $member->user_id may be a user or a group
+                            if ($userHasAccess) {
+                                break;
+                            };
+                        }
+                    }
+                    if ($userHasAccess) {
                         $row = [];
                         // add values to the row in the same order as the table headers
-                        $row[] = $insight->name;
+                        $row[] = Html::a('/insights/viewInsight/' . Get_class($insight), $insight->name);
                         $row[] = $modulename;
                         $row[] = $insight->description;
                         // the actions column is used to hold buttons that link to actions per insight. Note the insight id is added to the href on these buttons.
@@ -48,4 +57,22 @@ function index_ALL(Web $w)
 
     //send the table to the template using ctx
     $w->ctx('insightTable', HtmlBootstrap5::table($table, 'insight_table', 'tablesorter', $tableHeaders));
+}
+
+// Function to recursively check if a user is a member of a group (or parent group)
+function checkUserAccess(Web $w, $group, $user_id): bool
+{
+    $groupMembers = AuthService::getInstance($w)->getGroupMembers($group);
+    if (!empty($groupMembers)) {
+        foreach ($groupMembers as $groupMember) {
+            if ($groupMember->user_id === $user_id) {
+                return true;
+            } elseif (AuthService::getInstance($w)->getUser($groupMember->user_id)->is_group) {
+                if (checkUserAccess($w, $groupMember->user_id, $user_id)) {
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
 }
