@@ -23,7 +23,7 @@ class TokensPolicy extends DbObject
         - APP can interpret profile identifier freely (eg: as user_id, group_policy, code-baked app_actions etc)
     */
 
-    public function getBearersRoles()
+    public function getBearersRoles(): array
     {
         // Consider remaining stateless here...
         // we have persisted no concept of the token beyond:
@@ -40,7 +40,7 @@ class TokensPolicy extends DbObject
         $hook_results = $this->w->callHook("tokens", "get_roles_from_policy", $this);
 
         if (empty($hook_results)) {
-            $this->Log->error("No Roles for policy:" . $this->_role_profile);
+            LogService::getInstance($this->w)->error("No Roles for policy:" . $this->_role_profile);
         }
 
         // listener will return conventional/conformed roles list
@@ -65,7 +65,7 @@ class TokensPolicy extends DbObject
      * @param string $path
      * @return true if one role function returned true
      */
-    public function tokensAllowed($path)
+    public function tokensAllowed($path): bool
     {
         $roles = $this->getBearersRoles() ?? [];
 

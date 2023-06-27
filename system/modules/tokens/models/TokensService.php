@@ -5,15 +5,15 @@
 class TokensService extends DbService
 {
 
-    public function getTokenFromAuthorisationHeader($bearer)
+    public function getTokenFromAuthorisationHeader($bearer): string
     {
         if (!preg_match('/Bearer\s(\S+)/', $bearer, $matches)) {
-            return null;
+            return "";
         }
-        return $matches[1] ?? null;
+        return $matches[1] ?? "";
     }
 
-    public function getJsonFromPostRequest()
+    public function getJsonFromPostRequest(): array
     {
         // Takes raw data from the request
         $json = file_get_contents('php://input');
@@ -25,7 +25,7 @@ class TokensService extends DbService
     // This will only work for a vanilla HS256 token!
     // Key-pair hashed tokens (Cognito etc) will neeed their own check methods
 
-    public function getJwtSignatureCheck($jwt, $asBase64 = false)
+    public function getJwtSignatureCheck($jwt, $asBase64 = false): bool
     {
         $parts = explode(".", $jwt);
 
@@ -44,24 +44,22 @@ class TokensService extends DbService
         return ($signature == ($parts[2] ?? null));
     }
 
-    public function getJwtPayload($jwt)
+    public function getJwtPayload($jwt): array
     {
         $parts = explode(".", $jwt);
         return json_decode(base64_decode($parts[1] ?? ""), true);
     }
 
-    public function getAppFromJwtPayload($jwt)
+    public function getAppFromJwtPayload($jwt): string
     {
-        return $this->getJwtPayload($jwt)['client_id'] ?? null;
+        return $this->getJwtPayload($jwt)['client_id'] ?? "";
     }
 
-    function getBase64URL($plainText)
+    function getBase64URL($plainText): string
     {
         $base64 = base64_encode($plainText);
         $base64 = trim($base64, "=");
         $base64url = strtr($base64, '+/', '-_');
-        return ($base64url);
+        return $base64url;
     }
-
-
 }
