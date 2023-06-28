@@ -117,14 +117,16 @@ class form {
             $buffer .= "id='{$this->id}' ";
         }
 
-        if (!empty($this->displayOverlay) && $this->displayOverlay === true) {
-            $buffer .= " data-show-overlay >";
-        }
-        
         if (!empty($this->_class)) {
             $buffer .= "class='{$this->_class}' ";
         }
 
+        if (!empty($this->displayOverlay) && $this->displayOverlay === true) {
+            $buffer .= " data-show-overlay ";
+        }
+
+        $buffer .= ">";
+        
         // Automatically print CSRF token
         if (class_exists("CSRF") && !empty($this->method) && ($this->method == "POST")) {
             $buffer .= "<input type='hidden' name='" . \CSRF::getTokenID() . "' value='" . \CSRF::getTokenValue() . "' />";
