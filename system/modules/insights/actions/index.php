@@ -37,7 +37,7 @@ function index_ALL(Web $w)
                     if ($userHasAccess) {
                         $row = [];
                         // add values to the row in the same order as the table headers
-                        $row[] = Html::a('/insights/viewInsight/' . Get_class($insight), $insight->name);
+                        $row[] = HtmlBootstrap5::a('/insights/viewInsight/' . Get_class($insight), $insight->name);
                         $row[] = $modulename;
                         $row[] = $insight->description;
                         // the actions column is used to hold buttons that link to actions per insight. Note the insight id is added to the href on these buttons.

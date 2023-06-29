@@ -38,15 +38,7 @@ function editMembers_GET(Web &$w)
             }
         }
     }
-/*
-                    (new Select([
-                    'id|name' => 'country',
-                    'selected_option' => $event->country,
-                    'label' => 'Country',
-                    'options' => BridgeService::getInstance($w)->getCountryNamesForSelect(),
-                    'required' => true,
-                ])),
-*/
+    
     $addMemberForm = [["", "hidden", "insight_class_name", $insight_class_name]];
 
     if (empty($p['id'])) {
