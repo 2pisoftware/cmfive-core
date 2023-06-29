@@ -4,12 +4,26 @@
  *
  * @param <type> $w
  */
+
+use Html\Form\InputField\Text;
+
 function groupadd_GET(Web $w)
 {
 	$template['New Group'] = array(array(array("Group Title: ","text","title")));
 	$validation = ['title' => ['required']];
-
-	$w->out(Html::multiColForm($template,"/admin/groupadd","POST","Save", null, null, null, "_self", true, $validation));
+	/*
+	$template = [
+				'New Group' => [ 
+					(new \Html\Form\InputField\Text([
+				'id|name' => 'title',
+				'value' => ' ',
+				'label' => 'Group title',
+				'required' => true,
+			]))
+					]
+				];
+*/
+	$w->out(Html::multiColForm($template,  "/admin/groupadd","POST","Save", null, null, null, "_self", true, $validation));
 
 	$w->setLayout(null);
 }
@@ -23,7 +37,7 @@ function groupadd_POST(Web $w)
 	$user->insert();
 
     if (!empty($user->id)) {
-    	$w->msg("New group added!", "/admin/groups");       
+    	$w->msg("New group added", "/admin/groups");       
     } else {
         $w->msg("Unable to create group.", "/admin/groups");
     }
