@@ -6,7 +6,7 @@
             echo '<p>Load: ' . implode(' ', $load) . '</p>';
         } ?>
 
-        <?php echo Html::b('/admin/phpinfo', "phpinfo", null, null, true, 'secondary'); ?>
+        <?php echo HtmlBootstrap5::b('/admin/phpinfo', "phpinfo", null, null, true, 'btn-sm btn-primary'); ?>
     </div>
     <div class='small-12 medium-9 columns'>
         <h4>Auditing</h4>

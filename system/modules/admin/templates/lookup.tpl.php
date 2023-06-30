@@ -5,7 +5,7 @@
     </div>
     <div class="tab-body">
         <div id="tab-1" class="clearfix">
-            <?php echo Html::filter("Search Lookup Items", array(
+            <?php echo HtmlBootstrap5::filter("Search Lookup Items", array(
                 array("Type", "select", "type", Request::mixed("types"), LookupService::getInstance($w)->getLookupTypes())
             ), "/admin/lookup"); ?>
             <?php echo $listitem; ?>

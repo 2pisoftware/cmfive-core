@@ -23,6 +23,7 @@ function groups_GET(Web &$w)
 			 
 			$line = array();
 			// Use box but set $button=false to remove button styling
+			//$line[] = AuthService::getInstance($w)->user()->is_admin ? HtmlBootstrap5::a("/admin/groupedit/" . $group->id, $group->login) : $group->login;
 			$line[] = AuthService::getInstance($w)->user()->is_admin ? HtmlBootstrap5::box("/admin/groupedit/" . $group->id, $group->login, false, false, null, null, 'isbox', null, " link-primary cursor-pointer ") : $group->login;
 			//if it is a sub group from other group;
 			$groupUsers = $group->isInGroups();
@@ -50,7 +51,9 @@ function groups_GET(Web &$w)
 
 	if (AuthService::getInstance($w)->user()->is_admin)
 	{
-		$w->out(HtmlBootstrap5::box("/admin/groupadd", "New Group", true, false, null, null, 'isbox', null, 'btn btn-sm btn-primary'));
+		//$w->out(HtmlBootstrap5::box("/admin/groupadd", "New Group", true, false, null, null, 'isbox', null, 'btn btn-sm btn-primary'));
+		$w->ctx("button", HtmlBootstrap5::box("/admin/groupadd", "New Group", true, false, null, null, 'isbox', null, 'btn btn-sm btn-primary'));
 	}
-	$w->out(HtmlBootstrap5::table($table, null, "tablesorter", true));
+	//$w->out(HtmlBootstrap5::table($table, null, "tablesorter", true));
+	$w->ctx("table", HtmlBootstrap5::table($table, null, "tablesorter", true));
 }
