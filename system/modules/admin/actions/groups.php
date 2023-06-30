@@ -22,8 +22,8 @@ function groups_GET(Web &$w)
 			$ancestors = array();
 			 
 			$line = array();
-
-			$line[] = AuthService::getInstance($w)->user()->is_admin ? HtmlBootstrap5::a("/admin/groupedit/" . $group->id, $group->login ) : $group->login;
+			// Use box but set $button=false to remove button styling
+			$line[] = AuthService::getInstance($w)->user()->is_admin ? HtmlBootstrap5::box("/admin/groupedit/" . $group->id, $group->login, false, false, null, null, 'isbox', null, " link-primary cursor-pointer ") : $group->login;
 			//if it is a sub group from other group;
 			$groupUsers = $group->isInGroups();
 
