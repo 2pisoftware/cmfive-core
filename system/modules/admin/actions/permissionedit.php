@@ -1,6 +1,9 @@
 <?php
 
 function permissionedit_GET(Web $w) {
+
+    $w->setLayout('layout-bootstrap-5');
+ 
     $option = $w->pathMatch("group_id");
 
     $user = AuthService::getInstance($w)->getUser($option['group_id']);
@@ -50,7 +53,7 @@ function permissionedit_GET(Web $w) {
     }
     $action = AuthService::getInstance($w)->user()->is_admin ? "/admin/permissionedit/" . $option['group_id'] : null;
 
-    $w->ctx("permission", Html::multiColForm($permission, $action));
+    $w->ctx("permission", HtmlBootstrap5::multiColForm($permission, $action));
 
     $w->ctx("groupRoles", json_encode($groupRoles));
 }
