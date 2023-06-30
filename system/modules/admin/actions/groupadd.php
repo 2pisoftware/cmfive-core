@@ -9,23 +9,20 @@ use Html\Form\InputField\Text;
 
 function groupadd_GET(Web $w)
 {
-	$template['New Group'] = array(array(array("Group Title: ","text","title")));
-	$validation = ['title' => ['required']];
-	/*
-	$template = [
-				'New Group' => [ 
-					(new \Html\Form\InputField\Text([
+
+	$w->setLayout('layout-bootstrap-5');
+
+	$w->out(HtmlBootstrap5::multiColForm([
+        'New Group' => [
+            [
+				(new \Html\Form\InputField\Text([
 				'id|name' => 'title',
-				'value' => ' ',
 				'label' => 'Group title',
 				'required' => true,
-			]))
-					]
-				];
-*/
-	$w->out(Html::multiColForm($template,  "/admin/groupadd","POST","Save", null, null, null, "_self", true, $validation));
+				]))
+            ]
+		]],  "/admin/groupadd", "POST", "Save"));
 
-	$w->setLayout(null);
 }
 
 function groupadd_POST(Web $w)

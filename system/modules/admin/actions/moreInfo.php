@@ -28,7 +28,7 @@ function moreInfo_GET(Web &$w)
 		{
 			$line = array();
 				
-			$style = $groupMember->role == "owner" ? "<div style=\"color:red;\">" : "<div style=\"color:white;\">";
+			$style = $groupMember->role == "owner" ? "<div style=\"color:red;\">" : "<div style=\"color:default;\">";
 				
 			$name = $groupMember->getUser()->is_group == 1 ? $groupMember->getUser()->login : $groupMember->getUser()->getContact()->getFullName();
 				
