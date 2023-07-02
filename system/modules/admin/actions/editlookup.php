@@ -1,5 +1,7 @@
 <?php
 
+use Html\Form\Select;
+
 function editlookup_GET(Web &$w)
 {
     $p = $w->pathMatch("id", "type");
@@ -10,16 +12,30 @@ function editlookup_GET(Web &$w)
         $types = LookupService::getInstance($w)->getLookupTypes();
 
         $w->out(HtmlBootstrap5::multiColForm([
-            "Edit an Existing Entry' => [
+            'Edit an Existing Entry' => [
+                [
+                    (new Select([
+                        'id|name' => 'type',
+                        'selected_option' => $lookup->type,
+                        'label' => 'Type',
+                        'options' => $types,
+                    ])),
+                ],
                 [
                     (new \Html\Form\InputField\Text([
-                            'id|name' => 'code',
-                            'label' => 'Key',
-                            'value' => $lookup->code,
-                            'required' => true,
-                        ]))
-                ]
-            ]
+                        'id|name' => 'code',
+                        'label' => 'Code',
+                        'value' => $lookup->code,
+                    ]))
+                ],
+                [
+                    (new \Html\Form\InputField\Text([
+                        'id|name' => 'title',
+                        'label' => 'Title',
+                        'value' => $lookup->title,
+                    ]))
+                ],
+            ],
         ], $w->localUrl("/admin/editlookup/" . $lookup->id . "/" . $p['type']), "POST", " Update "));
 /*
         $f = HtmlBootstrap5::multiColForm(array(
