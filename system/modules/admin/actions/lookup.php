@@ -45,7 +45,7 @@ function lookup_ALL(Web &$w)
             $table[] = $line;
         }
     } else {
-        $table[] = ["No Lookup items to list", null, null, null];
+        $table[] = ["No Lookup items to list", null, null, null, "A value"];
     }
 
     // Order by sort key (group name in uppercase)
