@@ -173,7 +173,7 @@ class HtmlBootstrap5 extends Html
                         case "email":
                         case "tel":
                             $size = !empty($field[4]) ? $field[4] : null;
-                            $buffer .= '<input' . $readonly . ' class="form-control" type="' . $type . '" name="' . $name . '" value="' . htmlspecialchars($value) .
+                            $buffer .= '<input' . $readonly . ' class="form-control" type="' . $type . '" name="' . $name . '" value="' . (empty($value) ? '' : htmlspecialchars($value)) .
                             '" size="' . $size . '" id="' . $name . '" ' . $required . " />";
                             break;
                         case "autocomplete":
@@ -235,7 +235,7 @@ class HtmlBootstrap5 extends Html
                             $buffer .= Html::radio($name, $group, $value, $defaultValue, $rd_class) . "&nbsp;" . htmlentities($title);
                             break;
                         case "hidden":
-                            $buffer .= '<input type="hidden" name="' . $name . '" value="' . htmlspecialchars($value) . '" id="' . $name . '"/>';
+                            $buffer .= '<input type="hidden" name="' . $name . '" value="' . (empty($value) ? '' : htmlspecialchars($value)) . '" id="' . $name . '"/>';
                             break;
                         case "file":
                             $size = !empty($row[4]) ? $row[4] : null;
@@ -626,7 +626,7 @@ class HtmlBootstrap5 extends Html
             switch ($type) {
                 case "text":
                 case "password":
-                    $buffer .= '<input' . $readonly . ' style="width:100%;"  type="' . $type . '" name="' . $name . '" value="' . htmlspecialchars($value) . '" size="' . (!empty($row[4]) ? $row[4] : null) . '" id="' . $name . '"/>';
+                    $buffer .= '<input' . $readonly . ' style="width:100%;"  type="' . $type . '" name="' . $name . '" value="' . (empty($value) ? '' : htmlspecialchars($value)) . '" size="' . (!empty($row[4]) ? $row[4] : null) . '" id="' . $name . '"/>';
                     break;
                 case "autocomplete":
                     $minlength = !empty($row[5]) ? $row[5] : null;
@@ -683,7 +683,7 @@ class HtmlBootstrap5 extends Html
                     $buffer .= Html::radio($name, $group, $value, $defaultValue, $class) . "&nbsp;" . htmlentities($title);
                     break;
                 case "hidden":
-                    $hidden .= "<input type=\"hidden\" name=\"" . $name . "\" value=\"" . htmlspecialchars($value) . "\"/>\n";
+                    $hidden .= "<input type=\"hidden\" name=\"" . $name . "\" value=\"" . (empty($value) ? '' : htmlspecialchars($value)) . "\"/>\n";
                     break;
                 case "file":
                     $buffer .= "<input style=\"width:100%;\" type=\"" . $type . "\" name=\"" . $name . "\" size=\"" . $size . "\" id=\"" . $name . "\"/>";
