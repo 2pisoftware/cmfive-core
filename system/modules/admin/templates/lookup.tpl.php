@@ -15,3 +15,9 @@
         </div>
     </div>
 </div>
+<script>
+    // script to auto submit the filter form when the "type" is changed
+    document.getElementById("type").addEventListener("change", ({
+        target
+    }) => target.form.submit());
+</script>
