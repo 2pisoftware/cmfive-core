@@ -24,21 +24,24 @@
         <ul class="small-block-grid-1 medium-block-grid-2 large-block-grid-4">
             <li>
                 <div class='panel action_container'>
-                    <button type='button' id='clear_config' class='button info small expand'>Clear Config cache</button>
+                    <button type="button" id='clear_config' class='button info small expand' onclick="clearConfig()">Clear Config</button>
+                    <!-- <button type='button' id='clear_config' class='button info small expand'>Clear Config cache</button> -->
                     <p>&nbsp;</p>
                 </div>
             </li>
             <?php if (Config::get('file.adapters.local.active') !== true) : ?>
                 <li>
                     <div class='panel action_container'>
-                        <button type='button' id='clear_config' class='button info small expand'>Clear cached images</button>
+                        <button type="button" id='clear_config' class='button info small expand' onclick="clearConfig()">Clear cached images</button>
+                        <!-- <button type='button' id='clear_config' class='button info small expand'>Clear cached images</button> -->
                         <p><?php echo !empty($cache_image_count) ? $cache_image_count : 0; ?> images cached</p>
                     </div>
                 </li>
             <?php endif; ?>
             <li>
                 <div class='panel action_container'>
-                    <button type='button' id='reindex_objects' class='button info small expand'>Reindex searchable objects</button>
+                    <button type="button" id='reindex_objects' class='button info small expand' onclick="reindexObjects()">Reindex searchable objects</button>
+                    <!-- button type='button' id='reindex_objects' class='button info small expand'>Reindex searchable objects</button> -->
                     <p class='text-center'><span id='reindex_objects_count'><?php echo $count_indexed; ?></span> searchable objects indexed</p>
                 </div>
             </li>
@@ -62,32 +65,63 @@
 </div>
 
 <script>
-    $("#clear_config").click(function() {
-        var _this = $(this);
-        var _old_text = _this.text();
+    function clearConfig() {
+        var _this = document.getElementById("clear_config");
+        var _old_text = _this.textContent;
 
-        _this.addClass('disabled');
-        _this.text('Clearing...');
-        $.get('/admin/ajaxClearCache', function(response) {
-            _this.removeClass('disabled');
-            _this.text(_old_text);
+        _this.disabled = true;
+        _this.textContent = 'Clearing...';
+
+        const xhttp = new XMLHttpRequest();
+        xhttp.open("GET", "/admin/ajaxClearCache");
+        xhttp.send();
+
+        _this.disabled = false;
+        _this.textContent = _old_text;
+    }
+
+    function reindexObjects() {
+        var _this = document.getElementById("reindex_objects");
+        var _old_text = _this.textContent;
+
+        _this.disabled = true;
+        _this.textContent = 'Reindexing...';
+
+        const xhttp = new XMLHttpRequest();
+        xhttp.open("GET", "/admin-maintenance/ajax_reindexobjects");
+        xhttp.send();
+
+        _this.disabled = false;
+        _this.textContent = _old_text;
+    }
+    /*
+        $("#clear_config").click(function() {
+            var _this = $(this);
+            var _old_text = _this.text();
+
+            _this.addClass('disabled');
+            _this.text('Clearing...');
+            $.get('/admin/ajaxClearCache', function(response) {
+                _this.removeClass('disabled');
+                _this.text(_old_text);
+            });
         });
-    });
 
-    $("#reindex_objects").click(function() {
-        var _this = $(this);
-        var _old_text = _this.text();
+        $("#reindex_objects").click(function() {
+            var _this = $(this);
+            var _old_text = _this.text();
 
-        _this.addClass('disabled');
-        _this.text('Reindexing...');
-        $.get('/admin-maintenance/ajax_reindexobjects', function(response) {
-            $("#reindex_objects_count").text(response);
-            _this.removeClass('disabled');
-            _this.text(_old_text);
+            _this.addClass('disabled');
+            _this.text('Reindexing...');
+            $.get('/admin-maintenance/ajax_reindexobjects', function(response) {
+                $("#reindex_objects_count").text(response);
+                _this.removeClass('disabled');
+                _this.text(_old_text);
+            });
         });
-    });
 
-    $('#export_audit_table').click(function() {
-        $('#export_audit_table_count').text('0');
-    });
+        $('#export_audit_table').click(function() {
+            $('#export_audit_table_count').text('0');
+        });
+        */
 </script>
