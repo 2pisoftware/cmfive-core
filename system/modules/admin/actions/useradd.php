@@ -57,18 +57,37 @@ function useradd_GET(Web $w)
         ["Title", "autocomplete", "title", null, LookupService::getInstance($w)->getLookupByType("title")],
         ["Email", "text", "email"],
     ];
-    
-    $roles = AuthService::getInstance($w)->getAllRoles();
-    $roles = array_chunk($roles, 4);
-    foreach ($roles as $r) {
-        $row = [];
-        foreach ($r as $rf) {
-            $row[] = [$rf, "checkbox", "check_" . $rf];
+
+    $form['User Roles'][] = [];  // Add heading for User Permissions
+
+    $allroles = AuthService::getInstance($w)->getAllRoles();
+
+    foreach ($allroles as $role) {
+        $parts = explode("_", $role);
+
+        if (count($parts) == 1) {
+            array_unshift($parts, "admin");
         }
-        $form['User Roles'][] = $row;
+
+        $module = array_shift($parts);
+
+        $result[$module][] = implode("_", $parts);
     }
 
-    $w->out(HtmlBootstrap5::multiColForm($form, $w->localUrl("/admin/useradd"), "POST", "Save", null, null, null, "_self", true, array_merge(User::$_validation, ['password' => ['required'], 'password2' => ['required']])));
+    $permission = array();
+
+    foreach ($result as $module => $parts) {
+        $parts = array_chunk($parts, 4);
+
+        foreach ($parts as $level => $roles) {
+            foreach ($roles as $r) {
+                $roleName = $module == "admin" ? $r : implode("_", array($module, $r));
+                $permission[ucwords($module)][$level][] = array($roleName, "checkbox", "check_" . $roleName, null);
+            }
+        }
+    }
+
+    $w->out(HtmlBootstrap5::multiColForm(array_merge($form, $permission), $w->localUrl("/admin/useradd"), "POST", "Save", null, null, null, "_self", true, array_merge(User::$_validation, ['password' => ['required'], 'password2' => ['required']])));
 }
 
 /**
