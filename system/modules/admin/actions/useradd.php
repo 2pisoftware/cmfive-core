@@ -54,7 +54,7 @@ function useradd_GET(Web $w)
     ];
 
     $form['Contact Details'][] = [
-        ["Title", "autocomplete", "title", null, LookupService::getInstance($w)->getLookupByType("title")],
+        ["Title", "select", "acp_title", null, LookupService::getInstance($w)->getLookupByType("title")],
         ["Email", "text", "email"],
     ];
 
