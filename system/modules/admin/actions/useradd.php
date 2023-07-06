@@ -1,6 +1,7 @@
 <?php
 
 use Html\Form\InputField\Password;
+use Html\Form\Select;
 
 /**
  * Display User edit form in colorbox
@@ -10,7 +11,8 @@ use Html\Form\InputField\Password;
 function useradd_GET(Web $w)
 {
     $p = $w->pathMatch("box");
-    $w->setLayout("layout-2021");
+    //$w->setLayout("layout-2021");
+    $w->setLayout('layout-bootstrap-5');
 
     $availableLocales = $w->getAvailableLanguages();
 
@@ -36,11 +38,31 @@ function useradd_GET(Web $w)
     }
 
     $form['User Details'][] = [
-        ["Login","text","login"],
-        ["Admin","checkbox","is_admin"],
-        ["Active","checkbox","is_active"],
-        ["External", "checkbox", "is_external"],
-        ["Language", "select", "language", null, $availableLocales],
+        (new \Html\Form\InputField([
+            "id|name" => "login",
+            'label' => 'Login',
+            "required" => true,
+        ])),
+        (new \Html\Form\InputField\Checkbox([
+            "id|name" => "is_admin",
+            'label' => 'Admin',
+            "class" => "",
+        ])),
+        (new \Html\Form\InputField\Checkbox([
+            "id|name" => "is_active",
+            'label' => 'Active',
+            "class" => "",
+        ])),
+        (new \Html\Form\InputField\Checkbox([
+            "id|name" => "is_external",
+            'label' => 'External',
+            "class" => "",
+        ])),
+        (new Select([
+            "id|name" => "language",
+            'label' => 'Language',
+            'options' => $availableLocales,
+        ])),
     ];
     
     $form['User Details'][] = [
@@ -49,17 +71,33 @@ function useradd_GET(Web $w)
     ];
     
     $form['Contact Details'][] = [
-        ["First Name", "text", "firstname"],
-        ["Last Name", "text", "lastname"],
+        (new \Html\Form\InputField([
+            "id|name" => "firstname",
+            'label' => 'First Name',
+            "required" => true,
+        ])),
+        (new \Html\Form\InputField([
+            "id|name" => "lastname",
+            'label' => 'Last Name',
+            "required" => true,
+        ])),
     ];
 
     $form['Contact Details'][] = [
-        ["Title", "select", "acp_title", null, LookupService::getInstance($w)->getLookupByType("title")],
-        ["Email", "text", "email"],
+        (new Select([
+            "id|name" => "acp_title",
+            'label' => 'Title',
+            'options' => LookupService::getInstance($w)->getLookupByType("title"),
+        ])),
+        (new \Html\Form\InputField\Email([
+            "id|name" => "email",
+            'label' => 'Email',
+        ]))
     ];
 
     $form['User Roles'][] = [];  // Add heading for User Permissions
 
+    // Display permissions grouped by module
     $allroles = AuthService::getInstance($w)->getAllRoles();
 
     foreach ($allroles as $role) {
@@ -82,7 +120,11 @@ function useradd_GET(Web $w)
         foreach ($parts as $level => $roles) {
             foreach ($roles as $r) {
                 $roleName = $module == "admin" ? $r : implode("_", array($module, $r));
-                $permission[ucwords($module)][$level][] = array($roleName, "checkbox", "check_" . $roleName, null);
+                $permission[ucwords($module)][$level][] = (new \Html\Form\InputField\Checkbox([
+                    "id|name" => "check_" . $roleName,
+                    'label' => $roleName,
+                    "class" => "checkbox"
+                ])); //array($roleName, "checkbox", "check_" . $roleName, null);
             }
         }
     }
@@ -135,9 +177,7 @@ function useradd_POST(Web &$w)
     $roles = AuthService::getInstance($w)->getAllRoles();
     foreach ($roles as $r) {
         if (!empty($_REQUEST["check_" . $r])) {
-            if ($_REQUEST["check_" . $r] == 1) {
-                $user->addRole($r);
-            }
+            $user->addRole($r);
         }
     }
     $w->callHook("admin", "account_changed", $user);
