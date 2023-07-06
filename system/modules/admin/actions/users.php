@@ -97,9 +97,21 @@ function users_GET(Web $w)
     $external_base_url = $internal_base_url . "#external";
 
     $filterData = [
-        ["Login", "text", "admin/user__filter-login", $login],
-        ["Name", "text", "admin/user__filter-name", $name],
-        ["Email", "text", "admin/user__filter-email", $email]
+        (new \Html\Form\InputField\Text([
+            'id|name' => 'admin/user__filter-login',
+            'value' => $login,
+            'label' => 'Login',
+        ])),
+        (new \Html\Form\InputField\Text([
+            'id|name' => 'admin/user__filter-name',
+            'value' => $name,
+            'label' => 'Name',
+        ])),
+        (new \Html\Form\InputField\Text([
+            'id|name' => 'admin/user__filter-email',
+            'value' => $email,
+            'label' => 'Email',
+        ]))
     ];
 
     $internal_page_size = $w->sessionOrRequest('cmfive-internal-users__page-size', 50);
