@@ -1,6 +1,6 @@
 <?php
 
-namespace Helper;
+namespace Tests\Support\Helper;
 
 class CmfiveFormModule extends \Codeception\Module
 {

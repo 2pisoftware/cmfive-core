@@ -1,15 +1,16 @@
 <?php
 
-namespace Helper;
+namespace Tests\Support\Helper;
+use Tests\Support\AcceptanceTester;
 
 class CmfiveConfig extends \Codeception\Module
 {
     private $CACHE_PATH = '/../../cache/config.cache';
     private $CONFIG_CLASS_PATH = '/../../system/classes/Config.php';
 
-    public function _before(\Codeception\TestCase $test)
+    public function _before($test)
     {
-        $base = $this->getModule('Helper\CmfiveSite')->getInstallPath();
+        $base = $this->getModule('Tests\Support\Helper\CmfiveSite')->getInstallPath();
         $this->CACHE_PATH = $base . '/cache/config.cache';
         $this->CONFIG_CLASS_PATH = $base . '/system/classes/Config.php';
 
