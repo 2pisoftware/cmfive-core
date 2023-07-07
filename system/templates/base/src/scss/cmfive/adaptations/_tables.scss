@@ -5,7 +5,7 @@ table {
 
     th {
         @include font-size('body');
-        @include theme((color: 'dark-grey'));
+        @include theme((color: 'dark-grey', background-color: 'white-black'));
     }
 
     td {

@@ -123,7 +123,7 @@ class CmfiveAdminModule extends \Codeception\Module
     {
         $I->clickCmfiveNavbar($I, 'Admin', 'List Groups');
         $row = $I->findTableRowMatching(1, $usergroup);
-        $I->click('More Info', "table tr:nth-child({$row}) td:nth-child(3)");
+        $I->click('Edit', "table tr:nth-child({$row}) td:nth-child(3)");
         $I->click('New Member');
         $I->waitForElementClickable('#member_id');
         $I->selectOption('#member_id', $user);
@@ -137,7 +137,7 @@ class CmfiveAdminModule extends \Codeception\Module
     {
         $I->clickCmfiveNavbar($I, 'Admin', 'List Groups');
         $row = $I->findTableRowMatching(1, $usergroup);
-        $I->click('More Info', "table tr:nth-child({$row}) td:nth-child(3)");
+        $I->click('Edit', "table tr:nth-child({$row}) td:nth-child(3)");
         $I->click('Edit Permissions');
         if (empty($permissions)) {
             $permissions = ['user'];

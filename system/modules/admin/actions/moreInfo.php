@@ -17,7 +17,7 @@ function moreInfo_GET(Web &$w)
 	$w->ctx("editPermission", Html::b("/admin/permissionedit/".$option['group_id'],"Edit Permissions"));
 
 	//fill in member table;
-	$table = array(array("Name","Role","Operations"));
+	$table = array(array("Name","Role","Operations", "sort_key" => null));
 
 	$groupMembers = AuthService::getInstance($w)->getGroupMembers($option['group_id']);
 		
@@ -42,8 +42,20 @@ function moreInfo_GET(Web &$w)
 			{
 				$line[] = null;
 			}
+			$line["sort_key"] = strtoupper($name);
 			$table[] = $line;
 		}
 	}
+	// Order by sort key (name/group in uppercase)
+	array_multisort(
+		array_column($table, "sort_key"),
+		SORT_ASC,
+		$table
+	);
+	// Remove sort column
+	for ($i = 0, $length = count($table); $i < $length; ++$i) {
+		unset($table[$i]["sort_key"]);
+	}
+
 	$w->ctx("memberList", Html::table($table,null,"tablesorter",true));
 }
