@@ -32,7 +32,7 @@ class UserCest
         $I->addUserGroupMember($I, 'Parent Group', 'TEST USER GROUP');
         $I->see('Test User Group');
         $I->clickCmfiveNavbar($I, 'Admin', 'List Groups');
-        $I->see('Parent Group', 'table tr:nth-child(1) td:nth-child(2)');
+        $I->see('Parent Group', 'table tr:nth-child(1) td:nth-child(1)');
         $I->addUserGroupMember($I, 'Test User Group', "{$this->firstname} {$this->lastname}");
         $I->editUserGroupPermissions($I, 'Test User Group', ['user', 'comment']);
         $I->clickCmfiveNavbar($I, 'Admin', 'List Users');
