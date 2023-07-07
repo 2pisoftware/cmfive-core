@@ -116,63 +116,6 @@
             }
         },
         methods: {
-            /*
-             * Now done in edit_POST function
-             *
-            updateAccountDetails: function() {
-                var _this = this;
-
-                if (_this.is_loading === true) {
-                    return;
-                }
-
-                _this.is_loading = true;
-
-                axios.post("/auth/ajax_update_account_details", {
-                    id: _this.user.id,
-                    account_details: _this.user.account
-                }).then(function(response) {
-                    if (response.status !== 200) {
-                        new Toast("Failed to update").show();
-                        return;
-                    }
-
-                    new Toast("Account details updated").show();
-                }).catch(function(error) {
-                    new Toast("Failed to update").show();
-                    console.log(error);
-                }).finally(function() {
-                    _this.is_loading = false;
-                });
-            },
-            updateSecurityDetails: function() {
-                var _this = this;
-                _this.user.security.login = _this.user.security.login.trim();
-
-                if (_this.is_loading === true || _this.user.security.login === "") {
-                    return;
-                }
-
-                _this.is_loading = true;
-
-                axios.post("/admin-user/ajax_update_security_details", {
-                    id: _this.user.id,
-                    security_details: _this.user.security
-                }).then(function(response) {
-                    if (response.status !== 200) {
-                        new Toast("Failed to update").show();
-                        return;
-                    }
-
-                    new Toast("Security details updated").show();
-                }).catch(function(error) {
-                    new Toast("Failed to update").show();
-                    console.log(error);
-                }).finally(function() {
-                    _this.is_loading = false;
-                });
-            },
-            */
             unlockAccount: function() {
                 this.is_loading = true;
 

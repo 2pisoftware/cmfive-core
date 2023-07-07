@@ -116,9 +116,9 @@ function edit_GET(Web $w)
             ],
             [
                 (new Select([
-                    "id|name" => "title",
+                    "id|name" => "title_lookup_id",
                     'label' => 'Title',
-                    'selected_option' => !empty($contact->title_lookup_id) ? LookupService::getInstance($w)->getLookup($contact->title_lookup_id)->code : "",
+                    'selected_option' => !empty($contact->title_lookup_id) ? LookupService::getInstance($w)->getLookup($contact->title_lookup_id)->code : null,
                     'options' => LookupService::getInstance($w)->getLookupByType("title"),
                 ])),
                 (new \Html\Form\InputField([
@@ -188,9 +188,9 @@ function edit_POST(Web $w): void
     }
 
     $contact->fill($_POST);
-    $contact->title_lookup_id = LookupService::getInstance($w)->getLookupByTypeAndCodeV2('title', $_POST['title'])->id;
+    $contact->setTitle($_POST['title_lookup_id']);
 
-    if (!$contact->insertOrUpdate()) {
+    if (!$contact->insertOrUpdate(true)) {  // need true to be able to update the title if no title selected now when one had been selected prior
         $w->error("Failed to update contact details", $redirect_url);
     }
 

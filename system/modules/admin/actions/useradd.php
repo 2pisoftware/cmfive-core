@@ -85,7 +85,7 @@ function useradd_GET(Web $w)
 
     $form['Contact Details'][] = [
         (new Select([
-            "id|name" => "acp_title",
+            "id|name" => "title_lookup_id",
             'label' => 'Title',
             'options' => LookupService::getInstance($w)->getLookupByType("title"),
         ])),
@@ -156,7 +156,7 @@ function useradd_POST(Web &$w)
     $contact->fill($_REQUEST);
     $contact->dt_created = time();
     $contact->private_to_user_id = null;
-    $contact->setTitle($_REQUEST['acp_title']);
+    $contact->setTitle($_REQUEST['title_lookup_id']);
     $contact->insert();
 
     // now saving the user
