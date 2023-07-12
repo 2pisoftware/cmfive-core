@@ -1,6 +1,7 @@
 <?php
 
 use Html\Form\Select;
+use Html\Cmfive\SelectWithOther;
 
 function edit_GET(Web $w)
 {
@@ -115,11 +116,15 @@ function edit_GET(Web $w)
                 ]))->setAttribute("v-model", "user.account.lastname"),
             ],
             [
-                (new Select([
+                (new SelectWithOther([
                     "id|name" => "title_lookup_id",
                     'label' => 'Title',
                     'selected_option' => !empty($contact->title_lookup_id) ? LookupService::getInstance($w)->getLookup($contact->title_lookup_id)->code : null,
                     'options' => LookupService::getInstance($w)->getLookupByType("title"),
+                    'other_field' => new \Html\Form\InputField([
+                        'id|name' => 'title_other',
+                        'placeholder' => 'Other Title'
+                    ]),
                 ])),
                 (new \Html\Form\InputField([
                     "id|name" => "othername",
@@ -188,7 +193,11 @@ function edit_POST(Web $w): void
     }
 
     $contact->fill($_POST);
-    $contact->setTitle($_POST['title_lookup_id']);
+    if ($_POST['title_lookup_id'] === "other") {
+        $contact->setTitle($_POST['title_other']);
+    } else {
+        $contact->setTitle($_POST['title_lookup_id']);
+    }
 
     if (!$contact->insertOrUpdate(true)) {  // need true to be able to update the title if no title selected now when one had been selected prior
         $w->error("Failed to update contact details", $redirect_url);

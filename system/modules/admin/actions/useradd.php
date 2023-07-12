@@ -2,6 +2,7 @@
 
 use Html\Form\InputField\Password;
 use Html\Form\Select;
+use Html\Cmfive\SelectWithOther;
 
 /**
  * Display User edit form in colorbox
@@ -84,10 +85,14 @@ function useradd_GET(Web $w)
     ];
 
     $form['Contact Details'][] = [
-        (new Select([
+        (new SelectWithOther([
             "id|name" => "title_lookup_id",
             'label' => 'Title',
             'options' => LookupService::getInstance($w)->getLookupByType("title"),
+            'other_field' => new \Html\Form\InputField([
+                'id|name' => 'title_other',
+                'placeholder' => 'Other Title'
+            ]),
         ])),
         (new \Html\Form\InputField\Email([
             "id|name" => "email",
@@ -156,7 +161,11 @@ function useradd_POST(Web &$w)
     $contact->fill($_REQUEST);
     $contact->dt_created = time();
     $contact->private_to_user_id = null;
-    $contact->setTitle($_REQUEST['title_lookup_id']);
+    if ($_REQUEST['title_lookup_id'] === "other") {
+        $contact->setTitle($_REQUEST['title_other']);
+    } else {
+        $contact->setTitle($_REQUEST['title_lookup_id']);
+    }
     $contact->insert();
 
     // now saving the user
