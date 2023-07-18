@@ -62,18 +62,17 @@ function edit_GET(Web $w)
 			(new \Html\Form\InputField\Text([
 				"id|name" => "template_title",
 				"value" => $t->template_title,
+				"size" => 100
 			])) //["", "textarea", "template_title", $t->template_title, 100, 1, false]
 		] 
 	];
 	$newForm["Template Body"] = [
 		[
-			/*(new \Html\Form\InputField\TextArea([
+			(new \Html\Cmfive\QuillEditor([
 				"id|name" => "template_body",
 				"value" => $t->template_body,
 				"class" => "codemirror"
-				//"maxlength" => 100
-			])) */
-			["", "textarea", "template_body", $t->template_body, 60, 100, "codemirror"]
+			]))->setOptions(["toolbar" => false]) //"cols" => 60, "rows" => 100, "class" => "codemirror"]) //["", "textarea", "template_body", $t->template_body, 60, 100, "codemirror"]
 		]
 	];
 
@@ -85,8 +84,8 @@ function edit_GET(Web $w)
 			(new \Html\Cmfive\QuillEditor([
 				"id|name" => "test_title_json",
 				"value" => $t->test_title_json,
-				"label" => "" //,
-				//"maxlength" => 100
+				"label" => "",
+				"maxlength" => 100
 			])) //["", "textarea", "test_title_json", $t->test_title_json, 100, 5, false]]
 		] 
 	];
