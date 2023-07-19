@@ -9,7 +9,7 @@
                 <?php if (count($sorted_attachments) > 0) {
                     foreach ($attachments as $_adapter => $_att) {
                         if ($_adapter !== $attachment_adapter && Config::get('file.adapters.' . $_adapter . '.active') == true) {
-                            echo Html::b('/file-admin/moveToAdapter?from_adapter=' . $attachment_adapter . '&to_adapter=' . $_adapter, 'Move all to ' . strtoupper($_adapter), 'Are you sure you want to move all attachments from ' . $attachment_adapter . ' to ' . $_adapter, null, false, 'secondary expand');
+                            echo HtmlBootstrap5::b('/file-admin/moveToAdapter?from_adapter=' . $attachment_adapter . '&to_adapter=' . $_adapter, 'Move all to ' . strtoupper($_adapter), 'Are you sure you want to move all attachments from ' . $attachment_adapter . ' to ' . $_adapter, null, false, 'secondary expand');
                         }
                     }
                 }?>
