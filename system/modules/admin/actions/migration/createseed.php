@@ -37,6 +37,8 @@ function createseed_POST(Web $w) {
 		$w->error('Missing data', '/admin-migration#seed');
 	}
 
+	$name = str_replace(' ', '', $name);
+
 	$response = MigrationService::getInstance($w)->createMigrationSeed($module, $name);
 
 	if ($response) {
