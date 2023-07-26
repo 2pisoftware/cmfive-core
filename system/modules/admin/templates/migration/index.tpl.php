@@ -109,7 +109,7 @@ use Carbon\Carbon; ?>
         <div id="individual">
             <?php if (!empty($available)) : ?>
                 <div class="row">
-                    <div class="col-3">
+                    <div class="col-2">
                         <ul id="migrations_list" class="nav flex-column nav-pills" role="tablist">
                             <?php foreach ($available as $module => $available_in_module) :
                                 $id = $module . "-tab";
@@ -135,7 +135,7 @@ use Carbon\Carbon; ?>
                             <?php endforeach; ?>
                         </ul>
                     </div>
-                    <div class="col-9">
+                    <div class="col-10">
                         <div class="tab-content">
                             <?php foreach ($available as $module => $available_in_module) :
                                 $labelledby = $module . "-tab"; ?>
@@ -213,65 +213,74 @@ use Carbon\Carbon; ?>
         <div id='seed'>
             <?php echo HtmlBootstrap5::box('/admin-migration/createseed', 'Create a seed', true, false, null, null, null, null, "btn btn-sm btn-primary"); ?>
             <?php if (!empty($seeds)) : ?>
-                <ul id="migrations_list" class="nav nav-tabs" role="tablist">
-                    <?php foreach ($seeds as $module => $available_seeds) : ?>
-                        <?php if (count($available_seeds) > 0) :
-                            $id = $module . "-tab";
-                            $target = "#" . $module; ?>
+                <div class="row">
+                    <div class="col-2">
+                        <ul id="seeds_list" class="nav flex-column nav-pills" role="tablist">
+                            <?php foreach ($seeds as $module => $available_seeds) : ?>
+                                <?php if (count($available_seeds) > 0) :
+                                    $id = $module . "-tab-seed";
+                                    $target = "#" . $module . "-seed";
+                                    $seedmodule = $module . "-seed" ?>
 
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link" id=<?php echo $id; ?> data-bs-toggle="tab" data-bs-target=<?php echo $target; ?> type="button" role="tab" aria-controls=<?php echo $module; ?> aria-selected="false">
-                                    <?php echo ucfirst($module); ?>
-                                </button>
-                            </li>
-                        <?php endif; ?>
-                    <?php endforeach; ?>
-                </ul>
-                <div class="tab-content">
-                    <?php foreach ($seeds as $module => $available_seeds) :
-                        $labelledby = $module . "-tab"; ?>
-                        <div class="tab-pane" id=<?php echo $module; ?> role="tabpanel" aria-labelledby=<?php echo $labelledby; ?>>
-                            <table class='small-12 columns'>
-                                <thead>
-                                    <tr>
-                                        <td>Name</td>
-                                        <td>Description</td>
-                                        <td>Status</td>
-                                        <td>Action</td>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php foreach ($available_seeds as $seed => $classname) : ?>
-                                        <?php if (is_file($seed)) {
-                                            require_once($seed);
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" id=<?php echo $id; ?> data-bs-toggle="tab" data-bs-target=<?php echo $target; ?> type="button" role="tab" aria-controls=<?php echo $seedmodule; ?> aria-selected="false">
+                                            <?php echo ucfirst($module); ?>
+                                        </button>
+                                    </li>
+                                <?php endif; ?>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
+                    <div class="col-10">
+                        <div class="tab-content">
+                            <?php foreach ($seeds as $module => $available_seeds) :
+                                $id = $module . "-tab-seed";
+                                $seedmodule = $module . "-seed"; ?>
 
-                                            $seed_obj = null;
-                                            if (class_exists($classname)) {
-                                                $seed_obj = new $classname($w);
-                                            }
-                                        }
-                                        if (!empty($seed_obj)) :
-                                            $migration_exists = MigrationService::getInstance($w)->migrationSeedExists($classname); ?>
+                                <div class="tab-pane" id=<?php echo $seedmodule; ?> role="tabpanel" aria-labelledby=<?php echo $id; ?>>
+                                    <table class='small-12 columns'>
+                                        <thead>
                                             <tr>
-                                                <td><?php echo $seed_obj->name; ?></td>
-                                                <td><?php echo $seed_obj->description; ?></td>
-                                                <td>
-                                                    <?php if ($migration_exists) : ?>
-                                                        <span class='label success'>Installed</span>
-                                                    <?php else : ?>
-                                                        <span class='label secondary'>Not installed</span>
-                                                    <?php endif; ?>
-                                                </td>
-                                                <td>
-                                                    <?php echo !$migration_exists ? HtmlBootstrap5::b('/admin-migration/installseed?url=' . urlencode($seed), "Install", null, null, false, "btn btn-sm btn-primary") : ''; ?>
-                                                </td>
+                                                <td>Name</td>
+                                                <td>Description</td>
+                                                <td>Status</td>
+                                                <td>Action</td>
                                             </tr>
-                                        <?php endif; ?>
-                                    <?php endforeach; ?>
-                                </tbody>
-                            </table>
+                                        </thead>
+                                        <tbody>
+                                            <?php foreach ($available_seeds as $seed => $classname) : ?>
+                                                <?php if (is_file($seed)) {
+                                                    require_once($seed);
+
+                                                    $seed_obj = null;
+                                                    if (class_exists($classname)) {
+                                                        $seed_obj = new $classname($w);
+                                                    }
+                                                }
+                                                if (!empty($seed_obj)) :
+                                                    $migration_exists = MigrationService::getInstance($w)->migrationSeedExists($classname); ?>
+                                                    <tr>
+                                                        <td><?php echo $seed_obj->name; ?></td>
+                                                        <td><?php echo $seed_obj->description; ?></td>
+                                                        <td>
+                                                            <?php if ($migration_exists) : ?>
+                                                                <span class='label success'>Installed</span>
+                                                            <?php else : ?>
+                                                                <span class='label secondary'>Not installed</span>
+                                                            <?php endif; ?>
+                                                        </td>
+                                                        <td>
+                                                            <?php echo !$migration_exists ? HtmlBootstrap5::b('/admin-migration/installseed?url=' . urlencode($seed), "Install", null, null, false, "btn btn-sm btn-primary") : ''; ?>
+                                                        </td>
+                                                    </tr>
+                                                <?php endif; ?>
+                                            <?php endforeach; ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            <?php endforeach; ?>
                         </div>
-                    <?php endforeach; ?>
+                    </div>
                 </div>
             <?php endif; ?>
         </div>
