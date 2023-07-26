@@ -110,24 +110,26 @@ use Carbon\Carbon; ?>
             <?php if (!empty($available)) : ?>
                 <div class="row">
                     <div class="col-2">
-                        <ul id="migrations_list" class="nav flex-column nav-pills" role="tablist">
+                        <ul id="migrations_list" class="nav flex-column nav-pills nav-fill justify-content-start" role="tablist">
                             <?php foreach ($available as $module => $available_in_module) :
                                 $id = $module . "-tab";
                                 $target = "#" . $module; ?>
 
                                 <li class="nav-item" role="presentation">
                                     <button class="nav-link" id=<?php echo $id; ?> data-bs-toggle="tab" data-bs-target=<?php echo $target; ?> type="button" role="tab" aria-controls=<?php echo $module; ?> aria-selected="false">
-                                        <div class="row">
-                                            <div class="col">
-                                                <?php echo ucfirst($module); ?>
-                                            </div>
-                                            <div class="col">
-                                                <?php
-                                                echo is_array($installed[$module]) && count($installed[$module]) > 0 ? "<span class='btn btn-primary btn-sm' style='font-size: 14pt;'>" . count($installed[$module]) . "</span>" : ""; ?>
-                                            </div>
-                                            <div class="col">
-                                                <?php
-                                                echo is_array($installed[$module]) && (count($available_in_module) - count($installed[$module])) > 0 ? "<span class='btn btn-warning btn-sm' style='font-size: 14pt;'>" . (count($available_in_module) - count($installed[$module])) . "</span>" : ""; ?>
+                                        <div class="container">
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <?php echo ucfirst($module); ?>
+                                                </div>
+                                                <div class="col-3">
+                                                    <?php
+                                                    echo is_array($installed[$module]) && count($installed[$module]) > 0 ? "<span class='btn btn-primary btn-sm' style='font-size: 14pt;'>" . count($installed[$module]) . "</span>" : ""; ?>
+                                                </div>
+                                                <div class="col-3">
+                                                    <?php
+                                                    echo is_array($installed[$module]) && (count($available_in_module) - count($installed[$module])) > 0 ? "<span class='btn btn-warning btn-sm' style='font-size: 14pt;'>" . (count($available_in_module) - count($installed[$module])) . "</span>" : ""; ?>
+                                                </div>
                                             </div>
                                         </div>
                                     </button>
