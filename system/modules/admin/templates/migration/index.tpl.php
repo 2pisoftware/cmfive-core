@@ -109,7 +109,7 @@ use Carbon\Carbon; ?>
         <div id="individual">
             <?php if (!empty($available)) : ?>
                 <div class="row">
-                    <div class="col-2">
+                    <div class="col-2 border">
                         <ul id="migrations_list" class="nav flex-column nav-pills nav-fill" role="tablist">
                             <?php foreach ($available as $module => $available_in_module) :
                                 $id = $module . "-tab";
@@ -214,7 +214,7 @@ use Carbon\Carbon; ?>
             <?php echo HtmlBootstrap5::box('/admin-migration/createseed', 'Create a seed', true, false, null, null, null, null, "btn btn-sm btn-primary"); ?>
             <?php if (!empty($seeds)) : ?>
                 <div class="row">
-                    <div class="col-2">
+                    <div class="col-2 border">
                         <ul id="seeds_list" class="nav flex-column nav-pills" role="tablist">
                             <?php foreach ($seeds as $module => $available_seeds) : ?>
                                 <?php if (count($available_seeds) > 0) :
