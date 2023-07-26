@@ -1,16 +1,31 @@
 <?php
 
+use Html\Form\Select;
+
 function createseed_GET(Web $w) {
 	$w->setLayout('layout-bootstrap-5');
 
 	$w->out(
 		HtmlBootstrap5::multiColForm([
 			'Create a seed' => [
-				[["Module", "select", "module", null, $w->modules()]],
-				[["Name", "text", "name"]]
+				[
+					(new Select([
+						"id|name" => "module",
+						'label' => 'Module',
+						'selected_option' => null,
+						'options' => $w->modules(),
+						'required' => true
+					])), //["Module", "select", "module", null, $w->modules()]],
+				],
+				[
+					(new \Html\Form\InputField([
+						"id|name" => "name",
+						'label' => 'Name',
+						'required' => true
+					])) //"Name", "text", "name"]]
+				]
 			]
-		], '/admin-migration/createseed')
-	);
+		], '/admin-migration/createseed'));
 }
 
 function createseed_POST(Web $w) {
