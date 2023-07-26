@@ -137,72 +137,73 @@ use Carbon\Carbon; ?>
                     </div>
                     <div class="col-9">
                         <div class="tab-content">
-                                <?php foreach ($available as $module => $available_in_module) :
-                                    $labelledby = $module . "-tab"; ?>
-                                    <div class="tab-pane" id=<?php echo $module; ?> role="tabpanel" aria-labelledby=<?php echo $id; ?>>
-                                        <?php echo HtmlBootstrap5::box("/admin-migration/create/" . $module, "Create a" . (in_array($module[0], ['a', 'e', 'i', 'o', 'u']) ? 'n' : '') . ' ' . $module . " migration", true, false, null, null, null, null, "btn btn-sm btn-primary"); ?>
-                                        <?php if (count($available[$module]) > 0) : ?>
-                                            <?php echo HtmlBootstrap5::b("/admin-migration/run/" . $module . "?ignoremessages=false&prevage=individual", "Run all " . $module . " migrations", "Are you sure you want to run all outstanding migrations for this module?", null, false, "btn btn-sm btn-primary"); ?>
-                                            <table>
-                                                <thead>
-                                                    <tr>
-                                                        <th>Name</th>
-                                                        <th>Description</th>
-                                                        <th>Path</th>
-                                                        <th>Date run</th>
-                                                        <th>Pre Text</th>
-                                                        <th>Post Text</th>
-                                                        <th>Actions</th>
+                            <?php foreach ($available as $module => $available_in_module) :
+                                $labelledby = $module . "-tab"; ?>
+                                <div class="tab-pane" id=<?php echo $module; ?> role="tabpanel" aria-labelledby=<?php echo $labelledby; ?>>
+
+                                    <?php echo HtmlBootstrap5::box("/admin-migration/create/" . $module, "Create a" . (in_array($module[0], ['a', 'e', 'i', 'o', 'u']) ? 'n' : '') . ' ' . $module . " migration", true, false, null, null, null, null, "btn btn-sm btn-primary"); ?>
+                                    <?php if (count($available[$module]) > 0) : ?>
+                                        <?php echo HtmlBootstrap5::b("/admin-migration/run/" . $module . "?ignoremessages=false&prevage=individual", "Run all " . $module . " migrations", "Are you sure you want to run all outstanding migrations for this module?", null, false, "btn btn-sm btn-primary"); ?>
+                                        <table>
+                                            <thead>
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>Description</th>
+                                                    <th>Path</th>
+                                                    <th>Date run</th>
+                                                    <th>Pre Text</th>
+                                                    <th>Post Text</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <?php foreach ($available_in_module as $a_migration_path => $migration_data) : ?>
+                                                    <tr <?php echo (MigrationService::getInstance($w)->isInstalled($migration_data['class_name'])) ? 'style="background-color: #43CD80;"' : ''; ?>>
+                                                        <td><?php echo $migration_data['class_name']; ?></td>
+                                                        <td>
+                                                            <?php
+                                                            echo $migration_data['description'];
+                                                            ?>
+                                                        </td>
+                                                        <td><?php echo $a_migration_path; ?></td>
+                                                        <td>
+                                                            <?php if (MigrationService::getInstance($w)->isInstalled($migration_data['class_name'])) :
+                                                                $installedMigration = MigrationService::getInstance($w)->getMigrationByClassname($migration_data['class_name']); ?>
+                                                                <span data-tooltip aria-haspopup="true" title="<?php echo @formatDate($installedMigration->dt_created, "d-M-Y \a\\t H:i"); ?>">
+                                                                    Run <?php echo Carbon::createFromTimeStamp($installedMigration->dt_created)->diffForHumans(); ?> by <?php echo !empty($installedMigration->creator_id) && !empty(AuthService::getInstance($w)->getUser($installedMigration->creator_id)) ? AuthService::getInstance($w)->getUser($installedMigration->creator_id)->getContact()->getFullName() : "System"; ?>
+                                                                </span>
+                                                            <?php endif; ?>
+                                                        </td>
+                                                        <td>
+                                                            <?php
+
+                                                            echo $migration_data['pretext'];
+                                                            ?>
+                                                        </td>
+                                                        <td>
+                                                            <?php
+                                                            echo $migration_data['posttext'];
+                                                            ?>
+                                                        </td>
+                                                        <td>
+                                                            <?php
+                                                            $filename = basename($a_migration_path, ".php");
+                                                            if (MigrationService::getInstance($w)->isInstalled($migration_data['class_name'])) {
+                                                                echo HtmlBootstrap5::b('/admin-migration/rollback/' . $module . '/' . $filename, "Rollback to here", "Are you 110% sure you want to rollback a migration? DATA COULD BE LOST PERMANENTLY!", null, false, "btn btn-sm btn-danger");
+                                                            } else {
+                                                                echo HtmlBootstrap5::b('/admin-migration/run/' . $module . '/' . $filename . "?ignoremessages=false&prevpage=individual", "Migrate to here", "Are you sure you want to run a migration?", null, false, "btn btn-sm btn-primary");
+                                                            }
+                                                            ?>
+                                                        </td>
+
                                                     </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <?php foreach ($available_in_module as $a_migration_path => $migration_data) : ?>
-                                                        <tr <?php echo (MigrationService::getInstance($w)->isInstalled($migration_data['class_name'])) ? 'style="background-color: #43CD80;"' : ''; ?>>
-                                                            <td><?php echo $migration_data['class_name']; ?></td>
-                                                            <td>
-                                                                <?php
-                                                                echo $migration_data['description'];
-                                                                ?>
-                                                            </td>
-                                                            <td><?php echo $a_migration_path; ?></td>
-                                                            <td>
-                                                                <?php if (MigrationService::getInstance($w)->isInstalled($migration_data['class_name'])) :
-                                                                    $installedMigration = MigrationService::getInstance($w)->getMigrationByClassname($migration_data['class_name']); ?>
-                                                                    <span data-tooltip aria-haspopup="true" title="<?php echo @formatDate($installedMigration->dt_created, "d-M-Y \a\\t H:i"); ?>">
-                                                                        Run <?php echo Carbon::createFromTimeStamp($installedMigration->dt_created)->diffForHumans(); ?> by <?php echo !empty($installedMigration->creator_id) && !empty(AuthService::getInstance($w)->getUser($installedMigration->creator_id)) ? AuthService::getInstance($w)->getUser($installedMigration->creator_id)->getContact()->getFullName() : "System"; ?>
-                                                                    </span>
-                                                                <?php endif; ?>
-                                                            </td>
-                                                            <td>
-                                                                <?php
-
-                                                                echo $migration_data['pretext'];
-                                                                ?>
-                                                            </td>
-                                                            <td>
-                                                                <?php
-                                                                echo $migration_data['posttext'];
-                                                                ?>
-                                                            </td>
-                                                            <td>
-                                                                <?php
-                                                                $filename = basename($a_migration_path, ".php");
-                                                                if (MigrationService::getInstance($w)->isInstalled($migration_data['class_name'])) {
-                                                                    echo HtmlBootstrap5::b('/admin-migration/rollback/' . $module . '/' . $filename, "Rollback to here", "Are you 110% sure you want to rollback a migration? DATA COULD BE LOST PERMANENTLY!", null, false, "btn btn-sm btn-danger");
-                                                                } else {
-                                                                    echo HtmlBootstrap5::b('/admin-migration/run/' . $module . '/' . $filename . "?ignoremessages=false&prevpage=individual", "Migrate to here", "Are you sure you want to run a migration?", null, false, "btn btn-sm btn-primary");
-                                                                }
-                                                                ?>
-                                                            </td>
-
-                                                        </tr>
-                                                    <?php endforeach; ?>
-                                                </tbody>
-                                            </table>
-                                        <?php endif; ?>
-                                    </div>
-                                <?php endforeach; ?>
-                            </div>
+                                                <?php endforeach; ?>
+                                            </tbody>
+                                        </table>
+                                    <?php endif; ?>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
                     </div>
                 </div>
             <?php else : ?>
@@ -212,18 +213,24 @@ use Carbon\Carbon; ?>
         <div id='seed'>
             <?php echo HtmlBootstrap5::box('/admin-migration/createseed', 'Create a seed', true, false, null, null, null, null, "btn btn-sm btn-primary"); ?>
             <?php if (!empty($seeds)) : ?>
-                <ul class="tabs" data-tab>
+                <ul id="migrations_list" class="nav nav-tabs" role="tablist">
                     <?php foreach ($seeds as $module => $available_seeds) : ?>
-                        <?php if (count($available_seeds) > 0) : ?>
-                            <div class="tab-title <?php echo key($seeds) == $module ? 'active' : '' ?>">
-                                <a href="#<?php echo $module; ?>"><?php echo ucfirst($module); ?></a>
-                            </div>
+                        <?php if (count($available_seeds) > 0) :
+                            $id = $module . "-tab";
+                            $target = "#" . $module; ?>
+
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id=<?php echo $id; ?> data-bs-toggle="tab" data-bs-target=<?php echo $target; ?> type="button" role="tab" aria-controls=<?php echo $module; ?> aria-selected="false">
+                                    <?php echo ucfirst($module); ?>
+                                </button>
+                            </li>
                         <?php endif; ?>
                     <?php endforeach; ?>
                 </ul>
-                <div class="tabs-content">
-                    <?php foreach ($seeds as $module => $available_seeds) : ?>
-                        <div class="content <?php echo key($seeds) == $module ? 'active' : '' ?>" id="<?php echo $module; ?>">
+                <div class="tab-content">
+                    <?php foreach ($seeds as $module => $available_seeds) :
+                        $labelledby = $module . "-tab"; ?>
+                        <div class="tab-pane" id=<?php echo $module; ?> role="tabpanel" aria-labelledby=<?php echo $labelledby; ?>>
                             <table class='small-12 columns'>
                                 <thead>
                                     <tr>

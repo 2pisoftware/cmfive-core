@@ -1,10 +1,10 @@
 <?php
 
 function createseed_GET(Web $w) {
-	$w->setLayout(null);
+	$w->setLayout('layout-bootstrap-5');
 
 	$w->out(
-		Html::multiColForm([
+		HtmlBootstrap5::multiColForm([
 			'Create a seed' => [
 				[["Module", "select", "module", null, $w->modules()]],
 				[["Name", "text", "name"]]
