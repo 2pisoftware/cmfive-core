@@ -264,7 +264,7 @@ use Carbon\Carbon; ?>
                                                         <td><?php echo $seed_obj->description; ?></td>
                                                         <td>
                                                             <?php if ($migration_exists) : ?>
-                                                                <span class='btn btn-primary btn-sm'>Installed</span>
+                                                                <span class='btn btn-success btn-sm'>Installed</span>
                                                             <?php else : ?>
                                                                 <span class='btn btn-warning btn-sm'>Not installed</span>
                                                             <?php endif; ?>
