@@ -19,8 +19,8 @@ function index_GET($w)
                 $t->title, $t->module, $t->category,
                 [$t->is_active ? "Active" : "Inactive", true],
                 // [Date("H:i d-m-Y", $t->dt_created), true],
-                // [Date("H:i d-m-Y", $t->dt_modified), true],
-                Html::b("/admin-templates/edit/" . $t->id, "Edit", false),
+                // [Date("H:i d-m-Y", $t->dt_modified), true], 
+                HtmlBootstrap5::b("/admin-templates/edit/" . $t->id, "Edit", null, null, false, "btn-sm btn-secondary"),
             ];
         }
     }
