@@ -100,41 +100,7 @@ function useradd_GET(Web $w)
         ]))
     ];
 
-    $form['User Roles'][] = [];  // Add heading for User Permissions
-
-    // Display permissions grouped by module
-    $allroles = AuthService::getInstance($w)->getAllRoles();
-
-    foreach ($allroles as $role) {
-        $parts = explode("_", $role);
-
-        if (count($parts) == 1) {
-            array_unshift($parts, "admin");
-        }
-
-        $module = array_shift($parts);
-
-        $result[$module][] = implode("_", $parts);
-    }
-
-    $permission = array();
-
-    foreach ($result as $module => $parts) {
-        $parts = array_chunk($parts, 4);
-
-        foreach ($parts as $level => $roles) {
-            foreach ($roles as $r) {
-                $roleName = $module == "admin" ? $r : implode("_", array($module, $r));
-                $permission[ucwords($module)][$level][] = (new \Html\Form\InputField\Checkbox([
-                    "id|name" => "check_" . $roleName,
-                    'label' => $roleName,
-                    "class" => "checkbox"
-                ])); //array($roleName, "checkbox", "check_" . $roleName, null);
-            }
-        }
-    }
-
-    $w->out(HtmlBootstrap5::multiColForm(array_merge($form, $permission), $w->localUrl("/admin/useradd"), "POST", "Save", null, null, null, "_self", true, array_merge(User::$_validation, ['password' => ['required'], 'password2' => ['required']])));
+    $w->out(HtmlBootstrap5::multiColForm($form, $w->localUrl("/admin/useradd"), "POST", "Save", null, null, null, "_self", true, array_merge(User::$_validation, ['password' => ['required'], 'password2' => ['required']])));
 }
 
 /**
