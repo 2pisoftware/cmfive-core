@@ -25,5 +25,5 @@ function index_GET($w)
         }
     }
 
-    $w->ctx("templates_table", Html::table($table_data, null, "tablesorter", $table_header));
+    $w->ctx("templates_table", HtmlBootstrap5::table($table_data, null, "tablesorter", $table_header));
 }
