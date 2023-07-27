@@ -38,7 +38,7 @@ function lookup_ALL(Web &$w)
             $line[] = $look->code;
             $line[] = $look->title;
             $line[] = HtmlBootstrap5::buttonGroup(
-                HtmlBootstrap5::box($w->localUrl("/admin/editlookup/" . $look->id . "/" . urlencode(Request::string('type', ''))), " Edit ", true, false, null, null, 'isbox', null, 'btn btn-sm btn-primary') .
+                HtmlBootstrap5::box($w->localUrl("/admin/editlookup/" . $look->id . "/" . urlencode(Request::string('type', ''))), " Edit ", true, false, null, null, 'isbox', null, 'btn btn-sm btn-secondary') .
                 HtmlBootstrap5::b($w->webroot() . "/admin/deletelookup/" . $look->id . "/" . urlencode(Request::string('type', '')), " Delete ", "Are you sure you wish to DELETE this Lookup item?", "deletebutton", false, "btn-sm btn-danger"));
             $line['sort_key'] = strtoupper($look->type) . strtoupper($look->code) . strtoupper($look->title);
 
@@ -95,6 +95,6 @@ function lookup_ALL(Web &$w)
                 ]))
             ],
         ],
-    ], $w->localUrl("/admin/newlookup/"), "POST", " Save"));
+    ], $w->localUrl("/admin/newlookup/"), "POST", "Save"));
 
 }
