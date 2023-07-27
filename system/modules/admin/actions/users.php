@@ -165,7 +165,7 @@ function users_GET(Web $w)
                 HtmlBootstrap5::buttonGroup(
                     HtmlBootstrap5::b("/admin-user/edit/" . $internal_user->id, "Edit", null, "editbutton", false, 'btn-sm btn-secondary') .
                     HtmlBootstrap5::b("/admin/permissionedit/" . $internal_user->id, "Permissions", null, "permissionsbutton", false, 'btn-sm btn-info') .
-                    HtmlBootstrap5::b("/admin-user/remove/" . $internal_user->id, "Remove", null, "deletebutton", false, "btn-sm btn-danger")
+                    HtmlBootstrap5::b("/admin-user/remove/" . $internal_user->id, "Delete", null, "deletebutton", false, "btn-sm btn-danger")
                 )
             ];
         }
@@ -188,7 +188,7 @@ function users_GET(Web $w)
                 HtmlBootstrap5::buttonGroup(
                     HtmlBootstrap5::b("/admin-user/edit/" . $external_user->id, "Edit", null, "editbutton", false, 'btn-sm btn-secondary') .
                     HtmlBootstrap5::b("/admin/permissionedit/" . $external_user->id, "Permissions", null, "permissionsbutton", false, 'btn-sm btn-info') .
-                    HtmlBootstrap5::b("/admin-user/remove/" . $external_user->id, "Remove", null, "deletebutton", false, "btn-sm btn-danger")
+                    HtmlBootstrap5::b("/admin-user/remove/" . $external_user->id, "Delete", null, "deletebutton", false, "btn-sm btn-danger")
                 )
             ];
         }

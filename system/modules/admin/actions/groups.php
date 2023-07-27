@@ -39,7 +39,7 @@ function groups_GET(Web &$w)
 
 			$buttonGroup = HtmlBootstrap5::b("/admin/moreInfo/" . $group->id, "Edit", null, "editbutton", false, 'btn-sm btn-secondary');
 			if (AuthService::getInstance($w)->user()->is_admin) {
-				$buttonGroup .= HtmlBootstrap5::b("/admin/groupdelete/" . $group->id, "Remove", "Are you sure you want to delete this group?", "deletebutton", false, "btn-sm btn-danger");
+				$buttonGroup .= HtmlBootstrap5::b("/admin/groupdelete/" . $group->id, "Delete", "Are you sure you want to delete this group?", "deletebutton", false, "btn-sm btn-danger");
 			}
 			$operations = HtmlBootstrap5::buttonGroup($buttonGroup);
 
