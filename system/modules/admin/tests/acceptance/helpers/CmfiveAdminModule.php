@@ -45,21 +45,32 @@ class CmfiveAdminModule extends \Codeception\Module
     {
         $I->clickCmfiveNavbar($I, 'Admin', 'List Users');
         $rowIndex = $I->findTableRowMatching(1, $user);
-        $I->click('Edit', 'tbody tr:nth-child(' . $rowIndex . ')');
+        $I->click('Edit', ".table-responsive tbody tr:nth-child({$rowIndex}) td:nth-child(8)");
+        //$I->click('Edit', 'tbody tr:nth-child(' . $rowIndex . ')');
         $I->wait(1);
 
         $fields = [];
-        $fields['select:language'] = $data['language'];
-        $fields['first_name'] = $data['first_name'];
-        $fields['last_name'] = $data['last_name'];
-        //if (!empty($data['title'])) {
-        //    $fields['select:title'] = $data['title'];
-        //}
+        if (!empty($data['first_name'])) {
+            $fields['first_name'] = $data[' first_name'];
+        }
+        if (!empty($data['last_name'])) {
+            $fields['last_name'] = $data['last_name'];
+        }
+        if (!empty($data['other_name'])) {
+            $fields['other_name'] = $data['other_name'];
+        }
+        if (!empty($data['language'])) {
+            $fields['select:language'] = $data['language'];
+        }
+        if (!empty($data['title_lookup_id'])) {
+            $fields['select:title_lookup_id'] = $data['title_lookup_id'];
+            $I->click('Other');
+        }
         $I->fillForm($fields);
 
         //$I->fillForm($data);
-        $I->click('Update');
-        $I->waitForText("Account details updated");
+        $I->click('Save');
+        $I->waitForText("User details updated");
     }
 
     public function editLookup($I, $lookup, $data)
@@ -127,7 +138,7 @@ class CmfiveAdminModule extends \Codeception\Module
     {
         $I->clickCmfiveNavbar($I, 'Admin', 'List Groups');
         $row = $I->findTableRowMatching(1, $usergroup);
-        $I->click('More Info', "table tr:nth-child({$row}) td:nth-child(3)");
+        $I->click('Edit', "table tr:nth-child({$row}) td:nth-child(3)");
         $I->click('New Member');
         $I->waitForElementClickable('#member_id');
         $I->selectOption('#member_id', $user);
@@ -141,7 +152,7 @@ class CmfiveAdminModule extends \Codeception\Module
     {
         $I->clickCmfiveNavbar($I, 'Admin', 'List Groups');
         $row = $I->findTableRowMatching(1, $usergroup);
-        $I->click('More Info', "table tr:nth-child({$row}) td:nth-child(3)");
+        $I->click('Edit', "table tr:nth-child({$row}) td:nth-child(3)");
         $I->click('Edit Permissions');
         if (empty($permissions)) {
             $permissions = ['user'];
