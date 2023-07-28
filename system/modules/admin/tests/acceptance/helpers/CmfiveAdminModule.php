@@ -17,7 +17,7 @@ class CmfiveAdminModule extends \Codeception\Module
      *
      * @return void
      */
-    public function createUser($I, $username, $password, $firstName, $lastName, $email, array $permissions = [])
+    public function createUser($I, $username, $password, $firstName, $lastName, $email)
     {
         $I->clickCmfiveNavbar($I, 'Admin', 'List Users');
         $I->click('Add New User');
@@ -35,12 +35,6 @@ class CmfiveAdminModule extends \Codeception\Module
                 'email' => $email
             ]
         );
-        if (empty($permissions)) {
-            $permissions = ['user'];
-        }
-        foreach ($permissions as $permission) {
-            $I->click('#check_' . $permission);
-        }
         $I->click('Save');
         $I->waitForElement("//div[@class='tab-head'][a[@href='#internal'] and a[@href='#external']]", 2);
         $I->waitForElement("//div[contains(@class,'alert-box')]", 2);
@@ -53,7 +47,17 @@ class CmfiveAdminModule extends \Codeception\Module
         $rowIndex = $I->findTableRowMatching(1, $user);
         $I->click('Edit', 'tbody tr:nth-child(' . $rowIndex . ')');
         $I->wait(1);
-        $I->fillForm($data);
+
+        $fields = [];
+        $fields['select:language'] = $data['language'];
+        $fields['first_name'] = $data['first_name'];
+        $fields['last_name'] = $data['last_name'];
+        //if (!empty($data['title'])) {
+        //    $fields['select:title'] = $data['title'];
+        //}
+        $I->fillForm($fields);
+
+        //$I->fillForm($data);
         $I->click('Update');
         $I->waitForText("Account details updated");
     }
