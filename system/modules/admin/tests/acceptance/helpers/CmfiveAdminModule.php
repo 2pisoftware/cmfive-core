@@ -64,7 +64,6 @@ class CmfiveAdminModule extends \Codeception\Module
         }
         if (!empty($data['title_lookup_id'])) {
             $fields['select:title_lookup_id'] = $data['title_lookup_id'];
-            $I->click('Other');
         }
         $I->fillForm($fields);
 
@@ -92,8 +91,8 @@ class CmfiveAdminModule extends \Codeception\Module
     {
         $I->clickCmfiveNavbar($I, 'Admin', 'Lookup');
         $I->click('New Item');
-        $I->click("//div[@id='tab-2']//label[@class='small-12 columns']//select[@id='type']");
-        $I->click("//label[@class='small-12 columns']//option[@value='title'][contains(text(),'title')]");
+        $I->click("//div[@id='tab-2']//select[@id='type']");
+        $I->click("//div[@id='tab-2']//option[@value='title'][contains(text(),'title')]");
         $I->fillField('#code', $code);
         $I->fillField('#title', $title);
         $I->click(".savebutton");
@@ -121,7 +120,7 @@ class CmfiveAdminModule extends \Codeception\Module
         $I->wait(1);
         $I->fillField('#title', $name);
         $I->click('Save');
-        $I->waitForText('New group added!');
+        $I->waitForText('New group added');
         $I->see($name);
     }
 
@@ -131,7 +130,7 @@ class CmfiveAdminModule extends \Codeception\Module
         $row = $I->findTableRowMatching(1, $usergroup);
         $I->click('Delete', "table tr:nth-child({$row}) td:nth-child(3)");
         $I->acceptPopup();
-        $I->see('Group is deleted!');
+        $I->see('Group is deleted');
     }
 
     public function addUserGroupMember($I, $usergroup, $user, $admin = false)
@@ -160,7 +159,11 @@ class CmfiveAdminModule extends \Codeception\Module
         foreach ($permissions as $permission) {
             $I->click('#check_' . $permission);
         }
+        $I->scrollTo(['css' => 'button.btn:nth-child(1)'], 220, 250);
+        $I->wait(2);
         $I->click('Save');
+        $I->see('Permissions are updated');
+
     }
 
     public function createTemplate($I, $title, $module, $category, $code)
