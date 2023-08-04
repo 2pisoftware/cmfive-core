@@ -30,7 +30,7 @@ function lookup_ALL(Web &$w)
 
     $table = array(array("Type", "Code", "Title", "Actions", "sort_key" => null));
 
-    if ($lookup) {
+    if (!empty($lookup)) {
         foreach ($lookup as $look) {
             $line = [];
 
@@ -44,19 +44,20 @@ function lookup_ALL(Web &$w)
 
             $table[] = $line;
         }
-    } else {
-        $table[] = ["No Lookup items to list", null, null, null, "A value"];
-    }
 
-    // Order by sort key (group name in uppercase)
-    array_multisort(
-        array_column($table, "sort_key"),
-        SORT_ASC,
-        $table
-    );
-    // Remove sort column
-    for ($i = 0, $length = count($table); $i < $length; ++$i) {
-        unset($table[$i]["sort_key"]);
+        // Order by sort key (group name in uppercase)
+        array_multisort(
+            array_column($table, "sort_key"),
+            SORT_ASC,
+            $table
+        );
+        // Remove sort column
+        for ($i = 0, $length = count($table); $i < $length; ++$i) {
+            unset($table[$i]["sort_key"]);
+        }
+
+    } else {
+        $table[] = ["No Lookup items to list", null, null, null, null];
     }
 
     // display list of items, if any
