@@ -1,6 +1,6 @@
 // src/app.ts
 import { AlertAdaptation, DropdownAdaptation, FavouritesAdaptation, TabAdaptation, TableAdaptation } from './adaptations';
-import { QuillEditor, InputWithOther, MultiFileUpload, MultiSelect, Overlay } from './components';
+import { QuillEditor, InputWithOther, MultiFileUpload, MultiSelect, Overlay, CodeMirror } from './components';
 
 import { Modal, Tooltip } from 'bootstrap';
 
@@ -188,6 +188,7 @@ class Cmfive {
         TabAdaptation.bindTabInteractions();
         TableAdaptation.bindTableInteractions();
         QuillEditor.bindQuillEditor();
+        CodeMirror.bindCodeMirrorEditor();
 
         // Remove all foundation button classes and replace them with bootstrap if they don't exist
         target?.querySelectorAll('.button')?.forEach(b =>  {
