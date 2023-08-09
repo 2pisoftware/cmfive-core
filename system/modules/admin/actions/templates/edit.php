@@ -35,7 +35,7 @@ function edit_GET(Web $w)
 				"label" => "Module",
 				"required" => true,
 				"value" => $t->module
-			])), //["Module", "text", "module", $t->module],
+			])), //["Module", "text", "module", $t->module], 
 			(new \Html\Form\InputField\Text([
 				"id|name" => "category",
 				"label" => "Category",
@@ -64,15 +64,14 @@ function edit_GET(Web $w)
 				"value" => $t->template_title,
 				"maxlength" => 100
 			])) //["", "textarea", "template_title", $t->template_title, 100, 1, false]
-		] 
+		]
 	];
 	$newForm["Template Body"] = [
 		[
-			(new \Html\Cmfive\QuillEditor([
+			(new \Html\Cmfive\CodeMirrorEditor([
 				"id|name" => "template_body",
-				"value" => $t->template_body ,
-				"maxlength" => 6000
-			])) //["", "textarea", "template_body", $t->template_body, 60, 100, "codemirror"]
+				"value" => $t->template_body,
+			]))//->addToConfig(['extensions' => ['basicSetup'], 'parent' => 'template_body']) //["", "textarea", "template_body", $t->template_body, 60, 100, "codemirror"]
 		]
 	];
 
@@ -81,7 +80,7 @@ function edit_GET(Web $w)
 	$newForm = [];
 	$newForm["Title Data"] = [
 		[
-			(new \Html\Cmfive\QuillEditor([
+			(new \Html\Form\InputField\Text([
 				"id|name" => "test_title_json",
 				"value" => $t->test_title_json,
 				"maxlength" => 500

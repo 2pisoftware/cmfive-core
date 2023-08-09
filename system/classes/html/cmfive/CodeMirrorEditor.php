@@ -43,7 +43,7 @@ class CodeMirrorEditor extends \Html\Form\InputField
         $this->_values = $values;
         return $this;
     }
-   
+   /*
     public function __toString(): string
     {
         if (!empty($this->_values)) {
@@ -54,4 +54,10 @@ class CodeMirrorEditor extends \Html\Form\InputField
 
         return parent::__toString();
     }
+*/
+    public function __toString()
+    {
+        return '<textarea name="' . $this->name . '" id="' . $this->id . '" style="display:none"></textarea><div class="code-mirror-target" cm-value=\'' . $this->value . '\' id="' . $this->id . '">'  . '</div>';
+    }
+
 }
