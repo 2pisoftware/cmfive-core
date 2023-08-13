@@ -333,9 +333,8 @@ class AuthService extends DbService
             return self::$_cache[$key];
         }
 
-        // API token handling - WIP 202203
-
-        // if I have an authentication header: and it has a token -> else fallthrough to original logic
+        // API token handling:
+        // If I have an authentication header: and it has a token -> else fallthrough to original logic
         // ie: expecting [...curl...etc...] -H "Authorization: Bearer {token}"
         /*
                 Note! If under Apache & HTTP_AUTHORIZATION is dropped, prove site HTPPS and then patch access:
@@ -386,9 +385,12 @@ class AuthService extends DbService
                     $this->forceLogin($user->id);
                     if ($user->allowed($path)) {
                         self::$_cache[$key] = $url ? $url : true;
-                        // hmmm, so we have forced login, 
-                        // but do we expect to still bounce 1x through auth/login as redirect?
-                        // = noting this 'return' is omitted in standing core releases, though is required by new tokens model!
+                        // Observed during work for token handler:
+                        // Here, we have forced login, 
+                        // But do we mean for it to still bounce 1x through auth/login as redirect?
+                        // In standing core releases, a _cache[key] 'return' is omitted here
+                        // = noting it was required by new tokens model!
+                        // Possibly this block should also have return thus:
                         // return self::$_cache[$key]; 
                     }
                 } else {
