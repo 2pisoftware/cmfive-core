@@ -266,4 +266,22 @@ class InsightService extends DbService
             return $pdf;
         }
     }
+
+    // Function to recursively check if a user is a member of a group (or parent group)
+    public function checkUserAccess(Web $w, $group, $user_id): bool
+    {
+        $groupMembers = AuthService::getInstance($w)->getGroupMembers($group);
+        if (!empty($groupMembers)) {
+            foreach ($groupMembers as $groupMember) {
+                if ($groupMember->user_id === $user_id) {
+                    return true;
+                } elseif (AuthService::getInstance($w)->getUser($groupMember->user_id)->is_group) {
+                    if (InsightService::checkUserAccess($w, $groupMember->user_id, $user_id)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
 }
