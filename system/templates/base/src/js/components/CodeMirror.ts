@@ -3,7 +3,7 @@
 import { basicSetup, EditorView } from 'codemirror'
 import {EditorState} from "@codemirror/state"
 //import {syntaxHighlighting, defaultHighlightStyle} from "@codemirror/language"
-//import {html} from "@codemirror/lang-html"
+import {html} from "@codemirror/lang-html"
 
 
 export class CodeMirror {
@@ -14,8 +14,8 @@ export class CodeMirror {
         const cmEditors = document.querySelectorAll(CodeMirror.SELECT_TARGET);
 
         if (cmEditors) {
-            cmEditors.forEach((q) => {
-                const content = q.getAttribute('cm-value');
+            cmEditors.forEach((cm) => {
+                const content = cm.getAttribute('cm-value');
                 //let str: string = "hello " + content;
                 //console.log(str);
                 
@@ -23,48 +23,22 @@ export class CodeMirror {
                     doc: content,
                     extensions: [
                         basicSetup,
+                        //html(),
                     ],
-                    parent: q as HTMLInputElement,
+                    parent: cm as HTMLInputElement,
                     });
                 
-                const textarea = document.getElementById(q.id);
-                q.closest('form').removeEventListener('submit', () => textarea.innerText = q.querySelector('.cm-content').innerHTML);
-                q.closest('form').addEventListener('submit', () => textarea.innerText = q.querySelector('.cm-content').innerHTML);
-/*
-                let str: string = "hello " + editor.state.doc.toString();
+                const textarea = document.getElementById(cm.id);
+                cm.closest('form').removeEventListener('submit', () => textarea.innerText = cm.querySelector('.cm-content').innerHTML);
+                cm.closest('form').addEventListener('submit', () => textarea.innerText = Array.from(cm.querySelectorAll(".cm-line")).map(e => e.textContent).join("\n"));
+
+                let str: string = "hello 2 " + Array.from(cm.querySelectorAll('.cm-line')).map(e => e.textContent).join("\n");
+                    //Array.from(document.querySelectorAll(".cm-line")).map(x => x.textContent).join("\n");
+                
+                //let str: string = "hello " + Array.from(cm.querySelectorAll(".cm-line")).map(e => e.textContent).join("\n");
                 console.log(str);
-                let transaction = editor.state.update({changes: {from: 0, insert: "0"}})
-                let str1: string = "hello " + transaction.state.doc.toString();
-                console.log(str1)
-                editor.dispatch(transaction);
-                */
 
             })
         }
-        /*
-
-        document.querySelectorAll(CodeMirror.SELECT_TARGET)?.forEach(s => {
-            const config = s.getAttribute('data-config');
-
-            new EditorView({
-                extensions: [
-                    basicSetup,
-                ],
-                parent: s.parentElement as HTMLInputElement,
-                });
-        })
-    }
-
-        let s: HTMLInputElement = document.querySelector(CodeMirror.SELECT_TARGET);
-        let str: string = "hello " + s.parentElement;
-        console.log(str);
-        new EditorView({
-            extensions: [
-                basicSetup,
-            ],
-            parent: s.parentElement as HTMLInputElement,
-        });
-    }
-        */
     }
 }
