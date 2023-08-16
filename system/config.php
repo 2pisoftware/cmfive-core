@@ -94,3 +94,5 @@ Config::set('system.aws', [
         'secret' => '',
     ],
 ]);
+
+Config::set('system.use_api', true);
