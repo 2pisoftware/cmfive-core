@@ -52,7 +52,7 @@ class HtmlBootstrap5 extends Html
      * @param <type> $extrabuttons
      * @return <type>
      */
-    public static function multiColForm($data, $action = null, $method = "POST", $submitTitle = "Save", $id = null, $class = null, $extrabuttons = null, $target = "_self", $includeFormTag = true, $validation = null)
+    public static function multiColForm($data, $action = null, $method = "POST", $submitTitle = "Save", $id = null, $class = null, $extrabuttons = null, $target = "_self", $includeFormTag = true, $validation = null, $displayOverlay = true)
     {
         if (empty($data)) {
             return;
@@ -64,7 +64,7 @@ class HtmlBootstrap5 extends Html
         // If form tag is needed print it
         if ($includeFormTag) {
             $class .= " col";
-            $form->id($id)->name($id)->setClass($class)->method($method)->action($action)->target($target);
+            $form->id($id)->name($id)->setClass($class)->method($method)->action($action)->target($target)->displayOverlay($displayOverlay);
 
             if (in_multiarray("file", $data) || objectPropertyHasValueInMultiArray("\Html\Form\InputField", "type", "file", $data)) {
                 $form->enctype("multipart/form-data");
@@ -212,7 +212,7 @@ class HtmlBootstrap5 extends Html
                             $items = !empty($field[4]) ? $field[4] : null;
 
                             $default = !empty($field[5]) ? ($field[5] == "null" ? null : $field[5]) : "-- Select --";
-                            $sl_class = !empty($field[6]) ? $field[6] : null;
+                            $sl_class = !empty($field[6]) ? $field[6] : "form-select";
                             $buffer .= Html::select($name, $items, $value, $sl_class, "width: 100%;", $default, ($readonly ? ' disabled="disabled" ' : null) . ' ' . $required);
                             break;
                         case "multiSelect":

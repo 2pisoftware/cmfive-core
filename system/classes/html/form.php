@@ -10,6 +10,7 @@ class form {
     public $name;
     public $novalidate; // HTML5 (novalidate)
     public $target; // (_blank, _self, _parent, _top)
+    public $displayOverlay;
     
     public $id;
     public $_class;
@@ -69,7 +70,14 @@ class form {
         $this->_class = $class;
         return $this;
     }
+
+    public function displayOverlay($displayOverlay)
+    {
+        $this->displayOverlay = $displayOverlay;
+        return $this;
+    }
     
+
     public function open() {
         $buffer = "";
         $buffer .= "<form ";
@@ -108,12 +116,16 @@ class form {
         if (!empty($this->id)) {
             $buffer .= "id='{$this->id}' ";
         }
-        
+
         if (!empty($this->_class)) {
             $buffer .= "class='{$this->_class}' ";
         }
-        
-        $buffer .= " data-show-overlay >";
+
+        if (!empty($this->displayOverlay) && $this->displayOverlay === true) {
+            $buffer .= " data-show-overlay ";
+        }
+
+        $buffer .= ">";
         
         // Automatically print CSRF token
         if (class_exists("CSRF") && !empty($this->method) && ($this->method == "POST")) {

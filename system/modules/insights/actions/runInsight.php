@@ -5,6 +5,7 @@
 function runInsight_GET(Web $w)
 {
 
+    $w->setLayout('layout-bootstrap-5');
 
     /** @var InsightBaseClass $insight */
     /** this class will be used on all other classes accessed by the runInsight action. It sets up the initial parameters for each insight */
