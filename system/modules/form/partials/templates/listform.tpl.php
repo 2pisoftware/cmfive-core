@@ -8,7 +8,8 @@
             <thead>
                 <tr><?php echo $form->getTableHeaders(); ?>
                     <?php if ($display_only !== true) : ?>
-                        <td>Actions</td><?php endif; ?></tr>
+                        <td>Actions</td><?php endif; ?>
+                </tr>
             </thead>
             <tbody>
                 <tr v-if='!instances'>
@@ -63,6 +64,14 @@
             watch: {
                 page: function() {
                     this.getInstances();
+                },
+                instances: function() {
+                    this.$nextTick(() => {
+                        document.querySelectorAll('#form_list_<?php echo $form->id; ?> [data-modal-target]').forEach(function(m) {
+                            m.removeEventListener('click', boundModalListener);
+                            m.addEventListener('click', boundModalListener);
+                        })
+                    });
                 }
             },
             created: function() {
