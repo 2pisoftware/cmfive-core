@@ -126,8 +126,8 @@ class HtmlBootstrap5 extends Html
                                 break;
                         }
                         if ((property_exists($field, "type") && $field->type !== "hidden") || !property_exists($field, "type")) {
-                            $buffer .= '<div class="col"><label class="' . $label_class . '"' . (property_exists($field, 'id') && !empty($field->id) ? ' for="' . $field->id . '"' : '' ) . '>' . $field->label . ($field->required ? " <small>Required</small>" : "") . "</label>"
-                            . $field->__toString() . '</div>';
+                            $buffer .= '<div class="col"><label class="' . $label_class . '"' . (property_exists($field, 'id') && !empty($field->id) ? ' for="' . $field->id . '"' : '') . '>' . $field->label . ($field->required ? " <small>Required</small>" : "") . "</label>"
+                                . $field->__toString() . '</div>';
                         } else {
                             $buffer .= $field->__toString();
                         }
@@ -174,7 +174,7 @@ class HtmlBootstrap5 extends Html
                         case "tel":
                             $size = !empty($field[4]) ? $field[4] : null;
                             $buffer .= '<input' . $readonly . ' class="form-control" type="' . $type . '" name="' . $name . '" value="' . (empty($value) ? '' : htmlspecialchars($value)) .
-                            '" size="' . $size . '" id="' . $name . '" ' . $required . " />";
+                                '" size="' . $size . '" id="' . $name . '" ' . $required . " />";
                             break;
                         case "autocomplete":
                             $options = !empty($field[4]) ? $field[4] : null;
@@ -205,8 +205,8 @@ class HtmlBootstrap5 extends Html
                                 $custom_class = $field[6];
                             }
                             $buffer .= '<textarea' . $readonly . ' class="form-control" style="width:100%; height: auto; " name="' . $name . '" rows="' . $r . '" cols="' . $c .
-                            '" ' . (!empty($custom_class) ? ($custom_class === true ? "class='ckeditor'" : "class='$custom_class' ") : '') . ' id="' . $name
-                            . '" ' . $required . '>' . $value . '</textarea>';
+                                '" ' . (!empty($custom_class) ? ($custom_class === true ? "class='ckeditor'" : "class='$custom_class' ") : '') . ' id="' . $name
+                                . '" ' . $required . '>' . $value . '</textarea>';
                             break;
                         case "select":
                             $items = !empty($field[4]) ? $field[4] : null;
@@ -284,7 +284,7 @@ class HtmlBootstrap5 extends Html
         $buffer = "";
 
         // Opening tags
-        $buffer .= "<table class='{$class} d-none d-md-block'>";
+        $buffer .= "<table class='{$class} d-none d-md-table'>";
         if (!empty($header)) {
             $buffer .= "<thead><tr>";
             if (is_array($header)) {
@@ -712,7 +712,7 @@ class HtmlBootstrap5 extends Html
 
             $buffer .= "</div></label></li>";
         }
-        
+
         $buffer .= "</ul>"; // </div>
         $buffer .= "\n</fieldset>\n";
         $buffer .= $hidden . "</form>\n";
@@ -757,7 +757,7 @@ class HtmlBootstrap5 extends Html
      * @param string $class
      * @return string
      */
-    public static function alertBox($msg, $type = "alert-info", $include_close = true) : string
+    public static function alertBox($msg, $type = "alert-info", $include_close = true): string
     {
         if ($type !== "alert-info" && $type !== "alert-warning" && $type !== "alert-danger" && $type !== "alert-success") {
             $type = "alert-info";
