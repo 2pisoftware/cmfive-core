@@ -15,7 +15,7 @@ use Carbon\Carbon; ?>
     <div class="tab-body clearfix">
         <div id="batch">
             <div class="row-fluid">
-                <?php echo HtmlBootstrap5::b("/admin-migration/rollbackbatch", "Rollback latest batch", "Are you sure you want to rollback migrations?", null, false, "btn btn-sm btn-primary"); ?>
+                <?php echo HtmlBootstrap5::b("/admin-migration/rollbackbatch", "Rollback latest batch", "Are you sure you want to rollback migrations?", null, false, "btn btn-sm btn-danger"); ?>
             </div>
             <div class="accordion" id="accordion1">
 
@@ -110,18 +110,26 @@ use Carbon\Carbon; ?>
             <?php if (!empty($available)) : ?>
                 <div class="row">
                     <div class="col-2">
-                        <div id="migrations_list" class="list-group" role="tablist">
+                        <ul id="migrations_list" class="list-group" role="tablist">
                             <?php
                             $active = true;
                             foreach ($available as $module => $available_in_module) {
                                 $id = $module . "-tab";
                                 $target = "#" . $module;
 
-                                echo '<a class="list-group-item list-group-item-action' . ($active ? ' active' : '') . '" id="' . $id . '" data-bs-toggle="list" href="' . $target . '" role="tab" aria-controls="' . $module . '">' . ucfirst($module) . '</a>';
+                                echo '<li class="list-group-item list-group-item-action d-flex justify-content-between align-items-start' . ($active ? ' active' : '') . '" id="' . $id . '" data-bs-toggle="list" href="' . $target . '" role="tab" aria-controls="' . $module . '">' . ucfirst($module);
                                 $active = false;
+
+                                // installed and non-installed migrations badges
+                                echo '<div class="right">';
+                                echo is_array($installed[$module]) && count($installed[$module]) > 0 ? '<span class="badge bg-success rounded-pill">' . count($installed[$module]) . '</span>' : '';
+                                echo is_array($installed[$module]) && (count($available_in_module) - count($installed[$module])) > 0 ? '<span class="badge bg-warning rounded-pill">' . (count($available_in_module) - count($installed[$module])) . '</span>' : '';
+                                echo '</div>';
+
+                                echo '</li>';
                             }
                             ?>
-                        </div>
+                        </ul>
                     </div>
                     <div class="col-10">
                         <div class="tab-content">
@@ -172,19 +180,56 @@ use Carbon\Carbon; ?>
             <?php if (!empty($seeds)) : ?>
                 <div class="row">
                     <div class="col-2">
-                        <div id="seeds_list" class="list-group" role="tablist">
+                        <ul id="seeds_list" class="list-group" role="tablist">
                             <?php
+                            // installed and not-installed seed counts for each module to be displayed as badges
+                            $seed_status_counts = [];
+                            foreach ($seeds as $module => $available_seeds) {
+                                $installed = 0;
+                                $not_installed = 0;
+
+                                foreach ($available_seeds as $seed => $classname) {
+                                    if (is_file($seed)) {
+                                        require_once($seed);
+
+                                        if (class_exists($classname)) {
+                                            $seed_obj = new $classname($w);
+
+                                            if (!empty($seed_obj)) {
+                                                $migration_exists = MigrationService::getInstance($w)->migrationSeedExists($classname);
+
+                                                if ($migration_exists) {
+                                                    $installed++;
+                                                } else {
+                                                    $not_installed++;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+
+                                $seed_status_counts[$module] = [$installed, $not_installed];
+                            }
+
                             $active = true;
                             foreach ($seeds as $module => $available_seeds) {
                                 $id = $module . "-tab-seed";
                                 $target = "#" . $module . "-seed";
                                 $seedmodule = $module . "-seed";
 
-                                echo '<a class="list-group-item list-group-item-action' . ($active ? ' active' : '') . '" id="' . $id . '" data-bs-toggle="list" href="' . $target . '" role="tab" aria-controls="' . $seedmodule . '">' . ucfirst($module) . '</a>';
+                                echo '<li class="list-group-item list-group-item-action d-flex justify-content-between align-items-start' . ($active ? ' active' : '') . '" id="' . $id . '" data-bs-toggle="list" href="' . $target . '" role="tab" aria-controls="' . $seedmodule . '">' . ucfirst($module);
                                 $active = false;
+
+                                // installed and non-installed migrations badges
+                                echo '<div class="right">';
+                                echo $seed_status_counts[$module][0] > 0 ? '<span class="badge bg-success rounded-pill">' . $seed_status_counts[$module][0] . '</span>' : '';
+                                echo $seed_status_counts[$module][1] > 0 ? '<span class="badge bg-warning rounded-pill">' . $seed_status_counts[$module][1] . '</span>' : '';
+                                echo '</div>';
+
+                                echo '</li>';
                             }
                             ?>
-                        </div>
+                        </ul>
                     </div>
                     <div class="col-10">
                         <div class="tab-content">
