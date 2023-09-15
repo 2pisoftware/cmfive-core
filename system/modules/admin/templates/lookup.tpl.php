@@ -6,7 +6,7 @@
     <div class='tab-body'>
         <div id='tab-1'>
             <?php echo HtmlBootstrap5::filter("Search Lookup Items", array(
-                array("Type", "select", "type", Request::mixed("types"), LookupService::getInstance($w)->getLookupTypes(), "form-select")
+                array("Type", "select", "type", $selectedtypes, LookupService::getInstance($w)->getLookupTypes(), "form-select")
             ), "/admin/lookup"); ?>
             <?php echo $listitem; ?>
         </div>
@@ -15,9 +15,9 @@
         </div>
     </div>
 </div>
-<script>
+<!-- <script>
     // script to auto submit the filter form when the "type" is changed
     document.getElementById("type").addEventListener("change", ({
         target
     }) => target.form.submit());
-</script>
+</script> -->

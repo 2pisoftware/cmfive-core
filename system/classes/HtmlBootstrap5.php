@@ -695,8 +695,10 @@ class HtmlBootstrap5 extends Html
 
         // This is only true when the filter has one element and its a select field
         if ($should_autosubmit) {
-            $buffer .= "<script>$('form" . ($id ? "#" . $id : "") . ' select\').change(function(){this.form.submit()});</script>';
+            $selector = $id ? "form#" . $id . " select" : "form select";
+            $buffer .= "<script>document.querySelectorAll('" . $selector . "').forEach(function(select) { select.addEventListener('change', function() { this.form.submit(); }); });</script>";
         }
+
         // Filter button (optional... though optional is pointless)
         if (!empty($action)) {
             $button = new \Html\button();

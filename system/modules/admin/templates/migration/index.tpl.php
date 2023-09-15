@@ -14,96 +14,97 @@ use Carbon\Carbon; ?>
     </div>
     <div class="tab-body clearfix">
         <div id="batch">
-            <div class="row-fluid">
-                <?php echo HtmlBootstrap5::b("/admin-migration/rollbackbatch", "Rollback latest batch", "Are you sure you want to rollback migrations?", null, false, "btn btn-sm btn-danger"); ?>
-            </div>
-            <div class="accordion" id="accordion1">
+            <div class="row">
+                <div class="col-2">
+                    <ul id="batch_list" class="list-group" role="tablist">
+                        <?php
+                        $active = true;
+                        if (!empty($not_installed)) {
+                            echo '<li class="list-group-item list-group-item-action d-flex justify-content-between align-items-start active" id="not-installed-tab" data-bs-toggle="list" href="#not-installed" role="tab" aria-controls="not-installed">Not Installed</li>';
+                            $active = false;
+                        }
 
-                <?php if (!empty($not_installed)) :
-                    $id = "heading" . $batch_no;
-                    $control = "collapse" . $batch_no;
-                    $target = "#collapse" . $batch_no; ?>
+                        if (!empty($batched)) {
+                            krsort($batched);
 
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id=<?php echo $id; ?>>
-                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target=<?php echo $target; ?> aria-expanded="false" aria-controls=<?php echo $control; ?>>
-                                Not Installed
-                            </button>
-                        </h2>
-                        <div id=<?php echo $control; ?> class="accordion-collapse collapse" data-bs-parent="#accordion1" aria-labelledby=<?php echo $id; ?>>
-                            <div class="accordion-body">
+                            foreach ($batched as $batch_no => $batched_migrations) {
+                                $id = "batch" . $batch_no . "-tab";
+                                $control = "batch" . $batch_no;
+                                $target = "#batch" . $batch_no;
 
-                                <?php
-                                echo HtmlBootstrap5::b("/admin-migration/run/all?ignoremessages=false&prevpage=batch", "Install migrations", "Are you sure you want to install migrations?", null, false, "btn btn-sm btn-primary");
-                                ?>
-                                <?php
-                                $header = ["Name", "Description", "Pre Text", "Post Text"];
-                                $data = [];
-                                foreach ($not_installed as $module => $_not_installed) {
-                                    foreach ($_not_installed as $_migration_class) {
-
-                                        $migration_path = $_migration_class['path'];
-                                        if (file_exists(ROOT_PATH . '/' . $migration_path)) {
-                                            include_once ROOT_PATH . '/' . $migration_path;
-                                            $classname = $_migration_class['class']['class_name'];
-                                            if (class_exists($classname)) {
-                                                $migration = (new $classname(1))->setWeb($w);
-                                                $migration_description = $migration->description();
-                                                $migration_preText = $migration->preText();
-                                                $migration_postText = $migration->postText();
-                                            }
-                                            $row = [];
-                                            $row[] = $module . ' - ' . $classname;
-                                            $row[] = $migration_description;
-                                            $row[] = $migration_preText;
-                                            $row[] = $migration_postText;
-                                            $data[] = $row;
+                                echo '<li class="list-group-item list-group-item-action d-flex justify-content-between align-items-start' . ($active ? ' active' : '') . '" id="' . $id . '" data-bs-toggle="list" href="' . $target . '" role="tab" aria-controls="' . $control . '">Batch ' . $batch_no . '</li>';
+                                $active = false;
+                            }
+                        }
+                        ?>
+                    </ul>
+                </div>
+                <div class="col-10">
+                    <?php echo HtmlBootstrap5::b("/admin-migration/rollbackbatch", "Rollback latest batch", "Are you sure you want to rollback migrations?", null, false, "btn btn-sm btn-danger"); ?>
+                    <div class="tab-content">
+                        <?php
+                        $active = true;
+                        if (!empty($not_installed)) {
+                            echo '<div class="tab-pane active" id="not-installed" role="tabpanel" aria-labelledby="not-installed-tab">';
+                            $active = false;
+                            $header = ["Name", "Description", "Pre Text", "Post Text"];
+                            $data = [];
+                            foreach ($not_installed as $module => $_not_installed) {
+                                foreach ($_not_installed as $_migration_class) {
+                                    $migration_path = $_migration_class['path'];
+                                    if (file_exists(ROOT_PATH . '/' . $migration_path)) {
+                                        include_once ROOT_PATH . '/' . $migration_path;
+                                        $classname = $_migration_class['class']['class_name'];
+                                        if (class_exists($classname)) {
+                                            $migration = (new $classname(1))->setWeb($w);
+                                            $migration_description = $migration->description();
+                                            $migration_preText = $migration->preText();
+                                            $migration_postText = $migration->postText();
                                         }
-                                    }
-                                }
-
-                                $table =  HtmlBootstrap5::table($data, null, "tablesorter", $header);
-                                echo $table;
-                                ?>
-                            </div>
-                        </div>
-                    </div>
-                <?php endif; ?>
-                <?php if (!empty($batched)) :
-                    krsort($batched); ?>
-
-                    <?php foreach ($batched as $batch_no => $batched_migrations) :
-                        $id = "heading" . $batch_no;
-                        $control = "collapse" . $batch_no;
-                        $target = "#collapse" . $batch_no; ?>
-
-                        <div class="accordion-item">
-                            <h2 class="accordion-header" id=<?php echo $id; ?>>
-                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target=<?php echo $target; ?> aria-expanded="false" aria-controls=<?php echo $control; ?>>
-                                    Batch <?php echo $batch_no; ?>
-                                </button>
-                            </h2>
-                            <div id=<?php echo $control; ?> class="accordion-collapse collapse" data-bs-parent="#accordion1" aria-labelledby=<?php echo $id; ?>>
-                                <div class="accordion-body">
-                                    <?php
-                                    $header = ["Name", "Description", "Pre Text", "Post Text"];
-                                    $data = [];
-                                    foreach ($batched_migrations as $batched_migration) {
                                         $row = [];
-                                        $row[] = $batched_migration['module'] . ' - ' . $batched_migration['classname'];
-                                        $row[] = $batched_migration['description'];
-                                        $row[] = $batched_migration['pretext'];
-                                        $row[] = $batched_migration['posttext'];
+                                        $row[] = $module . ' - ' . $classname;
+                                        $row[] = $migration_description;
+                                        $row[] = $migration_preText;
+                                        $row[] = $migration_postText;
                                         $data[] = $row;
                                     }
-                                    $table =  HtmlBootstrap5::table($data, null, "tablesorter", $header);
-                                    echo $table; ?>
-                                </div>
-                            </div>
-                        </div>
-                    <?php endforeach; ?>
+                                }
+                            }
+
+                            echo HtmlBootstrap5::table($data, null, "table", $header);
+                            echo '</div>';
+                        }
+
+                        if (!empty($batched)) {
+                            krsort($batched);
+
+                            foreach ($batched as $batch_no => $batched_migrations) {
+                                $id = "batch" . $batch_no . "-tab";
+                                $control = "batch" . $batch_no;
+                                $target = "#batch" . $batch_no;
+
+                                echo '<div class="tab-pane' . ($active ? ' active' : '') . '" id="' . $control . '" role="tabpanel" aria-labelledby="' . $id . '">';
+                                $active = false;
+
+                                $header = ["Name", "Description", "Pre Text", "Post Text"];
+                                $data = [];
+                                foreach ($batched_migrations as $batched_migration) {
+                                    $row = [];
+                                    $row[] = $batched_migration['module'] . ' - ' . $batched_migration['classname'];
+                                    $row[] = $batched_migration['description'];
+                                    $row[] = $batched_migration['pretext'];
+                                    $row[] = $batched_migration['posttext'];
+                                    $data[] = $row;
+                                }
+                                $table =  HtmlBootstrap5::table($data, null, "table", $header);
+                                echo $table;
+                                echo '</div>';
+                            }
+                        }
+                        ?>
+                    </div>
+                </div>
             </div>
-        <?php endif; ?>
         </div>
 
         <div id="individual">
@@ -121,9 +122,10 @@ use Carbon\Carbon; ?>
                                 $active = false;
 
                                 // installed and non-installed migrations badges
+                                $installed_count = is_array($installed[$module]) ? count($installed[$module]) : 0;
                                 echo '<div class="right">';
-                                echo is_array($installed[$module]) && count($installed[$module]) > 0 ? '<span class="badge bg-success rounded-pill">' . count($installed[$module]) . '</span>' : '';
-                                echo is_array($installed[$module]) && (count($available_in_module) - count($installed[$module])) > 0 ? '<span class="badge bg-warning rounded-pill">' . (count($available_in_module) - count($installed[$module])) . '</span>' : '';
+                                echo $installed_count > 0 ? '<span class="badge bg-success rounded-pill">' . $installed_count . '</span>' : '';
+                                echo (count($available_in_module) - $installed_count) > 0 ? '<span class="badge bg-warning rounded-pill">' . (count($available_in_module) - $installed_count) . '</span>' : '';
                                 echo '</div>';
 
                                 echo '</li>';

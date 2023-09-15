@@ -13,6 +13,9 @@ function lookup_ALL(Web &$w)
     $typelist = HtmlBootstrap5::select("type", $types, Request::string('type'));
     $w->ctx("typelist", $typelist);
 
+    $selectedtype = Request::string('type');
+    $w->ctx("selectedtype", $selectedtype);
+
     // tab: Lookup List
     $where = [];
     if (Request::string('reset') == null) {
@@ -39,7 +42,8 @@ function lookup_ALL(Web &$w)
             $line[] = $look->title;
             $line[] = HtmlBootstrap5::buttonGroup(
                 HtmlBootstrap5::box($w->localUrl("/admin/editlookup/" . $look->id . "/" . urlencode(Request::string('type', ''))), " Edit ", true, false, null, null, 'isbox', null, 'btn btn-sm btn-secondary') .
-                HtmlBootstrap5::b($w->webroot() . "/admin/deletelookup/" . $look->id . "/" . urlencode(Request::string('type', '')), " Delete ", "Are you sure you wish to DELETE this Lookup item?", "deletebutton", false, "btn-sm btn-danger"));
+                    HtmlBootstrap5::b($w->webroot() . "/admin/deletelookup/" . $look->id . "/" . urlencode(Request::string('type', '')), " Delete ", "Are you sure you wish to DELETE this Lookup item?", "deletebutton", false, "btn-sm btn-danger")
+            );
             $line['sort_key'] = strtoupper($look->type) . strtoupper($look->code) . strtoupper($look->title);
 
             $table[] = $line;
@@ -55,7 +59,6 @@ function lookup_ALL(Web &$w)
         for ($i = 0, $length = count($table); $i < $length; ++$i) {
             unset($table[$i]["sort_key"]);
         }
-
     } else {
         $table[] = ["No Lookup items to list", null, null, null, null];
     }
@@ -97,5 +100,4 @@ function lookup_ALL(Web &$w)
             ],
         ],
     ], $w->localUrl("/admin/newlookup/"), "POST", "Save"));
-
 }
