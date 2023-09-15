@@ -10,9 +10,6 @@ function lookup_ALL(Web &$w)
 
     $types = LookupService::getInstance($w)->getLookupTypes();
 
-    $typelist = HtmlBootstrap5::select("type", $types, Request::string('type'));
-    $w->ctx("typelist", $typelist);
-
     $selectedtype = Request::string('type');
     $w->ctx("selectedtype", $selectedtype);
 
