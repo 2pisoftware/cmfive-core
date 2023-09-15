@@ -6,7 +6,7 @@
     <div class='tab-body'>
         <div id='tab-1'>
             <?php echo HtmlBootstrap5::filter("Search Lookup Items", array(
-                array("Type", "select", "type", $selectedtypes, LookupService::getInstance($w)->getLookupTypes(), "form-select")
+                array("Type", "select", "type", $selectedtype, LookupService::getInstance($w)->getLookupTypes(), "form-select")
             ), "/admin/lookup"); ?>
             <?php echo $listitem; ?>
         </div>
