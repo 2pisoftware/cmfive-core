@@ -1,6 +1,6 @@
 <h1>Deleted files</h1>
 <?php if (!empty($deleted_files)) : ?>
-	<table class="table table-borderless">
+	<table class="table-striped">
 		<thead>
 			<tr>
 				<th scope="col">File</th>
@@ -11,7 +11,7 @@
 		<tbody>
 			<?php foreach ($deleted_files as $deleted_file) : ?>
 				<tr>
-					<th><?php echo $deleted_file->filename; ?></th>
+					<td><?php echo $deleted_file->filename; ?></td>
 					<td><?php echo $deleted_file->fullpath; ?></td>
 					<td><?php
 						$action = HtmlBootstrap5::b("/file/atfile/" . $deleted_file->id, "View", null, null, true, "btn btn-sm btn-primary");

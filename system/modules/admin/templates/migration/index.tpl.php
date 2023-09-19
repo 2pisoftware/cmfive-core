@@ -20,7 +20,7 @@ use Carbon\Carbon; ?>
                         <?php
                         $active = true;
                         if (!empty($not_installed)) {
-                            echo '<li class="list-group-item list-group-item-action d-flex justify-content-between align-items-start active" id="not-installed-tab" data-bs-toggle="list" href="#not-installed" role="tab" aria-controls="not-installed">Not Installed</li>';
+                            echo '<li class="list-group-item list-group-item-action d-flex justify-content-between align-items-center active" id="not-installed-tab" data-bs-toggle="list" href="#not-installed" role="tab" aria-controls="not-installed">Not Installed</li>';
                             $active = false;
                         }
 
@@ -40,12 +40,16 @@ use Carbon\Carbon; ?>
                     </ul>
                 </div>
                 <div class="col-10">
-                    <?php echo HtmlBootstrap5::b("/admin-migration/rollbackbatch", "Rollback latest batch", "Are you sure you want to rollback migrations?", null, false, "btn btn-sm btn-danger"); ?>
                     <div class="tab-content">
                         <?php
                         $active = true;
                         if (!empty($not_installed)) {
                             echo '<div class="tab-pane active" id="not-installed" role="tabpanel" aria-labelledby="not-installed-tab">';
+
+                            echo HtmlBootstrap5::b("/admin-migration/run/all?ignoremessages=false&prevpage=batch", "Install migrations", "Are you sure you want to install migrations?", null, false, "btn btn-sm btn-primary");
+                            echo HtmlBootstrap5::b("/admin-migration/rollbackbatch", "Rollback latest batch", "Are you sure you want to rollback migrations?", null, false, "btn btn-sm btn-danger");
+
+
                             $active = false;
                             $header = ["Name", "Description", "Pre Text", "Post Text"];
                             $data = [];
@@ -84,8 +88,9 @@ use Carbon\Carbon; ?>
                                 $target = "#batch" . $batch_no;
 
                                 echo '<div class="tab-pane' . ($active ? ' active' : '') . '" id="' . $control . '" role="tabpanel" aria-labelledby="' . $id . '">';
-                                $active = false;
+                                echo HtmlBootstrap5::b("/admin-migration/rollbackbatch", "Rollback latest batch", "Are you sure you want to rollback migrations?", null, false, "btn btn-sm btn-danger");
 
+                                $active = false;
                                 $header = ["Name", "Description", "Pre Text", "Post Text"];
                                 $data = [];
                                 foreach ($batched_migrations as $batched_migration) {
