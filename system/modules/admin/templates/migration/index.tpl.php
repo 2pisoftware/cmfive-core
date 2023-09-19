@@ -71,7 +71,7 @@ use Carbon\Carbon; ?>
                                 }
                             }
 
-                            echo HtmlBootstrap5::table($data, null, "table", $header);
+                            echo HtmlBootstrap5::table($data, null, "table-striped", $header);
                             echo '</div>';
                         }
 
@@ -96,8 +96,7 @@ use Carbon\Carbon; ?>
                                     $row[] = $batched_migration['posttext'];
                                     $data[] = $row;
                                 }
-                                $table =  HtmlBootstrap5::table($data, null, "table", $header);
-                                echo $table;
+                                echo HtmlBootstrap5::table($data, null, "table-striped", $header);
                                 echo '</div>';
                             }
                         }
@@ -165,7 +164,7 @@ use Carbon\Carbon; ?>
                                         $data[] = $row;
                                     }
 
-                                    echo HtmlBootstrap5::table($data, null, "table width-20", $header);
+                                    echo HtmlBootstrap5::table($data, null, "table-striped width-20", $header);
                                 }
 
                                 echo '</div>';
@@ -269,7 +268,7 @@ use Carbon\Carbon; ?>
                                     }
                                 }
 
-                                echo HtmlBootstrap5::table($data, null, "table", $header);
+                                echo HtmlBootstrap5::table($data, null, "table-striped", $header);
                                 echo '</div>';
                             }
                             ?>
