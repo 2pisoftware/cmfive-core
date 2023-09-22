@@ -2,6 +2,7 @@
 
 function edit_GET(Web $w)
 {
+    $w->setLayout(null);
     $p = $w->pathMatch("id");
     $processor_id = $p["id"];
 

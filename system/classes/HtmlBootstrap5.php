@@ -31,6 +31,23 @@ class HtmlBootstrap5 extends Html
         return '<div class="btn-group btn-group-sm" role="group">' . $content . '</div>';
     }
 
+    public static function dropdownButton($title, $contents, $class)
+    {
+        $content = '';
+        foreach ($contents as $item) {
+            $content .= '<li>' . $item . '</li>';
+        }
+
+        return '<div class="dropdown">
+            <button class="' . $class . ' dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">'
+            . $title .
+            '</button>
+            <ul class="dropdown-menu">'
+            . $content .
+            '</ul>
+        </div>';
+    }
+
     /**
      * Creates a complex form where each section can have
      * a different number of columns.
