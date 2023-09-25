@@ -75,7 +75,6 @@ class AuthService extends DbService
     }
     public function externalLogin($login, $password, $skip_session = false)
     {
-
         $user = $this->getUserForLogin($login);
         if (empty($user->id) || ($user->encryptPassword($password) !== $user->password) || $user->is_external == 0) {
             return null;
@@ -257,7 +256,7 @@ class AuthService extends DbService
      *
      * @return array[Lookup]
      */
-    public function getTitles() : array
+    public function getTitles(): array
     {
         return LookupService::getInstance($this->w)->getLookupByType("title");
     }
@@ -328,11 +327,51 @@ class AuthService extends DbService
             return false;
         }
 
+        // Whitelisted action, or white-bread login session
         if ((function_exists("anonymous_allowed") && anonymous_allowed($this->w, $path)) || ($this->user() && $this->user()->allowed($path))) {
             self::$_cache[$key] = $url ? $url : true;
             return self::$_cache[$key];
         }
 
+        // API token handling:
+        // If I have an authentication header: and it has a token -> else fallthrough to original logic
+        // ie: expecting [...curl...etc...] -H "Authorization: Bearer {token}"
+        /*
+                Note! If under Apache & HTTP_AUTHORIZATION is dropped, prove site HTPPS and then patch access:
+                RewriteEngine On
+                RewriteCond %{HTTP:Authorization} ^(.+)$
+                RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+                */
+
+        if (empty($this->user()) && (Config::get('system.use_api') === true) && !empty($_SERVER['HTTP_AUTHORIZATION'])) {
+            $speculativeToken = TokensService::getInstance($this->w)->getTokenFromAuthorisationHeader($_SERVER['HTTP_AUTHORIZATION']);
+            if (!empty($speculativeToken)) {
+                // call for a module to assert the token is valid
+                $hook_results = $this->w->callHook("auth", "get_auth_token_validation", $speculativeToken);
+            }
+
+            // if the token is invalid( jwt fails checks, len == 0 or somesuch) then we stop and don't continue
+            if (empty($speculativeToken) || empty($hook_results)) {
+                LogService::getInstance($this->w)->error("Key invalid: '" . ($_SERVER['HTTP_AUTHORIZATION'] ?? "!NONE!") . "' was provided");
+                ApiOutputService::getInstance($this->w)->apiRefuseMessage($path,"Token not valid");
+                self::$_cache[$key] = false;
+                return false;
+            }
+            foreach ($hook_results as $module => $validatingToken) {
+                if (is_a($validatingToken, "TokensPolicy") && $validatingToken->tokensAllowed($path)) {
+                    self::$_cache[$key] = $url ? $url : true;
+                    return self::$_cache[$key];
+                } else {
+                    LogService::getInstance($this->w)->info('Handler ' . $module . ' did not provide Auth');
+                }
+            }
+            ApiOutputService::getInstance($this->w)->apiRefuseMessage($path.":[".$speculativeToken."]", "Token not authenticated");
+            self::$_cache[$key] = false;
+            return false;
+        }
+
+
+        // Allow forced user-login if any module will vouch for web server asserted identity
         if (empty($this->user()) && (Config::get('system.use_passthrough_authentication') === true) && !empty($_SERVER['AUTH_USER'])) {
             // Get the username
             $username = explode('\\', $_SERVER["AUTH_USER"]);
@@ -346,6 +385,13 @@ class AuthService extends DbService
                     $this->forceLogin($user->id);
                     if ($user->allowed($path)) {
                         self::$_cache[$key] = $url ? $url : true;
+                        // Observed during work for token handler:
+                        // Here, we have forced login, 
+                        // But do we mean for it to still bounce 1x through auth/login as redirect?
+                        // In standing core releases, a _cache[key] 'return' is omitted here
+                        // = noting it was required by new tokens model!
+                        // Possibly this block should also have return thus:
+                        // return self::$_cache[$key]; 
                     }
                 } else {
                     LogService::getInstance($this->w)->info($module . ' did not provide passthrough user for:' . $username);
@@ -362,7 +408,7 @@ class AuthService extends DbService
      *
      * @return array of strings
      */
-    public function getAllRoles() : array
+    public function getAllRoles(): array
     {
         $this->_loadRoles();
         if (!$this->_roles) {

@@ -14,7 +14,8 @@ function migrationmessage_GET(Web $w)
     // Pretext Page File
     $w->ctx("migration_module", Request::string('module'));
 
-    $w->ctx("migration_filename", Request::string('filename'));
+    $migration_filename = Request::string('filename');
+    $w->ctx("migration_filename", $migration_filename );
 
     $migration_path = Request::string('path');
 
@@ -28,7 +29,7 @@ function migrationmessage_GET(Web $w)
             $migration_preText = $migration->preText();
             $w->ctx("migration_preText", $migration_preText);
         } else {
-            $w->error("Migration Class not found for message", "/admin-migrations#batch");
+            $w->error("Migration Class not found for message", "/admin-migration#batch");
         }
     }
 }

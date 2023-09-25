@@ -157,7 +157,7 @@ class Web
 
     private function getHostname()
     {
-        return $this->getRequestHeader('HTTP_HOST');
+        return $this->getRequestHeader("HTTP_X_FORWARDED_HOST", $this->getRequestHeader('HTTP_HOST'));
     }
 
     private function getRequestHeader($header, $default = '')
@@ -732,7 +732,7 @@ class Web
             if (Config::get('system.csrf.enabled') === true) {
                 $allowed = Config::get('system.csrf.protected');
                 if (!empty($allowed[$this->_module]) || (!empty($this->_submodule) && !empty($allowed[$this->_module . '-' . $this->_submodule]))) {
-                    if (in_array($this->_action, $allowed[$this->_module]) || (!empty($this->_submodule) && in_array($this->_action, $allowed[$this->_module . '-' . $this->_submodule]))) {
+                    if (in_array($this->_action, $allowed[$this->_module] ?? []) || (!empty($this->_submodule) && in_array($this->_action, $allowed[$this->_module . '-' . $this->_submodule] ?? []))) {
                         // If we get here then we are configured to enforce CSRF checking
                         LogService::getInstance($this)->debug("Checking CSRF");
                         try {

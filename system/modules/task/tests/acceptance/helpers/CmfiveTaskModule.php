@@ -1,6 +1,6 @@
 <?php
 
-namespace Helper;
+namespace Tests\Support\Helper;
 
 class CmfiveTaskModule extends \Codeception\Module
 {
@@ -231,7 +231,7 @@ class CmfiveTaskModule extends \Codeception\Module
      */
     public function deleteTask($I, $url)
     {
-        $I->amOnURL($url);
+        $I->amOnPage($url);
         $I->click('Delete');
         $I->acceptPopup();
     }
