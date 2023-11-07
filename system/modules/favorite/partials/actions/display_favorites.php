@@ -1,6 +1,6 @@
 <?php
 
-namespace System\Modules\Favorite;
+// namespace System\Modules\Favorite;
 
 function display_favorites(\Web $w)
 {
