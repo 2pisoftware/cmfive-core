@@ -6,11 +6,12 @@
 @import 'bootstrap_overrides';
 
 // Required
-@import "~bootstrap/scss/functions";
-@import "~bootstrap/scss/variables";
-@import "~bootstrap/scss/mixins";
-@import "~bootstrap/scss/utilities";
-@import "~bootstrap/scss/bootstrap-grid";
+@import 'bootstrap/scss/mixins';
+@import 'bootstrap/scss/functions';
+@import 'bootstrap/scss/variables';
+@import 'bootstrap/scss/maps';
+@import 'bootstrap/scss/utilities';
+@import "bootstrap/scss/bootstrap-grid";
 
 // Optional bootstrap extras
 $accordion-button-active-icon: $accordion-button-icon;
@@ -53,6 +54,9 @@ $accordion-button-active-icon: $accordion-button-icon;
 }
 
 // Tom Select styles
+$input-border-color: $mid-grey !default;
+$input-bg: $light-grey !default;
+
 @import '~tom-select/src/scss/tom-select.bootstrap5.scss';
 
 // There is a collision in styles between quill and tom-select - this is a patch for this:
