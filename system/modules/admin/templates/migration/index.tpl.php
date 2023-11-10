@@ -241,28 +241,37 @@ use Carbon\Carbon; ?>
                         <div class="tab-content">
                             <script>
                                 // set default module selection for seed creation modal based on currently selected module in seeds_list
-                                document.addEventListener("DOMContentLoaded", function() {
-                                    var create_seed_button = document.getElementById("create-seed");
-                                    var seeds_list = document.getElementById("seeds_list");
+                                document.addEventListener('DOMContentLoaded', function() {
+                                    var create_seed = document.getElementById('create-seed');
+                                    var seeds_list = document.getElementById('seeds_list');
 
-                                    const setDefaultSelectedModule = function() {
+                                    function setDefaultSelectedModule() {
                                         // find <li> in seeds_list that has "active" as a class
-                                        var active_module = seeds_list.querySelector(".active");
+                                        var selection = seeds_list.querySelector('.active');
 
-                                        // get moduleName from active_module innerHTML
-                                        // innerHTML of <li> in seeds_list contains `span` for installed seed count badges,
-                                        // so split on `<span` and grab the first element of the produced array
-                                        var moduleName = active_module.innerHTML.split("<span")[0].toLowerCase();
+                                        // get moduleName from selection innerHTML
+                                        // innerHTML of selection contains `span` for installed seed count badges,
+                                        // so split on `<span` and grab the first element of the resulting array
+                                        var moduleName = selection.innerHTML.split('<span')[0].toLowerCase();
 
-                                        // set data-modal-target on create_seed_button to include active-module param in GET request to createseed.php action
-                                        create_seed_button.dataset.modalTarget = "/admin-migration/createseed?active-module=" + moduleName;
+                                        // regex to match the value of create_seed's data-modal-target `default-selection` request param
+                                        var selection_value = /(?<=default-selection=)[^&]+/;
+
+                                        // get a shorthand copy of create_seed's data-modal-target attribute value (a relative url)
+                                        var modalTarget = create_seed.dataset.modalTarget;
+
+                                        // update/set create_seed's default-selection request param
+                                        create_seed.dataset.modalTarget =
+                                            modalTarget.includes('default-selection')
+                                                ? modalTarget.replace(selection_value, moduleName)
+                                                : modalTarget + `${modalTarget.includes('?') ? '&' : '?'}default-selection=${moduleName}`;
                                     }
 
                                     // set default selected module on page load
                                     setDefaultSelectedModule();
 
                                     // add setDefaultSelectedModule to seeds_list click event
-                                    // when active module changes, default selected module for create_seed_button is updated
+                                    // when seeds_list selection changes, update create_seed's `default-selection` request param
                                     seeds_list.addEventListener("click", setDefaultSelectedModule);
                                 });
                             </script>

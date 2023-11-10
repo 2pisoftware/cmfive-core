@@ -6,26 +6,37 @@ function createseed_GET(Web $w) {
 	$w->setLayout('layout-bootstrap-5');
 
 	$w->out(
-		HtmlBootstrap5::multiColForm([
-			'Create a seed' => [
-				[
-					(new Select([
-						"id|name" => "module",
-						'label' => 'Module',
-						'selected_option' => Request::string('active-module') ?? null,
-						'options' => $w->modules(),
-						'required' => true
-					])),
-				],
-				[
-					(new \Html\Form\InputField([
-						"id|name" => "name",
-						'label' => 'Name',
-						'required' => true
-					]))
+		HtmlBootstrap5::multiColForm(
+			[
+				'Create a seed' => [
+					[
+						new Select(
+							[
+								"id|name" => "module",
+								'label' => 'Module',
+								'selected_option' => Request::string('default-selection') ?? null,
+								'options' => $w->modules(),
+								'required' => true
+							]
+						)
+					],
+					[
+						new \Html\Form\InputField(
+							[
+								"id|name" => "name",
+								'label' => 'Name',
+								'required' => true,
+
+								'pattern' => '^[a-zA-Z_\x80-\xff][a-zA-Z0-9_\s+\x80-\xff]*$',
+								'title' => 'Must be a letter or underscore followed by letters, numbers, underscores, or spaces'
+							]
+						)
+					]
 				]
-			]
-		], '/admin-migration/createseed'));
+			],
+			'/admin-migration/createseed'
+		)
+	);
 }
 
 function createseed_POST(Web $w) {
@@ -37,27 +48,27 @@ function createseed_POST(Web $w) {
 		$w->error('Missing data', '/admin-migration#seed');
 	}
 
-	// split on spaces ensure camel case
-	$name = implode("", array_map('ucfirst', preg_split('/\s+/', $name)));
+	// matches a letter/underscore followed by letters/underscores/numbers/spaces
+	$valid_string = '/^[a-zA-Z_\x80-\xff][a-zA-Z0-9_\s+\x80-\xff]*$/';
 
-	// ensure name is a valid php class name (excluding php keyword restrictions)
-	// if there are invalid characters, underline them in the error message banner
-	// valid class name regex: /^[a-zA-Z_\x80-\xff][a-zA-Z0-9_\x80-\xff]*$/
-	// see: https://www.php.net/manual/en/language.oop5.basic.php
-	if (!preg_match('/^[a-zA-Z_\x80-\xff][a-zA-Z0-9_\x80-\xff]*$/', $name)) {
-		$invalid_character_regex = '/(^[^a-zA-Z_\x80-\xff])|([^a-zA-Z0-9_\x80-\xff])/';
+	// matches any character that would cause the string to be invalid
+	$invalid_characters = '/(^[^a-zA-Z_\x80-\xff])|([^a-zA-Z0-9_\s+\x80-\xff])/';
 
-		// Wrap all invalid characters with a span to apply the red squiggly underline class
+	if (!preg_match($valid_string, $name)) {
+		// wrap all invalid characters with an emphasis tag and apply the red squiggly underline class
 		$name = preg_replace_callback(
-			$invalid_character_regex,
+			$invalid_characters,
 			function ($matches) {
-				return '<span class="red-squiggly-underline">' . $matches[0] . '</span>';
+				return '<em class="red-squiggly-underline" aria-invalid="true" aria-live="polite">' . $matches[0] . '</em>';
 			},
 			$name
 		);
 
-		$w->error("Invalid database seed name: " . $name, "/admin-migration#seed");
+		$w->error('Invalid migration name: ' . $name, '/admin-migration#individual');
 	}
+
+	// remove whitespace, and ensure camel case
+	$name = implode('', array_map('ucfirst', preg_split('/\s+/', $name)));
 
 	$response = MigrationService::getInstance($w)->createMigrationSeed($module, $name);
 
