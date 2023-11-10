@@ -127,10 +127,10 @@ use Carbon\Carbon; ?>
 
                                 // installed and non-installed migrations badges
                                 $installed_count = is_array($installed[$module]) ? count($installed[$module]) : 0;
-                                echo '<div class="right">';
-                                echo $installed_count > 0 ? '<span class="badge bg-success rounded-pill">' . $installed_count . '</span>' : '';
-                                echo (count($available_in_module) - $installed_count) > 0 ? '<span class="badge bg-warning rounded-pill" style="margin-left: 5px">' . (count($available_in_module) - $installed_count) . '</span>' : '';
-                                echo '</div>';
+                                echo '<span class="right" role="status" aria-label="installation status">';
+                                echo $installed_count > 0 ? '<span class="badge bg-success rounded-pill" aria-label="installed">' . $installed_count . '</span>' : '';
+                                echo (count($available_in_module) - $installed_count) > 0 ? '<span class="badge bg-warning rounded-pill" style="margin-left: 5px" aria-label="not installed">' . (count($available_in_module) - $installed_count) . '</span>' : '';
+                                echo '</span>';
 
                                 echo '</li>';
                             }
@@ -227,10 +227,10 @@ use Carbon\Carbon; ?>
                                 $active = false;
 
                                 // installed and non-installed migrations badges
-                                echo '<div class="right">';
-                                echo $seed_status_counts[$module][0] > 0 ? '<span class="badge bg-success rounded-pill">' . $seed_status_counts[$module][0] . '</span>' : '';
-                                echo $seed_status_counts[$module][1] > 0 ? '<span class="badge bg-warning rounded-pill" style="margin-left: 5px">' . $seed_status_counts[$module][1] . '</span>' : '';
-                                echo '</div>';
+                                echo '<span class="right" role="status" aria-label="installation status">';
+                                echo $seed_status_counts[$module][0] > 0 ? '<span class="badge bg-success rounded-pill" aria-label="installed">' . $seed_status_counts[$module][0] . '</span>' : '';
+                                echo $seed_status_counts[$module][1] > 0 ? '<span class="badge bg-warning rounded-pill" style="margin-left: 5px"  aria-label="not installed">' . $seed_status_counts[$module][1] . '</span>' : '';
+                                echo '</span>';
 
                                 echo '</li>';
                             }
@@ -250,9 +250,9 @@ use Carbon\Carbon; ?>
                                         var active_module = seeds_list.querySelector(".active");
 
                                         // get moduleName from active_module innerHTML
-                                        // innerHTML of <li> in seeds_list contains `div` for installed seed count badges,
-                                        // so split on `<div` and grab the first element of the produced array
-                                        var moduleName = active_module.innerHTML.split("<div")[0].toLowerCase();
+                                        // innerHTML of <li> in seeds_list contains `span` for installed seed count badges,
+                                        // so split on `<span` and grab the first element of the produced array
+                                        var moduleName = active_module.innerHTML.split("<span")[0].toLowerCase();
 
                                         // set data-modal-target on create_seed_button to include active-module param in GET request to createseed.php action
                                         create_seed_button.dataset.modalTarget = "/admin-migration/createseed?active-module=" + moduleName;
