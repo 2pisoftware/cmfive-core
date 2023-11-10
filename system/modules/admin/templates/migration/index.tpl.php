@@ -129,7 +129,7 @@ use Carbon\Carbon; ?>
                                 $installed_count = is_array($installed[$module]) ? count($installed[$module]) : 0;
                                 echo '<div class="right">';
                                 echo $installed_count > 0 ? '<span class="badge bg-success rounded-pill">' . $installed_count . '</span>' : '';
-                                echo (count($available_in_module) - $installed_count) > 0 ? '<span class="badge bg-warning rounded-pill">' . (count($available_in_module) - $installed_count) . '</span>' : '';
+                                echo (count($available_in_module) - $installed_count) > 0 ? '<span class="badge bg-warning rounded-pill" style="margin-left: 5px">' . (count($available_in_module) - $installed_count) . '</span>' : '';
                                 echo '</div>';
 
                                 echo '</li>';
@@ -229,7 +229,7 @@ use Carbon\Carbon; ?>
                                 // installed and non-installed migrations badges
                                 echo '<div class="right">';
                                 echo $seed_status_counts[$module][0] > 0 ? '<span class="badge bg-success rounded-pill">' . $seed_status_counts[$module][0] . '</span>' : '';
-                                echo $seed_status_counts[$module][1] > 0 ? '<span class="badge bg-warning rounded-pill">' . $seed_status_counts[$module][1] . '</span>' : '';
+                                echo $seed_status_counts[$module][1] > 0 ? '<span class="badge bg-warning rounded-pill" style="margin-left: 5px">' . $seed_status_counts[$module][1] . '</span>' : '';
                                 echo '</div>';
 
                                 echo '</li>';
@@ -239,7 +239,28 @@ use Carbon\Carbon; ?>
                     </div>
                     <div class="col-10">
                         <div class="tab-content">
-                            <?php echo HtmlBootstrap5::box('/admin-migration/createseed', 'Create a seed', true, false, null, null, null, null, "btn btn-sm btn-primary"); ?>
+                            <script>
+                                // set default module for seed creation based on currently active module in seeds_list
+                                document.addEventListener("DOMContentLoaded", function() {
+                                    var create_seed_button = document.getElementById("create-seed");
+                                    var seeds_list = document.getElementById("seeds_list");
+
+                                    const updateDefaultSelectedModule = () => {
+                                        // find active module in seeds_list
+                                        var active_module = seeds_list.querySelector(".active");
+
+                                        // get moduleName from active_module innerHTML
+                                        var moduleName = active_module.innerHTML.split("<")[0].toLowerCase();
+
+                                        // set data-modal-target on create_seed_button to include default selected module in GET request
+                                        create_seed_button.dataset.modalTarget = "/admin-migration/createseed?default-selected-module=" + moduleName;
+                                    }
+
+                                    seeds_list.addEventListener("click", updateDefaultSelectedModule);
+                                    updateDefaultSelectedModule();
+                                });
+                            </script>
+                            <?php echo HtmlBootstrap5::box('/admin-migration/createseed', 'Create a seed', true, false, null, null, null, "create-seed", "btn btn-sm btn-primary"); ?>
                             <?php
                             $active = true;
                             foreach ($seeds as $module => $available_seeds) {

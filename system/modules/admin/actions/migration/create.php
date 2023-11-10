@@ -26,7 +26,7 @@ function create_POST(Web $w) {
 	$p = $w->pathMatch("module");
 	
 	if (empty($p['module']) || !in_array($p['module'], $w->modules())) {
-		$w->error("Missing specified module or it doesn't exist", "/admin-migration");
+		$w->error("Missing specified module or it doesn't exist", "/admin-migration#individual");
 	}
 	
 	$name = Request::string('name', 'migration');
@@ -47,10 +47,10 @@ function create_POST(Web $w) {
 			return '<span class="red-squiggly-underline">' . $matches[0] . '</span>';
 		}, $name);
 
-		$w->error("Invalid migration name: " . $name, "/admin-migration");
+		$w->error("Invalid migration name: " . $name, "/admin-migration#individual");
 	}
 
 	$response = MigrationService::getInstance($w)->createMigration($p['module'], $name);
 	
-	$w->msg($response, "/admin-migration");
+	$w->msg($response, "/admin-migration#individual");
 }
