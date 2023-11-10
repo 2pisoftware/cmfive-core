@@ -12,7 +12,7 @@ function createseed_GET(Web $w) {
 					(new Select([
 						"id|name" => "module",
 						'label' => 'Module',
-						'selected_option' => $_GET['default-selected-module'],
+						'selected_option' => $_GET['active-module'] ?? null,
 						'options' => $w->modules(),
 						'required' => true
 					])), //["Module", "select", "module", null, $w->modules()]],

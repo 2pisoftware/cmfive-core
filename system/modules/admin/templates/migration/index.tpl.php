@@ -240,24 +240,30 @@ use Carbon\Carbon; ?>
                     <div class="col-10">
                         <div class="tab-content">
                             <script>
-                                // set default module for seed creation based on currently active module in seeds_list
+                                // set default module selection for seed creation modal based on currently selected module in seeds_list
                                 document.addEventListener("DOMContentLoaded", function() {
                                     var create_seed_button = document.getElementById("create-seed");
                                     var seeds_list = document.getElementById("seeds_list");
 
-                                    const updateDefaultSelectedModule = () => {
-                                        // find active module in seeds_list
+                                    const setDefaultSelectedModule = function() {
+                                        // find <li> in seeds_list that has "active" as a class
                                         var active_module = seeds_list.querySelector(".active");
 
                                         // get moduleName from active_module innerHTML
-                                        var moduleName = active_module.innerHTML.split("<")[0].toLowerCase();
+                                        // innerHTML of <li> in seeds_list contains `div` for installed seed count badges,
+                                        // so split on `<div` and grab the first element of the produced array
+                                        var moduleName = active_module.innerHTML.split("<div")[0].toLowerCase();
 
-                                        // set data-modal-target on create_seed_button to include default selected module in GET request
-                                        create_seed_button.dataset.modalTarget = "/admin-migration/createseed?default-selected-module=" + moduleName;
+                                        // set data-modal-target on create_seed_button to include active-module param in GET request to createseed.php action
+                                        create_seed_button.dataset.modalTarget = "/admin-migration/createseed?active-module=" + moduleName;
                                     }
 
-                                    seeds_list.addEventListener("click", updateDefaultSelectedModule);
-                                    updateDefaultSelectedModule();
+                                    // set default selected module on page load
+                                    setDefaultSelectedModule();
+
+                                    // add setDefaultSelectedModule to seeds_list click event
+                                    // when active module changes, default selected module for create_seed_button is updated
+                                    seeds_list.addEventListener("click", setDefaultSelectedModule);
                                 });
                             </script>
                             <?php echo HtmlBootstrap5::box('/admin-migration/createseed', 'Create a seed', true, false, null, null, null, "create-seed", "btn btn-sm btn-primary"); ?>
