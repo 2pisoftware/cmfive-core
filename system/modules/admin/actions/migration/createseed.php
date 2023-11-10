@@ -12,17 +12,17 @@ function createseed_GET(Web $w) {
 					(new Select([
 						"id|name" => "module",
 						'label' => 'Module',
-						'selected_option' => $_GET['active-module'] ?? null,
+						'selected_option' => Request::string('active-module') ?? null,
 						'options' => $w->modules(),
 						'required' => true
-					])), //["Module", "select", "module", null, $w->modules()]],
+					])),
 				],
 				[
 					(new \Html\Form\InputField([
 						"id|name" => "name",
 						'label' => 'Name',
 						'required' => true
-					])) //"Name", "text", "name"]]
+					]))
 				]
 			]
 		], '/admin-migration/createseed'));
@@ -37,8 +37,8 @@ function createseed_POST(Web $w) {
 		$w->error('Missing data', '/admin-migration#seed');
 	}
 
-	// split on spaces, periods, and dashes, and ensure camel case
-	$name = implode("", array_map('ucfirst', preg_split('/[\s\.\-]/', $name)));
+	// split on spaces ensure camel case
+	$name = implode("", array_map('ucfirst', preg_split('/\s+/', $name)));
 
 	// ensure name is a valid php class name (excluding php keyword restrictions)
 	// if there are invalid characters, underline them in the error message banner

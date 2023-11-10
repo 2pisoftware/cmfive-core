@@ -266,8 +266,9 @@ use Carbon\Carbon; ?>
                                     seeds_list.addEventListener("click", setDefaultSelectedModule);
                                 });
                             </script>
-                            <?php echo HtmlBootstrap5::box('/admin-migration/createseed', 'Create a seed', true, false, null, null, null, "create-seed", "btn btn-sm btn-primary"); ?>
                             <?php
+                            echo HtmlBootstrap5::box('/admin-migration/createseed', 'Create a seed', true, false, null, null, null, "create-seed", "btn btn-sm btn-primary");
+
                             $active = true;
                             foreach ($seeds as $module => $available_seeds) {
                                 $id = $module . "-tab-seed";
