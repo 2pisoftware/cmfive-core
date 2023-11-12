@@ -131,3 +131,7 @@ table.tablesorter {
         width: 20%;
     }
 }
+
+.center-3rd-column {
+    @include center-nth-column(3);
+}

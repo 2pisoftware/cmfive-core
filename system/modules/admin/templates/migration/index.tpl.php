@@ -246,32 +246,22 @@ use Carbon\Carbon; ?>
                                     var seeds_list = document.getElementById('seeds_list');
 
                                     function setDefaultSelectedModule() {
-                                        // find <li> in seeds_list that has "active" as a class
-                                        var selection = seeds_list.querySelector('.active');
+                                        var active = seeds_list.querySelector('.active');
+                                        var module_name = active.innerHTML.split('<')[0].toLowerCase();
 
-                                        // get moduleName from selection innerHTML
-                                        // innerHTML of selection contains `span` for installed seed count badges,
-                                        // so split on `<span` and grab the first element of the resulting array
-                                        var moduleName = selection.innerHTML.split('<span')[0].toLowerCase();
-
-                                        // regex to match the value of create_seed's data-modal-target `default-selection` request param
+                                        var url = create_seed.dataset.modalTarget;
                                         var selection_value = /(?<=default-selection=)[^&]+/;
 
-                                        // get a shorthand copy of create_seed's data-modal-target attribute value (a relative url)
-                                        var modalTarget = create_seed.dataset.modalTarget;
-
-                                        // update/set create_seed's default-selection request param
-                                        create_seed.dataset.modalTarget =
-                                            modalTarget.includes('default-selection')
-                                                ? modalTarget.replace(selection_value, moduleName)
-                                                : modalTarget + `${modalTarget.includes('?') ? '&' : '?'}default-selection=${moduleName}`;
+                                        create_seed.dataset.modalTarget = url.match(selection_value) ?
+                                            url.replace(selection_value, module_name) :
+                                            url + `${url.includes('?') ? '&' : '?'}default-selection=${module_name}`;
                                     }
 
                                     // set default selected module on page load
                                     setDefaultSelectedModule();
 
                                     // add setDefaultSelectedModule to seeds_list click event
-                                    // when seeds_list selection changes, update create_seed's `default-selection` request param
+                                    // when seeds_list module selection changes, update create_seed's default-selection request param
                                     seeds_list.addEventListener("click", setDefaultSelectedModule);
                                 });
                             </script>
@@ -310,7 +300,7 @@ use Carbon\Carbon; ?>
                                     }
                                 }
 
-                                echo HtmlBootstrap5::table($data, null, "table-striped", $header);
+                                echo HtmlBootstrap5::table($data, null, "table-striped center-3rd-column", $header);
                                 echo '</div>';
                             }
                             ?>

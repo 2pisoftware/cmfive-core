@@ -10,14 +10,17 @@ function create_GET(Web $w) {
 	$form = [
 		'Enter the migration name' => [
 			[
-				(new \Html\Form\InputField([
-					"id|name" => "name",
-					'label' => 'Name',
-					'required' => true,
-					// see comment in create_POST
-					'pattern' => '^[a-zA-Z_\x80-\xff][a-zA-Z0-9_\s+\x80-\xff]*$',
-					'title' => 'Must be a letter or underscore followed by letters, numbers, underscores, or spaces'
-				]))
+				(
+					new \Html\Form\InputField(
+						[
+							"id|name" => "name",
+							'label' => 'Name',
+							'required' => true,
+							'pattern' => '^[a-zA-Z_\x80-\xff][a-zA-Z0-9_\s+\x80-\xff]*$',
+							'title' => 'Must be a letter or underscore followed by letters, numbers, underscores, or spaces'
+						]
+					)
+				)
 			]
 		]
 	];
