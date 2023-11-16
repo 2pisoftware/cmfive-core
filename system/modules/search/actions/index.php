@@ -2,7 +2,12 @@
 
 function index_ALL(Web &$w) {
     // $w->out(print_r(SearchService::getInstance($w)->getIndexes(),true));
-    $w->ctx("indexes", SearchService::getInstance($w)->getIndexes());
+    $indexes = SearchService::getInstance($w)->getIndexes();
+    $selIndexes = [];
+    foreach ($indexes as $k => $v) {
+        $selIndexes[] = [$k,$v];
+    }
+    $w->ctx("indexes", $selIndexes);
 
     $tags = [];
     if (Config::get('tag.active') == true) {

@@ -1,6 +1,6 @@
 {
   "name": "cmfive-core",
-  "version": "5.0.0",
+  "version": "5.0.2",
   "description": "Cmfive core new layout project",
   "private": true,
   "scripts": {
