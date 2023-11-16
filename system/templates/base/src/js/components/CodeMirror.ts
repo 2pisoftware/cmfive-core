@@ -27,8 +27,8 @@ export class CodeMirror {
                     parent: cm as HTMLInputElement,
                 });
                 
-                cm.removeEventListener('update', (event) => CodeMirror.updateCallback(editorView, content, event));
-                cm.addEventListener('update', (event) => CodeMirror.updateCallback(editorView, content, event));
+                cm.removeEventListener('update', (event) => CodeMirror.updateCallback(editorView, event));
+                cm.addEventListener('update', (event) => CodeMirror.updateCallback(editorView, event));
 
                 // CodeMirror.views.push(editorView);
 
@@ -39,7 +39,7 @@ export class CodeMirror {
         }
     }
 
-    static updateCallback(editorView: EditorView, content, event) {
+    static updateCallback(editorView: EditorView, event) {
         let state = editorView.state
         let transaction = state.update({changes: {from: 0, to: state.doc.length, insert: event.detail}})
         editorView.update([transaction])
