@@ -15,8 +15,8 @@ function groupmember_GET(Web $w)
     foreach ($users as $user) {
         // We do not list ourselves as an option 
         if ($user->id != $option["group_id"]) {
-            $name = $user->is_group == 1 ? strtoupper($user->login) : $user->getContact()->getFullName();
-            $select[!empty($user->is_group)][$name] = array($name, $user->id);
+            $name = $user->is_group == 1 ? strtoupper($user->login) : $user->getContact()->getFullName() . " (" . (!empty($user->getContact()->email) ? $user->getContact()->email : "no email") . ")";
+            $select[!empty($user->is_group)][$user->id] = array($name, $user->id);
         }
     }
 
