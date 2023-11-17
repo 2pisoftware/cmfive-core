@@ -1,10 +1,12 @@
 <?php
 
-function create_GET(Web $w) {
+function create_GET(Web $w){
+	$w->setLayout('layout-bootstrap-5');
+
 	$p = $w->pathMatch("module");
 	
 	if (empty($p['module']) || !in_array($p['module'], $w->modules())) {
-		$w->out("Missing specified module or it doesn't exist");
+		$w->error("Missing specified module or it doesn't exist", "/admin-migration#individual");
 	}
 	
 	$form = [

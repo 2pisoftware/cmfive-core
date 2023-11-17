@@ -2,7 +2,8 @@
 $theme_setting = AuthService::getInstance($w)->getSettingByKey('bs5-theme');
 ?>
 <!DOCTYPE html>
-<html class="theme theme--<?php echo !empty($theme_setting->id) ? $theme_setting->setting_value : 'dark'; ?>">
+<html class="theme theme--<?php echo !empty($theme_setting->id) ? $theme_setting->setting_value : 'dark'; ?>"
+    data-layout="bs5">
 
 <head>
     <meta charset="utf-8" />

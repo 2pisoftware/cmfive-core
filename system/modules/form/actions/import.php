@@ -1,22 +1,49 @@
 <?php
 
-function import_GET(Web $w) {
+use Html\Form\InputField\File;
+use Html\Form\InputField;
 
+function import_GET(Web $w) {
+	$w->setLayout('layout-bootstrap-5');
+	
 	$w->ctx('title',"Form Import");
 
-	$_form = [
-		'Select form zip file' => [
-			[(new \Html\Form\InputField\File())->setName("file")->setId("file")->setAttribute("capture", "camera")], // ["File", "file", "file"]
-			[[" Form title override (Optional)", "text", "title_override"]]
-		]
-	];
+	// $_form = [
+	// 	'Select form zip file' => [
+	// 		[(new File())->setName("file")->setId("file")->setAttribute("capture", "camera")], // ["File", "file", "file"]
+	// 		[["Form title override (Optional)", "text", "title_override"]]
+	// 	]
+	// ];
 
-	$w->ctx("form", Html::multiColForm($_form, "/form/import", "POST", "Save"));
+	// $w->ctx("form", Html::multiColForm($_form, "/form/import"));
+
+	$w->out(
+		HtmlBootstrap5::multiColForm(
+			[
+				'Select form zip file' => [
+					[
+						new File(
+							[
+								'id|name' => 'file'
+							]
+						)
+					],
+					[
+						new InputField(
+							[
+								'id|name' => 'title_override', 
+								'label' => 'Form title override (Optional)'
+							]
+						)
+					]
+				]
+			]
+		),
+		"/form/import"
+	);
 }
 
 function import_POST(Web $w) {
-
-
 	if(isset($_FILES['file'])) {
 	    $filename = $_FILES['file']['name'];
 	    $source = $_FILES['file']['tmp_name'];
@@ -30,10 +57,12 @@ function import_POST(Web $w) {
 	    $target = ROOT_PATH .'/uploads/form/' . $name[0] . '-' . time() . '/';  
 	     
 	    // Ensures that the correct file was chosen
-	    $accepted_types = array('application/zip', 
-	                                'application/x-zip-compressed', 
-	                                'multipart/x-zip', 
-	                                'application/s-compressed');
+	    $accepted_types = [
+			'application/zip', 
+	        'application/x-zip-compressed', 
+	        'multipart/x-zip', 
+	        'application/s-compressed'
+		];
 	 
 	    foreach($accepted_types as $mime_type) {
 	        if($mime_type == $type) {
@@ -46,7 +75,7 @@ function import_POST(Web $w) {
 	    $okay = strtolower($name[1]) == 'zip' ? true: false;
 	 
 	    if(!$okay) {
-	          $w->error("Please choose a zip file","/form");       
+	          $w->error("Please choose a zip file", "/form");       
 	    }
 	    
 	    mkdir($target);
@@ -61,15 +90,15 @@ function import_POST(Web $w) {
 		         
 		        unlink($saved_file_location);
 		    } else {
-		    	$w->error('failed opening zip',"/form");
+		    	$w->error('failed opening zip', "/form");
 		    }
 	    } else {
-	        $w->error("Failed to save file upload","/form");
+	        $w->error("Failed to save file upload", "/form");
 	    }
 	     
 	    $content = json_decode(file_get_contents($target.$name[0]));
 	    if (empty($content)) {
-	    	$w->error('no content found. PLease ensure that your zip filename matches your report name');
+	    	$w->error('no content found. PLease ensure that your zip filename matches your report name', '/form');
 	    }
 
 	    //delete file upload from directory
@@ -88,8 +117,8 @@ function import_POST(Web $w) {
 	    	FormService::getInstance($w)->importForm($new_title,$content);
 
 	    }
-	    $w->msg('Form import completed','/form');
+	    $w->msg('Form import completed', '/form');
 	} else {
-		$w->error('No upload found','/form');
+		$w->error('No upload found', '/form');
 	}
 }

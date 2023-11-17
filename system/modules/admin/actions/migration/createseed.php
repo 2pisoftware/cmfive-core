@@ -1,6 +1,7 @@
 <?php
 
 use Html\Form\Select;
+use Html\Form\InputField;
 
 function createseed_GET(Web $w) {
 	$w->setLayout('layout-bootstrap-5');
@@ -21,7 +22,7 @@ function createseed_GET(Web $w) {
 						)
 					],
 					[
-						new \Html\Form\InputField(
+						new InputField(
 							[
 								"id|name" => "name",
 								'label' => 'Name',
