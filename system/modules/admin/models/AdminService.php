@@ -190,7 +190,7 @@ class AdminService extends DbService
             $w->menuLink("admin/users", "List Users", $nav);
             $w->menuLink("admin/groups", "List Groups", $nav);
             $w->menuLink('admin-maintenance', 'Maintenance', $nav);
-            $w->menuLink("admin/lookup", "Lookup", $nav);
+            $w->menuLink("admin-lookups", "Lookup", $nav);
             $w->menuLink("admin-templates", "Templates", $nav);
             // $w->menuLink("admin/composer", "Update composer.json", $nav, null, "_blank");
             $w->menuLink("admin-migration", "Migrations", $nav);
