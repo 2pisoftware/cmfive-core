@@ -10,7 +10,7 @@ function edit_GET(Web &$w)
     $lookup = LookupService::getInstance($w)->getLookup($p['id']);
     $types = LookupService::getInstance($w)->getLookupTypes();
 
-    $w->out(HtmlBootstrap5::multiColForm([
+    $form = [
         (!empty($lookup->id) ? 'Edit' : 'Create') . ' Lookup Item' => [
             [
                 (new Select([
@@ -18,11 +18,7 @@ function edit_GET(Web &$w)
                     'selected_option' => $lookup->type ?? '',
                     'label' => 'Type',
                     'options' => $types,
-                ])),
-                (empty($lookup->id) ? (new \Html\Form\InputField\Text([
-                    'id|name' => 'ntype',
-                    'label' => 'or Add New Type',
-                ])) : '')
+                ]))
             ],
             [
                 (new Text([
@@ -41,7 +37,16 @@ function edit_GET(Web &$w)
                 ]))
             ],
         ],
-    ], $w->localUrl("/admin-lookups/edit/" . (!empty($lookup->id) ? $lookup->id . '/' : '') . $p['type']), "POST", "Update"));
+    ];
+
+    if (empty($lookup->id)) {
+        array_push($form[(!empty($lookup->id) ? 'Edit' : 'Create') . ' Lookup Item'][0], (new \Html\Form\InputField\Text([
+            'id|name' => 'ntype',
+            'label' => 'or Add New Type',
+        ])));
+    }
+
+    $w->out(HtmlBootstrap5::multiColForm($form, $w->localUrl("/admin-lookups/edit/" . (!empty($lookup->id) ? $lookup->id . '/' : '') . $p['type']), "POST", empty($lookup->id) ? "Create" : "Update"));
 }
 
 function edit_POST(Web &$w)
@@ -60,5 +65,5 @@ function edit_POST(Web &$w)
     }
 
     $lookup->insertOrUpdate();
-    $w->msg('Lookup Item ' . (!empty($lookup->id) ? 'updated' : 'created'), "/admin-lookups/index?type=" . $type);
+    $w->msg('Lookup Item ' . (!empty($id) ? 'updated' : 'created'), "/admin-lookups/index?type=" . $type);
 }

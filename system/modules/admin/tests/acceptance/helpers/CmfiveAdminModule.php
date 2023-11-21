@@ -70,32 +70,33 @@ class CmfiveAdminModule extends \Codeception\Module
         $I->wait(1);
         $I->click("//div[@id='cmfive-modal']//button[contains(text(),'Update')]");
         $I->wait(1);
-        $I->see('Lookup Item edited');
+        $I->see('Lookup Item updated');
     }
 
     public function createLookup($I, $type, $code, $title)
     {
         $I->clickCmfiveNavbar($I, 'Admin', 'Lookup');
-        $I->click('New Item');
-        $I->click("//div[@id='tab-2']//label[@class='small-12 columns']//select[@id='type']");
-        $I->click("//label[@class='small-12 columns']//option[@value='title'][contains(text(),'title')]");
+        $I->click('Create Lookup');
+        // $I->click("//div[@id='tab-2']//label[@class='small-12 columns']//select[@id='type']");
+        // $I->click("//label[@class='small-12 columns']//option[@value='title'][contains(text(),'title')]");
+        $I->fillField("#title", "title");
         $I->fillField('#code', $code);
         $I->fillField('#title', $title);
         $I->click(".savebutton");
         $I->wait(1);
-        $I->see('Lookup Item added');
+        $I->see('Lookup Item created');
     }
 
     public function createLookupType($I, $type, $code, $title)
     {
         $I->clickCmfiveNavbar($I, 'Admin', 'Lookup');
-        $I->click('New Item');
+        $I->click('Create Lookup');
         $I->fillField('#ntype', $type);
         $I->fillField('#code', $code);
         $I->fillField('#title', $title);
         $I->click(".savebutton");
         $I->wait(1);
-        $I->see('Lookup Item added');
+        $I->see('Lookup Item created');
     }
 
     public function createUserGroup($I, $name)
