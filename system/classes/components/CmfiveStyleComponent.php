@@ -72,8 +72,8 @@ class CmfiveStyleComponent extends CmfiveComponent {
 				
 				if (!is_dir(ROOT_PATH . '/cache/css/')) {
 					mkdir(ROOT_PATH . '/cache/css/');
-					
 				}
+
 				// check if exists or make .htaccess with allow from all
 				if (!file_exists(ROOT_PATH . '/cache/css/.htaccess')) {
 					$access_file = fopen(ROOT_PATH . '/cache/css/.htaccess', 'w');
@@ -81,7 +81,7 @@ class CmfiveStyleComponent extends CmfiveComponent {
 					fclose($access_file);
 				}
 
-				file_put_contents(ROOT_PATH . '/cache/css/' . $this->_filename . '.css', $compiled_css);
+                file_put_contents(ROOT_PATH . '/cache/css/' . $this->_filename . '.css', $compiled_css->getCss());
 				$this->rel = 'stylesheet';
 				$this->href = '/cache/css/' . $this->_filename . '.css';
 				return parent::_include();
