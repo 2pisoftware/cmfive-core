@@ -1,5 +1,6 @@
-<?php echo HtmlBootstrap5::b("/channels-web/edit", "Add Web Channel", null, null, false, "btn btn-sm btn-primary"); ?>
-<?php echo HtmlBootstrap5::b("/channels-email/edit", "Add Email Channel", null, null, false, "btn btn-sm btn-primary"); ?>
+<?php echo HtmlBootstrap5::box("/channels-web/edit", "Add Web Channel", true, false, null, null, "isbox", null, "btn-sm btn-primary") ?>
+<?php echo HtmlBootstrap5::box("/channels-email/edit", "Add Email Channel", true, false, null, null, "isbox", null, "btn-sm btn-primary") ?>
+
 
 <?php if (!empty($channels)) : ?>
     <table class="tablesorter">
