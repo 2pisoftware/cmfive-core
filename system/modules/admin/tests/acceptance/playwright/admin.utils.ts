@@ -87,7 +87,12 @@ export class AdminHelper {
 
         await page.getByRole("link", {name: "New Item", exact: true}).click();
 
-        await page.getByLabel("or Add New Type").fill(type);
+        const type_dropdown = await page.locator("#type option", {hasText: type}).count();
+        if (type_dropdown == 0) {
+            await page.getByLabel("or Add New Type").fill(type);
+        } else {
+            await page.getByRole("combobox").selectOption(type);
+        }
         await page.getByLabel("Code").fill(code);
         await page.getByLabel("Title", { exact: true }).fill(lookup);
         await page.getByRole("button", {name: "Save"}).click();
