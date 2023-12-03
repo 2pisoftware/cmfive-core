@@ -29,6 +29,7 @@ function listattachments(\Web $w, $params)
             "attachment" => $attachment,
             "redirect" => $redirect,
             "hide_image_exif" => $params["hide_image_exif"] ?? false,
+            "hide_edit_restriction" => $params["hide_edit_restriction"] ?? false,
             "is_mutable" => $params["is_mutable"] ?? true,
         ], "file", "GET");
     }

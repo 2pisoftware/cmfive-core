@@ -163,7 +163,6 @@ class CmfiveAdminModule extends \Codeception\Module
         $I->wait(2);
         $I->click('Save');
         $I->see('Permissions are updated');
-
     }
 
     public function createTemplate($I, $title, $module, $category, $code)
@@ -176,11 +175,20 @@ class CmfiveAdminModule extends \Codeception\Module
         $I->fillField('#category', $category);
         $I->click('Save');
         $I->click('Template');
-        $I->wait(2);
+        $I->waitForElement('#template_title', 2);
         $I->fillField('#template_title', $title);
-        $I->executeJS("$('.CodeMirror')[0].CodeMirror.setValue(\"" . $code . "\")");
-        $I->wait(2);
-        $I->click("//div[@id='template']//button[@type='submit']");
+        if (!$I->isUsingBootstrap5($I)) {
+            $I->executeJS("$('.CodeMirror')[0].CodeMirror.setValue(\"" . $code . "\")");
+            $I->waitForElement("//div[@id='template']//button[@type='submit']", 2);
+            $I->click("//div[@id='template']//button[@type='submit']");
+        } else {
+            $I->executeJS(
+                "const customEvent = new CustomEvent('update', {detail: \"" . $code . "\"});"
+                 . "document.querySelector('.code-mirror-target').dispatchEvent(customEvent);"
+            );
+            $I->waitForElement("//div[@id='tab-2']//button[@type='submit']", 2);
+            $I->click("//div[@id='tab-2']//button[@type='submit']");
+        }
     }
 
     public function demoTemplate($I, $title)
