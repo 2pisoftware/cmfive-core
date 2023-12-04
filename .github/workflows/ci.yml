@@ -123,7 +123,12 @@ jobs:
           if [ $? -gt 0 ]; then
             echo "Admin module tests failed"
           fi
-
+        # Setup playwright
+      - name: Setup Playwright
+        run: |
+          cd test/playwright
+          npm i
+          npx playwright install
       # Run Acceptance Tests
       - name: "Confirm Codeception setup"
         run: |        
