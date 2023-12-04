@@ -127,8 +127,8 @@ jobs:
       - name: Setup Playwright
         run: |
           cd test/playwright
-          npm i
-          npx playwright install
+          npm ci
+          npx playwright install --with-deps
       # Run Acceptance Tests
       - name: "Confirm Codeception setup"
         run: |        
