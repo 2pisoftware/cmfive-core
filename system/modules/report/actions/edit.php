@@ -61,7 +61,7 @@ function edit_GET(Web &$w)
                 (new \Html\Form\Select([
                     "id|name" => "module",
                     "label" => "Module",
-                    "selected_option" => strtolower($report->module),
+                    "selected_option" => strtolower($report->module ?? ""),
                     "options" => ReportService::getInstance($w)->getModules(),
                 ])),
                 (new \Html\Form\Select([
