@@ -136,13 +136,12 @@ jobs:
       - name: "Run admin module tests"
         run: |
           ./test-cli.sh admin github
-          # docker exec nginx-php8.1 bash -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php tests module admin silent; exit \$?"
-          # if [ $? -gt 0 ]; then
-          #   echo "Admin module tests failed"
-          # fi
+          if [ $? -gt 0 ]; then
+            echo "Admin module tests failed"
+          fi
       - name: "Run channels module tests"
         run: |
-          docker exec nginx-php8.1 bash -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php tests module channels silent; exit \$?"
+          ./test-cli.sh channels github
           if [ $? -gt 0 ]; then
             echo "Channels module tests failed"
           fi
@@ -198,4 +197,5 @@ jobs:
           path: |
             test/Codeception/tests/_output/
             storage/log/
+            test/playwright/test-results/
           retention-days: 5
