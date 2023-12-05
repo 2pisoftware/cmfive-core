@@ -135,12 +135,14 @@ jobs:
           docker exec nginx-php8.1 bash -c "ls -lah -R /var/www/html/test/Codeception/tests && cat /var/www/html/test/Codeception/*.yml && cat /var/www/html/test/Codeception/tests/*.yml"
       - name: "Run admin module tests"
         run: |
+          cd test/playwright
           npm run test --module="admin" --reporter="github"
           if [ $? -gt 0 ]; then
             echo "Admin module tests failed"
           fi
       - name: "Run channels module tests"
         run: |
+          cd test/playwright
           npm run test --module="channel" --reporter="github"
           if [ $? -gt 0 ]; then
             echo "Channels module tests failed"
