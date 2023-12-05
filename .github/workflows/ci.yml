@@ -107,7 +107,7 @@ jobs:
       # Build new layout
       - uses: actions/setup-node@v3
         with:
-          node-version: 14
+            node-version: 18
         
       - name: Build new designs  
         run: |
