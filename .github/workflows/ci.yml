@@ -198,4 +198,5 @@ jobs:
             test/Codeception/tests/_output/
             storage/log/
             test/playwright/test-results/
+            test/playwright/playwright-report/
           retention-days: 5
