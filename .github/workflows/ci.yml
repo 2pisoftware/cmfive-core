@@ -135,7 +135,7 @@ jobs:
           docker exec nginx-php8.1 bash -c "ls -lah -R /var/www/html/test/Codeception/tests && cat /var/www/html/test/Codeception/*.yml && cat /var/www/html/test/Codeception/tests/*.yml"
       - name: "Run admin module tests"
         run: |
-          chmod 777 -R system/modules/admin/install/migrations/
+          sudo chmod 777 -R system/modules/admin/install/migrations/
           cd test/playwright
           npm run build
           npm run test --module="admin" --reporter="github"
