@@ -136,6 +136,7 @@ jobs:
       - name: "Run admin module tests"
         run: |
           cd test/playwright
+          npm run build
           npm run test --module="admin" --reporter="github"
           if [ $? -gt 0 ]; then
             echo "Admin module tests failed"
@@ -143,6 +144,7 @@ jobs:
       - name: "Run channels module tests"
         run: |
           cd test/playwright
+          npm run build
           npm run test --module="channel" --reporter="github"
           if [ $? -gt 0 ]; then
             echo "Channels module tests failed"
