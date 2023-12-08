@@ -79,7 +79,7 @@ jobs:
 
           docker exec -t nginx-php8.1 bash -c "chmod -R 777 cache/ storage/ uploads/"
           
-          docker start selenium314;
+          docker start seleniumDrv;
           docker ps
       - name: Inject configs into cmfive Test Environment
         run: |
