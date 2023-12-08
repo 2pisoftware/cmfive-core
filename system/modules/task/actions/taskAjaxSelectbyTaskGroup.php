@@ -44,7 +44,13 @@ function taskAjaxSelectbyTaskGroup_ALL(Web $w)
 
     $mem = "<label>Assigned To" . $assigned_to . "</label>";
 
-    $taskgroup_link = $task_group->isOwner(AuthService::getInstance($w)->user()) ? "<a href=\"" . $w->localUrl("task-group/viewmembergroup/" . $task_group->id) . "\">" . $task_group->title . "</a>" : $task_group->title;
+    $taskgroup_url = $w->localUrl("task-group/viewmembergroup/" . $task_group->id);
+    $show_link = $task_group->isOwner(AuthService::getInstance($w)->user()) && 
+                AuthService::getInstance($this)->allowed($taskgroup_url);
+    $taskgroup_link = $show_link ?
+     "<a href=\"" . $taskgroup_url . "\">" . $task_group->title . "</a>" :
+      $task_group->title;
+
     $task_text = "<table style='width: 100%;'>" .
         "<tr><td class=section colspan=2>Task Group Description</td></tr>" .
         "<tr><td><b>Task Group</td><td>" . $taskgroup_link . "</td></tr>" .
