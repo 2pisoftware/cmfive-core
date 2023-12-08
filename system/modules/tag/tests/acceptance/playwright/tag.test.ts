@@ -1,13 +1,15 @@
 import { expect, test, type Page } from "@playwright/test";
 import { HOST, CmfiveHelper } from "@utils/cmfive";
-import { AdminHelper } from "@utils/admin";
 import { TagHelper } from "@utils/tag";
-import { DateTime } from "luxon";
 import { TaskHelper } from "@utils/task";
 
 const tagNameSingle = CmfiveHelper.randomID("tag_");
 const taskNameSingle = CmfiveHelper.randomID("task_");
 const tagNameMultiple = CmfiveHelper.randomID("tag_");
+
+console.log(`Tag Name Single: ${tagNameSingle}`);
+console.log(`Task Name Single: ${taskNameSingle}`);
+console.log(`Tag Name Multiple: ${tagNameMultiple}`);
 
 test.describe.configure({ mode: 'serial' });
 
@@ -15,11 +17,10 @@ let page: Page;
 
 test.beforeAll(async ({ browser }) => {
     page = await browser.newPage();
+    CmfiveHelper.acceptDialog(page);
 });
 
 test.afterAll(async () => {
-    console.log("Test that admin can manage tags");
-
     await CmfiveHelper.login(page, "admin", "admin");
     await CmfiveHelper.clickCmfiveNavbar(page, "Tag", "Tag Admin");
 
@@ -43,9 +44,7 @@ test.afterAll(async () => {
     // Delete the tags
     await page.goto(HOST + '/tag/admin');
     await CmfiveHelper.getRowByText(page, tagNameSingle).getByText("Delete").click();
-    await page.acceptDialog();
     await CmfiveHelper.getRowByText(page, tagNameMultiple).getByText("Delete").click();
-    await page.acceptDialog();
 });
 
 test("Test that users can tag objects", async ({ page }) => {
