@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { HOST, CmfiveHelper } from "@utils/cmfive";
+import { HOST, GLOBAL_TIMEOUT, CmfiveHelper } from "@utils/cmfive";
 import { TagHelper } from "@utils/tag";
 import { TaskHelper } from "@utils/task";
 
@@ -10,6 +10,7 @@ const taskGroupName = CmfiveHelper.randomID("taskgroup_");
 test.describe.configure({ mode: 'serial' });
 
 test("Test that users can tag objects", async ({ page }) => {
+    test.setTimeout(GLOBAL_TIMEOUT);
     await CmfiveHelper.login(page, "admin", "admin");
 
     await TaskHelper.createTaskGroup(page, taskGroupName, "To Do", "MEMBER", "MEMBER", "MEMBER");
@@ -19,6 +20,8 @@ test("Test that users can tag objects", async ({ page }) => {
 });
 
 test("Test that users can tag multiple objects with same tag", async ({ page }) => {
+    test.setTimeout(GLOBAL_TIMEOUT);
+    
     const tagNameMultiple = CmfiveHelper.randomID("tag_");
 
     CmfiveHelper.acceptDialog(page);
