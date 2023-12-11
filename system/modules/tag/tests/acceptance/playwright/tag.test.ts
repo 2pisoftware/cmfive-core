@@ -39,6 +39,7 @@ test("Test that users can tag multiple objects with same tag", async ({ page }) 
 
     await page.goto(HOST + "/task/tasklist?task__assignee-id=unassigned");
     expect(await page.getByText(tagNameMultiple).count()).toBe(3);
+    await CmfiveHelper.logout(page);
 
     await CmfiveHelper.login(page, "admin", "admin");
     await CmfiveHelper.clickCmfiveNavbar(page, "Tag", "Tag Admin");
@@ -51,17 +52,20 @@ test("Test that users can tag multiple objects with same tag", async ({ page }) 
     const tagName = CmfiveHelper.randomID("tag_");
     await CmfiveHelper.getRowByText(page, tagNameSingle).getByText("Edit").click();
     await page.locator("#tag").fill(tagName);
-    await page.getByText("Save").click()
+    await page.getByText("Save").click();
 
     expect(page.getByText("Tag saved")).toBeVisible();
     await page.getByText("Back to Tag List").click();
 
     // Verify that the task tagged with our edited tag shows the new tag name
     await page.goto(HOST + "/task/tasklist?task__assignee-id=unassigned");
+    await page.waitForTimeout(1000);
     await CmfiveHelper.getRowByText(page, taskNameSingle).getByText(tagName).click();
+    expect(await page.getByText(tagName).count()).toBe(1);
+    await page.locator(".reveal-modal-bg").click({position: {x: 10, y: 10}});
 
     // Delete the tags
-    await page.goto(HOST + '/tag/admin');
-    await CmfiveHelper.getRowByText(page, tagNameSingle).getByText("Delete").click();
+    await CmfiveHelper.clickCmfiveNavbar(page, "Tag", "Tag Admin");
+    await CmfiveHelper.getRowByText(page, tagName).getByText("Delete").click();
     await CmfiveHelper.getRowByText(page, tagNameMultiple).getByText("Delete").click();
 });

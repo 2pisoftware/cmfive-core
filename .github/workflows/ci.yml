@@ -152,7 +152,9 @@ jobs:
           fi
       - name: "Run form module tests"
         run: |
-          docker exec nginx-php8.1 bash -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php tests module form silent; exit \$?"
+          cd test/playwright
+          npm run build
+          npm run test --module="form" --reporter="github"
           if [ $? -gt 0 ]; then
             echo "Form module tests failed"
           fi
@@ -178,13 +180,17 @@ jobs:
           fi
       - name: "Run task module tests"
         run: |
-          docker exec nginx-php8.1 bash -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php tests module task silent; exit \$?"
+          cd test/playwright
+          npm run build
+          npm run test --module="task" --reporter="github"
           if [ $? -gt 0 ]; then
             echo "Task module tests failed"
           fi
       - name: "Run timelog module tests"
         run: |
-          docker exec nginx-php8.1 bash -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php tests module timelog silent; exit \$?"
+          cd test/playwright
+          npm run build
+          npm run test --module="timelog" --reporter="github"
           if [ $? -gt 0 ]; then
             echo "Timelog module tests failed"
           fi
