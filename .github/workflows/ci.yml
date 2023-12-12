@@ -137,7 +137,7 @@ jobs:
       - name: "Run Playwright Module Tests"
         run: |
           for module in $PLAYWRIGHT_MODULES; do
-            ./run-tests.sh $module
+            ./run-test-with-retries.sh $module
           done
       # - name: "Run inbox module tests"
       #   run: |
