@@ -5,6 +5,7 @@ define('TIMELOG_DEFAULT_PAGE_SIZE', 20);
 
 function index_GET(Web $w)
 {
+    $w->setLayout('layout-bootstrap-5');
     $page = Request::int("p", TIMELOG_DEFAULT_PAGE);
     $pagesize = Request::int("ps", TIMELOG_DEFAULT_PAGE_SIZE);
 

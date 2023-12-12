@@ -6,3 +6,15 @@
         @include shadow-flat();
     }
 }
+.column-time {
+    width: 10%;
+}
+.column-object {
+    width: 15%;
+}
+.column-description {
+    width: 45%;
+}
+.column-actions {
+    width: 20%;
+}
