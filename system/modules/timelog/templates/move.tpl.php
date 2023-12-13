@@ -1,54 +1,57 @@
-<form action="/timelog/move/<?php echo $timelog->id; ?><?php echo $redirect ? "?redirect=" . $redirect : ""; ?>"
-    method="POST" name="timelog_move_form" target="_self" id="timelog_move_form" class=" small-12 columns">
-    <div class="row-fluid clearfix small-12 multicolform">
+<form action="/timelog/move/<?php echo $timelog->id; ?><?php echo $redirect ? "?redirect=" . $redirect : ""; ?>" method="POST" name="timelog_move_form" target="_self" id="timelog_move_form" class=" small-12 columns">
+    <div class="">
 
-        <div class="panel clearfix">
-            <div class="small-12 columns section-header">
+        <div class="">
+            <div class="small-12 section-header row">
                 <h4>Move timelog</h4>
             </div>
-            <ul class="small-block-grid-1 medium-block-grid-2 section-body">
-                <li>
-                    <label class="small-12 columns">Module
-                        <?php echo (new \Html\Form\Select([
-                            "id|name"            => "object_class",
-                            "selected_option"    => $timelog->object_class ?: $tracking_class ?: (empty($select_indexes) ? null : $select_indexes[0][1]),
-                            "options"            => $select_indexes
-                        ])); ?>
-                    </label>
-                </li>
-                <li>
-                    <label class="small-12 columns">Search
-                        <small>Required</small>
-                        <?php
-                        $usable_class = !empty($timelog->object_class) ? $timelog->object_class : (!empty($tracking_class) ? $tracking_class : (empty($select_indexes) ? null : $select_indexes[0][1]));
-$where_clause = [];
-if (!empty($usable_class)) {
-    if (in_array("is_deleted", (new $usable_class($w))->getDbTableColumnNames())) {
-        $where["is_deleted"] = 0;
-    }
-}
+            <div class="small-block-grid-1 medium-block-grid-2 section-body row">
+                <div class="col">
+                    <label class="small-12 form-label" for="task_select">Module</label>
+                    <?php echo (new \Html\Form\Select([
+                        "id"            => "task_select",
+                        "selected_option"    => $timelog->object_class ?: $tracking_class ?: (empty($select_indexes) ? null : $select_indexes[0][1]),
+                        "options"            => $select_indexes,
+                        "class"               => "form-select",
+                    ])); ?>
 
-echo (new \Html\Form\Autocomplete([
-    "id|name"       => "search",
-    "title"            => !empty($object) ? $object->getSelectOptionTitle() : null,
-    "value"            => !empty($timelog->object_id) ? $timelog->object_id : $tracking_id,
-    "required"        => "true"
-]))->setOptions(!empty($usable_class) ? TimelogService::getInstance($w)->getObjects($usable_class, $where) : ""); ?>
-                    </label>
-                </li>
+                </div>
+                <div class="col">
+                    <label class="small-12 form-label" for="search">Search</label>
+                    <?php
+                    $usable_class = !empty($timelog->object_class) ? $timelog->object_class : (!empty($tracking_class) ? $tracking_class : (empty($select_indexes) ? null : $select_indexes[0][1]));
+                    $where_clause = [];
+                    if (!empty($usable_class)) {
+                        if (in_array("is_deleted", (new $usable_class($w))->getDbTableColumnNames())) {
+                            $where["is_deleted"] = 0;
+                        }
+                    }
+
+                    echo (new \Html\Form\Autocomplete([
+                        "id"       => "search",
+                        "title"            => !empty($object) ? $object->getSelectOptionTitle() : null,
+                        "value"            => !empty($timelog->object_id) ? $timelog->object_id : $tracking_id,
+                        "required"        => "true",
+                        "class"            => "form-input ",
+                    ]))->setOptions(!empty($usable_class) ? TimelogService::getInstance($w)->getObjects($usable_class, $where) : ""); ?>
+                    <small>Required</small>
+
+                </div>
+            </div>
+            <div class="row">
                 <?php echo (new \Html\Form\InputField(["type" => "hidden", "id|name" => "object_id", "value" => $timelog->object_id ?: $tracking_id])); ?>
-            </ul>
+            </div>
             <?php if (!empty($form)) : ?>
                 <?php foreach ($form as $form_section_heading => $form_array) : ?>
                     <?php foreach ($form_array as $form_element_key => $form_elements) : ?>
                         <?php foreach ($form_elements as $form_element) : ?>
-            <ul class="small-block-grid-1 medium-block-grid-1 section-body">
-                <li>
-                    <label class="small-12 columns"><?php echo $form_element->label; ?>
-                            <?php echo $form_element; ?>
-                    </label>
-                </li>
-            </ul>
+                            <ul class="small-block-grid-1 medium-block-grid-1 section-body">
+                                <li>
+                                    <label class="small-12 columns"><?php echo $form_element->label; ?>
+                                        <?php echo $form_element; ?>
+                                    </label>
+                                </li>
+                            </ul>
                         <?php endforeach; ?>
                     <?php endforeach; ?>
                 <?php endforeach; ?>
