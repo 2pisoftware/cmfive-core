@@ -8,7 +8,7 @@
                         <tr>
                             <th class=" column-time">From</th>
                             <th class="column-time">To</th>
-                            <th class="column-object">Object</th>
+                            <th class="column-object">Task</th>
                             <th class="column-description">Description</th>
                             <th class="column-actions">Actions</th>
                         </tr>
@@ -21,18 +21,21 @@
                                 <td><?php echo $time_entry->getLinkedObject() ? get_class($time_entry->getLinkedObject()) . ": " . $time_entry->getLinkedObject()->toLink() : '' ?></td>
                                 <td><?php echo $time_entry->getComment()->comment ?></td>
                                 <td>
-                                    <?php if ($time_entry->object_class == "Task") : ?>
-                                        <?php echo Html::b('/task/edit/' . $time_entry->object_id . "#timelog", "View") ?>
-                                    <?php endif; ?>
-                                    <?php if ($time_entry->canEdit(AuthService::getInstance($w)->user())) : ?>
-                                        <?php echo Html::box('/timelog/edit/' . $time_entry->id, 'Edit', true) ?>
-                                    <?php endif; ?>
-                                    <?php if ($time_entry->canEdit(AuthService::getInstance($w)->user())) : ?>
-                                        <?php echo Html::box('/timelog/move/' . $time_entry->id, 'Move', true) ?>
-                                    <?php endif; ?>
-                                    <?php if ($time_entry->canDelete(AuthService::getInstance($w)->user())) : ?>
-                                        <?php echo Html::b('/timelog/delete/' . $time_entry->id, 'Delete', empty($confirmation_message) ? 'Are you sure you want to delete this timelog?' : $confirmation_message) ?>
-                                    <?php endif; ?>
+
+                                    <?php
+                                    echo HtmlBootstrap5::buttonGroup(
+                                        ($time_entry->object_class == 'Task' ? HtmlBootstrap5::b('/task/edit/' . $time_entry->object_id . "#timelog", "View All", null, null, false, "btn btn-primary") : '') .
+                                            ($time_entry->canEdit(AuthService::getInstance($w)->user()) ? HtmlBootstrap5::box('/timelog/edit/' . $time_entry->id, "Edit", true, null, null, null, "isbox", null, "btn btn-secondary") : '') .
+                                            ($time_entry->canEdit(AuthService::getInstance($w)->user()) || $time_entry->canDelete(AuthService::getInstance($w)->user()) ? HtmlBootstrap5::dropdownButton(
+                                                "More",
+                                                [
+                                                    ($time_entry->canEdit(AuthService::getInstance($w)->user()) ? HtmlBootstrap5::box('/timelog/move/' . $time_entry->id, 'Move', true, null, null, null, "isbox", null, "dropdown-item btn-sm text-start") : ''),
+                                                    '<hr class="dropdown-divider">',
+                                                    ($time_entry->canDelete(AuthService::getInstance($w)->user()) ? HtmlBootstrap5::b('/timelog/delete/' . $time_entry->id, 'Delete', empty($confirmation_message) ? 'Are you sure you want to delete this timelog?' : $confirmation_message, null, false, "dropdown-item btn-sm text-start") : '')
+                                                ],
+                                                "btn-info btn btn-sm rounded-0 rounded-end-1"
+                                            ) : '')
+                                    ); ?>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
