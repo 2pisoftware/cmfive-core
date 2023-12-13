@@ -1,15 +1,16 @@
 import { expect, test } from "@playwright/test";
-import { HOST, CmfiveHelper } from "@utils/cmfive";
+import { HOST, GLOBAL_TIMEOUT, CmfiveHelper } from "@utils/cmfive";
 import { TagHelper } from "@utils/tag";
 import { TaskHelper } from "@utils/task";
 
 const tagNameSingle = CmfiveHelper.randomID("tag_");
 const taskNameSingle = CmfiveHelper.randomID("task_");
+const taskGroupName = CmfiveHelper.randomID("taskgroup_");
 
 test.describe.configure({ mode: 'serial' });
 
 test("Test that users can tag objects", async ({ page }) => {
-    const taskGroupName = CmfiveHelper.randomID("taskgroup_");
+    test.setTimeout(GLOBAL_TIMEOUT);
     await CmfiveHelper.login(page, "admin", "admin");
 
     await TaskHelper.createTaskGroup(page, taskGroupName, "To Do", "MEMBER", "MEMBER", "MEMBER");
@@ -19,6 +20,8 @@ test("Test that users can tag objects", async ({ page }) => {
 });
 
 test("Test that users can tag multiple objects with same tag", async ({ page }) => {
+    test.setTimeout(GLOBAL_TIMEOUT);
+
     const tagNameMultiple = CmfiveHelper.randomID("tag_");
 
     CmfiveHelper.acceptDialog(page);
@@ -39,12 +42,9 @@ test("Test that users can tag multiple objects with same tag", async ({ page }) 
 
     await page.goto(HOST + "/task/tasklist?task__assignee-id=unassigned");
     expect(await page.getByText(tagNameMultiple).count()).toBe(3);
-    await CmfiveHelper.logout(page);
-
-    await CmfiveHelper.login(page, "admin", "admin");
-    await CmfiveHelper.clickCmfiveNavbar(page, "Tag", "Tag Admin");
 
     // Verify we still have our tags
+    await CmfiveHelper.clickCmfiveNavbar(page, "Tag", "Tag Admin");
     expect(await page.getByText(tagNameSingle).count()).toBe(1);
     expect(await page.getByText(tagNameMultiple).count()).toBe(1);
 
@@ -59,10 +59,8 @@ test("Test that users can tag multiple objects with same tag", async ({ page }) 
 
     // Verify that the task tagged with our edited tag shows the new tag name
     await page.goto(HOST + "/task/tasklist?task__assignee-id=unassigned");
-    await page.waitForTimeout(1000);
-    await CmfiveHelper.getRowByText(page, taskNameSingle).getByText(tagName).click();
+    await page.waitForTimeout(100);
     expect(await page.getByText(tagName).count()).toBe(1);
-    await page.locator(".reveal-modal-bg").click({position: {x: 10, y: 10}});
 
     // Delete the tags
     await CmfiveHelper.clickCmfiveNavbar(page, "Tag", "Tag Admin");

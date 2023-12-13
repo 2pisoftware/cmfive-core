@@ -79,7 +79,7 @@ test("Test that you can manage taskgroups, taskgroup members, and tasks", async 
 
     for(let [taskName, taskNum] of tasks) {
         await page.goto(HOST + "/task/edit/" + taskNum + "#details");
-        await page.waitForTimeout(1_000);
+        await page.waitForTimeout(100);
 
         await expect(page.getByRole("button", {name: "Delete", exact: true}).first()).toBeVisible();
         await page.getByRole("button", {name: "Delete", exact: true}).first().click();

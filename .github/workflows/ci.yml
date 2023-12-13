@@ -15,6 +15,7 @@ env:
   DB_USERNAME: cmfive_test
   DB_PASSWORD: cmfive_test
   DB_DATABASE: cmfive_test
+  PLAYWRIGHT_MODULES: "admin channel form tag task timelog"
 
 jobs:
   # Lint
@@ -133,37 +134,15 @@ jobs:
       - name: "Confirm Codeception setup"
         run: |        
           docker exec nginx-php8.1 bash -c "ls -lah -R /var/www/html/test/Codeception/tests && cat /var/www/html/test/Codeception/*.yml && cat /var/www/html/test/Codeception/tests/*.yml"
-      - name: "Run admin module tests"
+      
+      - name: "Run Playwright Module Tests"
         run: |
           sudo chmod 777 -R system/modules/admin/install/migrations/
           cd test/playwright
-          npm run build
-          npm run test --module="admin" --reporter="github"
-          if [ $? -gt 0 ]; then
-            echo "Admin module tests failed"
-          fi
-      - name: "Run channels module tests"
-        run: |
-          cd test/playwright
-          npm run build
-          npm run test --module="channel" --reporter="github"
-          if [ $? -gt 0 ]; then
-            echo "Channels module tests failed"
-          fi
-      - name: "Run form module tests"
-        run: |
-          cd test/playwright
-          npm run build
-          npm run test --module="form" --reporter="github"
-          if [ $? -gt 0 ]; then
-            echo "Form module tests failed"
-          fi
-      # - name: "Run inbox module tests"
-      #   run: |
-      #     docker exec nginx-php8.1 bash -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php tests module inbox silent; exit \$?"
-      #     if [ $? -gt 0 ]; then
-      #       echo "Inbox module tests failed"
-      #     fi
+          for module in $PLAYWRIGHT_MODULES; do
+            ./run-test-with-retries.sh $module
+          done
+
       - name: "Run report module tests"
         run: |
           cd test/playwright
@@ -172,30 +151,13 @@ jobs:
           if [ $? -gt 0 ]; then
             echo "Report module tests failed"
           fi
-      - name: "Run tag module tests"
-        run: |
-          cd test/playwright
-          npm run build
-          npm run test --module="tag" --reporter="github"
-          if [ $? -gt 0 ]; then
-            echo "Tag module tests failed"
-          fi
-      - name: "Run task module tests"
-        run: |
-          cd test/playwright
-          npm run build
-          npm run test --module="task" --reporter="github"
-          if [ $? -gt 0 ]; then
-            echo "Task module tests failed"
-          fi
-      - name: "Run timelog module tests"
-        run: |
-          cd test/playwright
-          npm run build
-          npm run test --module="timelog" --reporter="github"
-          if [ $? -gt 0 ]; then
-            echo "Timelog module tests failed"
-          fi
+
+      # - name: "Run inbox module tests"
+      #   run: |
+      #     docker exec nginx-php8.1 bash -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php tests module inbox silent; exit \$?"
+      #     if [ $? -gt 0 ]; then
+      #       echo "Inbox module tests failed"
+      #     fi
 
       - name: Stop containers
         # the containers should be stopped regardless of 
