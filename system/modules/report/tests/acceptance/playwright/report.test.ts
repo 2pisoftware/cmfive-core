@@ -63,7 +63,7 @@ test("Test that users can attach templates to reports", async ({ page }) => {
    ]);
 
     await CmfiveHelper.clickCmfiveNavbar(page, "Report", "Report Dashboard");
-    expect(page.locator("div", {has: page.getByText(report_name, {exact: true})})).toBeVisible();
+    expect(page.locator(".body table tbody a", {has: page.getByText(report_name, {exact: true})})).toBeVisible();
 
     // Attach template to report
     await CmfiveHelper.getRowByText(page, report_name).getByText("Edit").click();
