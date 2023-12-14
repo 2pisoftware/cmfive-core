@@ -140,6 +140,7 @@ jobs:
           export DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306
           sudo chmod 777 -R system/modules/admin/install/migrations/
           cd test/playwright
+          npm run build
 
           for module in $PLAYWRIGHT_MODULES; do
             npm run test:with-retries --module="$module" --platform="chromium" --attempts=3 --reporter="github"
