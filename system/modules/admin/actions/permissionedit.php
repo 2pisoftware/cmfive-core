@@ -81,5 +81,5 @@ function permissionedit_POST(Web &$w) {
     }
     $returnPath = $user->is_group == 1 ? "/admin/moreInfo/" . $option['group_id'] : "/admin/users";
 
-    $w->msg("Permissions are updated", $returnPath);
+    $w->msg("Permissions updated", $returnPath);
 }
