@@ -130,7 +130,6 @@ jobs:
           cd test/playwright
           npm ci
           npx playwright install --with-deps
-          npm run build
       # Run Acceptance Tests
       - name: "Confirm Codeception setup"
         run: |        
@@ -142,16 +141,9 @@ jobs:
           sudo chmod 777 -R system/modules/admin/install/migrations/
           cd test/playwright
 
-          test_suite_status=0
           for module in $PLAYWRIGHT_MODULES; do
             npm run test:with-retries --module="$module" --platform="chromium" --attempts=3 --reporter="github"
-            test_exit_status=$?
-            if [ $test_exit_status -ne 0 ]; then
-              test_suite_status=1
-            fi
           done
-
-          exit $test_suite_status
 
       # - name: "Run admin module tests"
       #   run: |
