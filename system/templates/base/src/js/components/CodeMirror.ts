@@ -8,7 +8,8 @@ import {html} from "@codemirror/lang-html"
 
 export class CodeMirror {
     private static SELECT_TARGET = '.code-mirror-target';
-
+    private static views: EditorView[];
+    
     static bindCodeMirrorEditor() {
 
         const cmEditors = document.querySelectorAll(CodeMirror.SELECT_TARGET);
@@ -16,29 +17,31 @@ export class CodeMirror {
         if (cmEditors) {
             cmEditors.forEach((cm) => {
                 const content = cm.getAttribute('cm-value');
-                //let str: string = "hello " + content;
-                //console.log(str);
                 
-                let editor = new EditorView({
+                const editorView = new EditorView({
                     doc: content,
                     extensions: [
                         basicSetup,
                         //html(),
                     ],
                     parent: cm as HTMLInputElement,
-                    });
+                });
                 
+                cm.removeEventListener('update', (event) => CodeMirror.updateCallback(editorView, event));
+                cm.addEventListener('update', (event) => CodeMirror.updateCallback(editorView, event));
+
+                // CodeMirror.views.push(editorView);
+
                 const textarea = document.getElementById(cm.id);
                 cm.closest('form').removeEventListener('submit', () => textarea.innerText = cm.querySelector('.cm-content').innerHTML);
                 cm.closest('form').addEventListener('submit', () => textarea.innerText = Array.from(cm.querySelectorAll(".cm-line")).map(e => e.textContent).join("\n"));
-
-                let str: string = "hello 2 " + Array.from(cm.querySelectorAll('.cm-line')).map(e => e.textContent).join("\n");
-                    //Array.from(document.querySelectorAll(".cm-line")).map(x => x.textContent).join("\n");
-                
-                //let str: string = "hello " + Array.from(cm.querySelectorAll(".cm-line")).map(e => e.textContent).join("\n");
-                console.log(str);
-
             })
         }
+    }
+
+    static updateCallback(editorView: EditorView, event) {
+        let state = editorView.state
+        let transaction = state.update({changes: {from: 0, to: state.doc.length, insert: event.detail}})
+        editorView.update([transaction])
     }
 }

@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 import { GLOBAL_TIMEOUT, CmfiveHelper } from "@utils/cmfive";
 import { ChannelsHelper} from "@utils/channels";
 
-test.describe.configure({mode: 'parallel'});
+// test.describe.configure({mode: 'parallel'});
 
 test("Test that you can create a Web Channel using the Channels module", async ({ page }) => {
     test.setTimeout(GLOBAL_TIMEOUT);

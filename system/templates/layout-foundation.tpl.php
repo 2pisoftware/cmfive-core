@@ -222,7 +222,7 @@
                     if (!empty($inject)) :
                         foreach ($inject as $i) : ?>
                             <li><?php echo $i; ?></li>
-                            <?php
+                    <?php
                         endforeach;
                     endif;
                     ?>
@@ -233,16 +233,16 @@
                     <?php endif; ?>
 
                     <?php if (AuthService::getInstance($w)->user()) : ?>
-                    <!-- Clear cache button -->
+                        <!-- Clear cache button -->
                         <?php if (AuthService::getInstance($w)->user()->is_admin) : ?>
-                        <li>
-                            <a id="admin_clear_cache" href="/admin/ajaxClearCache" onclick="return false;" title="Clear configuration cache">
-                                <span class="clear_cache_icon fi-refresh show-for-medium-up"></span>
-                                <span class="show-for-small">Clear cache</span>
-                            </a>
-                        </li>
+                            <li>
+                                <a id="admin_clear_cache" href="/admin/ajaxClearCache" onclick="return false;" title="Clear configuration cache">
+                                    <span class="clear_cache_icon fi-refresh show-for-medium-up"></span>
+                                    <span class="show-for-small">Clear cache</span>
+                                </a>
+                            </li>
                         <?php endif; ?>
-                    <!-- User Profile drop down -->
+                        <!-- User Profile drop down -->
                         <li class="has-dropdown">
                             <a href="#">
                                 <span class="fi-torso show-for-medium-up"></span>
@@ -258,7 +258,7 @@
                                 "dropdown"
                             );
                             ?>
-                    </li>
+                        </li>
                     <?php endif; ?>
                 </ul>
 
@@ -268,7 +268,7 @@
                         <li><?php echo $w->menuLink(MainService::getInstance($w)->getUserRedirectURL(), "<span class='fi-home show-for-medium-up'></span><span class='show-for-small'>Home</span>"); ?></li>
                         <li class="divider"></li>
                         <?php foreach ($w->modules() as $module) {
-                                // Check if config is set to display on topmenu
+                            // Check if config is set to display on topmenu
                             if (Config::get("{$module}.topmenu") && Config::get("{$module}.active")) :
                                 // Check for navigation
                                 $service_module = ucfirst($module) . "Service";
@@ -276,34 +276,34 @@
                                 if ($menu_link !== false) :
                                     if (method_exists($module . "Service", "navigation")) : ?>
                                         <li class="has-dropdown <?php echo $w->_module == $module ? 'active' : ''; ?>" id="topnav_<?php echo $module; ?>">
-                                        <?php // Try and get a badge count for the menu item
-                                        echo $menu_link;
-                                        $module_navigation = $service_module::getInstance($w)->navigation($w);
+                                            <?php // Try and get a badge count for the menu item
+                                            echo $menu_link;
+                                            $module_navigation = $service_module::getInstance($w)->navigation($w);
 
-                                        // Invoke hook to inject extra navigation
-                                        $hook_navigation_items = $w->callHook($module, "extra_navigation_items", $module_navigation);
-                                        if (!empty($hook_navigation_items)) {
-                                            foreach ($hook_navigation_items as $hook_navigation_item) {
-                                                if (is_array($hook_navigation_item)) {
-                                                    $module_navigation = array_merge($module_navigation, $hook_navigation_item);
-                                                } else {
-                                                    $module_navigation[] = $hook_navigation_item;
+                                            // Invoke hook to inject extra navigation
+                                            $hook_navigation_items = $w->callHook($module, "extra_navigation_items", $module_navigation);
+                                            if (!empty($hook_navigation_items)) {
+                                                foreach ($hook_navigation_items as $hook_navigation_item) {
+                                                    if (is_array($hook_navigation_item)) {
+                                                        $module_navigation = array_merge($module_navigation, $hook_navigation_item);
+                                                    } else {
+                                                        $module_navigation[] = $hook_navigation_item;
+                                                    }
                                                 }
                                             }
-                                        }
-                                        echo Html::ul($module_navigation, null, "dropdown"); ?>
+                                            echo Html::ul($module_navigation, null, "dropdown"); ?>
                                         </li>
                                     <?php else : ?>
                                         <li <?php echo $w->_module == $module ? 'class="active"' : ''; ?>><?php echo $menu_link; ?></li>
                                     <?php endif; ?>
                                     <li class="divider"></li>
-                                <?php endif;
+                            <?php endif;
                             endif;
                         }
 
                         if (Config::get('system.help_enabled', true) && AuthService::getInstance($w)->allowed('/help/view')) : ?>
                             <li><?php echo Html::box(WEBROOT . "/help/view/" . $w->_module . ($w->_submodule ? "-" . $w->_submodule : "") . "/" . $w->_action, "<span class='fi-q show-for-medium-up'>?</span><span class='show-for-small'>Help</span>", false, true, 750, 500, "isbox", null, null, null, 'cmfive-help-modal'); ?> </li>
-                        <?php endif;
+                    <?php endif;
                     endif; ?>
                 </ul> <!-- End left nav section -->
             </section>
@@ -353,7 +353,8 @@
             reveal: {
                 animation_speed: <?php echo defaultVal(Config::get('core_template.foundation.reveal.animation_speed'), 150); ?>,
                 animation: '<?php echo defaultVal(Config::get('core_template.foundation.reveal.animation'), 'fade'); ?>',
-                close_on_background_click: <?php echo defaultVal(Config::get('core_template.foundation.reveal.close_on_background_click'), 'true'); // Must be string value in PHP ?>
+                close_on_background_click: <?php echo defaultVal(Config::get('core_template.foundation.reveal.close_on_background_click'), 'true'); // Must be string value in PHP 
+                                            ?>
             },
             accordion: {
                 multi_expand: <?php echo defaultVal(Config::get('core_template.foundation.accordion.multi_expand'), 'true'); ?>,
@@ -363,19 +364,36 @@
         var modal_history = [];
         var modal_history_pop = false;
 
+        function boundModalListener() {
+            if (this.hasAttribute('data-modal-confirm')) {
+                if (confirm(this.getAttribute('data-modal-confirm'))) {
+                    openModal(this.getAttribute('data-modal-target'));
+                }
+            } else {
+                openModal(this.getAttribute('data-modal-target'))
+            }
+        }
+
         $(document).ready(function() {
             document.querySelectorAll('[data-modal-target]').forEach(function(m) {
-                m.addEventListener('click', function() {
-                    if (m.hasAttribute('data-modal-confirm')) {
-                        if (confirm(m.getAttribute('data-modal-confirm'))) {
-                            openModal(m.getAttribute('data-modal-target'));
-                        }
-                    } else {
-                        openModal(m.getAttribute('data-modal-target'))
-                    }
-                });
+                m.removeEventListener('click', boundModalListener);
+                m.addEventListener('click', boundModalListener);
             })
         })
+
+        // $(document).ready(function() {
+        //     document.querySelectorAll('[data-modal-target]').forEach(function(m) {
+        //         m.addEventListener('click', function() {
+        //             if (m.hasAttribute('data-modal-confirm')) {
+        //                 if (confirm(m.getAttribute('data-modal-confirm'))) {
+        //                     openModal(m.getAttribute('data-modal-target'));
+        //                 }
+        //             } else {
+        //                 openModal(m.getAttribute('data-modal-target'))
+        //             }
+        //         });
+        //     })
+        // })
 
         // Automatically append the close 'x' to reveal modals
         $(document).on('opened', '[data-reveal]', function() {

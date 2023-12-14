@@ -52,5 +52,6 @@ function edit_GET(Web $w) {
 	$w->ctx("is_restricted", json_encode(empty($owner) ? false : true));
 	$w->ctx("viewers", json_encode($viewers));
 	$w->ctx("owner", json_encode(["id" => empty($owner) ? null : $owner->id, "name" => empty($owner) ? null : $owner->getFullName()]));
+	$w->ctx("show_restrict", Request::string("allowrestrictionui"));
 	$w->ctx("can_restrict", AuthService::getInstance($w)->user()->hasRole("restrict") ? "true" : "false");
 }

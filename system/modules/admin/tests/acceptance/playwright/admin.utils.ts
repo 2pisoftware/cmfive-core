@@ -43,7 +43,6 @@ export class AdminHelper {
             await CmfiveHelper.clickCmfiveNavbar(page, "Admin", "List Users");
         await page.waitForURL(HOST + "/admin/users#internal");
 
-
         await CmfiveHelper.getRowByText(page, username).getByRole("button", {name: "Delete"}).click();
         await page.getByRole("button", {name: "Delete user", exact: true}).click();
     
@@ -52,7 +51,7 @@ export class AdminHelper {
 
     static async editUser(page: Page, username: string, data: [string, string][]) {
         await page.waitForTimeout(100); // let page load so next line doesn't fail if previous function ended on a redirect to user list
-        if (page.url() != HOST + "/admin/users#internal")
+        if(page.url() != HOST + "/admin/users#internal")
             await CmfiveHelper.clickCmfiveNavbar(page, "Admin", "List Users");
         await page.waitForURL(HOST + "/admin/users#internal");
 
@@ -87,7 +86,12 @@ export class AdminHelper {
 
         await page.getByRole("link", {name: "New Item", exact: true}).click();
 
-        await page.getByLabel("or Add New Type").fill(type);
+        const type_dropdown = await page.locator("#type option", {hasText: type}).count();
+        if (type_dropdown == 0) {
+            await page.getByLabel("or Add New Type").fill(type);
+        } else {
+            await page.getByRole("combobox").selectOption(type);
+        }
         await page.getByLabel("Code").fill(code);
         await page.getByLabel("Title", { exact: true }).fill(lookup);
         await page.getByRole("button", {name: "Save"}).click();
