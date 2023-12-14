@@ -33,7 +33,7 @@ export class AdminHelper {
             await page.locator("#check_"+permission).check();
 
         await page.getByRole("button", { name: "Save" }).click();
-        await expect(page.getByText("Permissions are updated")).toBeVisible();
+        await expect(page.getByText("Permissions updated")).toBeVisible();
     }
 
     static async deleteUser(page: Page, username: string)
@@ -172,7 +172,7 @@ export class AdminHelper {
 
         await CmfiveHelper.getRowByText(page, usergroup).getByRole("button", {name: "Delete"}).click();
 
-        await expect(page.getByText("Group is deleted")).toBeVisible();
+        await expect(page.getByText("Group deleted")).toBeVisible();
     }
 
     static async addUserGroupMember(page: Page, usergroup: string, usergroupID: string, user: string, owner: boolean = false)
@@ -210,7 +210,7 @@ export class AdminHelper {
 
         await CmfiveHelper.getRowByText(page, user).getByRole("link", {name: "Delete"}).click();
 
-        await expect(page.getByText("Member is deleted")).toBeVisible();
+        await expect(page.getByText("Member deleted")).toBeVisible();
     }
 
     static async editUserGroupPermissions(page: Page, usergroup: string, usergroupID: string, permissions: string[])
@@ -229,7 +229,7 @@ export class AdminHelper {
 
         await page.getByRole("button", {name: "Save"}).click();
 
-        await expect(page.getByText("Permissions are updated")).toBeVisible();
+        await expect(page.getByText("Permissions updated")).toBeVisible();
     }
 
     /**
