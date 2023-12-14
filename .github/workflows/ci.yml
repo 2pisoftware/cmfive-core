@@ -141,10 +141,16 @@ jobs:
           sudo chmod 777 -R system/modules/admin/install/migrations/
           cd test/playwright
           npm run build
+          TEST_STATUS=0
 
           for module in $PLAYWRIGHT_MODULES; do
-            npm run test:with-retries --module="$module" --platform="chromium" --attempts=3 --reporter="github"
+            if ! npm run test:with-retries --module="$module" --platform="chromium" --attempts=3 --reporter="github"; then
+              TEST_STATUS=1
+            fi
           done
+
+          exit $TEST_STATUS
+
 
       # - name: "Run admin module tests"
       #   run: |
