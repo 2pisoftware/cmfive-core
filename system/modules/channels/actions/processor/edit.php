@@ -31,7 +31,7 @@ function edit_GET(Web $w)
         'processor_class' => ['required']
     ];
 
-    $w->out(Html::multiColForm($form, "/channels-processor/edit/{$processor_id}", "POST", "Save", "processor_form", null, null, '_self', true, $validation));
+    $w->out(HtmlBootstrap5::multiColForm($form, "/channels-processor/edit/{$processor_id}", "POST", "Save", "processor_form", null, null, '_self', true, $validation));
 }
 
 function edit_POST(Web $w)

@@ -17,5 +17,6 @@ class Migration extends DbObject {
      * @var array[array[string]]
      */
     public static $_validation = [
-        'name' => ['required']];
+        'name' => ['required']
+    ];
 }
