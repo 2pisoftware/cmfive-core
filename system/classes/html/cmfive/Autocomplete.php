@@ -4,13 +4,27 @@ namespace Html\Cmfive;
 
 use Html\Form\Select;
 
+/**
+ * A select field with autocomplete functionality
+ * Implements Tom Select, similar to MultiSelect but for a single value
+ * 
+ * @author @tynanmatthews
+ */
 class Autocomplete extends Select
 {
+
     public $_config = [
         'create' => false,
         'maxitems' => 1,
     ];
     public $_values = [];
+
+    public function __construct($fields = [])
+    {
+        parent::__construct($fields);
+        $this->class = $this->class .= ' tom-select-target';
+    }
+
 
     public function getConfig(): array
     {

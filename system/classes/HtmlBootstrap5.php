@@ -1,5 +1,9 @@
 <?php
 
+use Html\Cmfive\Autocomplete;
+
+require_once "html/cmfive/Autocomplete.php";
+
 class HtmlBootstrap5 extends Html
 {
     public static function b($href, $title, $confirm = null, $id = null, $newtab = false, $class = null, $type = null, $name = null)
@@ -196,7 +200,16 @@ class HtmlBootstrap5 extends Html
                         case "autocomplete":
                             $options = !empty($field[4]) ? $field[4] : null;
                             $minValue = !empty($field[5]) ? $field[5] : 1;
-                            $buffer .= Html::autocomplete($name, $options, $value, "form-control", "width: 100%;", $minValue, $required);
+                            $buffer .= new Autocomplete([
+                                "id"       => $name,
+                                "title"            => $title,
+                                "required"        => $required,
+                                "class"            => "form-control ",
+                                "style"            => "width: 100%;",
+                                "minValue"        => $minValue,
+                                "options"            => $options,
+                            ]);
+                            // $buffer .= Html::autocomplete($name, $options, $value, "form-control", "width: 100%;", $minValue, $required);
                             break;
                         case "date":
                             $size = !empty($field[4]) ? $field[4] : null;
