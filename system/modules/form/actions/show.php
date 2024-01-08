@@ -2,6 +2,8 @@
 
 function show_GET(Web $w)
 {
+    $w->setLayout('layout-bootstrap-5');
+    
     $p = $w->pathMatch("id");
     if (empty($p['id'])) {
         $w->error("Form not found", "/form");

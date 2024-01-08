@@ -2,6 +2,8 @@
 
 function edit_GET(Web $w)
 {
+    $w->setLayout('layout-bootstrap-5');
+
     $p = $w->pathMatch("id");
     $_form_object = $p['id'] ? FormService::getInstance($w)->getForm($p['id']) : new Form($w);
 
@@ -18,7 +20,7 @@ function edit_GET(Web $w)
 
     $validation = ['title' => ['required']];
 
-    $w->out(Html::multiColForm($form, '/form/edit/' . $_form_object->id, "POST", "Save", null, null, null, "_self", true, $validation));
+    $w->out(HtmlBootstrap5::multiColForm($form, "/form/edit/$_form_object->id", "POST", "Save", null, null, null, "_self", true, $validation));
 }
 
 function edit_POST(Web $w)

@@ -1,22 +1,39 @@
 <?php
 
-function import_GET(Web $w) {
+use Html\Form\InputField\File;
+use Html\Form\InputField;
 
+function import_GET(Web $w) {
+	$w->setLayout('layout-bootstrap-5');
 	$w->ctx('title',"Form Import");
 
-	$_form = [
-		'Select application zip file' => [
-			[(new \Html\Form\InputField\File())->setName("file")->setId("file")->setAttribute("capture", "camera")], // ["File", "file", "file"]
-			[[" Application title override (Optional)", "text", "title_override"]]
-		]
-	];
-
-	$w->ctx("form", Html::multiColForm($_form, "/form-application/import", "POST", "Save"));
+	$w->out(
+		HtmlBootstrap5::multiColForm(
+			[
+				'Select application zip file' => [
+					[
+						new File(
+							[
+								'id|name' => 'file'
+							]
+						)
+					],
+					[
+						new InputField(
+							[
+								'id|name' => 'title_override', 
+								'label' => 'Application title override (Optional)'
+							]
+						)
+					]
+				]
+			],
+			"/form-application/import"
+		)
+	);
 }
 
 function import_POST(Web $w) {
-
-
 	if(isset($_FILES['file'])) {
 	    $filename = $_FILES['file']['name'];
 	    $source = $_FILES['file']['tmp_name'];
@@ -46,7 +63,7 @@ function import_POST(Web $w) {
 	    $okay = strtolower($name[1]) == 'zip' ? true: false;
 	 
 	    if(!$okay) {
-	          $w->error("Please choose a zip file","/form-application");       
+	          $w->error("Please choose a zip file", "/form-application");       
 	    }
 	    
 	    mkdir($target);

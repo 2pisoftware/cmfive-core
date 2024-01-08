@@ -5,17 +5,7 @@ use Html\Form\InputField;
 
 function import_GET(Web $w) {
 	$w->setLayout('layout-bootstrap-5');
-	
-	$w->ctx('title',"Form Import");
-
-	// $_form = [
-	// 	'Select form zip file' => [
-	// 		[(new File())->setName("file")->setId("file")->setAttribute("capture", "camera")], // ["File", "file", "file"]
-	// 		[["Form title override (Optional)", "text", "title_override"]]
-	// 	]
-	// ];
-
-	// $w->ctx("form", Html::multiColForm($_form, "/form/import"));
+	$w->ctx('title', "Form Import");
 
 	$w->out(
 		HtmlBootstrap5::multiColForm(
