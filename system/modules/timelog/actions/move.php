@@ -2,6 +2,7 @@
 
 function move_GET(Web $w)
 {
+    $w->setLayout('layout-bootstrap-5');
     $p = $w->pathMatch("id");
 
     // get redirect, defaults to "/timelog"
@@ -59,6 +60,18 @@ function move_GET(Web $w)
     }
 
     $form = [];
+
+
+    $usable_class = !empty($timelog->object_class) ? $timelog->object_class : (!empty($tracking_class) ? $tracking_class : (empty($select_indexes) ? null : $select_indexes[0][1]));
+    $where_clause = [];
+    if (!empty($usable_class)) {
+        if (in_array("is_deleted", (new $usable_class($w))->getDbTableColumnNames())) {
+            $where_clause["is_deleted"] = 0;
+        }
+    }
+    $acp_options = !empty($usable_class) ? TimelogService::getInstance($w)->getObjects($usable_class, $where_clause) : "";
+    $w->ctx("acp_options", $acp_options);
+
     if (!empty($object)) {
         $additional_form_fields = $w->callHook("timelog", "type_options_for_" . get_class($object), $object);
         if (!empty($additional_form_fields[0])) {
@@ -68,7 +81,32 @@ function move_GET(Web $w)
             }
         }
     }
-    $w->ctx("form", $form);
+
+    $form["Timelog"] = [
+        [
+            [
+                "Module",
+                "select",
+                "object_class",
+                $timelog->object_class ?: $tracking_class ?: (empty($select_indexes) ? null : $select_indexes[0][1]),
+                $select_indexes,
+            ],
+            [
+                "Search",
+                "autocomplete",
+                "search",
+                !empty($object) ? $object->getSelectOptionTitle() : null,
+                $acp_options,
+            ],
+        ],
+        [
+            $form["Additional Fields"] ?? [],
+        ]
+    ];
+
+    // (new \Html\Form\InputField(["type" => "hidden", "id|name" => "object_id", "value" => $timelog->object_id ?: $tracking_id]));
+
+    $w->ctx("form", HtmlBootstrap5::multiColForm($form, "/timelog/move/{$timelog->id}", "POST", "Save", "timelogform"));
 }
 
 function move_POST(Web $w)

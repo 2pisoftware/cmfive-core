@@ -1,4 +1,4 @@
-<form action="/timelog/move/<?php echo $timelog->id; ?><?php echo $redirect ? "?redirect=" . $redirect : ""; ?>" method="POST" name="timelog_move_form" target="_self" id="timelog_move_form" class=" small-12 columns">
+<!-- <form action="/timelog/move/<?php echo $timelog->id; ?><?php echo $redirect ? "?redirect=" . $redirect : ""; ?>" method="POST" name="timelog_move_form" target="_self" id="timelog_move_form" class=" small-12 columns">
     <div class="">
 
         <div class="">
@@ -9,7 +9,7 @@
                 <div class="col">
                     <label class="small-12 form-label" for="task_select">Module</label>
                     <?php echo (new \Html\Form\Select([
-                        "id"            => "task_select",
+                        "id|name"            => "object_class",
                         "selected_option"    => $timelog->object_class ?: $tracking_class ?: (empty($select_indexes) ? null : $select_indexes[0][1]),
                         "options"            => $select_indexes,
                         "class"               => "form-select",
@@ -27,8 +27,8 @@
                         }
                     }
 
-                    echo (new \Html\Form\Autocomplete([
-                        "id"       => "search",
+                    echo (new \Html\Cmfive\Autocomplete([
+                        "id"       => "acp_search",
                         "title"            => !empty($object) ? $object->getSelectOptionTitle() : null,
                         "value"            => !empty($timelog->object_id) ? $timelog->object_id : $tracking_id,
                         "required"        => "true",
@@ -65,9 +65,53 @@
             </ul>
         </div>
     </div>
-</form>
+</form> -->
+
+<?php echo $form ?>
 <script type="text/javascript">
     // Input values are module and search
+    console.log("raw loggin it")
+
+    document.addEventListener('keyup', (event) => {
+        console.log(event)
+        console.log(event.target)
+        console.log(event.target.id)
+        console.log(event.target.value)
+    })
+
+    document.addEventListener('DOMContentLoaded', () => {
+        // If there is no task group selected, we disable submit
+        if (document.getElementById('object_id').value == "") {
+            document.getElementsByClassName('savebutton')[0].disabled = true
+            document.getElementById('search').setAttribute('readonly', 'true')
+        }
+        var searchBaseUrl = "/timelog/ajaxSearch";
+
+        // If there is already a value in #object_class, that is, we are
+        // editing, then set the searchURL
+        var searchUrl = "";
+        if (document.getElementById('object_class').value !== "") {
+            document.getElementsById('search').setAttribute('readonly', 'false')
+            searchUrl = searchBaseUrl + "?index=" + document.getElementById('object_class').value;
+        }
+
+        document.getElementById('object_class').addEventListener('change', () => {
+            console.log("Object class changed")
+
+            //clear the search bar
+            document.getElementById('search').value = ''
+            document.getElementById
+
+        })
+
+
+        var acpSearch = document.getElementById('acp_search')
+
+        acpSearch.addEventListener('change', () => {
+            console.log('acpSearch changed')
+            console.log(acpSearch.value)
+        })
+    });
     $(document).ready(function() {
         // If there is no task group selected, we disable submit
         if ($("#object_id").val() == "") {
@@ -82,6 +126,7 @@
         if ($("#object_class").val !== "") {
             $("#acp_search").removeAttr("readonly");
             searchUrl = searchBaseUrl + "?index=" + $("#object_class").val();
+            console.log(searchUrl);
         }
         $("#object_class").change(function() {
             console.log("object class changed");
