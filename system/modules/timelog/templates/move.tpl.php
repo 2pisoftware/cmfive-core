@@ -100,14 +100,24 @@
 
             //clear the search bar
             document.getElementById('search').value = ''
-            document.getElementById
 
+            var panels = document.querySelectorAll('#timelog_move_form .panel + .panel');
+            panels.forEach((panel) => {
+                panel.remove()
+            })
+
+            if (this.value !== "") {
+                document.getElementById('search').removeAttribute('readonly')
+                searchUrl = searchBaseUrl + '?index=' + this.value
+            } else {
+                // This fails with unknown page...
+                document.getElementById("search").setAttribute('readonly', 'true')
+                searchUrl = searchBaseUrl
+            }
         })
 
-
-        var acpSearch = document.getElementById('acp_search')
-
-        acpSearch.addEventListener('change', () => {
+        //rewrite to contain logic for autocomplete
+        document.getElementById('search').addEventListener('change', () => {
             console.log('acpSearch changed')
             console.log(acpSearch.value)
         })
