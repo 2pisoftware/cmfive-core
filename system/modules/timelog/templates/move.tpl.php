@@ -118,8 +118,18 @@
 
         //rewrite to contain logic for autocomplete
         document.getElementById('search').addEventListener('change', () => {
-            console.log('acpSearch changed')
-            console.log(acpSearch.value)
+            var acpUrl = searchUrl + "&term=" + this.value
+
+            fetch(acpUrl)
+                .then((response) => {
+                    console.log(response.json());
+                    return response.json()
+                }).then((result) => {
+                    let select = document.getElementById("search")
+                    let control = select.tomselect
+                    control.clearOptions()
+                    //add new options from result
+                })
         })
     });
     $(document).ready(function() {
