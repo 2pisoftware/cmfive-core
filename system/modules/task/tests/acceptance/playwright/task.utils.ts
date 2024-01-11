@@ -1,0 +1,209 @@
+import { HOST, CmfiveHelper } from "@utils/cmfive";
+import { expect, Page } from "@playwright/test";
+import { DateTime } from "luxon";
+
+export class TaskHelper  {
+    /**
+     * returns the taskgroup id
+     */
+    static async createTaskGroup(
+        page: Page,
+        groupName: string,
+        groupType: "To Do" | "Software Development" | "Cmfive Support",
+        whoCanAssign:         "GUEST" | "MEMBER" | "OWNER",
+        whoCanView:   "ALL" | "GUEST" | "MEMBER" | "OWNER",
+        whoCanCreate: "ALL" | "GUEST" | "MEMBER" | "OWNER",
+        automaticSubscription: boolean = true
+    ): Promise<string> {
+        if(page.url() != HOST + "/task-group/viewtaskgrouptypes#dashboard")
+            CmfiveHelper.clickCmfiveNavbar(page, "Task", "Task Groups");
+
+        await page.getByRole("link", {name: "New Task Group"}).click();
+
+        await page.getByLabel("Title").fill(groupName);
+
+        await page.getByRole('combobox', {name: "Task Group Type"}).selectOption(groupType);
+        switch (groupType) {
+        case "To Do":
+            await page.getByRole("combobox", {name: "Default Task Type"}).selectOption("To Do");
+            break;
+        case "Software Development":
+            await page.getByRole("combobox", {name: "Default Task Type"}).selectOption("Programming Task");
+            break;
+        case "Cmfive Support":
+            await page.getByRole("combobox", {name: "Default Task Type"}).selectOption("Support Ticket");
+            break;
+        }
+
+        await page.getByRole("combobox", {name: "Who Can Assign"}).selectOption(whoCanAssign);
+        await page.getByRole("combobox", {name: "Who Can View"}).selectOption(whoCanView);
+        await page.getByRole("combobox", {name: "Who Can Create"}).selectOption(whoCanCreate);
+        await page.getByRole("combobox", {name: "Default Priority"}).selectOption("Normal");
+
+        const subcheckbox = await page.getByRole("checkbox", {name: "Automatic Subscription"});
+        if (automaticSubscription)
+            await subcheckbox.check();
+        else
+            subcheckbox.uncheck();
+
+        await page.getByRole("button", {name: "Save"}).click();
+
+        await expect(page.getByText("Task Group " + groupName + " added")).toBeVisible();
+
+        return page.url().split("/viewmembergroup/")[1].split("#")[0];
+    }
+
+    static async editTaskGroup(
+        page: Page,
+        groupName: string,
+        groupID: string,
+        edit: Record<string, string | boolean>)
+    {
+        if(page.url() != HOST + "/task-group/viewmembergroup/" + groupID + "#members") {
+            if(page.url() != HOST + "/task-group/viewtaskgrouptypes#dashboard")
+                CmfiveHelper.clickCmfiveNavbar(page, "Task", "Task Groups");
+            
+            await page.getByRole("link", {name: groupName, exact: true}).click();
+        }
+
+        await page.getByRole("button", {name: "Edit Task Group"}).click();
+        await page.waitForSelector('#cmfive-modal');
+        const modal = await page.locator('#cmfive-modal');
+
+        if(edit["Title"] !== undefined) await modal.getByLabel("Title").fill(edit["Title"] as string);
+
+        for(let option of ["Who Can Assign", "Who Can View", "Who Can Create", "Default Task Type", "Default Priority", "Default Assignee"])
+           if(edit[option] !== undefined) await modal.getByRole("combobox", {name: option}).selectOption(edit[option] as string);
+
+        if(edit["Automatic Subscription"] !== undefined) await modal.getByLabel("Automatic Subscription").setChecked(edit["Automatic Subscription"] as boolean);
+
+        await modal.getByRole("button", {name: "Update"}).click();
+    }
+
+    static async deleteTaskGroup(page: Page, groupName: string, groupID: string)
+    {
+        if(page.url() != HOST + "/task-group/viewmembergroup/" + groupID + "#members") {
+            if(page.url() != HOST + "/task-group/viewtaskgrouptypes#dashboard")
+                CmfiveHelper.clickCmfiveNavbar(page, "Task", "Task Groups");
+            
+            await page.getByRole("link", {name: groupName, exact: true}).click();
+        }
+
+        await page.getByRole("button", {name: "Delete Task Group"}).click();
+        await page.click('#cmfive-modal button:text-is("Delete")');
+
+        await expect(page.getByText("Task Group " + groupName + " deleted.")).toBeVisible();
+    }
+
+    static async addMemberToTaskgroup(page: Page, groupName: string, groupID: string, memberName: string, role: "ALL" | "GUEST" | "MEMBER" | "OWNER")
+    {
+        if(page.url() != HOST + "/task-group/viewmembergroup/" + groupID + "#members") {
+            if(page.url() != HOST + "/task-group/viewtaskgrouptypes#dashboard")
+                CmfiveHelper.clickCmfiveNavbar(page, "Task", "Task Groups");
+            
+            await page.getByRole("link", {name: groupName, exact: true}).click();
+        }
+
+        await page.getByRole("button", {name: "Add New Members"}).click();
+
+        await page.getByRole("combobox", {name: "As Role"}).selectOption(role);
+        await page.getByRole("combobox", {name: "Add Group Members"}).selectOption(memberName);
+        await page.getByRole("button", {name: "Submit"}).click();
+
+        await expect(page.getByText("Task Group updated")).toBeVisible();
+    }
+
+    static async setDefaultAssignee(page: Page, groupName: string, groupID: string, assignee: string)
+    {
+        if(page.url() != HOST + "/task-group/viewmembergroup/" + groupID + "#members") {
+            if(page.url() != HOST + "/task-group/viewtaskgrouptypes#dashboard")
+                CmfiveHelper.clickCmfiveNavbar(page, "Task", "Task Groups");
+            
+            await page.getByRole("link", {name: groupName, exact: true}).click();
+        }
+        
+        await page.getByRole("button", {name: "Edit Task Group"}).click();
+
+        await page.getByRole("combobox", {name: "Default Assignee"}).selectOption(assignee);
+
+        await page.getByRole("button", {name: "Update"}).click();
+
+        await expect(page.getByText("Task Group " + groupName + " updated.")).toBeVisible();
+    }
+
+    // /**
+    //  * returns the task id
+    //  */
+    // static async createTaskOld(page: Page, taskName: string, groupName: string, groupType: "To Do" | "Software Development" | "Cmfive Support", assignee?: string): Promise<string>
+    // {
+    //     await CmfiveHelper.clickCmfiveNavbar(page, "Task", "New Task");
+
+    //     await CmfiveHelper.fillAutoComplete(page, "task_group_id", groupName, groupName);
+    //     await page.getByLabel('Task Title Required').fill(taskName);
+        
+    //     if (assignee) await page.getByRole("combobox", {name: "Assigned To"}).selectOption(assignee);
+
+    //     switch (groupType) {
+    //     case "To Do":
+    //         await page.getByRole("combobox", {name: "Task Type Required"}).selectOption("To Do");
+    //         break;
+    //     case "Software Development":
+    //         await page.getByRole("combobox", {name: "Task Type Required"}).selectOption("Programming Task");
+    //         break;
+    //     case "Cmfive Support":
+    //         await page.getByRole("combobox", {name: "Task Type Required"}).selectOption("Support Ticket");
+    //         break;
+    //     }
+
+    //     await page.getByRole("button", {name: "Save"}).click();
+
+    //     await page.waitForURL(HOST + "/task/edit/*"); // will hang if task creation failed? poor man's expect(...)?
+
+    //     return page.url().split("/edit/")[1].split("#")[0];
+    // }
+
+    static async createTask(page: Page, task: string, taskgroup: string, taskType: string, data?: Record<string, string>): Promise<string>
+    {
+        await CmfiveHelper.clickCmfiveNavbar(page, "Task", "New Task");
+
+        await CmfiveHelper.fillAutoComplete(page, "task_group_id", taskgroup, taskgroup);
+        await page.getByLabel('Task Title Required').fill(task);
+
+        await page.getByRole("combobox", {name: "Task Type Required"}).selectOption({
+            "To Do": "To Do",
+            "Software Development": "Programming Task",
+            "Cmfive Support": "Support Ticket"
+        }[taskType] as string);
+
+        if(data !== undefined) {
+            for(let option of ["Priority", "Status", "Assigned To"])
+                if(data[option] !== undefined) await page.getByRole("combobox", {name: option}).selectOption(data[option]);
+
+            for(let option of ["Estimated hours", "Effort"])
+                if(data[option] !== undefined) await page.getByLabel(option).fill(data[option]);
+
+            if(data["Description"] !== undefined) await page.getByRole('application', {name: "Rich Text Editor, description"}).fill(data["Description"]);
+        }
+
+        // check that datepicker works
+        await page.getByLabel("Date Due").click();
+        await page.waitForSelector("#ui-datepicker-div");
+        await page.getByRole("link", {name: "1", exact: true}).click();
+        await expect(page.locator("#dt_due")).toHaveValue(DateTime.now().set({day: 1}).toFormat("dd/MM/yyyy") as string);
+
+        await page.getByRole("button", {name: "Save"}).click();
+        await page.waitForURL(HOST + "/task/edit/*");
+
+        // return task ID
+        return page.url().split("/edit/")[1].split("#")[0];
+    }
+
+    static async deleteTask(page: Page, taskName: string, taskID: string)
+    {
+        await CmfiveHelper.clickCmfiveNavbar(page, "Task", "Task List");
+        await page.getByRole("link", {name: taskName, exact: true}).click();
+     
+        await page.getByRole("button", {name: "Delete", exact: true}).first().click();
+        await expect(page.getByRole("link", {name: taskName, exact: true})).not.toBeVisible();
+    }
+}

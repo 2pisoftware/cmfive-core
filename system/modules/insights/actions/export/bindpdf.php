@@ -1,5 +1,7 @@
 <?php
 
+use Html\Form\Select;
+
 function bindpdf_GET(Web $w)
 {
     // we have:
@@ -28,27 +30,32 @@ function bindpdf_GET(Web $w)
 
     //Drop-down for choosing template to use for export
     $templates = TemplateService::getInstance($w)->findTemplates('insights', $insight_class_name_pdf, false, false);
-    $template_select = Html::form(
+    $template_select = HtmlBootstrap5::multiColForm(
         [
-            ["Select template for PDF layout (optional)", "section"],
-            [
-                "",
-                "select",
-                "template_id",
-                $requestedTemplate,
-                $templates
+            'Select template for PDF layout (optional)' => [
+                [
+                    (new Select([
+                        'id|name' => 'template_id',
+                        'selected_option' => $requestedTemplate,
+                        'options' => $templates,
+                    ])),
+                ]
             ],
-            ["&nbsp", "section"],
-            ["Select page layout", "section"],
-            [Html::radio("layout_P", "layout_selection", "P", "P") . " : Portrait"],
-            [Html::radio("layout_L", "layout_selection", null, "L") . " : Landscape"],
-
+            'Select Page Layout' => [
+                [
+                    [HtmlBootstrap5::radio("layout_P", "layout_selection", "P", "P") . " : Portrait"],
+                    [HtmlBootstrap5::radio("layout_L", "layout_selection", null, "L") . " : Landscape"],
+                ]
+            ]
         ],
         "/insights-export/pdf/" . $p['insight_class'] . "?" . $refreshedParameters,
         "POST",
-        "",
-        "template_select_form"
+        "Export",
+        "template_select_form",
+        null, null,
+        "_self",
+        true, null, $displayOverlay = false
     );
 
-    $w->ctx('template_select', $template_select);
+    $w->out($template_select);
 }

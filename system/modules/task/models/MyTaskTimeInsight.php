@@ -28,10 +28,16 @@ class MyTaskTimeInsight extends InsightBaseClass
         return [
             "Options" => [
                 [
-                    ["Date From (optional)", "date", "dt_start", array_key_exists('dt_start', $parameters) ? $parameters['dt_start'] : null],
-                ],
-                [
-                    ["Date To (optional)", "date", "dt_end", array_key_exists('dt_end', $parameters) ? $parameters['dt_end'] : null],
+                    (new \Html\Form\InputField\Date([
+                        'id|name' => 'dt_start',
+                        'value' => array_key_exists('dt_start', $parameters) ? $parameters['dt_start'] : null,
+                        'label' => 'Date From (optional)',
+                    ])),
+                    (new \Html\Form\InputField\Date([
+                        'id|name' => 'dt_end',
+                        'value' => array_key_exists('dt_end', $parameters) ? $parameters['dt_end'] : null,
+                        'label' => 'Date To (optional)',
+                    ])),
                 ],
             ]
         ];
