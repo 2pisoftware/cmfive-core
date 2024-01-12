@@ -1641,7 +1641,7 @@ class Web
      * @param String module
      * @param String $function
      * @param Mixed $data
-     * @return array array of return values from all functions that answer to this hool
+     * @return array array of return values from all functions that answer to this hook
      */
     public function callHook($module, $function, $data = null)
     {
