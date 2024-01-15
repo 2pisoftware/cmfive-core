@@ -72,16 +72,6 @@ function move_GET(Web $w)
     $acp_options = !empty($usable_class) ? TimelogService::getInstance($w)->getObjects($usable_class, $where_clause) : "";
     $w->ctx("acp_options", $acp_options);
 
-    if (!empty($object)) {
-        $additional_form_fields = $w->callHook("timelog", "type_options_for_" . get_class($object), $object);
-        if (!empty($additional_form_fields[0])) {
-            $form["Additional Fields"] = [];
-            foreach ($additional_form_fields as $form_fields) {
-                $form["Additional Fields"][] = $form_fields;
-            }
-        }
-    }
-
     $form["Timelog"] = [
         [
             [
@@ -99,10 +89,17 @@ function move_GET(Web $w)
                 $acp_options,
             ],
         ],
-        [
-            $form["Additional Fields"] ?? [],
-        ]
     ];
+
+    if (!empty($object)) {
+        $additional_form_fields = $w->callHook("timelog", "type_options_for_" . get_class($object), $object);
+        if (!empty($additional_form_fields[0])) {
+            $form["Additional Fields"] = [];
+            foreach ($additional_form_fields as $form_fields) {
+                $form["Additional Fields"][] = $form_fields;
+            }
+        }
+    }
 
     // (new \Html\Form\InputField(["type" => "hidden", "id|name" => "object_id", "value" => $timelog->object_id ?: $tracking_id]));
 
