@@ -59,7 +59,7 @@ jobs:
       - uses: actions/checkout@v3
         with:
           repository: '2pisoftware/cmfive-boilerplate'
-          ref: 'feature/PlaywrightMigration'
+          ref: 'develop'
 
       # Pre-requisites Prepare Cmfive Environment
       - name: Setup cmfive Test Environment
