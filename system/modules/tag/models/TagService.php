@@ -72,4 +72,14 @@ class TagService extends DbService {
         $w->ctx("navigation", $nav);
         return $nav;
     }
+
+    public function navList(): array
+    {
+        if (AuthService::getInstance($this->w)->user()->hasRole('tag_admin')) {
+            return [
+                new MenuLinkStruct("Tag Admin", "tag/admin"),
+            ];
+        }
+        return [];
+    }
 }

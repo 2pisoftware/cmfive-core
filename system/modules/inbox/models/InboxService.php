@@ -227,4 +227,13 @@ class InboxService extends DbService {
         );
     }
     
+    public function navList(): array
+    {
+        return [
+            new MenuLinkStruct("New Messages", "inbox"),
+            new MenuLinkStruct("Read Messages", "inbox/read"),
+            new MenuLinkStruct("Archive", "inbox/showarchive"),
+            new MenuLinkStruct("Bin", "inbox/trash"),
+        ];
+    }
 }

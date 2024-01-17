@@ -1,0 +1,15 @@
+
+.accordion-button {
+    ::after {
+        @include theme((color: 'white'));
+    }
+
+    &:hover {
+        cursor: pointer;
+    }
+
+    &:focus, &:active {
+        outline: none !important;
+        box-shadow: none !important;
+    }
+}

@@ -11,10 +11,10 @@
         <a href='#external'>External</a>
     </div>
     <div class='tab-body'>
-        <div id='internal'>
+        <div id='internal' class='p-0'>
             <?php echo $internal_table; ?>
         </div>
-        <div id='external'>
+        <div id='external' class='p-0'>
             <?php echo $external_table; ?>
         </div>
     </div>
