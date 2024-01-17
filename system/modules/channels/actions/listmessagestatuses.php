@@ -2,6 +2,7 @@
 
 function listmessagestatuses_ALL(Web $w)
 {
+    $w->setLayout('layout-bootstrap-5');
     $p = $w->pathMatch("id");
     $id = $p["id"];
     ChannelsService::getInstance($w)->navigation($w, "Message Statuses");

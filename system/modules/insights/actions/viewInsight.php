@@ -4,6 +4,9 @@
 
 function viewInsight_GET(Web $w)
 {
+
+    $w->setLayout('layout-bootstrap-5');
+
     [$insight_class] = $w->pathMatch("insight_class");    // $insight_class will contain whatever you put after the slash following the action name
 
     // now we need to fetch the correct insight
@@ -21,5 +24,5 @@ function viewInsight_GET(Web $w)
 
     $w->ctx('title', "View Insight for " . $insight->name);
 
-    $w->ctx('filterForm', html::multiColForm($insight->getfilters($w, $_REQUEST), "/insights/runInsight/" . $insight_class, "GET", "Run"));
+    $w->ctx('filterForm', HtmlBootstrap5::multiColForm($insight->getfilters($w, $_REQUEST), "/insights/runInsight/" . $insight_class, "GET", "Run"));
 }

@@ -79,6 +79,7 @@ $themes: map.deep-merge($themes, (
             .accordion-item {
                 @include theme((background-color: 'navbar-background'));
                 border-radius: 0px;
+                border: none;
 
                 .accordion-header {
                     .accordion-button {

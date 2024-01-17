@@ -196,7 +196,7 @@ class Html
     /**
      * Create an a link styled as a button that pops up a reveal dialog
      * */
-    public static function abox($href, $title, $class = null, $id = null, $confirm = null)
+    public static function abox($href, $title, $class = "", $id = "", $confirm = "")
     {
         $classParam = ' button tiny ';
         if (strlen($class) > 0) {
@@ -365,8 +365,8 @@ class Html
             $readonly = "";
 
             // handle disabled fields
-            if (substr($name, 0, 1) == '-') {
-                $name = substr($name, 1);
+            if (substr(($name ?? ""), 0, 1) == '-') {
+                $name = substr(($name ?? ""), 1);
                 $readonly = " readonly='true' ";
             }
             // Add title field
@@ -665,8 +665,8 @@ class Html
                     $buffer .= ($type !== "hidden" ? "<div>" : "");
 
                     // handle disabled fields
-                    if (substr($name, 0, 1) == '-') {
-                        $name = substr($name, 1);
+                    if (substr(($name ?? ""), 0, 1) == '-') {
+                        $name = substr(($name ?? ""), 1);
                         $readonly = " readonly='true' ";
                     }
 
@@ -969,7 +969,7 @@ class Html
                 }
             }
             // Remove trailing comma
-            $source = substr($source, 0, -1);
+            $source = substr(($source ?? ""), 0, -1);
             $source .= "]";
         } else {
             $source = "'" . $options . "'";
@@ -1335,8 +1335,8 @@ class Html
             }
 
             // handle disabled fields
-            if (substr($name, 0, 1) == '-') {
-                $name = substr($name, 1);
+            if (substr(($name ?? ""), 0, 1) == '-') {
+                $name = substr(($name ?? ""), 1);
                 $readonly = " readonly='true' ";
             }
 

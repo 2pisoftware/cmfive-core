@@ -1,6 +1,8 @@
 <?php
 
 function remove_GET(Web $w) {
+
+	$w->setLayout('layout-bootstrap-5');
 	
 	list($user_id) = $w->pathMatch();
 	
