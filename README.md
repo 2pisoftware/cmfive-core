@@ -4,7 +4,7 @@
 
 Cmfive is a modular PHP framework for creating robust and extensible web applications.
 
-### Installation
+### Installation:
 
 First, grab the latest version of the [cmfive-boilerplate repository](https://github.com/2pisoftware/cmfive-boilerplate/archive/master.zip). This will contain the folder structure required by Cmfive. Then clone or download this repository and then create a symbolic link from the system folder in this repo into the base folder of the cmfive-boilerplate project.
 

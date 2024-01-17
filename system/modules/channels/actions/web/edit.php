@@ -2,6 +2,7 @@
 
 function edit_GET(Web $w)
 {
+    $w->setLayout('layout-bootstrap-5');
     $p = $w->pathMatch("id");
     $channel_id = $p["id"];
 
@@ -24,7 +25,7 @@ function edit_GET(Web $w)
         ],
     ];
 
-    $w->ctx("form", Html::multiColForm($form, "/channels-web/edit/{$channel_id}", "POST", "Save", "channelform"));
+    $w->ctx("form", HtmlBootstrap5::multiColForm($form, "/channels-web/edit/{$channel_id}", "POST", "Save", "channelform"));
 }
 
 function edit_POST(Web $w)

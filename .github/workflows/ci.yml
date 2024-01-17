@@ -15,6 +15,7 @@ env:
   DB_USERNAME: cmfive_test
   DB_PASSWORD: cmfive_test
   DB_DATABASE: cmfive_test
+  PLAYWRIGHT_MODULES: "admin channel form tag report task timelog"
 
 jobs:
   # Lint
@@ -58,7 +59,7 @@ jobs:
       - uses: actions/checkout@v3
         with:
           repository: '2pisoftware/cmfive-boilerplate'
-          ref: 'feature/PHP8.1'
+          ref: 'develop'
 
       # Pre-requisites Prepare Cmfive Environment
       - name: Setup cmfive Test Environment
@@ -72,14 +73,14 @@ jobs:
           docker exec -t nginx-php8.1 bash -c "rm -rf ./system && ln -s ./composer/vendor/2pisoftware/cmfive-core/system ./system"
           
           echo CoreInstall
-          docker exec -t nginx-php8.1 bash -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php install core ${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}"
+          docker exec -t nginx-php8.1 bash -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php install core ${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}} 8.1"
 
           echo DBCreate 
           docker exec -t mysql-8 bash -c "mysql -h 127.0.0.1 -u'root' -p'root' --execute \"CREATE DATABASE cmfive_test; CREATE USER cmfive_test@'%' IDENTIFIED BY 'cmfive_test'; GRANT ALL PRIVILEGES ON cmfive_test.* TO cmfive_test@'%'; GRANT PROCESS ON *.* TO cmfive_test@'%'; FLUSH PRIVILEGES;\""
 
           docker exec -t nginx-php8.1 bash -c "chmod -R 777 cache/ storage/ uploads/"
           
-          docker start selenium314;
+          docker start seleniumDrv;
           docker ps
       - name: Inject configs into cmfive Test Environment
         run: |
@@ -107,7 +108,7 @@ jobs:
       # Build new layout
       - uses: actions/setup-node@v3
         with:
-          node-version: 14
+            node-version: 18
         
       - name: Build new designs  
         run: |
@@ -123,59 +124,84 @@ jobs:
           if [ $? -gt 0 ]; then
             echo "Admin module tests failed"
           fi
-
+        # Setup playwright
+      - name: Setup Playwright
+        run: |
+          cd test/playwright
+          npm ci
+          npx playwright install --with-deps
       # Run Acceptance Tests
       - name: "Confirm Codeception setup"
         run: |        
           docker exec nginx-php8.1 bash -c "ls -lah -R /var/www/html/test/Codeception/tests && cat /var/www/html/test/Codeception/*.yml && cat /var/www/html/test/Codeception/tests/*.yml"
+      
+    #   - name: "Run Playwright Module Tests"
+    #     run: |
+    #       export DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306
+    #       sudo chmod 777 -R system/modules/admin/install/migrations/
+    #       cd test/playwright
+
+    #       for module in $PLAYWRIGHT_MODULES; do
+    #         npm run test:with-retries --module="$module" --platform="chromium" --attempts=3 --reporter="github"
+    #       done
+
       - name: "Run admin module tests"
         run: |
-          docker exec nginx-php8.1 bash -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php tests module admin silent; exit \$?"
-          if [ $? -gt 0 ]; then
-            echo "Admin module tests failed"
-          fi
-      - name: "Run channels module tests"
+            sudo chmod 777 -R system/modules/admin/install/migrations/
+            cd test/playwright
+            npm run build
+            npm run test --module="admin" --reporter="github"
+            if [ $? -gt 0 ]; then
+                echo "Admin module tests failed"
+            fi
+      - name: "Run channel module tests"
         run: |
-          docker exec nginx-php8.1 bash -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php tests module channels silent; exit \$?"
-          if [ $? -gt 0 ]; then
-            echo "Channels module tests failed"
-          fi
+            cd test/playwright
+            npm run build
+            npm run test --module="channel" --reporter="github"
+            if [ $? -gt 0 ]; then
+                echo "Channel module tests failed"
+            fi
       - name: "Run form module tests"
         run: |
-          docker exec nginx-php8.1 bash -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php tests module form silent; exit \$?"
-          if [ $? -gt 0 ]; then
-            echo "Form module tests failed"
-          fi
-      # - name: "Run inbox module tests"
-      #   run: |
-      #     docker exec nginx-php8.1 bash -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php tests module inbox silent; exit \$?"
-      #     if [ $? -gt 0 ]; then
-      #       echo "Inbox module tests failed"
-      #     fi
+            cd test/playwright
+            npm run build
+            npm run test --module="form" --reporter="github"
+            if [ $? -gt 0 ]; then
+                echo "Form module tests failed"
+            fi
       - name: "Run report module tests"
         run: |
-          docker exec nginx-php8.1 bash -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php tests module report silent; exit \$?"
+          cd test/playwright
+          npm run build
+          npm run test --module="report" --reporter="github"
           if [ $? -gt 0 ]; then
             echo "Report module tests failed"
           fi
       - name: "Run tag module tests"
         run: |
-          docker exec nginx-php8.1 bash -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php tests module tag silent; exit \$?"
-          if [ $? -gt 0 ]; then
-            echo "Tag module tests failed"
-          fi
+            cd test/playwright
+            npm run build
+            npm run test --module="tag" --reporter="github"
+            if [ $? -gt 0 ]; then
+                echo "Tag module tests failed"
+            fi
       - name: "Run task module tests"
         run: |
-          docker exec nginx-php8.1 bash -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php tests module task silent; exit \$?"
-          if [ $? -gt 0 ]; then
-            echo "Task module tests failed"
-          fi
+            cd test/playwright
+            npm run build
+            npm run test --module="task" --reporter="github"
+            if [ $? -gt 0 ]; then
+                echo "Task module tests failed"
+            fi
       - name: "Run timelog module tests"
         run: |
-          docker exec nginx-php8.1 bash -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php tests module timelog silent; exit \$?"
-          if [ $? -gt 0 ]; then
-            echo "Timelog module tests failed"
-          fi
+            cd test/playwright
+            npm run build
+            npm run test --module="timelog" --reporter="github"
+            if [ $? -gt 0 ]; then
+                echo "Timelog module tests failed"
+            fi
 
       - name: Stop containers
         # the containers should be stopped regardless of 
@@ -186,10 +212,12 @@ jobs:
       # Store Test Results
       - name: Test results
         if: ${{ failure() }} || ${{ success() }}
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: test-output
           path: |
             test/Codeception/tests/_output/
             storage/log/
+            test/playwright/test-results/
+            test/playwright/playwright-report/
           retention-days: 5

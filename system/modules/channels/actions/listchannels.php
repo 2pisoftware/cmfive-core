@@ -2,6 +2,7 @@
 
 function listchannels_GET(Web $w)
 {
+    $w->setLayout('layout-bootstrap-5');
     ChannelsService::getInstance($w)->navigation($w, "Channels List");
 
     // Get known channel types: email and web

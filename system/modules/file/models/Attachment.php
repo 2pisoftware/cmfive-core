@@ -496,8 +496,8 @@ class Attachment extends DbObject
         if ($this->isImage()) {
             // Generate thumbnail and cache
             require_once 'phpthumb/ThumbLib.inc.php';
-            $width = $this->w->request("w", FileService::$_thumb_width);
-            $height = $this->w->request("h", FileService::$_thumb_height);
+            $width = Request::int('w', FileService::$_thumb_width);
+            $height = Request::int('h', FileService::$_thumb_height);
             $thumb = PhpThumbFactory::create($this->getContent(), [], true);
             $thumb->adaptiveResize($width, $height);
 

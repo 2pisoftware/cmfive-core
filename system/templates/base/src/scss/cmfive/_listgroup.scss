@@ -1,0 +1,11 @@
+.list-group {
+    @include shadow-flat();
+
+    .list-group-item {
+        @include theme((background-color: 'white-black', color: 'dark-grey', border-color: 'light-grey'));
+    }
+
+    .active {
+        @include theme((background-color: 'mid-grey', color: 'white-black', border-color: 'mid-grey'));
+    }
+}

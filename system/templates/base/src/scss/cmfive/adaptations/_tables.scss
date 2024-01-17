@@ -5,7 +5,7 @@ table {
 
     th {
         @include font-size('body');
-        @include theme((color: 'dark-grey'));
+        @include theme((color: 'dark-grey', background-color: 'white-black'));
     }
 
     td {
@@ -14,6 +14,34 @@ table {
     }
 }
 
+table.table-striped {
+    @include shadow-flat();
+    margin-top: 12px;
+    padding: 20px;
+
+    thead {
+        tr {
+            th {
+                
+                font-weight: 400;
+                padding: 12px 20px;
+            }
+        }
+    }
+    tbody {
+        tr {
+            td {
+                padding: 0px 20px;
+            }
+
+            &:first-child, &:nth-child(2n + 1) {
+                td {
+                    @include theme((background-color: 'light-grey'));
+                }
+            }
+        }
+    }
+}
 
 table.tablesorter {
     @include shadow-flat();
@@ -96,4 +124,14 @@ table.tablesorter {
     .panel {
         margin-bottom: 2rem;
     }
+}
+
+.width-20 {
+    th {
+        width: 20%;
+    }
+}
+
+.center-3rd-column {
+    @include center-nth-column(3);
 }
