@@ -1106,7 +1106,7 @@ class Html
     ): string {
         // Build URL for pagination.
         $url_parsed = parse_url($base_url);
-        $url_string = $url_parsed["path"];
+        $url_string = '/' . $url_parsed["path"];
         $url_string .= (empty($url_parsed["query"]) ? "?" : "?" . $url_parsed["query"] . "&") . $sort_query_param . "=" . $sort . "&" . $sort_direction_param . "=" . $sort_direction;
         $url_string .= (!empty($url_parsed["fragment"]) ? "#" . $url_parsed["fragment"] : "");
 
@@ -1598,13 +1598,9 @@ UPLOAD;
      * @param string $height
      * @return string
      */
-    public static function embedDocument($link, $width = '1024', $height = '724', $zoom = 'page-width', $is_docx = false)
+    public static function embedDocument(string $link, $width = '1024', $height = '724', $zoom = 'page-width', $is_docx = false)
     {
-        if ($is_docx) {
-            return '<iframe src="https://docs.google.com/gview?url=' . $link . '&embedded=true"  width=' . $width . ' height=' . $height . ' allowfullscreen webkitallowfullscreen></iframe>';
-        }
-
-        return "<iframe src='/system/templates/js/viewerjs-0.5.8/ViewerJS/index.html?zoom={$zoom}#../../../../..{$link}' width='{$width}' height='{$height}' allowfullscreen webkitallowfullscreen></iframe>";
+        return "<object style='min-height: 600px float: none; display: inline;' data='{$link}#view=FitH&navpanes=0' width='100%' height='$height' loading='lazy' allow='fullscreen'></object>";
     }
 
     /**
