@@ -26,4 +26,6 @@ function index_GET(Web $w)
     }
 
     $w->ctx("number_of_printers", 0);
+
+    $w->ctx("unused_roles", AdminService::getInstance($w)->getUnusedRoles());
 }
