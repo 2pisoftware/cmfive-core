@@ -204,7 +204,7 @@ class HtmlBootstrap5 extends Html
                                 "id"       => $name,
                                 "title"            => $title,
                                 "required"        => $required,
-                                "class"            => "form-control ",
+                                "class"            => "form-control autocomplete",
                                 "style"            => "width: 100%;",
                                 "minValue"        => $minValue,
                                 "options"            => $options,

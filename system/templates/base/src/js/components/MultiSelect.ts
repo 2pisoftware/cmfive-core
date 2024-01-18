@@ -2,7 +2,7 @@
 import TomSelect from 'tom-select';
 
 export class MultiSelect {
-    private static SELECT_TARGET = '.tom-select-target';
+    private static SELECT_TARGET = '.tom-select-multiselect';
 
     static bindInteractions() {
         document.querySelectorAll(MultiSelect.SELECT_TARGET)?.forEach(s => {

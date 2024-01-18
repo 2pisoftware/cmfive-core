@@ -19,12 +19,6 @@ class Autocomplete extends Select
     ];
     public $_values = [];
 
-    public function __construct($fields = [])
-    {
-        parent::__construct($fields);
-        $this->class = $this->class .= ' tom-select-target';
-    }
-
 
     public function getConfig(): array
     {
@@ -49,7 +43,7 @@ class Autocomplete extends Select
             $this->_config['items'] = $this->_values;
         }
         $this->setAttribute('data-config', json_encode($this->_config));
-        $this->class = $this->class .= ' tom-select-target';
+        $this->class = $this->class .= ' tom-select-target tom-select-autocomplete';
 
         return parent::__toString();
     }

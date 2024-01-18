@@ -1,6 +1,6 @@
 // src/app.ts
 import { AlertAdaptation, DropdownAdaptation, FavouritesAdaptation, TabAdaptation, TableAdaptation } from './adaptations';
-import { QuillEditor, InputWithOther, MultiFileUpload, MultiSelect, Overlay, CodeMirror } from './components';
+import { QuillEditor, InputWithOther, MultiFileUpload, MultiSelect, Autocomplete, Overlay, CodeMirror } from './components';
 
 import { Modal, Tooltip } from 'bootstrap';
 
@@ -118,6 +118,7 @@ class Cmfive {
      * @param target Document|Element
      */
     static ready(target: Document|Element) {
+        console.log("now you are going to work hey")
         if (!window.hasOwnProperty('cmfiveEventBus')) {
             // @ts-ignore
             window.cmfiveEventBus = document.createComment('Helper')
@@ -185,6 +186,7 @@ class Cmfive {
         InputWithOther.bindOtherInteractions();
         MultiFileUpload.bindInteractions();
         MultiSelect.bindInteractions();
+        Autocomplete.bindInteractions();
         TabAdaptation.bindTabInteractions();
         TableAdaptation.bindTableInteractions();
         QuillEditor.bindQuillEditor();
