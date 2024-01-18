@@ -5,6 +5,7 @@ import { Overlay } from './Overlay';
 import { QuillEditor } from './QuillEditor';
 import { Toast } from './Toast';
 import { CodeMirror } from './CodeMirror';
+import { Autocomplete } from './Autocomplete';
 // import TestComponent from './TestComponent';
 
-export { InputWithOther, MultiFileUpload, MultiSelect, Overlay, QuillEditor, Toast, CodeMirror };
+export { InputWithOther, MultiFileUpload, MultiSelect, Overlay, QuillEditor, Toast, CodeMirror, Autocomplete };
