@@ -31,7 +31,7 @@ function index_GET(Web $w)
 
     //FIXME build tables
 
-    $timelog_table_headers = ['From', 'To', 'Task', 'Description', 'Actions'];
+    $timelog_table_headers = ['From', 'To', 'Object', 'Description', 'Actions'];
     $timelog_table_column_widths = [10, 10, 24, 40, 16];
 
     $time_entries = $time_entry_objects;
@@ -59,7 +59,6 @@ function index_GET(Web $w)
                 $timelog_table .= '<tr>';
                 $timelog_table .= '<td>' . formatDate($time_entry->dt_start, "H:i:s") . '</td>';
                 $timelog_table .= '<td>' . formatDate($time_entry->dt_end, "H:i:s") . '</td>';
-                $timelog_table .= '<td>' . $additional_details . '</td>';
                 $timelog_table .= '<td>' . ($time_entry->getLinkedObject() ? (get_class($time_entry->getLinkedObject()) . ": " . $time_entry->getLinkedObject()->toLink()) : '') . '</td>';
                 $timelog_table .= '<td>' . ($time_entry->getComment() ? $time_entry->getComment()->comment : 'no comment found') . '</td>';
                 $timelog_table .= '<td>' . HtmlBootstrap5::buttonGroup(($time_entry->object_class == 'Task' ? HtmlBootstrap5::b('/task/edit/' . $time_entry->object_id . "#timelog", "View All", null, null, false, "btn btn-primary") : '') .
