@@ -8,6 +8,17 @@ use Html\Form\Select;
  * A select field with autocomplete functionality
  * Implements Tom Select, similar to MultiSelect but for a single value
  * 
+ * @param array $attributes
+ * 
+ * Fields:
+ * id: html id
+ * title: what is displayed to the user before selection
+ * required: is this field required?
+ * class: html classes
+ * style: css styles
+ * minValue: minimum number of characters before autocomplete is triggered
+ * options: array of options to autocomplete from
+ * 
  * @author @tynanmatthews
  */
 class Autocomplete extends Select
