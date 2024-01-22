@@ -3,6 +3,7 @@ import { AlertAdaptation, DropdownAdaptation, FavouritesAdaptation, TabAdaptatio
 import { QuillEditor, InputWithOther, MultiFileUpload, MultiSelect, Autocomplete, Overlay, CodeMirror } from './components';
 
 import { Modal, Tooltip } from 'bootstrap';
+import { Autocomplete } from './components/Autocomplete';
 
 class Cmfive {
     static THEME_KEY = 'theme';
@@ -95,7 +96,21 @@ class Cmfive {
             return response.text()
         }).then((content) => {
             modalContent.innerHTML = content + modalContent.innerHTML;
-    
+  
+            Array.from(modalContent.querySelectorAll("script")).forEach(oldScriptEl => {
+                const newScriptEl = document.createElement("script");
+                
+                Array.from(oldScriptEl.attributes).forEach( attr => {
+                    newScriptEl.setAttribute(attr.name, attr.value) 
+                });
+                
+                const scriptText = document.createTextNode(oldScriptEl.innerHTML);
+                newScriptEl.appendChild(scriptText);
+                
+                console.log(oldScriptEl, newScriptEl)
+                oldScriptEl.parentNode.replaceChild(newScriptEl, oldScriptEl);
+            });
+
             // Rebind elements for modal
             Cmfive.ready(modalContent);
         })
@@ -181,6 +196,7 @@ class Cmfive {
         // })
 
         AlertAdaptation.bindCloseEvent();
+        Autocomplete.bindInteractions();
         DropdownAdaptation.bindDropdownHover();
         FavouritesAdaptation.bindFavouriteInteractions();
         InputWithOther.bindOtherInteractions();

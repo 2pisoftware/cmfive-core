@@ -1,35 +1,20 @@
-<?php
+<?php namespace Html\Cmfive;
 
-namespace Html\Cmfive;
+use Html\Form\InputField;
 
-use Html\Form\Select;
-
-/**
- * A select field with autocomplete functionality
- * Implements Tom Select, similar to MultiSelect but for a single value
- * 
- * @param array $attributes
- * 
- * Fields:
- * id: html id
- * title: what is displayed to the user before selection
- * required: is this field required?
- * class: html classes
- * style: css styles
- * minValue: minimum number of characters before autocomplete is triggered
- * options: array of options to autocomplete from
- * 
- * @author @tynanmatthews
- */
-class Autocomplete extends Select
+class Autocomplete extends InputField
 {
+    public string $url = '';
+    public array $_lookup_values = [];
+
+    public string $valueField = '';
+    public string $labelField = '';
+    public string $searchField = '';
 
     public $_config = [
         'create' => false,
-        'maxitems' => 1,
+        'maxItems' => 1,
     ];
-    public $_values = [];
-
 
     public function getConfig(): array
     {
@@ -42,19 +27,43 @@ class Autocomplete extends Select
         return $this;
     }
 
-    public function setValues(array $values): self
+    public function setUrl(string $url): self
     {
-        $this->_values = $values;
+        $this->url = $url;
+        return $this;
+    }
+
+    public function setValueField(string $valueField): self
+    {
+        $this->valueField = $valueField;
+        return $this;
+    }
+
+    public function setLabelField(string $labelField): self
+    {
+        $this->labelField = $labelField;
+        return $this;
+    }
+
+    public function setSearchField(string $searchField): self
+    {
+        $this->searchField = $searchField;
+        return $this;
+    }
+
+    public function setLookupValues(array $lookup_values): self
+    {
+        $this->_lookup_values = $lookup_values;
         return $this;
     }
 
     public function __toString(): string
     {
-        if (!empty($this->_values)) {
-            $this->_config['items'] = $this->_values;
-        }
-        $this->setAttribute('data-config', json_encode($this->_config));
-        $this->class = $this->class .= ' tom-select-target tom-select-autocomplete';
+        $this->class .= ' autocomplete';
+        $this->setAttribute('autocomplete', '');
+        $this->setAttribute('data-config', json_encode(array_merge($this->_config, ['valueField' => $this->valueField, 'labelField' => $this->labelField, 'searchField' => $this->searchField])));
+        $this->setAttribute('data-url', $this->url);
+        // $this->setAttribute('data-lookup-values', json_encode($this->_lookup_values));
 
         return parent::__toString();
     }
