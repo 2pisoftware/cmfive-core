@@ -167,7 +167,7 @@ class InputField extends \Html\Form\FormElement
      */
     public function setAutocomplete($autocomplete)
     {
-        $this->autcomplete = $autocomplete;
+        $this->autocomplete = $autocomplete;
 
         return $this;
     }
