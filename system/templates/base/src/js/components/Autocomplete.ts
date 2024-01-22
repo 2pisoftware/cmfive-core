@@ -2,14 +2,13 @@
 import TomSelect from 'tom-select';
 
 export class Autocomplete {
-    private static SELECT_TARGET = 'input[autocomplete]';
+    private static SELECT_TARGET = 'input[custom_autocomplete]';
 
     /**
      * @todo check if this works with multiple instances
      */
     static bindInteractions() {
         document.querySelectorAll(Autocomplete.SELECT_TARGET)?.forEach(s => {
-            console.log(s)
             const mut_config = { attributes: true };
             const callback = (mutationList, observer) => {
                 for (const mutation of mutationList) {
@@ -29,7 +28,7 @@ export class Autocomplete {
         let config = JSON.parse(el.getAttribute('data-config'));
         let url = el.getAttribute('data-url');
         const callback = function(query, callback) {
-			var _url = url + '?q=' + encodeURIComponent(query);
+			var _url = url + '?term=' + encodeURIComponent(query);
 			fetch(_url)
 				.then(response => response.json())
 				.then(json => {
@@ -40,6 +39,10 @@ export class Autocomplete {
 		};
 
         config['load'] = callback;
-        new TomSelect(el as HTMLInputElement, config ? config : null);
+        try {
+            new TomSelect(el as HTMLInputElement, config ? config : null);
+        } catch (e:any) {
+            console.error("Failed to setup Tom-Select: ", (e ?? 'Null error'));
+        }
     }
 }

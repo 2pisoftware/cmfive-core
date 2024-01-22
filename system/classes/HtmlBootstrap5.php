@@ -1,9 +1,5 @@
 <?php
 
-use Html\Cmfive\Autocomplete;
-
-require_once "html/cmfive/Autocomplete.php";
-
 class HtmlBootstrap5 extends Html
 {
     public static function b($href, $title, $confirm = null, $id = null, $newtab = false, $class = null, $type = null, $name = null)
@@ -101,7 +97,9 @@ class HtmlBootstrap5 extends Html
         foreach ($data as $section => $rows) {
             // Print section header
             $buffer .= "<div class='panel clearfix'>";
-            $buffer .= "<div class='row g-0 clearfix section-header'><h4 class='col'>{$section}<span style='display: none;' class='changed_status right alert radius label'>changed</span></h4></div>";
+            if (is_string($section)) {
+                $buffer .= "<div class='row g-0 clearfix section-header'><h4 class='col'>{$section}<span style='display: none;' class='changed_status right alert radius label'>changed</span></h4></div>";
+            }
 
             // Loop through each row
             foreach ($rows as $row) {
@@ -196,20 +194,6 @@ class HtmlBootstrap5 extends Html
                             $size = !empty($field[4]) ? $field[4] : null;
                             $buffer .= '<input' . $readonly . ' class="form-control" type="' . $type . '" name="' . $name . '" value="' . (empty($value) ? '' : htmlspecialchars($value)) .
                                 '" size="' . $size . '" id="' . $name . '" ' . $required . " />";
-                            break;
-                        case "autocomplete":
-                            $options = !empty($field[4]) ? $field[4] : null;
-                            $minValue = !empty($field[5]) ? $field[5] : 1;
-                            $buffer .= new Autocomplete([
-                                "id"       => $name,
-                                "title"            => $title,
-                                "required"        => $required,
-                                "class"            => "form-control autocomplete",
-                                "style"            => "width: 100%;",
-                                "minValue"        => $minValue,
-                                "options"            => $options,
-                            ]);
-                            // $buffer .= Html::autocomplete($name, $options, $value, "form-control", "width: 100%;", $minValue, $required);
                             break;
                         case "date":
                             $size = !empty($field[4]) ? $field[4] : null;

@@ -3,7 +3,6 @@ import { AlertAdaptation, DropdownAdaptation, FavouritesAdaptation, TabAdaptatio
 import { QuillEditor, InputWithOther, MultiFileUpload, MultiSelect, Autocomplete, Overlay, CodeMirror } from './components';
 
 import { Modal, Tooltip } from 'bootstrap';
-import { Autocomplete } from './components/Autocomplete';
 
 class Cmfive {
     static THEME_KEY = 'theme';
@@ -133,7 +132,6 @@ class Cmfive {
      * @param target Document|Element
      */
     static ready(target: Document|Element) {
-        console.log("now you are going to work hey")
         if (!window.hasOwnProperty('cmfiveEventBus')) {
             // @ts-ignore
             window.cmfiveEventBus = document.createComment('Helper')

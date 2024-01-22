@@ -1,4 +1,6 @@
-<?php namespace Html\Cmfive;
+<?php
+
+namespace Html\Cmfive;
 
 use Html\Form\InputField;
 
@@ -60,7 +62,7 @@ class Autocomplete extends InputField
     public function __toString(): string
     {
         $this->class .= ' autocomplete';
-        $this->setAttribute('autocomplete', '');
+        $this->setAttribute('custom_autocomplete', '');
         $this->setAttribute('data-config', json_encode(array_merge($this->_config, ['valueField' => $this->valueField, 'labelField' => $this->labelField, 'searchField' => $this->searchField])));
         $this->setAttribute('data-url', $this->url);
         // $this->setAttribute('data-lookup-values', json_encode($this->_lookup_values));
