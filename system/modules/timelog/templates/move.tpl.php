@@ -58,7 +58,7 @@
             <?php endif; ?>
             <ul class="small-block-grid-1 medium-block-grid-1 section-body">
                 <li>
-                    <div class="small-12 columns">
+                    <div >
                         <button class="button small">Save</button>
                     </div>
                 </li>
@@ -70,13 +70,10 @@
 <?php echo $form ?>
 <script type="text/javascript">
     // Input values are module and search
-    console.log("raw loggin it")
-
-    document.addEventListener('keyup', (event) => {
-        console.log(event)
-        console.log(event.target)
-        console.log(event.target.id)
-        console.log(event.target.value)
+    const search = document.getElementById('object_class')
+    search.addEventListener('change', () => {
+        console.log("Object class changed")
+        // change the autocomplete URL here
     })
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -132,65 +129,5 @@
                 })
         })
     });
-    $(document).ready(function() {
-        // If there is no task group selected, we disable submit
-        if ($("#object_id").val() == "") {
-            $(".savebutton").prop("disabled", true);
-            $("#acp_search").attr("readonly", "true");
-        }
-        var searchBaseUrl = "/timelog/ajaxSearch";
-
-        // If there is already a value in #object_class, that is, we are
-        // editing, then set the searchURL
-        var searchUrl = "";
-        if ($("#object_class").val !== "") {
-            $("#acp_search").removeAttr("readonly");
-            searchUrl = searchBaseUrl + "?index=" + $("#object_class").val();
-            console.log(searchUrl);
-        }
-        $("#object_class").change(function() {
-            console.log("object class changed");
-            $("#acp_search").val("");
-            $("#timelog_move_form .panel + .panel").remove();
-            if ($(this).val() !== "") {
-                $("#acp_search").removeAttr("readonly");
-                searchUrl = searchBaseUrl + "?index=" + $(this).val();
-            } else {
-                // This fails with unknown page...
-                $("#acp_search").attr("readonly", "true");
-                searchUrl = searchBaseUrl;
-            }
-        });
-
-        $("#acp_search").autocomplete({
-            source: function(request, response) {
-                $.ajax({
-                    url: searchUrl + "&term=" + request.term,
-                    success: function(result) {
-                        response(JSON.parse(result));
-                    }
-                });
-            },
-            // When the have selected a search value then do the ajax call
-            select: function(event, ui) {
-                $("#object_id").val(ui.item.id);
-                // Task is chosen, allow submit
-                $(".savebutton").prop("disabled", false);
-                $("#timelog_move_form .panel + .panel").remove();
-                $.get("/timelog/ajaxGetExtraData/" + $("#object_class").val() + "/" + $("#object_id").val())
-                    .done(function(response) {
-                        if (response != "") {
-                            var append_panel = "<div class='panel'><div class='row-fluid section-header'><h4>Additional Fields" + $("#object_class").val() +
-                                "</h4></div><ul class='small-block-grid-1 medium-block-grid-1 section-body'><li>" + response + "</li></ul></div>";
-                            $("#timelog_move_form .panel").after(append_panel);
-                        }
-                    });
-
-            },
-            minLength: 3
-        });
-
-        // Need to simulate change to module type to set url
-
-    });
+    
 </script>
