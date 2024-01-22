@@ -1,5 +1,8 @@
 <?php
 
+use Html\Cmfive\Autocomplete;
+use Html\Form\Select;
+
 function move_GET(Web $w)
 {
     $w->setLayout('layout-bootstrap-5');
@@ -91,19 +94,44 @@ function move_GET(Web $w)
         ],
     ];
 
+    $select_field = new Select([
+        "id" => "object_class",
+        "name" => "object_class",
+        "class" => "form-control",
+        "title" => "object_class",
+        "selected_option" => $timelog->object_class ?: $tracking_class ?: (empty($select_indexes) ? null : $select_indexes[0][1]),
+        "required" => true,
+        "options" => $select_indexes,
+        "data-value" => $timelog->object_class ?: $tracking_class ?: (empty($select_indexes) ? null : $select_indexes[0][1]),
+    ]);
+    $w->ctx("select_field", $select_field);
+    $autocomplete_field = new Autocomplete([
+        "id" => "acp_search",
+        "name" => "search",
+        "class" => "form-control",
+        "title" => !empty($object) ? $object->getSelectOptionTitle() : null,
+        "required" => true,
+        "minValue" => 2,
+        "options" => $acp_options,
+        "data-attr-search-url" => "",
+    ]);
+    $w->ctx("autocomplete_field", $autocomplete_field);
+
+
     if (!empty($object)) {
         $additional_form_fields = $w->callHook("timelog", "type_options_for_" . get_class($object), $object);
         if (!empty($additional_form_fields[0])) {
-            $form["Additional Fields"] = [];
+            $additional_fields_out = [];
             foreach ($additional_form_fields as $form_fields) {
-                $form["Additional Fields"][] = $form_fields;
+                $additional_fields_out[] = $form_fields;
             }
+            $w->ctx("additional_form_fields", $additional_fields_out);
         }
     }
 
     // (new \Html\Form\InputField(["type" => "hidden", "id|name" => "object_id", "value" => $timelog->object_id ?: $tracking_id]));
 
-    $w->ctx("form", HtmlBootstrap5::multiColForm($form, "/timelog/move/{$timelog->id}", "POST", "Save", "timelogform"));
+    //$w->out(HtmlBootstrap5::multiColForm($form, "/timelog/move/{$timelog->id}", "POST", "Save", "timelogform"));
 }
 
 function move_POST(Web $w)
