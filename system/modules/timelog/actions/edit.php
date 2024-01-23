@@ -17,7 +17,8 @@ function edit_GET(Web $w)
     }
 
     $w->ctx("timelog", $timelog);
-    $w->ctx('redirect', Request::string("redirect", ''));
+    $redirect = Request::string("redirect", '');
+    $w->ctx('redirect', $redirect);
 
     $indexes = TimelogService::getInstance($w)->getLoggableObjects();
     $select_indexes = [];
@@ -32,6 +33,13 @@ function edit_GET(Web $w)
     $tracking_class = Request::string("class");
     $w->ctx("tracking_id", $tracking_id);
     $w->ctx("tracking_class", $tracking_class);
+
+    if (AuthService::getInstance($w)->user()->is_admin) {
+        $options = AuthService::getInstance($w)->getUsers();
+        usort($options, function ($a, $b) {
+            return strcmp($a->getContact()->getFullName(), $b->getContact()->getFullName());
+        });
+    }
 
     // If timelog.object_id is required then we must require the search field
     $validation = Timelog::$_validation;
@@ -48,25 +56,117 @@ function edit_GET(Web $w)
         $object->time_type = $timelog->time_type;
     }
 
-    $form = [];
+    //depending on permissions have a select or hidden field for selecting timelog user
+    if (AuthService::getInstance($w)->user()->is_admin && !empty($options)) {
+        $user_select = (new \Html\Form\Select([
+            "id|name"    => "user_id",
+            'required'  => true,
+        ]))->setOptions($options, true)->setSelectedOption(empty($timelog->id) ? AuthService::getInstance($w)->user()->id : (!empty($timelog->user_id) ? $timelog->user_id : null))->setLabel('Assigned User');
+    } else {
+        $user_select = (new \Html\Form\InputField\Hidden([
+            "name"        => "user_id",
+            "value"        => empty($timelog->id) ? AuthService::getInstance($w)->user()->id : $timelog->user_id
+        ]));
+    }
+    $form_header = (!empty($timelog->id)) ? "Update" : "Create";
+    $form[$form_header] = [
+        [
+            $user_select,
+        ],
+        [
+            (new Html\Form\Select([
+                "id|name" => "object_class",
+                "class" => "form-control",
+                "selected_option" => $timelog->object_class ?: $tracking_class ?: (empty($select_indexes) ? null : $select_indexes[0][1]),
+                "required" => true,
+                "options" => $select_indexes,
+            ]))->setLabel('Module'),
+
+
+            (new Html\Cmfive\Autocomplete([
+                "id|name" => "acp_search",
+                "class" => "form-control",
+                "required" => true,
+                'url' => 'ajaxSearch?index=Task'
+            ]))->setLabel('Search'),
+        ],
+        [
+            (new \Html\Form\InputField\Date([
+                "id|name"        => "date_start",
+                "value"            => $timelog->getDateStart(),
+                "required"        => true,
+            ]))->setLabel('Date'),
+            (new \Html\Form\InputField([
+                "id|name"        => "time_start",
+                "value"            => $timelog->getTimeStart(),
+                "pattern"        => "^(0?[0-9]|1[0-9]|2[0-3]):[0-5][0-9](\s+)?(AM|PM|am|pm)?$",
+                "placeholder"    => "12hr format: 11:30pm or 24hr format: 23:30",
+                "required"        => "true"
+            ]))->setLabel('Time Started'),
+        ],
+        (!$timelog->isRunning()) ? [
+            (new \Html\Form\InputField\Radio([
+                "name"        => "select_end_method",
+                "value"        => "time",
+                "class"        => "right",
+                "style"        => "margin-top: 20px;",
+                "checked"    => "true",
+                "tabindex"    => -1
+            ])),
+            (new \Html\Form\InputField([
+                "id|name"        => "time_end",
+                "value"            => $timelog->getTimeEnd(),
+                "pattern"        => "^(0?[0-9]|1[0-9]|2[0-3]):[0-5][0-9](\s+)?(AM|PM|am|pm)?$",
+                "placeholder"    => "12hr format: 11:30pm or 24hr format: 23:30",
+                "required"        => "true"
+            ]))->setLabel('End Time'),
+            (new \Html\Form\InputField\Radio([
+                "name"        => "select_end_method",
+                "value"        => "hours",
+                "class"        => "right",
+                "style"        => "margin-top: 20px;",
+                "tabindex"    => -1
+            ])),
+            (new \Html\Form\InputField\Number([
+                "id|name"        => "hours_worked",
+                "value"            => $timelog->getHoursWorked(),
+                "min"            => 0,
+                "max"            => 23,
+                "step"            => 1,
+                "placeholder"    => "Hours: 0-23",
+                "disabled"        => "true"
+            ]))->setLabel('Hours Worked'),
+            (new \Html\Form\InputField\Number([
+                "id|name"        => "minutes_worked",
+                "value"            => $timelog->getMinutesWorked(),
+                "min"            => 0,
+                "max"            => 59,
+                "step"            => 1,
+                "placeholder"    => "Mins: 0-59",
+                "disabled"        => "true"
+            ]))->setLabel('Minutes Worked'),
+        ] : null,
+        [
+            (new \Html\Form\Textarea([
+                "id|name"        => "description",
+                "value"            => !empty($timelog->id) ? $timelog->getComment()->comment : null,
+                "rows"            => 8
+            ]))->setLabel('Description'),
+        ],
+        [
+            (new \Html\Form\InputField(["type" => "hidden", "id|name" => "object_id", "value" => $timelog->object_id ?: $tracking_id])),
+        ],
+    ];
     if (!empty($object)) {
         $additional_form_fields = $w->callHook("timelog", "type_options_for_" . get_class($object), $object);
         if (!empty($additional_form_fields[0])) {
-            $form['Additional Fields'] = [];
             foreach ($additional_form_fields as $form_fields) {
-                $form['Additional Fields'][] = $form_fields;
+                $form[$form_header][] = $form_fields;
             }
         }
     }
-    $w->ctx("form", $form);
-
-    if (AuthService::getInstance($w)->user()->is_admin) {
-        $users = AuthService::getInstance($w)->getUsers();
-        usort($users, function ($a, $b) {
-            return strcmp($a->getContact()->getFullName(), $b->getContact()->getFullName());
-        });
-        $w->ctx("options", $users);
-    }
+    //method='POST' name='timelog_edit_form' target='_self' id='timelog_edit_form' class=' small-12 columns'>
+    $w->ctx("form", HtmlBootstrap5::multiColForm($form, '/timelog/edit/' . (!empty($timelog->id) ? $timelog->id : '') . ($redirect ? '?redirect=' . $redirect : ''), "POST", "Save", 'timelog_edit_form', null, null, '_self', true, $validation));
 }
 
 function edit_POST(Web $w)
