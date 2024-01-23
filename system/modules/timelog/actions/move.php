@@ -77,12 +77,10 @@ function move_GET(Web $w)
 
             (new Html\Form\Select([
                 "id|name" => "object_class",
-                'title' => 'Module but better',
                 "class" => "form-control",
                 "selected_option" => $timelog->object_class ?: $tracking_class ?: (empty($select_indexes) ? null : $select_indexes[0][1]),
                 "required" => true,
                 "options" => $select_indexes,
-                "data-value" => $timelog->object_class ?: $tracking_class ?: (empty($select_indexes) ? null : $select_indexes[0][1]),
             ]))->setLabel('Module'),
 
 
