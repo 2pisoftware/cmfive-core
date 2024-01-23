@@ -109,9 +109,6 @@ function move_GET(Web $w)
         }
     }
 
-
-    // (new \Html\Form\InputField(["type" => "hidden", "id|name" => "object_id", "value" => $timelog->object_id ?: $tracking_id]));
-
     $w->ctx('form', HtmlBootstrap5::multiColForm($form, "/timelog/move/{$timelog->id}", "POST", "Save", "timelogform"));
 }
 
