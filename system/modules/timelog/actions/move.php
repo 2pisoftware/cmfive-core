@@ -91,7 +91,7 @@ function move_GET(Web $w)
                 "class" => "form-control",
                 // "title" => !empty($object) ? $object->getSelectOptionTitle() : null,
                 "required" => true,
-                'url' => 'timelog/ajaxSearch?index=Task'
+                'url' => 'ajaxSearch?index=Task'
             ]))->setLabel('Search'),
 
         ],

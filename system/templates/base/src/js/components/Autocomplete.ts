@@ -13,6 +13,7 @@ export class Autocomplete {
             const callback = (mutationList, observer) => {
                 for (const mutation of mutationList) {
                     if (mutation.type === "attributes" && mutation.attributeName === "data-url") {
+                        console.log('Updating autocomplete data-url')
                         Autocomplete.setupTomSelect(s);
                     }
                 }
@@ -28,11 +29,11 @@ export class Autocomplete {
         let config = JSON.parse(el.getAttribute('data-config'));
         let url = el.getAttribute('data-url');
         const callback = function(query, callback) {
-			var _url = url + '?term=' + encodeURIComponent(query);
+			var _url = url + '&term=' + encodeURIComponent(query);
 			fetch(_url)
 				.then(response => response.json())
 				.then(json => {
-					callback(json.items);
+					callback(json);
 				}).catch(()=>{
 					callback();
 				});
