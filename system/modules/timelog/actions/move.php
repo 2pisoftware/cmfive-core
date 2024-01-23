@@ -90,7 +90,7 @@ function move_GET(Web $w)
                 // "title" => !empty($object) ? $object->getSelectOptionTitle() : null,
                 "required" => true,
                 'url' => 'ajaxSearch?index=Task'
-            ]))->setLabel('Search'),
+            ]))->setValueField('id')->setLabelField('value')->setSearchField('value')->setLabel('Search'),
 
         ],
         [

@@ -88,7 +88,7 @@ function edit_GET(Web $w)
                 "class" => "form-control",
                 "required" => true,
                 'url' => 'ajaxSearch?index=Task'
-            ]))->setLabel('Search'),
+            ]))->setValueField('id')->setLabelField('value')->setSearchField('value')->setLabel('Search'),
         ],
         [
             (new \Html\Form\InputField\Date([
