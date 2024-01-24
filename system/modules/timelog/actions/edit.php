@@ -16,9 +16,7 @@ function edit_GET(Web $w)
         $timelog = new Timelog($w);
     }
 
-    $w->ctx("timelog", $timelog);
     $redirect = Request::string("redirect", '');
-    $w->ctx('redirect', $redirect);
 
     $indexes = TimelogService::getInstance($w)->getLoggableObjects();
     $select_indexes = [];
@@ -27,12 +25,9 @@ function edit_GET(Web $w)
             $select_indexes[] = [$friendly_name, $search_name];
         }
     }
-    $w->ctx("select_indexes", $select_indexes);
 
     $tracking_id = Request::int("id");
     $tracking_class = Request::string("class");
-    $w->ctx("tracking_id", $tracking_id);
-    $w->ctx("tracking_class", $tracking_class);
 
     if (AuthService::getInstance($w)->user()->is_admin) {
         $options = AuthService::getInstance($w)->getUsers();
@@ -50,7 +45,6 @@ function edit_GET(Web $w)
     }
 
     $object = TimelogService::getInstance($w)->getObject($timelog->object_class ?: $tracking_class, $timelog->object_id ?: $tracking_id);
-    $w->ctx("object", $object);
     // Hook relies on knowing the timelogs time_type record, but also the object, so we give the time_type to object
     if (!empty($object->id) && !empty($timelog->id)) {
         $object->time_type = $timelog->time_type;
@@ -165,7 +159,7 @@ function edit_GET(Web $w)
             }
         }
     }
-    //method='POST' name='timelog_edit_form' target='_self' id='timelog_edit_form' class=' small-12 columns'>
+
     $w->ctx("form", HtmlBootstrap5::multiColForm($form, '/timelog/edit/' . (!empty($timelog->id) ? $timelog->id : '') . ($redirect ? '?redirect=' . $redirect : ''), "POST", "Save", 'timelog_edit_form', null, null, '_self', true, $validation));
 }
 
