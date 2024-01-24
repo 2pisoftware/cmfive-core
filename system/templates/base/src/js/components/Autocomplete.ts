@@ -26,6 +26,9 @@ export class Autocomplete {
     }
 
     static setupTomSelect(el) {
+        if (el.tomselect){
+            el.tomselect.destroy();
+        }
         let config = JSON.parse(el.getAttribute('data-config'));
         let url = el.getAttribute('data-url');
         const callback = function(query, callback) {

@@ -64,7 +64,7 @@ function edit_GET(Web $w)
         ]))->setOptions($options, true)->setSelectedOption(empty($timelog->id) ? AuthService::getInstance($w)->user()->id : (!empty($timelog->user_id) ? $timelog->user_id : null))->setLabel('Assigned User');
     } else {
         $user_select = (new \Html\Form\InputField\Hidden([
-            "name"        => "user_id",
+            "id|name"        => "user_id",
             "value"        => empty($timelog->id) ? AuthService::getInstance($w)->user()->id : $timelog->user_id
         ]));
     }

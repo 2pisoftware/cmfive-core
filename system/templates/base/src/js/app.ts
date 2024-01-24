@@ -112,10 +112,7 @@ class Cmfive {
 
             // Rebind elements for modal
             Cmfive.ready(modalContent);
-        }).then (() => {
-            // TODO investigate cmfive event bus for this purpose
-            window.dispatchEvent(new Event('cmfive-modal-loaded'));
-        });
+        })
     }
 
     static formCancel()
