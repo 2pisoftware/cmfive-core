@@ -1106,7 +1106,7 @@ class Html
     ): string {
         // Build URL for pagination.
         $url_parsed = parse_url($base_url);
-        $url_string = '/' . $url_parsed["path"];
+        $url_string = $url_parsed["path"];
         $url_string .= (empty($url_parsed["query"]) ? "?" : "?" . $url_parsed["query"] . "&") . $sort_query_param . "=" . $sort . "&" . $sort_direction_param . "=" . $sort_direction;
         $url_string .= (!empty($url_parsed["fragment"]) ? "#" . $url_parsed["fragment"] : "");
 
