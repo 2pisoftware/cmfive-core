@@ -189,7 +189,7 @@ function edit_POST(Web $w)
     }
 
     $timelog->object_class = $_POST['object_class'];
-    $timelog->object_id = $_POST['object_id'];
+    $timelog->object_id = $_POST['acp_search'];
     $timelog->time_type = !empty($_POST['time_type']) ? $_POST['time_type'] : null;
 
     $timelog->dt_start = $time_object->format('Y-m-d H:i:s');

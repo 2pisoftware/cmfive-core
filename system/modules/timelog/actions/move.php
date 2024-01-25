@@ -137,7 +137,7 @@ function move_POST(Web $w)
     }
 
     $timelog->object_class = Request::string("object_class");
-    $timelog->object_id = Request::int("object_id");
+    $timelog->object_id = Request::int("acp_search");
 
     $timelog->update();
 
