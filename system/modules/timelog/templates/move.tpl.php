@@ -37,6 +37,9 @@
             search.value = ''
             updateFields();
         })
+        search.addEventListener('change', () => {
+            document.getElementById('object_id').value = search.value
+        })
     }
     initialiseMoveModal();
 </script>

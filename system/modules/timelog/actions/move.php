@@ -87,7 +87,7 @@ function move_GET(Web $w)
             (new Html\Cmfive\Autocomplete([
                 "id|name" => "acp_search",
                 "class" => "form-control",
-                // "title" => !empty($object) ? $object->getSelectOptionTitle() : null,
+                "value" => !empty($object) ? $object->getSelectOptionTitle() : null,
                 "required" => true,
                 'url' => 'ajaxSearch?index=Task'
             ]))->setValueField('id')->setLabelField('value')->setSearchField('value')->setLabel('Search'),
@@ -137,7 +137,7 @@ function move_POST(Web $w)
     }
 
     $timelog->object_class = Request::string("object_class");
-    $timelog->object_id = Request::int("acp_search");
+    $timelog->object_id = Request::int("object_id");
 
     $timelog->update();
 

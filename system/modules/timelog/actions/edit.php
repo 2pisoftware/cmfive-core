@@ -80,9 +80,10 @@ function edit_GET(Web $w)
             (new Html\Cmfive\Autocomplete([
                 "id|name" => "acp_search",
                 "class" => "form-control",
+                'value' => !empty($object) ? $object->getSelectOptionTitle() : null,
                 "required" => true,
                 'url' => 'ajaxSearch?index=Task'
-            ]))->setValueField('id')->setLabelField('value')->setSearchField('value')->setLabel('Search'),
+            ]))->setValueField('id')->setLabelField('value')->setSearchField('value')->setLabel('Search'), //set tom-select variables
         ],
         [
             (new \Html\Form\InputField\Date([
@@ -189,7 +190,7 @@ function edit_POST(Web $w)
     }
 
     $timelog->object_class = $_POST['object_class'];
-    $timelog->object_id = $_POST['acp_search'];
+    $timelog->object_id = $_POST['object_id'];
     $timelog->time_type = !empty($_POST['time_type']) ? $_POST['time_type'] : null;
 
     $timelog->dt_start = $time_object->format('Y-m-d H:i:s');

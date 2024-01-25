@@ -80,6 +80,10 @@
             updateFields();
         })
 
+        search.addEventListener('change', () => {
+            document.getElementById('object_id').value = search.value
+        })
+
         // If the start time changes and there is no end time then set end time
         // to start time, and vice versa
         startTime.addEventListener('focusout', function() {
