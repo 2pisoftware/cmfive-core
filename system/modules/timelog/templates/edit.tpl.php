@@ -11,13 +11,16 @@
         const startTime = document.getElementById('time_start')
 
         const endDate = document.getElementById('date_end')
-        const endTime = document.getElementById('time_end')
+        const endTime = document.getElementById('time_end') ?? false
         const hoursWorked = document.getElementById('hours_worked')
         const minutesWorked = document.getElementById('minutes_worked')
 
         const description = document.getElementById('description')
 
         const saveButton = document.getElementsByClassName('savebutton')[0]
+
+        const isTimelogRunning = (startTime.value && !endTime) ? true : false
+        console.log('is timelog running? ', isTimelogRunning)
 
 
         var radios = document.querySelectorAll("input[type=radio][name=select_end_method]");
@@ -84,21 +87,8 @@
             document.getElementById('object_id').value = search.value
         })
 
-        // If the start time changes and there is no end time then set end time
-        // to start time, and vice versa
-        startTime.addEventListener('focusout', function() {
-            if (endTime.value == "") {
-                endTime.value = endTime.value;
-            }
-        });
-        endTime.addEventListener('focusout', function() {
-            if (startTime.value == "") {
-                startTime.value = endTime.value;
-            }
-        });
     }
     initialiseEditModal();
-    // TODO implement autocomplete functionality
 
     // TODO implement error messages
 
