@@ -118,46 +118,42 @@
 
         //validation functions
         function validateEndTime() {
-            console.log('validate end time ran')
-            console.log('select end method', selectEndMethod)
             if (selectEndMethod === 'time') {
-                console.log('time validate')
-
                 if (parseTime(endTime.value) <= parseTime(startTime.value)) {
-                    // document.getElementById("timelog__end-time-error").style.display = 'block';
-                    // document.getElementById("timelog__end-time-error").parentNode.classList.add('error');
                     alert('End time is before start time')
                     saveButton.disabled = true
+                    return false
                 } else if (parseTime(endTime.value) >= parseTime(startTime.value)) {
                     saveButton.disabled = false
+                    return true
                 }
             } else if (selectEndMethod === 'hours') {
                 console.log('hours validate')
                 if ((!hoursWorked && !minutesWorked) || (hoursWorked.value <= 0 || minutesWorked.value <= 0)) {
-                    // document.getElementById("timelog__hours-mins-error").style.display = 'block';
-                    // document.getElementById("timelog__hours-mins-error").parentNode.classList.add('error');
+
                     alert('Hours and minutes must be greater than 0')
                     saveButton.disabled = true
+                    return false
                 } else {
                     saveButton.disabled = false
+                    return true
                 }
             }
         }
 
         function validateTime() {
-            console.log('validate time ran')
             const currentTime = Date.now()
             const formTime = parseTime(startTime.value, startDate.value)
 
-            console.log('current time:', currentTime)
-            console.log('form time:', formTime)
             if (formTime > currentTime) {
                 alert('Timelog cannot start in the future')
                 saveButton.disabled = true
+                return false
             } else {
-                console.log('validate time else ran')
                 if (!isTimelogRunning) {
                     validateEndTime()
+                } else {
+                    return true
                 }
             }
         }
@@ -165,14 +161,20 @@
         //validation event listeners
         //TODO make these red or otherwise obvious when invalid
         if (!isTimelogRunning) {
-            endTime.addEventListener('change', () => {
-                validateTime()
+            endTime.addEventListener('change', function() {
+                validateTime() ? this.classList.remove('input-error') : this.classList.add('input-error')
             })
-            hoursWorked.addEventListener('change', () => {
-                validateTime()
+            hoursWorked.addEventListener('change', function() {
+                if (validateTime()) {
+                    console.log('return true')
+                    this.classList.remove('input-error')
+                } else {
+                    this.classList.add('input-error')
+                    console.log(this);
+                }
             })
-            minutesWorked.addEventListener('change', () => {
-                validateTime()
+            minutesWorked.addEventListener('change', function() {
+                validateTime() ? this.classList.remove('input-error') : this.classList.add('input-error')
             })
         }
 
