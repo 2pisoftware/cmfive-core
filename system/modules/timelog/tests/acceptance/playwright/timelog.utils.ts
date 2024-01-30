@@ -42,7 +42,7 @@ export class TimelogHelper  {
         await CmfiveHelper.fillDatePicker(page, "Date Required", "date_start", date);
         await page.locator("#time_start").fill(start_time);
         await page.locator("#time_end").fill(end_time);
-        await page.locator("#description").fill(timelog);
+        await page.locator("#timelog_edit_form #description").fill(timelog);
         await page.locator("#timelog_edit_form").getByRole("button", { name: "Save" }).click();
 
         await page.getByRole("link", {name: taskName, exact: true}).first().click();
