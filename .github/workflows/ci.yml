@@ -26,7 +26,7 @@ jobs:
     - name: Get phpcs
       run: wget https://raw.githubusercontent.com/2pisoftware/cmfive-boilerplate/master/phpcs.xml
     - name: Codesniffer
-      uses: pipeline-components/php-codesniffer@v0.12.3
+      uses: pipeline-components/php-codesniffer@v0.31.0
       with:
         options: -s -p --colors --extensions=php --runtime-set testVersion 7.4
   php-codesniffer80:
@@ -36,7 +36,7 @@ jobs:
     - name: Get phpcs
       run: wget https://raw.githubusercontent.com/2pisoftware/cmfive-boilerplate/master/phpcs.xml
     - name: Codesniffer
-      uses: pipeline-components/php-codesniffer@v0.12.3
+      uses: pipeline-components/php-codesniffer@v0.31.0
       with:
         options: -s -p --colors --extensions=php --runtime-set testVersion 8.0
   php-codesniffer81:
@@ -46,7 +46,7 @@ jobs:
     - name: Get phpcs
       run: wget https://raw.githubusercontent.com/2pisoftware/cmfive-boilerplate/master/phpcs.xml
     - name: Codesniffer
-      uses: pipeline-components/php-codesniffer@v0.12.3
+      uses: pipeline-components/php-codesniffer@v0.31.0
       with:
         options: -s -p --colors --extensions=php --runtime-set testVersion 8.1
   # Test
