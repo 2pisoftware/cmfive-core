@@ -2,12 +2,10 @@
 <script type="text/javascript">
     function parseTime(time, date) {
         const isTwelveHour = time[time.length - 1] === 'm';
-        console.log('time -1', time[time.length - 1])
         const parts = time.split(':');
         let hours = parseInt(parts[0]);
         const minutes = parseInt(parts[1]);
         if (isTwelveHour) {
-            console.log('its in twelve hour form mate')
             if (hours === 12) {
                 hours = 0;
             }
@@ -15,7 +13,7 @@
                 hours += 12;
             }
         }
-        //guard statement
+
         if (date === undefined) {
             return new Date(0, 0, 0, hours, minutes, 0, 0).getTime();
         }
@@ -30,39 +28,29 @@
 
     function initialiseEditModal() {
         // Variables for each component
-        const userSelect = document.getElementById('user_id')
+        let userSelect = document.getElementById('user_id')
 
-        const search = document.getElementById('acp_search')
-        const moduleSelect = document.getElementById('object_class')
+        let search = document.getElementById('acp_search')
+        let moduleSelect = document.getElementById('object_class')
 
-        const startDate = document.getElementById('date_start')
-        const startTime = document.getElementById('time_start')
+        let startDate = document.getElementById('date_start')
+        let startTime = document.getElementById('time_start')
 
-        const endDate = document.getElementById('date_end')
-        const endTime = document.getElementById('time_end') ?? false
-        const hoursWorked = document.getElementById('hours_worked')
-        const minutesWorked = document.getElementById('minutes_worked')
+        let endDate = document.getElementById('date_end')
+        let endTime = document.getElementById('time_end') ?? false
+        let hoursWorked = document.getElementById('hours_worked')
+        let minutesWorked = document.getElementById('minutes_worked')
 
-        const description = document.getElementById('description')
+        let description = document.getElementById('description')
 
-        const saveButton = document.getElementsByClassName('savebutton')[0]
+        let saveButton = document.getElementsByClassName('savebutton')[0]
 
-        const isTimelogRunning = (startTime.value && !endTime) ? true : false
-        let selectEndMethod = ''
-        if (!isTimelogRunning) {
-            if (endTime.value) {
-                selectEndMethod = 'time'
-            } else if (hoursWorked.value || minutesWorked.value) {
-                selectEndMethod = 'hours'
-            }
-        }
-
+        // Defaults to time, can be changed with radio buttons
+        let selectEndMethod = 'time'
 
         let radios = document.querySelectorAll("input[type=radio][name=select_end_method]");
         radios.forEach(function(radio) {
             radio.addEventListener('change', function() {
-                // document.getElementById("timelog__end-time-error").style.display = 'none';
-                // document.getElementById("timelog__end-time-error").parentNode.classList.remove('error');
 
                 if (this.value === "time") {
                     selectEndMethod = 'time'
@@ -75,6 +63,7 @@
                     minutesWorked.value = "";
 
                     document.getElementById("time_end").focus();
+
                 } else if (this.value === "hours") {
                     selectEndMethod = 'hours'
                     hoursWorked.removeAttribute("disabled");
@@ -88,9 +77,8 @@
             });
         });
 
-        // Check if there is a object_class selected, if not, disable submit and search, if so update search url
         const searchBaseUrl = '/timelog/ajaxSearch';
-
+        // Check if there is a object_class selected, if not, disable submit and search, if so update search url
         const updateFields = () => {
             if (moduleSelect.value == "") {
                 //if there is no module selected, disable the search bar and save button
@@ -116,27 +104,17 @@
         updateFields();
         saveButton.disabled = true //ensure save button is disabled on page load
 
-        //validation functions
+        // validation functions
         function validateEndTime() {
             if (selectEndMethod === 'time') {
-                if (parseTime(endTime.value) <= parseTime(startTime.value)) {
-                    alert('End time is before start time')
-                    saveButton.disabled = true
-                    return false
-                } else if (parseTime(endTime.value) >= parseTime(startTime.value)) {
-                    saveButton.disabled = false
-                    return true
+                if (parseTime(endTime.value, startDate.value) < parseTime(startTime.value, startDate.value)) {
+                    throw new Error('End time is before start time')
+                } else if (parseTime(endTime.value, startDate.value) == parseTime(startTime.value, startDate.value)) {
+                    throw new Error('End time is the same as start time')
                 }
             } else if (selectEndMethod === 'hours') {
-                console.log('hours validate')
-                if ((!hoursWorked && !minutesWorked) || (hoursWorked.value <= 0 || minutesWorked.value <= 0)) {
-
-                    alert('Hours and minutes must be greater than 0')
-                    saveButton.disabled = true
-                    return false
-                } else {
-                    saveButton.disabled = false
-                    return true
+                if ((!hoursWorked && !minutesWorked) || (hoursWorked.value < 0 || minutesWorked.value < 0) || (hoursWorked.value == 0 && minutesWorked.value == 0)) {
+                    throw new Error('Hours and minutes must be greater than 0')
                 }
             }
         }
@@ -144,53 +122,52 @@
         function validateTime() {
             const currentTime = Date.now()
             const formTime = parseTime(startTime.value, startDate.value)
-
             if (formTime > currentTime) {
-                alert('Timelog cannot start in the future')
-                saveButton.disabled = true
-                return false
-            } else {
-                if (!isTimelogRunning) {
-                    validateEndTime()
-                } else {
-                    return true
-                }
+                throw new Error('Timelog cannot start in the future')
+            }
+            if (endTime) {
+                validateEndTime()
             }
         }
 
-        //validation event listeners
-        //TODO make these red or otherwise obvious when invalid
-        if (!isTimelogRunning) {
-            endTime.addEventListener('change', function() {
-                validateTime() ? this.classList.remove('input-error') : this.classList.add('input-error')
-            })
-            hoursWorked.addEventListener('change', function() {
-                if (validateTime()) {
-                    console.log('return true')
-                    this.classList.remove('input-error')
-                } else {
-                    this.classList.add('input-error')
-                    console.log(this);
-                }
-            })
-            minutesWorked.addEventListener('change', function() {
-                validateTime() ? this.classList.remove('input-error') : this.classList.add('input-error')
+        /**
+         * Fixes case where error caused by altering one field is corrected by changing another field
+         * without would lead to css style still being applied to original violating field
+         */
+        function removeClass(className) {
+            //This class ensures 
+            let dirtyObjects = document.querySelectorAll('.' + className)
+            dirtyObjects.forEach(dirtyObject => {
+                dirtyObject.classList.remove(className)
             })
         }
 
-        startTime.addEventListener('change', () => {
-            validateTime()
-        })
+        // validation event listeners
+        let validatingElements = [startTime, startDate];
+        if (endTime) {
+            // if end time exists, so will hours worked and minutes worked
+            validatingElements = validatingElements.concat([endTime, hoursWorked, minutesWorked])
+        }
 
-        startDate.addEventListener('change', () => {
-            validateTime()
+        validatingElements.forEach(element => {
+            element.addEventListener('change', function() {
+                try {
+                    validateTime()
+                    removeClass('input-error');
+                    saveButton.disabled = false
+                } catch (error) {
+                    alert(error.message)
+                    this.classList.add('input-error')
+                    saveButton.disabled = true
+                }
+            })
         })
 
         moduleSelect.addEventListener('change', () => {
             search.value = ''
             updateFields();
             //updateFields is able to enable the submit button so must also validate time here
-            validateTime()
+            validateTime() ? saveButton.disabled = false : saveButton.disabled = true
         })
 
         search.addEventListener('change', () => {
@@ -199,23 +176,4 @@
 
     }
     initialiseEditModal();
-
-    // TODO implement error messages
-
-    // document.getElementById("time_end").addEventListener('keyup', function() {
-    //     document.getElementById("timelog__end-time-error").style.display = 'none';
-    //     document.getElementById("timelog__end-time-error").parentNode.classList.remove('error');
-    // });
-
-    // document.getElementById("hours_worked").addEventListener('keyup', function() {
-    //     document.getElementById("timelog__hours-mins-error").style.display = 'none';
-    //     document.getElementById("timelog__hours-mins-error").parentNode.classList.remove('error');
-    // });
-
-    // document.getElementById("minutes_worked").addEventListener('keyup', function() {
-    //     document.getElementById("timelog__hours-mins-error").style.display = 'none';
-    //     document.getElementById("timelog__hours-mins-error").parentNode.classList.remove('error');
-    // });
-
-    // Input values are module, search and description
 </script>
