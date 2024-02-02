@@ -26,7 +26,7 @@ jobs:
     - name: Get phpcs
       run: wget https://raw.githubusercontent.com/2pisoftware/cmfive-boilerplate/master/phpcs.xml
     - name: Codesniffer
-      uses: pipeline-components/php-codesniffer@v0.12.3
+      uses: pipeline-components/php-codesniffer@v0.31.0
       with:
         options: -s -p --colors --extensions=php --runtime-set testVersion 7.4
   php-codesniffer80:
@@ -36,7 +36,7 @@ jobs:
     - name: Get phpcs
       run: wget https://raw.githubusercontent.com/2pisoftware/cmfive-boilerplate/master/phpcs.xml
     - name: Codesniffer
-      uses: pipeline-components/php-codesniffer@v0.12.3
+      uses: pipeline-components/php-codesniffer@v0.31.0
       with:
         options: -s -p --colors --extensions=php --runtime-set testVersion 8.0
   php-codesniffer81:
@@ -46,7 +46,7 @@ jobs:
     - name: Get phpcs
       run: wget https://raw.githubusercontent.com/2pisoftware/cmfive-boilerplate/master/phpcs.xml
     - name: Codesniffer
-      uses: pipeline-components/php-codesniffer@v0.12.3
+      uses: pipeline-components/php-codesniffer@v0.31.0
       with:
         options: -s -p --colors --extensions=php --runtime-set testVersion 8.1
   # Test
@@ -56,32 +56,24 @@ jobs:
     runs-on: ubuntu-22.04
     needs: [ php-codesniffer74, php-codesniffer80, php-codesniffer81 ]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           repository: '2pisoftware/cmfive-boilerplate'
           ref: 'develop'
 
       # Pre-requisites Prepare Cmfive Environment
-      - name: Setup cmfive Test Environment
+      - name: Start containers
         run: |
           cp .codepipeline/test_agent/configs/test_agent-config.php config.php
+          docker compose -f docker-compose.yml up --build -d --wait --wait-timeout 120
           
-          docker-compose -f test_agent-compose.yml up --build -d
-          sleep 5
-          docker ps
-          docker exec -t cmfive bash -c "chmod -R 777 ./*"
-          docker exec -t cmfive bash -c "rm -rf ./system && ln -s ./composer/vendor/2pisoftware/cmfive-core/system ./system"
-          
-          echo CoreInstall
-          docker exec -t cmfive bash -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php install core ${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}} 8.1"
+      # Pre-requisites Prepare Cmfive Environment
+      - name: Setup cmfive Test Environment
+        run: |
+            echo DBCreate 
+            docker exec -t mysql-8 bash -c "mysql -h 127.0.0.1 -u'root' -p'root' --execute \"CREATE DATABASE cmfive_test; CREATE USER cmfive_test@'%' IDENTIFIED BY 'cmfive_test'; GRANT ALL PRIVILEGES ON cmfive_test.* TO cmfive_test@'%'; GRANT PROCESS ON *.* TO cmfive_test@'%'; FLUSH PRIVILEGES;\""
+            docker exec -t cmfive bash -c "chmod -R 777 ./*"
 
-          echo DBCreate 
-          docker exec -t mysql-8 bash -c "mysql -h 127.0.0.1 -u'root' -p'root' --execute \"CREATE DATABASE cmfive_test; CREATE USER cmfive_test@'%' IDENTIFIED BY 'cmfive_test'; GRANT ALL PRIVILEGES ON cmfive_test.* TO cmfive_test@'%'; GRANT PROCESS ON *.* TO cmfive_test@'%'; FLUSH PRIVILEGES;\""
-
-          docker exec -t cmfive bash -c "chmod -R 777 cache/ storage/ uploads/"
-          
-          docker start seleniumDrv;
-          docker ps
       - name: Inject configs into cmfive Test Environment
         run: |
           echo "Inheriting test_agent config from PIPELINE"
@@ -90,32 +82,15 @@ jobs:
       - name: Prepare cmfive Test Backend
         run: |
           docker exec cmfive bash -c "cd ./test/ && sh ./.install/install.sh && chmod -R 777 /var/www/html/test/Codeception/tests"
-      
-      - name: Apply cmfive Test Config to Core install
-        run: |
-          echo SeedingCmfive
-          docker exec cmfive bash -c "cat config.php"
-          # docker exec -t cmfive bash -c "php cmfive.php install core ${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}"
-          docker exec -t cmfive bash -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php seed encryption"
-          docker exec -t cmfive bash -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php install migrations"
-          docker exec -t cmfive bash -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php seed admin admin admin admin@example.com admin admin"
-          docker exec -t cmfive bash -c "chmod -R 777 cache/ storage/ uploads/"
 
       - name: Prepare cmfive Test DB
         run: |
           docker exec -t cmfive bash -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php testDB setup; exit \$?";
         
       # Build new layout
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
             node-version: 18
-        
-      - name: Build new designs  
-        run: |
-          docker exec -t cmfive bash -c "chmod -R 777 system/templates/base"
-          cd system/templates/base
-          npm i
-          npm run prod
         
       # Run Unit Tests
       - name: "Run unit tests"
@@ -134,16 +109,6 @@ jobs:
       - name: "Confirm Codeception setup"
         run: |        
           docker exec cmfive bash -c "ls -lah -R /var/www/html/test/Codeception/tests && cat /var/www/html/test/Codeception/*.yml && cat /var/www/html/test/Codeception/tests/*.yml"
-      
-    #   - name: "Run Playwright Module Tests"
-    #     run: |
-    #       export DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306
-    #       sudo chmod 777 -R system/modules/admin/install/migrations/
-    #       cd test/playwright
-
-    #       for module in $PLAYWRIGHT_MODULES; do
-    #         npm run test:with-retries --module="$module" --platform="chromium" --attempts=3 --reporter="github"
-    #       done
 
       - name: "Run admin module tests"
         run: |
@@ -212,7 +177,7 @@ jobs:
       # Store Test Results
       - name: Test results
         if: ${{ failure() }} || ${{ success() }}
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: test-output
           path: |
