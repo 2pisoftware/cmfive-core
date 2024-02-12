@@ -1,9 +1,10 @@
 <?php
 
-function permissionedit_GET(Web $w) {
+function permissionedit_GET(Web $w)
+{
 
     $w->setLayout('layout-bootstrap-5');
- 
+
     $option = $w->pathMatch("group_id");
 
     $user = AuthService::getInstance($w)->getUser($option['group_id']);
@@ -33,7 +34,7 @@ function permissionedit_GET(Web $w) {
         if (count($parts) == 1) {
             array_unshift($parts, "admin");
         }
-        
+
         $module = array_shift($parts);
 
         $result[$module][] = implode("_", $parts);
@@ -58,7 +59,8 @@ function permissionedit_GET(Web $w) {
     $w->ctx("groupRoles", json_encode($groupRoles));
 }
 
-function permissionedit_POST(Web &$w) {
+function permissionedit_POST(Web &$w)
+{
     $option = $w->pathMatch("group_id");
     //update permissions for user/group;
     $user = AuthService::getInstance($w)->getUser($option['group_id']);
@@ -81,5 +83,5 @@ function permissionedit_POST(Web &$w) {
     }
     $returnPath = $user->is_group == 1 ? "/admin/moreInfo/" . $option['group_id'] : "/admin/users";
 
-    $w->msg("Permissions are updated", $returnPath);
+    $w->msg("Permissions updated", $returnPath);
 }

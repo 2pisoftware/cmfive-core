@@ -8,18 +8,15 @@ function groupdelete_GET(Web &$w)
 
 	$roles = $user->getRoles();
 
-	foreach ($roles as $role)
-	{
+	foreach ($roles as $role) {
 		$user->removeRole($role);
 	}
 	$members = AuthService::getInstance($w)->getGroupMembers($option['group_id']);
 
-	if ($members)
-	{
-		foreach ($members as $member)
-		{
+	if ($members) {
+		foreach ($members as $member) {
 			$member->delete();
 		}
 	}
-	$w->msg("Group is deleted", "/admin/groups");
+	$w->msg("Group deleted", "/admin/groups");
 }

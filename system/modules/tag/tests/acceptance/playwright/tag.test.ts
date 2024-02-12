@@ -21,7 +21,7 @@ test("Test that users can tag objects", async ({ page }) => {
 
 test("Test that users can tag multiple objects with same tag", async ({ page }) => {
     test.setTimeout(GLOBAL_TIMEOUT);
-    
+
     const tagNameMultiple = CmfiveHelper.randomID("tag_");
 
     CmfiveHelper.acceptDialog(page);
@@ -59,7 +59,7 @@ test("Test that users can tag multiple objects with same tag", async ({ page }) 
 
     // Verify that the task tagged with our edited tag shows the new tag name
     await page.goto(HOST + "/task/tasklist?task__assignee-id=unassigned");
-    await page.waitForTimeout(500);
+    await page.waitForTimeout(100);
     expect(await page.getByText(tagName).count()).toBe(1);
 
     // Delete the tags

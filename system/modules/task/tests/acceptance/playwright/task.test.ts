@@ -50,7 +50,7 @@ test("Test that you can manage taskgroups, taskgroup members, and tasks", async 
     await page.getByRole("button", {name: "Duplicate Task"}).click();
     await expect(page.getByText("Task duplicated")).toBeVisible();
     const duplicateTaskID = page.url().split("/edit/")[1].split("#")[0];
-    await expect(duplicateTaskID).not.toBe(taskID);
+    expect(duplicateTaskID).not.toBe(taskID);
 
     // edit task
     await page.getByRole("combobox", {name: "Status"}).selectOption("Wip");
@@ -59,6 +59,7 @@ test("Test that you can manage taskgroups, taskgroup members, and tasks", async 
     await expect(page.getByRole("combobox", {name: "Status Required"})).toHaveValue("Wip");
 
     // edit task group member details
+    await page.screenshot({path: "task.png"})
     await CmfiveHelper.clickCmfiveNavbar(page, "Task", "Task Groups");
     await page.getByRole("link", {name: taskgroup+"_edited", exact: true}).click();
     await CmfiveHelper.getRowByText(page, user+"_firstname "+user+"_lastname").getByRole("button", {name: "Edit"}).click();
@@ -79,7 +80,7 @@ test("Test that you can manage taskgroups, taskgroup members, and tasks", async 
 
     for(let [taskName, taskNum] of tasks) {
         await page.goto(HOST + "/task/edit/" + taskNum + "#details");
-        await page.waitForTimeout(1_000);
+        await page.waitForTimeout(100);
 
         await expect(page.getByRole("button", {name: "Delete", exact: true}).first()).toBeVisible();
         await page.getByRole("button", {name: "Delete", exact: true}).first().click();

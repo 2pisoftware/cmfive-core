@@ -33,7 +33,7 @@ export class AdminHelper {
             await page.locator("#check_"+permission).check();
 
         await page.getByRole("button", { name: "Save" }).click();
-        await expect(page.getByText("Permissions are updated")).toBeVisible();
+        await expect(page.getByText("Permissions updated")).toBeVisible();
     }
 
     static async deleteUser(page: Page, username: string)
@@ -43,7 +43,6 @@ export class AdminHelper {
             await CmfiveHelper.clickCmfiveNavbar(page, "Admin", "List Users");
         await page.waitForURL(HOST + "/admin/users#internal");
 
-
         await CmfiveHelper.getRowByText(page, username).getByRole("button", {name: "Delete"}).click();
         await page.getByRole("button", {name: "Delete user", exact: true}).click();
     
@@ -52,7 +51,7 @@ export class AdminHelper {
 
     static async editUser(page: Page, username: string, data: [string, string][]) {
         await page.waitForTimeout(100); // let page load so next line doesn't fail if previous function ended on a redirect to user list
-        if (page.url() != HOST + "/admin/users#internal")
+        if(page.url() != HOST + "/admin/users#internal")
             await CmfiveHelper.clickCmfiveNavbar(page, "Admin", "List Users");
         await page.waitForURL(HOST + "/admin/users#internal");
 
@@ -173,7 +172,7 @@ export class AdminHelper {
 
         await CmfiveHelper.getRowByText(page, usergroup).getByRole("button", {name: "Delete"}).click();
 
-        await expect(page.getByText("Group is deleted")).toBeVisible();
+        await expect(page.getByText("Group deleted")).toBeVisible();
     }
 
     static async addUserGroupMember(page: Page, usergroup: string, usergroupID: string, user: string, owner: boolean = false)
@@ -211,7 +210,7 @@ export class AdminHelper {
 
         await CmfiveHelper.getRowByText(page, user).getByRole("link", {name: "Delete"}).click();
 
-        await expect(page.getByText("Member is deleted")).toBeVisible();
+        await expect(page.getByText("Member deleted")).toBeVisible();
     }
 
     static async editUserGroupPermissions(page: Page, usergroup: string, usergroupID: string, permissions: string[])
@@ -230,7 +229,7 @@ export class AdminHelper {
 
         await page.getByRole("button", {name: "Save"}).click();
 
-        await expect(page.getByText("Permissions are updated")).toBeVisible();
+        await expect(page.getByText("Permissions updated")).toBeVisible();
     }
 
     /**

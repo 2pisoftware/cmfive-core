@@ -7,6 +7,10 @@ function listattachments(\Web $w, $params)
     $object = $params["object"];
     $redirect = $params["redirect"];
 
+    if ($redirect[0] !== '/') {
+        $redirect = '/' . $redirect;
+    }
+
     $page = $w->sessionOrRequest("attachment__" . hash("crc32", get_class($object) . $object->id) . "__page", 1);
     $page_size = 6;
     $w->ctx("page", $page);

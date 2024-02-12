@@ -20,7 +20,7 @@ export class TagHelper {
 
         await page.locator('.close-reveal-modal').click()
         // await page.waitForResponse(HOST + `/tag/ajaxGetTags/Task/${taskId}`)
-        await page.waitForTimeout(500);
+        await page.waitForTimeout(100);
 
         await expect(page.locator(`#tag_container_Task_${taskId}`)).toHaveText(tagName)
     }
