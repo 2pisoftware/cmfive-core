@@ -57,7 +57,7 @@ jobs:
     needs: [ php-codesniffer74, php-codesniffer80, php-codesniffer81 ]
     strategy:
       matrix:
-        node_version: [18, 20]
+        node_version: [18, 20, latest]
     steps:
       - uses: actions/checkout@v4
         with:
