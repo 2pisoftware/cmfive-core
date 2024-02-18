@@ -21,6 +21,6 @@ class InboxRemoveTable extends CmfiveMigration
     }
 
     public function description() {
-        return 'Remove inbox table';
+        return 'Remove inbox table and roles';
     }
 }
