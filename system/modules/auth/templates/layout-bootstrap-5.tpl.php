@@ -58,7 +58,7 @@ $theme_setting = AuthService::getInstance($w)->getSettingByKey('bs5-theme');
         </div>
         <div class='row'>
             <?php if (Config::get("main.application_logo")) : ?>
-                <center><img src=<?php echo Config::get("main.application_logo"); ?> class='img-fluid' alt="<?php echo Config::get("main.application_name"); ?>" /></center>
+                <center><img src="<?php echo Config::get("main.application_logo"); ?>" class='img-fluid' alt="<?php echo Config::get("main.application_name"); ?>" /></center>
             <?php endif; ?>
             <?php if (Config::get('auth.show_application_name', true)) : ?>
                 <h1 style="text-align: center;"><?php echo $w->moduleConf('main', 'application_name'); ?></h1>

@@ -37,9 +37,10 @@
     </div>
     <div v-else>
         <form @submit.prevent="executeLogin">
-            <div data-alert class="alert-box alert row" v-if="error_message != null">
+            <div data-alert class="alert alert-warning fade show row d-flex justify-content-between" v-if="error_message != null" role='alert'>
+
                 {{ error_message }}
-                <a href="#" class="close" @click="error_message = null">&times;</a>
+                <button type='button' class="btn-close" @click="error_message = null" aria-label='Close'></button>
             </div>
             <?php
             echo (new \Html\Form\InputField\Hidden([
@@ -103,32 +104,50 @@
 
                 _this.is_loading = true;
 
-                axios.post("/auth/login", {
+                let formData = {
                     "<?php echo CSRF::getTokenID(); ?>": "<?php echo CSRF::getTokenValue(); ?>",
-                    login: _this.login,
-                    password: _this.password,
-                    mfa_code: _this.mfa_code,
-                }).then(function(response) {
-                    if (response.data.redirect_url != null) {
-                        window.location.href = response.data.redirect_url;
-                        return;
-                    }
+                    "login": _this.login,
+                    "password": _this.password,
+                    "mfa_code": _this.mfa_code,
+                }
 
-                    _this.is_mfa_enabled = response.data.is_mfa_enabled;
-                    if (_this.is_mfa_enabled) {
-                        _this.$nextTick(function() {
-                            document.getElementById("mfa_code").focus();
-                        });
-                    }
-                }).catch(function(error) {
-                    _this.login = null,
-                        _this.password = null,
-                        _this.mfa_code = null,
-                        _this.is_mfa_enabled = false;
-                    _this.error_message = error.response.data;
-                }).finally(function() {
-                    _this.is_loading = false;
-                });
+                fetch('/auth/login', {
+                        method: 'POST',
+                        headers: new Headers({
+                            'Content-Type': 'application/json'
+                        }),
+                        body: JSON.stringify(formData)
+                    }).then(response => {
+                        return response.json()
+                    }).then(response => {
+                        if (response.data.redirect_url != null) {
+                            window.location.href = response.data.redirect_url;
+                            return;
+                        }
+                        _this.is_mfa_enabled = response.data.is_mfa_enabled;
+                        if (_this.is_mfa_enabled) {
+                            _this.$nextTick(function() {
+                                document.getElementById("mfa_code").focus();
+                            });
+                        }
+
+                        if (response.status == 500) {
+                            _this.login = null,
+                                _this.password = null,
+                                _this.mfa_code = null,
+                                _this.is_mfa_enabled = false;
+                            _this.error_message = response.message;
+                        }
+                    })
+                    .catch(error => {
+                        _this.login = null,
+                            _this.password = null,
+                            _this.mfa_code = null,
+                            _this.is_mfa_enabled = false;
+                        _this.error_message = error.message;
+                    }).finally(() => {
+                        _this.is_loading = false;
+                    });
             },
             back: function() {
                 this.is_mfa_enabled = false;
