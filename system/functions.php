@@ -187,6 +187,10 @@ function humanReadableBytes($input, $rounding = 2, $bytesValue = true)
         $barrier = 1000;
     }
 
+    if ($input === null) {
+        return '0 B';
+    }
+
     while ($input > $barrier) {
         $input /= $barrier;
         array_shift($ext);
