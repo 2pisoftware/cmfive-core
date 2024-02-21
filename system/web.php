@@ -997,7 +997,9 @@ class Web
                             Config::enableSandbox();
                             include($searchingDir . '/config.php');
                             $include_path = $searchingDir . '/config.php';
-                            include(ROOT_PATH . '/config.php');
+                            if (file_exists(ROOT_PATH . "/config.php")) {
+                                require ROOT_PATH . "/config.php";
+                            }
 
                             if (Config::get("{$item}.active") === true) {
                                 // Need to reset sandbox content to remove inclusion of project config
