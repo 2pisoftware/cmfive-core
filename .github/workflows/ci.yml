@@ -99,9 +99,6 @@ jobs:
             fi
           done
 
-          cp boilerplate/.codepipeline/test_agent/configs/test_agent-config.php config.php
-          docker compose -f docker-compose.yml up --build -d --wait --wait-timeout 300
-
       # Pre-requisites Prepare Cmfive Environment
       - name: Setup cmfive Test Environment
         run: |
