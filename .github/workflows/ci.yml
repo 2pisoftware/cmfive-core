@@ -155,11 +155,19 @@ jobs:
                 echo "Timelog module tests failed"
             fi
 
+      - name: Get container healthchecks
+        if: always()
+        run: |
+          docker inspect --format='{{json .State.Health.Status}}' cmfive
+          docker inspect --format='{{json .State.Health.Status}}' mysql-8
+          docker inspect --format='{{json .State.Health.Status}}' node-compiler
+
       - name: Stop containers
         # the containers should be stopped regardless of 
         # the test result
         if: always()
-        run: docker-compose down
+        run: |
+          docker-compose down
 
       # Store Test Results
       - name: Test results
