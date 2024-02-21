@@ -165,8 +165,12 @@ jobs:
             if docker inspect $container --format='{{.State.Health.Status}}' >/dev/null 2>&1; then
               health=$(docker inspect --format='{{json .State.Health.Status}}' $container)
               if [ "$health" != "\"healthy\"" ]; then
-                echo "Container is not healthy"
+                echo "CONTAINER IS NOT HEALTHY"
+                echo "==== STATUS ===="
                 docker inspect --format='{{json .State.Health}}' $container
+                echo "==== LOGS ===="
+                docker logs $container
+                echo "==== END ===="
               else
                 echo "Container is healthy"
               fi
