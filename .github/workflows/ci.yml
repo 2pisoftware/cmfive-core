@@ -43,23 +43,71 @@ jobs:
       matrix:
         node_version: [18, 20]
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          path: main
+
+      - name: Checkout Boilerplate
+        uses: actions/checkout@v4
         with:
           repository: '2pisoftware/cmfive-boilerplate'
           ref: 'develop'
+          path: boilerplate
 
       # Pre-requisites Prepare Cmfive Environment
+      - name: Pull Docker images
+        run: |
+          docker pull ghcr.io/2pisoftware/cmfive:develop
+          docker pull mysql:8
+
       - name: Start containers
         run: |
-          cp .codepipeline/test_agent/configs/test_agent-config.php config.php
+          # Create MySQL 8 container
+          docker run --name mysql-8 -d -p 3306:3306 \
+            -e MYSQL_ROOT_PASSWORD=root \
+            -e MYSQL_DATABASE=cmfive_test \
+            -e MYSQL_USER=cmfive_test \
+            -e MYSQL_PASSWORD=cmfive_test \
+            mysql:8
+
+          # Wait for MySQL to start
+          time=0
+          while ! docker exec mysql-8 mysqladmin ping -hlocalhost --silent; do
+            sleep 1
+            time=$((time+1))
+            if [ $time -gt 60 ]; then
+              echo "MySQL failed to start"
+              exit 1
+            fi
+          done
+
+          # Create Cmfive container
+          docker run --name cmfive -d -p 80:80 \
+            -v ${{ github.workspace }}/main/system:/var/www/html/system \
+            -v ${{ github.workspace }}/boilerplate/.codepipeline/test_agent/configs/test_agent-config.php:/var/www/html/config.php \
+            ghcr.io/2pisoftware/cmfive:develop
+
+          # Wait for cmfive healthcheck to be healthy
+          time=0
+          while [ "$(docker inspect -f '{{.State.Health.Status}}' cmfive)" != "healthy" ]; do
+            sleep 1
+            time=$((time+1))
+            if [ $time -gt 60 ]; then
+              echo "Cmfive failed to start"
+              exit 1
+            fi
+          done
+
+          cp boilerplate/.codepipeline/test_agent/configs/test_agent-config.php config.php
           docker compose -f docker-compose.yml up --build -d --wait --wait-timeout 300
-          
+
       # Pre-requisites Prepare Cmfive Environment
       - name: Setup cmfive Test Environment
         run: |
             echo DBCreate 
             docker exec -t mysql-8 bash -c "mysql -h 127.0.0.1 -u'root' -p'root' --execute \"CREATE DATABASE cmfive_test; CREATE USER cmfive_test@'%' IDENTIFIED BY 'cmfive_test'; GRANT ALL PRIVILEGES ON cmfive_test.* TO cmfive_test@'%'; GRANT PROCESS ON *.* TO cmfive_test@'%'; FLUSH PRIVILEGES;\""
-            docker exec -t cmfive bash -c "chmod -R 777 ./*"
+            docker exec -t cmfive sh -c "chmod -R ugo=rwX /var/www/html*"
 
       - name: Inject configs into cmfive Test Environment
         run: |
@@ -68,11 +116,11 @@ jobs:
 
       - name: Prepare cmfive Test Backend
         run: |
-          docker exec cmfive bash -c "cd ./test/ && sh ./.install/install.sh && chmod -R 777 /var/www/html/test/Codeception/tests"
+          docker exec cmfive sh -c "cd ./test/ && sh ./.install/install.sh && chmod -R 777 /var/www/html/test/Codeception/tests"
 
       - name: Prepare cmfive Test DB
         run: |
-          docker exec -t cmfive bash -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php testDB setup; exit \$?";
+          docker exec -t cmfive sh -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php testDB setup; exit \$?";
         
       # Build new layout
       - uses: actions/setup-node@v4
@@ -82,7 +130,7 @@ jobs:
       # Run Unit Tests
       - name: "Run unit tests"
         run: |
-          docker exec cmfive bash -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php tests unit all; exit \$?"
+          docker exec cmfive sh -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php tests unit all; exit \$?"
           if [ $? -gt 0 ]; then
             echo "Admin module tests failed"
           fi
@@ -95,7 +143,7 @@ jobs:
       # Run Acceptance Tests
       - name: "Confirm Codeception setup"
         run: |        
-          docker exec cmfive bash -c "ls -lah -R /var/www/html/test/Codeception/tests && cat /var/www/html/test/Codeception/*.yml && cat /var/www/html/test/Codeception/tests/*.yml"
+          docker exec cmfive sh -c "ls -lah -R /var/www/html/test/Codeception/tests && cat /var/www/html/test/Codeception/*.yml && cat /var/www/html/test/Codeception/tests/*.yml"
 
       - name: "Run admin module tests"
         run: |
