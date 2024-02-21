@@ -230,7 +230,10 @@ jobs:
         # the test result
         if: always()
         run: |
-          docker-compose down
+          docker stop cmfive
+          docker stop mysql-8
+          docker rm cmfive
+          docker rm mysql-8
 
       # Store Test Results
       - name: Test results
