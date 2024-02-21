@@ -46,7 +46,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          path: main
+          path: core
 
       - name: Checkout Boilerplate
         uses: actions/checkout@v4
@@ -54,6 +54,15 @@ jobs:
           repository: '2pisoftware/cmfive-boilerplate'
           ref: 'develop'
           path: boilerplate
+
+      - name: Compile the theme
+        run: |
+          docker run node:18-alpine \
+            -v ${{ github.workspace }}/core/system/templates/base:/var/www/html/system/templates/base \
+            sh -c \
+            "cd /var/www/html/system/templates/base && \
+            npm install && \
+            npm run production"
 
       # Pre-requisites Prepare Cmfive Environment
       - name: Pull Docker images
@@ -64,6 +73,7 @@ jobs:
       - name: Start containers
         run: |
           # Create MySQL 8 container
+          echo "Starting MySQL 8"
           docker run --name mysql-8 -d -p 3306:3306 \
             -e MYSQL_ROOT_PASSWORD=root \
             -e MYSQL_DATABASE=cmfive_test \
@@ -72,8 +82,9 @@ jobs:
             mysql:8
 
           # Wait for MySQL to start
+          echo "Waiting for MySQL to start"
           time=0
-          while ! docker exec mysql-8 sh -c "mysqladmin ping -hlocalhost --silent"; do
+          while ! docker exec mysql-8 mysqladmin ping -ucmfive_test -pcmfive_test --silent; do
             sleep 1
             time=$((time+1))
             if [ $time -gt 60 ]; then
@@ -83,12 +94,14 @@ jobs:
           done
 
           # Create Cmfive container
+          echo "Starting Cmfive"
           docker run --name cmfive -d -p 80:80 \
-            -v ${{ github.workspace }}/main/system:/var/www/html/system \
+            -v ${{ github.workspace }}/core/system:/var/www/html/system \
             -v ${{ github.workspace }}/boilerplate/.codepipeline/test_agent/configs/test_agent-config.php:/var/www/html/config.php \
             ghcr.io/2pisoftware/cmfive:develop
 
           # Wait for cmfive healthcheck to be healthy
+          echo "Waiting for Cmfive to start"
           time=0
           while [ "$(docker inspect -f '{{.State.Health.Status}}' cmfive)" != "healthy" ]; do
             sleep 1
