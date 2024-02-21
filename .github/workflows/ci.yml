@@ -115,9 +115,7 @@ jobs:
       # Pre-requisites Prepare Cmfive Environment
       - name: Setup cmfive Test Environment
         run: |
-            echo DBCreate 
-            docker exec -t mysql-8 bash -c "mysql -h 127.0.0.1 -u'root' -p'root' --execute \"CREATE DATABASE cmfive_test; CREATE USER cmfive_test@'%' IDENTIFIED BY 'cmfive_test'; GRANT ALL PRIVILEGES ON cmfive_test.* TO cmfive_test@'%'; GRANT PROCESS ON *.* TO cmfive_test@'%'; FLUSH PRIVILEGES;\""
-            docker exec -t cmfive sh -c "chmod -R ugo=rwX /var/www/html*"
+          docker exec -t cmfive sh -c "chmod -R ugo=rwX /var/www/html*"
 
       - name: Inject configs into cmfive Test Environment
         run: |
