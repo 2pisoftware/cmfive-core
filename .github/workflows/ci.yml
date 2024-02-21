@@ -156,7 +156,7 @@ jobs:
             fi
 
       - name: Get container healthchecks
-        if: always()
+        if: failure()
         run: |
           docker inspect --format='{{json .State.Health.Status}}' cmfive
           docker inspect --format='{{json .State.Health.Status}}' mysql-8
