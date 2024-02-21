@@ -73,7 +73,7 @@ jobs:
 
           # Wait for MySQL to start
           time=0
-          while ! docker exec mysql-8 mysqladmin ping -hlocalhost --silent; do
+          while ! docker exec mysql-8 sh -c "mysqladmin ping -hlocalhost --silent"; do
             sleep 1
             time=$((time+1))
             if [ $time -gt 60 ]; then
@@ -203,10 +203,8 @@ jobs:
       - name: Get container healthchecks
         if: failure()
         run: |
-          services=$(docker compose config --services)
-          for service in $services; do
-            echo "Service: $service"
-            container=$(docker-compose ps -q $service)
+          function check() {
+            container=$1
             if docker inspect $container --format='{{.State.Health.Status}}' >/dev/null 2>&1; then
               health=$(docker inspect --format='{{json .State.Health.Status}}' $container)
               if [ "$health" != "\"healthy\"" ]; then
@@ -222,8 +220,9 @@ jobs:
             else
               echo "Container does not have a health check"
             fi
-            echo ""
-          done
+          }
+          check mysql-8
+          check cmfive
 
       - name: Stop containers
         # the containers should be stopped regardless of 
