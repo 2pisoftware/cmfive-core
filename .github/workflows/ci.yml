@@ -158,9 +158,23 @@ jobs:
       - name: Get container healthchecks
         if: failure()
         run: |
-          docker inspect --format='{{json .State.Health.Status}}' cmfive
-          docker inspect --format='{{json .State.Health.Status}}' mysql-8
-          docker inspect --format='{{json .State.Health.Status}}' node-compiler
+          services=$(docker compose config --services)
+          for service in $services; do
+            echo "Service: $service"
+            container=$(docker-compose ps -q $service)
+            if docker inspect $container --format='{{.State.Health.Status}}' >/dev/null 2>&1; then
+              health=$(docker inspect --format='{{json .State.Health.Status}}' $container)
+              if [ "$health" != "\"healthy\"" ]; then
+                echo "Container is not healthy"
+                docker inspect --format='{{json .State.Health}}' $container
+              else
+                echo "Container is healthy"
+              fi
+            else
+              echo "Container does not have a health check"
+            fi
+            echo ""
+          done
 
       - name: Stop containers
         # the containers should be stopped regardless of 
