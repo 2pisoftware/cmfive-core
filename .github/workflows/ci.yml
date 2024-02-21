@@ -65,9 +65,6 @@ jobs:
       # Pre-requisites Prepare Cmfive Environment
       - name: Start containers
         run: |
-          # Test please remove 👇
-          docker pull ghcr.io/2pisoftware/cmfive:pr-103
-
           cp .codepipeline/test_agent/configs/test_agent-config.php config.php
           docker compose -f docker-compose.yml up --build -d --wait --wait-timeout 120
           
