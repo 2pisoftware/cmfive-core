@@ -68,7 +68,7 @@ jobs:
         run: |
           cd core/system/templates/base
           npm ci || npm install
-          npm run build
+          npm run production
 
       # Pre-requisites Prepare Cmfive Environment
       - name: Pull Docker images
