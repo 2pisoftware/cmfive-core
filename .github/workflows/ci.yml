@@ -187,7 +187,7 @@ jobs:
 
       - name: "Run admin module tests"
         run: |
-            sudo chmod 777 -R system/modules/admin/install/migrations/
+            sudo chmod ugo=rwX -R core/system/modules/admin/install/migrations/
             cd boilerplate/test/playwright
             npm run build
             npm run test --module="admin" --reporter="github"
