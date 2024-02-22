@@ -124,7 +124,7 @@ jobs:
 
           # Define extra config
           CONFIG='
-          Config::append("tests", ["testrunner" => "ENABLED"])
+          Config::append("tests", ["testrunner" => "ENABLED"]);
           '
 
           # Write extra config to cmfive container
