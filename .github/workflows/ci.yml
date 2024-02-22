@@ -254,29 +254,10 @@ jobs:
                 echo "Timelog module tests failed"
             fi
 
-      - name: Get container healthchecks
+      - name: Get container logs
         if: failure()
         run: |
-          function check() {
-            container=$1
-            if docker inspect $container --format='{{.State.Health.Status}}' >/dev/null 2>&1; then
-              health=$(docker inspect --format='{{json .State.Health.Status}}' $container)
-              if [ "$health" != "\"healthy\"" ]; then
-                echo "CONTAINER IS NOT HEALTHY"
-                echo "==== STATUS ===="
-                docker inspect --format='{{json .State.Health}}' $container
-                echo "==== LOGS ===="
-                docker logs $container
-                echo "==== END ===="
-              else
-                echo "Container is healthy"
-              fi
-            else
-              echo "Container does not have a health check"
-            fi
-          }
-          check mysql-8
-          check cmfive
+          docker logs check cmfive
 
       # Save composer cache from cmfive container
       - name: Save composer cache
