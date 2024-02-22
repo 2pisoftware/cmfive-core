@@ -161,7 +161,11 @@ jobs:
         run: |
           # Install packages required for the tests
           docker exec -u root -t cmfive sh -c \
-            "apk add --no-cache php81-dom php81-xmlwriter php81-tokenizer";
+            "apk add --no-cache php81-dom php81-xmlwriter php81-tokenizer php81-ctype";
+
+          # Install phpunit
+          docker exec -u root -t cmfive sh -c \
+            "cd /usr/local/bin && wget -O phpunit https://phar.phpunit.de/phpunit-10.phar && chmod +x phpunit";
 
           # Change owner of the test directory
           docker exec -u root -t cmfive sh -c \
