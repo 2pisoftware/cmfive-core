@@ -109,7 +109,7 @@ jobs:
             ghcr.io/2pisoftware/cmfive:develop
 
           # Install core
-          docker exec -u cmfive cmfive sh -c "php cmfive.php core install"
+          docker exec -u cmfive cmfive sh -c "chmod -R ugo=rwX . && php cmfive.php core install"
 
           # Wait for cmfive healthcheck to be healthy
           echo "Waiting for Cmfive to start"
