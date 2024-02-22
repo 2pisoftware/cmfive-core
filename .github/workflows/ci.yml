@@ -101,7 +101,7 @@ jobs:
 
           # Create Cmfive container
           echo "Starting Cmfive"
-          docker run --name cmfive -d -p 80:80 \
+          docker run --name cmfive -d -p 3000:80 \
             -v ${{ github.workspace }}/core/system:/var/www/html/system \
             -v ${{ github.workspace }}/boilerplate/.codepipeline/test_agent/configs/test_agent-config.php:/var/www/html/config.php \
             -v ${{ github.workspace }}/boilerplate/test:/var/www/html/test \
