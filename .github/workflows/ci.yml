@@ -105,7 +105,11 @@ jobs:
             -v ${{ github.workspace }}/core/system:/var/www/html/system \
             -v ${{ github.workspace }}/boilerplate/.codepipeline/test_agent/configs/test_agent-config.php:/var/www/html/config.php \
             -v ${{ github.workspace }}/boilerplate/test:/var/www/html/test \
+            -v ${{ github.workspace }}/boilerplate/storage:/var/www/html/storage \
             ghcr.io/2pisoftware/cmfive:develop
+
+          # Install core
+          docker exec -u cmfive cmfive sh -c "php cmfive.php core install"
 
           # Wait for cmfive healthcheck to be healthy
           echo "Waiting for Cmfive to start"
@@ -257,7 +261,7 @@ jobs:
       - name: Get container logs
         if: failure()
         run: |
-          docker logs check cmfive
+          docker logs cmfive
 
       # Save composer cache from cmfive container
       - name: Save composer cache
@@ -282,9 +286,9 @@ jobs:
         with:
           name: test-output-${{matrix.node_version}}
           path: |
-            test/Codeception/tests/_output/
-            storage/log/
-            test/playwright/test-results/
-            test/playwright/playwright-report/
+            boilerplate/test/Codeception/tests/_output/
+            boilerplate/storage/log/
+            boilerplate/test/playwright/test-results/
+            boilerplate/test/playwright/playwright-report/
           retention-days: 5
 
