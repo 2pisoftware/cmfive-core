@@ -78,6 +78,9 @@ jobs:
 
       - name: Start containers
         run: |
+          # Change owner
+          sudo chown -R 1000:1000 .
+
           # Create MySQL 8 container
           echo "Starting MySQL 8"
           docker run --name mysql-8 -d -p 3306:3306 \
@@ -102,14 +105,11 @@ jobs:
           # Create Cmfive container
           echo "Starting Cmfive"
           docker run --name cmfive -d -p 3000:80 \
-            -v ${{ github.workspace }}/core/system:/var/www/html/system \
-            -v ${{ github.workspace }}/boilerplate/.codepipeline/test_agent/configs/test_agent-config.php:/var/www/html/config.php \
-            -v ${{ github.workspace }}/boilerplate/test:/var/www/html/test \
-            -v ${{ github.workspace }}/boilerplate/storage:/var/www/html/storage \
+            -v ${{ github.workspace }}/core/system:/var/www/html/system:rw \
+            -v ${{ github.workspace }}/boilerplate/.codepipeline/test_agent/configs/test_agent-config.php:/var/www/html/config.php:rw \
+            -v ${{ github.workspace }}/boilerplate/test:/var/www/html/test:rw \
+            -v ${{ github.workspace }}/boilerplate/storage:/var/www/html/storage:rw \
             ghcr.io/2pisoftware/cmfive:develop
-
-          # Install core
-          docker exec -u cmfive cmfive sh -c "chmod -R ugo=rwX . && php cmfive.php core install"
 
           # Wait for cmfive healthcheck to be healthy
           echo "Waiting for Cmfive to start"
