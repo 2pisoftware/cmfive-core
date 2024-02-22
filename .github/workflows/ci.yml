@@ -121,7 +121,14 @@ jobs:
       - name: Inject configs into cmfive Test Environment
         run: |
           echo "Inheriting test_agent config from PIPELINE"
-          echo 'Config::append("tests", ["testrunner" => "ENABLED"]);' >> config.php
+
+          # Define extra config
+          CONFIG='
+          Config::append("tests", ["testrunner" => "ENABLED"])
+          '
+
+          # Write extra config to cmfive container
+          docker exec -t cmfive sh -c "echo \"$CONFIG\" >> /var/www/html/config.php"
 
       - name: Prepare cmfive Test Backend
         run: |
