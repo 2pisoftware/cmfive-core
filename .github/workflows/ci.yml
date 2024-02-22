@@ -161,7 +161,7 @@ jobs:
         run: |
           # Install packages required for the tests
           docker exec -u root -t cmfive sh -c \
-            "apk add --no-cache php81-dom php81-xmlwriter php81-tokenizer php81-ctype";
+            "apk add --no-cache php81-dom php81-xmlwriter php81-tokenizer php81-ctype mysql-client mariadb-connector-c-dev";
 
           # Install phpunit
           docker exec -u root -t cmfive sh -c \
@@ -177,7 +177,7 @@ jobs:
 
       - name: Prepare cmfive Test DB
         run: |
-          docker exec -t cmfive sh -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php testDB setup; exit \$?";
+          docker exec -t cmfive sh -c "DB_HOST=mysql-8 DB_USERNAME=root DB_PASSWORD=root DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php testDB setup; exit \$?";
         
       # Build new layout
       - uses: actions/setup-node@v4
