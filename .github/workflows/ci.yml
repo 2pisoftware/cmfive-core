@@ -178,8 +178,12 @@ jobs:
       - name: Setup Playwright
         run: |
           # Link system so it can find tests
+          echo "Contents of core/system"
+          ls -la core/system
+          
+          echo "Linking core/system to boilerplate/system"
           ln -s core/system boilerplate/system 
-          ls boilerplate/system
+          ls -la boilerplate/system
 
           cd boilerplate/test/playwright
           npm ci
@@ -275,7 +279,7 @@ jobs:
       - name: Save composer cache
         if: always()
         run: |
-          docker cp cmfive:/var/www/html/.composer .composer
+          docker cp cmfive:/home/cmfive/.composer .composer
 
       - name: Stop containers
         # the containers should be stopped regardless of 
