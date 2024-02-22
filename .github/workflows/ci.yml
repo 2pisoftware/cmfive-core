@@ -132,13 +132,14 @@ jobs:
 
       - name: Prepare cmfive Test Backend
         run: |
+          # Install packages required for the tests
+          docker exec -u root -t cmfive sh -c "apk add php81-dom";
+
+          # Install Codeception
           docker exec cmfive sh -c "cd ./test/ && sh ./.install/install.sh && chmod -R 777 /var/www/html/test/Codeception/tests"
 
       - name: Prepare cmfive Test DB
         run: |
-          # Install packages required for the tests
-          docker exec -u root -t cmfive sh -c "apk add php81-dom";
-
           docker exec -t cmfive sh -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php testDB setup; exit \$?";
         
       # Build new layout
