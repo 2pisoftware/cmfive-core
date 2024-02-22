@@ -179,6 +179,7 @@ jobs:
         run: |
           # Link system so it can find tests
           ln -s core/system boilerplate/system 
+          ls boilerplate/system
 
           cd boilerplate/test/playwright
           npm ci
@@ -190,7 +191,7 @@ jobs:
 
       - name: "Run admin module tests"
         run: |
-            sudo chmod ugo=rwX -R core/system/modules/admin/install/migrations/
+            sudo chmod ugo=rwX -R boilerplate/system/modules/admin/install/migrations/
             cd boilerplate/test/playwright
             npm run build
             npm run test --module="admin" --reporter="github"
@@ -270,6 +271,12 @@ jobs:
           check mysql-8
           check cmfive
 
+      # Save composer cache from cmfive container
+      - name: Save composer cache
+        if: always()
+        run: |
+          docker cp cmfive:/var/www/html/.composer .composer
+
       - name: Stop containers
         # the containers should be stopped regardless of 
         # the test result
@@ -293,8 +300,3 @@ jobs:
             test/playwright/playwright-report/
           retention-days: 5
 
-      # Save composer cache from cmfive container
-      - name: Save composer cache
-        if: ${{ always() }}
-        run: |
-          docker cp cmfive:/var/www/html/.composer .composer
