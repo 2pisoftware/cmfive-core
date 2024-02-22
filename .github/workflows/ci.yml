@@ -81,6 +81,9 @@ jobs:
           # Change owner
           sudo chown -R 1000:1000 .
 
+          # Create docker network
+          docker network create cmfive
+
           # Create MySQL 8 container
           echo "Starting MySQL 8"
           docker run --name mysql-8 -d -p 3306:3306 \
@@ -88,6 +91,7 @@ jobs:
             -e MYSQL_DATABASE=cmfive_test \
             -e MYSQL_USER=cmfive_test \
             -e MYSQL_PASSWORD=cmfive_test \
+            --network=cmfive \
             mysql:8
 
           # Wait for MySQL to start
@@ -113,6 +117,7 @@ jobs:
             -e DB_USERNAME=cmfive_test \
             -e DB_PASSWORD=cmfive_test \
             -e DB_DATABASE=cmfive_test \
+            --network=cmfive \
             ghcr.io/2pisoftware/cmfive:develop
 
           # Wait for cmfive healthcheck to be healthy
@@ -278,10 +283,9 @@ jobs:
         # the test result
         if: always()
         run: |
-          docker stop cmfive
-          docker stop mysql-8
-          docker rm cmfive
-          docker rm mysql-8
+          docker rm cmfive -f
+          docker rm mysql-8 -f
+          docker network rm cmfive
 
       # Store Test Results
       - name: Test results
