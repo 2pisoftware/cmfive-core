@@ -59,10 +59,7 @@ jobs:
         run: |
           docker run node:18-alpine \
             -v ${{ github.workspace }}/core/system/templates/base:/var/www/html/system/templates/base \
-            sh -c \
-            "cd /var/www/html/system/templates/base && \
-            npm install && \
-            npm run production"
+            sh -c "cd /var/www/html/system/templates/base && npm install && npm run production"
 
       # Pre-requisites Prepare Cmfive Environment
       - name: Pull Docker images
@@ -133,7 +130,8 @@ jobs:
       - name: Prepare cmfive Test Backend
         run: |
           # Install packages required for the tests
-          docker exec -u root -t cmfive sh -c "apk add php81-dom";
+          docker exec -u root -t cmfive sh -c \
+            "apk add --no-cache php81-dom php81-xmlwriter php81-tokenizer";
 
           # Install Codeception
           docker exec cmfive sh -c "cd ./test/ && sh ./.install/install.sh && chmod -R 777 /var/www/html/test/Codeception/tests"
