@@ -66,9 +66,9 @@ jobs:
 
       - name: Compile the theme
         run: |
-          docker run node:18-alpine \
-            -v ${{ github.workspace }}/core/system/templates/base:/var/www/html/system/templates/base \
-            sh -c "cd /var/www/html/system/templates/base && npm install && npm run production"
+          cd core/system/templates/base
+          npm ci || npm install
+          npm run build
 
       # Pre-requisites Prepare Cmfive Environment
       - name: Pull Docker images
@@ -178,7 +178,7 @@ jobs:
       - name: Setup Playwright
         run: |
           # Link system so it can find tests
-          ln -s boilerplate/system core/system
+          ln -s core/system boilerplate/system 
 
           cd boilerplate/test/playwright
           npm ci
@@ -295,6 +295,6 @@ jobs:
 
       # Save composer cache from cmfive container
       - name: Save composer cache
-        if: ${{ success() }}
+        if: ${{ always() }}
         run: |
           docker cp cmfive:/var/www/html/.composer .composer
