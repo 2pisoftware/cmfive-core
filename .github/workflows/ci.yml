@@ -187,7 +187,7 @@ jobs:
       # Run Unit Tests
       - name: "Run unit tests"
         run: |
-          docker exec -u root cmfive chmod -R ug=rwX /var/www/html/test/Codeception/
+          docker exec -u root cmfive chmod -R ugo=rwX /var/www/html/test/Codeception/
           docker exec -u cmfive cmfive sh -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php tests unit all; exit \$?"
           if [ $? -gt 0 ]; then
             echo "Admin module tests failed"
