@@ -179,12 +179,15 @@ jobs:
         run: |
           # Link system so it can find tests
           echo "Contents of core/system"
-          ls -la core/system
+          ls -la core/system/
           
           echo "Linking core/system to boilerplate/system"
-          ln -s core/system boilerplate/system 
+          cd boilerplate
+          ln -s ../core/system system 
+          cd ..
           ls -la boilerplate/system
 
+          echo "Installing Playwright"
           cd boilerplate/test/playwright
           npm ci
           npx playwright install --with-deps
