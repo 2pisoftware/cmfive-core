@@ -177,6 +177,9 @@ jobs:
         # Setup playwright
       - name: Setup Playwright
         run: |
+          # Link system so it can find tests
+          ln -s boilerplate/system core/system
+
           cd boilerplate/test/playwright
           npm ci
           npx playwright install --with-deps
