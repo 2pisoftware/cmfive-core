@@ -1,6 +1,3 @@
-<?php
-$theme_setting = AuthService::getInstance($w)->getSettingByKey('bs5-theme');
-?>
 <!DOCTYPE html>
 <html class="theme theme--light">
 
