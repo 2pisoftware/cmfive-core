@@ -55,11 +55,11 @@ jobs:
           ref: 'develop'
           path: boilerplate
 
-      # Define composer cache
-      - name: Composer cache
-        uses: actions/cache@v4
+      # Define cache for .composer
+      - name: Cache .composer
+        uses: actions/cache@v2
         with:
-          path: .composer
+          path: ${{ github.workspace }}/.composer
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
           restore-keys: |
             ${{ runner.os }}-composer-
@@ -107,15 +107,15 @@ jobs:
           done
 
           # Get .composer dir ready
-          if [ ! -d .composer ]; then
-            mkdir .composer
+          if [ ! -d ${{ github.workspace }}/.composer ]; then
+            mkdir ${{ github.workspace }}/.composer
           fi
-          chmod -R ugo=rwX .composer
+          chmod -R ugo=rwX ${{ github.workspace }}/.composer
 
           # Create Cmfive container
           echo "Starting Cmfive"
           docker run --name cmfive -d -p 3000:80 \
-            -v ${{ github.workspace }}.composer/:/home/cmfive/.composer/:rw \
+            -v ${{ github.workspace }}/.composer/:/home/cmfive/.composer/:rw \
             -v ${{ github.workspace }}/core/system:/var/www/html/system:rw \
             -v ${{ github.workspace }}/boilerplate/.codepipeline/test_agent/configs/test_agent-config.php:/var/www/html/config.php:rw \
             -v ${{ github.workspace }}/boilerplate/test:/var/www/html/test:rw \
@@ -275,12 +275,6 @@ jobs:
         if: failure()
         run: |
           docker logs cmfive
-
-      # Save composer cache from cmfive container
-      - name: Save composer cache
-        if: always()
-        run: |
-          docker cp cmfive:/home/cmfive/.composer .composer
 
       - name: Stop containers
         # the containers should be stopped regardless of 
