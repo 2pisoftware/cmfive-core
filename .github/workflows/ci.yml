@@ -82,7 +82,14 @@ jobs:
           # Change owner
           sudo chown -R 1000:1000 .
 
+          echo "Linking core/system to boilerplate/system"
+          cd boilerplate
+          sudo ln -s ../core/system system 
+          cd ..
+          ls -la boilerplate/system
+
           # Create docker network
+          echo "Setting up docker"
           docker network create cmfive
 
           # Create MySQL 8 container
@@ -198,12 +205,6 @@ jobs:
           # Link system so it can find tests
           echo "Contents of core/system"
           ls -la core/system/
-          
-          echo "Linking core/system to boilerplate/system"
-          cd boilerplate
-          ln -s ../core/system system 
-          cd ..
-          ls -la boilerplate/system
 
           echo "Installing Playwright"
           cd boilerplate/test/playwright
