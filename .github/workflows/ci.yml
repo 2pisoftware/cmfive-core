@@ -19,42 +19,29 @@ env:
 
 jobs:
   # Lint
-  php-codesniffer74:
-    name: PHP CS 7.4
+  php-codesniffer:
+    name: PHP CS
     runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        php_version: [7.4, 8.0, 8.1, 8.3]
     steps:
     - name: Get phpcs
       run: wget https://raw.githubusercontent.com/2pisoftware/cmfive-boilerplate/master/phpcs.xml
     - name: Codesniffer
       uses: pipeline-components/php-codesniffer@v0.31.0
       with:
-        options: -s -p --colors --extensions=php --runtime-set testVersion 7.4
-  php-codesniffer80:
-    name: PHP CS 8.0
-    runs-on: ubuntu-22.04
-    steps:
-    - name: Get phpcs
-      run: wget https://raw.githubusercontent.com/2pisoftware/cmfive-boilerplate/master/phpcs.xml
-    - name: Codesniffer
-      uses: pipeline-components/php-codesniffer@v0.31.0
-      with:
-        options: -s -p --colors --extensions=php --runtime-set testVersion 8.0
-  php-codesniffer81:
-    name: PHP CS 8.1
-    runs-on: ubuntu-22.04
-    steps:
-    - name: Get phpcs
-      run: wget https://raw.githubusercontent.com/2pisoftware/cmfive-boilerplate/master/phpcs.xml
-    - name: Codesniffer
-      uses: pipeline-components/php-codesniffer@v0.31.0
-      with:
-        options: -s -p --colors --extensions=php --runtime-set testVersion 8.1
+        options: -s -p --colors --extensions=php --runtime-set testVersion ${{matrix.php_version}}
+
   # Test
   run_test:
     # Checkout Boilerplate
     name: Unit/Acceptance tests
     runs-on: ubuntu-22.04
-    needs: [ php-codesniffer74, php-codesniffer80, php-codesniffer81 ]
+    needs: [ php-codesniffer]
+    strategy:
+      matrix:
+        node_version: [18, 20]
     steps:
       - uses: actions/checkout@v4
         with:
@@ -90,7 +77,7 @@ jobs:
       # Build new layout
       - uses: actions/setup-node@v4
         with:
-            node-version: 18
+            node-version: ${{ matrix.node_version }}
         
       # Run Unit Tests
       - name: "Run unit tests"
@@ -179,7 +166,7 @@ jobs:
         if: ${{ failure() }} || ${{ success() }}
         uses: actions/upload-artifact@v4
         with:
-          name: test-output
+          name: test-output-${{matrix.node_version}}
           path: |
             test/Codeception/tests/_output/
             storage/log/
