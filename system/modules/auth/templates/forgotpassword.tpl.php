@@ -12,11 +12,11 @@
             ?>
         </label>
     </div>
-    <div class='row d-flex justify-content-between mt-3'>
+    <div class='row d-flex justify-content-between mt-3 row-cols-1 row-cols-sm-2'>
         <div class='col'>
             <button type="submit" class="btn btn-primary w-100">Submit</button>
         </div>
-        <div class='col'>
+        <div class='col mt-3 mt-sm-0'>
             <button type="button" onclick='window.location.href="/auth/login"' class="btn btn-secondary w-100">Back</button>
         </div>
     </div>

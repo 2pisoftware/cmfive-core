@@ -25,11 +25,11 @@
                     ?>
                 </label>
             </div>
-            <div class='row d-flex justify-content-between mt-3'>
+            <div class='row d-flex justify-content-between mt-3 row-cols-1 row-cols-sm-2'>
                 <div class='col'>
                     <button type="submit" class="btn btn-primary w-100">Confirm</button>
                 </div>
-                <div class='col'>
+                <div class='col mt-3 mt-sm-0'>
                     <button class="btn btn-secondary w-100" @click.prevent="back">Back</button>
                 </div>
             </div>
@@ -70,12 +70,12 @@
                     ?>
                 </label>
             </div>
-            <div class='row d-flex justify-content-between mt-3'>
+            <div class='row d-flex justify-content-between mt-3 row-cols-1 row-cols-sm-2'>
                 <div class='col'>
                     <button type="submit" class="btn btn-primary w-100 h-auto">Login</button>
                 </div>
-                <div class='col text-end'>
-                    <a onclick="window.location.href='/auth/forgotpassword';" class="btn w-auto text-end"><?php echo $passwordHelp; ?></a>
+                <div class='col text-center text-sm-end'>
+                    <a onclick="window.location.href='/auth/forgotpassword';" class="btn w-auto "><?php echo $passwordHelp; ?></a>
                 </div>
             </div>
         </form>
