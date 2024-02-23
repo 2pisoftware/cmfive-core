@@ -109,6 +109,7 @@ jobs:
           # Create Cmfive container
           echo "Starting Cmfive"
           docker run --name cmfive -d -p 3000:80 \
+            -v ${{ github.workspace }}.composer/:/home/cmfive/.composer/:rw \
             -v ${{ github.workspace }}/core/system:/var/www/html/system:rw \
             -v ${{ github.workspace }}/boilerplate/.codepipeline/test_agent/configs/test_agent-config.php:/var/www/html/config.php:rw \
             -v ${{ github.workspace }}/boilerplate/test:/var/www/html/test:rw \
@@ -131,14 +132,6 @@ jobs:
               exit 1
             fi
           done
-
-      # Load composer cache
-      - name: Load composer cache
-        if: runner.os == 'Linux'
-        run: |
-          if [ -d .composer ]; then
-            docker cp .composer cmfive:/home/cmfive/
-          fi
 
       # Pre-requisites Prepare Cmfive Environment
       - name: Setup cmfive Test Environment
@@ -163,9 +156,9 @@ jobs:
           docker exec -u root -t cmfive sh -c \
             "apk add --no-cache php81-dom php81-xmlwriter php81-tokenizer php81-ctype mysql-client mariadb-connector-c-dev";
 
-          # Install phpunit
-          docker exec -u root -t cmfive sh -c \
-            "cd /usr/local/bin && wget -O phpunit https://phar.phpunit.de/phpunit-10.phar && chmod +x phpunit";
+          # Install phpunit 8
+          docker exec -u root cmfive sh -c \
+            "cd /usr/local/bin && curl -L https://phar.phpunit.de/phpunit-8.phar -o phpunit && chmod +x phpunit && chmod 777 .";
 
           # Change owner of the test directory
           docker exec -u root -t cmfive sh -c \
