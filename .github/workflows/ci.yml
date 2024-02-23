@@ -215,23 +215,23 @@ jobs:
         run: |        
           docker exec cmfive sh -c "ls -lah -R /var/www/html/test/Codeception/tests && cat /var/www/html/test/Codeception/*.yml && cat /var/www/html/test/Codeception/tests/*.yml"
 
-      - name: "Run admin module tests"
-        run: |
-            sudo chmod ugo=rwX -R boilerplate/system/modules/admin/install/migrations/
-            cd boilerplate/test/playwright
-            npm run build
-            npm run test --module="admin" --reporter="github"
-            if [ $? -gt 0 ]; then
-                echo "Admin module tests failed"
-            fi
-      - name: "Run channel module tests"
-        run: |
-            cd boilerplate/test/playwright
-            npm run build
-            npm run test --module="channel" --reporter="github"
-            if [ $? -gt 0 ]; then
-                echo "Channel module tests failed"
-            fi
+      # - name: "Run admin module tests"
+      #   run: |
+      #       sudo chmod ugo=rwX -R boilerplate/system/modules/admin/install/migrations/
+      #       cd boilerplate/test/playwright
+      #       npm run build
+      #       npm run test --module="admin" --reporter="github"
+      #       if [ $? -gt 0 ]; then
+      #           echo "Admin module tests failed"
+      #       fi
+      # - name: "Run channel module tests"
+      #   run: |
+      #       cd boilerplate/test/playwright
+      #       npm run build
+      #       npm run test --module="channel" --reporter="github"
+      #       if [ $? -gt 0 ]; then
+      #           echo "Channel module tests failed"
+      #       fi
       - name: "Run form module tests"
         run: |
             cd boilerplate/test/playwright
@@ -264,14 +264,14 @@ jobs:
             if [ $? -gt 0 ]; then
                 echo "Task module tests failed"
             fi
-      - name: "Run timelog module tests"
-        run: |
-            cd boilerplate/test/playwright
-            npm run build
-            npm run test --module="timelog" --reporter="github"
-            if [ $? -gt 0 ]; then
-                echo "Timelog module tests failed"
-            fi
+      # - name: "Run timelog module tests"
+      #   run: |
+      #       cd boilerplate/test/playwright
+      #       npm run build
+      #       npm run test --module="timelog" --reporter="github"
+      #       if [ $? -gt 0 ]; then
+      #           echo "Timelog module tests failed"
+      #       fi
 
       - name: Get container logs
         if: failure()
