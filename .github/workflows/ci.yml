@@ -59,7 +59,7 @@ jobs:
       - name: Cache .composer
         uses: actions/cache@v2
         with:
-          path: ${{ github.workspace }}/.composer
+          path: /tmp/.composer
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
           restore-keys: |
             ${{ runner.os }}-composer-
@@ -107,15 +107,15 @@ jobs:
           done
 
           # Get .composer dir ready
-          if [ ! -d ${{ github.workspace }}/.composer ]; then
-            mkdir ${{ github.workspace }}/.composer
+          if [ ! -d /tmp/.composer ]; then
+            mkdir /tmp/.composer
           fi
-          chmod -R ugo=rwX ${{ github.workspace }}/.composer
+          chmod -R ugo=rwX /tmp/.composer
 
           # Create Cmfive container
           echo "Starting Cmfive"
           docker run --name cmfive -d -p 3000:80 \
-            -v ${{ github.workspace }}/.composer/:/home/cmfive/.composer/:rw \
+            -v /tmp/.composer:/home/cmfive/.composer/:rw \
             -v ${{ github.workspace }}/core/system:/var/www/html/system:rw \
             -v ${{ github.workspace }}/boilerplate/.codepipeline/test_agent/configs/test_agent-config.php:/var/www/html/config.php:rw \
             -v ${{ github.workspace }}/boilerplate/test:/var/www/html/test:rw \
