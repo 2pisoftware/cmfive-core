@@ -106,6 +106,9 @@ jobs:
             fi
           done
 
+          # Get .composer dir ready
+          chmod -R ugo=rwX .composer
+
           # Create Cmfive container
           echo "Starting Cmfive"
           docker run --name cmfive -d -p 3000:80 \
