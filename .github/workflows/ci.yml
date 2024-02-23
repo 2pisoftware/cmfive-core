@@ -107,6 +107,9 @@ jobs:
           done
 
           # Get .composer dir ready
+          if [ ! -d .composer ]; then
+            mkdir .composer
+          fi
           chmod -R ugo=rwX .composer
 
           # Create Cmfive container
