@@ -145,7 +145,7 @@ class HtmlBootstrap5 extends Html
                                 break;
                         }
                         if ((property_exists($field, "type") && $field->type !== "hidden") || !property_exists($field, "type")) {
-                            $buffer .= '<div class="col"><label class="' . $label_class . '"' . (property_exists($field, 'id') && !empty($field->id) ? ' for="' . $field->id . '"' : '') . '>' . $field->label . ($field->required ? " <small>Required</small>" : "") . "</label>"
+                            $buffer .= '<div class="col-12 col-md-6 col-lg-' . floor(12 / count($row)) . '"><label class="' . $label_class . '"' . (property_exists($field, 'id') && !empty($field->id) ? ' for="' . $field->id . '"' : '') . '>' . $field->label . ($field->required ? " <small>Required</small>" : "") . "</label>"
                                 . $field->__toString() . '</div>';
                         } else {
                             $buffer .= $field->__toString();
