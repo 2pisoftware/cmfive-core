@@ -43,11 +43,9 @@ jobs:
       matrix:
         node_version: [18, 20]
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          path: core
+      ## NOTE: Current branch of cmfive-core will be used on the cmfive container
 
+      # Checkout the boilerplate
       - name: Checkout Boilerplate
         uses: actions/checkout@v4
         with:
@@ -78,6 +76,8 @@ jobs:
           docker pull mysql:8
 
       - name: Start containers
+        env:
+          CORE_BRANCH: "${{ github.event.pull_request.head.ref }}"
         run: |
           # Change owner
           sudo chown -R 1000:1000 .
@@ -124,7 +124,6 @@ jobs:
           echo "Starting Cmfive"
           docker run --name cmfive -d -p 3000:80 \
             -v /tmp/.composer:/home/cmfive/.composer/:rw \
-            -v ${{ github.workspace }}/core/system:/var/www/html/system:rw \
             -v ${{ github.workspace }}/boilerplate/.codepipeline/test_agent/configs/test_agent-config.php:/var/www/html/config.php:rw \
             -v ${{ github.workspace }}/boilerplate/test:/var/www/html/test:rw \
             -v ${{ github.workspace }}/boilerplate/storage:/var/www/html/storage:rw \
@@ -132,6 +131,7 @@ jobs:
             -e DB_USERNAME=cmfive_test \
             -e DB_PASSWORD=cmfive_test \
             -e DB_DATABASE=cmfive_test \
+            -e CMFIVE_CORE_BRANCH=$CORE_BRANCH
             --network=cmfive \
             ghcr.io/2pisoftware/cmfive:develop
 
