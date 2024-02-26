@@ -4,6 +4,8 @@ function edit_GET(Web $w)
 {
     $p = $w->pathMatch("id");
 
+    $isBootstrap = array_key_exists('HTTP_X_CMFIVE_TEMPLATE', $_SERVER);
+
     if (!empty($p['id'])) {
         $timelog = TimelogService::getInstance($w)->getTimelog($p['id']);
         if (empty($timelog)) {
@@ -100,6 +102,7 @@ function edit_GET(Web $w)
             ]))->setLabel('Time Started'),
         ],
         (!$timelog->isRunning()) ? [
+
             (new \Html\Form\InputField\Radio([
                 "name"        => "select_end_method",
                 "value"        => "time",
@@ -115,6 +118,7 @@ function edit_GET(Web $w)
                 "placeholder"    => "12hr format: 11:30pm or 24hr format: 23:30",
                 "required"        => "true"
             ]))->setLabel('End Time'),
+
             (new \Html\Form\InputField\Radio([
                 "name"        => "select_end_method",
                 "value"        => "hours",

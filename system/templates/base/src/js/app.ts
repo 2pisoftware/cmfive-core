@@ -89,7 +89,8 @@ class Cmfive {
         Cmfive.currentModal.show();
         fetch(url, {
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'X-Cmfive-Template': 'bootstrap'
             }
         }).then((response) => {
             return response.text()
