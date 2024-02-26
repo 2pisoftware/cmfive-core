@@ -198,7 +198,7 @@ jobs:
           if [ $? -gt 0 ]; then
             echo "Admin module tests failed"
           fi
-        # Setup playwright
+      # Setup playwright
       - name: Setup Playwright
         run: |
           echo "Installing Playwright"
@@ -212,7 +212,7 @@ jobs:
 
       - name: "Run admin module tests"
         run: |
-            sudo chmod ugo=rwX -R boilerplate/system/modules/admin/install/migrations/
+            docker exec -u root cmfive sh -c "chmod ugo=rwX -R /var/www/html/system/modules/admin/install/migrations/"
             cd boilerplate/test/playwright
             npm run build
             npm run test --module="admin" --reporter="github"
