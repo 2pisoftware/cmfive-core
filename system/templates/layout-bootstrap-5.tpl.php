@@ -247,7 +247,6 @@ $theme_setting = AuthService::getInstance($w)->getSettingByKey('bs5-theme');
         </div>
     </div>
     <div class="cmfive-toast-message"></div>
-    <script src="https://cdn.jsdelivr.net/gh/hbroek/reken/dist/reken.min.js"></script>
     <?php $w->outputScripts(); ?>
 </body>
 
