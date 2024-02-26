@@ -138,9 +138,13 @@ jobs:
 
       - name: Compile the theme
         run: |
-          cd boilerplate/system/templates/base
+          # Copy the theme from the docker container
+          docker cp cmfive:/var/www/html/system/templates/base /tmp/cmfive-theme
+          cd /tmp/cmfive-theme
           npm ci || npm install
           npm run production
+          # Copy the compiled theme back to the docker container
+          docker cp /tmp/cmfive-theme/. cmfive:/var/www/html/system/templates/base
 
       # Pre-requisites Prepare Cmfive Environment
       - name: Setup cmfive Test Environment
