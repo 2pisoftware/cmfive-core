@@ -81,7 +81,8 @@ jobs:
           CORE_BRANCH: "${{ github.event.pull_request.head.ref }}"
         run: |
           # Link system dir
-          ln -s {{ github.workspace }}/core/system {{ github.workspace }}/boilerplate/system
+          cd boilerplate
+          ln -s ../core/system system
 
           # Change owner
           sudo chown -R 1000:1000 .
