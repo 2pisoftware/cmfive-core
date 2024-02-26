@@ -44,6 +44,7 @@ jobs:
         node_version: [18, 20]
     steps:
       ## NOTE: Current branch of cmfive-core will be used on the cmfive container
+      ## See the `CORE_BRANCH` environment variable in the `Start containers` step
 
       # Checkout the boilerplate
       - name: Checkout Boilerplate
@@ -63,12 +64,6 @@ jobs:
             ${{ github.workspace }}/boilerplate/composer
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
 
-      - name: Compile the theme
-        run: |
-          cd core/system/templates/base
-          npm ci || npm install
-          npm run production
-
       # Pre-requisites Prepare Cmfive Environment
       - name: Pull Docker images
         run: |
@@ -81,12 +76,6 @@ jobs:
         run: |
           # Change owner
           sudo chown -R 1000:1000 .
-
-          echo "Linking core/system to boilerplate/system"
-          cd boilerplate
-          sudo ln -s ../core/system system 
-          cd ..
-          ls -la boilerplate/system
 
           # Create docker network
           echo "Setting up docker"
@@ -147,6 +136,12 @@ jobs:
             fi
           done
 
+      - name: Compile the theme
+        run: |
+          cd boilerplate/system/templates/base
+          npm ci || npm install
+          npm run production
+
       # Pre-requisites Prepare Cmfive Environment
       - name: Setup cmfive Test Environment
         run: |
@@ -202,10 +197,6 @@ jobs:
         # Setup playwright
       - name: Setup Playwright
         run: |
-          # Link system so it can find tests
-          echo "Contents of core/system"
-          ls -la core/system/
-
           echo "Installing Playwright"
           cd boilerplate/test/playwright
           npm ci
