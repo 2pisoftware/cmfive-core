@@ -120,7 +120,7 @@ jobs:
             -e DB_USERNAME=cmfive_test \
             -e DB_PASSWORD=cmfive_test \
             -e DB_DATABASE=cmfive_test \
-            -e CMFIVE_CORE_BRANCH=$CORE_BRANCH
+            -e CMFIVE_CORE_BRANCH=$CORE_BRANCH \
             --network=cmfive \
             ghcr.io/2pisoftware/cmfive:develop
 
