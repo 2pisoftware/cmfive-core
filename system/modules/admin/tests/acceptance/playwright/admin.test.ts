@@ -167,8 +167,10 @@ test("Test that Cmfive Admin can create/run/rollback migrations", async ({ page 
     // test that migration can be run/rolled back from "Individual" migrations tab
     await page.getByRole("link", { name: "Individual" }).click();
 
+    const migrationsCount = await page.getByRole('button', {name: 'Migrate to here'}).count();
+    const plural = migrationsCount == 1 ? " has" : "s have";
     await CmfiveHelper.getRowByText(page, "Admin"+migration).getByRole("button", { name: "Migrate to here" }).click();
-    await expect(page.getByText("1 migration has run.")).toBeVisible();
+    await expect(page.getByText(`${migrationsCount} migration${plural} run.`)).toBeVisible();
 
     await CmfiveHelper.getRowByText(page, "Admin" + migration).getByRole("button", { name: "Rollback to here" }).click();
     await expect(page.getByText("1 migration has rolled back")).toBeVisible();

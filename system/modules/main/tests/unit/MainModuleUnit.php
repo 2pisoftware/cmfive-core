@@ -16,7 +16,6 @@ class MainModuleUnit extends TestCase //\Codeception\Test\Unit
         $favourite1 = FavoriteService::getInstance($w);
         $file1 = FileService::getInstance($w);
         $form1 = FormService::getInstance($w);
-        // $inbox1 = InboxService::getInstance($w);
         $main1 = MainService::getInstance($w);
         $report1 = ReportService::getInstance($w);
         $search1 = SearchService::getInstance($w);
@@ -66,7 +65,6 @@ class MainModuleUnit extends TestCase //\Codeception\Test\Unit
         $this->assertNull(FormService::getInstance($w)->_db);
 
         // $this->assertNotNull($inbox1->_db);
-        // $inbox2 = InboxService::getInstance($w);
         // $inbox1->_db = null;
         // $this->assertNull($inbox2->_db);
 

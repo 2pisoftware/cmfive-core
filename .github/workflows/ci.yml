@@ -19,101 +19,213 @@ env:
 
 jobs:
   # Lint
-  php-codesniffer74:
-    name: PHP CS 7.4
+  php-codesniffer:
+    name: PHP CS
     runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        php_version: [7.4, 8.0, 8.1, 8.3]
     steps:
     - name: Get phpcs
       run: wget https://raw.githubusercontent.com/2pisoftware/cmfive-boilerplate/master/phpcs.xml
     - name: Codesniffer
       uses: pipeline-components/php-codesniffer@v0.31.0
       with:
-        options: -s -p --colors --extensions=php --runtime-set testVersion 7.4
-  php-codesniffer80:
-    name: PHP CS 8.0
-    runs-on: ubuntu-22.04
-    steps:
-    - name: Get phpcs
-      run: wget https://raw.githubusercontent.com/2pisoftware/cmfive-boilerplate/master/phpcs.xml
-    - name: Codesniffer
-      uses: pipeline-components/php-codesniffer@v0.31.0
-      with:
-        options: -s -p --colors --extensions=php --runtime-set testVersion 8.0
-  php-codesniffer81:
-    name: PHP CS 8.1
-    runs-on: ubuntu-22.04
-    steps:
-    - name: Get phpcs
-      run: wget https://raw.githubusercontent.com/2pisoftware/cmfive-boilerplate/master/phpcs.xml
-    - name: Codesniffer
-      uses: pipeline-components/php-codesniffer@v0.31.0
-      with:
-        options: -s -p --colors --extensions=php --runtime-set testVersion 8.1
+        options: -s -p --colors --extensions=php --runtime-set testVersion ${{matrix.php_version}}
+
   # Test
   run_test:
     # Checkout Boilerplate
     name: Unit/Acceptance tests
     runs-on: ubuntu-22.04
-    needs: [ php-codesniffer74, php-codesniffer80, php-codesniffer81 ]
+    needs: [ php-codesniffer]
+    strategy:
+      matrix:
+        node_version: [18, 20]
     steps:
-      - uses: actions/checkout@v4
+      ## NOTE: Current branch of cmfive-core will be used on the cmfive container
+      ## See the `CORE_BRANCH` environment variable in the `Start containers` step
+
+      # Checkout current commit
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          path: core
+
+      # Checkout the boilerplate
+      - name: Checkout Boilerplate
+        uses: actions/checkout@v4
         with:
           repository: '2pisoftware/cmfive-boilerplate'
           ref: 'develop'
+          path: boilerplate
+
+      # Define cache for .composer
+      - name: Cache .composer
+        uses: actions/cache@v4
+        id: cache
+        with:
+          path: |
+            /tmp/.composer
+            ${{ github.workspace }}/boilerplate/composer
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
 
       # Pre-requisites Prepare Cmfive Environment
-      - name: Start containers
+      - name: Pull Docker images
         run: |
-          cp .codepipeline/test_agent/configs/test_agent-config.php config.php
-          docker compose -f docker-compose.yml up --build -d --wait --wait-timeout 120
-          
+          docker pull ghcr.io/2pisoftware/cmfive:develop
+          docker pull mysql:8
+
+      - name: Start containers
+        env:
+          CORE_BRANCH: "${{ github.event.pull_request.head.ref }}"
+        run: |
+          # Link system dir
+          cd boilerplate
+          ln -s ../core/system system
+
+          # Change owner
+          sudo chown -R 1000:1000 .
+
+          # Create docker network
+          echo "Setting up docker"
+          docker network create cmfive
+
+          # Create MySQL 8 container
+          echo "Starting MySQL 8"
+          docker run --name mysql-8 -d -p 3306:3306 \
+            -e MYSQL_ROOT_PASSWORD=root \
+            -e MYSQL_DATABASE=cmfive_test \
+            -e MYSQL_USER=cmfive_test \
+            -e MYSQL_PASSWORD=cmfive_test \
+            --network=cmfive \
+            mysql:8
+
+          # Wait for MySQL to start
+          echo "Waiting for MySQL to start"
+          time=0
+          while ! docker exec mysql-8 mysqladmin ping -ucmfive_test -pcmfive_test --silent; do
+            sleep 1
+            time=$((time+1))
+            if [ $time -gt 60 ]; then
+              echo "MySQL failed to start"
+              exit 1
+            fi
+          done
+
+          # Get .composer dir ready
+          if [ ! -d /tmp/.composer ]; then
+            mkdir /tmp/.composer
+          fi
+          chmod -R ugo=rwX /tmp/.composer
+
+          # Create Cmfive container
+          echo "Starting Cmfive"
+          docker run --name cmfive -d -p 3000:80 \
+            -v /tmp/.composer:/home/cmfive/.composer/:rw \
+            -v ${{ github.workspace }}/boilerplate/.codepipeline/test_agent/configs/test_agent-config.php:/var/www/html/config.php:rw \
+            -v ${{ github.workspace }}/boilerplate/test:/var/www/html/test:rw \
+            -v ${{ github.workspace }}/boilerplate/storage:/var/www/html/storage:rw \
+            -v system:/var/www/html/system:rw \
+            -e DB_HOST=mysql-8 \
+            -e DB_USERNAME=cmfive_test \
+            -e DB_PASSWORD=cmfive_test \
+            -e DB_DATABASE=cmfive_test \
+            -e CMFIVE_CORE_BRANCH=$CORE_BRANCH \
+            --network=cmfive \
+            ghcr.io/2pisoftware/cmfive:develop
+          # Note: system is mounted to a volume to avoid conflicts with the symlink
+
+          # Wait for cmfive healthcheck to be healthy
+          echo "Waiting for Cmfive to start"
+          time=0
+          while [ "$(docker inspect -f '{{.State.Health.Status}}' cmfive)" != "healthy" ]; do
+            sleep 1
+            time=$((time+1))
+            if [ $time -gt 60 ]; then
+              echo "Cmfive failed to start"
+              exit 1
+            fi
+          done
+
+      - name: Compile the theme
+        run: |
+          # Copy the theme from the docker container
+          docker cp cmfive:/var/www/html/system/templates/base /tmp/cmfive-theme
+          cd /tmp/cmfive-theme
+          npm ci || npm install
+          npm run production
+          # Copy the compiled theme back to the docker container
+          docker cp /tmp/cmfive-theme/. cmfive:/var/www/html/system/templates/base
+
       # Pre-requisites Prepare Cmfive Environment
       - name: Setup cmfive Test Environment
         run: |
-            echo DBCreate 
-            docker exec -t mysql-8 bash -c "mysql -h 127.0.0.1 -u'root' -p'root' --execute \"CREATE DATABASE cmfive_test; CREATE USER cmfive_test@'%' IDENTIFIED BY 'cmfive_test'; GRANT ALL PRIVILEGES ON cmfive_test.* TO cmfive_test@'%'; GRANT PROCESS ON *.* TO cmfive_test@'%'; FLUSH PRIVILEGES;\""
-            docker exec -t cmfive bash -c "chmod -R 777 ./*"
+          docker exec -t cmfive sh -c "chmod -R ugo=rwX /var/www/html*"
 
       - name: Inject configs into cmfive Test Environment
         run: |
           echo "Inheriting test_agent config from PIPELINE"
-          echo 'Config::append("tests", ["testrunner" => "ENABLED"]);' >> config.php
+
+          # Define extra config
+          CONFIG='
+          Config::append(\"tests\", [\"testrunner\" => \"ENABLED\"]);
+          '
+
+          # Write extra config to cmfive container
+          docker exec -t cmfive sh -c "echo \"$CONFIG\" >> /var/www/html/config.php"
 
       - name: Prepare cmfive Test Backend
         run: |
-          docker exec cmfive bash -c "cd ./test/ && sh ./.install/install.sh && chmod -R 777 /var/www/html/test/Codeception/tests"
+          # Install packages required for the tests
+          docker exec -u root -t cmfive sh -c \
+            "apk add --no-cache php81-dom php81-xmlwriter php81-tokenizer php81-ctype mysql-client mariadb-connector-c-dev";
+
+          # Install phpunit 8
+          docker exec -u root cmfive sh -c \
+            "cd /usr/local/bin && curl -L https://phar.phpunit.de/phpunit-8.phar -o phpunit && chmod +x phpunit && chmod 777 .";
+
+          # Change owner of the test directory
+          docker exec -u root -t cmfive sh -c \
+            "chown -R cmfive:cmfive /var/www/html/test";
+
+          # Install Codeception
+          docker exec -u cmfive cmfive sh -c \
+            "cd /var/www/html/test/ && sh ./.install/install.sh"
 
       - name: Prepare cmfive Test DB
         run: |
-          docker exec -t cmfive bash -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php testDB setup; exit \$?";
+          docker exec -t cmfive sh -c "DB_HOST=mysql-8 DB_USERNAME=root DB_PASSWORD=root DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php testDB setup; exit \$?";
         
       # Build new layout
       - uses: actions/setup-node@v4
         with:
-            node-version: 18
+            node-version: ${{ matrix.node_version }}
         
       # Run Unit Tests
       - name: "Run unit tests"
         run: |
-          docker exec cmfive bash -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php tests unit all; exit \$?"
+          docker exec -u root cmfive chmod -R ugo=rwX /var/www/html/test/
+          docker exec -u cmfive cmfive sh -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php tests unit all; exit \$?"
           if [ $? -gt 0 ]; then
             echo "Admin module tests failed"
           fi
-        # Setup playwright
+      # Setup playwright
       - name: Setup Playwright
         run: |
-          cd test/playwright
+          echo "Installing Playwright"
+          cd boilerplate/test/playwright
           npm ci
           npx playwright install --with-deps
       # Run Acceptance Tests
       - name: "Confirm Codeception setup"
         run: |        
-          docker exec cmfive bash -c "ls -lah -R /var/www/html/test/Codeception/tests && cat /var/www/html/test/Codeception/*.yml && cat /var/www/html/test/Codeception/tests/*.yml"
+          docker exec cmfive sh -c "ls -lah -R /var/www/html/test/Codeception/tests && cat /var/www/html/test/Codeception/*.yml && cat /var/www/html/test/Codeception/tests/*.yml"
 
       - name: "Run admin module tests"
         run: |
-            sudo chmod 777 -R system/modules/admin/install/migrations/
-            cd test/playwright
+            docker exec -u root cmfive sh -c "chmod ugo=rwX -R /var/www/html/system/modules/admin/install/migrations/"
+            cd boilerplate/test/playwright
             npm run build
             npm run test --module="admin" --reporter="github"
             if [ $? -gt 0 ]; then
@@ -121,7 +233,7 @@ jobs:
             fi
       - name: "Run channel module tests"
         run: |
-            cd test/playwright
+            cd boilerplate/test/playwright
             npm run build
             npm run test --module="channel" --reporter="github"
             if [ $? -gt 0 ]; then
@@ -129,7 +241,7 @@ jobs:
             fi
       - name: "Run form module tests"
         run: |
-            cd test/playwright
+            cd boilerplate/test/playwright
             npm run build
             npm run test --module="form" --reporter="github"
             if [ $? -gt 0 ]; then
@@ -137,7 +249,7 @@ jobs:
             fi
       - name: "Run report module tests"
         run: |
-          cd test/playwright
+          cd boilerplate/test/playwright
           npm run build
           npm run test --module="report" --reporter="github"
           if [ $? -gt 0 ]; then
@@ -145,7 +257,7 @@ jobs:
           fi
       - name: "Run tag module tests"
         run: |
-            cd test/playwright
+            cd boilerplate/test/playwright
             npm run build
             npm run test --module="tag" --reporter="github"
             if [ $? -gt 0 ]; then
@@ -153,7 +265,7 @@ jobs:
             fi
       - name: "Run task module tests"
         run: |
-            cd test/playwright
+            cd boilerplate/test/playwright
             npm run build
             npm run test --module="task" --reporter="github"
             if [ $? -gt 0 ]; then
@@ -161,28 +273,37 @@ jobs:
             fi
       - name: "Run timelog module tests"
         run: |
-            cd test/playwright
+            cd boilerplate/test/playwright
             npm run build
             npm run test --module="timelog" --reporter="github"
             if [ $? -gt 0 ]; then
                 echo "Timelog module tests failed"
             fi
 
+      - name: Get container logs
+        if: failure()
+        run: |
+          docker logs cmfive
+
       - name: Stop containers
         # the containers should be stopped regardless of 
         # the test result
         if: always()
-        run: docker-compose down
+        run: |
+          docker rm cmfive -f
+          docker rm mysql-8 -f
+          docker network rm cmfive
 
       # Store Test Results
       - name: Test results
         if: ${{ failure() }} || ${{ success() }}
         uses: actions/upload-artifact@v4
         with:
-          name: test-output
+          name: test-output-${{matrix.node_version}}
           path: |
-            test/Codeception/tests/_output/
-            storage/log/
-            test/playwright/test-results/
-            test/playwright/playwright-report/
+            boilerplate/test/Codeception/tests/_output/
+            boilerplate/storage/log/
+            boilerplate/test/playwright/test-results/
+            boilerplate/test/playwright/playwright-report/
           retention-days: 5
+
