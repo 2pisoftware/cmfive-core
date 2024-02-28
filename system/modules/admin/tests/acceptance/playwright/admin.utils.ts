@@ -294,4 +294,24 @@ export class AdminHelper {
 
         return tabs[1];
     }
+
+    static async installDatabaseSeeds(page: Page, module: string){
+        //installs databse seeds if not installed
+        await CmfiveHelper.clickCmfiveNavbar(page, "Admin", "Migrations");
+        await page.getByRole('link', {name: 'Database Seeds'}).click();
+        const moduleTab = await page.locator(`#${module}-tab-seed`);
+
+        //collect number of buttons
+        await moduleTab.click()
+        const installButtons = await page.getByRole('button', {name: 'Install'});
+        const installButtonsCount = await installButtons.count();
+
+        //loop for number of buttons aka how many seeds to install
+        for (let i = 0; i < installButtonsCount; i++) {
+            await moduleTab.click()
+            //each time you click the button it takes one locator result off the page
+            await installButtons.first().click(); //this always resolves the first button
+            await page.waitForSelector('div.alert-success', {state: 'visible'});
+        }
+    }
 }
