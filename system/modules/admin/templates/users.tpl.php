@@ -1,13 +1,7 @@
 <div class="mb-3">
-    
-    <?php 
-<<<<<<< HEAD
-    echo Html::box($webroot . "/admin/useradd/box", "Add New User", true); 
-    echo Html::filter("Filter Users", $filterData, "/admin/users", "GET", "Filter", "users_filter");
-=======
+    <?php
     echo HtmlBootstrap5::box($webroot . "/admin/useradd/box", "Add New User", true, false, null, null, 'isbox', null, 'btn btn-sm btn-primary'); 
     echo HtmlBootstrap5::filter("Filter Users", $filterData, "/admin/users", "GET", "Filter", "users_filter");
->>>>>>> origin/develop
     ?>
 </div>
 <div class='tabs'>
