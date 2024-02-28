@@ -106,8 +106,9 @@ function edit_POST(Web $w)
 	$p = $w->pathMatch("id");
 	$t = $p["id"] ? TemplateService::getInstance($w)->getTemplate($p['id']) : new Template($w);
 	$t->fill($_POST);
-	$encoded_template_body = $_POST['template_body'] ?? '';
-	$t->template_body = json_decode($encoded_template_body);
+    if (array_key_exists('template_body', $_POST)) {
+        $t->template_body = json_decode($_POST['template_body']);
+    }
 
 	// Set is active if saving is originating from the first page
 	if (isset($_POST["title"]) && isset($_POST["module"]) && isset($_POST["category"])) {

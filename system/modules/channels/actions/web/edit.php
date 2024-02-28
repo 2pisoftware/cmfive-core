@@ -13,6 +13,9 @@ function edit_GET(Web $w)
     $form = $channel_object->getForm();
 
     $web_channel = $channel_id ? ChannelService::getInstance($w)->getWebChannel($channel_id) : new WebChannelOption($w);
+    if (empty($web_channel)) {
+        $web_channel = new WebChannelOption($w);
+    }
 
     $form["Web"] = [
         [
