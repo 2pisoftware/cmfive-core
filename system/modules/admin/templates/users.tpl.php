@@ -4,7 +4,7 @@
     echo HtmlBootstrap5::filter("Filter Users", $filterData, "/admin/users", "GET", "Filter", "users_filter");
     ?>
 </div>
-<div class='tabs'>
+<div class='tabs pt-4'>
     <div class='tab-head'>
         <a class='active' href='#internal'>Internal</a>
         <a href='#external'>External</a>
