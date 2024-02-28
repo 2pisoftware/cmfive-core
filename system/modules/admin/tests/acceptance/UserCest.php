@@ -9,6 +9,7 @@ class UserCest
 
     public function testUser($I)
     {
+        // NB Permissions are now assigned from the Permissions button - not when the User is initially created
         $I->wantTo('Verify users, groups & permissions are assignable');
         $I->login($I, 'admin', 'admin');
         $I->createUser(
@@ -17,8 +18,7 @@ class UserCest
             'password',
             $this->firstname,
             $this->lastname,
-            'Firstname@lastname.com',
-            ['user']
+            'Firstname@lastname.com'
         );
         $I->createLookupType($I, 'title', $this->lookupTitle, $this->lookupTitle);
         $I->editUser($I, $this->username, ['title' => $this->lookupTitle]);

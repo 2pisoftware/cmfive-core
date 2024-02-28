@@ -2,6 +2,8 @@
 
 function index_GET(Web $w)
 {
+    $w->setLayout('layout-bootstrap-5');
+
     $w->ctx('title', 'Cmfive Maintenance');
 
     // Get server name

@@ -30,7 +30,7 @@ function groupmember_GET(Web $w)
 
     $validation = ['member_id' => ['required']];
 
-    $w->out(Html::multiColForm($template, "/admin/groupmember/" . $option['group_id'], "POST", "Save", null, null, null, "_self", true, $validation));
+    $w->out(HtmlBootstrap5::multiColForm($template, "/admin/groupmember/" . $option['group_id'], "POST", "Save", null, null, null, "_self", true, $validation));
 
     $w->setLayout(null);
 }
@@ -77,6 +77,6 @@ function groupmember_POST(Web $w)
     if (!empty($exceptions)) {
         $w->error(implode(", ", $exceptions) . " can not be added!", "/admin/moreInfo/" . $group_id);
     } else {
-        $w->msg("New members are added!", "/admin/moreInfo/" . $group_id);
+        $w->msg("New member added", "/admin/moreInfo/" . $group_id);
     }
 }

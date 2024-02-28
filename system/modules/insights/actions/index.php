@@ -1,8 +1,10 @@
 <?php
+
 /**@author Alice Hutley <alice@2pisoftware.com> */
 
 function index_ALL(Web $w)
 {
+    $w->setLayout('layout-bootstrap-5');
     // $w->setLayout('layout-2021');
     $w->ctx("title", "Insights List");
 
@@ -21,30 +23,32 @@ function index_ALL(Web $w)
             if (!empty($insights)) {
                 foreach ($insights as $insight) {
                     $userHasAccess = false;
-                    if (InsightService::getInstance($w)->IsMember(get_class($insight), $user_id)) {
+                    $userHasAccess = false;
+                    if (InsightService::getInstance($w)->IsMember(Get_class($insight), $user_id)) {
                         $userHasAccess = true;
                     } else {
                         // check if this user is a member of a group (or parent group) with access to this insight report
-                        $allMembers = InsightService::getInstance($w)->getAllMembersForInsightClass(get_class($insight));
+                        $allMembers = InsightService::getInstance($w)->getAllMembersForInsightClass(Get_class($insight));
                         foreach ($allMembers as $member) {
                             $userHasAccess = InsightService::getInstance($w)->checkUserAccess($w, $member->user_id, $user_id);  // $member->user_id may be a user or a group
                             if ($userHasAccess) {
                                 break;
-                            };
+                            }
                         }
                     }
                     if ($userHasAccess) {
                         $row = [];
                         // add values to the row in the same order as the table headers
-                        $row[] = Html::a('/insights/viewInsight/' . get_class($insight), $insight->name);
+                        $row[] = HtmlBootstrap5::a('/insights/viewInsight/' . Get_class($insight), $insight->name);
                         $row[] = $modulename;
                         $row[] = $insight->description;
                         // the actions column is used to hold buttons that link to actions per insight. Note the insight id is added to the href on these buttons.
                         $actions = [];
-                        $actions[] = Html::b('/insights/viewInsight/' . get_class($insight), 'View');
+                        $button_group = HtmlBootstrap5::b("/insights/viewInsight/" . Get_class($insight), "View", null, "viewbutton", false, 'btn-sm btn-primary');
                         if (InsightService::getInstance($w)->isInsightOwner($user_id, get_class($insight))) {
-                            $actions[] = Html::b('/insights/manageMembers?insight_class=' . get_class($insight), 'Manage Members');
+                            $button_group .= HtmlBootstrap5::b("/insights/manageMembers?insight_class=" . Get_class($insight), "Manage Members", null, " viewbutton", false, "btn-sm btn-secondary");
                         }
+                        $actions[] =  HtmlBootstrap5::buttonGroup($button_group);
                         $row[] = implode('', $actions);
                         $table[] = $row;
                     }
@@ -54,5 +58,5 @@ function index_ALL(Web $w)
     }
 
     //send the table to the template using ctx
-    $w->ctx('insightTable', Html::table($table, 'insight_table', 'tablesorter', $tableHeaders));
+    $w->ctx('insightTable', HtmlBootstrap5::table($table, 'insight_table', 'tablesorter', $tableHeaders));
 }
