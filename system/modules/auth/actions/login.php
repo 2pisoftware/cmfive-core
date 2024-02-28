@@ -16,9 +16,6 @@ function login_GET(Web $w)
 
     $w->ctx("loginform", $loginform);
     $w->ctx("passwordHelp", Config::get('auth.access_hint', 'Forgot Password?'));
-
-    $w->enqueueScript(["name" => "vue.js", "uri" => "/system/templates/js/vue.js", "weight" => 2000]);
-    CmfiveScriptComponentRegister::registerComponent("AxiosJS", new CmfiveScriptComponent("/system/templates/js/axios.min.js"));
 }
 
 function login_POST(Web $w)
@@ -40,19 +37,19 @@ function login_POST(Web $w)
 
     $user = AuthService::getInstance($w)->getUserForLogin($login);
     if (empty($user)) {
-        $w->out((new AxiosResponse())->setErrorResponse("Incorrect login details", "Incorrect login details"));
+        $w->out((new JsonResponse())->setErrorResponse("Incorrect login details", "Incorrect login details"));
         return;
     }
 
     if (Config::get('auth.login.attempts.track_attempts', false) == true) {
         if ($user->is_locked == 1) {
-            $w->out((new AxiosResponse())->setErrorResponse("This account is locked, most likely due to too many login attempts. Please contact an Administrator to get your account unlocked", "This account is locked, most likely due to too many login attempts. Please contact an Administrator to get your account unlocked"));
+            $w->out((new JsonResponse())->setErrorResponse("This account is locked, most likely due to too many login attempts. Please contact an Administrator to get your account unlocked", "This account is locked, most likely due to too many login attempts. Please contact an Administrator to get your account unlocked"));
             return;
         }
     }
 
     if ($user->is_mfa_enabled && empty($mfa_code)) {
-        $w->out((new AxiosResponse())->setSuccessfulResponse(null, ["is_mfa_enabled" => true]));
+        $w->out((new JsonResponse())->setSuccessfulResponse(null, ["is_mfa_enabled" => true]));
         return;
     }
 
@@ -61,12 +58,12 @@ function login_POST(Web $w)
         if (Config::get('auth.login.attempts.track_attempts', false) === true) {
             AuthService::getInstance($w)->recordLoginAttempt($login);
         }
-        $w->out((new AxiosResponse())->setErrorResponse("Incorrect login details", "Incorrect login details"));
+        $w->out((new JsonResponse())->setErrorResponse("Incorrect login details", "Incorrect login details"));
         return;
     }
 
     $user->resetAttempts();
-    
+
     if ($w->session('orig_path') != "auth/login") {
         $url = $w->session('orig_path');
         LogService::getInstance($w)->debug("Original path: " . $url);
@@ -76,8 +73,8 @@ function login_POST(Web $w)
             $url = $user->redirect_url;
         }
         $w->sessionUnset('orig_path');
-        $w->out((new AxiosResponse())->setSuccessfulResponse(null, ["redirect_url" => $w->localUrl($url)]));
+        $w->out((new JsonResponse())->setSuccessfulResponse(null, ["redirect_url" => $w->localUrl($url)]));
     } else {
-        $w->out((new AxiosResponse())->setSuccessfulResponse(null, ["redirect_url" => !empty($user->redirect_url) ? $w->localUrl($user->redirect_url) : $w->localUrl()]));
+        $w->out((new JsonResponse())->setSuccessfulResponse(null, ["redirect_url" => !empty($user->redirect_url) ? $w->localUrl($user->redirect_url) : $w->localUrl()]));
     }
 }
