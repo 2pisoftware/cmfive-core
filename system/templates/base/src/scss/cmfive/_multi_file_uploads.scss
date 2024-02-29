@@ -61,3 +61,15 @@
         }
     }
 }
+
+/** Secondary theme colour text for the multi-upload size */
+.multi-upload-total-size {
+    color: #6c757d;
+}
+
+.multi-upload-item-size {
+    color: #6c757d;
+    padding: 1rem;
+    display: inline-block;
+    min-width: 16ch;
+}
