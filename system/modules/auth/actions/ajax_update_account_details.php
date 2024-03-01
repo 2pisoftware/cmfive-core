@@ -6,13 +6,13 @@ function ajax_update_account_details_POST(Web $w)
 
     $request_data = json_decode(file_get_contents("php://input"), true);
     if (empty($request_data)) {
-        $w->out((new AxiosResponse())->setErrorResponse("Request data missing", null));
+        $w->out((new JsonResponse())->setErrorResponse("Request data missing", null));
         return;
     }
 
     $user = AuthService::getInstance($w)->getUser($request_data["id"]);
     if (empty($user)) {
-        $w->out((new AxiosResponse())->setErrorResponse("Unable to find user", null));
+        $w->out((new JsonResponse())->setErrorResponse("Unable to find user", null));
         return;
     }
 
@@ -21,13 +21,13 @@ function ajax_update_account_details_POST(Web $w)
     }
 
     if (!$user->insertOrUpdate()) {
-        $w->out((new AxiosResponse())->setErrorResponse("Failed to update details", null));
+        $w->out((new JsonResponse())->setErrorResponse("Failed to update details", null));
         return;
     }
 
     $contact = $user->getContact();
     if (empty($contact)) {
-        $w->out((new AxiosResponse())->setErrorResponse("Unable to find user", null));
+        $w->out((new JsonResponse())->setErrorResponse("Unable to find user", null));
         return;
     }
 
@@ -35,9 +35,9 @@ function ajax_update_account_details_POST(Web $w)
     $contact->setTitle($request_data["account_details"]["title"]);
 
     if (!$contact->insertOrUpdate()) {
-        $w->out((new AxiosResponse())->setErrorResponse("Failed to update details", null));
+        $w->out((new JsonResponse())->setErrorResponse("Failed to update details", null));
         return;
     }
 
-    $w->out((new AxiosResponse())->setSuccessfulResponse("User details updated", null));
+    $w->out((new JsonResponse())->setSuccessfulResponse("User details updated", null));
 }
