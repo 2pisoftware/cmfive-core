@@ -55,7 +55,10 @@
             <h3 class="mt-4 mb-0">Role Cleanup</h3>
             <p>Found <?php echo count($unused_roles); ?> unused role<?php echo count($unused_roles) == 1 ? '' : 's'; ?></p>
             <?php if ($unused_roles) : ?>
-                <?php echo HtmlBootstrap5::b('/admin-maintenance/purgeunusedroles', "Purge unused roles", null, null, true, 'm-0 mb-3 btn btn-sm btn-primary'); ?>
+                <?php echo HtmlBootstrap5::b(
+                    href: '/admin-maintenance/purgeunusedroles',
+                    title: "Purge unused roles",
+                    class: 'm-0 mb-3 btn btn-sm btn-primary'); ?>
                 <table class="tablesorter">
                     <thead>
                         <tr>

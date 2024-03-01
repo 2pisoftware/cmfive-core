@@ -299,6 +299,19 @@ class AuthService extends DbService
         return null;
     }
 
+    public function getRole($id)
+    {
+        return $this->getObject("UserRole", $id);
+    }
+
+    public function getUnusedRoles()
+    {
+        $roles = AuthService::getInstance($this->w)->getAllRoles();
+        $unused_roles = $this->w->db->get('user_role')->where('role NOT', $roles)->fetchAll();
+
+        return array_map(fn ($role) => ["id" => $role['id'], "role" => $role['role'], "user" => AuthService::getInstance($this->w)->getUser($role['user_id'])->getFullName()], $unused_roles ?? []);
+    }
+
     /**
      *
      * checks if the CURRENT user has this role
