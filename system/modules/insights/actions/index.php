@@ -30,26 +30,25 @@ function index_ALL(Web $w)
                         // check if this user is a member of a group (or parent group) with access to this insight report
                         $allMembers = InsightService::getInstance($w)->getAllMembersForInsightClass($insight_class);
                         foreach ($allMembers as $member) {
-                            $userHasAccess = InsightService::getInstance($w)->checkUserAccess($w, $member->user_id, $user_id);  // $member->user_id may be a user or a group
+                            $userHasAccess = InsightService::getInstance($w)->checkUserAccess($member->user_id, $user_id);  // $member->user_id may be a user or a group
                             if ($userHasAccess) {
                                 break;
-                            };
+                            }
                         }
                     }
                     if ($userHasAccess) {
-                        $row = [];
                         // add values to the row in the same order as the table headers
-                        $row[] = HtmlBootstrap5::a('/insights/viewInsight/' . $insight_class, $insight->name);
-                        $row[] = $modulename;
-                        $row[] = $insight->description;
+                        $row = [
+                            HtmlBootstrap5::a('/insights/viewInsight/' . $insight_class, $insight->name),
+                            $modulename,
+                            $insight->description
+                        ];
                         // the actions column is used to hold buttons that link to actions per insight. Note the insight id is added to the href on these buttons.
-                        $actions = [];
                         $button_group = HtmlBootstrap5::b("/insights/viewInsight/" . $insight_class, "View", null, "viewbutton", false, 'btn-sm btn-primary');
                         if (InsightService::getInstance($w)->isInsightOwner($user_id, $insight_class)) {
                             $button_group .= HtmlBootstrap5::b("/insights/manageMembers?insight_class=" . $insight_class, "Manage Members", null, " viewbutton", false, "btn-sm btn-secondary");
                         }
-                        $actions[] =  HtmlBootstrap5::buttonGroup($button_group);
-                        $row[] = implode('', $actions);
+                        $row[] = HtmlBootstrap5::buttonGroup($button_group);
                         $table[] = $row;
                     }
                 }

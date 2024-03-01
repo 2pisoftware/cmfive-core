@@ -135,7 +135,7 @@ class InsightService extends DbService
     //retrieve a specific member matching the id given number
     public function GetMemberForId($id)
     {
-        return $this->GetObject('InsightMembers', $id);
+        return $this->getObject('InsightMembers', $id);
     }
 
     public function getInsightInstance(string $insight_class)
@@ -160,8 +160,7 @@ class InsightService extends DbService
     public function date2db($date)
     {
         if ($date) {
-            $formatteddate = formatDate($date, 'Y-m-d');
-            return $formatteddate;
+            return formatDate($date, 'Y-m-d');
         }
     }
 
@@ -271,7 +270,7 @@ class InsightService extends DbService
                     }
                 }
                 if (!empty($report_template_id) && !empty($templatedata)) {
-                    $results = $this->w->Template->render(
+                    $results = TemplateService::getInstance($this->w)->render(
                         $report_template_id,
                         ["data" => $templatedata, "w" => $this->w, "POST" => $_POST]
                     );

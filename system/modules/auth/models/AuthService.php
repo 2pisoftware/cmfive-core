@@ -507,15 +507,14 @@ class AuthService extends DbService
         $rows = $this->_db->get("user")->where(['is_active' => 1, 'is_deleted' => 0, 'is_group' => 1])->fetchAll();
 
         if ($rows) {
-            $objects = $this->fillObjects("User", $rows);
-
-            return $objects;
+            return $this->fillObjects("User", $rows);
         }
         return null;
     }
 
     public function getGroupMembers($group_id = null, $user_id = null)
     {
+        $option = [];
         if ($group_id) {
             $option['group_id'] = $group_id;
         }
@@ -524,22 +523,12 @@ class AuthService extends DbService
             $option['user_id'] = $user_id;
         }
 
-        $groupMembers = $this->getObjects("GroupUser", $option, true);
-
-        if ($groupMembers) {
-            return $groupMembers;
-        }
-        return null;
+        return $this->getObjects("GroupUser", $option, true);
     }
 
     public function getGroupMemberById($id)
     {
-        $groupMember = $this->getObject("GroupUser", $id);
-
-        if ($groupMember) {
-            return $groupMember;
-        }
-        return null;
+        return $this->getObject("GroupUser", $id);
     }
 
     public function getRoleForLoginUser($group_id, $user_id)
