@@ -2,7 +2,9 @@
 import { AlertAdaptation, DropdownAdaptation, FavouritesAdaptation, TabAdaptation, TableAdaptation } from './adaptations';
 import { QuillEditor, InputWithOther, MultiFileUpload, MultiSelect, Overlay, CodeMirror } from './components';
 
-import { Modal, Tooltip } from 'bootstrap';
+import { Modal, Toast, Tooltip } from 'bootstrap';
+
+type window = Window & typeof globalThis & { cmfiveEventBus: Comment, cmfive: { toast: typeof Toast } };
 
 class Cmfive {
     static THEME_KEY = 'theme';
@@ -126,6 +128,10 @@ class Cmfive {
                 console.log("DOM EVENT", event); // => detail-data
                 Cmfive.ready(event.detail);
             });
+        }
+
+        (window as window).cmfive = {
+            toast: require('./components/Toast').Toast
         }
 
         // Add offset for breadcrumb if scrollbar is visible

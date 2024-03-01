@@ -36,7 +36,16 @@ export class TimelogHelper  {
             await page.getByRole("link", {name: taskName, exact: true}).click();
         }
 
-        await CmfiveHelper.clickCmfiveNavbar(page, "Timelog", "Add Timelog");
+        // manually adding navigation due to Add timelog not being a link
+        const navbarCategory = page.locator("#topnav_timelog");
+        const bootstrap5 = await CmfiveHelper.isBootstrap5(page);
+        if (bootstrap5) {
+            await navbarCategory.click();
+        } else { // Foundation
+            await navbarCategory.hover();
+        }
+
+        await navbarCategory.getByText('Add Timelog').click();
         await page.waitForSelector("#cmfive-modal", {state: "visible"});
 
         await CmfiveHelper.fillDatePicker(page, "Date Required", "date_start", date);

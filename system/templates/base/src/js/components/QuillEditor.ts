@@ -1,6 +1,7 @@
 // js/components/QuillEditor.ts
 
-import Quill from 'quill';
+import * as quill from 'quill';
+const Quill = quill.default || quill;
 
 export class QuillEditor {
     private static quillTarget = '.quill-editor';

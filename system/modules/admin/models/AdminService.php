@@ -189,22 +189,37 @@ class AdminService extends DbService
     public function navigation(Web $w, $title = null, $prenav = null)
     {
         if ($title) {
-            $w->ctx("title", $title);
+            $w->ctx('title', $title);
         }
 
         $nav = $prenav ? $prenav : [];
         if (AuthService::getInstance($w)->loggedIn()) {
-            $w->menuLink("admin/index", "Admin Dashboard", $nav);
-            $w->menuLink("admin/users", "List Users", $nav);
-            $w->menuLink("admin/groups", "List Groups", $nav);
+            $w->menuLink('admin/index', 'Admin Dashboard', $nav);
+            $w->menuLink('admin/users', 'List Users', $nav);
+            $w->menuLink('admin/groups', 'List Groups', $nav);
             $w->menuLink('admin-maintenance', 'Maintenance', $nav);
-            $w->menuLink("admin/lookup", "Lookup", $nav);
-            $w->menuLink("admin-templates", "Templates", $nav);
-            // $w->menuLink("admin/composer", "Update composer.json", $nav, null, "_blank");
-            $w->menuLink("admin-migration", "Migrations", $nav);
+            $w->menuLink('admin/lookup', 'Lookup', $nav);
+            $w->menuLink('admin-templates', 'Templates', $nav);
+            $w->menuLink('admin-migration', 'Migrations', $nav);
         }
 
         $w->ctx("navigation", $nav);
         return $nav;
+    }
+
+    /**
+     * @return MenuLinkStruct[]
+     */
+    public function navList(): array
+    {
+        return [
+            new MenuLinkStruct('Admin Dashboard', 'admin/index'),
+            new MenuLinkStruct('List Users', 'admin/users'),
+            new MenuLinkStruct('List Groups', 'admin/groups'),
+            new MenuLinkStruct('Maintenance', 'admin-maintenance'),
+            new MenuLinkStruct('Lookup', 'admin/lookup'),
+            new MenuLinkStruct('Templates', 'admin-templates'),
+            new MenuLinkStruct('Migrations', 'admin-migration'),
+        ];
     }
 }

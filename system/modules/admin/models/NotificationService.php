@@ -3,7 +3,6 @@
 class NotificationService extends DbService
 {
     const TYPE_EMAIL = 'email';
-    const TYPE_INBOX = 'inbox';
 
     /**
      * Sends a notification to a user
@@ -36,12 +35,6 @@ class NotificationService extends DbService
             $output = TemplateService::getInstance($this->w)->render($template, $template_data);
 
             switch ($method) {
-                case NotificationService::TYPE_INBOX:
-                    if (Config::get('inbox.active') === true) {
-                        InboxService::getInstance($this->w)->addMessage($subject, $output, $recipient_user->id, null, null, false);
-                    }
-                    break;
-
                 case NotificationService::TYPE_EMAIL:
                 default:
                     MailService::getInstance($this->w)->sendMail(
@@ -126,8 +119,7 @@ class NotificationService extends DbService
     public function getAvailableNotificationMethods()
     {
         return [
-            NotificationService::TYPE_EMAIL,
-            NotificationService::TYPE_INBOX
+            NotificationService::TYPE_EMAIL
         ];
     }
 }

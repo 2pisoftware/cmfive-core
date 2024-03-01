@@ -1104,4 +1104,16 @@ class TaskService extends DbService
         $w->ctx("navigation", $nav);
         return $nav;
     }
+
+    public function navList(): array
+    {
+        return [
+            new MenuLinkStruct("Task Dashboard", "task/index"),
+            new MenuLinkStruct("New Task", "task/edit"),
+            new MenuLinkStruct("Task List", "task/tasklist"),
+            new MenuLinkStruct("Notifications", "task/notifications"),
+            new MenuLinkStruct("Activity", "task/taskweek"),
+            new MenuLinkStruct("Task Groups", "task-group/viewtaskgrouptypes"),
+        ];
+    }
 }
