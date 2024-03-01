@@ -22,9 +22,8 @@ function editMembers_GET(Web &$w)
     $insight = InsightService::getInstance($w)->getInsightInstance($insight_class_name);
     $w->ctx('title', (!empty($p['id']) ? 'Edit member' : 'Add new member') . " for $insight->name");
 
-
-    // get the list of users that can be added to the insight
-    $userstoadd = array_filter(AuthService::getInstance($w)->getUsers(), function ($u) {
+    // get the list of users and/or groups that can be added to the insight
+    $userstoadd = array_filter(AuthService::getInstance($w)->getUsersAndGroups(), function ($u) {
         return $u->hasAnyRole(['insights_user', 'insights_admin']);
     });
     $members = $insight->getMembers($w);

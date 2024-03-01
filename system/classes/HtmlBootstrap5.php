@@ -31,6 +31,23 @@ class HtmlBootstrap5 extends Html
         return '<div class="btn-group btn-group-sm" role="group">' . $content . '</div>';
     }
 
+    public static function dropdownButton($title, $contents, $class)
+    {
+        $content = '';
+        foreach ($contents as $item) {
+            $content .= '<li>' . $item . '</li>';
+        }
+
+        return '<div class="dropdown">
+            <button class="' . $class . ' dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">'
+            . $title .
+            '</button>
+            <ul class="dropdown-menu">'
+            . $content .
+            '</ul>
+        </div>';
+    }
+
     /**
      * Creates a complex form where each section can have
      * a different number of columns.
@@ -126,8 +143,8 @@ class HtmlBootstrap5 extends Html
                                 break;
                         }
                         if ((property_exists($field, "type") && $field->type !== "hidden") || !property_exists($field, "type")) {
-                            $buffer .= '<div class="col"><label class="' . $label_class . '"' . (property_exists($field, 'id') && !empty($field->id) ? ' for="' . $field->id . '"' : '' ) . '>' . $field->label . ($field->required ? " <small>Required</small>" : "") . "</label>"
-                            . $field->__toString() . '</div>';
+                            $buffer .= '<div class="col"><label class="' . $label_class . '"' . (property_exists($field, 'id') && !empty($field->id) ? ' for="' . $field->id . '"' : '') . '>' . $field->label . ($field->required ? " <small>Required</small>" : "") . "</label>"
+                                . $field->__toString() . '</div>';
                         } else {
                             $buffer .= $field->__toString();
                         }
@@ -173,8 +190,8 @@ class HtmlBootstrap5 extends Html
                         case "email":
                         case "tel":
                             $size = !empty($field[4]) ? $field[4] : null;
-                            $buffer .= '<input' . $readonly . ' class="form-control" type="' . $type . '" name="' . $name . '" value="' . htmlspecialchars($value) .
-                            '" size="' . $size . '" id="' . $name . '" ' . $required . " />";
+                            $buffer .= '<input' . $readonly . ' class="form-control" type="' . $type . '" name="' . $name . '" value="' . (empty($value) ? '' : htmlspecialchars($value)) .
+                                '" size="' . $size . '" id="' . $name . '" ' . $required . " />";
                             break;
                         case "autocomplete":
                             $options = !empty($field[4]) ? $field[4] : null;
@@ -205,8 +222,8 @@ class HtmlBootstrap5 extends Html
                                 $custom_class = $field[6];
                             }
                             $buffer .= '<textarea' . $readonly . ' class="form-control" style="width:100%; height: auto; " name="' . $name . '" rows="' . $r . '" cols="' . $c .
-                            '" ' . (!empty($custom_class) ? ($custom_class === true ? "class='ckeditor'" : "class='$custom_class' ") : '') . ' id="' . $name
-                            . '" ' . $required . '>' . $value . '</textarea>';
+                                '" ' . (!empty($custom_class) ? ($custom_class === true ? "class='ckeditor'" : "class='$custom_class' ") : '') . ' id="' . $name
+                                . '" ' . $required . '>' . $value . '</textarea>';
                             break;
                         case "select":
                             $items = !empty($field[4]) ? $field[4] : null;
@@ -235,7 +252,7 @@ class HtmlBootstrap5 extends Html
                             $buffer .= Html::radio($name, $group, $value, $defaultValue, $rd_class) . "&nbsp;" . htmlentities($title);
                             break;
                         case "hidden":
-                            $buffer .= '<input type="hidden" name="' . $name . '" value="' . htmlspecialchars($value) . '" id="' . $name . '"/>';
+                            $buffer .= '<input type="hidden" name="' . $name . '" value="' . (empty($value) ? '' : htmlspecialchars($value)) . '" id="' . $name . '"/>';
                             break;
                         case "file":
                             $size = !empty($row[4]) ? $row[4] : null;
@@ -284,7 +301,7 @@ class HtmlBootstrap5 extends Html
         $buffer = "";
 
         // Opening tags
-        $buffer .= "<table class='{$class} d-none d-md-block'>";
+        $buffer .= "<table class='{$class} d-none d-md-table'>";
         if (!empty($header)) {
             $buffer .= "<thead><tr>";
             if (is_array($header)) {
@@ -626,7 +643,7 @@ class HtmlBootstrap5 extends Html
             switch ($type) {
                 case "text":
                 case "password":
-                    $buffer .= '<input' . $readonly . ' style="width:100%;"  type="' . $type . '" name="' . $name . '" value="' . htmlspecialchars($value) . '" size="' . (!empty($row[4]) ? $row[4] : null) . '" id="' . $name . '"/>';
+                    $buffer .= '<input' . $readonly . ' style="width:100%;"  type="' . $type . '" name="' . $name . '" value="' . (empty($value) ? '' : htmlspecialchars($value)) . '" size="' . (!empty($row[4]) ? $row[4] : null) . '" id="' . $name . '"/>';
                     break;
                 case "autocomplete":
                     $minlength = !empty($row[5]) ? $row[5] : null;
@@ -683,7 +700,7 @@ class HtmlBootstrap5 extends Html
                     $buffer .= Html::radio($name, $group, $value, $defaultValue, $class) . "&nbsp;" . htmlentities($title);
                     break;
                 case "hidden":
-                    $hidden .= "<input type=\"hidden\" name=\"" . $name . "\" value=\"" . htmlspecialchars($value) . "\"/>\n";
+                    $hidden .= "<input type=\"hidden\" name=\"" . $name . "\" value=\"" . (empty($value) ? '' : htmlspecialchars($value)) . "\"/>\n";
                     break;
                 case "file":
                     $buffer .= "<input style=\"width:100%;\" type=\"" . $type . "\" name=\"" . $name . "\" size=\"" . $size . "\" id=\"" . $name . "\"/>";
@@ -695,8 +712,10 @@ class HtmlBootstrap5 extends Html
 
         // This is only true when the filter has one element and its a select field
         if ($should_autosubmit) {
-            $buffer .= "<script>$('form" . ($id ? "#" . $id : "") . ' select\').change(function(){this.form.submit()});</script>';
+            $selector = $id ? "form#" . $id . " select" : "form select";
+            $buffer .= "<script>document.querySelectorAll('" . $selector . "').forEach(function(select) { select.addEventListener('change', function() { this.form.submit(); }); });</script>";
         }
+
         // Filter button (optional... though optional is pointless)
         if (!empty($action)) {
             $button = new \Html\button();
@@ -712,7 +731,7 @@ class HtmlBootstrap5 extends Html
 
             $buffer .= "</div></label></li>";
         }
-        
+
         $buffer .= "</ul>"; // </div>
         $buffer .= "\n</fieldset>\n";
         $buffer .= $hidden . "</form>\n";
@@ -757,7 +776,7 @@ class HtmlBootstrap5 extends Html
      * @param string $class
      * @return string
      */
-    public static function alertBox($msg, $type = "alert-info", $include_close = true) : string
+    public static function alertBox($msg, $type = "alert-info", $include_close = true): string
     {
         if ($type !== "alert-info" && $type !== "alert-warning" && $type !== "alert-danger" && $type !== "alert-success") {
             $type = "alert-info";

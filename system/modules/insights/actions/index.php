@@ -1,4 +1,5 @@
 <?php
+
 /**@author Alice Hutley <alice@2pisoftware.com> */
 
 function index_ALL(Web $w)
@@ -13,7 +14,7 @@ function index_ALL(Web $w)
     // access service functions using the Web $w object and the module name
     $modules = InsightService::getInstance($w)->getAllInsights('all');
 
-    //Display a list of all the insights this user can see
+    // Display a list of all the insights this user can see
     // build the table array adding the headers and the row data
     $table = [];
     $tableHeaders = ['Name', 'Module', 'Description', 'Actions'];
@@ -21,6 +22,8 @@ function index_ALL(Web $w)
         foreach ($modules as $modulename => $insights) {
             if (!empty($insights)) {
                 foreach ($insights as $insight) {
+                    $userHasAccess = false;
+                    $userHasAccess = false;
                     $userHasAccess = false;
                     if (InsightService::getInstance($w)->IsMember(Get_class($insight), $user_id)) {
                         $userHasAccess = true;
@@ -57,22 +60,4 @@ function index_ALL(Web $w)
 
     //send the table to the template using ctx
     $w->ctx('insightTable', HtmlBootstrap5::table($table, 'insight_table', 'tablesorter', $tableHeaders));
-}
-
-// Function to recursively check if a user is a member of a group (or parent group)
-function checkUserAccess(Web $w, $group, $user_id): bool
-{
-    $groupMembers = AuthService::getInstance($w)->getGroupMembers($group);
-    if (!empty($groupMembers)) {
-        foreach ($groupMembers as $groupMember) {
-            if ($groupMember->user_id === $user_id) {
-                return true;
-            } elseif (AuthService::getInstance($w)->getUser($groupMember->user_id)->is_group) {
-                if (checkUserAccess($w, $groupMember->user_id, $user_id)) {
-                    return true;
-                }
-            }
-        }
-    }
-    return false;
 }

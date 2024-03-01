@@ -76,6 +76,14 @@ class DbService
     }
 
     /**
+     * @return MenuLinkType[]
+     */
+    public function navList(): array
+    {
+        return [];
+    }
+
+    /**
      * Formats a timestamp
      * per default MySQL datetime format is used
      *
