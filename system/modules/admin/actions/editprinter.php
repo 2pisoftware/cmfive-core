@@ -16,7 +16,7 @@ function editprinter_GET(Web $w)
         ]
     ];
 
-    $w->out(Html::multiColForm($form, "/admin/editprinter/{$p['id']}", "POST", "Save", null, null, null, "_self", true, Printer::$_validation));
+    $w->out(HtmlBootstrap5::multiColForm($form, "/admin/editprinter/{$p['id']}", "POST", "Save", null, null, null, "_self", true, Printer::$_validation));
 }
 
 function editprinter_POST(Web $w)

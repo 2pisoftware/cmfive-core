@@ -1,5 +1,7 @@
 <?php
 
+use Html\Form\Select;
+
 /**
  * Provide form by which to add members to an insight
  *
@@ -35,22 +37,33 @@ function editMembers_GET(Web &$w)
             }
         }
     }
-
+    
     $addMemberForm = [["", "hidden", "insight_class_name", $insight_class_name]];
 
     if (empty($p['id'])) {
-        $addMemberForm[] = ["Add Member", "select", "user_id", null, $users];
+        $addMemberForm[] = (new Select([
+                    'id|name' => 'user_id',
+                    'label' => 'Add Member',
+                    'options' => $users,
+                    'required' => true,
+                ]));
     } else {
         $user = AuthService::getInstance($w)->getUser($member->user_id);
         $addMemberForm[] = ["Add Member", "text", "-user_id", $user->is_group ?  $user->login : $user->getContact()->getFullName()];
     }
-    $addMemberForm[] =  ["With Role", "select", "type", $member->type, InsightService::getInstance($w)->getInsightPermissions()];
+    $addMemberForm[] = (new Select([
+        'id|name' => 'type',
+        'label' => 'With Role',
+        'selected_option' => $member->type,
+        'options' => InsightService::getInstance($w)->getInsightPermissions(),
+        'required' => true,
+    ]));;
 
-    //if we are editing an existing meber we need to send the id to the post method
+    //if we are editing an existing member we need to send the id to the post method
     $postUrl = '/insights-members/editMembers/' . (!empty($member->id) ? $member->id : '');
 
     // sending the form to the 'out' function bypasses the template.
-    $w->out(Html::multiColForm([(empty($p['id']) ? "Add new member" : "Edit member") . " for $insight->name" => [$addMemberForm]], $postUrl));
+    $w->out(HtmlBootstrap5::multiColForm([(empty($p['id']) ? "Add new member" : "Edit member") . " for $insight->name" => [$addMemberForm]], $postUrl));
 }
 
 function editMembers_POST(Web $w)

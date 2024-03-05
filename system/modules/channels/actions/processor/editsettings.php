@@ -22,7 +22,7 @@ function editsettings_GET(Web $w)
         $form = $class->getSettingsForm($processor->settings, $w);
 
         if (!empty($form)) {
-            $w->out(Html::multiColForm($form, "/channels-processor/editsettings/{$processor->id}"));
+            $w->out(HtmlBootstrap5::multiColForm($form, "/channels-processor/editsettings/{$processor->id}"));
         } else {
             $w->error("Form implementation is empty", "/channels/listprocessors");
         }

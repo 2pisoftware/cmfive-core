@@ -1,8 +1,10 @@
 <?php
+
 /**@author Alice Hutley <alice@2pisoftware.com> */
 
 function index_ALL(Web $w)
 {
+    $w->setLayout('layout-bootstrap-5');
     // $w->setLayout('layout-2021');
     $w->ctx("title", "Insights List");
 
@@ -28,7 +30,7 @@ function index_ALL(Web $w)
                         // check if this user is a member of a group (or parent group) with access to this insight report
                         $allMembers = InsightService::getInstance($w)->getAllMembersForInsightClass($insight_class);
                         foreach ($allMembers as $member) {
-                            $userHasAccess = InsightService::getInstance($w)->checkUserAccess($member->user_id, $user_id);  // $member->user_id may be a user or a group
+                            $userHasAccess = AuthService::getInstance($w)->isUserGroupMemberRecursive($member->user_id, $user_id);  // $member->user_id may be a user or a group
                             if ($userHasAccess) {
                                 break;
                             };
@@ -46,6 +48,7 @@ function index_ALL(Web $w)
                         if (InsightService::getInstance($w)->isInsightOwner($user_id, $insight_class)) {
                             $actions[] = Html::b('/insights/manageMembers?insight_class=' . $insight_class, 'Manage Members');
                         }
+                        $actions[] =  HtmlBootstrap5::buttonGroup($button_group);
                         $row[] = implode('', $actions);
                         $table[] = $row;
                     }
@@ -55,5 +58,5 @@ function index_ALL(Web $w)
     }
 
     //send the table to the template using ctx
-    $w->ctx('insightTable', Html::table($table, 'insight_table', 'tablesorter', $tableHeaders));
+    $w->ctx('insightTable', HtmlBootstrap5::table($table, 'insight_table', 'tablesorter', $tableHeaders));
 }

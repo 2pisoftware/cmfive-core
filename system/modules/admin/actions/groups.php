@@ -7,6 +7,7 @@
  */
 function groups_GET(Web &$w)
 {
+    $w->setLayout('layout-bootstrap-5');
     AdminService::getInstance($w)->navigation($w, "Groups");
 
     $table = [["Title", "Parent Groups", "Operations", "sort_key" => null]];

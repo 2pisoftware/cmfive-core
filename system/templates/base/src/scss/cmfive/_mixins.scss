@@ -126,3 +126,14 @@
         @include theme((background-color: 'dark-grey', color: 'white-black'));
     }
 }
+
+@mixin center-nth-column($n) {
+    tr {
+        th:nth-of-type(#{$n}),
+        td:nth-of-type(#{$n}) {
+            display: flex;
+            justify-content: center;
+            text-align: center;
+        }
+    }
+}
