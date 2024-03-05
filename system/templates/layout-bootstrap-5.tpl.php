@@ -214,7 +214,7 @@ $theme_setting = AuthService::getInstance($w)->getSettingByKey('bs5-theme');
             </div>
             <div id="menu-overlay" data-toggle-menu="close"></div>
         </div>
-        <div class="container-xl" id="body-content">
+        <div class="container-fluid" id="body-content">
             <?php
             if (!empty($error)) {
                 echo HtmlBootstrap5::alertBox($error, "alert-warning");

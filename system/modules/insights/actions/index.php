@@ -20,14 +20,15 @@ function index_ALL(Web $w)
         foreach ($modules as $modulename => $insights) {
             if (!empty($insights)) {
                 foreach ($insights as $insight) {
+                    $insight_class = get_class($insight);
                     $userHasAccess = false;
-                    if (InsightService::getInstance($w)->IsMember(Get_class($insight), $user_id)) {
+                    if (InsightService::getInstance($w)->IsMember($insight_class, $user_id)) {
                         $userHasAccess = true;
                     } else {
                         // check if this user is a member of a group (or parent group) with access to this insight report
-                        $allMembers = InsightService::getInstance($w)->getAllMembersForInsightClass(Get_class($insight));
+                        $allMembers = InsightService::getInstance($w)->getAllMembersForInsightClass($insight_class);
                         foreach ($allMembers as $member) {
-                            $userHasAccess = checkUserAccess($w, $member->user_id, $user_id);  // $member->user_id may be a user or a group
+                            $userHasAccess = InsightService::getInstance($w)->checkUserAccess($member->user_id, $user_id);  // $member->user_id may be a user or a group
                             if ($userHasAccess) {
                                 break;
                             };
@@ -36,14 +37,14 @@ function index_ALL(Web $w)
                     if ($userHasAccess) {
                         $row = [];
                         // add values to the row in the same order as the table headers
-                        $row[] = Html::a('/insights/viewInsight/' . Get_class($insight), $insight->name);
+                        $row[] = Html::a('/insights/viewInsight/' . $insight_class, $insight->name);
                         $row[] = $modulename;
                         $row[] = $insight->description;
                         // the actions column is used to hold buttons that link to actions per insight. Note the insight id is added to the href on these buttons.
                         $actions = [];
-                        $actions[] = Html::b('/insights/viewInsight/' . Get_class($insight), 'View');
-                        if (InsightService::getInstance($w)->isInsightOwner($user_id, get_class($insight))) {
-                            $actions[] = Html::b('/insights/manageMembers?insight_class=' . Get_class($insight), 'Manage Members');
+                        $actions[] = Html::b('/insights/viewInsight/' . $insight_class, 'View');
+                        if (InsightService::getInstance($w)->isInsightOwner($user_id, $insight_class)) {
+                            $actions[] = Html::b('/insights/manageMembers?insight_class=' . $insight_class, 'Manage Members');
                         }
                         $row[] = implode('', $actions);
                         $table[] = $row;
@@ -55,21 +56,4 @@ function index_ALL(Web $w)
 
     //send the table to the template using ctx
     $w->ctx('insightTable', Html::table($table, 'insight_table', 'tablesorter', $tableHeaders));
-}
-
-// Function to recursively check if a user is a member of a group (or parent group)
-function checkUserAccess(Web $w, $group, $user_id) : bool {
-    $groupMembers = AuthService::getInstance($w)->getGroupMembers($group);
-    if (!empty($groupMembers)) {
-        foreach ($groupMembers as $groupMember) {
-            if ($groupMember->user_id === $user_id) {
-                return true;
-            } elseif (AuthService::getInstance($w)->getUser($groupMember->user_id)->is_group) {
-                if (checkUserAccess($w, $groupMember->user_id, $user_id)) {
-                    return true;
-                }
-            }
-        }
-    }
-    return false;
 }
