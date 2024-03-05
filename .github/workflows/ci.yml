@@ -16,7 +16,6 @@ env:
   DB_PASSWORD: cmfive_test
   DB_DATABASE: cmfive_test
   PLAYWRIGHT_MODULES: "admin channel form tag report task timelog"
-  CONTAINER_NAME: cmfive
   
 jobs:
   # Lint
@@ -177,6 +176,8 @@ jobs:
           docker exec -t cmfive sh -c "echo \"$CONFIG\" >> /var/www/html/config.php"
 
       - name: Install dev tools
+        env:
+          CONTAINER: cmfive
         run: |
           if [ -f ./boilerplate/.codepipeline/docker/install_dev_tools.sh ]; then
             ./boilerplate/.codepipeline/docker/install_dev_tools.sh
