@@ -57,7 +57,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: '2pisoftware/cmfive-boilerplate'
-          ref: 'develop'
+          ref: 'feat/phpunit-10' #TODO: change back to develop
           path: boilerplate
 
       # Define cache for .composer
@@ -175,23 +175,13 @@ jobs:
           # Write extra config to cmfive container
           docker exec -t cmfive sh -c "echo \"$CONFIG\" >> /var/www/html/config.php"
 
-      - name: Prepare cmfive Test Backend
+      - name: Install dev tools
         run: |
-          # Install packages required for the tests
-          docker exec -u root -t cmfive sh -c \
-            "apk add --no-cache php81-dom php81-xmlwriter php81-tokenizer php81-ctype mysql-client mariadb-connector-c-dev";
-
-          # Install phpunit 8
-          docker exec -u root cmfive sh -c \
-            "cd /usr/local/bin && curl -L https://phar.phpunit.de/phpunit-8.phar -o phpunit && chmod +x phpunit && chmod 777 .";
-
-          # Change owner of the test directory
-          docker exec -u root -t cmfive sh -c \
-            "chown -R cmfive:cmfive /var/www/html/test";
-
-          # Install Codeception
-          docker exec -u cmfive cmfive sh -c \
-            "cd /var/www/html/test/ && sh ./.install/install.sh"
+          if [ -f ./boilerplate/.codepipeline/docker/install_dev_tools.sh ]; then
+            ./boilerplate/.codepipeline/docker/install_dev_tools.sh
+          else
+            echo "⚠️  WARNING: could not find dev tools in boilerplate"
+          fi
 
       - name: Prepare cmfive Test DB
         run: |
@@ -217,10 +207,6 @@ jobs:
           cd boilerplate/test/playwright
           npm ci
           npx playwright install --with-deps
-      # Run Acceptance Tests
-      - name: "Confirm Codeception setup"
-        run: |        
-          docker exec cmfive sh -c "ls -lah -R /var/www/html/test/Codeception/tests && cat /var/www/html/test/Codeception/*.yml && cat /var/www/html/test/Codeception/tests/*.yml"
 
       - name: "Run admin module tests"
         run: |
