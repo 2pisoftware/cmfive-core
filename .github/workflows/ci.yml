@@ -176,9 +176,9 @@ jobs:
           docker exec -t cmfive sh -c "echo \"$CONFIG\" >> /var/www/html/config.php"
 
       - name: Install dev tools
-        env:
-          CONTAINER_NAME: cmfive
         run: |
+          CONTAINER_NAME=cmfive
+          
           if [ -f ./boilerplate/.codepipeline/docker/install_dev_tools.sh ]; then
             ./boilerplate/.codepipeline/docker/install_dev_tools.sh
           else
