@@ -185,10 +185,6 @@ jobs:
             echo "⚠️  WARNING: could not find dev tools in boilerplate"
           fi
 
-      - name: Prepare cmfive Test DB
-        run: |
-          docker exec -t cmfive sh -c "DB_HOST=mysql-8 DB_USERNAME=root DB_PASSWORD=root DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php testDB setup; exit \$?";
-        
       # Build new layout
       - uses: actions/setup-node@v4
         with:
