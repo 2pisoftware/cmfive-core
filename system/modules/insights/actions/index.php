@@ -33,23 +33,29 @@ function index_ALL(Web $w)
                             $userHasAccess = AuthService::getInstance($w)->isUserGroupMemberRecursive($member->user_id, $user_id);  // $member->user_id may be a user or a group
                             if ($userHasAccess) {
                                 break;
-                            };
+                            }
                         }
                     }
                     if ($userHasAccess) {
-                        $row = [];
+                        // $row = [];
                         // add values to the row in the same order as the table headers
-                        $row[] = Html::a('/insights/viewInsight/' . $insight_class, $insight->name);
-                        $row[] = $modulename;
-                        $row[] = $insight->description;
+                        $row = [
+                            Html::a('/insights/viewInsight/' . $insight_class, $insight->name),
+                            $modulename,
+                            $insight->description
+                        ];
                         // the actions column is used to hold buttons that link to actions per insight. Note the insight id is added to the href on these buttons.
-                        $actions = [];
-                        $actions[] = Html::b('/insights/viewInsight/' . $insight_class, 'View');
+                        // $actions = [];
+                        $button_group = Html::b('/insights/viewInsight/' . $insight_class, 'View');
                         if (InsightService::getInstance($w)->isInsightOwner($user_id, $insight_class)) {
-                            $actions[] = Html::b('/insights/manageMembers?insight_class=' . $insight_class, 'Manage Members');
+                            $button_group .= Html::b(
+                                href: '/insights/manageMembers?insight_class=' . $insight_class,
+                                title: 'Manage Members',
+                                class: 'btn-secondary'
+                            );
                         }
-                        $actions[] =  HtmlBootstrap5::buttonGroup($button_group);
-                        $row[] = implode('', $actions);
+                        // $actions[] = HtmlBootstrap5::buttonGroup($button_group);
+                        $row[] = HtmlBootstrap5::buttonGroup($button_group); // implode('', $actions);
                         $table[] = $row;
                     }
                 }
