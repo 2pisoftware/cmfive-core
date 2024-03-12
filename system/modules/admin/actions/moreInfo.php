@@ -24,13 +24,13 @@ function moreInfo_GET(Web &$w)
     $groupMembers = AuthService::getInstance($w)->getGroupMembers($option['group_id']);
 
     if ($groupMembers) {
-        usort($groupMembers, function ($a, $b) {
-            $user_a = $a->getUser();
-            $user_b = $b->getUser();
-            $compare_a = $user_a->is_group == 1 ? $user_a->login : $user_a->getFullName();
-            $compare_b = $user_b->is_group == 1 ? $user_b->login : $user_b->getFullName();
-            return strcasecmp($compare_a, $compare_b);
-        });
+        // usort($groupMembers, function ($a, $b) {
+        //     $user_a = $a->getUser();
+        //     $user_b = $b->getUser();
+        //     $compare_a = $user_a->is_group == 1 ? $user_a->login : $user_a->getFullName();
+        //     $compare_b = $user_b->is_group == 1 ? $user_b->login : $user_b->getFullName();
+        //     return strcasecmp($compare_a, $compare_b);
+        // });
 
         foreach ($groupMembers as $groupMember) {
             $style = $groupMember->role == "owner" ? "<div class='text-primary'>" : "<div>";
