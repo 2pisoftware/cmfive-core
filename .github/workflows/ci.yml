@@ -136,7 +136,7 @@ jobs:
             ghcr.io/2pisoftware/cmfive:develop
           # Note: system is mounted to a volume to avoid conflicts with the symlink
 
-          docker exec -u root cd /var/www/html/system && git status;
+          docker exec -u root cmfive cd /var/www/html/system && git status;
 
           # Wait for cmfive healthcheck to be healthy
           echo "Waiting for Cmfive to start"
