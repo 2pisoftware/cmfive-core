@@ -46,11 +46,11 @@ jobs:
       ## NOTE: Current branch of cmfive-core will be used on the cmfive container
       ## See the `CORE_BRANCH` environment variable in the `Start containers` step
 
-      # Checkout current commit
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          path: core
+      # # Checkout current commit
+      # - name: Checkout
+      #   uses: actions/checkout@v4
+      #   with:
+      #     path: core
 
       # Checkout the boilerplate
       - name: Checkout Boilerplate
@@ -80,9 +80,9 @@ jobs:
         env:
           CORE_BRANCH: "${{ github.event.pull_request.head.ref }}"
         run: |
-          # Link system dir
-          cd boilerplate
-          ln -s ../core/system system
+          # # Link system dir
+          # cd boilerplate
+          # ln -s ../core/system system
 
           # Change owner
           sudo chown -R 1000:1000 .
@@ -126,7 +126,7 @@ jobs:
             -v ${{ github.workspace }}/boilerplate/.codepipeline/test_agent/configs/test_agent-config.php:/var/www/html/config.php:rw \
             -v ${{ github.workspace }}/boilerplate/test:/var/www/html/test:rw \
             -v ${{ github.workspace }}/boilerplate/storage:/var/www/html/storage:rw \
-            -v system:/var/www/html/system:rw \
+            # -v system:/var/www/html/system:rw \
             -e DB_HOST=mysql-8 \
             -e DB_USERNAME=cmfive_test \
             -e DB_PASSWORD=cmfive_test \
