@@ -19,29 +19,35 @@ function moreInfo_GET(Web &$w)
     $w->ctx("editPermission", Html::b("/admin/permissionedit/" . $option['group_id'], "Edit Permissions"));
 
     //fill in member table;
-    $table = array(array("Name", "Role", "Operations", "sort_key" => null));
+    $table = [["Name", "Role", "Operations"]];
 
     $groupMembers = AuthService::getInstance($w)->getGroupMembers($option['group_id']);
 
     if ($groupMembers) {
-        usort($groupMembers, function ($a, $b) {
-            $user_a = $a->getUser();
-            $user_b = $b->getUser();
-            $compare_a = $user_a->is_group == 1 ? $user_a->login : $user_a->getContact()->getFullName();
-            $compare_b = $user_b->is_group == 1 ? $user_b->login : $user_b->getContact()->getFullName();
-            return strcasecmp($compare_a, $compare_b);
-        });
+        // if (count($groupMembers) > 1) {
+            usort($groupMembers, function ($a, $b) {
+                $user_a = $a->getUser();
+                $user_b = $b->getUser();
+                $compare_a = $user_a->is_group == 1 ? $user_a->login : $user_a->getFullName();
+                $compare_b = $user_b->is_group == 1 ? $user_b->login : $user_b->getFullName();
+                return strcasecmp($compare_a, $compare_b);
+            });
+        // }
 
         foreach ($groupMembers as $groupMember) {
-            $line = [];
-
             $style = $groupMember->role == "owner" ? "<div class='text-primary'>" : "<div>";
 
-            $line[] = $style . $groupMember->getUser()->is_group == 1 ? $groupMember->getUser()->login : $groupMember->getUser()->getContact()->getFullName() . "</div>";
-            $line[] = $style . $groupMember->role . "</div>";
+            $line = [
+                $style . $groupMember->getUser()->is_group == 1 ? $groupMember->getUser()->login : $groupMember->getUser()->getFullName() . "</div>",
+                $style . $groupMember->role . "</div>"
+            ];
 
             if (AuthService::getInstance($w)->user()->is_admin || AuthService::getInstance($w)->getRoleForLoginUser($option['group_id'], AuthService::getInstance($w)->user()->id) == "owner") {
-                $line[] = Html::a("/admin/memberdelete/" . $option['group_id'] . "/" . $groupMember->id, "Delete", null, null, "Are you sure you want to delete this member?");
+                $line[] = Html::b(
+                    href: "/admin/memberdelete/" . $option['group_id'] . "/" . $groupMember->id,
+                    title: "Delete",
+                    confirm: "Are you sure you want to delete this member?",
+                    class: "btn-danger btn-sm");
             } else {
                 $line[] = null;
             }
