@@ -24,7 +24,7 @@ function moreInfo_GET(Web &$w)
     $groupMembers = AuthService::getInstance($w)->getGroupMembers($option['group_id']);
 
     if ($groupMembers) {
-        // usort($groupMembers, function ($a, $b) {
+         // usort($groupMembers, function ($a, $b) {
         //     $user_a = $a->getUser();
         //     $user_b = $b->getUser();
         //     $compare_a = $user_a->is_group == 1 ? $user_a->login : $user_a->getFullName();
