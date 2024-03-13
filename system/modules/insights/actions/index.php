@@ -5,7 +5,6 @@
 function index_ALL(Web $w)
 {
     $w->setLayout('layout-bootstrap-5');
-    // $w->setLayout('layout-2021');
     $w->ctx("title", "Insights List");
 
     //get userId for logged in user
@@ -37,15 +36,14 @@ function index_ALL(Web $w)
                         }
                     }
                     if ($userHasAccess) {
-                        // $row = [];
                         // add values to the row in the same order as the table headers
                         $row = [
                             Html::a('/insights/viewInsight/' . $insight_class, $insight->name),
                             $modulename,
                             $insight->description
                         ];
+
                         // the actions column is used to hold buttons that link to actions per insight. Note the insight id is added to the href on these buttons.
-                        // $actions = [];
                         $button_group = Html::b('/insights/viewInsight/' . $insight_class, 'View');
                         if (InsightService::getInstance($w)->isInsightOwner($user_id, $insight_class)) {
                             $button_group .= Html::b(
@@ -54,8 +52,8 @@ function index_ALL(Web $w)
                                 class: 'btn-secondary'
                             );
                         }
-                        // $actions[] = HtmlBootstrap5::buttonGroup($button_group);
-                        $row[] = HtmlBootstrap5::buttonGroup($button_group); // implode('', $actions);
+                        
+                        $row[] = HtmlBootstrap5::buttonGroup($button_group);
                         $table[] = $row;
                     }
                 }

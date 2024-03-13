@@ -61,16 +61,6 @@ jobs:
           ref: 'develop'
           path: boilerplate
 
-      # Define cache for .composer
-      # - name: Cache .composer
-      #   uses: actions/cache@v4
-      #   id: cache
-      #   with:
-      #     path: |
-      #       /tmp/.composer
-      #       ${{ github.workspace }}/boilerplate/composer
-      #     key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
-
       # Pre-requisites Prepare Cmfive Environment
       - name: Pull Docker images
         run: |
