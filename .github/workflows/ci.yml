@@ -61,16 +61,6 @@ jobs:
           ref: 'develop'
           path: boilerplate
 
-      # Define cache for .composer
-      # - name: Cache .composer
-      #   uses: actions/cache@v4
-      #   id: cache
-      #   with:
-      #     path: |
-      #       /tmp/.composer
-      #       ${{ github.workspace }}/boilerplate/composer
-      #     key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
-
       # Pre-requisites Prepare Cmfive Environment
       - name: Pull Docker images
         run: |
@@ -281,9 +271,9 @@ jobs:
             fi
 
       - name: Get container logs
-        if: failure()
+        if: ${{ failure() }} || ${{ success() }}
         run: |
-          docker logs cmfive
+          docker logs cmfive | tee container.log
 
       - name: Stop containers
         # the containers should be stopped regardless of 
@@ -305,5 +295,6 @@ jobs:
             boilerplate/storage/log/
             boilerplate/test/playwright/test-results/
             boilerplate/test/playwright/playwright-report/
+            container.log
           retention-days: 5
 
