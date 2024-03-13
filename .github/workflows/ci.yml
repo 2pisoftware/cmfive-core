@@ -16,7 +16,7 @@ env:
   DB_PASSWORD: cmfive_test
   DB_DATABASE: cmfive_test
   PLAYWRIGHT_MODULES: "admin channel form tag report task timelog"
-  BOILERPLATE_IMAGE: ghcr.io/2pisoftware/cmfive:pr-121
+  BOILERPLATE_IMAGE: ghcr.io/2pisoftware/cmfive:develop
 
 jobs:
   # Lint
