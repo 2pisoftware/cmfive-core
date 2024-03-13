@@ -16,7 +16,7 @@ env:
   DB_PASSWORD: cmfive_test
   DB_DATABASE: cmfive_test
   PLAYWRIGHT_MODULES: "admin channel form tag report task timelog"
-  BOILERPLATE_IMAGE: ghcr.io/2pisoftware/cmfive:pr-121
+  BOILERPLATE_IMAGE: ghcr.io/2pisoftware/cmfive:develop
 
 jobs:
   # Lint
@@ -271,9 +271,9 @@ jobs:
             fi
 
       - name: Get container logs
-        if: failure()
+        if: ${{ failure() }} || ${{ success() }}
         run: |
-          docker logs cmfive
+          docker logs cmfive | tee container.log
 
       - name: Stop containers
         # the containers should be stopped regardless of 
@@ -295,5 +295,6 @@ jobs:
             boilerplate/storage/log/
             boilerplate/test/playwright/test-results/
             boilerplate/test/playwright/playwright-report/
+            container.log
           retention-days: 5
 
