@@ -15,12 +15,10 @@ class Banner extends \Html\Form\FormElement
 
     use \Html\GlobalAttributes, \Html\Events;
 
-    public $form;
     public $name;
-    public $required;
     public $value;
 
-    static $_excludeFromOutput = ["value", "label"];
+    static $_excludeFromOutput = ["value"];
 
     /**
     * Returns built string of Banner field
@@ -41,45 +39,14 @@ class Banner extends \Html\Form\FormElement
     }
 
     /**
-     * The form element that the Banner is associated with (its
-     * "form owner"). The value of the attribute must be the ID of a form
-     * element in the same document. If this attribute is not specified, the
-     * <textarea> element must be a descendant of a form element. This attribute
-     * enables you to place <textarea> elements anywhere within a document, not
-     * just as descendants of their form elements.
-     *
-     * @param string $form
-     * @return \Html\Form\Banner
-     */
-    public function setForm($form)
-    {
-        $this->form = $form;
-
-        return $this;
-    }
-
-    /**
      * The name of the control.
      *
      * @param string $name
      * @return \Html\Form\Banner
      */
-    public function setname($name)
+    public function setName($name)
     {
         $this->name = $name;
-
-        return $this;
-    }
-
-    /**
-     * This attribute is required by HtmlBootstrap5::multiColForm(...)
-     *
-     * @param string $required
-     * @return \Html\Form\Banner
-     */
-    public function setRequired($required)
-    {
-        $this->required = $required;
 
         return $this;
     }

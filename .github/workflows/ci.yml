@@ -16,6 +16,7 @@ env:
   DB_PASSWORD: cmfive_test
   DB_DATABASE: cmfive_test
   PLAYWRIGHT_MODULES: "admin channel form tag report task timelog"
+  BOILERPLATE_IMAGE: ghcr.io/2pisoftware/cmfive:develop
 
 jobs:
   # Lint
@@ -60,20 +61,10 @@ jobs:
           ref: 'develop'
           path: boilerplate
 
-      # Define cache for .composer
-      - name: Cache .composer
-        uses: actions/cache@v4
-        id: cache
-        with:
-          path: |
-            /tmp/.composer
-            ${{ github.workspace }}/boilerplate/composer
-          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
-
       # Pre-requisites Prepare Cmfive Environment
       - name: Pull Docker images
         run: |
-          docker pull ghcr.io/2pisoftware/cmfive:develop
+          docker pull $BOILERPLATE_IMAGE
           docker pull mysql:8
 
       - name: Start containers
@@ -126,14 +117,13 @@ jobs:
             -v ${{ github.workspace }}/boilerplate/.codepipeline/test_agent/configs/test_agent-config.php:/var/www/html/config.php:rw \
             -v ${{ github.workspace }}/boilerplate/test:/var/www/html/test:rw \
             -v ${{ github.workspace }}/boilerplate/storage:/var/www/html/storage:rw \
-            -v system:/var/www/html/system:rw \
             -e DB_HOST=mysql-8 \
             -e DB_USERNAME=cmfive_test \
             -e DB_PASSWORD=cmfive_test \
             -e DB_DATABASE=cmfive_test \
             -e CMFIVE_CORE_BRANCH=$CORE_BRANCH \
             --network=cmfive \
-            ghcr.io/2pisoftware/cmfive:develop
+            $BOILERPLATE_IMAGE
           # Note: system is mounted to a volume to avoid conflicts with the symlink
 
           # Wait for cmfive healthcheck to be healthy
@@ -281,9 +271,9 @@ jobs:
             fi
 
       - name: Get container logs
-        if: failure()
+        if: ${{ failure() }} || ${{ success() }}
         run: |
-          docker logs cmfive
+          docker logs cmfive | tee container.log
 
       - name: Stop containers
         # the containers should be stopped regardless of 
@@ -305,5 +295,6 @@ jobs:
             boilerplate/storage/log/
             boilerplate/test/playwright/test-results/
             boilerplate/test/playwright/playwright-report/
+            container.log
           retention-days: 5
 
