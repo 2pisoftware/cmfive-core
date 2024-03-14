@@ -16,7 +16,7 @@ env:
   DB_PASSWORD: cmfive_test
   DB_DATABASE: cmfive_test
   PLAYWRIGHT_MODULES: "admin channel form tag report task timelog"
-  BOILERPLATE_IMAGE: ghcr.io/2pisoftware/cmfive:develop
+  BOILERPLATE_IMAGE: ghcr.io/2pisoftware/cmfive:pr-119 # TODO: change back to develop
 
 jobs:
   # Lint
@@ -58,7 +58,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: '2pisoftware/cmfive-boilerplate'
-          ref: 'feat/phpunit-10' #TODO: change back to develop
+          ref: 'feat/phpunit-10' # TODO: change back to develop
           path: boilerplate
 
       # Pre-requisites Prepare Cmfive Environment
