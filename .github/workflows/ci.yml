@@ -262,7 +262,7 @@ jobs:
       - name: Get container logs
         if: ${{ failure() }} || ${{ success() }}
         run: |
-          docker logs cmfive | tee /tmp/cmfive_container.log
+          docker logs cmfive | sudo tee cmfive_container.log
 
       - name: Stop containers
         # the containers should be stopped regardless of 
@@ -284,6 +284,6 @@ jobs:
             boilerplate/storage/log/
             boilerplate/test/playwright/test-results/
             boilerplate/test/playwright/playwright-report/
-            /tmp/cmfive_container.log
+            cmfive_container.log
           retention-days: 5
 
