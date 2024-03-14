@@ -122,6 +122,7 @@ jobs:
             -e DB_PASSWORD=cmfive_test \
             -e DB_DATABASE=cmfive_test \
             -e CMFIVE_CORE_BRANCH=$CORE_BRANCH \
+            -e ENVIRONMENT=development \
             --network=cmfive \
             $BOILERPLATE_IMAGE
           # Note: system is mounted to a volume to avoid conflicts with the symlink
@@ -253,11 +254,11 @@ jobs:
             if [ $? -gt 0 ]; then
                 echo "Timelog module tests failed"
             fi
-
+            
       - name: Get container logs
         if: ${{ failure() }} || ${{ success() }}
         run: |
-          docker logs cmfive | tee container.log
+          docker logs cmfive | tee /tmp/cmfive_container.log
 
       - name: Stop containers
         # the containers should be stopped regardless of 
@@ -279,6 +280,6 @@ jobs:
             boilerplate/storage/log/
             boilerplate/test/playwright/test-results/
             boilerplate/test/playwright/playwright-report/
-            container.log
+            /tmp/cmfive_container.log
           retention-days: 5
 
