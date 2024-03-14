@@ -86,16 +86,16 @@ jobs:
           echo "Starting MySQL 8"
           docker run --name mysql-8 -d -p 3306:3306 \
             -e MYSQL_ROOT_PASSWORD=root \
-            -e MYSQL_DATABASE=cmfive_test \
-            -e MYSQL_USER=cmfive_test \
-            -e MYSQL_PASSWORD=cmfive_test \
+            -e MYSQL_DATABASE=$DB_DATABASE \
+            -e MYSQL_USER=$DB_USERNAME \
+            -e MYSQL_PASSWORD=$DB_PASSWORD \
             --network=cmfive \
             mysql:8
 
           # Wait for MySQL to start
           echo "Waiting for MySQL to start"
           time=0
-          while ! docker exec mysql-8 mysqladmin ping -ucmfive_test -pcmfive_test --silent; do
+          while ! docker exec mysql-8 mysqladmin ping -u$DB_USERNAME -p$DB_PASSWORD --silent; do
             sleep 1
             time=$((time+1))
             if [ $time -gt 60 ]; then
@@ -118,9 +118,9 @@ jobs:
             -v ${{ github.workspace }}/boilerplate/test:/var/www/html/test:rw \
             -v ${{ github.workspace }}/boilerplate/storage:/var/www/html/storage:rw \
             -e DB_HOST=mysql-8 \
-            -e DB_USERNAME=cmfive_test \
-            -e DB_PASSWORD=cmfive_test \
-            -e DB_DATABASE=cmfive_test \
+            -e DB_USERNAME=$DB_USERNAME \
+            -e DB_PASSWORD=$DB_PASSWORD \
+            -e DB_DATABASE=$DB_DATABASE \
             -e CMFIVE_CORE_BRANCH=$CORE_BRANCH \
             -e ENVIRONMENT=development \
             --network=cmfive \
@@ -178,7 +178,7 @@ jobs:
 
       - name: Prepare cmfive Test DB
         run: |
-          docker exec -t cmfive sh -c "DB_HOST=mysql-8 DB_USERNAME=root DB_PASSWORD=root DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php testDB setup; exit \$?";
+          docker exec -t cmfive sh -c "DB_HOST=mysql-8 DB_USERNAME=root DB_PASSWORD=root DB_DATABASE=$DB_DATABASE DB_PORT=3306 php cmfive.php testDB setup; exit \$?";
 
       # Build new layout
       - uses: actions/setup-node@v4
@@ -189,7 +189,7 @@ jobs:
       - name: "Run unit tests"
         run: |
           docker exec -u root cmfive chmod -R ugo=rwX /var/www/html/test/
-          docker exec -u cmfive cmfive sh -c "DB_HOST=mysql-8 DB_USERNAME=cmfive_test DB_PASSWORD=cmfive_test DB_DATABASE=cmfive_test DB_PORT=3306 php cmfive.php tests unit all; exit \$?"
+          docker exec -u cmfive cmfive sh -c "DB_HOST=mysql-8 DB_USERNAME=$DB_USERNAME DB_PASSWORD=$DB_PASSWORD DB_DATABASE=$DB_DATABASE DB_PORT=3306 php cmfive.php tests unit all; exit \$?"
           if [ $? -gt 0 ]; then
             echo "Admin module tests failed"
           fi
