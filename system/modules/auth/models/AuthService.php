@@ -504,14 +504,7 @@ class AuthService extends DbService
 
     public function getGroups()
     {
-        $rows = $this->_db->get("user")->where(['is_active' => 1, 'is_deleted' => 0, 'is_group' => 1])->fetchAll();
-
-        if ($rows) {
-            $objects = $this->fillObjects("User", $rows);
-
-            return $objects;
-        }
-        return null;
+        return $this->getObjects("User", ['is_active' => 1, 'is_deleted' => 0, 'is_group' => 1]);
     }
 
     public function getGroupMembers($group_id = null, $user_id = null)
@@ -524,22 +517,12 @@ class AuthService extends DbService
             $option['user_id'] = $user_id;
         }
 
-        $groupMembers = $this->getObjects("GroupUser", $option, true);
-
-        if ($groupMembers) {
-            return $groupMembers;
-        }
-        return null;
+        return $this->getObjects("GroupUser", $option, true);
     }
 
     public function getGroupMemberById($id)
     {
-        $groupMember = $this->getObject("GroupUser", $id);
-
-        if ($groupMember) {
-            return $groupMember;
-        }
-        return null;
+        return $this->getObject("GroupUser", $id);
     }
 
     public function getRoleForLoginUser($group_id, $user_id)
@@ -557,5 +540,28 @@ class AuthService extends DbService
         if ($this->loggedIn()) {
             return $this->getObject('UserSetting', ['user_id' => $this->user()->id, 'setting_key' => $key]);
         }
+    }
+
+    /**
+     * Function to recursively check if a user is a member of a group (or parent group)
+     * 
+     * @param int|string $group_id
+     * @param int|string $user_id
+     * @return bool
+     */
+    public function isUserGroupMemberRecursive(int|string $group_id, int|string $user_id) : bool {
+        $groupMembers = $this->getGroupMembers($group_id);
+        if (!empty($groupMembers)) {
+            foreach ($groupMembers as $groupMember) {
+                if ($groupMember->user_id === $user_id) {
+                    return true;
+                } elseif ($this->getUser($groupMember->user_id)->is_group) {
+                    if ($this->isUserGroupMemberRecursive($groupMember->user_id, $user_id)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 }

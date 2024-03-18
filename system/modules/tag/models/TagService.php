@@ -40,6 +40,15 @@ class TagService extends DbService {
 		return null;
 	}
 	
+    public function objectHasTag(mixed $object, string $tag): bool
+    {
+        $query = $this->_db->get('tag')->leftJoin('tag_assign on tag.id = tag_assign.tag_id')
+				->where('object_class', get_class($object))->and('object_id', $object->id)
+                ->and('tag.tag', $tag)
+				->and('tag.is_deleted', 0)->and('tag_assign.is_deleted', 0);
+        return $query->count() > 0;
+    }
+
 	/**
 	 * Returns all tags associated with a given class
 	 * 
@@ -71,5 +80,15 @@ class TagService extends DbService {
         }
         $w->ctx("navigation", $nav);
         return $nav;
+    }
+
+    public function navList(): array
+    {
+        if (AuthService::getInstance($this->w)->user()->hasRole('tag_admin')) {
+            return [
+                new MenuLinkStruct("Tag Admin", "tag/admin"),
+            ];
+        }
+        return [];
     }
 }

@@ -11,7 +11,7 @@ function newlookup_POST(Web &$w) {
 	$err .= "Please enter a KEY<br>";
 	if ($_REQUEST['title'] == "")
 	$err .= "Please enter a VALUE<br>";
-	if (LookupService::getInstance($w)->getLookupByTypeAndCode($_REQUEST['type'],$_REQUEST['code']))
+	if (LookupService::getInstance($w)->getLookupByTypeAndCodeV2($_REQUEST['type'], $_REQUEST['code']))
 	$err .= "Type and Key combination already exists";
 
 	if ($err != "") {

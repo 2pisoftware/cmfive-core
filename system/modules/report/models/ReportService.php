@@ -664,4 +664,19 @@ class ReportService extends DbService
         $w->ctx("navigation", $nav);
         return $nav;
     }
+
+    public function navList(): array
+    {
+        $list = [
+            new MenuLinkStruct("Report Dashboard", "report/index")
+        ];
+        if (AuthService::getInstance($this->w)->user()->hasAnyRole(["report_editor", "report_admin"])) {
+            $list += [
+                new MenuLinkStruct("Create a Report", "report/edit"),
+                new MenuLinkStruct("Connections", "report-connections"),
+                new MenuLinkStruct("Feeds Dashboard", "report/listfeed"),
+            ];
+        }
+        return $list;
+    }
 }

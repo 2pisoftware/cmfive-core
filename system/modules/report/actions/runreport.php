@@ -27,7 +27,7 @@ function runreport_ALL(Web &$w)
                     $form = $rep->getReportCriteria();
 
                     // Determine if it's a multicolform
-                    $section_key = array_keys($form);
+                    $section_key = array_keys($form ?? []);
                     if (!empty($section_key[0])) {
                         $section_key = $section_key[0];
                     } else {
