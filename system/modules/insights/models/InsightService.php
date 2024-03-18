@@ -101,7 +101,7 @@ class InsightService extends DbService
     }
 
     //check if user is a member of an insight
-    public function IsMember($insight_class_name, $user_id)
+    public function isMember($insight_class_name, $user_id)
     {
 
         if (AuthService::getInstance($this->w)->getUser($user_id)->hasRole('insights_admin')) {
@@ -115,9 +115,9 @@ class InsightService extends DbService
     }
 
     //retrieve a specific member matching the id given number
-    public function GetMemberForId($id)
+    public function getMemberForId($id)
     {
-        return $this->GetObject('InsightMembers', $id);
+        return $this->getObject('InsightMembers', $id);
     }
 
     public function getInsightInstance(string $insight_class)
@@ -135,15 +135,6 @@ class InsightService extends DbService
         }
         if (InsightService::getInstance($this->w)->getUserMembershipForInsight($insight_class, $user_id) == "OWNER") {
             return true;
-        }
-    }
-
-    // convert dd/mm/yyyy date to yyyy-mm-dd for SQL statements
-    public function date2db($date)
-    {
-        if ($date) {
-            $formatteddate = formatDate($date, 'Y-m-d');
-            return $formatteddate;
         }
     }
 
@@ -253,7 +244,7 @@ class InsightService extends DbService
                     }
                 }
                 if (!empty($report_template_id) && !empty($templatedata)) {
-                    $results = $this->w->Template->render(
+                    $results = TemplateService::getInstance($this->w)->render(
                         $report_template_id,
                         ["data" => $templatedata, "w" => $this->w, "POST" => $_POST]
                     );
