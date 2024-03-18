@@ -119,7 +119,7 @@ class InsightService extends DbService
     }
 
     //check if user is a member of an insight
-    public function IsMember($insight_class_name, $user_id)
+    public function isMember($insight_class_name, $user_id)
     {
 
         if (AuthService::getInstance($this->w)->getUser($user_id)->hasRole('insights_admin')) {
@@ -133,7 +133,7 @@ class InsightService extends DbService
     }
 
     //retrieve a specific member matching the id given number
-    public function GetMemberForId($id)
+    public function getMemberForId($id)
     {
         return $this->getObject('InsightMembers', $id);
     }
@@ -153,14 +153,6 @@ class InsightService extends DbService
         }
         if (InsightService::getInstance($this->w)->getUserMembershipForInsight($insight_class, $user_id) == "OWNER") {
             return true;
-        }
-    }
-
-    // convert dd/mm/yyyy date to yyyy-mm-dd for SQL statements
-    public function date2db($date)
-    {
-        if ($date) {
-            return formatDate($date, 'Y-m-d');
         }
     }
 
