@@ -9,3 +9,4 @@
 /system/tests/composer.lock
 /system/tests/support/_generated
 system/system
+system/templates/base/package-lock.json

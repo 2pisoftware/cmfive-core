@@ -509,6 +509,7 @@ class AuthService extends DbService
 
     public function getGroupMembers($group_id = null, $user_id = null)
     {
+        $option = [];
         if ($group_id) {
             $option['group_id'] = $group_id;
         }

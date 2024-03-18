@@ -9,6 +9,24 @@ defined('MODELS_DIRECTORY') || define('MODELS_DIRECTORY', 'models');
 
 class InsightService extends DbService
 {
+    // Function to recursively check if a user is a member of a group (or parent group)
+    function checkUserAccess($group, $user_id): bool
+    {
+        $groupMembers = AuthService::getInstance($this->w)->getGroupMembers($group);
+        if (!empty($groupMembers)) {
+            foreach ($groupMembers as $groupMember) {
+                if ($groupMember->user_id === $user_id) {
+                    return true;
+                } elseif (AuthService::getInstance($this->w)->getUser($groupMember->user_id)->is_group) {
+                    if ($this->checkUserAccess($groupMember->user_id, $user_id)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
     // returns all insight instances
     public function getAllInsights($insights)
     {
