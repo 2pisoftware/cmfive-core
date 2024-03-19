@@ -27,3 +27,4 @@ jobs:
         with:
           name: cmfive-theme
           path: ./system/templates/base/dist
+          artifact-id: 1
