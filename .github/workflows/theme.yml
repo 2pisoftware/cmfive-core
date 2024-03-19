@@ -1,0 +1,29 @@
+name: Theme
+
+on:
+  push:
+    branches: [ develop ]
+  pull_request:
+    branches: [ develop, master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - name: Install dependencies
+        working-directory: ./system/templates/base
+        run: npm install
+      - name: Build
+        working-directory: ./system/templates/base
+        run: npm run build
+      - name: Save artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: base
+          path: ./system/templates/base/dist
