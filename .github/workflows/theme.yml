@@ -25,5 +25,5 @@ jobs:
       - name: Save artifact
         uses: actions/upload-artifact@v4
         with:
-          name: base
+          name: cmfive-theme
           path: ./system/templates/base/dist
