@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "lib": [
+      "es2015",
+      "dom"
+    ],
+    "baseUrl": "../../../../../../../cmfive-boilerplate/test/playwright",
+    "paths": {
+      "*": [
+        "*",
+        "node_modules/*"
+      ],
+      "@utils/*": [
+        "src/utils/*"
+      ],
+      "@utils/cmfive": [
+        "cmfive.utils.ts"
+      ]
+    }
+  }
+}

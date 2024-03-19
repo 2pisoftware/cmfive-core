@@ -6,13 +6,13 @@ function ajax_disable_mfa_POST(Web $w)
 
     $request_data = json_decode(file_get_contents("php://input"), true);
     if (empty($request_data) || empty($request_data["id"])) {
-        $w->out((new AxiosResponse())->setErrorResponse("Request data missing", null));
+        $w->out((new JsonResponse())->setErrorResponse("Request data missing", null));
         return;
     }
 
     $user = AuthService::getInstance($w)->getUser($request_data["id"]);
     if (empty($user)) {
-        $w->out((new AxiosResponse())->setErrorResponse("Unable to find user", null));
+        $w->out((new JsonResponse())->setErrorResponse("Unable to find user", null));
         return;
     }
 
@@ -20,9 +20,9 @@ function ajax_disable_mfa_POST(Web $w)
     $user->mfa_secret = null;
 
     if (!$user->update(true)) {
-        $w->out((new AxiosResponse())->setErrorResponse("Failed to disable MFA", null));
+        $w->out((new JsonResponse())->setErrorResponse("Failed to disable MFA", null));
         return;
     }
 
-    $w->out((new AxiosResponse())->setSuccessfulResponse("MFA disabled", null));
+    $w->out((new JsonResponse())->setSuccessfulResponse("MFA disabled", null));
 }

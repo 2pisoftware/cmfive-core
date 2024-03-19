@@ -13,7 +13,7 @@
 				<label style="font-size: 18px;">Description
 					<input type="text" id="description" v-model="description"/>
 				</label><br>
-				<div v-if="can_restrict">
+				<div v-if="can_restrict && show_restrict">
 					<label class="cmfive__checkbox-container">Restricted
 						<input type="checkbox" v-model="is_restricted">
 						<span class="cmfive__checkbox-checkmark"></span>
@@ -47,6 +47,7 @@
 			return {
 				id: "<?php echo $id; ?>",
 				can_restrict: "<?php echo $can_restrict; ?>",
+				show_restrict: "<?php echo $show_restrict; ?>",
 				viewers: <?php echo empty($viewers) ? json_encode([]) : $viewers; ?>,
 				new_owner: <?php echo empty($new_owner) ? json_decode([]) : $new_owner; ?>,
 				title: "<?php echo $title; ?>",

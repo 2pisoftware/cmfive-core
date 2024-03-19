@@ -1,6 +1,23 @@
 <?php
 
 /**
+ * Determines whether or not an object has overloaded a method
+ * 
+ * @param object $object
+ * @param string $method
+ * @return bool
+ */
+function method_exists_overloaded(object $object, string $method)
+{
+    if (!method_exists($object, $method)) {
+        return false;
+    }
+
+    $reflector = new \ReflectionMethod($object, $method);
+    return $reflector->getDeclaringClass()->getName() === get_class($object);
+}
+
+/**
  * Deduplicates arrays of arrays, something that array_unique can't do.
  * Given an array of arrays, this function will return an array containing only
  * unique arrays having removed any duplicate arrays.
@@ -170,6 +187,10 @@ function humanReadableBytes($input, $rounding = 2, $bytesValue = true)
         $barrier = 1000;
     }
 
+    if ($input === null) {
+        return '0 B';
+    }
+
     while ($input > $barrier) {
         $input /= $barrier;
         array_shift($ext);
@@ -222,7 +243,7 @@ function defaultVal($val, $default = null)
  */
 function toSlug($title)
 {
-    return strtolower(str_replace([' ', '_', ',', '.', '/'], '-', $title));
+    return strtolower(str_replace([' ', '_', ',', '.', '/'], '-', ($title ?? "")));
 }
 
 /**

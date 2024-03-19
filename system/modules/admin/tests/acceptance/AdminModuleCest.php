@@ -9,7 +9,7 @@ class AdminModuleCest
         $I->createUser($I, 'testAdmin_testuser', 'password', 'testAdmin_test', 'user', 'test@user.com');
         $I->clickCmfiveNavbar($I, 'Admin', 'List Users');
         $rowIndex = $I->findTableRowMatching(1, 'testAdmin_testuser');
-        $I->click('Remove', '.table-responsive table tbody tr:nth-child(' . $rowIndex . ')');
+        $I->click('Delete', '.table-responsive table tbody tr:nth-child(' . $rowIndex . ')');
         $I->click('Delete user');
         $I->acceptPopup();
         $I->clickCmfiveNavbar($I, 'Admin', 'List Users');

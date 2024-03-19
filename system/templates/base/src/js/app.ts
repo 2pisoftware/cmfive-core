@@ -1,8 +1,10 @@
 // src/app.ts
 import { AlertAdaptation, DropdownAdaptation, FavouritesAdaptation, TabAdaptation, TableAdaptation } from './adaptations';
-import { QuillEditor, InputWithOther, MultiFileUpload, MultiSelect, Overlay } from './components';
+import { QuillEditor, InputWithOther, MultiFileUpload, MultiSelect, Overlay, CodeMirror } from './components';
 
-import { Modal, Tooltip } from 'bootstrap';
+import { Modal, Toast, Tooltip } from 'bootstrap';
+
+type window = Window & typeof globalThis & { cmfiveEventBus: Comment, cmfive: { toast: typeof Toast } };
 
 class Cmfive {
     static THEME_KEY = 'theme';
@@ -128,6 +130,10 @@ class Cmfive {
             });
         }
 
+        (window as window).cmfive = {
+            toast: require('./components/Toast').Toast
+        }
+
         // Add offset for breadcrumb if scrollbar is visible
         const breadcrumb = document.querySelector('#breadcrumbs .breadcrumb');
         if (breadcrumb) {
@@ -188,6 +194,7 @@ class Cmfive {
         TabAdaptation.bindTabInteractions();
         TableAdaptation.bindTableInteractions();
         QuillEditor.bindQuillEditor();
+        CodeMirror.bindCodeMirrorEditor();
 
         // Remove all foundation button classes and replace them with bootstrap if they don't exist
         target?.querySelectorAll('.button')?.forEach(b =>  {

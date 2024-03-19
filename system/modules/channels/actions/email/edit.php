@@ -2,6 +2,7 @@
 
 function edit_GET(Web $w)
 {
+    $w->setLayout('layout-bootstrap-5');
     $p = $w->pathMatch("id");
     $channel_id = $p["id"];
 
@@ -69,7 +70,7 @@ function edit_GET(Web $w)
         's_password' => ['required']
     ];
 
-    $w->ctx("form", Html::multiColForm($form, "/channels-email/edit/{$channel_id}", "POST", "Save", "channelform", null, null, '_self', true, $validation));
+    $w->ctx("form", HtmlBootstrap5::multiColForm($form, "/channels-email/edit/{$channel_id}", "POST", "Save", "channelform", null, null, '_self', true, $validation));
 }
 
 function edit_POST(Web $w)

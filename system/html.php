@@ -196,7 +196,7 @@ class Html
     /**
      * Create an a link styled as a button that pops up a reveal dialog
      * */
-    public static function abox($href, $title, $class = null, $id = null, $confirm = null)
+    public static function abox($href, $title, $class = "", $id = "", $confirm = "")
     {
         $classParam = ' button tiny ';
         if (strlen($class) > 0) {
@@ -365,8 +365,8 @@ class Html
             $readonly = "";
 
             // handle disabled fields
-            if (substr($name, 0, 1) == '-') {
-                $name = substr($name, 1);
+            if (substr(($name ?? ""), 0, 1) == '-') {
+                $name = substr(($name ?? ""), 1);
                 $readonly = " readonly='true' ";
             }
             // Add title field
@@ -665,8 +665,8 @@ class Html
                     $buffer .= ($type !== "hidden" ? "<div>" : "");
 
                     // handle disabled fields
-                    if (substr($name, 0, 1) == '-') {
-                        $name = substr($name, 1);
+                    if (substr(($name ?? ""), 0, 1) == '-') {
+                        $name = substr(($name ?? ""), 1);
                         $readonly = " readonly='true' ";
                     }
 
@@ -969,7 +969,7 @@ class Html
                 }
             }
             // Remove trailing comma
-            $source = substr($source, 0, -1);
+            $source = substr(($source ?? ""), 0, -1);
             $source .= "]";
         } else {
             $source = "'" . $options . "'";
@@ -1335,8 +1335,8 @@ class Html
             }
 
             // handle disabled fields
-            if (substr($name, 0, 1) == '-') {
-                $name = substr($name, 1);
+            if (substr(($name ?? ""), 0, 1) == '-') {
+                $name = substr(($name ?? ""), 1);
                 $readonly = " readonly='true' ";
             }
 
@@ -1598,13 +1598,9 @@ UPLOAD;
      * @param string $height
      * @return string
      */
-    public static function embedDocument($link, $width = '1024', $height = '724', $zoom = 'page-width', $is_docx = false)
+    public static function embedDocument(string $link, $width = '1024', $height = '724', $zoom = 'page-width', $is_docx = false)
     {
-        if ($is_docx) {
-            return '<iframe src="https://docs.google.com/gview?url=' . $link . '&embedded=true"  width=' . $width . ' height=' . $height . ' allowfullscreen webkitallowfullscreen></iframe>';
-        }
-
-        return "<iframe src='/system/templates/js/viewerjs-0.5.8/ViewerJS/index.html?zoom={$zoom}#../../../../..{$link}' width='{$width}' height='{$height}' allowfullscreen webkitallowfullscreen></iframe>";
+        return "<object style='min-height: 600px float: none; display: inline;' data='{$link}#view=FitH&navpanes=0' width='100%' height='$height' loading='lazy' allow='fullscreen'></object>";
     }
 
     /**

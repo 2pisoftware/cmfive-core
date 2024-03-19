@@ -157,7 +157,7 @@ class Web
 
     private function getHostname()
     {
-        return $this->getRequestHeader('HTTP_HOST');
+        return $this->getRequestHeader("HTTP_X_FORWARDED_HOST", $this->getRequestHeader('HTTP_HOST'));
     }
 
     private function getRequestHeader($header, $default = '')

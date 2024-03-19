@@ -23,7 +23,7 @@ $themes: map.deep-merge($themes, (
         top: 0px;
         bottom: 0px;
         width: $side-menu-width;
-        z-index: 20;
+        z-index: 2000;
         padding: 1rem 0;
         opacity: 0;
         overflow-y: auto;
@@ -79,6 +79,7 @@ $themes: map.deep-merge($themes, (
             .accordion-item {
                 @include theme((background-color: 'navbar-background'));
                 border-radius: 0px;
+                border: none;
 
                 .accordion-header {
                     .accordion-button {
@@ -236,7 +237,7 @@ $themes: map.deep-merge($themes, (
 
     #menu-overlay {
         position: fixed;
-        z-index: 15;
+        z-index: 1990; // Sit just under the side menu
         top: 0; bottom: 0;
         left: 0; right: 0;
         background-color: black;

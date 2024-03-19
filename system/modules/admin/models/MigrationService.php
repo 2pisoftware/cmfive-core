@@ -316,7 +316,7 @@ MIGRATION;
                         // Class name must match filename after timestamp and hyphen
                         if (class_exists($migration['class_name'])) {
                             LogService::getInstance($this->w)->setLogger("MIGRATION")->info("Running migration: " . $migration['class_name']);
-                            
+
                             $this->w->db->startTransaction();
                             try {
                                 // Set migration class
@@ -476,7 +476,7 @@ MIGRATION;
         //sort installed migrations by id largest to smallest
         $migrations_to_rollback = $installed_migrations[$module];
         usort($migrations_to_rollback, function ($a, $b) {
-            return $a['id'] < $b['id'];
+            return $a['id'] - $b['id'];
         });
 
         // Attempt to rollback all migrations
