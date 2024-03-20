@@ -1,5 +1,17 @@
 // src/js/components/MultiFileUpload.ts
 
+function formatBytes(bytes, decimals = 2) {
+  if (bytes === 0) return '0 Bytes';
+
+  const k = 1024;
+  const dm = decimals < 0 ? 0 : decimals;
+  const sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+}
+
 export class MultiFileUpload {
     private static containerTarget = 'multi-upload-file-container';
     private static buttonTarget = 'multi-upload-button';
@@ -62,7 +74,7 @@ export class MultiFileUpload {
 
         // Add new items
         for (let file of files) {
-            dt.items.add(file)
+            dt.items.add(file);
         }
 
         // Set in our "container"
@@ -106,14 +118,22 @@ export class MultiFileUpload {
                 file_display.classList.add('d-none');
             }
         }
-        file_display.innerHTML = '';
+
+        var multiUploadSize = 0;
+        for (let i = 0; i < file_container.files.length; i++) {
+            multiUploadSize += file_container.files.item(i).size;
+        }
+
+        file_display.innerHTML = `<span class="multi-upload-total-size">Total Upload Size: ${formatBytes(multiUploadSize)}</span><hr/>`;
 
         for (let i = 0; i < file_container.files.length; i++) {
             const display_el = document.createElement('div');
             display_el.classList.add('multi-upload-item');
             display_el.innerText = file_container.files.item(i).name;
+            const upload_size_display = document.createElement('span');
+            upload_size_display.classList.add('multi-upload-item-size');
+            upload_size_display.innerText = formatBytes(file_container.files.item(i).size);
             const remove_button = document.createElement('button');
-            // remove_button.classList.add('btn', 'btn-sm', 'btn-outline-info');
             remove_button.innerHTML = '<i class="bi bi-x"></i>';
             remove_button.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -138,7 +158,8 @@ export class MultiFileUpload {
                 MultiFileUpload.loadList(parent);
             })
             remove_button.onclick = MultiFileUpload.removeButtonHandler;
-            display_el.appendChild(remove_button);
+            display_el.prepend(upload_size_display);
+            display_el.prepend(remove_button);
             file_display.appendChild(display_el);
         }
     }

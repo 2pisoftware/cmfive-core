@@ -51,43 +51,44 @@ class CmfiveStyleComponent extends CmfiveComponent
     {
         switch ($this->_extension) {
             case 'scss': {
-                // Compile and store in cache directory
-                $scss = new Compiler();
-                if (!empty($this->_include_paths)) {
-                    foreach ($this->_include_paths as $_include_path) {
-                        $scss->addImportPath(function ($_path) use ($_include_path) {
-                            if (file_exists(ROOT_PATH . $_include_path . $_path)) {
-                                return ROOT_PATH . $_include_path . $_path;
-                            }
+                    // Compile and store in cache directory
+                    $scss = new Compiler();
+                    if (!empty($this->_include_paths)) {
+                        foreach ($this->_include_paths as $_include_path) {
+                            $scss->addImportPath(function ($_path) use ($_include_path) {
+                                if (file_exists(ROOT_PATH . $_include_path . $_path)) {
+                                    return ROOT_PATH . $_include_path . $_path;
+                                }
 
-                            return null;
-                        });
+                                return null;
+                            });
+                        }
                     }
-                }
 
-                try {
-                    $compiled_css = $scss->compileString(file_get_contents(ROOT_PATH . $this->_dirname . '/' . $this->_filename . '.' . $this->_extension))->getCss();
-                } catch (Exception $e) {
-                    // Could not compile SCSS
-                    echo $e->getMessage();
-                    return;
-                }
+                    try {
+                        $compiled_css = $scss->compileString(file_get_contents(ROOT_PATH . $this->_dirname . '/' . $this->_filename . '.' . $this->_extension));
+                    } catch (Exception $e) {
+                        // Could not compile SCSS
+                        echo $e->getMessage();
+                        return;
+                    }
 
-                if (!is_dir(ROOT_PATH . '/cache/css/')) {
-                    mkdir(ROOT_PATH . '/cache/css/');
-                }
-                // check if exists or make .htaccess with allow from all
-                if (!file_exists(ROOT_PATH . '/cache/css/.htaccess')) {
-                    $access_file = fopen(ROOT_PATH . '/cache/css/.htaccess', 'w');
-                    fwrite($access_file, "Allow From All");
-                    fclose($access_file);
-                }
+                    if (!is_dir(ROOT_PATH . '/cache/css/')) {
+                        mkdir(ROOT_PATH . '/cache/css/');
+                    }
 
-                file_put_contents(ROOT_PATH . '/cache/css/' . $this->_filename . '.css', $compiled_css);
-                $this->rel = 'stylesheet';
-                $this->href = '/cache/css/' . $this->_filename . '.css';
-                return parent::_include();
-            }
+                    // check if exists or make .htaccess with allow from all
+                    if (!file_exists(ROOT_PATH . '/cache/css/.htaccess')) {
+                        $access_file = fopen(ROOT_PATH . '/cache/css/.htaccess', 'w');
+                        fwrite($access_file, "Allow From All");
+                        fclose($access_file);
+                    }
+
+                    file_put_contents(ROOT_PATH . '/cache/css/' . $this->_filename . '.css', $compiled_css->getCss());
+                    $this->rel = 'stylesheet';
+                    $this->href = '/cache/css/' . $this->_filename . '.css';
+                    return parent::_include();
+                }
             case 'css':
             default:
                 $this->rel = 'stylesheet';
