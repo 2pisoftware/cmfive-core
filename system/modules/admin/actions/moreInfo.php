@@ -7,9 +7,9 @@
  */
 function moreInfo_GET(Web &$w)
 {
-	$w->setLayout('layout-bootstrap-5');
+    $w->setLayout('layout-bootstrap-5');
 
-	$option = $w->pathMatch("group_id");
+    $option = $w->pathMatch("group_id");
 
     AdminService::getInstance($w)->navigation($w, AuthService::getInstance($w)->getUser($option['group_id'])->login);
 
