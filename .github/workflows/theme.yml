@@ -4,13 +4,13 @@ on:
   push:
     branches: [ develop ]
     paths: 
-      - ./system/templates/base
-      - ./github/workflows/theme.yml
+      - ./system/templates/base/**
+      - ./.github/workflows/theme.yml
   pull_request:
     branches: [ develop, master ]
     paths:
-      - ./system/templates/base
-      - ./github/workflows/theme.yml
+      - ./system/templates/base/**
+      - ./.github/workflows/theme.yml
 
 jobs:
   build:
