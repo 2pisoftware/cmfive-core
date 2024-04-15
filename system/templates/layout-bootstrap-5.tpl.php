@@ -12,8 +12,10 @@ $theme_setting = AuthService::getInstance($w)->getSettingByKey('bs5-theme');
     <?php
     CmfiveStyleComponentRegister::registerComponent('app', new CmfiveStyleComponent("/system/templates/base/dist/app.css"));
     CmfiveScriptComponentRegister::registerComponent('app', new CmfiveScriptComponent("/system/templates/base/dist/app.js"));
+    $w->enqueueScript(["name" => "jquery.js", "uri" => "/system/templates/js/foundation-5.5.0/js/vendor/jquery.js", "weight" => 1000]);
 
     $w->outputStyles();
+	$w->outputScripts();
     ?>
     <!-- backwards compat -->
     <script src="/system/templates/base/node_modules/vue3/dist/vue.global.prod.js"></script>
