@@ -121,9 +121,15 @@ function edit_POST(Web $w)
 
     // Check to see if timelog already exists, and remove if duplicate
     $all_timelogs = TimelogService::getInstance($w)->getTimelogs();
+    $all_timelogs_for_user = [];
     foreach ($all_timelogs as $existing_timelog) {
-        if ($existing_timelog->getDateStart() == substr($timelog->dt_start, 0, 10) && $existing_timelog->getTimeStart() == date('H:i', strtotime($timelog->dt_start)+36000)) {
-            $w->error('Duplicate Timelog Deleted', $redirect ?: '/timelog');
+        if ($existing_timelog->user_id == $timelog->user_id) {
+            $all_timelogs_for_user[] = $existing_timelog;
+        }
+    }
+    foreach ($all_timelogs_for_user as $existing_timelog_for_user) {
+        if (gmdate('Y-m-d', strtotime($existing_timelog_for_user->getDateStart() . ' ' . $existing_timelog_for_user->getTimeStart())) == substr($timelog->dt_start, 0, 10) && gmdate('H:i', strtotime($existing_timelog_for_user->getTimeStart())) == substr($timelog->dt_start, 11, 5)) {
+            $w->error('Duplicate Timelog Removed', $redirect ?: '/timelog');
         }
     }
     
