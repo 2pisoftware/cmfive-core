@@ -89,7 +89,8 @@ $theme_setting = AuthService::getInstance($w)->getSettingByKey('bs5-theme');
                                                 if (is_string($module_nav)) : ?>
                                                     <li class="nav-item"><?php echo $module_nav; ?></li>
                                                 <?php else: ?>
-                                                    <li class="nav-item"><a <?php echo $module_nav->type == MenuLinkType::Modal ? 'data-modal-target' : 'link'; ?>="<?php echo $module_nav->url; ?>"><?php echo $module_nav->title; ?></a></li>
+                                                    <?php var_dump($module_nav); ?>
+                                                    <li class="nav-item"><a <?php echo $module_nav->type == MenuLinkType::Modal ? 'data-modal-target' : 'href'; ?>="<?php echo $module_nav->url; ?>"><?php echo $module_nav->title; ?></a></li>
                                                 <?php endif;
                                             endforeach; ?>
                                         </ul>
