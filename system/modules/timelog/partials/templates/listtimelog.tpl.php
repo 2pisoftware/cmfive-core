@@ -1,7 +1,23 @@
 <?php echo Html::box("/timelog/edit?class={$class}&id={$id}" . (!empty($redirect) ? "&redirect=$redirect" : ''), "Add new timelog", true); ?>
-<h4 style="display: inline; padding: 0px 5px;" class="right">
-	<?php echo TaskService::getInstance($w)->getFormatPeriod($total); ?>
-</h4>
+<details style="user-select:none; padding: 0px 0px" class="right">
+  <summary style="span.icon {width: 10px; height: 24px; transition: all 0.3s; margin-left: 0px;}; display: flex; cursor: pointer">
+    <h4 class="right" style="margin-bottom: 5px">
+      <?php echo TaskService::getInstance($w)->getFormatPeriod($total); ?>
+    </h4>
+    <span class="icon" style="padding: 6px;">&dtrif;</span>
+  </summary>
+  <style>
+    details[open] summary .icon {
+        transform: rotate(180deg) translate(-19px, 5px);
+    }
+    details[open] summary h4 {
+        transform: translate(19px, 0px);
+    }
+  </style>
+  <p style="font-size: 11px; text-align: right; margin-bottom: 10px;">
+    <?php echo "Billable: " . TaskTime::getInstance($w)->getTotalTimeByBillable()['Billable'] . "<br>Non-Billable: " . TaskTime::getInstance($w)->getTotalTimeByBillable()['Non-Billable'] ?>
+  </p>
+</details>
 
 <?php if (!empty($timelogs)) : ?>
 	<table class='tablesorter small-12'>
