@@ -19,8 +19,7 @@ function listtimelog(\Web $w, $params) {
 		}
 	}
 	if (in_array($current_task->task_type, ['Todo', 'CmfiveTicket', 'CrmTicket']) && sizeof($timelogs) > 0) {
-		$task_time = \TaskTime::getInstance($w);
-		$task_time->task_id = $params['object_id'];
+		$task_time = \TaskService::getInstance($w);
 	} else {
 		$task_time = null;
 	}
@@ -30,5 +29,5 @@ function listtimelog(\Web $w, $params) {
 	$w->ctx("id", $params['object_id']);
 	$w->ctx("redirect", !empty($params['redirect']) ? $params['redirect'] : "");
 	$w->ctx("timelogs", $timelogs);
-	$w->ctx("billable_hours", !empty($task_time) ? $task_time->getTotalTimeByBillable() : null);
+	$w->ctx("billable_hours", !empty($task_time) ? $task_time->getTotalTimeByBillable($params['object_id']) : null);
 }
