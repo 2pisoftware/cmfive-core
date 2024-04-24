@@ -1,23 +1,30 @@
 <?php echo Html::box("/timelog/edit?class={$class}&id={$id}" . (!empty($redirect) ? "&redirect=$redirect" : ''), "Add new timelog", true); ?>
-<details style="user-select:none; padding: 0px 0px" class="right">
-  <summary style="span.icon {width: 10px; height: 24px; transition: all 0.3s; margin-left: 0px;}; display: flex; cursor: pointer">
-    <h4 class="right" style="margin-bottom: 5px">
-      <?php echo TaskService::getInstance($w)->getFormatPeriod($total); ?>
-    </h4>
-    <span class="icon" style="padding: 6px;">&dtrif;</span>
-  </summary>
-  <style>
-    details[open] summary .icon {
-        transform: rotate(180deg) translate(-19px, 5px);
-    }
-    details[open] summary h4 {
-        transform: translate(19px, 0px);
-    }
-  </style>
-  <p style="font-size: 11px; text-align: right; margin-bottom: 10px;">
-    <?php echo "Billable: " . TaskTime::getInstance($w)->getTotalTimeByBillable()['Billable'] . "<br>Non-Billable: " . TaskTime::getInstance($w)->getTotalTimeByBillable()['Non-Billable'] ?>
-  </p>
-</details>
+<?php if (!empty($billable_hours)) : ?>
+  <details style="user-select: none;" class="right">
+    <summary style="display: flex; cursor: pointer; justify-content: right;">
+      <h4 class="right" style="margin-bottom: 5px;">
+        <?php echo TaskService::getInstance($w)->getFormatPeriod($total); ?>
+      </h4>
+      <span class="icon" style="padding: 6px;">&dtrif;</span>
+    </summary>
+    <style>
+      details[open] summary span {
+        transform: rotate(180deg) translate(0px, 5px)
+      }
+    </style>
+    <p style="font-size: 11px; text-align: right; margin-bottom: 10px;">
+      <?php
+        if ($billable_hours) {
+            echo 'Billable: ' . $billable_hours['Billable'] . '<br>Non-Billable: ' . $billable_hours['Non-Billable'];
+        }
+      ?>
+    </p>
+  </details>
+<?php else: ?>
+  <h4 class="right" style="margin-bottom: 5px">
+        <?php echo TaskService::getInstance($w)->getFormatPeriod($total); ?>
+  </h4>
+<?php endif; ?>
 
 <?php if (!empty($timelogs)) : ?>
 	<table class='tablesorter small-12'>
