@@ -29,7 +29,7 @@ jobs:
     - name: Get phpcs
       run: wget https://raw.githubusercontent.com/2pisoftware/cmfive-boilerplate/master/phpcs.xml
     - name: Codesniffer
-      uses: pipeline-components/php-codesniffer@v0.32.0
+      uses: pipeline-components/php-codesniffer@v0.33.1
       with:
         options: -s -p --colors --extensions=php --runtime-set testVersion ${{matrix.php_version}}
 
