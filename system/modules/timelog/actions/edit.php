@@ -124,10 +124,10 @@ function edit_POST(Web $w)
     $timelogs_for_task_and_user = [];
     foreach ($timelogs_for_task as $existing_timelog) {
         if ($existing_timelog->user_id == $timelog->user_id) {
-            $all_timelogs_for_task_and_user[] = $existing_timelog;
+            $timelogs_for_task_and_user[] = $existing_timelog;
         }
     }
-    foreach ($all_timelogs_for_task_and_user as $existing_timelog_for_task_and_user) {
+    foreach ($timelogs_for_task_and_user as $existing_timelog_for_task_and_user) {
         if (gmdate('Y-m-d', strtotime($existing_timelog_for_task_and_user->getDateStart() . ' ' . $existing_timelog_for_task_and_user->getTimeStart())) == substr($timelog->dt_start, 0, 10) && gmdate('H:i', strtotime($existing_timelog_for_task_and_user->getTimeStart())) == substr($timelog->dt_start, 11, 5)) {
             $w->error('Duplicate Timelog Removed', $redirect ?: '/timelog');
         }
