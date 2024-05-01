@@ -27,7 +27,7 @@ export class TimelogHelper  {
         await expect(page.getByText(timelog)).toBeVisible();
     }
 
-    static async createTimelog(page: Page, timelog: string, taskName: string, taskID: string, date: DateTime, start_time: string, end_time: string)
+    static async createTimelog(page: Page, timelog: string, taskName: string, taskID: string, date: DateTime, start_time: string, end_time: string, check_duplicate: boolean = false)
     {
         if(page.url() != HOST + "/task/edit/" + taskID + "#details") {
             if(page.url() != HOST + "/task/tasklist")
@@ -54,31 +54,17 @@ export class TimelogHelper  {
         await page.getByLabel("Description", {exact: true}).fill(timelog);
         await page.locator("#timelog_edit_form").getByRole("button", { name: "Save" }).click();
 
-        await page.getByRole("link", {name: taskName, exact: true}).first().click();
+        if (check_duplicate) {
+            await expect(page.getByText("Duplicate Timelog Removed")).toBeVisible();
+        }
+        await page.getByRole("link", {name: taskName, exact: false}).first().click();
         await page.getByRole("link", {name: "Time Log"}).click();
         await page.reload();
-        await expect(page.getByText(timelog)).toBeVisible();
-    }
-
-    static async editTimelog(page: Page, timelog: string, taskName: string, taskID: string, date: DateTime, start_time: string, end_time: string)
-    {
-        if(page.url() == HOST + "/task/edit/" + taskID + "#timelog") page.reload();
-        else if(page.url() != HOST + "/task/edit/" + taskID + "#details") {
-            if(page.url() != HOST + "/task/tasklist")
-                await CmfiveHelper.clickCmfiveNavbar(page, "Task", "Task List");
-            
-            await page.getByRole("link", {name: taskName, exact: true}).click();
-            await page.getByRole("link", {name: "Time Log"}).click();
+        if (!check_duplicate) {
+            await expect(page.getByText(timelog)).toBeVisible();
+        } else {
+            await expect(page.getByText(timelog)).toBeHidden();
         }
-
-        await CmfiveHelper.getRowByText(page, timelog).getByRole("button", {name: "Edit"}).click();
-        
-        await CmfiveHelper.fillDatePicker(page, "Date Required", "date_start", date);
-        await page.locator("#time_start").fill(start_time);
-        await page.locator("#time_end").fill(end_time);
-        await page.getByRole("button", {name: "Save"}).click();
-
-        await expect(page.getByText("Timelog saved")).toBeVisible();
     }
 
     static async deleteTimelog(page: Page, timelog: string, taskName: string, taskID: string)
