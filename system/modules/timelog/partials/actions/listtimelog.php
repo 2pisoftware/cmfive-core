@@ -18,7 +18,7 @@ function listtimelog(\Web $w, $params) {
 			$current_task = $task;
 		}
 	}
-	if (in_array($current_task->task_type, ['Todo', 'CmfiveTicket', 'CrmTicket']) && sizeof($timelogs) > 0) {
+	if (in_array($current_task->task_type, ['Todo', 'CmfiveTicket', 'CrmTicket']) && sizeof($timelogs) > 0 && !empty(\TaskService::getInstance($w)->getTaskTypeObject($current_task->task_type)->getTimeTypes())) {
 		$task_time = \TaskService::getInstance($w);
 	} else {
 		$task_time = null;
