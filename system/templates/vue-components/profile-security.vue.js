@@ -122,8 +122,9 @@ Vue.component('profile-security', {
           return;
         }
 
-        _this.mfa_qr_code_url = response.data.qr_code;
-        _this.mfa_secret = response.data.mfa_secret;
+        const { data } = response.data;
+        _this.mfa_qr_code_url = data.qr_code;
+        _this.mfa_secret = data.mfa_secret;
       }).catch(function (error) {
         (new Toast("Failed to fetch QR Code")).show();
         console.log(error);
