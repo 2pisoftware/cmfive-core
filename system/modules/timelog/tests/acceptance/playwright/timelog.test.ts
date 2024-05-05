@@ -14,8 +14,8 @@ test("You can create a Timelog using Timer" , async ({page}) => {
     
     const taskgroup = CmfiveHelper.randomID("taskgroup_");
     const taskgroupID = await TaskHelper.createTaskGroup(page, taskgroup, "Software Development", "OWNER", "OWNER", "OWNER");
-    await TaskHelper.addMemberToTaskgroup(page, taskgroup, taskgroupID, "admin admin", "OWNER");
-    await TaskHelper.setDefaultAssignee(page, taskgroup, taskgroupID, "admin admin");
+    await TaskHelper.addMemberToTaskgroup(page, taskgroup, taskgroupID, "Admin Admin", "OWNER");
+    await TaskHelper.setDefaultAssignee(page, taskgroup, taskgroupID, "Admin Admin");
 
     const task = CmfiveHelper.randomID("task_");
     const taskID = await TaskHelper.createTask(page, task, taskgroup, "Software Development");
@@ -36,8 +36,8 @@ test("You can create a Timelog using Add Timelog" , async ({page}) => {
     
     const taskgroup = CmfiveHelper.randomID("taskgroup_");
     const taskgroupID = await TaskHelper.createTaskGroup(page, taskgroup, "Software Development", "OWNER", "OWNER", "OWNER");
-    await TaskHelper.addMemberToTaskgroup(page, taskgroup, taskgroupID, "admin admin", "OWNER");
-    await TaskHelper.setDefaultAssignee(page, taskgroup, taskgroupID, "admin admin");
+    await TaskHelper.addMemberToTaskgroup(page, taskgroup, taskgroupID, "Admin Admin", "OWNER");
+    await TaskHelper.setDefaultAssignee(page, taskgroup, taskgroupID, "Admin Admin");
 
     const task = CmfiveHelper.randomID("task_");
     const taskID = await TaskHelper.createTask(page, task, taskgroup, "Software Development");

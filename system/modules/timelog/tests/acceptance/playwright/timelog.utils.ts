@@ -27,7 +27,7 @@ export class TimelogHelper  {
         await expect(page.getByText(timelog)).toBeVisible();
     }
 
-    static async createTimelog(page: Page, timelog: string, taskName: string, taskID: string, date: DateTime, start_time: string, end_time: string, time_type: string = null)
+    static async createTimelog(page: Page, timelog: string, taskName: string, taskID: string, date: DateTime, start_time: string, end_time: string, time_type?: string)
     {
         if(page.url() != HOST + "/task/edit/" + taskID + "#details") {
             if(page.url() != HOST + "/task/tasklist")
