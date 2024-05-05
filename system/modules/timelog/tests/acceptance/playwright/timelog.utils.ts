@@ -67,6 +67,27 @@ export class TimelogHelper  {
         }
     }
 
+    static async editTimelog(page: Page, timelog: string, taskName: string, taskID: string, date: DateTime, start_time: string, end_time: string)
+    {
+        if(page.url() == HOST + "/task/edit/" + taskID + "#timelog") page.reload();
+        else if(page.url() != HOST + "/task/edit/" + taskID + "#details") {
+            if(page.url() != HOST + "/task/tasklist")
+                await CmfiveHelper.clickCmfiveNavbar(page, "Task", "Task List");
+            
+            await page.getByRole("link", {name: taskName, exact: true}).click();
+            await page.getByRole("link", {name: "Time Log"}).click();
+        }
+
+        await CmfiveHelper.getRowByText(page, timelog).getByRole("button", {name: "Edit"}).click();
+        
+        await CmfiveHelper.fillDatePicker(page, "Date Required", "date_start", date);
+        await page.locator("#time_start").fill(start_time);
+        await page.locator("#time_end").fill(end_time);
+        await page.getByRole("button", {name: "Save"}).click();
+
+        await expect(page.getByText("Timelog saved")).toBeVisible();
+    }
+
     static async deleteTimelog(page: Page, timelog: string, taskName: string, taskID: string)
     {
         if(page.url() == HOST + "/task/edit/" + taskID + "#timelog") page.reload();
