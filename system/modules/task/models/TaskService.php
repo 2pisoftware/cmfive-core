@@ -1150,7 +1150,7 @@ class TaskService extends DbService
         $billable_time_in_seconds = array_sum(array_merge(array_slice($time_totals_in_seconds, 0, 3), [$time_totals_in_seconds[4]]));
         $billable_time = floor($billable_time_in_seconds / 3600) . gmdate(":i:s", $billable_time_in_seconds);
         $nonbillable_time = floor($time_totals_in_seconds[3] / 3600) . gmdate(":i:s", $time_totals_in_seconds[3]);
-        return ['Billable' => $billable_time, 'Non-Billable' => $nonbillable_time];
+        return ['Billable' => substr($billable_time, 0, -3), 'Non-Billable' => substr($nonbillable_time, 0, -3)];
     }
     
 }

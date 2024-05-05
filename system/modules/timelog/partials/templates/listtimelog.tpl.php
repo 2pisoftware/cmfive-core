@@ -15,7 +15,7 @@
     <p style="font-size: 11px; text-align: right; margin-bottom: 10px;">
       <?php
         if ($billable_hours) {
-            echo 'Billable: ' . substr($billable_hours['Billable'], 0, -3) . '<br>Non-Billable: ' . substr($billable_hours['Non-Billable'], 0, -3);
+            echo 'Billable: ' . $billable_hours['Billable'] . '<br>Non-Billable: ' . $billable_hours['Non-Billable'];
         }
       ?>
     </p>
