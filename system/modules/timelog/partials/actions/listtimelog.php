@@ -11,10 +11,23 @@ function listtimelog(\Web $w, $params) {
 			return $carry += $timelog->getDuration();
 		});
 	}
+
+	$all_tasks = \TaskService::getInstance($w)->getTasks();
+	foreach ($all_tasks as $task) {
+		if ($task->id == $params['object_id']) {
+			$current_task = $task;
+		}
+	}
+	if (in_array($current_task->task_type, ['Todo', 'CmfiveTicket', 'CrmTicket']) && sizeof($timelogs) > 0 && !empty(\TaskService::getInstance($w)->getTaskTypeObject($current_task->task_type)->getTimeTypes())) {
+		$task_time = \TaskService::getInstance($w);
+	} else {
+		$task_time = null;
+	}
 	
 	$w->ctx("total", !empty($total) ? $total : 0);
 	$w->ctx("class", $params['object_class']);
 	$w->ctx("id", $params['object_id']);
 	$w->ctx("redirect", !empty($params['redirect']) ? $params['redirect'] : "");
 	$w->ctx("timelogs", $timelogs);
+	$w->ctx("billable_hours", !empty($task_time) ? $task_time->getTotalTimeByBillable($params['object_id']) : null);
 }
