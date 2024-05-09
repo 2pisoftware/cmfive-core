@@ -66,8 +66,8 @@ test("Test that duplicate timelogs are deleted" , async ({page}) => {
     
     const taskgroup = CmfiveHelper.randomID("taskgroup_");
     const taskgroupID = await TaskHelper.createTaskGroup(page, taskgroup, "Software Development", "OWNER", "OWNER", "OWNER");
-    await TaskHelper.addMemberToTaskgroup(page, taskgroup, taskgroupID, "Admin Admin", "OWNER");
-    await TaskHelper.setDefaultAssignee(page, taskgroup, taskgroupID, "Admin Admin");
+    await TaskHelper.addMemberToTaskgroup(page, taskgroup, taskgroupID, "admin admin", "OWNER");
+    await TaskHelper.setDefaultAssignee(page, taskgroup, taskgroupID, "admin admin");
 
     const task = CmfiveHelper.randomID("task_");
     const taskID = await TaskHelper.createTask(page, task, taskgroup, "Software Development");
