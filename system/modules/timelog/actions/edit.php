@@ -119,6 +119,20 @@ function edit_POST(Web $w)
         $timelog->user_id = !empty($_POST['user_id']) ? intval($_POST['user_id']) : AuthService::getInstance($w)->user()->id;
     }
 
+    // Check to see if timelog with same starting time already exists, and remove if duplicate
+    $timelogs_for_task = TimelogService::getInstance($w)->getTimelogsForObject($timelog->getLinkedObject());
+    $timelogs_for_task_and_user = [];
+    foreach ($timelogs_for_task as $existing_timelog) {
+        if ($existing_timelog->user_id == $timelog->user_id) {
+            $timelogs_for_task_and_user[] = $existing_timelog;
+        }
+    }
+    foreach ($timelogs_for_task_and_user as $existing_timelog_for_task_and_user) {
+        if (gmdate('Y-m-d', strtotime($existing_timelog_for_task_and_user->getDateStart() . ' ' . $existing_timelog_for_task_and_user->getTimeStart())) == substr($timelog->dt_start, 0, 10) && gmdate('H:i', strtotime($existing_timelog_for_task_and_user->getTimeStart())) == substr($timelog->dt_start, 11, 5)) {
+            $w->error('Duplicate Timelog Removed', $redirect ?: '/timelog');
+        }
+    }
+    
     // Timelog user_id handled in insert/update
     $timelog->insertOrUpdate();
 
