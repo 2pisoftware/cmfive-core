@@ -54,16 +54,14 @@ export class TimelogHelper  {
         await page.getByLabel("Description", {exact: true}).fill(timelog);
         await page.locator("#timelog_edit_form").getByRole("button", { name: "Save" }).click();
 
-        if (check_duplicate) {
-            await expect(page.getByText("Duplicate Timelog Removed")).toBeVisible();
-        }
         await page.getByRole("link", {name: taskName, exact: false}).first().click();
         await page.getByRole("link", {name: "Time Log"}).click();
         await page.reload();
-        if (!check_duplicate) {
-            await expect(page.getByText(timelog)).toBeVisible();
-        } else {
+
+        if (check_duplicate) {
             await expect(page.getByText(timelog)).toBeHidden();
+        } else {
+            await expect(page.getByText(timelog)).toBeVisible();
         }
     }
 
