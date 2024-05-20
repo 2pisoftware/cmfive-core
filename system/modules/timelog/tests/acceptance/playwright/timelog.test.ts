@@ -92,6 +92,7 @@ test("Test that duplicate timelogs are deleted" , async ({page}) => {
         "1:00",
         "2:00",
         true,
+        timelog1
     );
 
     await TimelogHelper.deleteTimelog(page, timelog1, task, taskID);
