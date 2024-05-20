@@ -65,9 +65,11 @@ export class TimelogHelper  {
             console.log(otherTimelogTrHtmlContent);
 
             const thisTimelogPreElement = await page.$(`tr > td > pre:has-text("${timelog}")`);
-            const thisTimelogTrElement = await thisTimelogPreElement.evaluateHandle(node => node.closest('tr'));
-            const thisTimelogTrHtmlContent = await thisTimelogTrElement.innerHTML();
-            console.log(thisTimelogTrHtmlContent);
+            if(thisTimelogPreElement) {
+                const thisTimelogTrElement = await thisTimelogPreElement.evaluateHandle(node => node.closest('tr'));
+                const thisTimelogTrHtmlContent = await thisTimelogTrElement.innerHTML();
+                console.log(thisTimelogTrHtmlContent);
+            }
 
             await expect(page.getByText(timelog)).toBeHidden();
         } else {
