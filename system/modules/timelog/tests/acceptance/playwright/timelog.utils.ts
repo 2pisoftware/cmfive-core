@@ -27,7 +27,7 @@ export class TimelogHelper  {
         await expect(page.getByText(timelog)).toBeVisible();
     }
 
-    static async createTimelog(page: Page, timelog: string, taskName: string, taskID: string, date: DateTime, start_time: string, end_time: string, check_duplicate: boolean = false, develop_ci_other_timelog: string = "")
+    static async createTimelog(page: Page, timelog: string, taskName: string, taskID: string, date: DateTime, start_time: string, end_time: string, check_duplicate: boolean = false)
     {
         if(page.url() != HOST + "/task/edit/" + taskID + "#details") {
             if(page.url() != HOST + "/task/tasklist")
@@ -59,18 +59,6 @@ export class TimelogHelper  {
         await page.reload();
 
         if (check_duplicate) {
-            const otherTimelogPreElement = await page.$(`tr > td > pre:has-text("${develop_ci_other_timelog}")`);
-            const otherTimelogTrElement = await otherTimelogPreElement.evaluateHandle(node => node.closest('tr'));
-            const otherTimelogTrHtmlContent = await otherTimelogTrElement.innerHTML();
-            console.log(otherTimelogTrHtmlContent);
-
-            const thisTimelogPreElement = await page.$(`tr > td > pre:has-text("${timelog}")`);
-            if(thisTimelogPreElement) {
-                const thisTimelogTrElement = await thisTimelogPreElement.evaluateHandle(node => node.closest('tr'));
-                const thisTimelogTrHtmlContent = await thisTimelogTrElement.innerHTML();
-                console.log(thisTimelogTrHtmlContent);
-            }
-
             await expect(page.getByText(timelog)).toBeHidden();
         } else {
             await expect(page.getByText(timelog)).toBeVisible();
@@ -109,7 +97,7 @@ export class TimelogHelper  {
             await page.getByRole("link", {name: "Time Log"}).click();
         }
 
-        await page.locator("tr", { has: page.getByText(timelog, {exact: false}) }).getByRole("button", {name: "Delete"}).click();
+        await CmfiveHelper.getRowByText(page, timelog).getByRole("button", {name: "Delete"}).click();
 
         await page.reload();
         await expect(page.getByText(timelog)).not.toBeVisible();
