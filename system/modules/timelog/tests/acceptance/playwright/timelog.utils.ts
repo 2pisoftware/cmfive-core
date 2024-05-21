@@ -109,7 +109,7 @@ export class TimelogHelper  {
             await page.getByRole("link", {name: "Time Log"}).click();
         }
 
-        await CmfiveHelper.getRowByText(page, timelog).getByRole("button", {name: "Delete"}).click();
+        await page.locator("tr", { has: page.getByText(timelog, {exact: false}) }).getByRole("button", {name: "Delete"}).click();
 
         await page.reload();
         await expect(page.getByText(timelog)).not.toBeVisible();
