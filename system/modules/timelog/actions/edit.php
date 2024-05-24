@@ -127,9 +127,9 @@ function edit_POST(Web $w)
             $timelogs_for_task_and_user[] = $existing_timelog;
         }
     }
-    LogService::getInstance($w)->debug("DEVELOP CI/CD TIMELOG DEDUPE TEST LOG ### CURRENT ### ID $timelog->id - DT START " . substr($timelog->dt_start, 0, 10) . " " . substr($timelog->dt_start, 11, 5));
+    LogService::getInstance($w)->info("DEVELOP CI/CD TIMELOG DEDUPE TEST LOG ### CURRENT ### ID $timelog->id - DT START " . substr($timelog->dt_start, 0, 10) . " " . substr($timelog->dt_start, 11, 5));
     foreach ($timelogs_for_task_and_user as $existing_timelog_for_task_and_user) {
-        LogService::getInstance($w)->debug("DEVELOP CI/CD TIMELOG DEDUPE TEST LOG ### EXISTING ### ID $existing_timelog_for_task_and_user->id - DT START " . gmdate('Y-m-d', strtotime($existing_timelog_for_task_and_user->getDateStart() . ' ' . $existing_timelog_for_task_and_user->getTimeStart())) . " " . gmdate('H:i', strtotime($existing_timelog_for_task_and_user->getTimeStart())));
+        LogService::getInstance($w)->info("DEVELOP CI/CD TIMELOG DEDUPE TEST LOG ### EXISTING ### ID $existing_timelog_for_task_and_user->id - DT START " . gmdate('Y-m-d', strtotime($existing_timelog_for_task_and_user->getDateStart() . ' ' . $existing_timelog_for_task_and_user->getTimeStart())) . " " . gmdate('H:i', strtotime($existing_timelog_for_task_and_user->getTimeStart())));
 
         if (gmdate('Y-m-d', strtotime($existing_timelog_for_task_and_user->getDateStart() . ' ' . $existing_timelog_for_task_and_user->getTimeStart())) == substr($timelog->dt_start, 0, 10) && gmdate('H:i', strtotime($existing_timelog_for_task_and_user->getTimeStart())) == substr($timelog->dt_start, 11, 5)) {
             $w->error('Duplicate Timelog Removed', $redirect ?: '/timelog');
