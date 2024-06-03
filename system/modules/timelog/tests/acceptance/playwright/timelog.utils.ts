@@ -54,15 +54,17 @@ export class TimelogHelper  {
         await page.getByLabel("Description", {exact: true}).fill(timelog);
         await page.locator("#timelog_edit_form").getByRole("button", { name: "Save" }).click();
 
+        if(await page.$("#saved_record_id") != null)
+            console.log(await page.$eval("#saved_record_id", el => el.innerHTML));
+
         await page.getByRole("link", {name: taskName, exact: false}).first().click();
         await page.getByRole("link", {name: "Time Log"}).click();
         await page.reload();
 
-        if (check_duplicate) {
+        if (check_duplicate)
             await expect(page.getByText(timelog)).toBeHidden();
-        } else {
+        else
             await expect(page.getByText(timelog)).toBeVisible();
-        }
     }
 
     static async editTimelog(page: Page, timelog: string, taskName: string, taskID: string, date: DateTime, start_time: string, end_time: string)
