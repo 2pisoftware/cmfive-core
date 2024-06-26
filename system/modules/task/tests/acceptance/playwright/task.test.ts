@@ -5,7 +5,7 @@ import { AdminHelper } from "@utils/admin";
 
 test.describe.configure({mode: 'parallel'});
 
-test("Test that you can manage taskgroups, taskgroup members, and tasks", async ({ page }) => {
+test("Test that you can manage taskgroups, taskgroup members, and tasks", async ({ page, isMobile }) => {
     test.setTimeout(GLOBAL_TIMEOUT);
     CmfiveHelper.acceptDialog(page);
 
@@ -13,7 +13,7 @@ test("Test that you can manage taskgroups, taskgroup members, and tasks", async 
 
     // create user
     const user = CmfiveHelper.randomID("user_")
-    await AdminHelper.createUser(page, user, user+"_password", user+"_firstname", user+"_lastname", user+"@example.com", /* ["user", "task_user", "task_group"] */);
+    await AdminHelper.createUser(page, isMobile, user, user+"_password", user+"_firstname", user+"_lastname", user+"@example.com", /* ["user", "task_user", "task_group"] */);
 
     // here we diverge from codeception task test, codeception expects no taskgroups to exist
     // playwright however does not have that luxury due to its parallel nature (timelog tests create taskgroups!)
@@ -22,11 +22,11 @@ test("Test that you can manage taskgroups, taskgroup members, and tasks", async 
 
     // create taskgroup
     const taskgroup = CmfiveHelper.randomID("taskgroup_");
-    const taskgroupID = await TaskHelper.createTaskGroup(page, taskgroup, "To Do", "GUEST", "GUEST", "GUEST");
+    const taskgroupID = await TaskHelper.createTaskGroup(page, isMobile, taskgroup, "To Do", "GUEST", "GUEST", "GUEST");
 
     // add user to/edit taskgroup
-    await TaskHelper.addMemberToTaskgroup(page, taskgroup, taskgroupID, user+"_firstname "+user+"_lastname", "MEMBER");
-    await TaskHelper.editTaskGroup(page, taskgroup, taskgroupID, {
+    await TaskHelper.addMemberToTaskgroup(page, isMobile, taskgroup, taskgroupID, user+"_firstname "+user+"_lastname", "MEMBER");
+    await TaskHelper.editTaskGroup(page, isMobile, taskgroup, taskgroupID, {
         "Title": taskgroup+"_edited",
         "Who Can Assign": "MEMBER",
         "Who Can Create": "MEMBER",
@@ -36,7 +36,7 @@ test("Test that you can manage taskgroups, taskgroup members, and tasks", async 
 
     // create task
     const task = CmfiveHelper.randomID("task_");
-    const taskID = await TaskHelper.createTask(page, task, taskgroup, "To Do", {
+    const taskID = await TaskHelper.createTask(page, isMobile, task, taskgroup, "To Do", {
         "Status": "New",
         "Priority": "Normal",
         "Assigned To": user+"_firstname "+user+"_lastname",
@@ -60,7 +60,7 @@ test("Test that you can manage taskgroups, taskgroup members, and tasks", async 
 
     // edit task group member details
     await page.screenshot({path: "task.png"})
-    await CmfiveHelper.clickCmfiveNavbar(page, "Task", "Task Groups");
+    await CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Task", "Task Groups");
     await page.getByRole("link", {name: taskgroup+"_edited", exact: true}).click();
     await CmfiveHelper.getRowByText(page, user+"_firstname "+user+"_lastname").getByRole("button", {name: "Edit"}).click();
     await page.waitForSelector("#cmfive-modal");
@@ -88,6 +88,6 @@ test("Test that you can manage taskgroups, taskgroup members, and tasks", async 
         await expect(page.getByRole("link", {name: taskName, exact: true})).not.toBeVisible();
     }
 
-    await TaskHelper.deleteTaskGroup(page, taskgroup+"_edited", taskgroupID);
-    await AdminHelper.deleteUser(page, user);
+    await TaskHelper.deleteTaskGroup(page, isMobile, taskgroup+"_edited", taskgroupID);
+    await AdminHelper.deleteUser(page, isMobile, user);
 });

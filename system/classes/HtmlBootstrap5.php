@@ -307,25 +307,27 @@ class HtmlBootstrap5 extends Html
 
         // Opening tags
         $buffer .= "<table class='{$class} d-none d-md-table'>";
-        if (!empty($header)) {
-            $buffer .= "<thead><tr>";
-            if (is_array($header)) {
-                foreach ($header as $h) {
-                    if (!is_array($h)) {
-                        $buffer .= "<th>{$h}</th>";
-                    } else {
-                        $buffer .= "<th " . ($h[1] === true ? "class='show-for-medium-up'" : "") . ">{$h[0]}</th>";
-                    }
-                }
-            } else {
-                // Backwards capability!
-                foreach ($data[0] as $h) {
-                    $buffer .= "<th>{$h}</th>";
-                }
-                array_shift($data);
-            }
-            $buffer .= "</tr></thead>";
+        if (empty($header)) {
+            $header = array_shift($data);
         }
+
+        $buffer .= "<thead><tr>";
+        if (is_array($header)) {
+            foreach ($header as $h) {
+                if (!is_array($h)) {
+                    $buffer .= "<th>{$h}</th>";
+                } else {
+                    $buffer .= "<th " . ($h[1] === true ? "class='show-for-medium-up'" : "") . ">{$h[0]}</th>";
+                }
+            }
+        } else {
+            // Backwards capability!
+            foreach ($data[0] as $h) {
+                $buffer .= "<th>{$h}</th>";
+            }
+            array_shift($data);
+        }
+        $buffer .= "</tr></thead>";
 
         $buffer .= "<tbody>";
         foreach ($data as $key => $row) {
@@ -343,11 +345,10 @@ class HtmlBootstrap5 extends Html
         }
         $buffer .= "</tbody></table>";
 
-        $buffer .= "<div class='d-block d-md-none'>";
+        $buffer .= "<div class='d-block d-md-none' style='padding-top: 2ch;'>";
         if (!empty($data) && is_array($data)) {
             if (!is_array($header)) {
-                $header = $data[0];
-                array_slice($data, 0, 1);
+                $header = array_shift($data);
             }
 
             foreach ($data as $key => $row) {
