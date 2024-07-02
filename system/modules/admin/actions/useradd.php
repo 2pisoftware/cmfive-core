@@ -9,8 +9,7 @@ use Html\Cmfive\SelectWithOther;
  *
  * @param <type> $w
  */
-function useradd_GET(Web $w)
-{
+function useradd_GET(Web $w) {
     $p = $w->pathMatch("box");
     //$w->setLayout("layout-2021");
     $w->setLayout('layout-bootstrap-5');
@@ -65,12 +64,12 @@ function useradd_GET(Web $w)
             'options' => $availableLocales,
         ])),
     ];
-    
+
     $form['User Details'][] = [
         $password_field,
         $password_confirm_field,
     ];
-    
+
     $form['Contact Details'][] = [
         (new \Html\Form\InputField([
             "id|name" => "firstname",
@@ -108,8 +107,7 @@ function useradd_GET(Web $w)
  *
  * @param <type> $w
  */
-function useradd_POST(Web &$w)
-{
+function useradd_POST(Web &$w) {
     $errors = $w->validate([
         ["login", ".+", "Login is mandatory"],
         ["password", ".+", "Password is mandatory"],
@@ -133,6 +131,11 @@ function useradd_POST(Web &$w)
         $contact->setTitle($_REQUEST['title_lookup_id']);
     }
     $contact->insert();
+
+    // Check if user with login already exists
+    $existing = DbService::getInstance($w)->getObject("User", ["login" => $_REQUEST["login"]]);
+    if (!empty($existing))
+        $w->error("A user with that login already exists", "/admin/users");
 
     // now saving the user
     $user = new User($w);
