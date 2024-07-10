@@ -22,4 +22,13 @@ class ChannelsService extends DbService
         $w->ctx("navigation", $nav);
         return $nav;
     }
+
+    public function navList(): array
+    {
+        return [
+            new MenuLinkStruct("List Channels", "channels/listchannels"),
+            new MenuLinkStruct("List Processors", "channels/listprocessors"),
+            new MenuLinkStruct("List Messages", "channels/listmessages"),
+        ];
+    }
 }

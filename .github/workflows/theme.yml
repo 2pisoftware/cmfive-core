@@ -1,0 +1,36 @@
+name: Theme
+
+on:
+  push:
+    branches: [ develop ]
+    paths: 
+      - 'system/templates/base/**'
+      - '.github/workflows/theme.yml'
+  pull_request:
+    branches: [ develop, master ]
+    paths:
+      - 'system/templates/base/**'
+      - '.github/workflows/theme.yml'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - name: Install dependencies
+        working-directory: ./system/templates/base
+        run: npm install
+      - name: Build
+        working-directory: ./system/templates/base
+        run: npm run production
+      - name: Save artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: cmfive-theme
+          path: ./system/templates/base/dist
+          

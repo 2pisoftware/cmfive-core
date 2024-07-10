@@ -1,0 +1,66 @@
+
+.accordion-item {
+    border-radius: 0;
+    // @include theme((border-color: 'light-grey'));
+
+    &:first-of-type {
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+    }
+    
+    &:last-of-type {
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+
+    .accordion-header {
+        border-radius: 0;
+
+        .accordion-button {
+            border-radius: 0;
+            @include theme((background-color: 'secondary'));
+            // @include theme((border-color: 'light-grey'));
+
+            &.collapsed {
+                @include theme((background-color: 'white-black'));
+                @include theme((color: 'dark-grey'));
+
+                &:after {
+                    @include dark-theme-rule("background-image", url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23ffffff'><path fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/></svg>"));
+                }
+
+                &:first-of-type {
+                    border-top-left-radius: 0;
+                    border-top-right-radius: 0;
+                }
+                
+                &:last-of-type {
+                    border-bottom-left-radius: 0;
+                    border-bottom-right-radius: 0;
+                }
+            }
+
+            ::after {
+                @include theme((color: 'dark-grey'));
+            }
+
+            &:hover {
+                cursor: pointer;
+            }
+
+            &:focus, &:active {
+                outline: none !important;
+                box-shadow: none !important;
+            }
+        }
+    }
+
+    .accordion-collapse {
+        border-radius: 0;
+        .accordion-body {
+            border-radius: 0;
+            @include theme((background-color: 'white-black'));
+            @include theme((color: 'dark-grey'));
+        }
+    }
+}

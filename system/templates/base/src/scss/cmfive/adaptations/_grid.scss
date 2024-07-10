@@ -1,3 +1,4 @@
+@use "sass:math";
 
 .row-fluid {
     // @include make-row();
@@ -30,7 +31,7 @@
     @media only screen {
         .small-#{$i} {
             // flex: 0 0 auto;
-            width: (100% / 12) * $i;
+            width: math.div(100%, 12) * $i;
         }
     }
 
@@ -38,7 +39,7 @@
         @include media-breakpoint-up(md) {
             .medium-#{$i} {
                 // flex: 0 0 auto;
-                width: (100% / 12) * $i !important;
+                width: math.div(100%, 12) * $i !important;
             }
         }
     }
@@ -47,7 +48,7 @@
         @include media-breakpoint-up(lg) {
             .large-#{$i} {
                 // flex: 0 0 auto;
-                width: (100% / 12) * $i !important;
+                width: math.div(100%, 12) * $i !important;
             }
         }
     }
@@ -72,9 +73,26 @@ ul[class*="-block-grid-"] {
             padding-left: 0;
         }
 
-        &:last-child {
-            padding-right: 0;
-        }
+        // &:last-child {
+        //     padding-right: 0;
+        // }
+    }
+}
+
+@media only screen {
+    ul.small-block-grid-1 li {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    ul.medium-block-grid-1 li {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    ul.large-block-grid-1 li {
+        padding-left: 0;
+        padding-right: 0;
     }
 }
 
@@ -83,13 +101,37 @@ ul[class*="-block-grid-"] {
         ul.small-block-grid-#{$i} {
             li {
                 flex: 0 1 calc(100%/#{$i});
+                padding: 0 1rem;
             }
         }
 
-        @include media-breakpoint-up(md) {
+        @include media-breakpoint-down(sm) {
+            @if $i > 1 {
+                ul.small-block-grid-#{$i} li:nth-child(#{$i}n) {
+                    padding-right: 0;
+                }
+            
+                ul.small-block-grid-#{$i} li:nth-child(#{$i}n + 1) {
+                    padding-left: 0;
+                }
+            }
+        }
+
+        @include media-breakpoint-only(md) {
             ul.medium-block-grid-#{$i} {
                 li {
                     flex: 0 1 calc(100%/#{$i}) !important;
+                    padding: 0 1rem;
+                }
+            }
+
+            @if $i > 1 {
+                ul.medium-block-grid-#{$i} li:nth-child(#{$i}n) {
+                    padding-right: 0;
+                }
+            
+                ul.medium-block-grid-#{$i} li:nth-child(#{$i}n + 1) {
+                    padding-left: 0;
                 }
             }
         }
@@ -98,11 +140,65 @@ ul[class*="-block-grid-"] {
             ul.large-block-grid-#{$i} {
                 li {
                     flex: 0 1 calc(100%/#{$i}) !important;
+                    padding: 0 1rem;
+                }
+            }
+
+            @if $i > 1 {
+                ul.large-block-grid-#{$i} li:nth-child(#{$i}n) {
+                    padding-right: 0;
+                }
+            
+                ul.large-block-grid-#{$i} li:nth-child(#{$i}n + 1) {
+                    padding-left: 0;
                 }
             }
         }
     }
 }
+
+// @media only screen {
+
+//     ul.small-block-grid-2 li:nth-child(2n) {
+//         padding-right: 0;
+//     }
+
+//     ul.small-block-grid-2 li:nth-child(2n + 1) {
+//         padding-left: 0;
+//     }
+
+//     ul.small-block-grid-3 li:nth-child(3n) {
+//         padding-right: 0;
+//     }
+
+//     ul.small-block-grid-3 li:nth-child(3n + 1) {
+//         padding-left: 0;
+//     }
+
+//     ul.small-block-grid-4 li:nth-child(4n) {
+//         padding-right: 0;
+//     }
+
+//     ul.small-block-grid-4 li:nth-child(4n + 1) {
+//         padding-left: 0;
+//     }
+
+//     ul.small-block-grid-5 li:nth-child(5n) {
+//         padding-right: 0;
+//     }
+
+//     ul.small-block-grid-5 li:nth-child(5n + 1) {
+//         padding-left: 0;
+//     }
+
+//     ul.small-block-grid-6 li:nth-child(6n) {
+//         padding-right: 0;
+//     }
+
+//     ul.small-block-grid-6 li:nth-child(6n + 1) {
+//         padding-left: 0;
+//     }
+// }
 
 // Foundation block grid - too complex to include
 
