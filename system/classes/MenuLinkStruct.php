@@ -1,10 +1,5 @@
 <?php
 
-enum MenuLinkType {
-    case Link;
-    case Modal;
-}
-
 class MenuLinkStruct {
     public function __construct(
         public string $title,
