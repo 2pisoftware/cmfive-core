@@ -32,7 +32,7 @@ class Timelog extends DbObject
     public function getDateStart()
     {
         if (!empty($this->dt_start)) {
-            return date('Y-m-d', $this->dt_start);
+            return formatDate($this->dt_start, 'Y-m-d');
         }
         return null;
     }
@@ -40,7 +40,7 @@ class Timelog extends DbObject
     public function getTimeStart()
     {
         if (!empty($this->dt_start)) {
-            return date('H:i', $this->dt_start);
+            return formatDate($this->dt_start, 'H:i');
         }
         return null;
     }
@@ -48,7 +48,7 @@ class Timelog extends DbObject
     public function getTimeEnd()
     {
         if (!empty($this->dt_end)) {
-            return date('H:i', $this->dt_end);
+            return formatDate($this->dt_end, 'H:i');
         }
         return null;
     }
@@ -56,7 +56,10 @@ class Timelog extends DbObject
     public function getHoursWorked()
     {
         if (!empty($this->dt_end)) {
-            $date_time_diff = $this->dt_end - $this->dt_start;
+            $start = $this->dt2Time($this->dt_start);
+            $end = $this->dt2Time($this->dt_end);
+
+            $date_time_diff = $end - $start;
             return intval($date_time_diff / 3600);
         }
         return null;
@@ -65,7 +68,10 @@ class Timelog extends DbObject
     public function getMinutesWorked()
     {
         if (!empty($this->dt_end)) {
-            $date_time_diff = $this->dt_end - $this->dt_start;
+            $start = $this->dt2Time($this->dt_start);
+            $end = $this->dt2Time($this->dt_end);
+
+            $date_time_diff = $end - $start;
             $date_time_diff -= intval($date_time_diff / 3600) * 3600;
             return round($date_time_diff / 60);
         }
@@ -92,7 +98,10 @@ class Timelog extends DbObject
     public function getDuration()
     {
         if (!empty($this->dt_start) && !empty($this->dt_end)) {
-            return ($this->dt_end - $this->dt_start);
+            $start = $this->dt2Time($this->dt_start);
+            $end = $this->dt2Time($this->dt_end);
+
+            return $end - $start;
         }
     }
 
@@ -138,7 +147,7 @@ class Timelog extends DbObject
         $this->object_class = get_class($object);
         $this->object_id = $object->id;
 
-        $this->dt_start = !empty($start_time) ? $start_time : time();
+        $this->dt_start = !empty($start_time) ? $start_time : (new DateTime('now', new DateTimeZone('UTC')))->format('Y-m-d H:i:s');
         $this->user_id = AuthService::getInstance($this->w)->user()->id;
         $this->insert(false);
 
@@ -148,7 +157,7 @@ class Timelog extends DbObject
     public function stop()
     {
         if (empty($this->dt_end)) {
-            $this->dt_end = time();
+            $this->dt_end = (new DateTime('now', new DateTimeZone('UTC')))->format('Y-m-d H:i:s');
             $this->update();
         }
     }

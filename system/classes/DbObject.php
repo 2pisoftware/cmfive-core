@@ -19,7 +19,7 @@
  *    into seconds when loaded from DB and turned back into
  *    MySQL datetime format when saved to DB.
  *
- * 3. d_* as above but data only
+ * 3. d_* as above but date only
  *
  * 4. t_* as above but time only
  *
@@ -401,6 +401,7 @@ class DbObject extends DbService
         if (strpos($k, "dt_") === 0) {
             if (!empty($v)) {
                 return $this->dt2Time($v);
+                // return time();
             }
         } elseif (strpos($k, "d_") === 0) {
             if (!empty($v)) {

@@ -1,5 +1,7 @@
 <?php
 
+use AWS\CRT\Log;
+
 function move_GET(Web $w)
 {
     $w->setLayout('layout-bootstrap-5');
@@ -113,6 +115,8 @@ function move_GET(Web $w)
 function move_POST(Web $w)
 {
     $p = $w->pathMatch("id");
+    $id = $p["id"];
+    // $id = Request::string("id");
 
     // get redirect, defaults to "/timelog"
     $redirect = Request::string("redirect", "/timelog");
@@ -120,12 +124,16 @@ function move_POST(Web $w)
         $redirect = $redirect . "#timelog";
     }
 
-    if (empty($p["id"])) {
+    if (empty($id)) {
         $w->error("No Timelog to move", $redirect);
         return;
     }
 
-    $timelog = TimelogService::getInstance($w)->getTimelog($p["id"]);
+    $timelog = TimelogService::getInstance($w)->getTimelog($id);
+
+    LogService::getInstance($w)->setLogger("TIMELOG")->debug("move getTimelog dt_start: " . $timelog->dt_start);
+    LogService::getInstance($w)->setLogger("TIMELOG")->debug("move getTimelog dt_end: " . $timelog->dt_end);
+
     if (empty($timelog)) {
         $w->error("Timelog not found", $redirect);
         return;

@@ -188,6 +188,7 @@ function edit_POST(Web $w)
     $time_object = null;
     try {
         $time_object = new DateTime(str_replace('/', '-', $_POST['date_start']) . ' ' . $_POST['time_start']);
+        $time_object->setTimezone(new DateTimeZone('UTC'));
     } catch (Exception $e) {
         LogService::getInstance($w)->setLogger("TIMELOG")->error($e->getMessage() . " in " . $e->getFile() . " on line " . $e->getLine());
         $w->error('Invalid start date or time', $redirect ?: '/timelog');
@@ -203,6 +204,7 @@ function edit_POST(Web $w)
         if ($_POST['select_end_method'] === "time") {
             try {
                 $end_time_object = new DateTime(str_replace('/', '-', $_POST['date_start']) . ' ' . $_POST['time_end']);
+                $end_time_object->setTimezone(new DateTimeZone('UTC'));
                 $timelog->dt_end = $end_time_object->format('Y-m-d H:i:s');
             } catch (Exception $e) {
                 LogService::getInstance($w)->setLogger("TIMELOG")->error($e->getMessage() . " in " . $e->getFile() . " on line " . $e->getLine());

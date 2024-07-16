@@ -1,6 +1,8 @@
 <?php
 
 function ajaxStart_POST(Web $w) {
+    LogService::getInstance($w)->setLogger('TIMELOG')->debug("cookies: " . json_encode($_COOKIE));
+
     if (TimelogService::getInstance($w)->hasActiveLog()) {
         LogService::getInstance($w)->debug("active log exists");
 		
@@ -21,8 +23,7 @@ function ajaxStart_POST(Web $w) {
     $start_time = null;
     if (!empty($_POST['start_time'])) {
         $start_string = $_POST['start_time'];
-        $time_object = new DateTime(date('d-m-Y',time()) . ' ' . $start_string);
-        $start_time = $time_object->getTimestamp();
+        $start_time = (new DateTime('now', new DateTimeZone('UTC')))->format('d-m-Y') . ' ' . $start_string;
     }
     
     
@@ -38,7 +39,7 @@ function ajaxStart_POST(Web $w) {
         $w->out(json_encode([
             'object'    => $p['class'],
             'title'     => $object->getSelectOptionTitle(),
-            'start_time'=>$start_time
+            'start_time'=> strtotime(str_replace("/", "-", $start_time))
         ]));
     } else {
         LogService::getInstance($w)->debug("object not found");
