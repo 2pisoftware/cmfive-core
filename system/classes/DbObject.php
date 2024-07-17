@@ -401,7 +401,6 @@ class DbObject extends DbService
         if (strpos($k, "dt_") === 0) {
             if (!empty($v)) {
                 return $this->dt2Time($v);
-                // return time();
             }
         } elseif (strpos($k, "d_") === 0) {
             if (!empty($v)) {

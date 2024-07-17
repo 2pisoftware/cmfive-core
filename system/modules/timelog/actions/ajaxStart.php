@@ -1,8 +1,6 @@
 <?php
 
 function ajaxStart_POST(Web $w) {
-    LogService::getInstance($w)->setLogger('TIMELOG')->debug("cookies: " . json_encode($_COOKIE));
-
     if (TimelogService::getInstance($w)->hasActiveLog()) {
         LogService::getInstance($w)->debug("active log exists");
 		

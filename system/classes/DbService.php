@@ -223,10 +223,6 @@ class DbService
         // Automatically converts keys with different database values
         $parts = [];
         foreach ($object->getDbTableColumnNames() as $k) {
-            // if (0 === strpos($k, 'dt_') || 0 === strpos($k, 'd_')) {
-            //     // This is MySQL specific!
-            //     $parts[] = "UNIX_TIMESTAMP($table.`" . $object->getDbColumnName($k) . "`) AS `$k`";
-            // } else
             if ($k != $object->getDbColumnName($k)) {
                 $parts[] = "`" . $object->getDbColumnName($k) . "` as `$k`";
             } else {
@@ -316,7 +312,7 @@ class DbService
         $this->buildSelect($o, $table, $class);
         $result = $this->_db->fetchAll();
         if ($result) {
-            $objects = $this->getObjectsFromRows($class, $result, true); // $from_db = true
+            $objects = $this->getObjectsFromRows($class, $result, true);
 
             if ($objects) {
                 // store the complete list
