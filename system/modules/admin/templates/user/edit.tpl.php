@@ -10,58 +10,58 @@
             <div id='tab-1'><?php echo $userDetails; ?></div>
             <div id='tab-2'>
                 <!-- <div class="container-fluid"> -->
-                    <div class="row">
-                        <div class="col-6">
-                            <form>
-                                <div data-alert class="row mb-4 alert-box warning" v-if="user.security.is_locked">
-                                    This account is locked <input class="btn btn-danger" value="Unlock" style="font-size: 0.8rem; display: inline; float: middle; width: 100px; margin-top: -8px; margin-left: 15px;" @click.prevent="unlockAccount" :disabled="is_loading">
-                                </div>
-                            </form>
-                            <div class='panel mt-0 clearfix'>
-                                <div class='row g-0 clearfix section-header'>
-                                    <h4 class='col'>Update Password</h4>
-                                </div>
-                                <div class='row'>
-                                    <form class='col'>
-                                        <div class="mb-3">
-                                            <label for="password" class="form-label">New Password</label>
-                                            <input id="password" name="password" type="password" required="required" v-model="user.security.new_password" :minlength="enforcePasswordLength ? passwordMinLength : null" class="form-control" />
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="repeatpassword" class="form-label">Repeat New Password</label>
-                                            <input id="repeatpassword" name="repeatpassword" type="password" required="required" v-model="user.security.repeat_new_password" :minlength="enforcePasswordLength ? passwordMinLength : null" class="form-control" />
-                                        </div>
-                                        <button class="btn btn-primary btn-sm m-0" type="submit" @click.prevent="updatePassword" :disabled="is_loading">Update Password</button>
-                                    </form>
-                                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <form>
+                            <div data-alert class="row mb-4 alert-box warning" v-if="user.security.is_locked">
+                                This account is locked <input class="btn btn-danger" value="Unlock" style="font-size: 0.8rem; display: inline; float: middle; width: 100px; margin-top: -8px; margin-left: 15px;" @click.prevent="unlockAccount" :disabled="is_loading">
                             </div>
-                        </div>
-                        <div class="col-6">
-                            <div class='panel clearfix'>
-                                <div class='row g-0 clearfix section-header'>
-                                    <h4 class='col'>Google Authenticator</h4>
-                                </div>
-                                <button v-if="!user.security.is_mfa_enabled && mfa_qr_code_url === null" class="btn btn-success" @click="getMfaQrCode" :disabled="is_loading">Enable</button>
-                                <button v-if="user.security.is_mfa_enabled" class="btn btn-warning" @click="disableMfa" :disabled="is_loading">Disable</button>
-                                <div v-if="mfa_qr_code_url !== null">
-                                    <div v-if="show_qr_code">
-                                        <img :src="mfa_qr_code_url" width="250" height="250">
-                                        <label style="margin-top: 4px;">Can't scan the code? Add it manually.</label>
-                                        <label>{{ mfa_secret }}</label>
+                        </form>
+                        <div class='panel mt-0 clearfix'>
+                            <div class='row g-0 clearfix section-header'>
+                                <h4 class='col'>Update Password</h4>
+                            </div>
+                            <div class='row'>
+                                <form class='col'>
+                                    <div class="mb-3">
+                                        <label for="password" class="form-label">New Password</label>
+                                        <input id="password" name="password" type="password" required="required" v-model="user.security.new_password" :minlength="enforcePasswordLength ? passwordMinLength : null" class="form-control" />
                                     </div>
-                                    <button v-else class="btn btn-primary" @click="show_qr_code = true">Show QR Code</button>
-                                    <form>
-                                        <div class="mb-3">
-                                            <label>Code</label>
-                                            <input id="code" name="code" type="text" required="required" v-model="mfa_code" class="form-control" />
-                                        </div>
-                                        <button class="btn btn-primary" @click.prevent="confirmMfaCode" :disabled="is_loading">Confirm Code</button>
-                                        <button class="btn btn-secondary" @click.prevent="cancel">Cancel</button>
-                                    </form>
-                                </div>
+                                    <div class="mb-3">
+                                        <label for="repeatpassword" class="form-label">Repeat New Password</label>
+                                        <input id="repeatpassword" name="repeatpassword" type="password" required="required" v-model="user.security.repeat_new_password" :minlength="enforcePasswordLength ? passwordMinLength : null" class="form-control" />
+                                    </div>
+                                    <button class="btn btn-primary btn-sm m-0" type="submit" @click.prevent="updatePassword" :disabled="is_loading">Update Password</button>
+                                </form>
                             </div>
                         </div>
                     </div>
+                    <div class="col-6">
+                        <div class='panel clearfix'>
+                            <div class='row g-0 clearfix section-header'>
+                                <h4 class='col'>Google Authenticator</h4>
+                            </div>
+                            <button v-if="!user.security.is_mfa_enabled && mfa_qr_code_url === null" class="btn btn-success" @click="getMfaQrCode" :disabled="is_loading">Enable</button>
+                            <button v-if="user.security.is_mfa_enabled" class="btn btn-warning" @click="disableMfa" :disabled="is_loading">Disable</button>
+                            <div v-if="mfa_qr_code_url !== null">
+                                <div v-if="show_qr_code">
+                                    <img :src="mfa_qr_code_url" width="250" height="250">
+                                    <label style="display: block; margin-top: 4px;">Can't scan the code? Add it manually.</label>
+                                    <label>{{ mfa_secret }}</label>
+                                </div>
+                                <button v-else class="btn btn-primary" @click="show_qr_code = true">Show QR Code</button>
+                                <form>
+                                    <div class="mb-3">
+                                        <label>Code</label>
+                                        <input id="code" name="code" type="text" required="required" v-model="mfa_code" class="form-control" />
+                                    </div>
+                                    <button class="btn btn-primary" @click.prevent="confirmMfaCode" :disabled="is_loading">Confirm Code</button>
+                                    <button class="btn btn-secondary" @click.prevent="cancel">Cancel</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <!-- </div> -->
             </div>
             <div id='tab-3'>
@@ -78,7 +78,9 @@
     </div>
 </div>
 <script>
-    const { createApp } = Vue
+    const {
+        createApp
+    } = Vue
 
     createApp({
         data: function() {
@@ -100,7 +102,9 @@
 
                 const response = await fetch("/admin-user/ajax_unlock_account", {
                     method: "POST",
-                    body: JSON.stringify({id: this.user.id})
+                    body: JSON.stringify({
+                        id: this.user.id
+                    })
                 }).catch((error) => {
                     (new window.cmfive.toast("Failed to update")).show();
                     console.log(error);
@@ -108,7 +112,7 @@
                 });
 
                 const json_response = await response.json();
-            
+
                 if (response.status !== 200) {
                     (new window.cmfive.toast("Failed to unlock")).show();
                     return;
@@ -116,7 +120,7 @@
 
                 (new window.cmfive.toast("Account unlocked")).show();
                 this.user.security.is_locked = false;
-                
+
                 this.is_loading = false;
             },
             async updatePassword() {
@@ -175,15 +179,12 @@
 
                 this.is_loading = true;
 
-                const response = await fetch("/auth/ajax_get_mfa_qr_code", {
-                    params: {
-                        id: this.user.id
-                    }
-                }).catch(function(error) {
-                    (new window.cmfive.toast("Failed to fetch QR Code")).show();
-                    this.is_loading = false;
-                    console.log(error);
-                })
+                const response = await fetch(`/auth/ajax_get_mfa_qr_code?id=${this.user.id}`)
+                    .catch(function(error) {
+                        (new window.cmfive.toast("Failed to fetch QR Code")).show();
+                        this.is_loading = false;
+                        console.log(error);
+                    })
                 const json_response = await response.json();
 
                 if (response.status !== 200) {
@@ -192,9 +193,9 @@
                     return;
                 }
 
-                this.mfa_qr_code_url = response.data.qr_code;
-                this.mfa_secret = response.data.mfa_secret;
-                
+                this.mfa_qr_code_url = json_response.data.qr_code;
+                this.mfa_secret = json_response.data.mfa_secret;
+
                 this.is_loading = false;
             },
             async confirmMfaCode() {
@@ -217,7 +218,7 @@
                     this.is_loading = false;
                     console.log(error);
                 })
-                
+
                 const json_response = await response.json();
                 if (response.status !== 200) {
                     (new window.cmfive.toast("Failed to confirm 2FA Code")).show();
@@ -243,7 +244,7 @@
 
                 this.is_loading = true;
 
-                const resposne = await fetch("/auth/ajax_disable_mfa", {
+                const response = await fetch("/auth/ajax_disable_mfa", {
                     method: "POST",
                     body: JSON.stringify({
                         id: this.user.id
