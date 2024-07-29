@@ -8,10 +8,10 @@
 function groups_GET(Web &$w)
 {
     $w->setLayout('layout-bootstrap-5');
+
     AdminService::getInstance($w)->navigation($w, "Groups");
 
     $table = [["Title", "Parent Groups", "Operations", "sort_key" => null]];
-
     $groups = AuthService::getInstance($w)->getGroups();
 
     if ($groups) {
@@ -23,6 +23,7 @@ function groups_GET(Web &$w)
             $ancestors = [];
 
             $line = [AuthService::getInstance($w)->user()->is_admin ? Html::box($w->localUrl("/admin/groupedit/" . $group->id), "<u>" . $group->login . "</u>") : $group->login];
+
             //if it is a sub group from other group;
             $groupUsers = $group->isInGroups();
 
@@ -31,6 +32,7 @@ function groups_GET(Web &$w)
                     $ancestors[] = $groupUser->getGroup()->login;
                 }
             }
+
             $line[] = count($ancestors) > 0 ? "<div class='text-success'>" . implode(", ", $ancestors) . "</div>" : "";
 
             $operations = Html::b("/admin/moreInfo/" . $group->id, "Edit");
