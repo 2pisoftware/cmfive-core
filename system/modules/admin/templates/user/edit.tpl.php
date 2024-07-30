@@ -136,26 +136,6 @@
                     this.is_loading = false;
                 });
             },
-            unlockAccount: function() {
-                this.is_loading = true;
-
-                axios.post("/admin-user/ajax_unlock_account", {
-                    id: this.user.id
-                }).then((response) => {
-                    if (response.status !== 200) {
-                        new Toast("Failed to unlock").show();
-                        return;
-                    }
-
-                    new Toast("Account unlocked").show();
-                    this.user.security.is_locked = false;
-                }).catch(function(error) {
-                    new Toast("Failed to update").show();
-                    console.log(error);
-                }).finally(() => {
-                    this.is_loading = false;
-                });
-            },
             updatePassword: function() {
                 var _this = this;
                 _this.user.security.new_password = _this.user.security.new_password.trim();

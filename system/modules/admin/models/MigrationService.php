@@ -316,6 +316,7 @@ MIGRATION;
                         // Class name must match filename after timestamp and hyphen
                         if (class_exists($migration['class_name'])) {
                             LogService::getInstance($this->w)->setLogger("MIGRATION")->info("Running migration: " . $migration['class_name']);
+
                             $this->w->db->startTransaction();
                             try {
                                 // Set migration class
