@@ -731,6 +731,7 @@ class HtmlBootstrap5 extends Html
 
             $buffer .= "</div></label></li>";
         }
+
         $buffer .= "</ul>"; // </div>
         $buffer .= "\n</fieldset>\n";
         $buffer .= $hidden . "</form>\n";
