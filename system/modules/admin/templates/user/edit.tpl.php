@@ -1,218 +1,106 @@
 <div id="app">
     <h3>Edit - {{ user.account.firstname + ' ' + user.account.lastname }}</h3>
-    <html-tabs>
-        <html-tab title="Account" selected>
-            <div id="account">
-                <div class="row-fluid body panel clearfix">
-                    <div class="small-12 medium-6 large-6 columns">
-                        <h3>Personal</h3>
-                        <label>Title
-                            <autocomplete id="title" :list="user.account.titles" v-model="user.account.title"></autocomplete>
-                        </label>
-                        <label>First Name
-                            <?php
-                            echo (new \Html\Form\InputField([
-                                "id|name" => "firstname",
-                            ]))->setAttribute("v-model", "user.account.firstname");
-                            ?>
-                        </label>
-                        <label>Last Name
-                            <?php
-                            echo (new \Html\Form\InputField([
-                                "id|name" => "lastname",
-                            ]))->setAttribute("v-model", "user.account.lastname");
-                            ?>
-                        </label>
-                        <label>Other Name
-                            <?php
-                            echo (new \Html\Form\InputField([
-                                "id|name" => "othername",
-                            ]))->setAttribute("v-model", "user.account.othername");
-                            ?>
-                        </label>
-                        <label>Language
-                            <?php
-                            echo (new \Html\Form\Select([
-                                "id|name" => "language",
-                            ]))->setOptions([]);
-                            ?>
-                        </label>
-                    </div>
-                    <div class="small-12 medium-6 large-6 columns">
-                        <h3>Contact</h3>
-                        <label>Home Phone
-                            <?php
-                            echo (new \Html\Form\InputField\Tel([
-                                "id|name" => "homephone",
-                            ]))->setAttribute("v-model", "user.account.homephone");
-                            ?>
-                        </label>
-                        <label>Work Phone
-                            <?php
-                            echo (new \Html\Form\InputField\Tel([
-                                "id|name" => "workphone",
-                            ]))->setAttribute("v-model", "user.account.workphone");
-                            ?>
-                        </label>
-                        <label>Mobile
-                            <?php
-                            echo (new \Html\Form\InputField\Tel([
-                                "id|name" => "mobile",
-                            ]))->setAttribute("v-model", "user.account.mobile");
-                            ?>
-                        </label>
-                        <label>Private Mobile
-                            <?php
-                            echo (new \Html\Form\InputField\Tel([
-                                "id|name" => "priv_mobile",
-                            ]))->setAttribute("v-model", "user.account.priv_mobile");
-                            ?>
-                        </label>
-                        <label>Fax
-                            <?php
-                            echo (new \Html\Form\InputField([
-                                "id|name" => "fax",
-                            ]))->setAttribute("v-model", "user.account.fax");
-                            ?>
-                        </label>
-                        <label>Email Address
-                            <?php
-                            echo (new \Html\Form\InputField\Email([
-                                "id|name" => "email",
-                            ]))->setAttribute("v-model", "user.account.email");
-                            ?>
-                        </label>
-                    </div>
-                    <div class="small-12 columns">
-                        <br>
-                        <button class="tiny" @click="updateAccountDetails" :disabled="is_loading">Update</button>
-                    </div>
-                </div>
+    <div class='tabs'>
+        <div class='tab-head'>
+            <a class='active' href="#tab-1">User Details</a>
+            <a href="#tab-2">Security</a>
+            <a href="#tab-3">Groups</a>
+        </div>
+        <div class='tab-body'>
+            <div id='tab-1'>
+                <?php echo $userDetails; ?>
             </div>
-        </html-tab>
-        <html-tab title="Security">
-            <div class="row-fluid body panel clearfix">
-                <div class="small-12 medium-6 large-4 columns">
-                    <h3>General</h3>
-                    <form>
-                        <div data-alert class="alert-box warning" v-if="user.security.is_locked">
-                            This account is locked <input class="button tiny alert" value="Unlock" style="font-size: 0.8rem; display: inline; float: right; width: 100px; margin-top: -8px; margin-right: -15px;" @click.prevent="unlockAccount" :disabled="is_loading">
-                        </div>
-                        <label>Login
-                            <?php
-                            echo (new \Html\Form\InputField([
-                                "id|name" => "login",
-                                "required" => true,
-                            ]))->setAttribute("v-model", "user.security.login");
-                            ?>
-                        </label>
-                        <label>Admin
-                            <?php
-                            echo (new \Html\Form\InputField\Checkbox([
-                                "id|name" => "admin",
-                                "class" => "",
-                            ]))->setAttribute("v-model", "user.security.is_admin");
-                            ?>
-                        </label>
-                        <label>Active
-                            <?php
-                            echo (new \Html\Form\InputField\Checkbox([
-                                "id|name" => "active",
-                                "class" => "",
-                            ]))->setAttribute("v-model", "user.security.is_active");
-                            ?>
-                        </label>
-                        <label>External
-                            <?php
-                            echo (new \Html\Form\InputField\Checkbox([
-                                "id|name" => "external",
-                                "class" => "",
-                            ]))->setAttribute("v-model", "user.security.is_external");
-                            ?>
-                        </label>
-                        <br>
-                        <input class="button tiny" type="submit" value="Update" style="font-size: 0.8rem;" @click.prevent="updateSecurityDetails" :disabled="is_loading">
-                    </form>
-                </div>
-                <div class="small-12 medium-6 large-4 columns">
-                    <h3>Update Password</h3>
-                    <form>
-                        <label>New Password
-                            <?php
-                            $password_field = (new \Html\Form\InputField\Password([
-                                "id|name" => "password",
-                                "required" => true,
-                            ]))->setAttribute("v-model", "user.security.new_password");
-                            if (Config::get('auth.login.password.enforce_length') === true) {
-                                $password_field->setMinlength(Config::get('auth.login.password.min_length', 8));
-                            }
-                            echo $password_field;
-                            ?>
-                        </label>
-                        <label>Repeat New Password
-                            <?php
-                            $password_confirm = (new \Html\Form\InputField\Password([
-                                "id|name" => "repeatpassword",
-                                "required" => true,
-                            ]))->setAttribute("v-model", "user.security.repeat_new_password");
-                            if (Config::get('auth.login.password.enforce_length') === true) {
-                                $password_confirm->setMinlength(Config::get('auth.login.password.min_length', 8));
-                            }
-
-                            echo $password_confirm;
-                            ?>
-                        </label>
-                        <br>
-                        <br>
-                        <input class="button tiny" type="submit" value="Update Password" style="font-size: 0.8rem;" @click.prevent="updatePassword" :disabled="is_loading">
-                    </form>
-                </div>
-                <div class="small-12 medium-6 large-4 columns end">
-                    <div class="large-12">
-                        <h3>Two Factor Authentication</h3>
-                    </div>
-                    <div class="large-12">
-                        <label>Google Authenticator</label>
-                        <button v-if="!user.security.is_mfa_enabled && mfa_qr_code_url === null" class="tiny success" @click="getMfaQrCode" :disabled="is_loading">Enable</button>
-                        <button v-if="user.security.is_mfa_enabled" class="tiny alert" @click="disableMfa" :disabled="is_loading">Disable</button>
-                        <div v-if="mfa_qr_code_url !== null">
-                            <div v-if="show_qr_code">
-                                <img :src="mfa_qr_code_url" width="250" height="250">
-                                <label style="margin-top: 4px;">Can't scan the code? Add it manually.</label>
-                                <label>{{ mfa_secret }}</label>
-                            </div>
-                            <button v-else class="tiny" @click="show_qr_code = true">Show QR Code</button>
+            <div id='tab-2'>
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col">
                             <form>
-                                <label>Code
+                                <div data-alert class="row mb-4 alert-box warning" v-if="user.security.is_locked">
+                                    This account is locked <input class="btn btn-danger" value="Unlock" style="font-size: 0.8rem; display: inline; float: middle; width: 100px; margin-top: -8px; margin-left: 15px;" @click.prevent="unlockAccount" :disabled="is_loading">
+                                </div>
+                            </form>
+                            <h3>Update Password</h3>
+                            <form>
+                                <label>New Password
                                     <?php
-                                    echo (new \Html\Form\InputField([
-                                        "id|name" => "code",
+                                    $password_field = (new \Html\Form\InputField\Password([
+                                        "id|name" => "password",
                                         "required" => true,
-                                    ]))->setAttribute("v-model", "mfa_code");
+                                    ]))->setAttribute("v-model", "user.security.new_password");
+                                    if (Config::get('auth.login.password.enforce_length') === true) {
+                                        $password_field->setMinlength(Config::get('auth.login.password.min_length', 8));
+                                    }
+                                    echo $password_field;
+                                    ?>
+                                </label>
+                                <label>Repeat New Password
+                                    <?php
+                                    $password_confirm = (new \Html\Form\InputField\Password([
+                                        "id|name" => "repeatpassword",
+                                        "required" => true,
+                                    ]))->setAttribute("v-model", "user.security.repeat_new_password");
+                                    if (Config::get('auth.login.password.enforce_length') === true) {
+                                        $password_confirm->setMinlength(Config::get('auth.login.password.min_length', 8));
+                                    }
+
+                                    echo $password_confirm;
                                     ?>
                                 </label>
                                 <br>
                                 <br>
-                                <button class="tiny success" @click.prevent="confirmMfaCode" :disabled="is_loading">Confirm Code</button>
-                                <button class="tiny info" @click.prevent="cancel">Cancel</button>
+                                <input class="button tiny" type="submit" value="Update Password" style="font-size: 0.8rem;" @click.prevent="updatePassword" :disabled="is_loading">
                             </form>
+                        </div>
+                        <div class="col">
+                            <label>Google Authenticator</label>
+                            <button v-if="!user.security.is_mfa_enabled && mfa_qr_code_url === null" class="btn btn-success" @click="getMfaQrCode" :disabled="is_loading">Enable</button>
+                            <button v-if="user.security.is_mfa_enabled" class="btn btn-warning" @click="disableMfa" :disabled="is_loading">Disable</button>
+                            <div v-if="mfa_qr_code_url !== null">
+                                <div v-if="show_qr_code">
+                                    <img :src="mfa_qr_code_url" width="250" height="250">
+                                    <label style="margin-top: 4px;">Can't scan the code? Add it manually.</label>
+                                    <label>{{ mfa_secret }}</label>
+                                </div>
+                                <button v-else class="btn btn-primary" @click="show_qr_code = true">Show QR Code</button>
+                                <form>
+                                    <label>Code
+                                        <?php
+                                        echo (new \Html\Form\InputField([
+                                            "id|name" => "code",
+                                            "required" => true,
+                                        ]))->setAttribute("v-model", "mfa_code");
+                                        ?>
+                                    </label>
+                                    <br>
+                                    <br>
+                                    <button class="btn btn-primary" @click.prevent="confirmMfaCode" :disabled="is_loading">Confirm Code</button>
+                                    <button class="btn btn-secondary" @click.prevent="cancel">Cancel</button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </html-tab>
-        <html-tab title="Groups">
-            <div class="row-fluid body panel clearfix">
-                <h3>Groups</h3>
-                <ul>
-                    <li v-for="group in user.groups">
-                        <a :href="group.url" target="_blank">{{ group.title }}</a>
-                    </li>
-                </ul>
+            <div id='tab-3'>
+                <div class="row-fluid body panel clearfix">
+                    <h3>Groups</h3>
+                    <ul>
+                        <li v-for="group in user.groups">
+                            <a :href="group.url" target="_blank">{{ group.title }}</a>
+                        </li>
+                    </ul>
+                </div>
             </div>
-        </html-tab>
-    </html-tabs>
+        </div>
+    </div>
 </div>
+<script src="/system/templates/js/axios.min.js"></script>
+
+<script src="/system/templates/js/jquery-1.4.2.min.js"></script>
+<!-- TODO: Needs toast SCSS too. -->
+<script src="/system/templates/js/Toast.js"></script>
+<script src="/system/templates/vue-components/profile-security.vue.js"></script>
+
 <script>
     var app = new Vue({
         el: "#app",
@@ -228,57 +116,24 @@
             }
         },
         methods: {
-            updateAccountDetails: function() {
-                var _this = this;
+            unlockAccount: function() {
+                this.is_loading = true;
 
-                if (_this.is_loading === true) {
-                    return;
-                }
-
-                _this.is_loading = true;
-
-                axios.post("/auth/ajax_update_account_details", {
-                    id: _this.user.id,
-                    account_details: _this.user.account
-                }).then(function(response) {
+                axios.post("/admin-user/ajax_unlock_account", {
+                    id: this.user.id
+                }).then((response) => {
                     if (response.status !== 200) {
-                        new Toast("Failed to update").show();
+                        new Toast("Failed to unlock").show();
                         return;
                     }
 
-                    new Toast("Account details updated").show();
+                    new Toast("Account unlocked").show();
+                    this.user.security.is_locked = false;
                 }).catch(function(error) {
                     new Toast("Failed to update").show();
                     console.log(error);
-                }).finally(function() {
-                    _this.is_loading = false;
-                });
-            },
-            updateSecurityDetails: function() {
-                var _this = this;
-                _this.user.security.login = _this.user.security.login.trim();
-
-                if (_this.is_loading === true || _this.user.security.login === "") {
-                    return;
-                }
-
-                _this.is_loading = true;
-
-                axios.post("/admin-user/ajax_update_security_details", {
-                    id: _this.user.id,
-                    security_details: _this.user.security
-                }).then(function(response) {
-                    if (response.status !== 200) {
-                        new Toast("Failed to update").show();
-                        return;
-                    }
-
-                    new Toast("Security details updated").show();
-                }).catch(function(error) {
-                    new Toast("Failed to update").show();
-                    console.log(error);
-                }).finally(function() {
-                    _this.is_loading = false;
+                }).finally(() => {
+                    this.is_loading = false;
                 });
             },
             unlockAccount: function() {

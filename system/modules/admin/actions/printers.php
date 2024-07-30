@@ -1,6 +1,8 @@
 <?php
 
 function printers_GET(Web $w) {
+    $w->setLayout('layout-bootstrap-5');
+
     $printers = PrinterService::getInstance($w)->getPrinters();
     $table_data = array();
     $table_header = array("Name", "Server", "Port", "Actions");
@@ -8,8 +10,8 @@ function printers_GET(Web $w) {
         foreach($printers as $printer) {
             $table_data[] = array(
                 $printer->name, $printer->server, $printer->port,
-                Html::box("/admin/editprinter/{$printer->id}", "Edit", true) .
-                Html::b("/admin/deleteprinter/{$printer->id}", "Delete", "Are you sure you want to delete this printer?")
+                HtmlBootstrap5::box("/admin/editprinter/{$printer->id}", "Edit", true, false, null, null, 'isbox', null, 'btn btn-sm btn-primary') .
+                HtmlBootstrap5::b("/admin/deleteprinter/{$printer->id}", "Delete", "Are you sure you want to delete this printer?", "deletebutton", false, "btn-sm btn-danger")
             );
         }
     }

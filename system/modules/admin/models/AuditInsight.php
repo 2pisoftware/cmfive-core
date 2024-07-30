@@ -14,12 +14,18 @@ class AuditInsight extends InsightBaseClass
         return [
             "Options" => [
                 [
-                    [
-                        "Date From (required)", "date", "dt_from", array_key_exists('dt_from', $parameters) ? $parameters['dt_from'] : null
-                    ],
-                    [
-                        "Date To (required)", "date", "dt_to", array_key_exists('dt_to', $parameters) ? $parameters['dt_to'] : null
-                    ],
+                    (new \Html\Form\InputField\Date([
+                        'id|name' => 'dt_from',
+                        'value' => array_key_exists('dt_from', $parameters) ? $parameters['dt_from'] : null,
+                        'label' => 'Date From',
+                        'required' => true,
+                    ])),
+                    (new \Html\Form\InputField\Date([
+                        'id|name' => 'dt_to',
+                        'value' => array_key_exists('dt_to', $parameters) ? $parameters['dt_to'] : null,
+                        'label' => 'Date To',
+                        'required' => true,
+                    ])),
                 ],
                 [
                     ["Users (optional)", "select", "user_id", array_key_exists('user_id', $parameters) ? $parameters['user_id'] : null, AuthService::getInstance($w)->getUsers()],
@@ -54,11 +60,7 @@ class AuditInsight extends InsightBaseClass
                 $row['URL'] = $datarow['path'];
                 $row['Class'] = $datarow['db_class'];
                 $row['Action'] = $datarow['db_action'];
-                $row['DB Id'] = html::a(
-                    "/insights/runInsight/AuditInsightObject?"
-                    ."class=".$row['Class']
-                    ."&id=".$datarow['db_id']
-                    ,$datarow['db_id']);
+                $row['DB Id'] = $datarow['db_id'];
                 $convertedData[] = $row;
             }
             $results[] = new InsightReportInterface('Audit Report', ['Date', 'User', 'Module', 'URL', 'Class', 'Action', 'DB Id'], $convertedData);

@@ -65,3 +65,13 @@
         @include theme((background-color: 'mid-grey', color: 'white-black'));
     }
 }
+
+.btn-info:active,
+.btn-info.active,
+.show > .btn-info.dropdown-toggle {
+    color: #ffffff !important;
+}
+
+.btn-info:hover {
+    border-color: #878787 !important;
+}

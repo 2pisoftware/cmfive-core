@@ -4,17 +4,30 @@
 *
 * @param <type> $w
 */
+
+use Html\Form\InputField\Text;
+
 function groupedit_GET(Web $w)
 {
+	$w->setLayout('layout-bootstrap-5');
+ 
 	$option = $w->pathMatch("group_id");
 
 	$user = AuthService::getInstance($w)->getUser($option['group_id']);
 
-	$template['Edit Group'] = array(array(array("Group Title: ","text","title",$user->login)));
+	$w->out(HtmlBootstrap5::multiColForm([
+		'Edit Group' => [
+			[
+				(new \Html\Form\InputField\Text([
+					'id|name' => 'title',
+					'label' => 'Group title',
+					'value' => $user->login,
+					'required' => true,
+				]))
+			]
+		]
+	], "/admin/groupedit/" . $option['group_id'], "POST", "Save"));
 
-	$w->out(Html::multiColForm($template,"/admin/groupedit/".$option['group_id'],"POST","Save"));
-
-	$w->setLayout(null);
 }
 
 function groupedit_POST(Web $w)
@@ -25,5 +38,5 @@ function groupedit_POST(Web $w)
 	$user->login = $_REQUEST['title'];
 	$user->update();
 
-	$w->msg("Group info updated!", "/admin/groups");
+	$w->msg("Group title updated", "/admin/groups");
 }

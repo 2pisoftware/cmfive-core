@@ -7,7 +7,7 @@
         </div>
         <div class="row-fluid">
             <?php echo ($is_mutable)
-                ? (Html::box("/file/edit/" . $attachment->id . "?redirect_url=" . urlencode($redirect), "Edit", true, null, null, null, null, null, "button expand secondary"))
+                ? (Html::box("/file/edit/" . $attachment->id . "?allowrestrictionui=" . empty($edit_attachment_restrictions_blocked) . "&redirect_url=" . urlencode($redirect), "Edit", true, null, null, null, null, null, "button expand secondary"))
                 : ""; ?>
         </div>
         <div class="row-fluid">
