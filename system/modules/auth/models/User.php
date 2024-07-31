@@ -60,7 +60,7 @@ class User extends DbObject
      *
      * @return bool
      */
-    public function checkMfaCode(string $mfa_code) : bool
+    public function checkMfaCode(string $mfa_code): bool
     {
         return (new GoogleAuthenticator())->checkCode($this->mfa_secret, $mfa_code);
     }
@@ -78,31 +78,40 @@ class User extends DbObject
     {
         return [
             [
-                __("English"), "en_US.UTF-8"
+                __("English"),
+                "en_US.UTF-8"
             ],
             [
-                __("German"), "de_DE.UTF-8"
+                __("German"),
+                "de_DE.UTF-8"
             ],
             [
-                __("French"), "fr_FR.UTF-8"
+                __("French"),
+                "fr_FR.UTF-8"
             ],
             [
-                __("Chinese"), "zh_CN.UTF-8"
+                __("Chinese"),
+                "zh_CN.UTF-8"
             ],
             [
-                __("Japanese"), "ja_JP.UTF-8"
+                __("Japanese"),
+                "ja_JP.UTF-8"
             ],
             [
-                __("Spanish"), "es_ES.UTF-8"
+                __("Spanish"),
+                "es_ES.UTF-8"
             ],
             [
-                __("Dutch"), "nl_NL.UTF-8"
+                __("Dutch"),
+                "nl_NL.UTF-8"
             ],
             [
-                __("Russian"), "ru_RU.UTF-8"
+                __("Russian"),
+                "ru_RU.UTF-8"
             ],
             [
-                __("Gaelic"), "gd_GB.UTF-8"
+                __("Gaelic"),
+                "gd_GB.UTF-8"
             ]
         ];
     }
@@ -275,8 +284,8 @@ class User extends DbObject
      */
     public function updateLastLogin()
     {
-        $data = ["dt_lastlogin" => $this->time2Dt(time())];
-        $this->_db->update("user", $data)->where("id", $this->id)->execute();
+        $this->dt_lastlogin = $this->time2Dt(time());
+        $this->update();
     }
 
     /**
@@ -298,7 +307,7 @@ class User extends DbObject
     }
 
     /**
-     * Check whether a user has a role in a list of roles
+     * Check whether a user has a role in a list of roles https://chat.internal.2pisoftware.com/twopi-software/channels/3f57uowsrpd6j8ycenajqtmnge__ntkcmtaqhigidjg8u1nd9gtp8a
      *
      * @param array $roles
      * @return true if the user has any one of these roles
@@ -374,7 +383,7 @@ class User extends DbObject
             unset($_SESSION['user_id']);
             $this->w->error("This account is locked, most likely due to too many login attempts. Please contact an Administrator to get your account unlocked", "/auth/login");
         }
-        
+
         if (!$this->is_active) {
             return false;
         }
@@ -428,7 +437,8 @@ class User extends DbObject
             $options = [
                 "memory_cost" => PASSWORD_ARGON2_DEFAULT_MEMORY_COST, // Max 1024 bytes.
                 "time_cost" => PASSWORD_ARGON2_DEFAULT_TIME_COST, // Max 2 seconds.
-                "threads" => PASSWORD_ARGON2_DEFAULT_THREADS]; // Max 2 threads.
+                "threads" => PASSWORD_ARGON2_DEFAULT_THREADS
+            ]; // Max 2 threads.
         }
 
         $hash = password_hash($password, $algorithm, $options);

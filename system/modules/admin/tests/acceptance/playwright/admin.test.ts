@@ -185,3 +185,43 @@ test("Test that Cmfive Admin can create/run/rollback migrations", async ({ page 
     await page.getByRole("button", { name: "Rollback latest batch" }).click();
     await expect(page.getByText("1 migration rolled back")).toBeVisible();
 });
+
+test("Test that Last Login is stored for users", async ({ page }) => {
+    test.setTimeout(GLOBAL_TIMEOUT);
+    CmfiveHelper.acceptDialog(page);
+
+    await CmfiveHelper.login(page, "admin", "admin");
+
+    //Create new User
+    const user = CmfiveHelper.randomID("user_");
+    await AdminHelper.createUser(
+        page,
+        user,
+        user+"_password",
+        user+"_firstName",
+        user+"_lastName",
+        user+"@localhost.com"
+    );
+    await CmfiveHelper.logout(page);
+
+    //Login as new user and store time range for login
+    const preLoginTime = new Date();
+    await CmfiveHelper.login(page,user,user+"_password");
+    const postLoginTime = new Date();
+    await CmfiveHelper.logout(page);
+    
+
+    await CmfiveHelper.login(page, "admin", "admin");
+    await CmfiveHelper.clickCmfiveNavbar(page,"Admin" ,"List Users");
+    const lastLogin = await (await CmfiveHelper.getColumnByText(page,user,"Last Login")).textContent();
+    const lastLoginDate = new Date(lastLogin);
+
+    // Check if LastLogin is within bounds and also adjusting for utc+10 
+    if (lastLoginDate){
+        console.log("Pre-Login Time: "+preLoginTime);
+        console.log("Last-Login Time: "+lastLoginDate);
+        console.log("Post-Login Time: "+postLoginTime);
+        expect((lastLoginDate>=preLoginTime&&lastLoginDate<=postLoginTime)||(lastLoginDate>=new Date(preLoginTime.getTime()+10*60*60*1000) &&lastLoginDate<=new Date(postLoginTime.getTime()+10*60*60*1000))).toBeTruthy();
+    }
+    await AdminHelper.deleteUser(page, user);
+});
