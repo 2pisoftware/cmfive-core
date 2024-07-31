@@ -17,7 +17,6 @@
     $w->enqueueStyle(["name" => "datePicker.css", "uri" => "/system/templates/css/datePicker.css", "weight" => 980]);
     $w->enqueueStyle(["name" => "jquery-ui-1.8.13.custom.css", "uri" => "/system/templates/js/jquery-ui-new/css/custom-theme/jquery-ui-1.8.13.custom.css", "weight" => 970]);
     $w->enqueueStyle(["name" => "liveValidation.css", "uri" => "/system/templates/css/liveValidation.css", "weight" => 960]);
-    $w->enqueueStyle(["name" => "colorbox.css", "uri" => "/system/templates/js/colorbox/colorbox/colorbox.css", "weight" => 950]);
     $w->enqueueStyle(["name" => "jquery.asmselect.css", "uri" => "/system/templates/css/jquery.asmselect.css", "weight" => 940]);
     $w->enqueueStyle(["name" => "foundation-icons.css", "uri" => "/system/templates/font/foundation-icons/foundation-icons.css", "weight" => 930]);
     $w->enqueueStyle(["name" => "codemirror.css", "uri" => "/system/templates/js/codemirror-4.4/lib/codemirror.css", "weight" => 900]);
@@ -35,7 +34,6 @@
     $w->enqueueScript(["name" => "livevalidation.js", "uri" => "/system/templates/js/livevalidation.js", "weight" => 940]);
     $w->enqueueScript(["name" => "main.js", "uri" => "/system/templates/js/main.js", "weight" => 995]);
     $w->enqueueScript(["name" => "jquery.asmselect.js", "uri" => "/system/templates/js/jquery.asmselect.js", "weight" => 920]);
-    $w->enqueueScript(["name" => "boxover.js", "uri" => "/system/templates/js/boxover.js", "weight" => 910]);
     $w->enqueueScript(["name" => "ckeditor.js", "uri" => "/system/templates/js/ckeditor/ckeditor.js", "weight" => 900]);
     $w->enqueueScript(["name" => "Chart.js", "uri" => "/system/templates/js/chart-js/dist/Chart.min.js", "weight" => 890]);
     $w->enqueueScript(["name" => "moment.js", "uri" => "/system/templates/js/moment.min.js", "weight" => 880]);
