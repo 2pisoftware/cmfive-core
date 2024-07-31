@@ -48,23 +48,6 @@ class HtmlBootstrap5 extends Html
         </div>';
     }
 
-    public static function dropdownButton($title, $contents, $class)
-    {
-        $content = '';
-        foreach ($contents as $item) {
-            $content .= '<li>' . $item . '</li>';
-        }
-
-        return '<div class="dropdown">
-            <button class="' . $class . ' dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">'
-            . $title .
-            '</button>
-            <ul class="dropdown-menu">'
-            . $content .
-            '</ul>
-        </div>';
-    }
-
     /**
      * Creates a complex form where each section can have
      * a different number of columns.
@@ -161,11 +144,11 @@ class HtmlBootstrap5 extends Html
                         }
                         if ((property_exists($field, "type") && $field->type !== "hidden") || !property_exists($field, "type")) {
                             $buffer .= '<div class="col"><label class="' . $label_class . '"'
-									. (property_exists($field, 'id') && !empty($field->id) ? ' for="' . $field->id . '"' : '')
-									. '>'
-									. $field->label
-									. (property_exists($field, "required") && $field->required ? " <small>Required</small>" : "")
-									. "</label>"
+                                . (property_exists($field, 'id') && !empty($field->id) ? ' for="' . $field->id . '"' : '')
+                                . '>'
+                                . $field->label
+                                . (property_exists($field, "required") && $field->required ? " <small>Required</small>" : "")
+                                . "</label>"
                                 . $field->__toString() . '</div>';
                         } else {
                             $buffer .= $field->__toString();

@@ -3,13 +3,8 @@
 use Html\Form\Select;
 use Html\Cmfive\SelectWithOther;
 
-use Html\Form\Select;
-use Html\Cmfive\SelectWithOther;
-
 function edit_GET(Web $w)
 {
-    $w->setLayout('layout-bootstrap-5');
-
     $w->setLayout('layout-bootstrap-5');
 
     VueComponentRegister::registerComponent("autocomplete", new VueComponent("autocomplete", "/system/templates/vue-components/form/elements/autocomplete.vue.js", "/system/templates/vue-components/form/elements/autocomplete.vue.css"));
@@ -26,8 +21,6 @@ function edit_GET(Web $w)
     if (empty($user)) {
         $w->error("Unable to find User", $redirect_url);
     }
-
-    $availableLocales = $w->getAvailableLanguages();
 
     $availableLocales = $w->getAvailableLanguages();
 
@@ -170,7 +163,6 @@ function edit_GET(Web $w)
             ]
         ],
     ], '/admin-user/edit/' . $user->id));
-
 }
 
 function edit_POST(Web $w): void

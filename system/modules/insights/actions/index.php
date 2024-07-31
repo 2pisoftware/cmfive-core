@@ -1,6 +1,5 @@
 <?php
 
-
 /**@author Alice Hutley <alice@2pisoftware.com> */
 
 function index_ALL(Web $w)
@@ -64,6 +63,5 @@ function index_ALL(Web $w)
     }
 
     //send the table to the template using ctx
-    $w->ctx('insightTable', HtmlBootstrap5::table($table, 'insight_table', 'tablesorter', $tableHeaders));
     $w->ctx('insightTable', HtmlBootstrap5::table($table, 'insight_table', 'tablesorter', $tableHeaders));
 }
