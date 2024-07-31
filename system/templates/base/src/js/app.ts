@@ -202,7 +202,6 @@ class Cmfive {
         TableAdaptation.bindTableInteractions();
         QuillEditor.bindQuillEditor();
         CodeMirror.bindCodeMirrorEditor();
-        CodeMirror.bindCodeMirrorEditor();
 
         // Remove all foundation button classes and replace them with bootstrap if they don't exist
         target?.querySelectorAll('.button')?.forEach(b =>  {

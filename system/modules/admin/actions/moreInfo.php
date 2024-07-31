@@ -6,17 +6,11 @@
  *
  * @param <type> $w
  */
- * Display member and permission infomation
- *
- * @param <type> $w
- */
 function moreInfo_GET(Web &$w)
 {
-	$w->setLayout('layout-bootstrap-5');
+    $w->setLayout('layout-bootstrap-5');
 
-	$w->setLayout('layout-bootstrap-5');
-
-	$option = $w->pathMatch("group_id");
+    $option = $w->pathMatch("group_id");
 
     AdminService::getInstance($w)->navigation($w, AuthService::getInstance($w)->getUser($option['group_id'])->login);
 
@@ -52,7 +46,8 @@ function moreInfo_GET(Web &$w)
                     href: "/admin/memberdelete/" . $option['group_id'] . "/" . $groupMember->id,
                     title: "Delete",
                     confirm: "Are you sure you want to delete this member?",
-                    class: "btn-danger btn-sm");
+                    class: "btn-danger btn-sm"
+                );
             } else {
                 $line[] = null;
             }

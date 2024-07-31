@@ -6,10 +6,6 @@
  *
  * @param <type> $w
  */
- * Display a list of all groups which are not deleted
- *
- * @param <type> $w
- */
 function groups_GET(Web &$w)
 {
     $w->setLayout('layout-bootstrap-5');

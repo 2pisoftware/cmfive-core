@@ -34,8 +34,6 @@
 @import 'cmfive/type';
 @import 'cmfive/listgroup';
 @import 'cmfive/red_squiggly_underline';
-@import 'cmfive/listgroup';
-@import 'cmfive/red_squiggly_underline';
 
 // Foundation adaptation styles
 // @import "cmfive/adaptations/accordion";
@@ -58,13 +56,8 @@
 
 // Tom Select styles
 @import '~tom-select/src/scss/tom-select.scss';
-@import '~tom-select/src/scss/tom-select.scss';
 
 // There is a collision in styles between quill and tom-select - this is a patch for this:
-.ts-wrapper.multi.has-items .ts-control {
-    padding: 4px 0px 0px;
-}
-
 .ts-wrapper.multi.has-items .ts-control {
     padding: 4px 0px 0px;
 }
@@ -72,10 +65,7 @@
 .ts-control {
     padding: 4px 0px 3px;
     border: none;
-    
-    padding: 4px 0px 3px;
-    border: none;
-    
+
     .item {
         margin-top: 0 !important;
     }
