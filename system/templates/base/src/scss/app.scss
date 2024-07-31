@@ -6,13 +6,12 @@
 @import 'bootstrap_overrides';
 
 // Required
-@import "~bootstrap/scss/functions";
-@import "~bootstrap/scss/variables";
-@import "~bootstrap/scss/variables-dark";
-@import "~bootstrap/scss/maps";
-@import "~bootstrap/scss/mixins";
-@import "~bootstrap/scss/utilities";
-@import "~bootstrap/scss/bootstrap-grid";
+// @import "~bootstrap/scss/functions";
+// @import "~bootstrap/scss/variables";
+// @import "~bootstrap/scss/mixins";
+// @import "~bootstrap/scss/maps";
+// @import "~bootstrap/scss/utilities";
+// @import "~bootstrap/scss/bootstrap-grid";
 
 // Optional bootstrap extras
 @import "~bootstrap/scss/bootstrap";
@@ -21,6 +20,7 @@
 // Cmfive styles
 @import 'cmfive/mixins';
 
+@import 'cmfive/accordion';
 @import 'cmfive/breadcrumb';
 @import 'cmfive/buttons';
 @import 'cmfive/cards';
@@ -65,7 +65,7 @@
 .ts-control {
     padding: 4px 0px 3px;
     border: none;
-    
+
     .item {
         margin-top: 0 !important;
     }

@@ -174,12 +174,7 @@ class Attachment extends DbObject
     {
         $view_url = $this->getViewUrl();
         if ($this->isDocument()) {
-            if (stripos($this->filename, '.docx') || stripos($this->filename, '.doc')) {
-                $view_url = substr($view_url, 0, 1) == '/' ? substr($view_url, 1) : $view_url;
-                return Html::embedDocument($this->w->localUrl() . $view_url, $width, $height, 'page-width', true);
-            } else {
-                return Html::embedDocument($view_url, $width, $height);
-            }
+            return Html::embedDocument($view_url, $width, $height);
         }
 
         return Html::a($view_url, $this->title);
@@ -203,7 +198,9 @@ class Attachment extends DbObject
             'application/vnd.ms-powerpoint',
             'application/vnd.oasis.opendocument.text',
             'application/vnd.oasis.opendocument.spreadsheet',
-            'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'application/json',
+            'text/plain'
         ];
 
         return in_array($this->mimetype, $document_mimetypes);
@@ -334,6 +331,7 @@ class Attachment extends DbObject
     public function displayContent()
     {
         $this->w->header("Content-Type: " . $this->getMimetype());
+        $this->w->header("Content-Disposition: inline; filename=\"" . $this->filename . "\"");
         $this->w->out($this->getContent());
     }
 

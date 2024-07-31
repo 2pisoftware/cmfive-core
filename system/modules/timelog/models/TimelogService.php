@@ -220,4 +220,18 @@ class TimelogService extends DbService
         $w->ctx("navigation", $nav);
         return $nav;
     }
+
+    public function navList(): array
+    {
+        $trackingObject = $this->getTrackingObject();
+
+        return [
+            new MenuLinkStruct("Timelog Dashboard", "timelog/index"),
+            new MenuLinkStruct(
+                "Add Timelog",
+                "timelog/edit" . (!empty($trackingObject) && !empty($trackingObject->id) ? "?class=" . get_class($trackingObject) . "&id=" . $trackingObject->id : ''),
+                MenuLinkType::Modal
+            ),
+        ];
+    }
 }
