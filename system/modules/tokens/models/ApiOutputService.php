@@ -36,10 +36,9 @@ class ApiOutputService extends DbService
     {
         $this->w->setLayout(null);
         http_response_code($response['status']);
-        // mark header for return content type JSON
-        if (substr($response['status'], 0, 1) == "2") {
-            header('Content-Type: application/json');
-        } else {
+        header('Content-Type: application/json');
+
+        if (substr($response['status'], 0, 1) != "2") {
             LogService::getInstance($this->w)->info("API request rejected: " . $response['referer']);
             // Don't need, already have set response code!
             // header($_SERVER["SERVER_PROTOCOL"] . " " . $response['status'] . " " . $response['payload'][0]);

@@ -1,5 +1,4 @@
 const mix = require("laravel-mix");
-// const fs = require("fs");
 const path = require('path');
 
 const { glb } = require('laravel-mix-glob');
@@ -18,9 +17,16 @@ const { glb } = require('laravel-mix-glob');
 
 process.env.DEBUG = true;
 
+mix.webpackConfig(webpack => {
+    return {
+        plugins: [
+            new webpack.DefinePlugin({ __VUE_PROD_DEVTOOLS__: 'true', }),
+        ]
+    }
+})
+
 async function loadAssets() {
-    mix
-        .ts("src/js/app.ts", "")
+    mix.ts("src/js/app.ts", "")
         .vue()
         .sass("src/scss/app.scss", "")
         .setPublicPath("dist")

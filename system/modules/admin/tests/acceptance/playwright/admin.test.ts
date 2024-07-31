@@ -1,8 +1,43 @@
 import { expect, test } from "@playwright/test";
-import { GLOBAL_TIMEOUT, CmfiveHelper } from "@utils/cmfive";
 import { AdminHelper } from "@utils/admin";
+import { CmfiveHelper, GLOBAL_TIMEOUT, HOST } from "@utils/cmfive";
 
 test.describe.configure({mode: 'parallel'});
+
+test("Admin can update password of user", async ({ page }) => {
+	test.setTimeout(GLOBAL_TIMEOUT);
+	CmfiveHelper.acceptDialog(page);
+
+	await CmfiveHelper.login(page, "admin", "admin");
+
+	const user = CmfiveHelper.randomID("user_");
+	await AdminHelper.createUser(
+		page,
+		user,
+		user + "_password",
+		user + "_firstName",
+		user + "_lastName",
+		user + "@localhost.com"
+	);
+
+	await page.goto(`${HOST}/admin/users`);
+
+	const row = CmfiveHelper.getRowByText(page, user);
+	const edit = row.getByRole("button", { name: "Edit" });
+	await edit.click();
+
+	const security = page.getByRole('link', { name: 'Security' });
+	await security.waitFor();
+	await security.click();
+
+	await page.getByLabel('New Password', { exact: true }).fill("test password");
+	await page.getByLabel('Repeat New Password', { exact: true }).fill("test password");
+	await page.getByRole('button', { name: 'Update Password' }).click();
+
+	await CmfiveHelper.logout(page);
+
+	await CmfiveHelper.login(page, user, "test password");
+});
 
 test("Test that an admin can create and delete a user", async ({ page }) => {
     test.setTimeout(GLOBAL_TIMEOUT);
@@ -167,8 +202,10 @@ test("Test that Cmfive Admin can create/run/rollback migrations", async ({ page 
     // test that migration can be run/rolled back from "Individual" migrations tab
     await page.getByRole("link", { name: "Individual" }).click();
 
+    const migrationsCount = await page.getByRole('button', {name: 'Migrate to here'}).count();
+    const plural = migrationsCount == 1 ? " has" : "s have";
     await CmfiveHelper.getRowByText(page, "Admin"+migration).getByRole("button", { name: "Migrate to here" }).click();
-    await expect(page.getByText("1 migration has run.")).toBeVisible();
+    await expect(page.getByText(`${migrationsCount} migration${plural} run.`)).toBeVisible();
 
     await CmfiveHelper.getRowByText(page, "Admin" + migration).getByRole("button", { name: "Rollback to here" }).click();
     await expect(page.getByText("1 migration has rolled back")).toBeVisible();
