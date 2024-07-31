@@ -606,4 +606,12 @@ class FormService extends DbService
 
         return $nav;
     }
+
+    public function navList(): array
+    {
+        return [
+            new MenuLinkStruct("Applications", "form-application"),
+            new MenuLinkStruct("Forms", "form"),
+        ];
+    }
 }

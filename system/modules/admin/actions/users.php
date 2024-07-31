@@ -74,13 +74,13 @@ function users_GET(Web $w)
         // Set up the filtered part of the url
         if (!(empty($login) && empty($name) && empty($email))) {
             $filter_url = "?";
-            if (!empty($login))  {
+            if (!empty($login)) {
                 $filter_url .= "admin%2Fuser__filter-login=" . $login;
                 if (!(empty($name) && empty($email))) {
                     $filter_url .= "&";
                 }
             }
-            if (!empty($name))  {
+            if (!empty($name)) {
                 $filter_url .= "admin%2Fuser__filter-name=" . $name;
                 if (!(empty($email))) {
                     $filter_url .= "&";
