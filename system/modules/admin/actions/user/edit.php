@@ -8,6 +8,7 @@ function edit_GET(Web $w)
     $w->setLayout('layout-bootstrap-5');
 
     VueComponentRegister::registerComponent("autocomplete", new VueComponent("autocomplete", "/system/templates/vue-components/form/elements/autocomplete.vue.js", "/system/templates/vue-components/form/elements/autocomplete.vue.css"));
+    // CmfiveScriptComponentRegister::registerComponent("toast", new CmfiveScriptComponent("/system/templates/base/dist/Toast.js"));
 
     $redirect_url = "/admin/users";
 
@@ -54,12 +55,13 @@ function edit_GET(Web $w)
             "fax" => $contact->fax,
             "email" => $contact->email,
 
+
         ],
         "security" => [
             "login" => $user->login,
-            "is_admin" => $user->is_admin,
-            "is_active" => $user->is_active,
-            "is_external" => $user->is_external,
+            "is_admin" => $user->is_admin ? 'true' : 'false',
+            "is_active" => $user->is_active ? 'true' : 'false',
+            "is_external" => $user->is_external ? 'true' : 'false',
             "is_locked" => $user->is_locked,
             "new_password" => "",
             "repeat_new_password" => "",
@@ -161,7 +163,6 @@ function edit_GET(Web $w)
             ]
         ],
     ], '/admin-user/edit/' . $user->id));
-
 }
 
 function edit_POST(Web $w): void
@@ -204,5 +205,4 @@ function edit_POST(Web $w): void
     }
 
     $w->msg("User details updated", $redirect_url);
-
 }
