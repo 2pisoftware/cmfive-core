@@ -1,12 +1,19 @@
 <?php
 
+
 /**
+ * Display member and permission infomation
+ *
+ * @param <type> $w
+ */
  * Display member and permission infomation
  *
  * @param <type> $w
  */
 function moreInfo_GET(Web &$w)
 {
+	$w->setLayout('layout-bootstrap-5');
+
 	$w->setLayout('layout-bootstrap-5');
 
 	$option = $w->pathMatch("group_id");

@@ -1,5 +1,6 @@
 <?php
 
+
 /**@author Alice Hutley <alice@2pisoftware.com> */
 
 function index_ALL(Web $w)
@@ -13,6 +14,7 @@ function index_ALL(Web $w)
     // access service functions using the Web $w object and the module name
     $modules = InsightService::getInstance($w)->getAllInsights('all');
 
+    // Display a list of all the insights this user can see
     // Display a list of all the insights this user can see
     // build the table array adding the headers and the row data
     $table = [];
@@ -62,5 +64,6 @@ function index_ALL(Web $w)
     }
 
     //send the table to the template using ctx
+    $w->ctx('insightTable', HtmlBootstrap5::table($table, 'insight_table', 'tablesorter', $tableHeaders));
     $w->ctx('insightTable', HtmlBootstrap5::table($table, 'insight_table', 'tablesorter', $tableHeaders));
 }

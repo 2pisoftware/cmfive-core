@@ -30,7 +30,7 @@ jobs:
     - name: Get phpcs
       run: wget https://raw.githubusercontent.com/2pisoftware/cmfive-boilerplate/master/phpcs.xml
     - name: Codesniffer
-      uses: pipeline-components/php-codesniffer@v0.31.0
+      uses: pipeline-components/php-codesniffer@v0.32.0
       with:
         options: -s -p --colors --extensions=php --runtime-set testVersion ${{matrix.php_version}}
 
@@ -149,6 +149,12 @@ jobs:
           # Copy the compiled theme back to the docker container
           docker cp /tmp/cmfive-theme/. cmfive:/var/www/html/system/templates/base
 
+      # Pre-requisites Prepare Cmfive Environment
+      - name: Start containers
+        run: |
+          cp .codepipeline/test_agent/configs/test_agent-config.php config.php
+          docker compose -f docker-compose.yml up --build -d --wait --wait-timeout 120
+          
       # Pre-requisites Prepare Cmfive Environment
       - name: Setup cmfive Test Environment
         run: |

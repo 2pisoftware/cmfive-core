@@ -18,7 +18,17 @@ class CmfiveStyleComponent extends CmfiveComponent
                 $this->$key = $value;
             }
         }
+    public function __construct($path, $include_paths = [], $is_external = false, $props = [])
+    {
+        if (!empty($props)) {
+            foreach ($props as $key => $value) {
+                $this->$key = $value;
+            }
+        }
 
+        $this->_external = $is_external;
+        if (!$this->_external) {
+            $style_path = pathinfo($path);
         $this->_external = $is_external;
         if (!$this->_external) {
             $style_path = pathinfo($path);
@@ -26,7 +36,18 @@ class CmfiveStyleComponent extends CmfiveComponent
             if (empty($style_path['extension']) || !in_array($style_path['extension'], static::$_allowed_extensions)) {
                 throw new Exception('Invalid file path given to component');
             }
+            if (empty($style_path['extension']) || !in_array($style_path['extension'], static::$_allowed_extensions)) {
+                throw new Exception('Invalid file path given to component');
+            }
 
+            $this->_extension = $style_path['extension'];
+            $this->_filename = $style_path['filename'];
+            $this->_dirname = $style_path['dirname'];
+            $this->_include_paths = $include_paths;
+        } else {
+            $this->href = $path;
+        }
+    }
             $this->_extension = $style_path['extension'];
             $this->_filename = $style_path['filename'];
             $this->_dirname = $style_path['dirname'];
@@ -43,7 +64,16 @@ class CmfiveStyleComponent extends CmfiveComponent
                 $this->$key = $value;
             }
         }
+    public function setProps(array $props)
+    {
+        if (!empty($props)) {
+            foreach ($props as $key => $value) {
+                $this->$key = $value;
+            }
+        }
 
+        return $this;
+    }
         return $this;
     }
 
@@ -98,3 +128,4 @@ class CmfiveStyleComponent extends CmfiveComponent
         }
     }
 }
+

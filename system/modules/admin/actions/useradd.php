@@ -3,6 +3,8 @@
 use Html\Form\InputField\Password;
 use Html\Form\Select;
 use Html\Cmfive\SelectWithOther;
+use Html\Form\Select;
+use Html\Cmfive\SelectWithOther;
 
 /**
  * Display User edit form in colorbox

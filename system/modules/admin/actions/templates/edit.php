@@ -7,6 +7,8 @@ function edit_GET(Web $w)
 {
 	$w->setLayout('layout-bootstrap-5');
 
+	$w->setLayout('layout-bootstrap-5');
+
 	AdminService::getInstance($w)->navigation($w, "Templates");
 	$p = $w->pathMatch("id");
 
@@ -42,6 +44,18 @@ function edit_GET(Web $w)
 				"required" => true,
 				"value" => $t->category
 			])) //["Category", "text", "category", $t->category]
+			(new \Html\Form\InputField\Text([
+				"id|name" => "module",
+				"label" => "Module",
+				"required" => true,
+				"value" => $t->module
+			])), //["Module", "text", "module", $t->module], 
+			(new \Html\Form\InputField\Text([
+				"id|name" => "category",
+				"label" => "Category",
+				"required" => true,
+				"value" => $t->category
+			])) //["Category", "text", "category", $t->category]
 		]
 	];
 	$newForm['Description'] = [
@@ -51,13 +65,26 @@ function edit_GET(Web $w)
 				"value" => $t->description,
 				"label" => "Description",
 			]))->setOptions(["placeholder" => "Please provide a brief description of the template"]) //["", "textarea", "description", $t->description]
+			(new \Html\Cmfive\QuillEditor([
+				"id|name" => "description",
+				"value" => $t->description,
+				"label" => "Description",
+			]))->setOptions(["placeholder" => "Please provide a brief description of the template"]) //["", "textarea", "description", $t->description]
 		],
 	];
 
 	$w->ctx("editdetailsform", HtmlBootstrap5::multiColForm($newForm, $w->localUrl('/admin-templates/edit/' . $t->id)));
+	$w->ctx("editdetailsform", HtmlBootstrap5::multiColForm($newForm, $w->localUrl('/admin-templates/edit/' . $t->id)));
 
 	$newForm = [];
 	$newForm["Template Title"] = [
+		[
+			(new \Html\Form\InputField\Text([
+				"id|name" => "template_title",
+				"value" => $t->template_title,
+				"maxlength" => 100
+			])) //["", "textarea", "template_title", $t->template_title, 100, 1, false]
+		]
 		[
 			(new \Html\Form\InputField\Text([
 				"id|name" => "template_title",
@@ -75,6 +102,7 @@ function edit_GET(Web $w)
 		]
 	];
 
+	$w->ctx("templateform", HtmlBootstrap5::multiColForm($newForm, $w->localUrl('/admin-templates/edit/' . $t->id)));
 	$w->ctx("templateform", HtmlBootstrap5::multiColForm($newForm, $w->localUrl('/admin-templates/edit/' . $t->id)));
 
 	$newForm = [];
@@ -98,6 +126,7 @@ function edit_GET(Web $w)
 	];
 
 	$w->ctx("testdataform", HtmlBootstrap5::multiColForm($newForm, $w->localUrl('/admin-templates/edit/' . $t->id)));
+	$w->ctx("testdataform", HtmlBootstrap5::multiColForm($newForm, $w->localUrl('/admin-templates/edit/' . $t->id)));
 	$w->ctx("id", $p['id']);
 }
 
@@ -113,8 +142,10 @@ function edit_POST(Web $w)
 	// Set is active if saving is originating from the first page
 	if (isset($_POST["title"]) && isset($_POST["module"]) && isset($_POST["category"])) {
 		$t->is_active = !empty($_REQUEST['is_active']) ? $_REQUEST['is_active'] : 0;
+		$t->is_active = !empty($_REQUEST['is_active']) ? $_REQUEST['is_active'] : 0;
 	}
 
 	$t->insertOrUpdate();
+	$w->msg("Template saved", "/admin-templates/edit/" . $t->id . "#tab-1");
 	$w->msg("Template saved", "/admin-templates/edit/" . $t->id . "#tab-1");
 }

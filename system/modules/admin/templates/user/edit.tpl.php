@@ -77,6 +77,13 @@
         </div>
     </div>
 </div>
+<script src="/system/templates/js/axios.min.js"></script>
+
+<script src="/system/templates/js/jquery-1.4.2.min.js"></script>
+<!-- TODO: Needs toast SCSS too. -->
+<script src="/system/templates/js/Toast.js"></script>
+<script src="/system/templates/vue-components/profile-security.vue.js"></script>
+
 <script>
     const {
         createApp

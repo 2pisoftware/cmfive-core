@@ -1,6 +1,11 @@
 <?php
 
+
 /**
+ * Display a list of all groups which are not deleted
+ *
+ * @param <type> $w
+ */
  * Display a list of all groups which are not deleted
  *
  * @param <type> $w
