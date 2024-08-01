@@ -286,4 +286,3 @@ jobs:
             boilerplate/test/playwright/playwright-report/
             cmfive_container.log
           retention-days: 5
-
