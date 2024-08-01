@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * Display member and permission infomation
  *
@@ -44,7 +45,8 @@ function moreInfo_GET(Web &$w)
                     href: "/admin/memberdelete/" . $option['group_id'] . "/" . $groupMember->id,
                     title: "Delete",
                     confirm: "Are you sure you want to delete this member?",
-                    class: "btn-danger btn-sm");
+                    class: "btn-danger btn-sm"
+                );
             } else {
                 $line[] = null;
             }
