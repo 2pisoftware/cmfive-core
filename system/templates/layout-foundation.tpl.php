@@ -17,7 +17,6 @@
     $w->enqueueStyle(["name" => "datePicker.css", "uri" => "/system/templates/css/datePicker.css", "weight" => 980]);
     $w->enqueueStyle(["name" => "jquery-ui-1.8.13.custom.css", "uri" => "/system/templates/js/jquery-ui-new/css/custom-theme/jquery-ui-1.8.13.custom.css", "weight" => 970]);
     $w->enqueueStyle(["name" => "liveValidation.css", "uri" => "/system/templates/css/liveValidation.css", "weight" => 960]);
-    $w->enqueueStyle(["name" => "colorbox.css", "uri" => "/system/templates/js/colorbox/colorbox/colorbox.css", "weight" => 950]);
     $w->enqueueStyle(["name" => "jquery.asmselect.css", "uri" => "/system/templates/css/jquery.asmselect.css", "weight" => 940]);
     $w->enqueueStyle(["name" => "foundation-icons.css", "uri" => "/system/templates/font/foundation-icons/foundation-icons.css", "weight" => 930]);
     $w->enqueueStyle(["name" => "codemirror.css", "uri" => "/system/templates/js/codemirror-4.4/lib/codemirror.css", "weight" => 900]);
@@ -28,14 +27,11 @@
     $w->enqueueScript(["name" => "jquery.js", "uri" => "/system/templates/js/foundation-5.5.0/js/vendor/jquery.js", "weight" => 1000]);
     $w->enqueueScript(["name" => "jquery.tablesorter.js", "uri" => "/system/templates/js/tablesorter/jquery.tablesorter.js", "weight" => 990]);
     $w->enqueueScript(["name" => "jquery.tablesorter.pager.js", "uri" => "/system/templates/js/tablesorter/addons/pager/jquery.tablesorter.pager.js", "weight" => 980]);
-    $w->enqueueScript(["name" => "jquery.colorbox-min.js", "uri" => "/system/templates/js/colorbox/colorbox/jquery.colorbox-min.js", "weight" => 970]);
     $w->enqueueScript(["name" => "jquery-ui-1.10.4.custom.min.js", "uri" => "/system/templates/js/jquery-ui-1.10.4.custom/js/jquery-ui-1.10.4.custom.min.js", "weight" => 960]);
 
     $w->enqueueScript(["name" => "jquery-ui-timepicker-addon.js", "uri" => "/system/templates/js/jquery-ui-timepicker-addon.js", "weight" => 950]);
-    $w->enqueueScript(["name" => "livevalidation.js", "uri" => "/system/templates/js/livevalidation.js", "weight" => 940]);
     $w->enqueueScript(["name" => "main.js", "uri" => "/system/templates/js/main.js", "weight" => 995]);
     $w->enqueueScript(["name" => "jquery.asmselect.js", "uri" => "/system/templates/js/jquery.asmselect.js", "weight" => 920]);
-    $w->enqueueScript(["name" => "boxover.js", "uri" => "/system/templates/js/boxover.js", "weight" => 910]);
     $w->enqueueScript(["name" => "ckeditor.js", "uri" => "/system/templates/js/ckeditor/ckeditor.js", "weight" => 900]);
     $w->enqueueScript(["name" => "Chart.js", "uri" => "/system/templates/js/chart-js/dist/Chart.min.js", "weight" => 890]);
     $w->enqueueScript(["name" => "moment.js", "uri" => "/system/templates/js/moment.min.js", "weight" => 880]);
@@ -43,7 +39,6 @@
     // Code mirror
     $w->enqueueScript(["name" => "codemirror.js", "uri" => "/system/templates/js/codemirror-4.4/codemirror-compressed.js", "weight" => 880]);
 
-    CmfiveScriptComponentRegister::registerComponent('ES6Promise', new CmfiveScriptComponent('/system/templates/js/es6-promise.auto.js'));
     CmfiveScriptComponentRegister::registerComponent('AxiosJS', new CmfiveScriptComponent('/system/templates/js/axios.min.js'));
     CmfiveScriptComponentRegister::registerComponent('ToastJS', new CmfiveScriptComponent("/system/templates/js/Toast.js"));
     CmfiveStyleComponentRegister::registerComponent('ToastSCSS', new CmfiveStyleComponent("/system/templates/css/Toast.scss", ['/system/templates/scss/']));
