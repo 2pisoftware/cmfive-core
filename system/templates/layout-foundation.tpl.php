@@ -27,11 +27,9 @@
     $w->enqueueScript(["name" => "jquery.js", "uri" => "/system/templates/js/foundation-5.5.0/js/vendor/jquery.js", "weight" => 1000]);
     $w->enqueueScript(["name" => "jquery.tablesorter.js", "uri" => "/system/templates/js/tablesorter/jquery.tablesorter.js", "weight" => 990]);
     $w->enqueueScript(["name" => "jquery.tablesorter.pager.js", "uri" => "/system/templates/js/tablesorter/addons/pager/jquery.tablesorter.pager.js", "weight" => 980]);
-    $w->enqueueScript(["name" => "jquery.colorbox-min.js", "uri" => "/system/templates/js/colorbox/colorbox/jquery.colorbox-min.js", "weight" => 970]);
     $w->enqueueScript(["name" => "jquery-ui-1.10.4.custom.min.js", "uri" => "/system/templates/js/jquery-ui-1.10.4.custom/js/jquery-ui-1.10.4.custom.min.js", "weight" => 960]);
 
     $w->enqueueScript(["name" => "jquery-ui-timepicker-addon.js", "uri" => "/system/templates/js/jquery-ui-timepicker-addon.js", "weight" => 950]);
-    $w->enqueueScript(["name" => "livevalidation.js", "uri" => "/system/templates/js/livevalidation.js", "weight" => 940]);
     $w->enqueueScript(["name" => "main.js", "uri" => "/system/templates/js/main.js", "weight" => 995]);
     $w->enqueueScript(["name" => "jquery.asmselect.js", "uri" => "/system/templates/js/jquery.asmselect.js", "weight" => 920]);
     $w->enqueueScript(["name" => "ckeditor.js", "uri" => "/system/templates/js/ckeditor/ckeditor.js", "weight" => 900]);
@@ -41,7 +39,6 @@
     // Code mirror
     $w->enqueueScript(["name" => "codemirror.js", "uri" => "/system/templates/js/codemirror-4.4/codemirror-compressed.js", "weight" => 880]);
 
-    CmfiveScriptComponentRegister::registerComponent('ES6Promise', new CmfiveScriptComponent('/system/templates/js/es6-promise.auto.js'));
     CmfiveScriptComponentRegister::registerComponent('AxiosJS', new CmfiveScriptComponent('/system/templates/js/axios.min.js'));
     CmfiveScriptComponentRegister::registerComponent('ToastJS', new CmfiveScriptComponent("/system/templates/js/Toast.js"));
     CmfiveStyleComponentRegister::registerComponent('ToastSCSS', new CmfiveStyleComponent("/system/templates/css/Toast.scss", ['/system/templates/scss/']));
