@@ -1126,7 +1126,12 @@ class TaskService extends DbService
         }
         $all_timelogs_for_task = TimelogService::getInstance($this->w)->getTimelogsForObject($current_task);
         
-        $timelog_types = Config::get('task.TaskType_' . $current_task->task_type)['time-types'];
+        $config_var = Config::get('task.TaskType_' . $current_task->task_type);
+        if (!array_key_exists('time-types', $config_var)) {
+            return;
+        }
+        $timelog_types = $config_var['time-types'];
+        
         $time_totals_for_time_types = [];
         foreach ($timelog_types as $timelog_type) {
             $total_time_for_type = 0;
