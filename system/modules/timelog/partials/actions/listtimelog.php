@@ -18,10 +18,8 @@ function listtimelog(\Web $w, $params) {
 			$current_task = $task;
 		}
 	}
-	if (in_array($current_task->task_type, ['Todo', 'CmfiveTicket', 'CrmTicket']) && sizeof($timelogs) > 0 && !empty(\TaskService::getInstance($w)->getTaskTypeObject($current_task->task_type)->getTimeTypes())) {
-		$task_time = \TaskService::getInstance($w);
-	} else {
-		$task_time = null;
+	if (in_array($current_task->task_type, ['Todo', 'CmfiveTicket', 'CrmTicket']) && sizeof($timelogs) > 0) {
+		$w->ctx("billable_hours", \TaskService::getInstance($w)->getTotalTimeByBillable($params['object_id']));
 	}
 	
 	$w->ctx("total", !empty($total) ? $total : 0);
@@ -29,5 +27,4 @@ function listtimelog(\Web $w, $params) {
 	$w->ctx("id", $params['object_id']);
 	$w->ctx("redirect", !empty($params['redirect']) ? $params['redirect'] : "");
 	$w->ctx("timelogs", $timelogs);
-	$w->ctx("billable_hours", !empty($task_time) ? $task_time->getTotalTimeByBillable($params['object_id']) : null);
 }
