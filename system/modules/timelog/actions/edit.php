@@ -128,12 +128,8 @@ function edit_POST(Web $w)
         }
     }
 
-    $dedupeInfo = "current( id( $timelog->user_id ) dt_start( " . substr($timelog->dt_start, 0, 10) . " " . substr($timelog->dt_start, 11, 5) . " ) )";
-
     foreach ($timelogs_for_task_and_user as $existing_timelog_for_task_and_user) {
         
-        $dedupeInfo .= " existing( id( $existing_timelog_for_task_and_user->user_id ) dt_start( " . gmdate('Y-m-d', strtotime($existing_timelog_for_task_and_user->getDateStart() . ' ' . $existing_timelog_for_task_and_user->getTimeStart())) . " " . gmdate('H:i', strtotime($existing_timelog_for_task_and_user->getTimeStart())) . " ) )";
-
         if (gmdate('Y-m-d', strtotime($existing_timelog_for_task_and_user->getDateStart() . ' ' . $existing_timelog_for_task_and_user->getTimeStart())) == substr($timelog->dt_start, 0, 10) && gmdate('H:i', strtotime($existing_timelog_for_task_and_user->getTimeStart())) == substr($timelog->dt_start, 11, 5)) {
             $w->error('Duplicate Timelog Removed', $redirect ?: '/timelog');
         }
@@ -145,5 +141,5 @@ function edit_POST(Web $w)
     // Save comment
     $timelog->setComment($_POST['description']);
 
-    $w->msg("<div id='saved_record_id' data-id='" . $timelog->id . "' >Timelog saved<!--$dedupeInfo--></div>", (!empty($redirect) ? $redirect . "#timelog" : "/timelog"));
+    $w->msg("<div id='saved_record_id' data-id='" . $timelog->id . "' >Timelog saved</div>", (!empty($redirect) ? $redirect . "#timelog" : "/timelog"));
 }
