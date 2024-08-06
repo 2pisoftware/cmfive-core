@@ -1,7 +1,7 @@
 <div class="image-container attachment text-center">
     <div class="image-container-overlay">
         <div class="row-fluid">
-            <button href="#" data-reveal-id="attachment_modal_<?php echo $attachment->id; ?>" class="button expand" onclick="$('#img_<?php echo $attachment->id; ?>').attr('src', $('#img_<?php echo $attachment->id; ?>').attr('src-async'));">
+            <button href="#" class="button expand" onclick="$('#img_<?php echo $attachment->id; ?>').attr('src', $('#img_<?php echo $attachment->id; ?>').attr('src-async')); $('#attachment_modal_<?php echo $attachment->id; ?>').foundation('reveal', 'open')">
                 View
             </button>
         </div>
@@ -24,18 +24,26 @@
         <i class="fi-page" style="font-size: 90pt;"></i>
     <?php } ?>
 </div>
-<a href="#" data-reveal-id="attachment_modal_<?php echo $attachment->id; ?>">
+<a href="#" onclick="$('#img_<?php echo $attachment->id; ?>').attr('src', $('#img_<?php echo $attachment->id; ?>').attr('src-async')); $('#attachment_modal_<?php echo $attachment->id; ?>').foundation('reveal', 'open')">
     <div class="row-fluid clearfix text-center" style="overflow: hidden;">
-        <b>Title: </b><?php echo $attachment->title; ?>
+        <b>Title: </b><?php echo $attachment->filename; ?>
     </div>
     <div class="row-fluid clearfix text-center" style="overflow: hidden;">
-        <b>Description: </b><?php echo strip_tags($attachment->description ?? ""); ?>
+        <?php
+            $description = strip_tags($attachment->description ?? "");
+            if($description !== "") {
+                echo '<b>Description: </b>' . $description;
+            }
+        ?>
     </div>
     <div class="row-fluid clearfix text-center">
         <?php if (!empty($owner)) {
             $contact = $owner->getContact();
             $buffer .= empty($contact) ? "" : "<b>Owner: </b> " . $contact->getFullname();
         } ?>
+    </div>
+    <div class="row-fluid clearfix text-center" style="overflow: hidden;">
+        (<?php echo $attachment->getSize(); ?>)
     </div>
 </a>
 <div id="attachment_modal_<?php echo $attachment->id; ?>" class="reveal-modal file__pdf-modal" data-reveal role="dialog">

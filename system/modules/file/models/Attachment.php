@@ -272,6 +272,16 @@ class Attachment extends DbObject
     }
 
     /**
+     * Returns size of attachment in human readable format
+     * 
+     * @return string size
+     */
+    public function getSize(): string
+    {
+        return humanReadableBytes($this->getFile()->getSize());
+    }
+
+    /**
      * Returns Gaufrette File instance (of the attached file)
      *
      * @return FilePolyfill
