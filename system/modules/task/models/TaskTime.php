@@ -28,5 +28,4 @@ class TaskTime extends  DbObject {
     public function getTask() {
         return $this->getObject("Task", $this->task_id);
     }
-
 }
