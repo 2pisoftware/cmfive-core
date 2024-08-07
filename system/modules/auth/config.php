@@ -11,7 +11,8 @@ Config::set('auth', [
     ],
     'show_application_name' => true,
     "dependencies" => [
-        "sonata-project/google-authenticator" => "^2.2"
+        "sonata-project/google-authenticator" => "^2.2",
+        "web-auth/webauthn-lib" => "^4.9"
     ],
     'login' => [
         'password' => [
