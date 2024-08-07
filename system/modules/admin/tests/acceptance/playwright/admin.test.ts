@@ -221,7 +221,10 @@ test("Test that Last Login is stored for users", async ({ page }) => {
         console.log("Pre-Login Time: "+preLoginTime);
         console.log("Last-Login Time: "+lastLoginDate);
         console.log("Post-Login Time: "+postLoginTime);
-        expect((lastLoginDate>=preLoginTime&&lastLoginDate<=postLoginTime)||(lastLoginDate>=new Date(preLoginTime.getTime()+10*60*60*1000) &&lastLoginDate<=new Date(postLoginTime.getTime()+10*60*60*1000))).toBeTruthy();
+        expect(
+            (lastLoginDate>=preLoginTime&&lastLoginDate<=postLoginTime)||
+        (lastLoginDate>=new Date(preLoginTime.getTime()-10*60*60*1000) &&
+        lastLoginDate<=new Date(postLoginTime.getTime()-10*60*60*1000))).toBeTruthy();
     }
     await AdminHelper.deleteUser(page, user);
 });
