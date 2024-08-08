@@ -1,4 +1,5 @@
 <?php
+use function GuzzleHttp\Promise\task;
 
 /**
  * My Timelog insight - replaces the My Timelog report
@@ -58,56 +59,107 @@ class MyTimelogInsight extends InsightBaseClass
     {
         $results = [];
 
-        // Summary
-        $timelog_query = $w->db->get('timelog')->where('timelog.user_id', AuthService::getInstance($w)->user()->id)
-            ->select()->select("sum(unix_timestamp(timelog.dt_end) - unix_timestamp(timelog.dt_start)) as 'Time'");
-        
+        // Get primary dataset
+        $primary_timelog_query = $w->db->get('timelog')->select()
+            ->select("timelog.id as 'timelog_id', unix_timestamp(timelog.dt_start) as 'dt_start', unix_timestamp(timelog.dt_end) as 'dt_end', timelog.time_type as 'time_type', task.title as 'task_title', task.id as 'task_id', task_group.title as 'task_group_title', substring(comment.comment, 1, 50) as 'comment'")
+            ->leftJoin('task on task.id = timelog.object_id and timelog.object_class = "Task"')
+            ->leftJoin('task_group on task_group.id = task.task_group_id')
+            ->leftJoin('comment on comment.obj_id = timelog.id and comment.obj_table = "timelog"');
+
         if (array_key_exists('task_group', $parameters) && !empty($parameters['task_group'])) {
-            $timelog_query->leftJoin('task on task.id = timelog.object_id and timelog.object_class = "Task"')
-                ->leftJoin('task_group on task_group.id = task.task_group_id')
-                ->where('task.task_group_id', $parameters['task_group'])
-                ->where('task.is_deleted', 0)
-                ->where('task_group.is_deleted', 0);
+            $primary_timelog_query->where('task.task_group_id', $parameters['task_group']);
         }
         if (array_key_exists('dt_from', $parameters) && !empty($parameters['dt_from'])) {
-            $timelog_query->where('timelog.dt_start >= ?', $parameters['dt_from']);
+            $primary_timelog_query->where('timelog.dt_start >= ?', $parameters['dt_from']);
         }
         if (array_key_exists('dt_to', $parameters) && !empty($parameters['dt_to'])) {
-            $timelog_query->where('timelog.dt_end <= ?', $parameters['dt_to']);
+            $primary_timelog_query->where('timelog.dt_end <= ?', $parameters['dt_to']);
         }
         if (array_key_exists('time_type', $parameters) && !empty($parameters['time_type'])) {
-            $timelog_query->where('timelog.time_type', $parameters['time_type']);
+            $primary_timelog_query->where('timelog.time_type', $parameters['time_type']);
         }
-        $timelog_query->where('timelog.is_deleted', 0);
+        $primary_timelog_query->where('timelog.is_deleted', 0)
+            ->where('task.is_deleted', 0)
+            ->where('task_group.is_deleted', 0)
+            ->where('timelog.user_id', AuthService::getInstance($w)->user()->id);
         
-        $timelogs = $timelog_query->fetchAll();
-        $hours = array_reduce($timelogs, fn ($carry, $t) => $carry + $t['Time']);
-        $results[] = new InsightReportInterface('Summary', ['User', 'Hours'], [[AuthService::getInstance($w)->user()->getFullName(), $this->formatDuration($hours)]]);
+        $primary_timelogs = $primary_timelog_query->orderBy("dt_start desc")->fetchAll();
+        
+        $summary = 0;
+        $time_type_summary = [];
+        $task_group_summary = [];
+        $task_summary = [];
+        $detailed_timelog = [];
+        foreach ($primary_timelogs as $pt) {
+            $time_difference = $pt['dt_end'] - $pt['dt_start'];
+            if ($time_difference < 0) {
+                continue;
+            }
 
-        //below service is referred to as $where in subsequent notes in this block for purpose of examples
-        // $data = AuditService::getInstance($w)->getAudits(($parameters['dt_from']), ($parameters['dt_to']), ($parameters['user_id']), ($parameters['module']), ($parameters['action']));
+            // Add to summary
+            $summary += $time_difference;
 
-        // if (!$data) {
-        //      $results[] = new InsightReportInterface('Audit Report', ['Results'], [['No data returned for selections']]);
-        // } else {
-        //     // convert $data from list of objects to array of values
-        //     $convertedData = [];
-        //     while ($datarow = array_pop($data)) {
-        //     // foreach ($data as $datarow) {
-        //         $row = [];
-        //         $row['Date'] = formatDateTime($datarow['dt_created']);
-        //         $creator = AuthService::getInstance($w)->getUser($datarow['creator_id']);
-        //         $row['User'] = empty($creator) ? '' : $creator->getFullName();
-        //         unset($creator);
-        //         $row['Module'] = $datarow['module'];
-        //         $row['URL'] = $datarow['path'];
-        //         $row['Class'] = $datarow['db_class'];
-        //         $row['Action'] = $datarow['db_action'];
-        //         $row['DB Id'] = $datarow['db_id'];
-        //         $convertedData[] = $row;
-        //     }
-        //     $results[] = new InsightReportInterface('Audit Report', ['Date', 'User', 'Module', 'URL', 'Class', 'Action', 'DB Id'], $convertedData);
-        // }
+            // Add to time type summary
+            if (!array_key_exists($pt["time_type"], $time_type_summary)) {
+                $time_type_summary[$pt['time_type']] = 0;
+            }
+            $time_type_summary[$pt['time_type']] += $time_difference;
+
+            // Add to task group summary
+            if (!array_key_exists($pt["task_group_title"], $task_group_summary)) {
+                $task_group_summary[$pt['task_group_title']] = 0;
+            }
+            $task_group_summary[$pt['task_group_title']] += $time_difference;
+
+            // Add to task summary
+            if (!array_key_exists($pt['task_title'], $task_summary)) {
+                $task_summary[$pt['task_title']] = [
+                    'task_title' => $pt['task_title'],
+                    'task_group_title' => $pt['task_group_title'],
+                    'time'=> 0,
+                ];
+            }
+            $task_summary[$pt['task_title']]['time'] += $time_difference;
+
+            // Add to detailed timelog
+            $detailed_timelog[] = [
+                date('Y-m-d H:i:s', $pt['dt_start']),
+                $this->formatDuration($time_difference),
+                $pt['task_title'],
+                $pt['task_group_title'],
+                $pt['time_type'],
+                $pt['comment'],
+            ];
+        }
+
+        // Format times and arrays
+        $summary = $this->formatDuration($summary);
+
+        // Found a neat trick to convert an associative array to a 2D array
+        $time_type_summary = array_map(fn (string $k, int $v) => [$k, $this->formatDuration($v)], array_keys($time_type_summary), array_values($time_type_summary));
+
+        // And a nice shorter way to sort in PHP8+
+        usort($time_type_summary, fn ($a, $b) => $a[0] <=> $b[0]);
+        
+        $task_group_summary = array_map(fn (string $k, int $v) => [$k, $this->formatDuration($v)], array_keys($task_group_summary), array_values($task_group_summary));
+        usort($task_group_summary, fn ($a, $b) => $a[0] <=> $b[0]);
+
+        $task_summary = array_map(fn (array $v) => [$v["task_group_title"], $v['task_title'], $this->formatDuration($v['time'])], array_values($task_summary));
+
+        // Summary
+        $results[] = new InsightReportInterface('Summary', ['Hours'], [[$summary]]);
+
+        // Time Type Summary
+        $results[] = new InsightReportInterface('Time Type Summary', ['Type', 'Hours'], $time_type_summary);
+
+        // Task group summary
+        $results[] = new InsightReportInterface('Task Group Summary', ['Task Group', 'Hours'], $task_group_summary);
+
+        // Task summary
+        $results[] = new InsightReportInterface('Task Summary', ['Task Group', 'Task', 'Hours'], $task_summary);
+
+        // Detailed timelog
+        $results[] = new InsightReportInterface('Detailed Time Log', ['Start Time', 'Hours', 'Task', 'Group', 'Type', 'Comment'], $detailed_timelog);
 
         return $results;
     }

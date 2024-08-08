@@ -2025,11 +2025,11 @@ class Web
      *
      * If $value is null, the current value will be returned.
      *
-     * @param string|integer $key
+     * @param string|int $key
      * @param mixed $value
      * @param boolean $append
      */
-    public function ctx(string|integer $key, mixed $value = null, bool $append = false)
+    public function ctx(string|int $key, mixed $value = null, bool $append = false)
     {
         if (!is_numeric($key) && !is_scalar($key)) {
             LogService::getInstance($this)->error("Key given to ctx() was not numeric or scalar");

@@ -1,16 +1,20 @@
-<?php
-echo HtmlBootstrap5::b("/insights/viewInsight/" . $insight_class_name . "?" . $request_string,"Change Insight Parameters", null, null, false, "btn-sm btn-primary");
-echo HtmlBootstrap5::b("/insights-export/csv/" . $insight_class_name . "?" . $request_string, "Export to CSV", null, null, false, "btn-sm btn-primary");
-echo HtmlBootstrap5::box("/insights-export/bindpdf/" . $insight_class_name . "?" . $request_string, "Export to PDF", true, false, null, null, "isbox", null, "btn-sm btn-primary");
-
-try {
-    foreach ($run_data as $data) {
-        echo '<h4>' . $data->title . '</h4>';
-        echo "<div style='overflow: auto;'>";
-        echo Html::table($data->data, null, "tablesorter", $data->header);
-        echo "</div>";
+<div>
+    <?php
+        echo HtmlBootstrap5::b(href: '/insights/viewInsight/' . $insight_class_name . '?' . $request_string, title: 'Change Insight Parameters', class: 'btn-sm btn-primary');
+        echo HtmlBootstrap5::b(href: '/insights-export/csv/' . $insight_class_name . '?' . $request_string, title: 'Export to CSV', class: 'btn-sm btn-secondary');
+        echo HtmlBootstrap5::box(href: '/insights-export/bindpdf/' . $insight_class_name . '?' . $request_string, title: 'Export to PDF', button: true, class: 'btn-sm btn-secondary');
+    ?>
+</div>
+<style>
+    .tablesorter tbody tr td {
+        padding: 5px 20px !important;
     }
-} catch (Error $e) {
-    echo "Error caught: " . $e->getMessage();
-    LogService::getInstance($w)->setLogger("INSIGHTS")->error("Error occurred. Cannot run insight $p" . $e->getMessage());
-}
+</style>
+<?php
+
+foreach ($run_data as $data) : ?>
+    <h4 class="mt-4"><?php echo $data->title; ?></h4>
+    <div style='overflow: auto;'>
+        <?php echo Html::table($data->data, null, "tablesorter", $data->header); ?>
+    </div>
+<?php endforeach;

@@ -25,14 +25,4 @@ function runInsight_GET(Web $w)
 
     //build request string for editing parameters
     $w->ctx('request_string', http_build_query($_GET));
-
-    //template_select
-    $insight_class_name_pdf = $insight_class . '_pdf';
-
-    //Drop-down for chossing template to use for export
-    $templates = TemplateService::getInstance($w)->findTemplates('insights', $insight_class_name_pdf, false, false);
-
-    $template_select = (new \Html\Form\Select())->setLabel('Template')->setName('template_id')->setOptions($templates, true);
-
-    $w->ctx('template_select', $template_select);
 }
