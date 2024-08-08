@@ -120,7 +120,13 @@ class InsightService extends DbService
         return $this->getObject('InsightMembers', $id);
     }
 
-    public function getInsightInstance(string $insight_class)
+    /**
+     * Returns an instance of the insight class
+     *
+     * @param string $insight_class
+     * @return InsightBaseClass
+     */
+    public function getInsightInstance(string $insight_class): InsightBaseClass
     {
         if (!empty($insight_class) && class_exists($insight_class) && is_subclass_of($insight_class, "InsightBaseClass")) {
             return new $insight_class();

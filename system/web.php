@@ -82,7 +82,7 @@ class Web
     public $_loginpath = 'auth/login';
     public $_is_mfa_enabled_path = "auth/ajax_is_mfa_enabled";
     public $_partialsdir = "partials";
-    public $db;
+    public DbPDO $db;
     public $_isFrontend = false;
     public $_isPortal = false;
     public $_is_head_request = false;
@@ -1908,7 +1908,7 @@ class Web
      *     pathMatch("eins","zwei","drei") will insert into the context
      *     ("eins" => "one", "zwei" => "two", "drei" => "three")
      *
-     * @param multiple string params, which will be turned into ctx entries
+     * @param mixed $args,... multiple string params, which will be turned into ctx entries
      * @return an array of key, value pairs
      */
     public function pathMatch()
@@ -2025,19 +2025,17 @@ class Web
      *
      * If $value is null, the current value will be returned.
      *
-     * @param string $key
-     * @param string $value
+     * @param string|integer $key
+     * @param mixed $value
      * @param boolean $append
      */
-    public function ctx($key, $value = null, $append = false)
+    public function ctx(string|integer $key, mixed $value = null, bool $append = false)
     {
         if (!is_numeric($key) && !is_scalar($key)) {
             LogService::getInstance($this)->error("Key given to ctx() was not numeric or scalar");
             return;
         }
 
-        // There was a massive bug here, using == over === is BAD as $x == null
-        // will be true for 0, "", null, false, etc. keep this in mind
         if ($value === null && func_num_args() === 1) {
             return !empty($this->_context[$key]) ? $this->_context[$key] : null;
         } else {

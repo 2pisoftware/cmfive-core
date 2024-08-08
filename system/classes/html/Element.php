@@ -11,7 +11,7 @@ abstract class Element
     /**
      * Constructor to set fields for subclassed object
      *
-     * @param array $fields
+     * @param \array $fields
      */
     public function __construct($fields = [])
     {
