@@ -14,6 +14,7 @@ function index_ALL(Web $w)
     $modules = InsightService::getInstance($w)->getAllInsights('all');
 
     // Display a list of all the insights this user can see
+    // Display a list of all the insights this user can see
     // build the table array adding the headers and the row data
     $table = [];
     $tableHeaders = ['Name', 'Module', 'Description', 'Actions'];
