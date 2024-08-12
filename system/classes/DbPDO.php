@@ -228,7 +228,7 @@ class DbPDO extends PDO
      * statement can be reset by passing NULL as the first parameter
      *
      * @param string|array $column
-     * @param string $equals
+     * @param string|array $equals
      * @return \DbPDO|null
      */
     public function where($column, $equals = null)
