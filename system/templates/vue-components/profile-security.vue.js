@@ -7,6 +7,10 @@ Vue.component('profile-security', {
     isMfaEnabled: {
       type: Boolean,
       required: true
+    },
+    isDeviceAuthEnabled: {
+      type: Boolean,
+      required: false
     }
   },
   template: `
