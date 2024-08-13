@@ -30,7 +30,7 @@ jobs:
     - name: Get phpcs
       run: wget https://raw.githubusercontent.com/2pisoftware/cmfive-boilerplate/master/phpcs.xml
     - name: Codesniffer
-      uses: pipeline-components/php-codesniffer@v0.31.0
+      uses: pipeline-components/php-codesniffer@v0.35.1
       with:
         options: -s -p --colors --extensions=php --runtime-set testVersion ${{matrix.php_version}}
 
@@ -286,4 +286,3 @@ jobs:
             boilerplate/test/playwright/playwright-report/
             cmfive_container.log
           retention-days: 5
-
