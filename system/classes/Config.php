@@ -2,6 +2,8 @@
 
 use Aws\S3\S3Client;
 use Aws\Ssm\SsmClient;
+use Aws\SecretsManager\SecretsManagerClient;
+use Aws\Exception\AwsException;
 
 /**
  * This class is responsible for storing and accessing
@@ -48,6 +50,13 @@ class Config
      * @var Aws\Ssm\SsmClient
      */
     private static $ssm_client;
+
+    /**
+     * The client used to interact with secrets manager.
+     *
+     * @var Aws\SecretsManager\SecretsManagerClient
+     */
+    private static $secrets_manager_client;
 
     /**
      * This function will set a key in an array
@@ -365,13 +374,10 @@ class Config
             // Create SSM Client
             if (Self::$ssm_client === null) {
                 Self::$ssm_client = new SsmClient([
-                    'region' => 'ap-southeast-2',
+                    'region' => getenv('AWS_REGION') ?: 'ap-southeast-2',
                     'version' => 'latest'
                     ]);
-
             }
-            
-
             $result = Self::$ssm_client->getParameter([
                     'Name' => $parameterName,
                     'WithDecryption' => true
@@ -386,9 +392,42 @@ class Config
         }
         Config::setFromS3Object($bucket, $key);
     }
+    /**
+     * Will get an object from secrets manager and merge it with the existing config. The object
+     * is expected to be valid JSON. If the JSON decode fails the function will fall back to using setFromS3Object or
+     * an exception will be thrown.
+     * 
+     * @param string $parameterName
+     * @param string $bucket
+     * @param string $key
+     * @return void
+     * @throws Exception
+     */
+    public static function setFromSecretsManager(string $secretName, string $bucket, string $key): void
+    {
+        if (!empty($secretName)) {
+            //retrieve JSON from secrets manager and merge with config
+            // Create Secrets Manager Client
+            if (Self::$secrets_manager_client === null) {
+                Self::$secrets_manager_client = new SecretsManagerClient([
+                    'region' => getenv('AWS_REGION') ?: 'ap-southeast-2',
+                    'version' => 'latest'
+                    ]);
+            }
+            $result = Self::$secrets_manager_client->getSecretValue([
+                'SecretId' => $secretName
+            ]);
+            $data = json_decode($result, true);
+            if (empty($data)) {
+                Config::setFromS3Object($bucket, $key);
+                return;
+            }
+            Config::merge($data, self::$register);
+            return;
+        }
+        Config::setFromS3Object($bucket, $key);
+    }
 }
-
-    
 
 /**
  * A static class to handle module dependencies. The key that is referenced is 'depends_on' and should
