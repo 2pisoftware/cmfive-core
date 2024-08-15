@@ -3,7 +3,6 @@
 use Aws\S3\S3Client;
 use Aws\Ssm\SsmClient;
 use Aws\SecretsManager\SecretsManagerClient;
-use Aws\Exception\AwsException;
 
 /**
  * This class is responsible for storing and accessing
@@ -362,12 +361,12 @@ class Config
      * an exception will be thrown.
      *
      * @param string $parameterName
-     * @param string $bucket
-     * @param string $key
+     * @param string|null $bucket
+     * @param string|null $key
      * @return void
      * @throws Exception
      */
-    public static function setFromParameterStore(string $parameterName, string $bucket, string $key): void 
+    public static function setFromParameterStore(string $parameterName, ?string $bucket = null, ?string $key = null): void 
     {
         if (!empty($parameterName)) {
             //retrieve JSON from paramater store and merge with config
@@ -384,26 +383,34 @@ class Config
             ]);
             $data = json_decode($result, true);
             if (empty($data)) {
-                Config::setFromS3Object($bucket, $key);
+                if (!empty($bucket) && !empty($key)) {
+                    Config::setFromS3Object($bucket, $key);
+                } else {
+                    throw new Exception("Failed to decode config data from parameter store and no S3 bucket/key provided");
+                }
                 return;
             }
             Config::merge($data, self::$register);
             return;
         }
-        Config::setFromS3Object($bucket, $key);
+        if (!empty($bucket) && !empty($key)) {
+            Config::setFromS3Object($bucket, $key);
+        } else {
+            throw new Exception("No parameter name provided and no S3 bucket/key provided");
+        }
     }
     /**
      * Will get an object from secrets manager and merge it with the existing config. The object
      * is expected to be valid JSON. If the JSON decode fails the function will fall back to using setFromS3Object or
      * an exception will be thrown.
      * 
-     * @param string $parameterName
-     * @param string $bucket
-     * @param string $key
+     * @param string $secretName
+     * @param string|null $bucket
+     * @param string|null $key
      * @return void
      * @throws Exception
      */
-    public static function setFromSecretsManager(string $secretName, string $bucket, string $key): void
+    public static function setFromSecretsManager(string $secretName, ?string $bucket = null, ?string $key = null): void
     {
         if (!empty($secretName)) {
             //retrieve JSON from secrets manager and merge with config
@@ -419,13 +426,21 @@ class Config
             ]);
             $data = json_decode($result, true);
             if (empty($data)) {
-                Config::setFromS3Object($bucket, $key);
+                if (!empty($bucket) && !empty($key)) {
+                    Config::setFromS3Object($bucket, $key);
+                } else {
+                    throw new Exception("Failed to decode config data from secrets manager and no S3 bucket/key provided");
+                }
                 return;
             }
             Config::merge($data, self::$register);
             return;
         }
-        Config::setFromS3Object($bucket, $key);
+        if (!empty($bucket) && !empty($key)) {
+            Config::setFromS3Object($bucket, $key);
+        } else {
+            throw new Exception("No secret name provided and no S3 bucket/key provided");
+        }
     }
 }
 
