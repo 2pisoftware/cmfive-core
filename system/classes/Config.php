@@ -371,13 +371,13 @@ class Config
         if (!empty($parameterName)) {
             //retrieve JSON from paramater store and merge with config
             // Create SSM Client
-            if (Self::$ssm_client === null) {
-                Self::$ssm_client = new SsmClient([
+            if (self::$ssm_client === null) {
+                self::$ssm_client = new SsmClient([
                     'region' => getenv('AWS_REGION') ?: 'ap-southeast-2',
                     'version' => 'latest'
                     ]);
             }
-            $result = Self::$ssm_client->getParameter([
+            $result = self::$ssm_client->getParameter([
                     'Name' => $parameterName,
                     'WithDecryption' => true
             ]);
@@ -415,13 +415,13 @@ class Config
         if (!empty($secretName)) {
             //retrieve JSON from secrets manager and merge with config
             // Create Secrets Manager Client
-            if (Self::$secrets_manager_client === null) {
-                Self::$secrets_manager_client = new SecretsManagerClient([
+            if (self::$secrets_manager_client === null) {
+                self::$secrets_manager_client = new SecretsManagerClient([
                     'region' => getenv('AWS_REGION') ?: 'ap-southeast-2',
                     'version' => 'latest'
                     ]);
             }
-            $result = Self::$secrets_manager_client->getSecretValue([
+            $result = self::$secrets_manager_client->getSecretValue([
                 'SecretId' => $secretName
             ]);
             $data = json_decode($result, true);
