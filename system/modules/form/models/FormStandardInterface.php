@@ -21,7 +21,7 @@ class FormStandardInterface extends FormFieldInterface
     ];
 
     /**
-     * Map FormField type to Html::multiColForm() type
+     * Map FormField type to HtmlBootstrap5::multiColForm() type
      *
      * @return string
      */
@@ -56,7 +56,7 @@ class FormStandardInterface extends FormFieldInterface
     }
 
     /**
-     * Map Form metadata to an array of extra parameters to Html::multiColForm()
+     * Map Form metadata to an array of extra parameters to HtmlBootstrap5::multiColForm()
      *
      * @return []
      */

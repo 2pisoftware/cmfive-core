@@ -3,6 +3,7 @@ import { AlertAdaptation, DropdownAdaptation, FavouritesAdaptation, TabAdaptatio
 import { CodeMirror, InputWithOther, MultiFileUpload, MultiSelect, Overlay, QuillEditor } from './components';
 
 import { Modal, Toast, Tooltip } from 'bootstrap';
+import { Sortable } from './components/Sortable';
 
 type window = Window & typeof globalThis & { cmfiveEventBus: Comment, cmfive: { toast: typeof Toast } };
 
@@ -193,15 +194,16 @@ class Cmfive {
         // })
 
         AlertAdaptation.bindCloseEvent();
+        CodeMirror.bindCodeMirrorEditor();
         DropdownAdaptation.bindDropdownHover();
         FavouritesAdaptation.bindFavouriteInteractions();
         InputWithOther.bindOtherInteractions();
         MultiFileUpload.bindInteractions();
         MultiSelect.bindInteractions();
+        QuillEditor.bindQuillEditor();
+        Sortable.bindSortableElements();
         TabAdaptation.bindTabInteractions();
         TableAdaptation.bindTableInteractions();
-        QuillEditor.bindQuillEditor();
-        CodeMirror.bindCodeMirrorEditor();
 
         // Remove all foundation button classes and replace them with bootstrap if they don't exist
         target?.querySelectorAll('.button')?.forEach(b =>  {

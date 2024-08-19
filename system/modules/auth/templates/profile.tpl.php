@@ -108,8 +108,11 @@ $w->setLayout("layout")
     </html-tabs>
 </div>
 <script>
-    var app = new Vue({
-        el: "#app",
+    const {
+        createApp
+    } = Vue;
+
+    createApp({
         data: function() {
             return {
                 user: <?php echo json_encode($user); ?>,
@@ -149,5 +152,5 @@ $w->setLayout("layout")
                 });
             }
         }
-    })
+    }).mount("#app");
 </script>

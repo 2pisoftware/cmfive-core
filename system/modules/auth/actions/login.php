@@ -2,6 +2,8 @@
 
 function login_GET(Web $w)
 {
+    // CmfiveScriptComponentRegister::requireVue3();
+
     // Check if logged in already
     $user = AuthService::getInstance($w)->user();
     if (AuthService::getInstance($w)->loggedIn() && AuthService::getInstance($w)->allowed($user->redirect_url)) {
@@ -24,7 +26,7 @@ function login_POST(Web $w)
 
     $request_data = json_decode(file_get_contents("php://input"), true);
     if (empty($request_data) || !array_key_exists("login", $request_data) || !array_key_exists("password", $request_data)) {
-        $w->error("Please enter your login and password", "/auth/login");
+        $w->out((new JsonResponse())->setErrorResponse("Please enter your login and password", "Please enter your login and password"));
     }
 
     $login = $request_data["login"];
@@ -32,7 +34,7 @@ function login_POST(Web $w)
     $mfa_code = array_key_exists("mfa_code", $request_data) ? $request_data["mfa_code"] : null;
 
     if (empty($login) || empty($password)) {
-        $w->error("Please enter your login and password", "/auth/login");
+        $w->out((new JsonResponse())->setErrorResponse("Please enter your login and password", "Please enter your login and password"));
     }
 
     $user = AuthService::getInstance($w)->getUserForLogin($login);

@@ -295,7 +295,7 @@ class HtmlBootstrap5 extends Html
      * @param array $array is the array of data
      * @param string $id is a css id
      * @param string $class is a css class
-     * @param boolean $header use first row as <th> if true
+     * @param boolean|string[] $header use first row as <th> if true
      *
      */
     public static function table($data, $id = null, $class = "tablesorter", $header = null)
