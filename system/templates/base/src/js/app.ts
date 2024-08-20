@@ -1,8 +1,10 @@
 // src/app.ts
 import { AlertAdaptation, DropdownAdaptation, FavouritesAdaptation, TabAdaptation, TableAdaptation } from './adaptations';
-import { QuillEditor, InputWithOther, MultiFileUpload, MultiSelect, Overlay } from './components';
+import { CodeMirror, InputWithOther, MultiFileUpload, MultiSelect, Overlay, QuillEditor } from './components';
 
-import { Modal, Tooltip } from 'bootstrap';
+import { Modal, Toast, Tooltip } from 'bootstrap';
+
+type window = Window & typeof globalThis & { cmfiveEventBus: Comment, cmfive: { toast: typeof Toast } };
 
 class Cmfive {
     static THEME_KEY = 'theme';
@@ -95,6 +97,13 @@ class Cmfive {
             return response.text()
         }).then((content) => {
             modalContent.innerHTML = content + modalContent.innerHTML;
+
+			// https://developer.mozilla.org/en-US/docs/Web/API/Element/innerHTML#security_considerations
+			// Appending scripts to the DOM via innerHTML is not meant to execute them for security purposes
+			// Unfortunately, various modals however contian script tags we need to execute
+			modalContent.querySelectorAll("script").forEach(x => {
+				eval(x.innerHTML);
+			})
     
             // Rebind elements for modal
             Cmfive.ready(modalContent);
@@ -126,6 +135,10 @@ class Cmfive {
                 console.log("DOM EVENT", event); // => detail-data
                 Cmfive.ready(event.detail);
             });
+        }
+
+        (window as window).cmfive = {
+            toast: require('./components/Toast').Toast
         }
 
         // Add offset for breadcrumb if scrollbar is visible
@@ -188,6 +201,7 @@ class Cmfive {
         TabAdaptation.bindTabInteractions();
         TableAdaptation.bindTableInteractions();
         QuillEditor.bindQuillEditor();
+        CodeMirror.bindCodeMirrorEditor();
 
         // Remove all foundation button classes and replace them with bootstrap if they don't exist
         target?.querySelectorAll('.button')?.forEach(b =>  {

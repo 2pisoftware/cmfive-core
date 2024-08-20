@@ -2,6 +2,8 @@
 
 function index_GET(Web $w)
 {
+    $w->setLayout('layout-bootstrap-5');
+
     $available = MigrationService::getInstance($w)->getAvailableMigrations('all');
     $installed = MigrationService::getInstance($w)->getInstalledMigrations('all');
     $seeds = MigrationService::getInstance($w)->getSeedMigrations();

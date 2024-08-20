@@ -1,0 +1,7 @@
+.red-squiggly-underline {
+    text-decoration: red wavy underline;
+    text-decoration-thickness: 1px;
+
+    // should be >3px or common descenders (q p y j g |) will break the underline
+    text-underline-offset: 4px;
+}

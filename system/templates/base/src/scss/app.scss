@@ -6,21 +6,21 @@
 @import 'bootstrap_overrides';
 
 // Required
-@import 'bootstrap/scss/mixins';
-@import 'bootstrap/scss/functions';
-@import 'bootstrap/scss/variables';
-@import 'bootstrap/scss/maps';
-@import 'bootstrap/scss/utilities';
-@import "bootstrap/scss/bootstrap-grid";
+// @import "~bootstrap/scss/functions";
+// @import "~bootstrap/scss/variables";
+// @import "~bootstrap/scss/mixins";
+// @import "~bootstrap/scss/maps";
+// @import "~bootstrap/scss/utilities";
+// @import "~bootstrap/scss/bootstrap-grid";
 
 // Optional bootstrap extras
-$accordion-button-active-icon: $accordion-button-icon;
 @import "~bootstrap/scss/bootstrap";
 @import "~bootstrap-icons/font/bootstrap-icons";
 
 // Cmfive styles
 @import 'cmfive/mixins';
 
+@import 'cmfive/accordion';
 @import 'cmfive/breadcrumb';
 @import 'cmfive/buttons';
 @import 'cmfive/cards';
@@ -32,7 +32,8 @@ $accordion-button-active-icon: $accordion-button-icon;
 @import 'cmfive/tables';
 @import 'cmfive/toast';
 @import 'cmfive/type';
-
+@import 'cmfive/listgroup';
+@import 'cmfive/red_squiggly_underline';
 
 // Foundation adaptation styles
 // @import "cmfive/adaptations/accordion";
@@ -54,13 +55,17 @@ $accordion-button-active-icon: $accordion-button-icon;
 }
 
 // Tom Select styles
-$input-border-color: $mid-grey !default;
-$input-bg: $light-grey !default;
-
-@import '~tom-select/src/scss/tom-select.bootstrap5.scss';
+@import '~tom-select/src/scss/tom-select.scss';
 
 // There is a collision in styles between quill and tom-select - this is a patch for this:
+.ts-wrapper.multi.has-items .ts-control {
+    padding: 4px 0px 0px;
+}
+
 .ts-control {
+    padding: 4px 0px 3px;
+    border: none;
+
     .item {
         margin-top: 0 !important;
     }

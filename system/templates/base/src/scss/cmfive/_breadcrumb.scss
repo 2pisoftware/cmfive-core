@@ -6,7 +6,7 @@ $themes: map.deep-merge($themes, (
         breadcrumb-text: $mid-grey,
     ),
     dark: (
-        breadcrumb-text: $mid-grey--dark,
+        breadcrumb-text: $dark-grey--dark,
     )
 ));
 
@@ -44,14 +44,18 @@ $themes: map.deep-merge($themes, (
 
             &:hover {
                 span, a {
-                    @include theme((color: 'dark-grey'));
+                    @include theme((color: 'white'));
+                }
+
+                &:not(.active) {
+                    text-decoration: underline;
                 }
             }
 
             &.active {
                 max-width: 200px;
                 span, a {
-                    @include theme((color: 'dark-grey'));
+                    @include theme((color: 'white'));
                 }
             }
         }

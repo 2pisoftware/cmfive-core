@@ -1,6 +1,8 @@
 <?php
 
 use Html\Form\InputField\Password;
+use Html\Form\Select;
+use Html\Cmfive\SelectWithOther;
 
 /**
  * Display User edit form in colorbox
@@ -10,7 +12,8 @@ use Html\Form\InputField\Password;
 function useradd_GET(Web $w)
 {
     $p = $w->pathMatch("box");
-    $w->setLayout("layout-2021");
+    //$w->setLayout("layout-2021");
+    $w->setLayout('layout-bootstrap-5');
 
     $availableLocales = $w->getAvailableLanguages();
 
@@ -36,39 +39,68 @@ function useradd_GET(Web $w)
     }
 
     $form['User Details'][] = [
-        ["Login","text","login"],
-        ["Admin","checkbox","is_admin"],
-        ["Active","checkbox","is_active"],
-        ["External", "checkbox", "is_external"],
-        ["Language", "select", "language", null, $availableLocales],
+        (new \Html\Form\InputField([
+            "id|name" => "login",
+            'label' => 'Login',
+            "required" => true,
+        ])),
+        (new \Html\Form\InputField\Checkbox([
+            "id|name" => "is_admin",
+            'label' => 'Admin',
+            "class" => "",
+        ])),
+        (new \Html\Form\InputField\Checkbox([
+            "id|name" => "is_active",
+            'label' => 'Active',
+            "class" => "",
+        ])),
+        (new \Html\Form\InputField\Checkbox([
+            "id|name" => "is_external",
+            'label' => 'External',
+            "class" => "",
+        ])),
+        (new Select([
+            "id|name" => "language",
+            'label' => 'Language',
+            'options' => $availableLocales,
+        ])),
     ];
-    
+
     $form['User Details'][] = [
         $password_field,
         $password_confirm_field,
     ];
-    
+
     $form['Contact Details'][] = [
-        ["First Name", "text", "firstname"],
-        ["Last Name", "text", "lastname"],
+        (new \Html\Form\InputField([
+            "id|name" => "firstname",
+            'label' => 'First Name',
+            "required" => true,
+        ])),
+        (new \Html\Form\InputField([
+            "id|name" => "lastname",
+            'label' => 'Last Name',
+            "required" => true,
+        ])),
     ];
 
     $form['Contact Details'][] = [
-        ["Title", "autocomplete", "title", null, LookupService::getInstance($w)->getLookupByType("title")],
-        ["Email", "text", "email"],
+        (new SelectWithOther([
+            "id|name" => "title_lookup_id",
+            'label' => 'Title',
+            'options' => LookupService::getInstance($w)->getLookupByType("title"),
+            'other_field' => new \Html\Form\InputField([
+                'id|name' => 'title_other',
+                'placeholder' => 'Other Title'
+            ]),
+        ])),
+        (new \Html\Form\InputField\Email([
+            "id|name" => "email",
+            'label' => 'Email',
+        ]))
     ];
-    
-    $roles = AuthService::getInstance($w)->getAllRoles();
-    $roles = array_chunk($roles, 4);
-    foreach ($roles as $r) {
-        $row = [];
-        foreach ($r as $rf) {
-            $row[] = [$rf, "checkbox", "check_" . $rf];
-        }
-        $form['User Roles'][] = $row;
-    }
 
-    $w->out(Html::multiColForm($form, $w->localUrl("/admin/useradd"), "POST", "Save", null, null, null, "_self", true, array_merge(User::$_validation, ['password' => ['required'], 'password2' => ['required']])));
+    $w->out(HtmlBootstrap5::multiColForm($form, $w->localUrl("/admin/useradd"), "POST", "Save", null, null, null, "_self", true, array_merge(User::$_validation, ['password' => ['required'], 'password2' => ['required']])));
 }
 
 /**
@@ -95,8 +127,18 @@ function useradd_POST(Web &$w)
     $contact->fill($_REQUEST);
     $contact->dt_created = time();
     $contact->private_to_user_id = null;
-    $contact->setTitle($_REQUEST['acp_title']);
+    if ($_REQUEST['title_lookup_id'] === "other") {
+        $contact->setTitle($_REQUEST['title_other']);
+    } else {
+        $contact->setTitle($_REQUEST['title_lookup_id']);
+    }
     $contact->insert();
+
+    // Check if user with login already exists
+    $existing = DbService::getInstance($w)->getObject("User", ["login" => $_REQUEST["login"]]);
+    if (!empty($existing)) {
+        $w->error("A user with that login already exists", "/admin/users");
+    }
 
     // now saving the user
     $user = new User($w);
@@ -116,9 +158,7 @@ function useradd_POST(Web &$w)
     $roles = AuthService::getInstance($w)->getAllRoles();
     foreach ($roles as $r) {
         if (!empty($_REQUEST["check_" . $r])) {
-            if ($_REQUEST["check_" . $r] == 1) {
-                $user->addRole($r);
-            }
+            $user->addRole($r);
         }
     }
     $w->callHook("admin", "account_changed", $user);
