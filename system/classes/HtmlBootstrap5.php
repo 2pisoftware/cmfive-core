@@ -354,7 +354,7 @@ class HtmlBootstrap5 extends Html
                 $buffer .= '<div class="card d-block mb-4"><ul class="list-group list-group-flush">';
                 foreach ($row as $index => $column) {
                     $buffer .= '<li class="list-group-item">';
-                    if (!empty($header) && array_key_exists($index, $header)) {
+                    if (!empty($header) && is_array($header) && array_key_exists($index, $header)) {
                         $buffer .= "<strong class='me-3'>" . (is_array($header[$index]) ? $header[$index][0] : $header[$index]) . "</strong>";
                     }
                     $buffer .= "<span>" . (is_array($column) ? $column[0] : $column) . "</span></li>";

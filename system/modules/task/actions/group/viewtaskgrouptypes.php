@@ -1,69 +1,114 @@
 <?php
-function viewtaskgrouptypes_ALL(Web $w) {
-	TaskService::getInstance($w)->navigation($w, "Manage Task Groups");
-	
-	
 
-	History::add("Manage Task Groups");
-	$task_groups = TaskService::getInstance($w)->getTaskGroups();
-	if ($task_groups) {
-		usort($task_groups, array("TaskService","sortbyGroup"));
-	}
-	// prepare column headings for display
-	$headers = array("Title","Type", "Description", "Default Assignee");
-	
-	$line = array($headers);
+use Html\Form\InputField\Checkbox;
+use Html\Form\InputField\Text;
+use Html\Form\Select;
+use Html\Form\Textarea;
 
-	// if task group exists, display title, group type, description, default assignee and button for specific task group info
-	if ($task_groups) {
-		foreach ($task_groups as $group) {
-			$row = array(
-					Html::a(WEBROOT."/task-group/viewmembergroup/".$group->id,$group->title),
-					$group->getTypeTitle(),
-					$group->description,
-					$group->getDefaultAssigneeName(),
-			);
-			
-			$line[] = $row;
-		}
-	}
-	else {
-		// if no groups for this group type, say as much
-		$line[] = array("There are no Task Groups Configured. Please create a New Task Group.","","","","");
-	}
+function viewtaskgrouptypes_ALL(Web $w)
+{
+    TaskService::getInstance($w)->navigation($w, "Manage Task Groups");
 
-	// display list of task groups in the target task group type
-	$w->ctx("dashboard",Html::table($line,null,"tablesorter",true));
+    History::add("Manage Task Groups");
+    $task_groups = TaskService::getInstance($w)->getTaskGroups();
+    if ($task_groups) {
+        usort($task_groups, ["TaskService", "sortbyGroup"]);
+    }
+    // prepare column headings for display
+    $headers = ["Title", "Type", "Description", "Default Assignee"];
 
-	// tab: new task group
-	// get generic task group permissions
-	$arrassign = TaskService::getInstance($w)->getTaskGroupPermissions();
-	// unset 'ALL' given all can never assign a task
-	unset($arrassign[0]);
+    $line = $headers;
 
-	
+    // if task group exists, display title, group type, description, default assignee and button for specific task group info
+    if ($task_groups) {
+        foreach ($task_groups as $group) {
+            $row = [
+                Html::a(WEBROOT . "/task-group/viewmembergroup/" . $group->id, $group->title),
+                $group->getTypeTitle(),
+                $group->description,
+                $group->getDefaultAssigneeName(),
+            ];
 
-	$grouptypes = TaskService::getInstance($w)->getAllTaskGroupTypes();
-        $assignees = AuthService::getInstance($w)->getUsers();
-        array_unshift($assignees,array("Unassigned","unassigned"));        
+            $line[] = $row;
+        }
+    } else {
+        // if no groups for this group type, say as much
+        $line[] = ["There are no Task Groups Configured. Please create a New Task Group.", "", "", "", ""];
+    }
 
-	// build form to create a new task group within the target group type
-	$f = Html::form(array(
-			array("Task Group Attributes","section"),
-			array("Task Group Type","select","task_group_type",null,$grouptypes),
-			array("Title","text","title"),
-			array("Who Can Assign","select","can_assign",null,$arrassign),
-			array("Who Can View","select","can_view",null,TaskService::getInstance($w)->getTaskGroupPermissions()),
-			array("Who Can Create","select","can_create",null,TaskService::getInstance($w)->getTaskGroupPermissions()),
-			
-			array("","hidden","is_deleted","0"),
-			array("Description","textarea","description",null,"26","6"),
-			array("Default Task Type","select","default_task_type",null,null),
-			array("Default Priority","select","default_priority",null,null),
-			array('Automatic Subscription', 'checkbox', 'is_automatic_subscription', TaskGroup::$_DEFAULT_AUTOMATIC_SUBSCRIPTION)
-			//array("Default Assignee","select","default_assignee_id",null,$assignees),
-	),$w->localUrl("/task-group/createtaskgroup"),"POST","Save");
+    // display list of task groups in the target task group type
+    $w->ctx("dashboard", HtmlBootstrap5::table($line, null, "tablesorter", true));
 
-	// display form
-	$w->ctx("creategroup",$f);
+    // tab: new task group
+    // get generic task group permissions
+    $arrassign = TaskService::getInstance($w)->getTaskGroupPermissions();
+    // unset 'ALL' given all can never assign a task
+    unset($arrassign[0]);
+
+    $grouptypes = TaskService::getInstance($w)->getAllTaskGroupTypes();
+    $assignees = AuthService::getInstance($w)->getUsers();
+    array_unshift($assignees, ["Unassigned", "unassigned"]);
+
+    $taskgroup_perms = TaskService::getInstance($w)->getTaskGroupPermissions();
+    
+    // build form to create a new task group within the target group type
+    $f = Htmlbootstrap5::multiColForm([
+        "Task Group Attributes" => [
+            [new Text([
+                "id|name" => "title",
+                "label" => "Title",
+            ])],
+            [new Textarea([
+                "id|name" => "description",
+                "label" => "Description",
+            ])],
+            [new Select([
+                "id|name" => "task_group_type",
+                "label" => "Task Group Type",
+                "options" => $grouptypes,
+            ])],
+            [
+                new Select([
+                    "id|name" => "can_assign",
+                    "label" => "Who Can Assign",
+                    "options" => $arrassign,
+                ]),
+                new Select([
+                    "id|name" => "can_view",
+                    "label" => "Who Can View",
+                    "options" => $taskgroup_perms,
+                ]),
+                new Select([
+                    "id|name" => "can_create",
+                    "label" => "Who Can Create",
+                    "options" => $taskgroup_perms,
+                ]),
+            ],
+            [
+                new Select([
+                    "id|name" => "default_task_type",
+                    "label" => "Default Task Type",
+                ]),
+                new Select([
+                    "id|name" => "default_priority",
+                    "label" => "Default Priority",
+                ])
+            ],
+            [
+                new Select([
+                    "id|name" => "default_assignee_id",
+                    "label" => "Default Assignee",
+                    "options" => $assignees,
+                ]),
+                new Checkbox([
+                    "id|name" => "is_automatic_subscription",
+                    "label" => "Automatic Subscription",
+                    "value" => TaskGroup::$_DEFAULT_AUTOMATIC_SUBSCRIPTION,
+                ]),
+            ]
+        ]
+    ], $w->localUrl("/task-group/createtaskgroup"), "POST");
+
+    // display form
+    $w->ctx("creategroup", $f);
 }
