@@ -120,7 +120,7 @@ test("Test that Cmfive Admin handles lookups", async ({ page }) => {
     await AdminHelper.createLookupType(page, "title", "Title", "Title");
     await AdminHelper.createLookup(page, "title", lookup_1, lookup_1);
     await AdminHelper.editUser(page, user, [["Title", lookup_1]]);
-    await CmfiveHelper.clickCmfiveNavbar(page, "Admin", "Lookup");
+    await CmfiveHelper.clickCmfiveNavbar(page, "Admin", "Lookups");
     await expect(page.getByText(lookup_1).first()).toBeVisible();
 
     await AdminHelper.editLookup(page, lookup_1, {"Title": lookup_2});
@@ -136,7 +136,7 @@ test("Test that Cmfive Admin handles lookups", async ({ page }) => {
     await expect(page.getByText(lookup_3).first()).toBeVisible();
 
     await AdminHelper.editUser(page, user, [["Title", lookup_3]]);
-    await CmfiveHelper.clickCmfiveNavbar(page, "Admin", "Lookup");
+    await CmfiveHelper.clickCmfiveNavbar(page, "Admin", "Lookups");
     await AdminHelper.deleteLookup(page, lookup_2);
     await expect(page.getByText("Lookup Item deleted")).toBeVisible();
 
