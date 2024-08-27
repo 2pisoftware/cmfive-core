@@ -5,6 +5,8 @@ import { CodeMirror, InputWithOther, MultiFileUpload, MultiSelect, Overlay, Quil
 import { Modal, Toast, Tooltip } from 'bootstrap';
 import { Sortable } from './components/Sortable';
 
+// import '../scss/app.scss';
+
 type window = Window & typeof globalThis & { cmfiveEventBus: Comment, cmfive: { toast: typeof Toast } };
 
 class Cmfive {

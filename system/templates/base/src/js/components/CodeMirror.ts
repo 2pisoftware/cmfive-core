@@ -10,7 +10,7 @@ export class CodeMirror {
     private static views: EditorView[];
     
     static bindCodeMirrorEditor() {
-
+        console.log("bind cm call")
         const cmEditors = document.querySelectorAll(CodeMirror.SELECT_TARGET);
 
         if (cmEditors) {

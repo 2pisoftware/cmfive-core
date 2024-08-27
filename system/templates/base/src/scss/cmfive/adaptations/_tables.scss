@@ -58,7 +58,7 @@ table.tablesorter {
                 &:before {
                     content: "";
                     display: block;
-                    background: url("~bootstrap-icons/icons/chevron-down.svg") no-repeat;
+                    background: url("bootstrap-icons/icons/chevron-down.svg") no-repeat;
                     width: 20px;
                     height: 20px;
                     float: left;
@@ -67,7 +67,7 @@ table.tablesorter {
 
                 &.sorted-asc {
                     &:before {
-                        background: url("~bootstrap-icons/icons/chevron-up.svg") no-repeat !important;
+                        background: url("bootstrap-icons/icons/chevron-up.svg") no-repeat !important;
                     }
                 }
             }
