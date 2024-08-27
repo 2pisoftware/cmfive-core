@@ -17,7 +17,7 @@ function viewtaskgrouptypes_ALL(Web $w)
     // prepare column headings for display
     $headers = ["Title", "Type", "Description", "Default Assignee"];
 
-    $line = $headers;
+    $line = [];
 
     // if task group exists, display title, group type, description, default assignee and button for specific task group info
     if ($task_groups) {
@@ -37,7 +37,7 @@ function viewtaskgrouptypes_ALL(Web $w)
     }
 
     // display list of task groups in the target task group type
-    $w->ctx("dashboard", HtmlBootstrap5::table($line, null, "tablesorter", true));
+    $w->ctx("dashboard", HtmlBootstrap5::table($line, null, "tablesorter", $headers));
 
     // tab: new task group
     // get generic task group permissions
