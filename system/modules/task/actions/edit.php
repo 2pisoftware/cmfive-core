@@ -1,9 +1,9 @@
 <?php
 
 //load form elements for required feilds
+use Html\Form\Html5Autocomplete;
 use \Html\Form\InputField as InputField;
 use \Html\Form\Select as Select;
-use \Html\Form\Autocomplete as Autocomplete;
 
 function edit_GET($w)
 {
@@ -62,14 +62,15 @@ function edit_GET($w)
     $form = [
         (!empty($p["id"]) ? 'Edit task' : "Create a new task") => [
             [
-                (new Autocomplete())
-                    ->setLabel("Task Group")
-                    ->setName(!empty($p["id"]) ? "task_group_id_text" : "task_group_id")
-                    ->setReadOnly(!empty($p["id"]) ? 'true' : null)
-                    ->setOptions($taskgroups)
-                    ->setValue(!empty($taskgroup) ? $taskgroup->id : null)
-                    ->setTitle(!empty($taskgroup) ? $taskgroup->getSelectOptionTitle() : null)
-                    ->setRequired('required'),
+                new Html5Autocomplete([
+                    "name" => "Task Group",
+                    "id" => "task_group",
+                    "required" => "required",
+                    "value" => !empty($taskgroup) ? $taskgroup->id : null,
+                    "options" => $taskgroups,
+                    "maxlength" => 1
+                ]),
+
                 (new Select([
                     "id|name" => "task_type"
                 ]))->setLabel("Task Type")
@@ -90,9 +91,9 @@ function edit_GET($w)
                     "label" => "Assigned To",
                     "style" => "width: 100%"
                 ]))->setOptions($members, true)
-                   ->setDisabled(!empty($taskgroup) && $taskgroup->getCanIAssign() ? null : "disabled")
-                   ->setRequired("required")
-                   ->setSelectedOption($task->assignee_id),
+                    ->setDisabled(!empty($taskgroup) && $taskgroup->getCanIAssign() ? null : "disabled")
+                    ->setRequired("required")
+                    ->setSelectedOption($task->assignee_id),
             ],
             [
                 ["Estimated hours", "text", "estimate_hours", $task->estimate_hours],
@@ -101,7 +102,7 @@ function edit_GET($w)
             [
                 ["Description", "textarea", "description", $task->description]
             ],
-                !empty($p['id']) ? [["Task Group ID", "hidden", "task_group_id", $task->task_group_id]] : null
+            !empty($p['id']) ? [["Task Group ID", "hidden", "task_group_id", $task->task_group_id]] : null
         ]
     ];
 
@@ -117,7 +118,7 @@ function edit_GET($w)
     }
 
     $w->ctx("task", $task);
-    $w->ctx("form", Html::multiColForm($form, $w->localUrl("/task/edit/{$task->id}"), "POST", "Save", "edit_form", "prompt", null, "_self", true, Task::$_validation));
+    $w->ctx("form", HtmlBootstrap5::multiColForm($form, $w->localUrl("/task/edit/{$task->id}"), "POST", "Save", "edit_form", "prompt", null, "_self", true, Task::$_validation));
 
     $createdDate = '';
     if (!empty($task->id)) {
@@ -198,14 +199,13 @@ function edit_GET($w)
     foreach ($banners ?? [] as $banner) {
         if (isset($banner["message"])) {
             $taskbanners .= "<div data-alert class='alert-box "
-            .($banner["style"] ?? "secondary")."'>"
-            .$banner["message"]
-            .((isset($banner["dismiss"])&&$banner["dismiss"])?"<a href='#' class='close'>&times;</a>":"")
-            ."</div>";
+                . ($banner["style"] ?? "secondary") . "'>"
+                . $banner["message"]
+                . ((isset($banner["dismiss"]) && $banner["dismiss"]) ? "<a href='#' class='close'>&times;</a>" : "")
+                . "</div>";
         }
     }
     $w->ctx("taskbanners", $taskbanners);
-
 }
 
 function edit_POST($w)
@@ -281,7 +281,7 @@ function edit_POST($w)
         $messageObject = new Swift_Message("Invite to: " . $task->title);
         $messageObject->setTo([$contact->email]);
         $messageObject->setReplyTo([AuthService::getInstance($w)->user()->getContact()->email])
-        ->setFrom(Config::get("main.company_support_email"));
+            ->setFrom(Config::get("main.company_support_email"));
 
         $messageObject->addPart("Your iCal is attached<br/><br/><a href='http://www.google.com/calendar/event?action=TEMPLATE&text={$task->title}" .
             "&dates=" . date("Ymd", strtotime(str_replace('/', '-', $task->dt_due))) . "/" . date("Ymd", strtotime(str_replace('/', '-', $task->dt_due))) .

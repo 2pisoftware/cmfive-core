@@ -61,7 +61,7 @@
                     }
                     ?>
                 </div>
-                <div class="row-fluid clearfix">
+                <div class="row clearfix">
                     <div class="small-12 large-9">
                         <?php echo $form; ?>
                     </div>
