@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * Display a list of all groups which are not deleted
  *
