@@ -6,7 +6,23 @@ class Html5Autocomplete extends \Html\Form\InputField
 {
     public $style;
 
+    /**
+     * If specified, directly provides options for TomSelect
+     * @var array<\DbObject|string>
+     */
     public $options;
+
+    /**
+     * If specified, is used as the endpoint for collecting more options
+     * @var string
+     */
+    public $source;
+
+    public static $_excludeFromOutput = [
+        "source",
+        "value",
+        "options",
+    ];
 
     public function __construct($fields = [])
     {
@@ -29,19 +45,19 @@ class Html5Autocomplete extends \Html\Form\InputField
                 continue;
             }
 
-            if ($field === "options") {
-                $field = "data-config";
-                $value = json_encode([
-                    // TODO: The old layout did this too, but it would be better to load the options from some endpoint whne required
-                    // instead of just sending literally every option to the user on page load.
-                    "options" => array_map(fn($val) => $this->convertOption($val), $value),
-                    "maxItems" => 1,
-                    "items" => $this->value,
-                ]);
-            }
-
             $buffer .= $field . "='" . $value . "' ";
         }
+
+        $buffer .=
+            "data-config" .
+            "='" .
+            json_encode([
+                "options" => $this->options ? array_map(fn($val) => $this->convertOption($val), $this->options) : null,
+                "maxItems" => 1,
+                "items" => $this->value,
+                "source" => $this->source
+            ]) .
+            "' ";
 
         return $buffer . '/>';
     }

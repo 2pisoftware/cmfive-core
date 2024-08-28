@@ -1,4 +1,6 @@
 <?php
+use Html\Form\Html5Autocomplete;
+use Html\Form\Select;
 
 function tasklist_ALL(Web $w)
 {
@@ -116,29 +118,61 @@ function tasklist_ALL(Web $w)
     $filter_assignees = $taskgroup_data["members"];
     array_unshift($filter_assignees, ["Unassigned", "unassigned"]);
     $filter_data = [
-        ["Assignee", "select", "task__assignee-id", !empty($assignee_id) ? $assignee_id : null, $filter_assignees],
-        ["Creator", "select", "task__creator-id", !empty($creator_id) ? $creator_id : null, $taskgroup_data["members"]],
-        (new \Html\Form\Autocomplete([
-            "label"        => "Task Group",
-            "name"        => "task__task-group-id",
-            "id"        => "task__task-group-id",
-            "source"    => $w->localUrl("/task-group/ajaxAutocompleteTaskgroups"),
-            "value"        => !empty($task_group_id) ? $taskgroup->getSelectOptionValue() : null,
-            "minlength" => 2,
-            "title"        => !empty($task_group_id) ? $taskgroup->getSelectOptionTitle() : null
-        ])), // ["Task Group", "select", "task__task-group-id", !empty($task_group_id) ? $task_group_id : null, $taskgroup_data["taskgroups"]],
-        ["Task Type", "select", "task__type", !empty($task_type) ? $task_type : null, $taskgroup_data["types"]],
-        ["Task Priority", "select", "task__priority", !empty($filter_urgent) ? "Urgent" : (!empty($task_priority) ? $task_priority : null), $taskgroup_data["priorities"]],
-        ["Task Status", "select", "task__status", !empty($task_status) ? $task_status : null, $taskgroup_data["statuses"]],
-        (new \Html\Form\Select([
+
+        new Select([
+            "name|id" => "task__assignee-id",
+            "label" => "Assignee",
+            "value" => !empty($assignee_id) ? $assignee_id : null,
+            "options" => $filter_assignees,
+        ]),
+
+        new Select([
+            "name|id" => "task__creator-id",
+            "label" => "Creator",
+            "value" => !empty($creator_id) ? $creator_id : null,
+            "options" => $taskgroup_data["members"],
+        ]),
+
+        (new Html5Autocomplete([
+            "id|name" => "task__task-group-id",
+            "label" => "Task Group",
+            "value" => !empty($task_group_id) ? $taskgroup->getSelectOptionValue() : null,
+            "source" => $w->localUrl("/task-group/ajaxAutocompleteTaskgroups"),
+            "minLength" => 2,
+        ])),
+
+        new Select([
+            "name|id" => "task__type",
+            "label" => "Task Type",
+            "value" => !empty($task_type) ? $task_type : null,
+            "options" => $taskgroup_data["types"],
+        ]),
+
+        new Select([
+            "name|id" => "task__priority",
+            "label" => "Task Priority",
+            "value" => !empty($filter_urgent) ? "Urgent" : (!empty($task_priority) ? $task_priority : null),
+            "options" => $taskgroup_data["priorities"],
+        ]),
+
+        new Select([
+            "name|id" => "task__status",
+            "label" => "Task Status",
+            "value" => !empty($task_status) ? $task_status : null,
+            "options" => $taskgroup_data["statuses"],
+        ]),
+
+        (new Select([
             "label"        => "Closed",
             "name"        => "task__is-closed",
-            "id"        => "task__is_closed"
-        ]))->setOptions([
-            ["label" => "No", "value" => '0'],
-            ["label" => "Yes", "value" => '1'],
-            ["label" => "Both", "value" => '']
-        ])->setSelectedOption($is_closed),
+            "id"        => "task__is_closed",
+            "options" => [
+                ["label" => "No", "value" => '0'],
+                ["label" => "Yes", "value" => '1'],
+                ["label" => "Both", "value" => '']
+            ],
+            "value" => $is_closed,
+        ]))
     ];
 
     $w->ctx("filter_data", $filter_data);
