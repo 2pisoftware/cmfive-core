@@ -26,6 +26,9 @@ class CmfiveStyleComponent extends CmfiveComponent
             if (empty($style_path['extension']) || !in_array($style_path['extension'], static::$_allowed_extensions)) {
                 throw new Exception('Invalid file path given to component');
             }
+            if (empty($style_path['extension']) || !in_array($style_path['extension'], static::$_allowed_extensions)) {
+                throw new Exception('Invalid file path given to component');
+            }
 
             $this->_extension = $style_path['extension'];
             $this->_filename = $style_path['filename'];
@@ -35,7 +38,7 @@ class CmfiveStyleComponent extends CmfiveComponent
             $this->href = $path;
         }
     }
-
+    
     public function setProps(array $props)
     {
         if (!empty($props)) {
