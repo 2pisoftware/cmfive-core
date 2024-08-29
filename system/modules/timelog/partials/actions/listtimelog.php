@@ -18,7 +18,8 @@ function listtimelog(\Web $w, $params) {
 			$current_task = $task;
 		}
 	}
-	if (in_array($current_task->task_type, ['Todo', 'CmfiveTicket', 'CrmTicket']) && sizeof($timelogs) > 0) {
+	$task_types_with_time_types = get_task_types_with_time_types($w);
+	if (in_array($current_task->task_type, $task_types_with_time_types) && sizeof($timelogs) > 0) {
 		$w->ctx("billable_hours", \TaskService::getInstance($w)->getTotalTimeByBillable($params['object_id']));
 	}
 	
