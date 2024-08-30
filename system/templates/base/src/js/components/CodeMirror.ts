@@ -4,7 +4,6 @@ import { basicSetup, EditorView } from 'codemirror'
 import { syntaxHighlighting, defaultHighlightStyle } from "@codemirror/language"
 import { html } from "@codemirror/lang-html"
 
-
 export class CodeMirror {
     private static SELECT_TARGET = '.code-mirror-target';
     private static views: EditorView[];

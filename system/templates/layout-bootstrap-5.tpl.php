@@ -11,12 +11,12 @@ $theme_setting = AuthService::getInstance($w)->getSettingByKey('bs5-theme');
     <title><?php echo ucfirst($w->currentModule()); ?><?php echo !empty($title) ? ' - ' . $title : ''; ?></title>
     <?php
     CmfiveStyleComponentRegister::registerComponent('app', new CmfiveStyleComponent("/system/templates/base/dist/app.css"));
-    CmfiveScriptComponentRegister::registerComponent('app', new CmfiveScriptComponent("/system/templates/base/dist/app.js"));
+    CmfiveScriptComponentRegister::registerComponent('app', new CmfiveScriptComponent("/system/templates/base/dist/app.js", ['type' => 'module']));
 
     $w->outputStyles();
     ?>
     <!-- backwards compat -->
-    <script src="/system/templates/base/node_modules/vue3/dist/vue.global.prod.js"></script>
+    <!-- <script src="/system/templates/base/node_modules/vue3/dist/vue.global.prod.js"></script> -->
     <script>
         // @todo: move this into a build file
         let modal_history = [];

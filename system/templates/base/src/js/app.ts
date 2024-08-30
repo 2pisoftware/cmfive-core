@@ -1,13 +1,13 @@
 // src/app.ts
 import { AlertAdaptation, DropdownAdaptation, FavouritesAdaptation, TabAdaptation, TableAdaptation } from './adaptations';
-import { CodeMirror, InputWithOther, MultiFileUpload, MultiSelect, Overlay, QuillEditor } from './components';
+import { CodeMirror, InputWithOther, MultiFileUpload, MultiSelect, Overlay, QuillEditor, Toast as CmfiveToast } from './components';
 
 import { Modal, Toast, Tooltip } from 'bootstrap';
 import { Sortable } from './components/Sortable';
 
-// import '../scss/app.scss';
+import '../scss/app.scss';
 
-type window = Window & typeof globalThis & { cmfiveEventBus: Comment, cmfive: { toast: typeof Toast } };
+type window = Window & typeof globalThis & { cmfiveEventBus: Comment, cmfive: { toast: typeof CmfiveToast } };
 
 class Cmfive {
     static THEME_KEY = 'theme';
@@ -106,7 +106,14 @@ class Cmfive {
 			// Unfortunately, various modals however contian script tags we need to execute
 			modalContent.querySelectorAll("script").forEach(x => {
 				eval(x.innerHTML);
-			})
+			});
+
+            // Emit modal load event
+            // @ts-ignore
+            if (window.cmfiveEventBus) {
+                // @ts-ignore
+                window.cmfiveEventBus.dispatchEvent(new CustomEvent('modal-load'));
+            }
     
             // Rebind elements for modal
             Cmfive.ready(modalContent);
@@ -129,19 +136,10 @@ class Cmfive {
      * 
      * @param target Document|Element
      */
-    static ready(target: Document|Element) {
-        if (!window.hasOwnProperty('cmfiveEventBus')) {
-            // @ts-ignore
-            window.cmfiveEventBus = document.createComment('Helper')
-            // @ts-ignore
-            window.cmfiveEventBus.addEventListener('dom-update', (event) => {
-                console.log("DOM EVENT", event); // => detail-data
-                Cmfive.ready(event.detail);
-            });
-        }
-
+    static ready(target: Document|Element) 
+    {
         (window as window).cmfive = {
-            toast: require('./components/Toast').Toast
+            toast: CmfiveToast
         }
 
         // Add offset for breadcrumb if scrollbar is visible
@@ -226,6 +224,16 @@ class Cmfive {
             m.addEventListener('click', this.linkClickListener);
         })
     }
+}
+
+if (!window.hasOwnProperty('cmfiveEventBus')) {
+    // @ts-ignore
+    window.cmfiveEventBus = document.createComment('Helper')
+    // @ts-ignore
+    window.cmfiveEventBus.addEventListener('dom-update', (event) => {
+        console.log("DOM EVENT", event); // => detail-data
+        Cmfive.ready(event.detail);
+    });
 }
 
 window.addEventListener('load', () => Cmfive.ready(document));
