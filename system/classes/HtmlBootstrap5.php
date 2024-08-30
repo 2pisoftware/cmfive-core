@@ -345,7 +345,7 @@ class HtmlBootstrap5 extends Html
         }
         $buffer .= "</tbody></table>";
 
-        $buffer .= "<div class='d-block d-md-none' style='padding-top: 2ch;'>";
+        $buffer .= "<div class='d-block d-md-none pt-4'>";
         if (!empty($data) && is_array($data)) {
             if (!is_array($header)) {
                 $header = array_shift($data);
