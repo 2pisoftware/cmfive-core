@@ -193,7 +193,7 @@ class Cmfive {
         //     o.addEventListener('click', Overlay.showOverlay);
         // })
 
-        AlertAdaptation.bindCloseEvent();
+        AlertAdaptation.bind(target);
         CodeMirror.bindCodeMirrorEditor();
         DropdownAdaptation.bindDropdownHover();
         FavouritesAdaptation.bindFavouriteInteractions();

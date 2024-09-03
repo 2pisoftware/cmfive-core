@@ -55,14 +55,12 @@
                         // Get new ordering and update via ajax
                         var ordering = [];
                         const rows = document.querySelectorAll("#fields tbody tr");
-                        console.log("rows", rows);
                         for (let i = 0; i < rows.length; i++) {
                             var id_split = rows.item(i).id.split("_");
                             var id = id_split[1];
 
                             ordering.push(id);
                         }
-                        console.log("ordering", ordering);
 
                         await fetch("/form-field/move/<?php echo $form->id; ?>", {
                             method: "POST",

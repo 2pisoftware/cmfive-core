@@ -25,38 +25,22 @@ console.log("fileMap", _fileMapObj);
 export default defineConfig({
     plugins: [vue()],
     build: {
-        minify: false,
+        minify: "terser",
         target: 'es6',
         lib:
-        {// Could also be a dictionary or array of multiple entry points
+        {
             entry: _x,
             name: 'cmfive',
             format: 'es',
         },
         rollupOptions: {
-            // input: _fileMapObj,
             output: {
-                // inlineDynamicImports: true,
                 format: "es",
-                // entryFileNames: '[name].js',
                 assetFileNames: (assetInfo) => {
                     if (assetInfo.name === 'style.css') return 'app.css';
                     return assetInfo.name;
                 },
             },
-            // plugins: [
-            //     {
-            //         name: 'wrap-in-iife',
-            //         generateBundle(outputOptions, bundle) {
-            //             Object.keys(bundle).forEach((fileName) => {
-            //                 const file = bundle[fileName]
-            //                 if (fileName.slice(-3) === '.js' && 'code' in file) {
-            //                     file.code = `(() => {\n${file.code}})()`
-            //                 }
-            //             })
-            //         }
-            //     }
-            // ]
         },
     },
     define: {
