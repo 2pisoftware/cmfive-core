@@ -15,9 +15,29 @@ export class Autocomplete {
                 parsed.shouldLoad = (query: string) => query.length > 1;
             }
 
-            new TomSelect(s as HTMLInputElement, parsed);
+			// tbh I would prefer a save button, but the cmfive api is already set up for add, remove, create methods
+			if (parsed.cmfive.onItemAdd)
+				parsed.onItemAdd = Autocomplete.tomSelectChange.bind(null, parsed.cmfive.onItemAdd);
+			if (parsed.cmfive.onItemRemove)
+				parsed.onItemRemove = Autocomplete.tomSelectChange.bind(null, parsed.cmfive.onItemRemove);
+			if (parsed.cmfive.onItemCreate)
+				parsed.onOptionAdd = Autocomplete.tomSelectChange.bind(null, parsed.cmfive.onItemCreate);
+
+			try {
+           		new TomSelect(s as HTMLInputElement, parsed);
+			}
+			catch (e) {
+				console.warn("tomselect errored", e);
+			}
         })
     }
+
+	static tomSelectChange = (
+		endpoint: string,
+		value: string
+	) => {
+		
+	}
 
     static tomSelectLoad = (
         source: string,

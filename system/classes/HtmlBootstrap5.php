@@ -552,15 +552,15 @@ class HtmlBootstrap5 extends Html
      *  and it may be a good idea to prefix input names with 'filter_' to avoid naming
      *  collisions in requests
      *
-     *  @param String $legend
-     *  @param Array $data
-     *  @param String $action
-     *  @param String $method
-     *  @param String $submitTitle
-     *  @param String $id
-     *  @param String $class
+     *  @param string $legend
+     *  @param array $data
+     *  @param string $action
+     *  @param string $method
+     *  @param string $submitTitle
+     *  @param string $id
+     *  @param string $class
      *
-     *  @return String $buf
+     *  @return string $buf
      */
     public static function filter($legend, $data, $action = null, $method = "POST", $submitTitle = "Filter", $id = null, $class = null, $validation = null)
     {
