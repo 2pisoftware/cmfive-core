@@ -1,5 +1,6 @@
 <?php
 
+use Html\Cmfive\QuillEditor;
 use Html\Form\InputField\Checkbox;
 use Html\Form\InputField\Text;
 use Html\Form\Select;
@@ -58,7 +59,7 @@ function viewtaskgrouptypes_ALL(Web $w)
                 "id|name" => "title",
                 "label" => "Title",
             ])],
-            [new Textarea([
+            [new QuillEditor([
                 "id|name" => "description",
                 "label" => "Description",
             ])],
