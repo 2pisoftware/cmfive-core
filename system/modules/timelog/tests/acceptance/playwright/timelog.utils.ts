@@ -30,7 +30,7 @@ export class TimelogHelper  {
         await expect(page.getByText(timelog)).toBeVisible();
     }
 
-    static async createTimelog(page: Page, isMobile: boolean, timelog: string, taskName: string, taskID: string, date: DateTime, start_time: string, end_time: string, check_duplicate: boolean = false)
+    static async createTimelog(page: Page, isMobile: boolean, timelog: string, taskName: string, taskID: string, date: DateTime, start_time: string, end_time: string, check_duplicate: boolean = false, time_type?: string)
     {
         if(page.url() != HOST + "/task/edit/" + taskID + "#details") {
             if(page.url() != HOST + "/task/tasklist")
@@ -58,6 +58,9 @@ export class TimelogHelper  {
         await page.locator("#time_start").fill(start_time);
         await page.locator("#time_end").fill(end_time);
         await page.getByLabel("Description", {exact: true}).fill(timelog);
+        if (time_type) {
+            await page.getByRole("combobox", {name: 'Task time' }).selectOption({ value: time_type });
+        }
         await page.locator("#timelog_edit_form").getByRole("button", { name: "Save" }).click();
 
         // if(await page.$("#saved_record_id") != null)

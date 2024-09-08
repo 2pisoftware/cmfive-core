@@ -11,6 +11,17 @@ function listtimelog(\Web $w, $params) {
 			return $carry += $timelog->getDuration();
 		});
 	}
+
+	$all_tasks = \TaskService::getInstance($w)->getTasks();
+	foreach ($all_tasks as $task) {
+		if ($task->id == $params['object_id']) {
+			$current_task = $task;
+		}
+	}
+	$task_types_with_time_types = get_task_types_with_time_types($w);
+	if (in_array($current_task->task_type, $task_types_with_time_types) && sizeof($timelogs) > 0) {
+		$w->ctx("billable_hours", \TaskService::getInstance($w)->getTotalTimeByBillable($params['object_id']));
+	}
 	
 	$w->ctx("total", !empty($total) ? $total : 0);
 	$w->ctx("class", $params['object_class']);

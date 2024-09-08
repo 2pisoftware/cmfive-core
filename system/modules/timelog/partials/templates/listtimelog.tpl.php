@@ -1,7 +1,30 @@
 <?php echo Html::box("/timelog/edit?class={$class}&id={$id}" . (!empty($redirect) ? "&redirect=$redirect" : ''), "Add new timelog", true); ?>
-<h4 style="display: inline; padding: 0px 5px;" class="right">
-	<?php echo TaskService::getInstance($w)->getFormatPeriod($total); ?>
-</h4>
+<?php if (!empty($billable_hours)) : ?>
+  <details style="user-select: none;" class="right">
+    <summary style="display: flex; cursor: pointer; justify-content: right;">
+      <h4 class="right" style="margin-bottom: 5px;">
+        <?php echo TaskService::getInstance($w)->getFormatPeriod($total); ?>
+      </h4>
+      <span class="icon" style="padding: 6px;">&dtrif;</span>
+    </summary>
+    <style>
+      details[open] summary span {
+        transform: rotate(180deg) translate(0px, 5px)
+      }
+    </style>
+    <p style="font-size: 11px; text-align: right; margin-bottom: 10px;">
+      <?php
+        if ($billable_hours) {
+            echo 'Billable: ' . $billable_hours['Billable'] . '<br>Non-Billable: ' . $billable_hours['Non-Billable'];
+        }
+      ?>
+    </p>
+  </details>
+<?php else: ?>
+  <h4 class="right" style="margin-bottom: 5px">
+        <?php echo TaskService::getInstance($w)->getFormatPeriod($total); ?>
+  </h4>
+<?php endif; ?>
 
 <?php if (!empty($timelogs)) : ?>
 	<table class='tablesorter small-12'>
