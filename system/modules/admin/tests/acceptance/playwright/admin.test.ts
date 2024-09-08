@@ -1,10 +1,46 @@
 import { expect, test } from "@playwright/test";
-import { GLOBAL_TIMEOUT, CmfiveHelper } from "@utils/cmfive";
 import { AdminHelper } from "@utils/admin";
+import { CmfiveHelper, GLOBAL_TIMEOUT, HOST } from "@utils/cmfive";
 
 test.describe.configure({mode: 'parallel'});
 
-test("Test that an admin can create and delete a user", async ({ page }) => {
+test("Admin can update password of user", async ({ page, isMobile }) => {
+	test.setTimeout(GLOBAL_TIMEOUT);
+	CmfiveHelper.acceptDialog(page);
+
+	await CmfiveHelper.login(page, "admin", "admin");
+
+	const user = CmfiveHelper.randomID("user_");
+	await AdminHelper.createUser(
+		page,
+        isMobile,
+		user,
+		user + "_password",
+		user + "_firstName",
+		user + "_lastName",
+		user + "@localhost.com"
+	);
+
+	await page.goto(`${HOST}/admin/users`);
+
+	const row = CmfiveHelper.getRowByText(page, user);
+	const edit = row.getByRole("button", { name: "Edit" });
+	await edit.click();
+
+	const security = page.getByRole('link', { name: 'Security' });
+	await security.waitFor();
+	await security.click();
+
+	await page.getByLabel('New Password', { exact: true }).fill("test password");
+	await page.getByLabel('Repeat New Password', { exact: true }).fill("test password");
+	await page.getByRole('button', { name: 'Update Password' }).click();
+
+	await CmfiveHelper.logout(page);
+
+	await CmfiveHelper.login(page, user, "test password");
+});
+
+test("Test that an admin can create and delete a user", async ({ page, isMobile }) => {
     test.setTimeout(GLOBAL_TIMEOUT);
     CmfiveHelper.acceptDialog(page);
 
@@ -13,6 +49,7 @@ test("Test that an admin can create and delete a user", async ({ page }) => {
     const user = CmfiveHelper.randomID("user_");
     await AdminHelper.createUser(
         page,
+        isMobile,
         user,
         user+"_password",
         user+"_firstName",
@@ -20,10 +57,10 @@ test("Test that an admin can create and delete a user", async ({ page }) => {
         user+"@localhost.com"
     );
 
-    await AdminHelper.deleteUser(page, user);
+    await AdminHelper.deleteUser(page, isMobile, user);
 });
 
-test("Test that users, groups & permissions are assignable", async ({ page }) => {
+test("Test that users, groups & permissions are assignable", async ({ page, isMobile }) => {
     test.setTimeout(GLOBAL_TIMEOUT);
     CmfiveHelper.acceptDialog(page);
 
@@ -31,7 +68,8 @@ test("Test that users, groups & permissions are assignable", async ({ page }) =>
     
     const user = CmfiveHelper.randomID("user_");
     await AdminHelper.createUser(
-        page,
+        page, 
+        isMobile,
         user,
         user+"_password",
         user+"_firstName",
@@ -41,28 +79,37 @@ test("Test that users, groups & permissions are assignable", async ({ page }) =>
 
     const parentgroup = CmfiveHelper.randomID("usergroup_");
     const usergroup = CmfiveHelper.randomID("usergroup_");
-    const parentgroupID = await AdminHelper.createUserGroup(page, parentgroup);
-    const usergroupID = await AdminHelper.createUserGroup(page, usergroup);
-    await AdminHelper.addUserGroupMember(page, parentgroup, parentgroupID, usergroup.toUpperCase());
-    await AdminHelper.addUserGroupMember(page, usergroup, usergroupID, user+"_firstName " + user+"_lastName");
+    const parentgroupID = await AdminHelper.createUserGroup(page, isMobile, parentgroup);
+    const usergroupID = await AdminHelper.createUserGroup(page, isMobile, usergroup);
+    await AdminHelper.addUserGroupMember(page, isMobile, parentgroup, parentgroupID, usergroup.toUpperCase());
+    await AdminHelper.addUserGroupMember(page, isMobile, usergroup, usergroupID, user+"_firstName " + user+"_lastName");
     
-    await AdminHelper.editUserGroupPermissions(page, usergroup, usergroupID, ["user", "comment"]);
-    await CmfiveHelper.clickCmfiveNavbar(page, "Admin", "List Users");
-    await CmfiveHelper.getRowByText(page, user).getByRole("button", {name: "Permissions"}).click();
+    await AdminHelper.editUserGroupPermissions(page, isMobile, usergroup, usergroupID, ["user", "comment"]);
+    await CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Admin", "List Users");
+
+    if(isMobile)
+        await page.click(`ul:has(li:has(span:text("${user}"))) button:text("Permissions")`);
+    else
+        await CmfiveHelper.getRowByText(page, user).getByRole("button", {name: "Permissions"}).click();
+
     await expect(page.locator("#check_comment")).toBeChecked();
     await expect(page.locator("#check_comment")).toBeDisabled();
 
-    await AdminHelper.deleteUserGroup(page, usergroup);
-    await CmfiveHelper.clickCmfiveNavbar(page, "Admin", "List Users");
-    await CmfiveHelper.getRowByText(page, user).getByRole("button", {name: "Permissions"}).click();
+    await AdminHelper.deleteUserGroup(page, isMobile, usergroup);
+    await CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Admin", "List Users");
+
+    if(isMobile)
+        await page.click(`ul:has(li:has(span:text("${user}"))) button:text("Permissions")`);
+    else
+        await CmfiveHelper.getRowByText(page, user).getByRole("button", {name: "Permissions"}).click();
     await expect(page.locator("#check_comment")).not.toBeChecked();
     await expect(page.locator("#check_comment")).not.toBeDisabled();
 
-    await AdminHelper.deleteUserGroup(page, parentgroup);
-    await AdminHelper.deleteUser(page, user);
+    await AdminHelper.deleteUserGroup(page, isMobile, parentgroup);
+    await AdminHelper.deleteUser(page, isMobile, user);
 });
 
-test("Test that Cmfive Admin handles lookups", async ({ page }) => {
+test("Test that Cmfive Admin handles lookups", async ({ page, isMobile }) => {
     test.setTimeout(GLOBAL_TIMEOUT);
     CmfiveHelper.acceptDialog(page);
 
@@ -70,7 +117,8 @@ test("Test that Cmfive Admin handles lookups", async ({ page }) => {
     
     const user = CmfiveHelper.randomID("user_");
     await AdminHelper.createUser(
-        page,
+        page, 
+        isMobile,
         user,
         user+"_password",
         user+"_firstName",
@@ -82,42 +130,47 @@ test("Test that Cmfive Admin handles lookups", async ({ page }) => {
     const lookup_2 = user + "_lookup_2";
     const lookup_3 = user + "_lookup_3";
 
-    await AdminHelper.createLookupType(page, "title", "Title", "Title");
-    await AdminHelper.createLookup(page, "title", lookup_1, lookup_1);
-    await AdminHelper.editUser(page, user, [["Title", lookup_1]]);
-    await CmfiveHelper.clickCmfiveNavbar(page, "Admin", "Lookup");
-    await expect(page.getByText(lookup_1).first()).toBeVisible();
+    await AdminHelper.createLookupType(page, isMobile, "title", "Title", "Title");
+    await AdminHelper.createLookup(page, isMobile, "title", lookup_1, lookup_1);
+    await AdminHelper.editUser(page, isMobile, user, [["Title", lookup_1]]);
+    await CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Admin", "Lookup");
+    await expect(page.getByText(lookup_1).nth(isMobile ? 2 : 1)).toBeVisible();
 
-    await AdminHelper.editLookup(page, lookup_1, {"Title": lookup_2});
-    await CmfiveHelper.clickCmfiveNavbar(page, "Admin", "List Users");
-    await CmfiveHelper.getRowByText(page, user).getByRole("button", {name: "Edit"}).click();
+    await AdminHelper.editLookup(page, isMobile, lookup_1, {"Title": lookup_2});
+    await CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Admin", "List Users");
+
+    if(isMobile)
+        await page.click(`ul:has(li:has(span:text("${user}"))) button:text("Edit")`);
+    else
+        await CmfiveHelper.getRowByText(page, user).getByRole("button", {name: "Edit"}).click();
+
     await page.getByRole('combobox', { name: 'Title' }).click();
-    await expect((await page.content()).includes(lookup_2)).toBeTruthy();
+    expect((await page.content()).includes(lookup_2)).toBeTruthy();
     
-    await AdminHelper.deleteLookup(page, lookup_2);
+    await AdminHelper.deleteLookup(page, isMobile, lookup_2);
     await expect(page.getByText("Cannot delete lookup as it is used as a title for the contacts: " + user+"_firstName " + user+"_lastName")).toBeVisible();
 
-    await AdminHelper.createLookup(page, "title", lookup_3, lookup_3);
-    await expect(page.getByText(lookup_3).first()).toBeVisible();
+    await AdminHelper.createLookup(page, isMobile, "title", lookup_3, lookup_3);
+    await expect(page.getByText(lookup_3).nth(isMobile ? 2 : 1)).toBeVisible();
 
-    await AdminHelper.editUser(page, user, [["Title", lookup_3]]);
-    await CmfiveHelper.clickCmfiveNavbar(page, "Admin", "Lookup");
-    await AdminHelper.deleteLookup(page, lookup_2);
+    await AdminHelper.editUser(page, isMobile, user, [["Title", lookup_3]]);
+    await CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Admin", "Lookup");
+    await AdminHelper.deleteLookup(page, isMobile, lookup_2);
     await expect(page.getByText("Lookup Item deleted")).toBeVisible();
 
-    await AdminHelper.deleteUser(page, user);
+    await AdminHelper.deleteUser(page, isMobile, user);
 
-    await AdminHelper.deleteLookup(page, lookup_3);
+    await AdminHelper.deleteLookup(page, isMobile, lookup_3);
     await expect(page.getByText("Lookup Item deleted")).toBeVisible();
 });
 
-test("Test that Cmfive Admin handles templates", async ({ page }) => {
+test("Test that Cmfive Admin handles templates", async ({ page, isMobile }) => {
     test.setTimeout(GLOBAL_TIMEOUT);
 
     await CmfiveHelper.login(page, "admin", "admin");
     
     const template = CmfiveHelper.randomID("template_");
-    const templateID = await AdminHelper.createTemplate(page, template, "Admin", "Templates", [
+    const templateID = await AdminHelper.createTemplate(page, isMobile, template, "Admin", "Templates", [
          "<table width='100%' align='center' class='form-table' cellpadding='1'>"
         ,"    <tr>"
         ,"        <td colspan='2' style='border:none;'>"
@@ -135,18 +188,18 @@ test("Test that Cmfive Admin handles templates", async ({ page }) => {
     ]);
 
     
-    const templateTestPage = await AdminHelper.demoTemplate(page, template, templateID);
+    const templateTestPage = await AdminHelper.demoTemplate(page, isMobile, template, templateID);
 
     await expect(templateTestPage.getByText("Test Company")).toBeVisible();
 });
 
-test("Test that Cmfive Admin can create/run/rollback migrations", async ({ page }) => {
+test("Test that Cmfive Admin can create/run/rollback migrations", async ({ page, isMobile }) => {
     test.setTimeout(GLOBAL_TIMEOUT);
     CmfiveHelper.acceptDialog(page);
 
     await CmfiveHelper.login(page, "admin", "admin");
 
-    await CmfiveHelper.clickCmfiveNavbar(page, "Admin", "Migrations");
+    await CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Admin", "Migrations");
 
     // create migration
     await page.getByRole("link", { name: "Individual" }).click();
@@ -169,15 +222,27 @@ test("Test that Cmfive Admin can create/run/rollback migrations", async ({ page 
 
     const migrationsCount = await page.getByRole('button', {name: 'Migrate to here'}).count();
     const plural = migrationsCount == 1 ? " has" : "s have";
-    await CmfiveHelper.getRowByText(page, "Admin"+migration).getByRole("button", { name: "Migrate to here" }).click();
+    
+    if(isMobile)
+        await page.click(`ul:has(li:has(span:text("Admin${migration}"))) button:text("Migrate to here")`);
+    else
+        await CmfiveHelper.getRowByText(page, "Admin"+migration).getByRole("button", { name: "Migrate to here" }).click();
+    
     await expect(page.getByText(`${migrationsCount} migration${plural} run.`)).toBeVisible();
 
-    await CmfiveHelper.getRowByText(page, "Admin" + migration).getByRole("button", { name: "Rollback to here" }).click();
+    if(isMobile)
+        await page.click(`ul:has(li:has(span:text("Admin${migration}"))) button:text("Rollback to here")`);
+    else
+        await CmfiveHelper.getRowByText(page, "Admin" + migration).getByRole("button", { name: "Rollback to here" }).click();
+    
     await expect(page.getByText("1 migration has rolled back")).toBeVisible();
 
     // test that migration can be run/rolled back from "Individual" migrations tab
     await page.getByRole("link", { name: "Batch" }).click();
-    await expect(page.getByRole("cell", { name: "admin - Admin" + migration })).toBeVisible();
+    if(isMobile)
+        await expect(page.locator("span", { hasText: "Admin - Admin" + migration })).toBeVisible();
+    else
+        await expect(page.getByRole("cell", { name: "admin - Admin" + migration })).toBeVisible();
 
     await page.getByRole("button", { name: "Install migrations" }).click();
     await expect(page.getByText("1 migration has run.")).toBeVisible();

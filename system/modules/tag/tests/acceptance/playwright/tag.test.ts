@@ -9,17 +9,17 @@ const taskGroupName = CmfiveHelper.randomID("taskgroup_");
 
 test.describe.configure({ mode: 'serial' });
 
-test("Test that users can tag objects", async ({ page }) => {
+test("Test that users can tag objects", async ({ page, isMobile }) => {
     test.setTimeout(GLOBAL_TIMEOUT);
     await CmfiveHelper.login(page, "admin", "admin");
 
-    await TaskHelper.createTaskGroup(page, taskGroupName, "To Do", "MEMBER", "MEMBER", "MEMBER");
-    const taskId = await TaskHelper.createTask(page, taskNameSingle, taskGroupName, "To Do");
+    await TaskHelper.createTaskGroup(page, isMobile, taskGroupName, "To Do", "MEMBER", "MEMBER", "MEMBER");
+    const taskId = await TaskHelper.createTask(page, isMobile, taskNameSingle, taskGroupName, "To Do");
 
     await TagHelper.createTagOnTask(page, tagNameSingle, taskId);
 });
 
-test("Test that users can tag multiple objects with same tag", async ({ page }) => {
+test("Test that users can tag multiple objects with same tag", async ({ page, isMobile }) => {
     test.setTimeout(GLOBAL_TIMEOUT);
 
     const tagNameMultiple = CmfiveHelper.randomID("tag_");
@@ -31,10 +31,10 @@ test("Test that users can tag multiple objects with same tag", async ({ page }) 
     const taskName3 = CmfiveHelper.randomID("task_");
     await CmfiveHelper.login(page, "admin", "admin");
 
-    await TaskHelper.createTaskGroup(page, taskGroupName, "To Do", "MEMBER", "MEMBER", "MEMBER");
-    const taskId1 = await TaskHelper.createTask(page, taskName1, taskGroupName, "To Do");
-    const taskId2 = await TaskHelper.createTask(page, taskName2, taskGroupName, "To Do");
-    const taskId3 = await TaskHelper.createTask(page, taskName3, taskGroupName, "To Do");
+    await TaskHelper.createTaskGroup(page, isMobile, taskGroupName, "To Do", "MEMBER", "MEMBER", "MEMBER");
+    const taskId1 = await TaskHelper.createTask(page, isMobile, taskName1, taskGroupName, "To Do");
+    const taskId2 = await TaskHelper.createTask(page, isMobile, taskName2, taskGroupName, "To Do");
+    const taskId3 = await TaskHelper.createTask(page, isMobile, taskName3, taskGroupName, "To Do");
 
     await TagHelper.createTagOnTask(page, tagNameMultiple, taskId1);
     await TagHelper.createTagOnTask(page, tagNameMultiple, taskId2);
@@ -44,7 +44,7 @@ test("Test that users can tag multiple objects with same tag", async ({ page }) 
     expect(await page.getByText(tagNameMultiple).count()).toBe(3);
 
     // Verify we still have our tags
-    await CmfiveHelper.clickCmfiveNavbar(page, "Tag", "Tag Admin");
+    await CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Tag", "Tag Admin");
     expect(await page.getByText(tagNameSingle).count()).toBe(1);
     expect(await page.getByText(tagNameMultiple).count()).toBe(1);
 
@@ -63,7 +63,7 @@ test("Test that users can tag multiple objects with same tag", async ({ page }) 
     expect(await page.getByText(tagName).count()).toBe(1);
 
     // Delete the tags
-    await CmfiveHelper.clickCmfiveNavbar(page, "Tag", "Tag Admin");
+    await CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Tag", "Tag Admin");
     await CmfiveHelper.getRowByText(page, tagName).getByText("Delete").click();
     await CmfiveHelper.getRowByText(page, tagNameMultiple).getByText("Delete").click();
 });

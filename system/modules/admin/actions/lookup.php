@@ -39,7 +39,7 @@ function lookup_ALL(Web &$w)
             $line[] = $look->title;
             $line[] = HtmlBootstrap5::buttonGroup(
                 HtmlBootstrap5::box($w->localUrl("/admin/editlookup/" . $look->id . "/" . urlencode(Request::string('type', ''))), " Edit ", true, false, null, null, 'isbox', null, 'btn btn-sm btn-secondary') .
-                    HtmlBootstrap5::b($w->webroot() . "/admin/deletelookup/" . $look->id . "/" . urlencode(Request::string('type', '')), " Delete ", "Are you sure you wish to DELETE this Lookup item?", "deletebutton", false, "btn-sm btn-danger")
+                HtmlBootstrap5::b($w->webroot() . "/admin/deletelookup/" . $look->id . "/" . urlencode(Request::string('type', '')), " Delete ", "Are you sure you wish to DELETE this Lookup item?", "deletebutton", false, "btn-sm btn-danger")
             );
             $line['sort_key'] = strtoupper($look->type) . strtoupper($look->code) . strtoupper($look->title);
 
@@ -54,14 +54,15 @@ function lookup_ALL(Web &$w)
         );
         // Remove sort column
         for ($i = 0, $length = count($table); $i < $length; ++$i) {
-            unset($table[$i]["sort_key"]);
+            // unset($table[$i]["sort_key"]);
+            array_pop($table[$i]);
         }
-    } else {
-        $table[] = ["No Lookup items to list", null, null, null, null];
-    }
 
-    // display list of items, if any
-    $w->ctx("listitem", HtmlBootstrap5::table($table, null, "tablesorter", true));
+        $w->ctx("listitem", HtmlBootstrap5::table($table, null, "tablesorter"));
+    } else {
+        // $table[] = ["No Lookup items to list", null, null, null];
+        $w->ctx("listitem", "<p class='pt-3 text-center'>No Lookup items to list.</p>");
+    }
 
 
     // tab: new lookup item

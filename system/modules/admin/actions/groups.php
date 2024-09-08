@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * Display a list of all groups which are not deleted
  *
@@ -48,5 +49,5 @@ function groups_GET(Web &$w)
         $w->out(Html::box("/admin/groupadd", "New Group", true));
     }
 
-    $w->out(Html::table($table, null, "tablesorter", true));
+    $w->out(HtmlBootstrap5::table($table, null, "tablesorter"));
 }
