@@ -121,7 +121,7 @@ jobs:
             -e DB_USERNAME=$DB_USERNAME \
             -e DB_PASSWORD=$DB_PASSWORD \
             -e DB_DATABASE=$DB_DATABASE \
-            -e CMFIVE_CORE_BRANCH=$CORE_BRANCH \
+            -e INSTALL_CORE_BRANCH=$CORE_BRANCH \
             -e ENVIRONMENT=development \
             --network=cmfive \
             $BOILERPLATE_IMAGE
