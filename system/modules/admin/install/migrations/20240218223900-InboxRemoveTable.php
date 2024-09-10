@@ -12,8 +12,10 @@ class InboxRemoveTable extends CmfiveMigration
         $this->dropTable('inbox_message');
 
         //Clear out the related user roles
-        $this->w->db->delete('user_role')->where('role', 'inbox_sender')->execute();
-        $this->w->db->delete('user_role')->where('role', 'inbox_reader')->execute();
+		if ($this->hasTable('user_role')) {
+            $this->w->db->delete('user_role')->where('role', 'inbox_sender')->execute();
+            $this->w->db->delete('user_role')->where('role', 'inbox_reader')->execute();
+        }
     }
 
     public function down(): void
