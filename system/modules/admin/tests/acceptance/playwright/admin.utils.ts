@@ -1,5 +1,5 @@
 import { expect, Page } from "@playwright/test";
-import { HOST, CmfiveHelper } from "@utils/cmfive";
+import { CmfiveHelper, HOST } from "@utils/cmfive";
 
 export class AdminHelper {
     static async createUser(page: Page, isMobile: boolean, username: string, password: string, firstname: string, lastname: string, email: string, permissions: string[] = [])
@@ -67,9 +67,11 @@ export class AdminHelper {
         else
             await CmfiveHelper.getRowByText(page, username).getByRole("button", { name: "Edit" }).click();
 
+		await page.waitForSelector("#tab-1")
+
         for (let [label, value] of data) {
             if (label == "Title") {
-                await page.getByLabel(label, { exact: true }).selectOption(value);
+                await page.locator("#title_lookup_id").selectOption(value);
             }
             else if (label == "Active" || label == "Admin" || label == "External") {
                 if (value == "true") {
@@ -91,59 +93,62 @@ export class AdminHelper {
 
     static async createLookupType(page: Page, isMobile: boolean, type: string, code: string, lookup: string)
     {
-        if(page.url() != HOST + "/admin/lookup#tab-1")
-            await CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Admin", "Lookup");
+        if(page.url() != HOST + "/admin-lookups#dynamic")
+            await CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Admin", "Lookups");
 
-        await page.getByRole("link", {name: "New Item", exact: true}).click();
+		await page.getByText("Create Lookup").click();
 
-        const type_dropdown = await page.locator("#type option", {hasText: type}).count();
-        if (type_dropdown == 0) {
-            await page.getByLabel("or Add New Type").fill(type);
-        } else {
-            await page.getByRole("combobox").selectOption(type);
-        }
-        await page.getByLabel("Code").fill(code);
-        await page.getByLabel("Title", { exact: true }).fill(lookup);
-        await page.getByRole("button", {name: "Save"}).click();
+		await page.waitForSelector("#cmfive-modal", { state: "visible" });
+        const modal = page.locator("#cmfive-modal");
 
-        await expect(page.getByText("Lookup Item added")).toBeVisible();
+		await modal.getByLabel("or Add New Type", { exact: true }).fill(type);
+
+		await modal.getByLabel("Code").fill(code);
+		await modal.getByLabel("Title",).fill(lookup);
+        await modal.getByRole("button", {name: "Create"}).click();
+
+        await expect(page.getByText("Lookup Item created")).toBeVisible();
     }
 
     static async createLookup(page: Page, isMobile: boolean, type: string, code: string, lookup: string)
     {
-        if(page.url() != HOST + "/admin/lookup#tab-1")
-            await CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Admin", "Lookup");
-            
-        await page.getByRole("link", { name: "New Item", exact: true }).click();
+        if(page.url() != HOST + "/admin-lookups#dynamic")
+            await CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Admin", "Lookups");
 
-        await page.getByRole("combobox").selectOption(type);
-        await page.getByLabel("Code").fill(code);
-        await page.getByLabel("Title", { exact: true }).fill(lookup);
+		await page.getByText("Create Lookup").click();
 
-        await page.getByRole("button", {name: "Save"}).click();
-        await expect(page.getByText("Lookup Item added")).toBeVisible();
+        await page.waitForSelector("#cmfive-modal", { state: "visible" });
+        const modal = page.locator("#cmfive-modal");
+
+		await modal.locator('#type').selectOption(type);
+
+		await modal.getByLabel("Code").fill(code);
+		await modal.getByLabel("Title").fill(lookup);
+        await modal.getByRole("button", {name: "Create"}).click();
+
+        await expect(page.getByText("Lookup Item created")).toBeVisible();
     }
 
     static async deleteLookup(page: Page, isMobile: boolean, lookup: string)
     {
-        if(page.url() != HOST + "/admin/lookup#tab-1")
-            await CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Admin", "Lookup");
+		if (page.url() != HOST + "/admin-lookups#dynamic")
+			await CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Admin", "Lookups");
 
-        if(isMobile)
-            await page.click(`ul:has(li:has(span:text("${lookup}"))) button:text("Delete")`);
-        else
-            await CmfiveHelper.getRowByText(page, lookup).getByRole("button", {name: "Delete"}).click();
-    }
+		// await CmfiveHelper.getRowByText(page, lookup).getByRole("button", { name: "Delete" }).click();
+		await page.getByRole('row', { name: lookup }).locator('button', { hasText: "Delete" }).click();
+	}
 
     static async editLookup(page: Page, isMobile: boolean, lookup: string, data: Record<string, string>)
     {
-        if(page.url() != HOST + "/admin/lookup#tab-1")
-            await CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Admin", "Lookup");
-        
-        if(isMobile)
-            await page.click(`ul:has(li:has(span:text("${lookup}"))) button:text("Edit")`);
-        else
-            await CmfiveHelper.getRowByText(page, lookup).getByRole("button", {name: "Edit"}).click();
+        if(page.url() != HOST + "/admin-lookups#dynamic")
+            await CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Admin", "Lookups");
+
+		// TODO: mobile isn't actually implemented for new lookups page
+        // if(isMobile)
+        //     await page.click(`ul:has(li:has(span:text("${lookup}"))) button:text("Edit")`);
+        // else
+		await page.getByRole('row', { name: lookup }).locator('a').click();
+
         await page.waitForSelector("#cmfive-modal", { state: "visible" });
         const modal = page.locator("#cmfive-modal");
 
@@ -158,7 +163,7 @@ export class AdminHelper {
 
         await modal.getByRole("button", {name: "Update"}).click();
 
-        await expect(page.getByText("Lookup Item edited")).toBeVisible();
+        await expect(page.getByText("Lookup Item updated")).toBeVisible();
     }
 
     /**

@@ -117,7 +117,7 @@ test("Test that Cmfive Admin handles lookups", async ({ page, isMobile }) => {
     
     const user = CmfiveHelper.randomID("user_");
     await AdminHelper.createUser(
-        page, 
+        page,
         isMobile,
         user,
         user+"_password",
@@ -133,7 +133,7 @@ test("Test that Cmfive Admin handles lookups", async ({ page, isMobile }) => {
     await AdminHelper.createLookupType(page, isMobile, "title", "Title", "Title");
     await AdminHelper.createLookup(page, isMobile, "title", lookup_1, lookup_1);
     await AdminHelper.editUser(page, isMobile, user, [["Title", lookup_1]]);
-    await CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Admin", "Lookup");
+    await CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Admin", "Lookups");
     await expect(page.getByText(lookup_1).nth(isMobile ? 2 : 1)).toBeVisible();
 
     await AdminHelper.editLookup(page, isMobile, lookup_1, {"Title": lookup_2});
@@ -154,14 +154,14 @@ test("Test that Cmfive Admin handles lookups", async ({ page, isMobile }) => {
     await expect(page.getByText(lookup_3).nth(isMobile ? 2 : 1)).toBeVisible();
 
     await AdminHelper.editUser(page, isMobile, user, [["Title", lookup_3]]);
-    await CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Admin", "Lookup");
+    await CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Admin", "Lookups");
     await AdminHelper.deleteLookup(page, isMobile, lookup_2);
-    await expect(page.getByText("Lookup Item deleted")).toBeVisible();
+	await expect(page.getByText("Lookup Item deleted")).toBeVisible();
 
     await AdminHelper.deleteUser(page, isMobile, user);
 
     await AdminHelper.deleteLookup(page, isMobile, lookup_3);
-    await expect(page.getByText("Lookup Item deleted")).toBeVisible();
+	await expect(page.getByText("Lookup Item deleted")).toBeVisible();
 });
 
 test("Test that Cmfive Admin handles templates", async ({ page, isMobile }) => {
