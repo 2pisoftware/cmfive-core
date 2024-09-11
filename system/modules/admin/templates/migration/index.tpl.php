@@ -14,8 +14,8 @@ use Carbon\Carbon; ?>
     </div>
     <div class="tab-body clearfix">
         <div id="batch">
-            <div class="row">
-                <div class="col-2">
+            <div class="responsive-flex">
+                <div style="width: 14rem; margin-right: 1rem">
                     <ul id="batch_list" class="list-group" role="tablist">
                         <?php
                         $active = true;
@@ -39,7 +39,7 @@ use Carbon\Carbon; ?>
                         ?>
                     </ul>
                 </div>
-                <div class="col-10">
+                <div class="col-9">
                     <div class="tab-content">
                         <?php
                         $active = true;
@@ -113,8 +113,8 @@ use Carbon\Carbon; ?>
 
         <div id="individual">
             <?php if (!empty($available)) : ?>
-                <div class="row">
-                    <div class="col-2">
+                <div class="responsive-flex">
+                    <div style="width: 14rem; margin-right: 1rem">
                         <ul id="migrations_list" class="list-group" role="tablist">
                             <?php
                             $active = true;
@@ -137,7 +137,7 @@ use Carbon\Carbon; ?>
                             ?>
                         </ul>
                     </div>
-                    <div class="col-10">
+                    <div class="col-9">
                         <div class="tab-content">
                             <?php
                             $active = true;
@@ -184,8 +184,8 @@ use Carbon\Carbon; ?>
         </div>
         <div id='seed'>
             <?php if (!empty($seeds)) : ?>
-                <div class="row">
-                    <div class="col-2">
+                <div class="responsive-flex">
+                    <div style="width: 14rem; margin-right: 1rem">
                         <ul id="seeds_list" class="list-group" role="tablist">
                             <?php
                             // installed and not-installed seed counts for each module to be displayed as badges
@@ -237,7 +237,7 @@ use Carbon\Carbon; ?>
                             ?>
                         </ul>
                     </div>
-                    <div class="col-10">
+                    <div class="col-9">
                         <div class="tab-content">
                             <script>
                                 // set default module selection for seed creation modal based on currently selected module in seeds_list
