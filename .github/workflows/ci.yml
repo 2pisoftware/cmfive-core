@@ -71,7 +71,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: '2pisoftware/cmfive-boilerplate'
-          ref: $BOILERPLATE_BRANCH
+          ref: ${{ env.BOILERPLATE_BRANCH }}
           path: boilerplate
 
       # Pre-requisites Prepare Cmfive Environment
