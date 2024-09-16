@@ -24,13 +24,12 @@ class AdminInitialMigration extends CmfiveMigration
                 ->addColumn('classname', 'string', ['limit' => 1024, 'null' => true])
                 ->addColumn('module', 'string', ['limit' => 1024, 'null' => true])
                 ->addColumn("batch", "integer", ['default' => 0])
+                ->addColumn("pretext", "string", ['default' => null, 'null' => true])
+                ->addColumn("posttext", "string", ['default' => null, 'null' => true])
+                ->addColumn("description", "string", ['default' => null, 'null' => true])
                 ->addCmfiveParameters(['dt_modified', 'modifier_id', 'is_deleted'])
                 ->create();
         }
-        $this->addColumnToTable('migration', 'pretext', 'string', ['default' => null, 'null' => true]);
-        $this->addColumnToTable('migration', 'posttext', 'string', ['default' => null, 'null' => true]);
-        $this->addColumnToTable('migration', 'description', 'string', ['default' => null, 'null' => true]);
-
 
         /**
          * AUDIT TABLE
