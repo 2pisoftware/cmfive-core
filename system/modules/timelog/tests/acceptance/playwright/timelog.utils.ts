@@ -3,16 +3,19 @@ import { expect, Page } from "@playwright/test";
 import { DateTime } from "luxon";
 
 export class TimelogHelper  {
-    static async createTimelogFromTimer(page: Page, timelog: string, taskName: string, taskID: string, start_time: string = "")
+    static async createTimelogFromTimer(page: Page, isMobile: boolean, timelog: string, taskName: string, taskID: string, start_time: string = "")
     {
         if(page.url() != HOST + "/task/edit/" + taskID + "#details") {
             if(page.url() != HOST + "/task/tasklist")
-                await CmfiveHelper.clickCmfiveNavbar(page, "Task", "Task List");
+                await CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Task", "Task List");
             
             await page.getByRole("link", {name: taskName, exact: true}).click();
         }
-        
-        await page.locator("#start_timer").click();
+
+        if(isMobile)
+            await page.getByRole("link", {name: "Menu"}).click();
+
+        await page.getByText("Start Timer", {exact: true}).click();
         await page.waitForSelector("#start_time", {state: "visible"});
         await page.waitForSelector("#timerModal", {state: "visible"});
         await page.locator("#start_time").fill(start_time);
@@ -27,19 +30,22 @@ export class TimelogHelper  {
         await expect(page.getByText(timelog)).toBeVisible();
     }
 
-    static async createTimelog(page: Page, timelog: string, taskName: string, taskID: string, date: DateTime, start_time: string, end_time: string, check_duplicate: boolean = false)
+    static async createTimelog(page: Page, isMobile: boolean, timelog: string, taskName: string, taskID: string, date: DateTime, start_time: string, end_time: string, check_duplicate: boolean = false)
     {
         if(page.url() != HOST + "/task/edit/" + taskID + "#details") {
             if(page.url() != HOST + "/task/tasklist")
-                await CmfiveHelper.clickCmfiveNavbar(page, "Task", "Task List");
+                await CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Task", "Task List");
             
             await page.getByRole("link", {name: taskName, exact: true}).click();
         }
 
         // manually adding navigation due to Add timelog not being a link
+        if (isMobile)
+            await page.getByRole("link", {name: "Menu"}).click();
+
         const navbarCategory = page.locator("#topnav_timelog");
         const bootstrap5 = await CmfiveHelper.isBootstrap5(page);
-        if (bootstrap5) {
+        if (bootstrap5 || isMobile) {
             await navbarCategory.click();
         } else { // Foundation
             await navbarCategory.hover();
@@ -54,8 +60,8 @@ export class TimelogHelper  {
         await page.getByLabel("Description", {exact: true}).fill(timelog);
         await page.locator("#timelog_edit_form").getByRole("button", { name: "Save" }).click();
 
-        if(await page.$("#saved_record_id") != null)
-            console.log(await page.$eval("#saved_record_id", el => el.innerHTML));
+        // if(await page.$("#saved_record_id") != null)
+        //     console.log(await page.$eval("#saved_record_id", el => el.innerHTML));
 
         await page.getByRole("link", {name: taskName, exact: false}).first().click();
         await page.getByRole("link", {name: "Time Log"}).click();
@@ -67,12 +73,12 @@ export class TimelogHelper  {
             await expect(page.getByText(timelog)).toBeVisible();
     }
 
-    static async editTimelog(page: Page, timelog: string, taskName: string, taskID: string, date: DateTime, start_time: string, end_time: string)
+    static async editTimelog(page: Page, isMobile: boolean, timelog: string, taskName: string, taskID: string, date: DateTime, start_time: string, end_time: string)
     {
         if(page.url() == HOST + "/task/edit/" + taskID + "#timelog") page.reload();
         else if(page.url() != HOST + "/task/edit/" + taskID + "#details") {
             if(page.url() != HOST + "/task/tasklist")
-                await CmfiveHelper.clickCmfiveNavbar(page, "Task", "Task List");
+                await CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Task", "Task List");
             
             await page.getByRole("link", {name: taskName, exact: true}).click();
             await page.getByRole("link", {name: "Time Log"}).click();
@@ -88,12 +94,12 @@ export class TimelogHelper  {
         await expect(page.getByText("Timelog saved")).toBeVisible();
     }
 
-    static async deleteTimelog(page: Page, timelog: string, taskName: string, taskID: string)
+    static async deleteTimelog(page: Page, isMobile: boolean, timelog: string, taskName: string, taskID: string)
     {
         if(page.url() == HOST + "/task/edit/" + taskID + "#timelog") page.reload();
         else if(page.url() != HOST + "/task/edit/" + taskID + "#details") {
             if(page.url() != HOST + "/task/tasklist")
-                await CmfiveHelper.clickCmfiveNavbar(page, "Task", "Task List");
+                await CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Task", "Task List");
             
             await page.getByRole("link", {name: taskName, exact: true}).click();
             await page.getByRole("link", {name: "Time Log"}).click();
