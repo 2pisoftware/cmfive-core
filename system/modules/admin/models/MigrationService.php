@@ -549,8 +549,7 @@ MIGRATION;
     {
         $filenames = [
             "AdminInitialMigration" => "20151030134124-AdminInitialMigration.php",
-            "AdminMigrationSeed" => "20170123091600-AdminMigrationSeed.php",
-            "AdminStableMigrationSchema" => "20240911010101-AdminStableMigrationSchema.php",
+            "AdminMigrationSeed" => "20170123091600-AdminMigrationSeed.php"
         ];
 
         $directory = SYSTEM_MODULE_DIRECTORY . DS . "admin" . DS . MIGRATION_DIRECTORY;
