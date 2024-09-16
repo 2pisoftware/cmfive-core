@@ -8,6 +8,7 @@ export class TaskHelper  {
      */
     static async createTaskGroup(
         page: Page,
+        isMobile: boolean,
         groupName: string,
         groupType: "To Do" | "Software Development" | "Cmfive Support",
         whoCanAssign:         "GUEST" | "MEMBER" | "OWNER",
@@ -16,7 +17,7 @@ export class TaskHelper  {
         automaticSubscription: boolean = true
     ): Promise<string> {
         if(page.url() != HOST + "/task-group/viewtaskgrouptypes#dashboard")
-            CmfiveHelper.clickCmfiveNavbar(page, "Task", "Task Groups");
+            CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Task", "Task Groups");
 
         await page.getByRole("link", {name: "New Task Group"}).click();
 
@@ -55,13 +56,14 @@ export class TaskHelper  {
 
     static async editTaskGroup(
         page: Page,
+        isMobile: boolean,
         groupName: string,
         groupID: string,
         edit: Record<string, string | boolean>)
     {
         if(page.url() != HOST + "/task-group/viewmembergroup/" + groupID + "#members") {
             if(page.url() != HOST + "/task-group/viewtaskgrouptypes#dashboard")
-                CmfiveHelper.clickCmfiveNavbar(page, "Task", "Task Groups");
+                CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Task", "Task Groups");
             
             await page.getByRole("link", {name: groupName, exact: true}).click();
         }
@@ -80,11 +82,11 @@ export class TaskHelper  {
         await modal.getByRole("button", {name: "Update"}).click();
     }
 
-    static async deleteTaskGroup(page: Page, groupName: string, groupID: string)
+    static async deleteTaskGroup(page: Page, isMobile: boolean, groupName: string, groupID: string)
     {
         if(page.url() != HOST + "/task-group/viewmembergroup/" + groupID + "#members") {
             if(page.url() != HOST + "/task-group/viewtaskgrouptypes#dashboard")
-                CmfiveHelper.clickCmfiveNavbar(page, "Task", "Task Groups");
+                CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Task", "Task Groups");
             
             await page.getByRole("link", {name: groupName, exact: true}).click();
         }
@@ -95,11 +97,11 @@ export class TaskHelper  {
         await expect(page.getByText("Task Group " + groupName + " deleted.")).toBeVisible();
     }
 
-    static async addMemberToTaskgroup(page: Page, groupName: string, groupID: string, memberName: string, role: "ALL" | "GUEST" | "MEMBER" | "OWNER")
+    static async addMemberToTaskgroup(page: Page, isMobile: boolean, groupName: string, groupID: string, memberName: string, role: "ALL" | "GUEST" | "MEMBER" | "OWNER")
     {
         if(page.url() != HOST + "/task-group/viewmembergroup/" + groupID + "#members") {
             if(page.url() != HOST + "/task-group/viewtaskgrouptypes#dashboard")
-                CmfiveHelper.clickCmfiveNavbar(page, "Task", "Task Groups");
+                CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Task", "Task Groups");
             
             await page.getByRole("link", {name: groupName, exact: true}).click();
         }
@@ -113,11 +115,11 @@ export class TaskHelper  {
         await expect(page.getByText("Task Group updated")).toBeVisible();
     }
 
-    static async setDefaultAssignee(page: Page, groupName: string, groupID: string, assignee: string)
+    static async setDefaultAssignee(page: Page, isMobile: boolean, groupName: string, groupID: string, assignee: string)
     {
         if(page.url() != HOST + "/task-group/viewmembergroup/" + groupID + "#members") {
             if(page.url() != HOST + "/task-group/viewtaskgrouptypes#dashboard")
-                CmfiveHelper.clickCmfiveNavbar(page, "Task", "Task Groups");
+                CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Task", "Task Groups");
             
             await page.getByRole("link", {name: groupName, exact: true}).click();
         }
@@ -131,40 +133,9 @@ export class TaskHelper  {
         await expect(page.getByText("Task Group " + groupName + " updated.")).toBeVisible();
     }
 
-    // /**
-    //  * returns the task id
-    //  */
-    // static async createTaskOld(page: Page, taskName: string, groupName: string, groupType: "To Do" | "Software Development" | "Cmfive Support", assignee?: string): Promise<string>
-    // {
-    //     await CmfiveHelper.clickCmfiveNavbar(page, "Task", "New Task");
-
-    //     await CmfiveHelper.fillAutoComplete(page, "task_group_id", groupName, groupName);
-    //     await page.getByLabel('Task Title Required').fill(taskName);
-        
-    //     if (assignee) await page.getByRole("combobox", {name: "Assigned To"}).selectOption(assignee);
-
-    //     switch (groupType) {
-    //     case "To Do":
-    //         await page.getByRole("combobox", {name: "Task Type Required"}).selectOption("To Do");
-    //         break;
-    //     case "Software Development":
-    //         await page.getByRole("combobox", {name: "Task Type Required"}).selectOption("Programming Task");
-    //         break;
-    //     case "Cmfive Support":
-    //         await page.getByRole("combobox", {name: "Task Type Required"}).selectOption("Support Ticket");
-    //         break;
-    //     }
-
-    //     await page.getByRole("button", {name: "Save"}).click();
-
-    //     await page.waitForURL(HOST + "/task/edit/*"); // will hang if task creation failed? poor man's expect(...)?
-
-    //     return page.url().split("/edit/")[1].split("#")[0];
-    // }
-
-    static async createTask(page: Page, task: string, taskgroup: string, taskType: string, data?: Record<string, string>): Promise<string>
+    static async createTask(page: Page, isMobile: boolean, task: string, taskgroup: string, taskType: string, data?: Record<string, string>): Promise<string>
     {
-        await CmfiveHelper.clickCmfiveNavbar(page, "Task", "New Task");
+        await CmfiveHelper.clickCmfiveNavbar(page, isMobile , "Task", "New Task");
 
         await CmfiveHelper.fillAutoComplete(page, "task_group_id", taskgroup, taskgroup);
         await page.getByLabel('Task Title Required').fill(task);
@@ -198,9 +169,9 @@ export class TaskHelper  {
         return page.url().split("/edit/")[1].split("#")[0];
     }
 
-    static async deleteTask(page: Page, taskName: string, taskID: string)
+    static async deleteTask(page: Page, isMobile: boolean, taskName: string, taskID: string)
     {
-        await CmfiveHelper.clickCmfiveNavbar(page, "Task", "Task List");
+        await CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Task", "Task List");
         await page.getByRole("link", {name: taskName, exact: true}).click();
      
         await page.getByRole("button", {name: "Delete", exact: true}).first().click();

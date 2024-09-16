@@ -190,7 +190,7 @@ class AdminService extends DbService
             $w->menuLink('admin/users', 'List Users', $nav);
             $w->menuLink('admin/groups', 'List Groups', $nav);
             $w->menuLink('admin-maintenance', 'Maintenance', $nav);
-            $w->menuLink('admin/lookup', 'Lookup', $nav);
+            $w->menuLink('admin-lookups', 'Lookups', $nav);
             $w->menuLink('admin-templates', 'Templates', $nav);
             $w->menuLink('admin-migration', 'Migrations', $nav);
         }
@@ -209,7 +209,7 @@ class AdminService extends DbService
             new MenuLinkStruct('List Users', 'admin/users'),
             new MenuLinkStruct('List Groups', 'admin/groups'),
             new MenuLinkStruct('Maintenance', 'admin-maintenance'),
-            new MenuLinkStruct('Lookup', 'admin/lookup'),
+            new MenuLinkStruct('Lookups', 'admin-lookups'),
             new MenuLinkStruct('Templates', 'admin-templates'),
             new MenuLinkStruct('Migrations', 'admin-migration'),
         ];

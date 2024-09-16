@@ -1,6 +1,6 @@
 <?php
 
-function index_GET(Web &$w)
+function index_ALL(Web &$w)
 {
     $w->setLayout('layout-bootstrap-5');
     AdminService::getInstance($w)->navigation($w, "Lookups");

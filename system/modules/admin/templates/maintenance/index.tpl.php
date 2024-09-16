@@ -1,16 +1,16 @@
 <div class='row-fluid'>
     <div class="card d-inline-block">
-        <div class="card-body d-flex align-items-center">
+        <div class="card-body d-flex align-items-center responsive-flex">
             <p class="me-3 mb-0">Server OS: <?php echo $server; ?></p>
 
             <?php if (!empty($load)) {
-                echo '<p  class="me-3 mb-0">Load: ' . implode(' ', $load) . '</p>';
+                echo '<p class="me-3 mb-0">Load: ' . implode(' ', $load) . '</p>';
             } ?>
 
             <?php echo HtmlBootstrap5::b('/admin/phpinfo', "phpinfo", null, null, true, 'btn-sm btn-primary align-self-center'); ?>
         </div>
     </div>
-    <div class='small-12 medium-9 row pt-3'>
+    <div class='small-12 medium-9 responsive-flex pt-3'>
         <div class="card me-3 text-center" style="width: 18rem">
             <div class="card-body d-inline-flex flex-column">
                 <h4>Auditing</h4>
@@ -21,7 +21,7 @@
         </div>
 
         <div class="card me-3 text-center" style="width: 18rem">
-            <div class="card-body d-inline-flex flex-column">
+            <div class="card-body d-inline-flex flex-column pt-3">
                 <h4>Cache and Index</h4>
                 <button type="button" id='clear_config' class='button info small' onclick="clearConfig()">Clear Config</button>
                 <?php if (Config::get('file.adapters.local.active') !== true) : ?>
