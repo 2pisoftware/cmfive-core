@@ -193,13 +193,13 @@ test("Test that Cmfive Admin handles templates", async ({ page, isMobile }) => {
     await expect(templateTestPage.getByText("Test Company")).toBeVisible();
 });
 
-test("Test that Cmfive Admin handles bad templates", async ({ page }) => {
+test("Test that Cmfive Admin handles bad templates", async ({ page, isMobile}) => {
     test.setTimeout(GLOBAL_TIMEOUT);
 
     await CmfiveHelper.login(page, "admin", "admin");
 
     const template = CmfiveHelper.randomID("template_");
-    const templateID = await AdminHelper.createTemplate(page, template, "Admin", "Templates", [
+    const templateID = await AdminHelper.createTemplate(page, isMobile, template, "Admin", "Templates", [
         "<link href=\"https://fonts.googleapis.com/css?family=Open+Sans\" rel=\"stylesheet\">",
         "<style>",
         "body {text-align: left;font-family: \"open sans' sans-serif;",
@@ -222,13 +222,13 @@ test("Test that Cmfive Admin handles bad templates", async ({ page }) => {
         "</table>",
     ]);
 
-    await AdminHelper.viewTemplate(page, template, templateID);
+    await AdminHelper.viewTemplate(page, isMobile, template, templateID);
     await page.getByRole("link", {name: "Template"}).click();
 
     await expect(await page.locator('.cm-line')).toHaveCount(22);
 });
 
-test("Test that Cmfive Admin can create/run/rollback migrations", async ({ page }) => {
+test("Test that Cmfive Admin can create/run/rollback migrations", async ({ page, isMobile }) => {
     test.setTimeout(GLOBAL_TIMEOUT);
     CmfiveHelper.acceptDialog(page);
 
