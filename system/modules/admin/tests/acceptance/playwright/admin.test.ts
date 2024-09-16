@@ -193,7 +193,7 @@ test("Test that Cmfive Admin handles templates", async ({ page, isMobile }) => {
     await expect(templateTestPage.getByText("Test Company")).toBeVisible();
 });
 
-test("Test that Cmfive Admin can create/run/rollback migrations", async ({ page, isMobile }) => {
+test("Test that Cmfive Admin handles bad templates", async ({ page, isMobile }) => {
     test.setTimeout(GLOBAL_TIMEOUT);
 
     await CmfiveHelper.login(page, "admin", "admin");
