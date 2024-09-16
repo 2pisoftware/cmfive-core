@@ -313,6 +313,16 @@ export class AdminHelper {
         return page.url().split("/admin-templates/edit/")[1].split("#")[0];
     }
 
+    static async viewTemplate(page: Page, isMobile: boolean, templateTitle: string, templateID: string): Promise<void>
+    {
+        if (page.url() != HOST + "/admin-templates/edit/" + templateID + "#details") {
+            if(page.url() != HOST + "/admin-templates")
+                await CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Admin", "Templates");
+
+            await CmfiveHelper.getRowByText(page, templateTitle).getByRole("button", {name: "Edit"}).click();
+        }
+    }
+
     static async demoTemplate(page: Page, isMobile: boolean, templateTitle: string, templateID: string): Promise<Page>
     {
         if(page.url() != HOST + "/admin-templates/edit/" + templateID + "#details") {

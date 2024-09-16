@@ -4,7 +4,7 @@ on:
   push:
     branches: [ develop ]
   pull_request:
-    branches: [ develop, master ]
+    branches: [ develop, main ]
 
   workflow_dispatch:
 env:
@@ -16,7 +16,6 @@ env:
   DB_PASSWORD: cmfive_test
   DB_DATABASE: cmfive_test
   PLAYWRIGHT_MODULES: "admin channel form tag report task timelog"
-  BOILERPLATE_IMAGE: ghcr.io/2pisoftware/cmfive:develop
 
 jobs:
   # Lint
@@ -53,12 +52,26 @@ jobs:
         with:
           path: core
 
+      # Set Boilerplate variables by determing which image and branch to use
+      - name: Set Boilerplate Vars
+        id: boilerplate_vars
+        run: |
+          if [ "${{ github.ref }}" == "refs/heads/main" ] || [ "${{ github.event.pull_request.base.ref }}" == "main" ]; then
+            # Base branch or current branch of core is main
+            echo "BOILERPLATE_IMAGE=ghcr.io/2pisoftware/cmfive:latest" >> $GITHUB_ENV
+            echo "BOILERPLATE_BRANCH=master" >> $GITHUB_ENV
+          else
+            # Base branch or current branch of core is another branch
+            echo "BOILERPLATE_IMAGE=ghcr.io/2pisoftware/cmfive:develop" >> $GITHUB_ENV
+            echo "BOILERPLATE_BRANCH=develop" >> $GITHUB_ENV
+          fi
+
       # Checkout the boilerplate
       - name: Checkout Boilerplate
         uses: actions/checkout@v4
         with:
           repository: '2pisoftware/cmfive-boilerplate'
-          ref: 'develop'
+          ref: ${{ env.BOILERPLATE_BRANCH }}
           path: boilerplate
 
       # Pre-requisites Prepare Cmfive Environment
@@ -121,7 +134,7 @@ jobs:
             -e DB_USERNAME=$DB_USERNAME \
             -e DB_PASSWORD=$DB_PASSWORD \
             -e DB_DATABASE=$DB_DATABASE \
-            -e CMFIVE_CORE_BRANCH=$CORE_BRANCH \
+            -e INSTALL_CORE_BRANCH=$CORE_BRANCH \
             -e ENVIRONMENT=development \
             --network=cmfive \
             $BOILERPLATE_IMAGE

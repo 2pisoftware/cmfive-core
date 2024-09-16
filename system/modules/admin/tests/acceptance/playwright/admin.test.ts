@@ -193,6 +193,41 @@ test("Test that Cmfive Admin handles templates", async ({ page, isMobile }) => {
     await expect(templateTestPage.getByText("Test Company")).toBeVisible();
 });
 
+test("Test that Cmfive Admin handles bad templates", async ({ page, isMobile }) => {
+    test.setTimeout(GLOBAL_TIMEOUT);
+
+    await CmfiveHelper.login(page, "admin", "admin");
+
+    const template = CmfiveHelper.randomID("template_");
+    const templateID = await AdminHelper.createTemplate(page, isMobile, template, "Admin", "Templates", [
+        "<link href=\"https://fonts.googleapis.com/css?family=Open+Sans\" rel=\"stylesheet\">",
+        "<style>",
+        "body {text-align: left;font-family: \"open sans' sans-serif;",
+        "    color: #2b286a;",
+        "}",
+        "</style>",
+        "<table width='100%' align='center' class='form-table' cellpadding='1'>",
+        "    <tr>",
+        "        <td colspan='2' style='border:none;'>",
+        "            <img width='400' src='' style='width: 400px;' />",
+        "        </td>",
+        "        <td colspan='2' style='border:none; text-align:right;'>",
+        "            Test Company<br/>",
+        "            123 Test St, Test Town, NSW 1234<br/>",
+        "            test@example.com<br/>",
+        "            ACN: 123456789<br/>",
+        "            ABN: 12345678901<br/>",
+        "        </td>",
+        "    </tr>",
+        "</table>",
+    ]);
+
+    await AdminHelper.viewTemplate(page, isMobile, template, templateID);
+    await page.getByRole("link", {name: "Template"}).click();
+
+    await expect(await page.locator('.cm-line')).toHaveCount(22);
+});
+
 test("Test that Cmfive Admin can create/run/rollback migrations", async ({ page, isMobile }) => {
     test.setTimeout(GLOBAL_TIMEOUT);
     CmfiveHelper.acceptDialog(page);
