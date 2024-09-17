@@ -132,7 +132,7 @@ e.g.
 
 #### config.php
 
-The most cruical part to a module, Cmfive first looks for a config file to load the module, if this is missing then your module won't be used at all by Cmfive. The config.php file uses a static class called Config which is essentially a key value store. A module config requires three values, here is a full example to explain each one:
+The most cruical part of a module, Cmfive first looks for a config file to load the module, if this is missing then your module won't be used at all by Cmfive. The config.php file uses a static class called Config which is essentially a key value store. A module config requires three values, here is a full example to explain each one:
 ```php
 <?php
 
