@@ -2,9 +2,9 @@ import { HOST, CmfiveHelper } from "@utils/cmfive";
 import { expect, Page } from "@playwright/test";
 
 export class FormHelper {
-    static async createForm(page: Page, form: string, description: string)
+    static async createForm(page: Page, isMobile: boolean, form: string, description: string)
     {
-        await CmfiveHelper.clickCmfiveNavbar(page, "Form", "Forms");
+        await CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Form", "Forms");
 
         await page.getByRole("button", {name: "Add a form"}).click();
 
@@ -16,18 +16,18 @@ export class FormHelper {
         await expect(page.getByText("Form created")).toBeVisible();
     }
 
-    static async deleteForm(page: Page, form: string)
+    static async deleteForm(page: Page, isMobile: boolean, form: string)
     {
-        await CmfiveHelper.clickCmfiveNavbar(page, "Form", "Forms");
+        await CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Form", "Forms");
 
         await CmfiveHelper.getRowByText(page, form).getByRole("button", {name: "Delete"}).click();
 
         await expect(page.getByText("Form deleted")).toBeVisible();
     }
 
-    static async editForm(page: Page, form: string, newName: string, newDescription: string)
+    static async editForm(page: Page, isMobile: boolean, form: string, newName: string, newDescription: string)
     {
-        await CmfiveHelper.clickCmfiveNavbar(page, "Form", "Forms");
+        await CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Form", "Forms");
 
         await CmfiveHelper.getRowByText(page, form).getByRole("button", {name: "Edit"}).click();
 
@@ -39,9 +39,9 @@ export class FormHelper {
         await expect(page.getByText("Form updated")).toBeVisible();
     }
 
-    static async addFormField(page: Page, form: string, name: string, key: string, type: string)
+    static async addFormField(page: Page, isMobile: boolean, form: string, name: string, key: string, type: string)
     {
-        await CmfiveHelper.clickCmfiveNavbar(page, "Form", "Forms");
+        await CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Form", "Forms");
 
         await page.getByRole("link", {name: form}).click();
         await page.getByRole("button", {name: "Add a field"}).click();   
@@ -58,9 +58,9 @@ export class FormHelper {
         await expect(page.getByText("Form created")).toBeVisible();
     }
 
-    static async createApplication(page: Page, application: string, description: string)
+    static async createApplication(page: Page, isMobile: boolean, application: string, description: string)
     {
-        await CmfiveHelper.clickCmfiveNavbar(page, "Form", "Applications");
+        await CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Form", "Applications");
         await page.getByRole("button", {name: "Create Application"}).click();
 
         await page.getByLabel("Title").fill(application);
@@ -78,9 +78,9 @@ export class FormHelper {
         await expect(page.getByText(application)).toBeVisible();
     }
 
-    static async attachApplicationForm(page: Page, application: string, form: string)
+    static async attachApplicationForm(page: Page, isMobile: boolean, application: string, form: string)
     {
-        await CmfiveHelper.clickCmfiveNavbar(page, "Form", "Applications");
+        await CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Form", "Applications");
         await CmfiveHelper.getRowByText(page, application).getByRole("button", {name: "Edit"}).click();
 
         await page.getByRole("button", {name: "Attach form"}).click();

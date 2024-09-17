@@ -82,7 +82,7 @@ jobs:
 
       - name: Start containers
         env:
-          CORE_BRANCH: "${{ github.event.pull_request.head.ref }}"
+          CORE_BRANCH: "${{ github.event.pull_request.head.ref || github.ref_name }}"
         run: |
           # Link system dir
           cd boilerplate

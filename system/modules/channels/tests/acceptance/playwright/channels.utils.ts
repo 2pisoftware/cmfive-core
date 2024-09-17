@@ -283,17 +283,22 @@ export class ChannelsHelper {
         await page.getByRole("button", {name: "Cancel"}).click();
     }
 
-    static async deleteChannel(page: Page, channel: Record<string, string | boolean>)
+    static async deleteChannel(page: Page, isMobile: boolean, channel: Record<string, string | boolean>)
     {
-        await CmfiveHelper.clickCmfiveNavbar(page, "Channels", "List Channels");
-        await CmfiveHelper.getRowByText(page, channel["Name"] as string).getByRole("button", { name: "More" }).click();
+        await CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Channels", "List Channels");
+
+        if(isMobile)
+            await page.click(`ul:has(li:has(span:text("${channel["Name"]}"))) button:text("More")`);
+        else
+            await CmfiveHelper.getRowByText(page, channel["Name"] as string).getByRole("button", { name: "More" }).click();
+
         await page.getByRole("button", {name: "Delete"}).click();
         await expect(page.getByText("Channel deleted")).toBeVisible();
     }
 
-    static async createProcessor(page: Page, processorName: string, channel: string, processorClass: string)
+    static async createProcessor(page: Page, isMobile: boolean, processorName: string, channel: string, processorClass: string)
     {
-        await CmfiveHelper.clickCmfiveNavbar(page, "Channels", "List Processors");
+        await CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Channels", "List Processors");
         // await page.getByRole("button", {name: "Add Processor"}).click();
         // await page.waitForSelector("#cmfive-modal", {state: "visible"});
         // const modal = page.locator("#cmfive-modal");
@@ -328,10 +333,15 @@ export class ChannelsHelper {
         await page.getByRole("button", {name: "Cancel"}).click();
     }
 
-    static async deleteProcessor(page: Page, processorName: string)
+    static async deleteProcessor(page: Page, isMobile: boolean, processorName: string)
     {
-        await CmfiveHelper.clickCmfiveNavbar(page, "Channels", "List Processors");
-        await CmfiveHelper.getRowByText(page, processorName).getByRole("button", { name: "More" }).click();
+        await CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Channels", "List Processors");
+
+        if(isMobile)
+            await page.click(`ul:has(li:has(span:text("${processorName}"))) button:text("More")`);
+        else
+            await CmfiveHelper.getRowByText(page, processorName).getByRole("button", { name: "More" }).click();
+        
         await page.getByRole("button", {name: "Delete"}).click();
         page.reload();
     }
