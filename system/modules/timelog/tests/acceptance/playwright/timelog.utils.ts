@@ -28,7 +28,7 @@ export class TimelogHelper  {
         await page.getByRole("link", {name: "Time Log"}).click();
         await page.reload();
         await expect(page.getByText(timelog)).toBeVisible();
-        //check timelog date and time
+        //check timelog date and time values
         await expect(page.getByText(new DateTime('now').toFormat("dd-LL-yyyy") + ' ' + start_time)).toBeVisible();
     }
 
@@ -73,6 +73,9 @@ export class TimelogHelper  {
             await expect(page.getByText(timelog)).toBeHidden();
         else
             await expect(page.getByText(timelog)).toBeVisible();
+        //check timelog date and time values
+        await expect(page.getByText(date.toFormat("dd-LL-yyyy") + ' ' + start_time)).toBeVisible();
+        await expect(page.getByText(date.toFormat("dd-LL-yyyy") + ' ' + end_time)).toBeVisible();
     }
 
     static async editTimelog(page: Page, isMobile: boolean, timelog: string, taskName: string, taskID: string, date: DateTime, start_time: string, end_time: string)
