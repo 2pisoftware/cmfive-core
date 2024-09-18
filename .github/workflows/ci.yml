@@ -213,8 +213,6 @@ jobs:
           cd boilerplate/test/playwright
           npm ci
           npx playwright install --with-deps
-          LANG=en_AU.UTF-8
-          locale
 
       - name: "Run admin module tests"
         run: |
@@ -267,6 +265,8 @@ jobs:
             fi
       - name: "Run timelog module tests"
         run: |
+            LANG=en_AU.UTF-8
+            locale
             cd boilerplate/test/playwright
             npm run build
             npm run test --module="timelog" --reporter="github"
