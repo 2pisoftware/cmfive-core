@@ -28,6 +28,8 @@ export class TimelogHelper  {
         await page.getByRole("link", {name: "Time Log"}).click();
         await page.reload();
         await expect(page.getByText(timelog)).toBeVisible();
+        //check timelog date and time
+        await expect(page.getByText(new DateTime('now').toFormat("dd-LL-yyyy") + ' ' + start_time)).toBeVisible();
     }
 
     static async createTimelog(page: Page, isMobile: boolean, timelog: string, taskName: string, taskID: string, date: DateTime, start_time: string, end_time: string, check_duplicate: boolean = false)
