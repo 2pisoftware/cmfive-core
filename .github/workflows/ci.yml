@@ -43,6 +43,10 @@ jobs:
       matrix:
         node_version: [18, 20]
     steps:
+      # Set locale to en_AU.UTF-8 for date formatting in tests browser
+      - name: Set locale
+        run: LANG=en_AU.UTF-8
+    
       ## NOTE: Current branch of cmfive-core will be used on the cmfive container
       ## See the `CORE_BRANCH` environment variable in the `Start containers` step
 
