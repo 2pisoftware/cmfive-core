@@ -2,6 +2,8 @@
 
 namespace Html\Form;
 
+use LogService;
+
 class Html5Autocomplete extends \Html\Form\InputField
 {
     public $style;
@@ -67,15 +69,12 @@ class Html5Autocomplete extends \Html\Form\InputField
     {
         $buffer = '<input ';
 
-        foreach (get_object_vars($this) as $field => $value)
-        {
-            if (is_null($value) || in_array($field, static::$_excludeFromOutput) || $field[0] == "_")
-            {
+        foreach (get_object_vars($this) as $field => $value) {
+            if (is_null($value) || in_array($field, static::$_excludeFromOutput) || $field[0] == "_") {
                 continue;
             }
 
-            if ($field === "required" && ($value === true || $value === "true"))
-            {
+            if ($field === "required" && ($value === true || $value === "true")) {
                 $buffer .= $field . " ";
                 continue;
             }
@@ -108,20 +107,23 @@ class Html5Autocomplete extends \Html\Form\InputField
     private function convertOption($val)
     {
         // Check for option 1
-        if (is_a($val, "DbObject"))
-        {
+        if (is_a($val, "DbObject")) {
             return [
                 "value" => $val->getSelectOptionValue(),
                 "text" => $val->getSelectOptionTitle()
             ];
-        }
-        else if (is_scalar($val))
-        {
-            return $val;
-        }
-        else
-        {
-            // Doesn't match a required format, is ignored
+        } else if (isset($val["value"]) && isset($val["text"])) {
+            return [
+                "value" => $val["value"],
+                "text" => $val["text"]
+            ];
+        } else if (is_scalar($val)) {
+            return [
+                "value" => $val,
+                "text" => $val,
+            ];
+        } else {
+            LogService::getInstance($this->w)->setLogger("html5autocomplete")->error("option did not match format", $val);
         }
     }
 }
