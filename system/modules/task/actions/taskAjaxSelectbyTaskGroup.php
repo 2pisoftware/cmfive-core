@@ -22,38 +22,26 @@ function taskAjaxSelectbyTaskGroup_ALL(Web $w)
     // if user cannot assign tasks in this group, leave 'first_assignee' blank for owner/member to delegate
     $members = ($task_group->getCanIAssign()) ? $members : [["Default", ""]];
 
-    $ttype = "Task Type <small>Required</small>" . (new Select())
-        ->setName("task_type")
-        ->setId("task_type")
-        ->setOptions($task_types)
-        ->setSelectedOption($task_group->default_task_type)
-        ->setRequired('required')->__toString();
-
-    $prior = Html::select("priority", $priority, $task_group->default_priority);
     array_unshift($members, ["Unassigned", "unassigned"]);
 
-    $assigned_to = (new \Html\Form\Select([
-        "id|name" => "assignee_id",
-        "required" => true,
-        "disabled" => !empty($task_group) && $task_group->getCanIAssign() ? null : "disabled",
-    ]))->setOptions($members, true);
+    $result = [
+        "types" => $task_types,
+        "default_type" => $task_group->default_task_type,
+        "priorities" => $priority,
+        "default_priority" => $task_group->default_priority,
+        "assignees" => $members,
+        "default_assignee" => !empty($task_group->default_assignee_id) ? $task_group->default_assignee_id : null,
+        "can_change_assignee" => !empty($task_group) && $task_group->getCanIAssign(),
+        "statuses" => $task_group->getTypeStatus(),
 
-    if (!empty($task_group->default_assignee_id)) {
-        $assigned_to->setSelectedOption($task_group->default_assignee_id);
-    }
-
-    $mem = "<label>Assigned To" . $assigned_to . "</label>";
-
-    $taskgroup_link = $task_group->isOwner(AuthService::getInstance($w)->user()) ? "<a href=\"" . $w->localUrl("task-group/viewmembergroup/" . $task_group->id) . "\">" . $task_group->title . "</a>" : $task_group->title;
-    $task_text = "<table style='width: 100%;'>" .
-        "<tr><td class=section colspan=2>Task Group Description</td></tr>" .
-        "<tr><td><b>Task Group</td><td>" . $taskgroup_link . "</td></tr>" .
-        "<tr><td><b>Task Type</b></td><td>" . $type_title . "</td></tr>" .
-        "<tr valign=top><td><b>Description</b></td><td>" . $type_desc . "</td></tr>" .
-        "</table>";
-
-    // return as array of arrays
-    $result = [$ttype, $prior, $mem, $task_text, Html::select("status", $task_group->getTypeStatus(), null, null, null, null)];
+        "group" => [
+            "is_owner" => $task_group->isOwner(AuthService::getInstance($w)->user()),
+			"name" => $task_group->title,
+            "link" => $w->localUrl("task-group/viewmembergroup/" . $task_group->id),
+            "type" => $type_title,
+            "desc" => $type_desc,
+        ]
+    ];
 
     $w->setLayout(null);
     $w->out(json_encode($result));

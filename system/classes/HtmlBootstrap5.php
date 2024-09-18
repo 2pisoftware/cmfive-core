@@ -101,12 +101,12 @@ class HtmlBootstrap5 extends Html
 
             // Loop through each row
             foreach ($rows as $row) {
-                // Print each field
-                $buffer .= "<div class='row'>";
-
                 if (empty($row)) {
                     continue;
                 }
+
+                // Print each field
+                $buffer .= "<div class='row'>";
 
                 foreach ($row as $entry) {
                     // Backwards compatibility - provide option to pass additional data

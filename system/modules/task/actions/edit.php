@@ -79,7 +79,7 @@ function edit_GET($w)
                     "required" => "required",
                     "value" => !empty($taskgroup) ? $taskgroup->id : null,
                     "options" => $taskgroups,
-                    "maxlength" => 1
+                    "maxLength" => 1
                 ]),
 
                 (new Select([

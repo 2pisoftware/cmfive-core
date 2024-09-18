@@ -27,8 +27,7 @@
 
             <?php
             $tab_headers = $w->callHook('core_template', 'tab_headers', $task);
-            if (!empty($tab_headers))
-            {
+            if (!empty($tab_headers)) {
                 echo implode('', $tab_headers);
             }
             ?>
@@ -38,8 +37,7 @@
     <div class="tab-body">
         <div id="details">
             <?php
-            if (!empty($task->id))
-            {
+            if (!empty($task->id)) {
                 echo FavoriteService::getInstance($w)->getFavoriteButton($task);
 
                 $tasktypeobject = $task->getTaskTypeObject();
@@ -78,8 +76,7 @@
 
                 /** @var TaskGroup */
                 $task_group = TaskService::getInstance($w)->getTaskGroup($task->task_group_id);
-                if (!empty($task_group) && $task_group->getCanICreate())
-                {
+                if (!empty($task_group) && $task_group->getCanICreate()) {
                     echo HtmlBootstrap5::box(
                         "/task-group/moveTaskgroup/" . $task->id,
                         "Move to Taskgroup",
@@ -95,8 +92,7 @@
 
                 // Extra buttons for task
                 $buttons = $w->callHook("task", "extra_buttons", $task);
-                if (!empty($buttons) && is_array($buttons))
-                {
+                if (!empty($buttons) && is_array($buttons)) {
                     echo implode('', $buttons);
                 }
 
@@ -150,14 +146,77 @@
                                                     <div class="pt-0"><?php echo $subscriber_user->getFullName() ?></div>
                                                     <div><?php echo $subscriber_user->getContact()->email; ?></div>
                                                 </div>
-                                                <?php echo HtmlBootstrap5::b('/task-subscriber/delete/' . $subscriber->id, 'Delete', 'Are you sure you want to remove this subscriber?', null, false, 'bg-warning d-inline'); ?></td>
+                                                <?php
+                                                echo HtmlBootstrap5::b(
+                                                    '/task-subscriber/delete/' . $subscriber->id,
+                                                    'Delete',
+                                                    'Are you sure you want to remove this subscriber?',
+                                                    null,
+                                                    false,
+                                                    'bg-warning d-inline'
+                                                );
+                                                ?></td>
                                             </div>
                                         <?php endif; ?>
                                     <?php endforeach; ?>
                                 </div>
                             <?php endif; ?>
                         </div>
+
+                            <?php
+                            $additional_details = $w->callHook("task", "additional_details", $task);
+                            if (!is_null($additional_details) && is_array($additional_details)) {
+                                $additional_details_flattened = [];
+                                foreach ($additional_details as $module_details) {
+                                    if (isset($module_details[0]) && !is_array($module_details[0])) {
+                                        $additional_details_flattened[] = $module_details;
+                                    } else {
+                                        foreach ($module_details as $details) {
+                                            $additional_details_flattened[] = $details;
+                                        }
+                                    }
+                                }
+
+                                if (!empty($additional_details_flattened)) : ?>
+                                    <div class="row-fluid clearfix panel">
+                                        <table class="small-12 columns">
+                                            <tbody>
+                                                <tr>
+                                                    <td class="section" colspan="2">Additional Details</td>
+                                                </tr>
+                                                <?php foreach ($additional_details_flattened as $additional_detail) : ?>
+                                                    <tr>
+                                                        <td><?php echo $additional_detail[0]; ?></td>
+                                                        <td><?php echo $additional_detail[1]; ?></td>
+                                                    </tr>
+                                                <?php endforeach; ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                <?php endif;
+                            }
+                            ?>
                     <?php endif; ?>
+
+                    <div class="col panel" id="group_details" style="display: none">
+                        <p>Task Group</p>
+                        <table class="table table-sm">
+                            <tr>
+                                <th>Name</th>
+                                <td id="group_name"></td>
+                            </tr>
+                            <tr>
+                                <th>Type</th>
+                                <td id="group_type"></td>
+                            </tr>
+                            <tr>
+                                <th>Description</th>
+                                <td id="group_desc"></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col panel" id="formfields" style="display: none;"></div>
+                    <div class="col panel" id="formdetails" style="display: none;"></div>
                 </div>
             </div>
         </div>
@@ -181,11 +240,84 @@
 
             <?php
             $tab_content = $w->callHook('core_template', 'tab_content', ['object' => $task, 'redirect_url' => '/task/edit/' . $task->id]);
-            if (!empty($tab_content))
-            {
+            if (!empty($tab_content)) {
                 echo implode('', $tab_content);
             }
             ?>
         <?php endif; ?>
     </div>
 </nav>
+
+<script>
+    const task_id = <?php echo !empty($task->id) ? $task->id : "undefined"; ?>
+
+    const makeSelectOptions = (select, value, label) => {
+        const elem = document.createElement("option");
+        elem.value = value;
+        elem.innerText = label;
+
+        select.appendChild(elem);
+    };
+
+    let controller;
+    const populateTaskgroupDetails = async (value) => {
+        if (controller)
+            controller.abort();
+
+        if (!value) {
+            document.getElementById("group_details").style.display = "none";
+            return;
+        }
+
+        controller = new AbortController();
+
+        const json = await fetch(
+            `/task/taskAjaxSelectbyTaskGroup/${value}${task_id ? `/${task_id}` : ""}`,
+            { signal: controller.signal }
+        )
+            .then(x => x.json());
+
+        const type = document.getElementById("task_type");
+        json.types.map(x => makeSelectOptions(type, x[1], x[0]))
+
+        const priority = document.getElementById("priority");
+        json.priorities.map(x => makeSelectOptions(priority, x[1], x[0]))
+
+        const assignee = document.getElementById("assignee_id");
+        json.assignees.map(x => makeSelectOptions(assignee, x[1], x[0]))
+        if (json.can_change_assignee === true) assignee.removeAttribute("disabled")
+
+        const status = document.getElementById("status");
+        json.statuses.map(x => makeSelectOptions(status, x[1], x[0]))
+
+        document.getElementById("group_name").innerText = json.group.name;
+        document.getElementById("group_type").innerText = json.group.type;
+        document.getElementById("group_desc").innerText = json.group.desc;
+        document.getElementById("group_details").style.display = "block";
+    }
+
+    populateTaskgroupDetails(<?php echo $task->task_group_id ?>);
+
+    document.getElementById("task_group").addEventListener("change", async (e) => populateTaskgroupDetails(e.target.value));
+
+    document.getElementById("edit_form").addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const edit = [...new FormData(e.target)].reduce((obj, [key, val]) => {
+            if (key === "task_group") key = "task_group_id";
+            obj[`edit[${key}]`] = val;
+            return obj;
+        }, {
+            '<?php echo \CSRF::getTokenId(); ?>': '<?php echo \CSRF::getTokenValue(); ?>'
+        });
+
+        const action = e.target.getAttribute("action");
+        const res = await fetch(action, {
+            method: "POST",
+            body: new URLSearchParams(edit)
+        });
+
+        if (res.ok) window.location.href = `/task/edit/${await res.text()}`
+        else window.location.reload();
+    })
+</script>

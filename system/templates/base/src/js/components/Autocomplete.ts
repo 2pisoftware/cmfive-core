@@ -16,12 +16,12 @@ export class Autocomplete {
             }
 
 			// tbh I would prefer a save button, but the cmfive api is already set up for add, remove, create methods
-			if (parsed.cmfive.onItemAdd)
-				parsed.onItemAdd = Autocomplete.tomSelectChange.bind(null, parsed.cmfive.onItemAdd);
-			if (parsed.cmfive.onItemRemove)
-				parsed.onItemRemove = Autocomplete.tomSelectChange.bind(null, parsed.cmfive.onItemRemove);
-			if (parsed.cmfive.onItemCreate)
-				parsed.onOptionAdd = Autocomplete.tomSelectChange.bind(null, parsed.cmfive.onItemCreate);
+			if (parsed?.cmfive?.onItemAdd)
+				parsed.onItemAdd = Autocomplete.tomSelectChange.bind(null, new URL(parsed.cmfive.onItemAdd));
+			if (parsed?.cmfive?.onItemRemove)
+				parsed.onItemRemove = Autocomplete.tomSelectChange.bind(null, new URL(parsed.cmfive.onItemRemove));
+			if (parsed?.cmfive?.onItemCreate)
+				parsed.onOptionAdd = Autocomplete.tomSelectChange.bind(null, new URL(parsed.cmfive.onItemCreate));
 
 			try {
            		new TomSelect(s as HTMLInputElement, parsed);
@@ -33,10 +33,15 @@ export class Autocomplete {
     }
 
 	static tomSelectChange = (
-		endpoint: string,
+		endpoint: URL,
 		value: string
 	) => {
-		
+
+		endpoint.searchParams.set("value", value);
+
+		fetch(endpoint, {
+			method: "POST",
+		})
 	}
 
     static tomSelectLoad = (
