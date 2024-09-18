@@ -16,6 +16,7 @@ env:
   DB_PASSWORD: cmfive_test
   DB_DATABASE: cmfive_test
   PLAYWRIGHT_MODULES: "admin channel form tag report task timelog"
+  LANG: en_AU.UTF-8
 
 jobs:
   # Lint
@@ -265,8 +266,6 @@ jobs:
             fi
       - name: "Run timelog module tests"
         run: |
-            LANG=en_AU.UTF-8
-            locale
             cd boilerplate/test/playwright
             npm run build
             npm run test --module="timelog" --reporter="github"
