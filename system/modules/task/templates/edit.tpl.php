@@ -38,7 +38,7 @@
         <div id="details">
             <?php
             if (!empty($task->id)) {
-                echo FavoriteService::getInstance($w)->getFavoriteButton($task);
+                echo FavoriteService::getInstance($w)->getBootstrapButton($task);
 
                 $tasktypeobject = $task->getTaskTypeObject();
                 echo !empty($tasktypeobject) && method_exists($tasktypeobject, "displayExtraButtons")
