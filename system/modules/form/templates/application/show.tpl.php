@@ -3,7 +3,7 @@
         margin-bottom: 0px;
     }
 
-    #form-application-<?php echo $application->id; ?>__tab-body .active > .row-fluid {
+    #form-application__tab-body .active > .row-fluid {
         overflow-y: auto;
     }
 </style>
@@ -34,7 +34,7 @@
         }
         ?>
     </div>
-    <div class="tab-body" id="form-application-<?php echo $application->id; ?>__tab-body">
+    <div class="tab-body" id="form-application__tab-body">
         <?php
         $tab_content = $w->callHook('core_template', 'tab_content', ['object' => $application, 'redirect_url' => '/form-application/show/' . $application->id]);
         if (!empty($tab_content)) {

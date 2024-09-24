@@ -14,7 +14,7 @@
     ?>
     <!-- backwards compat -->
     <!-- <script src="/system/templates/base/node_modules/vue/dist/vue.min.js"></script> -->
-    <script src="/system/templates/base/node_modules/vue3/dist/vue.global.prod.js"></script>
+    <script src="/system/templates/base/node_modules/vue/dist/vue.global.prod.js"></script>
     <style>
         #cmfive-body {
             background-color: #34486A !important;

@@ -23,8 +23,6 @@ function edit_GET(Web $w)
         ]
     ];
 
-    $available_forms = FormService::getInstance($w)->getForms();
-
     $w->ctx('available_forms', $available_forms);
     $w->ctx('application', $application);
     $w->ctx('new_application', !empty($application->id));

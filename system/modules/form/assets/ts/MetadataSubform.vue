@@ -3,5 +3,5 @@
     const props = defineProps(['defaultValue', 'forms'])
 </script>
 <template>
-    <div>Hello</div>
+    <div>hi</div>
 </template>
