@@ -1,5 +1,7 @@
 <?php
 
+use Carbon\CarbonInterval;
+
 function forgotpassword_GET(Web $w)
 {
     // Check if logged in already
@@ -36,11 +38,15 @@ function forgotpassword_POST(Web $w)
     $user->dt_password_reset_at = time();
     $user->update();
 
+    // default 30 minutes
+    $expiry = Config::get("auth.login.password.reset_token_expiry", 30 * 60);
+    $readable_expiry = CarbonInterval::seconds($expiry)->cascade()->forHumans();
+
     // Send email
     $message = "Hello {$user->getFullName()},\n<br/>";
     $message .= "Please go to this link to reset your password:<br/>\n";
     $message .= "<a href=\"https://" . $_SERVER["HTTP_HOST"] . "/auth/resetpassword?token={$user->password_reset_token}\">https://"
-        . $_SERVER["HTTP_HOST"] . "/auth/resetpassword?token={$user->password_reset_token}</a>\n<br/>You have 24 hours to reset your password.<br/><br/>";
+        . $_SERVER["HTTP_HOST"] . "/auth/resetpassword?token={$user->password_reset_token}</a>\n<br/>You have {$readable_expiry} to reset your password.<br/><br/>";
     $message .= "Thank you,\n<br/>". Config::get('main.company_name', 'Cosine');
 
     $result = MailService::getInstance($w)->sendMail($user_contact->email, $support_email, Config::get("main.application_name") . " password reset", $message);
