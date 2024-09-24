@@ -1,6 +1,6 @@
 // src/app.ts
 import { AlertAdaptation, DropdownAdaptation, FavouritesAdaptation, TabAdaptation, TableAdaptation } from './adaptations';
-import { CodeMirror, InputWithOther, MultiFileUpload, MultiSelect, Overlay, QuillEditor, Toast as CmfiveToast } from './components';
+import { Autocomplete, CodeMirror, InputWithOther, MultiFileUpload, Overlay, QuillEditor } from './components';
 
 import { Modal, Toast, Tooltip } from 'bootstrap';
 import { Sortable } from './components/Sortable';
@@ -199,7 +199,7 @@ class Cmfive {
         FavouritesAdaptation.bindFavouriteInteractions();
         InputWithOther.bindOtherInteractions();
         MultiFileUpload.bindInteractions();
-        MultiSelect.bindInteractions();
+        Autocomplete.bindInteractions();
         QuillEditor.bindQuillEditor();
         Sortable.bindSortableElements();
         TabAdaptation.bindTabInteractions();

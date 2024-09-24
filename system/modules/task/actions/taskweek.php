@@ -1,5 +1,9 @@
 <?php
 // show task activity for the group and date span specified
+
+use Html\Form\InputField\Date;
+use Html\Form\Select;
+
 function taskweek_ALL(Web &$w)
 {
     TaskService::getInstance($w)->navigation($w, "");
@@ -23,19 +27,24 @@ function taskweek_ALL(Web &$w)
     $line = [
         ["An overview of the activity in Tasks: " . $from . " to " . $to],
     ];
-    if ($tasks) {
+    if ($tasks)
+    {
         // dont wanna keep displaying same date so set a variable for comparison
         $olddate = "";
         $i = 0;
-        foreach ($tasks as $task) {
+        foreach ($tasks as $task)
+        {
             $taskgroup = TaskService::getInstance($w)->getTaskGroup($task['task_group_id']);
             $caniview = $taskgroup->getCanIView();
 
-            if ($caniview) {
+            if ($caniview)
+            {
                 // if current task date = previous task date, dont display
-                if (formatDate($task['dt_modified']) != $olddate) {
+                if (formatDate($task['dt_modified']) != $olddate)
+                {
                     // if this is not the first record, display emtpy row between date lists
-                    if ($i > 0) {
+                    if ($i > 0)
+                    {
                         $line[] = ["&nbsp;"];
                     }
                     // display fancy date
@@ -48,28 +57,34 @@ function taskweek_ALL(Web &$w)
                 $i++;
             }
         }
-    } else {
+    }
+    else
+    {
         // if no tasks found, say as much
         $line[] = ["No Task Activity found for given selections."];
     }
 
     // display
-    $lines = Html::table($line, null, "tablesorter", true);
+    $lines = HtmlBootstrap5::table($line, null, "tablesorter", true);
     $w->ctx("taskweek", $lines);
 
     // get list of groups of which i am a member
     $mygroups = TaskService::getInstance($w)->getMemberGroups($_SESSION['user_id']);
-    if ($mygroups) {
-        foreach ($mygroups as $mygroup) {
+    if ($mygroups)
+    {
+        foreach ($mygroups as $mygroup)
+        {
             $taskgroup = TaskService::getInstance($w)->getTaskGroup($mygroup->task_group_id);
             $caniview = $taskgroup->getCanIView();
 
-            if ($caniview) {
+            if ($caniview)
+            {
                 $group[$mygroup->task_group_id] = [TaskService::getInstance($w)->getTaskGroupTitleById($mygroup->task_group_id), $mygroup->task_group_id];
 
                 // for those groups of which i am a member, get list of all members for display in Assignee & Creator dropdowns
                 $mymembers = TaskService::getInstance($w)->getMembersInGroup($mygroup->task_group_id);
-                foreach ($mymembers as $mymem) {
+                foreach ($mymembers as $mymem)
+                {
                     $members[$mymem[1]] = [$mymem[0], $mymem[1]];
                 }
             }
@@ -77,10 +92,28 @@ function taskweek_ALL(Web &$w)
         sort($members);
     }
 
-    // load the search filters
-    $a = Html::select("assignee", $members, Request::mixed('assignee'));
-    $w->ctx("assignee", $a);
+    $search_form = HtmlBootstrap5::filter("Search Tasks", [
+        new Select([
+            "id|name" => "taskgroup",
+            "label" => "Task Group",
+            "options" => $group
+        ]),
+        new Select([
+            "id|name" => "assignee",
+            "label" => "User",
+            "options" => $members
+        ]),
+        new Date([
+            "id|name" => "dt_from",
+            "label" => "From",
+            "value" => DateTime::createFromFormat("d/m/Y", $from)->format("Y-m-d"), // annoying
+        ]),
+        new Date([
+            "id|name" => "dt_to",
+            "label" => "To date",
+            "value" => DateTime::createFromFormat("d/m/Y", $to)->format("Y-m-d"), // annoying
+        ]),
+    ], $w->localUrl("/task/taskweek"), "POST");
 
-    $taskgroups = Html::select("taskgroup", $group, Request::mixed('taskgroup'));
-    $w->ctx("taskgroups", $taskgroups);
+    $w->ctx("search_form", $search_form);
 }

@@ -101,12 +101,12 @@ class HtmlBootstrap5 extends Html
 
             // Loop through each row
             foreach ($rows as $row) {
-                // Print each field
-                $buffer .= "<div class='row'>";
-
                 if (empty($row)) {
                     continue;
                 }
+
+                // Print each field
+                $buffer .= "<div class='row'>";
 
                 foreach ($row as $entry) {
                     // Backwards compatibility - provide option to pass additional data
@@ -354,7 +354,7 @@ class HtmlBootstrap5 extends Html
                 $buffer .= '<div class="card d-block mb-4"><ul class="list-group list-group-flush">';
                 foreach ($row as $index => $column) {
                     $buffer .= '<li class="list-group-item">';
-                    if (!empty($header) && array_key_exists($index, $header)) {
+                    if (!empty($header) && is_array($header) && array_key_exists($index, $header)) {
                         $buffer .= "<strong class='me-3'>" . (is_array($header[$index]) ? $header[$index][0] : $header[$index]) . "</strong>";
                     }
                     $buffer .= "<span>" . (is_array($column) ? $column[0] : $column) . "</span></li>";
@@ -552,15 +552,15 @@ class HtmlBootstrap5 extends Html
      *  and it may be a good idea to prefix input names with 'filter_' to avoid naming
      *  collisions in requests
      *
-     *  @param String $legend
-     *  @param Array $data
-     *  @param String $action
-     *  @param String $method
-     *  @param String $submitTitle
-     *  @param String $id
-     *  @param String $class
+     *  @param string $legend
+     *  @param array $data
+     *  @param string $action
+     *  @param string $method
+     *  @param string $submitTitle
+     *  @param string $id
+     *  @param string $class
      *
-     *  @return String $buf
+     *  @return string $buf
      */
     public static function filter($legend, $data, $action = null, $method = "POST", $submitTitle = "Filter", $id = null, $class = null, $validation = null)
     {

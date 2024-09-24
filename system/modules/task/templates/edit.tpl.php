@@ -1,10 +1,10 @@
 <?php if (!empty($task->id)) : ?>
     <div class="row-fluid clearfix panel">
         <h3>Task [<?php echo $task->id; ?>]: <?php echo $task->title; ?></h3>
-        <blockquote>
-            Created: <?php echo $createdDate; ?><br />
-            Taskgroup: <?php echo $task->getTaskGroupTypeTitle(); ?>
-        </blockquote>
+        <div>
+            <div>Created: <?php echo $createdDate; ?></div>
+            <div>Taskgroup: <?php echo $task->getTaskGroupTypeTitle(); ?></div>
+        </div>
     </div>
 <?php endif; ?>
 
@@ -12,16 +12,18 @@
     <?php echo $taskbanners; ?>
 <?php endif; ?>
 
-<div class="tabs">
+<nav class="mt-3 tabs">
     <div class="tab-head">
         <a href="#details">Task Details</a>
+
         <?php if (!empty($task->id)) : ?>
             <?php if (AuthService::getInstance($w)->user()->hasRole('timelog_user')) : ?>
-                <a href="#timelog">Time Log <span class='label secondary round cmfive__tab-label cmfive__count-timelog'></span></a>
+                <a href="#timelog">Time Log</a>
             <?php endif; ?>
-            <a href="#internal_comments">Internal Comments <span class='label secondary round cmfive__tab-label cmfive__count-internal_comment_section'></span></a>
-            <a href="#external_comments">External Comments <span class='label secondary round cmfive__tab-label cmfive__count-external_comment_section'></span></a>
-            <a href="#attachments">Attachments <span class='label secondary round cmfive__tab-label cmfive__count-attachment'></span></a>
+
+            <a href="#internal_comments">Internal Comments</a>
+            <a href="#external_comments">External Comments</a>
+            <a href="#attachments">Attachments</a>
 
             <?php
             $tab_headers = $w->callHook('core_template', 'tab_headers', $task);
@@ -31,68 +33,138 @@
             ?>
         <?php endif; ?>
     </div>
+
     <div class="tab-body">
-        <div id="details" class="clearfix">
-            <div class="row-fluid clearfix">
-                <div class="row-fluid columns">
-                    <?php
-                    if (!empty($task->id)) {
-                        echo FavoriteService::getInstance($w)->getFavoriteButton($task);
-                        // Note the extra buttons only show when the task_type object
-                        $tasktypeobject = $task->getTaskTypeObject();
-                        echo !empty($tasktypeobject) && method_exists($tasktypeobject, "displayExtraButtons") ? $tasktypeobject->displayExtraButtons($task) : null;
-                        echo $task->canDelete(AuthService::getInstance($w)->user()) ? Html::b($task->w->localUrl('/task/delete/' . $task->id), "Delete", "Are you sure you want to delete this task?", null, false, 'warning') : '';
-                        echo Html::b($task->w->localURL('task/duplicatetask/' . $task->id), "Duplicate Task");
-                        echo Html::b($task->w->localURL('/task/edit/?gid=' . $task->task_group_id), "New Task");
+        <div id="details">
+            <?php
+            if (!empty($task->id)) {
+                echo FavoriteService::getInstance($w)->getBootstrapButton($task);
 
-                        /** @var TaskGroup */
-                        $task_group = TaskService::getInstance($w)->getTaskGroup($task->task_group_id);
-                        if (!empty($task_group) && $task_group->getCanICreate()) {
-                            echo Html::box("/task-group/moveTaskgroup/" . $task->id, "Move to Taskgroup", true, false, null, null, null, null, 'secondary');
-                        }
+                $tasktypeobject = $task->getTaskTypeObject();
+                echo !empty($tasktypeobject) && method_exists($tasktypeobject, "displayExtraButtons")
+                    ? $tasktypeobject->displayExtraButtons($task)
+                    : null;
 
-                        // Extra buttons for task
-                        $buttons = $w->callHook("task", "extra_buttons", $task);
-                        if (!empty($buttons) && is_array($buttons)) {
-                            echo implode('', $buttons);
-                        }
+                echo $task->canDelete(AuthService::getInstance($w)->user())
+                    ? HtmlBootstrap5::b(
+                        $task->w->localUrl('/task/delete/' . $task->id),
+                        "Delete",
+                        "Are you sure you want to delete this task?",
+                        null,
+                        false,
+                        'bg-danger text-light'
+                    )
+                    : '';
 
-                        echo $w->partial('listTags', ['object' => $task], 'tag');
-                    }
-                    ?>
+                echo HtmlBootstrap5::b(
+                    $task->w->localURL('task/duplicatetask/' . $task->id),
+                    "Duplicate Task",
+                    null,
+                    null,
+                    null,
+                    "bg-secondary text-light"
+                );
+
+                echo HtmlBootstrap5::b(
+                    $task->w->localURL('/task/edit/?gid=' . $task->task_group_id),
+                    "New Task",
+                    null,
+                    null,
+                    null,
+                    "bg-secondary text-light"
+                );
+
+                /** @var TaskGroup */
+                $task_group = TaskService::getInstance($w)->getTaskGroup($task->task_group_id);
+                if (!empty($task_group) && $task_group->getCanICreate()) {
+                    echo HtmlBootstrap5::box(
+                        "/task-group/moveTaskgroup/" . $task->id,
+                        "Move to Taskgroup",
+                        true,
+                        false,
+                        null,
+                        null,
+                        null,
+                        null,
+                        'bg-secondary text-light'
+                    );
+                }
+
+                // Extra buttons for task
+                $buttons = $w->callHook("task", "extra_buttons", $task);
+                if (!empty($buttons) && is_array($buttons)) {
+                    echo implode('', $buttons);
+                }
+
+                echo $w->partial('listTags', ['object' => $task], 'tag');
+            }
+            ?>
+
+            <div class="row">
+                <div class="small-12 large-9">
+                    <?php echo $form; ?>
                 </div>
-                <div class="row-fluid clearfix">
-                    <div class="small-12 large-9">
-                        <?php echo $form; ?>
-                    </div>
 
-                    <div class="small-12 large-3 right" style="margin-top: 16px;">
-                        <?php
-                        // Call hook and filter out empty/false values
-                        if (!empty($task->id)) : ?>
-                            <div class='row-fluid panel clearfix' id='task_subscribers'>
-                                <table class="small-12 columns">
-                                    <tbody>
-                                        <tr>
-                                            <td class="section" colspan="1">Subscribers <br> <?php echo Html::box('/task-subscriber/add/' . $task->id, 'Add', true, false, null, null, 'isbox', null, 'info center'); ?></td>
-                                        </tr>
-                                        <?php if (!empty($subscribers)) : ?>
-                                            <?php foreach ($subscribers as $subscriber) : ?>
-                                                <?php $subscriber_user = $subscriber->getUser(); ?>
-                                                <?php if (!empty($subscriber_user)) : ?>
-                                                    <tr <?php echo ($subscriber_user->is_external) ? 'style="background-color: #c99;"' : ''; ?>>
-                                                        <td><?php echo $subscriber_user->getFullName(); ?> - <?php echo $subscriber_user->getContact()->email; ?></br>
-                                                            <?php echo Html::b('/task-subscriber/delete/' . $subscriber->id, 'Delete', 'Are you sure you want to remove this subscriber?', null, false, 'warning center'); ?></td>
-                                                    </tr>
-                                                <?php endif; ?>
-                                            <?php endforeach; ?>
-                                        <?php endif; ?>
-                                    </tbody>
-                                </table>
+                <div class="small-12 large-3 right">
+                    <?php if (!empty($task->id)) : ?>
+                        <div class="row panel" id="task_subscribers">
+                            <div class="col">
+                                <div class="d-flex align-items-center justify-content-between border-bottom pb-2 mb-2">
+                                    <p class="fs-4 m-0">Subscribers</p>
+                                    <?php
+                                    echo HtmlBootstrap5::box(
+                                        '/task-subscriber/add/' . $task->id,
+                                        'Add',
+                                        true,
+                                        false,
+                                        null,
+                                        null,
+                                        'isbox',
+                                        null,
+                                        'bg-secondary text-light'
+                                    )
+                                    ?>
+                                </div>
                             </div>
 
+                            <?php if (!empty($subscribers)) : ?>
+                                <style>
+                                    .subscribers > div {
+                                        border-bottom: 1px solid white;
+                                    }
 
-                            <?php $additional_details = $w->callHook('task', 'additional_details', $task);
+                                    .subscribers > div:last-child {
+                                        border-bottom: none;
+                                    }
+                                </style>
+                                <div class="subscribers">
+                                    <?php foreach ($subscribers as $subscriber) : ?>
+                                        <?php $subscriber_user = $subscriber->getUser(); ?>
+                                        <?php if (!empty($subscriber_user)) : ?>
+                                            <div class="p-0 d-flex justify-content-between align-items-center">
+                                                <div class="d-inline-flex flex-column w-50">
+                                                    <div class="pt-0"><?php echo $subscriber_user->getFullName() ?></div>
+                                                    <div><?php echo $subscriber_user->getContact()->email; ?></div>
+                                                </div>
+                                                <?php
+                                                echo HtmlBootstrap5::b(
+                                                    '/task-subscriber/delete/' . $subscriber->id,
+                                                    'Delete',
+                                                    'Are you sure you want to remove this subscriber?',
+                                                    null,
+                                                    false,
+                                                    'bg-warning d-inline'
+                                                );
+                                                ?></td>
+                                            </div>
+                                        <?php endif; ?>
+                                    <?php endforeach; ?>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+
+                            <?php
+                            $additional_details = $w->callHook("task", "additional_details", $task);
                             if (!is_null($additional_details) && is_array($additional_details)) {
                                 $additional_details_flattened = [];
                                 foreach ($additional_details as $module_details) {
@@ -104,33 +176,51 @@
                                         }
                                     }
                                 }
+
                                 if (!empty($additional_details_flattened)) : ?>
-                                <div class="row-fluid clearfix panel">
-                                    <table class="small-12 columns">
-                                        <tbody>
-                                            <tr>
-                                                <td class="section" colspan="2">Additional Details</td>
-                                            </tr>
-                                            <?php foreach ($additional_details_flattened as $additional_detail) : ?>
+                                    <div class="row-fluid clearfix panel">
+                                        <table class="small-12 columns">
+                                            <tbody>
                                                 <tr>
-                                                    <td><?php echo $additional_detail[0]; ?></td>
-                                                    <td><?php echo $additional_detail[1]; ?></td>
+                                                    <td class="section" colspan="2">Additional Details</td>
                                                 </tr>
-                                            <?php endforeach; ?>
-                                        </tbody>
-                                    </table>
-                                </div>
+                                                <?php foreach ($additional_details_flattened as $additional_detail) : ?>
+                                                    <tr>
+                                                        <td><?php echo $additional_detail[0]; ?></td>
+                                                        <td><?php echo $additional_detail[1]; ?></td>
+                                                    </tr>
+                                                <?php endforeach; ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 <?php endif;
                             }
-                        endif;
-                        ?>
-                        <div class="small-12 panel" id="tasktext" style="display: none;"></div>
-                        <div class="small-12 panel clearfix" id="formfields" style="display: none;"></div>
-                        <div class="small-12 panel clearfix" id="formdetails" style="display: none;"></div>
+                            ?>
+                    <?php endif; ?>
+
+                    <div class="col panel" id="group_details" style="display: none">
+                        <p>Task Group</p>
+                        <table class="table table-sm">
+                            <tr>
+                                <th>Name</th>
+                                <td id="group_name"></td>
+                            </tr>
+                            <tr>
+                                <th>Type</th>
+                                <td id="group_type"></td>
+                            </tr>
+                            <tr>
+                                <th>Description</th>
+                                <td id="group_desc"></td>
+                            </tr>
+                        </table>
                     </div>
+                    <div class="col panel" id="formfields" style="display: none;"></div>
+                    <div class="col panel" id="formdetails" style="display: none;"></div>
                 </div>
             </div>
         </div>
+
         <?php if (!empty($task->id)) : ?>
             <?php if (AuthService::getInstance($w)->user()->hasRole('timelog_user')) : ?>
                 <div id="timelog">
@@ -156,112 +246,78 @@
             ?>
         <?php endif; ?>
     </div>
-</div>
-<script language="javascript">
-    // Force an ajax request initially, because if the group id is provided
-    // and this doesn't exist then the user would have to reselect the taskgroup
-    // manually, which is bad.
-    var initialChange = <?php echo (empty($task->id) ? "false" : "true"); ?>;
+</nav>
 
-    $(document).ready(function() {
-        bindTypeChangeEvent();
+<script>
+    const task_id = <?php echo !empty($task->id) ? $task->id : "undefined"; ?>
 
-        getTaskGroupData(<?php echo !empty($task->task_group_id) ? $task->task_group_id : Request::int('gid'); ?>);
-        $("#task_type").trigger("change");
-    });
+    const makeSelectOptions = (select, value, label) => {
+        const elem = document.createElement("option");
+        elem.value = value;
+        elem.innerText = label;
 
-    function selectAutocompleteCallback(event, ui) {
-        if (event.target.id == "acp_task_group_id") {
-            $("#formfields").hide().html("");
-            $("#tasktext").hide().html("");
+        select.appendChild(elem);
+    };
 
-            getTaskGroupData(ui.item.id);
-        }
-    }
+    let controller;
+    const populateTaskgroupDetails = async (value) => {
+        if (controller)
+            controller.abort();
 
-    function getTaskGroupData(taskgroup_id) {
-        $.getJSON("/task/taskAjaxSelectbyTaskGroup/" + taskgroup_id + "/<?php echo !empty($task->id) ? $task->id : null; ?>",
-            function(result) {
-                if (initialChange == false) {
-                    $('#task_type').parent().html(result[0]);
-                    $('#task_type').val('');
-                    $('#priority').parent().html(result[1]);
-                    $('#assignee_id').parent().html(result[2]);
-                    $('#status').html(result[4])
-                }
-                $('#tasktext').html(result[3]);
-                $("#tasktext").fadeIn();
-
-                bindTypeChangeEvent();
-            }
-        );
-    }
-
-    function bindTypeChangeEvent() {
-        $("#task_type").on("change", function(event) {
-            // Reset custom fields
-            $("#formfields").fadeOut();
-            $("#formfields").html("");
-
-            // Get/check for extra form fields
-            $.getJSON("/task/ajaxGetFieldForm/" + $("#task_type").val() + "/" + $("#task_group_id").val() + "/<?php echo !empty($task->id) ? $task->id : ''; ?>",
-                function(result) {
-                    if (result) {
-                        $("#formfields").html(result);
-                        $("#formfields").fadeIn();
-                    }
-                }
-            );
-            <?php if (!empty($task->id)) : ?>
-                var task_type_value = document.getElementById("task_type").value;
-                if (task_type_value.length > 0) {
-                    $("#formdetails").hide();
-                    $.getJSON("/task/ajaxGetExtraDetails/<?php echo $task->id; ?>/" + task_type_value, function(result) {
-                        if (result[0]) {
-                            $("#formdetails").html(result[0]);
-                            $("#formdetails").fadeIn();
-                        }
-                    });
-                }
-            <?php endif; ?>
-        });
-    }
-
-    // Submit both forms
-    $("#edit_form, #form_fields_form").submit(function() {
-        for (var instanceName in CKEDITOR.instances) {
-            CKEDITOR.instances[instanceName].updateElement();
+        if (!value) {
+            document.getElementById("group_details").style.display = "none";
+            return;
         }
 
-        toggleModalLoading();
-        var edit_form = {};
-        var extras_form = {};
-        $.each($('#edit_form').serializeArray(), function() {
-            edit_form[this.name] = this.value;
-        });
-        $.each($('#form_fields_form').serializeArray(), function() {
-            extras_form[this.name] = this.value;
+        controller = new AbortController();
+
+        const json = await fetch(
+            `/task/taskAjaxSelectbyTaskGroup/${value}${task_id ? `/${task_id}` : ""}`,
+            { signal: controller.signal }
+        )
+            .then(x => x.json());
+
+        const type = document.getElementById("task_type");
+        json.types.map(x => makeSelectOptions(type, x[1], x[0]))
+
+        const priority = document.getElementById("priority");
+        json.priorities.map(x => makeSelectOptions(priority, x[1], x[0]))
+
+        const assignee = document.getElementById("assignee_id");
+        json.assignees.map(x => makeSelectOptions(assignee, x[1], x[0]))
+        if (json.can_change_assignee === true) assignee.removeAttribute("disabled")
+
+        const status = document.getElementById("status");
+        json.statuses.map(x => makeSelectOptions(status, x[1], x[0]))
+
+        document.getElementById("group_name").innerText = json.group.name;
+        document.getElementById("group_type").innerText = json.group.type;
+        document.getElementById("group_desc").innerText = json.group.desc;
+        document.getElementById("group_details").style.display = "block";
+    }
+
+    populateTaskgroupDetails(<?php echo $task->task_group_id ?>);
+
+    document.getElementById("task_group").addEventListener("change", async (e) => populateTaskgroupDetails(e.target.value));
+
+    document.getElementById("edit_form").addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const edit = [...new FormData(e.target)].reduce((obj, [key, val]) => {
+            if (key === "task_group") key = "task_group_id";
+            obj[`edit[${key}]`] = val;
+            return obj;
+        }, {
+            '<?php echo \CSRF::getTokenId(); ?>': '<?php echo \CSRF::getTokenValue(); ?>'
         });
 
-        var action = $(this).attr('action');
-        $.ajax({
-            url: action,
-            type: 'POST',
-            data: {
-                '<?php echo \CSRF::getTokenId(); ?>': '<?php echo \CSRF::getTokenValue(); ?>',
-                'edit': edit_form,
-                'extra': extras_form
-            },
-            complete: function(response) {
-                console.error(response.responseText);
-                window.onbeforeunload = null;
-                if ($.isNumeric(response.responseText)) {
-                    window.location.href = "/task/edit/" + response.responseText;
-                } else {
-                    window.location.reload();
-                }
-            }
+        const action = e.target.getAttribute("action");
+        const res = await fetch(action, {
+            method: "POST",
+            body: new URLSearchParams(edit)
         });
-        return false;
-    });
+
+        if (res.ok) window.location.href = `/task/edit/${await res.text()}`
+        else window.location.reload();
+    })
 </script>
