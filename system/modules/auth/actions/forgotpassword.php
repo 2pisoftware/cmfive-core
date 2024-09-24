@@ -39,7 +39,7 @@ function forgotpassword_POST(Web $w)
     // Send email
     $message = "Hello {$user->getFullName()},\n<br/>";
     $message .= "Please go to this link to reset your password:<br/>\n";
-    $message .= "<a href=\"https://" . $_SERVER["HTTP_HOST"] . "/auth/resetpassword?email={$user_contact->email}&token={$user->password_reset_token}\">https://"
+    $message .= "<a href=\"https://" . $_SERVER["HTTP_HOST"] . "/auth/resetpassword?token={$user->password_reset_token}\">https://"
         . $_SERVER["HTTP_HOST"] . "/auth/resetpassword?token={$user->password_reset_token}</a>\n<br/>You have 24 hours to reset your password.<br/><br/>";
     $message .= "Thank you,\n<br/>". Config::get('main.company_name', 'Cosine');
 
