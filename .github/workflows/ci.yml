@@ -165,8 +165,8 @@ jobs:
         run: |
           docker exec -t cmfive sh -c "chmod -R ugo=rwX /var/www/html*"
           docker exec -u cmfive cmfive sh -c "cd composer/vendor/2pisoftware/cmfive-core && git log -n 1"
-          locale-gen en_AU.UTF-8
-          update-locale en_AU.UTF-8
+          sudo locale-gen en_AU.UTF-8
+          sudo update-locale en_AU.UTF-8
           LANG=en_AU.UTF-8
           LC_ALL=en_AU.UTF-8
           echo "Runner locale info"
