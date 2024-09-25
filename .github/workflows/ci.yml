@@ -14,6 +14,7 @@ env:
   DB_PASSWORD: cmfive_test
   DB_DATABASE: cmfive_test
   PLAYWRIGHT_MODULES: "admin channel form tag report task timelog"
+  LANG: en_AU.UTF-8
 
 jobs:
   # Lint
@@ -164,6 +165,16 @@ jobs:
       - name: Setup cmfive Test Environment
         run: |
           docker exec -t cmfive sh -c "chmod -R ugo=rwX /var/www/html*"
+          docker exec -u cmfive cmfive sh -c "cd composer/vendor/2pisoftware/cmfive-core && git log -n 1"
+          sudo locale-gen en_AU.UTF-8
+          sudo update-locale en_AU.UTF-8
+          LANG=en_AU.UTF-8
+          LC_ALL=en_AU.UTF-8
+          echo "Runner locale info"
+          date
+          locale
+          echo "Web host timezone"
+          docker exec -t cmfive sh -c "date"
 
       - name: Inject configs into cmfive Test Environment
         run: |

@@ -546,9 +546,7 @@ class Web
                     $this->ctx('error', "An error occoured, if this message persists please contact your administrator.");
                 });
             }
-            if ($init_database) {
-                $this->initDB();
-            }
+            
 
             // Set the timezone from Config
             $timezone = Config::get('system.timezone');
@@ -556,6 +554,10 @@ class Web
                 $timezone = 'UTC';
             }
             date_default_timezone_set($timezone);
+
+            if ($init_database) {
+                $this->initDB();
+            }
 
             //check config for 'gc_maxlifetime' for the session
             $gc_maxlifetime = Config::get('system.gc_maxlifetime');
