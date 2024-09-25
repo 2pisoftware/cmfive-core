@@ -16,6 +16,7 @@ env:
   DB_PASSWORD: cmfive_test
   DB_DATABASE: cmfive_test
   PLAYWRIGHT_MODULES: "admin channel form tag report task timelog"
+  LANG: en_AU.UTF-8
 
 jobs:
   # Lint
