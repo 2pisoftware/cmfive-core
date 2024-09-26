@@ -165,6 +165,16 @@ jobs:
       - name: Setup cmfive Test Environment
         run: |
           docker exec -t cmfive sh -c "chmod -R ugo=rwX /var/www/html*"
+          sudo locale-gen en_AU.UTF-8
+          sudo update-locale en_AU.UTF-8
+          LANG=en_AU.UTF-8
+          LC_ALL=en_AU.UTF-8
+          echo "Test Execution context:"
+          echo "Runner locale info"
+          date
+          locale
+          echo "Web host timezone"
+          docker exec -t cmfive sh -c "date"
 
       - name: Inject configs into cmfive Test Environment
         run: |
@@ -270,7 +280,19 @@ jobs:
             if [ $? -gt 0 ]; then
                 echo "Timelog module tests failed"
             fi
-            
+
+      - name: Get source code details
+        if: ${{ failure() }} || ${{ success() }}
+        run: |
+          echo ">> CONTAINER LABELS (BOILERPLATE) <<"
+          echo "===================================="
+          docker inspect --format='{{range $key, $value := .Config.Labels}}{{$key}}={{$value}}{{println}}{{end}}' cmfive
+          echo ""
+          echo ""
+          echo ">> CORE COMMIT DETAILS <<"
+          echo "========================="
+          docker exec -u cmfive cmfive sh -c "cd composer/vendor/2pisoftware/cmfive-core && git log -n 1"
+                
       - name: Get container logs
         if: ${{ failure() }} || ${{ success() }}
         run: |
