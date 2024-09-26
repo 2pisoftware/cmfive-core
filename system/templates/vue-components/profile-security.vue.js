@@ -7,6 +7,10 @@ Vue.component('profile-security', {
     isMfaEnabled: {
       type: Boolean,
       required: true
+    },
+    isDeviceAuthEnabled: {
+      type: Boolean,
+      required: false
     }
   },
   template: `
@@ -50,6 +54,13 @@ Vue.component('profile-security', {
               <button class="btn btn-success" @click.prevent="confirmMfaCode" :disabled="is_loading">Confirm Code</button>
               <button class="btn btn-secondary" @click.prevent="cancel">Cancel</button>
             </form>
+          </div>
+        </div>
+        <div class="large-12">
+          <label>Device Authenticator</label>
+          <div>
+            <button v-if="!isDeviceAuthEnabled && mfa_qr_code_url === null" class="btn btn-success" @click="registerAuthenticator" :disabled="is_loading">Enable</button>
+            <button v-if="isDeviceAuthEnabled" class="btn btn-error" @click="disableMfa" :disabled="is_loading">Disable</button>
           </div>
         </div>
       </div>
@@ -98,6 +109,32 @@ Vue.component('profile-security', {
         (new Toast("Password successfully updated")).show();
       }).catch(function (error) {
         (new Toast("Failed to update password")).show();
+        console.log(error);
+      }).finally(function () {
+        _this.is_loading = false;
+      });
+    },
+    registerAuthenticator: function () {
+      var _this = this;
+
+      if (_this.is_loading === true) {
+        return;
+      }
+
+      _this.is_loading = true;
+
+      axios.post("/auth/ajax_register_authenticator", {
+        id: _this.userId
+      }).then(function (response) {
+        if (response.status !== 200) {
+          (new Toast("Failed to register authenticator")).show();
+          return;
+        }
+
+        _this.isMfaEnabled = true;
+        (new Toast("Authenticator registered")).show();
+      }).catch(function (error) {
+        (new Toast("Failed to register authenticator")).show();
         console.log(error);
       }).finally(function () {
         _this.is_loading = false;
