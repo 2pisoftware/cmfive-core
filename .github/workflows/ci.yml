@@ -129,11 +129,11 @@ jobs:
             -v ${{ github.workspace }}/boilerplate/.codepipeline/test_agent/configs/test_agent-config.php:/var/www/html/config.php:rw \
             -v ${{ github.workspace }}/boilerplate/test:/var/www/html/test:rw \
             -v ${{ github.workspace }}/boilerplate/storage:/var/www/html/storage:rw \
+            -v ${{ github.workspace }}/core/system:/var/www/html/system:rw \
             -e DB_HOST=mysql-8 \
             -e DB_USERNAME=$DB_USERNAME \
             -e DB_PASSWORD=$DB_PASSWORD \
             -e DB_DATABASE=$DB_DATABASE \
-            -e INSTALL_CORE_BRANCH=$CORE_BRANCH \
             -e ENVIRONMENT=development \
             --network=cmfive \
             $BOILERPLATE_IMAGE
@@ -150,6 +150,23 @@ jobs:
               exit 1
             fi
           done
+
+      - name: Get source code details
+        if: ${{ failure() }} || ${{ success() }}
+        run: |
+          echo ">> CONTAINER LABELS (BOILERPLATE) <<"
+          echo "===================================="
+          docker inspect --format='{{range $key, $value := .Config.Labels}}{{$key}}={{$value}}{{println}}{{end}}' cmfive
+          echo ""
+          echo ""
+          echo ">> CORE COMMIT DETAILS <<"
+          echo "========================="
+          echo "VENDOR DIRECTORY: (should be unused)"
+          docker exec -u cmfive cmfive sh -c "cd composer/vendor/2pisoftware/cmfive-core && git log -1 --pretty=format:"CORE_HASH=\"%H\"%nCORE_COMMIT_MSG=\"%s\"%nCORE_REF=\"%D\"""
+          echo ""
+          echo "MOUNTED CORE: (should be used, this is mounted to /system)"
+          pushd core
+          git log -1 --pretty=format:"CORE_HASH=\"%H\"%nCORE_COMMIT_MSG=\"%s\"%nCORE_REF=\"%D\""
 
       - name: Compile the theme
         run: |
@@ -280,18 +297,6 @@ jobs:
             if [ $? -gt 0 ]; then
                 echo "Timelog module tests failed"
             fi
-
-      - name: Get source code details
-        if: ${{ failure() }} || ${{ success() }}
-        run: |
-          echo ">> CONTAINER LABELS (BOILERPLATE) <<"
-          echo "===================================="
-          docker inspect --format='{{range $key, $value := .Config.Labels}}{{$key}}={{$value}}{{println}}{{end}}' cmfive
-          echo ""
-          echo ""
-          echo ">> CORE COMMIT DETAILS <<"
-          echo "========================="
-          docker exec -u cmfive cmfive sh -c "cd composer/vendor/2pisoftware/cmfive-core && git log -n 1"
                 
       - name: Get container logs
         if: ${{ failure() }} || ${{ success() }}
