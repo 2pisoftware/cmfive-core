@@ -15,7 +15,7 @@ class FormElement extends \Html\Element
     /**
      * Sets the printable label used by {@see Html::multiColForm()}
      *
-     * @param String $label
+     * @param \string $label
      * @return \Html\Form\FormElement
      */
     public function setLabel($label)

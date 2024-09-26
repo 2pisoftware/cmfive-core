@@ -18,11 +18,13 @@ function viewInsight_GET(Web $w)
         $w->error('Insight does not exist', '/insights');
     }
 
-    if (empty($insight->getfilters($w, $_REQUEST))) {
+    $filter_form = $insight->getfilters($w, $_REQUEST);
+
+    if (empty($filter_form)) {
         $w->redirect("/insights/runInsight/" . $insight_class);
     }
 
     $w->ctx('title', "View Insight for " . $insight->name);
 
-    $w->ctx('filterForm', HtmlBootstrap5::multiColForm($insight->getfilters($w, $_REQUEST), "/insights/runInsight/" . $insight_class, "GET", "Run"));
+    $w->ctx('filterForm', HtmlBootstrap5::multiColForm($filter_form, "/insights/runInsight/" . $insight_class, "GET", "Run"));
 }

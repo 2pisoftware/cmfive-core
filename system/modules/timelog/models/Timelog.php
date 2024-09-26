@@ -1,4 +1,5 @@
 <?php
+
 class Timelog extends DbObject
 {
     public $object_class;

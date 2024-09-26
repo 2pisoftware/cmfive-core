@@ -1,3 +1,14 @@
+@use 'sass:map';
+
+// Menu theme colours
+$themes: map.deep-merge($themes, (
+    default: (
+        row-color: $mid-grey,
+    ),
+    dark: (
+        row-color: lighten($white--dark, 15%),
+    )
+));
 
 table {
     width: 100%;
@@ -10,7 +21,7 @@ table {
 
     td {
         @include font-size('body');
-        @include theme((color: 'dark-grey', background-color: 'white-black'));
+        @include theme((color: 'dark-grey', background-color: 'row-color'));
     }
 }
 
