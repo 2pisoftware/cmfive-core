@@ -259,35 +259,68 @@
         select.appendChild(elem);
     };
 
-    let controller;
+    const clearSelectOptions = (select) => select.textContent = ""
+
+    let fieldsControllers;
+    const populateTaskFormFields = async () => {
+        if (fieldsControllers) fieldsControllers.abort(); 
+
+        const type = document.getElementById("task_type").value;
+        const group = document.getElementById("task_group").value;
+
+        // backend requires all 3
+        if (!type || !group || !task_id)
+            return;
+
+        fieldsControllers = new AbortController();
+
+        const container = document.getElementById("formfields")
+
+        const json = await fetch(
+            `/task/ajaxGetFieldForm/${type}/${group}/${task_id}`,
+            { signal: fieldsControllers.signal }
+        ).then(x => x.json());
+
+        container.innerHTML = json.current;
+        container.style.display = "block";
+        container.getElementsByTagName("form")[0].classList.remove("columns");
+    }
+
+    populateTaskFormFields();
+    document.getElementById("task_type").addEventListener("change", async (e) => populateTaskFormFields(e.target.value));
+
+    let detailsController;
     const populateTaskgroupDetails = async (value) => {
-        if (controller)
-            controller.abort();
+        if (detailsController)
+            detailsController.abort();
 
         if (!value) {
             document.getElementById("group_details").style.display = "none";
             return;
         }
 
-        controller = new AbortController();
+        detailsController = new AbortController();
 
         const json = await fetch(
             `/task/taskAjaxSelectbyTaskGroup/${value}${task_id ? `/${task_id}` : ""}`,
-            { signal: controller.signal }
-        )
-            .then(x => x.json());
+            { signal: detailsController.signal }
+        ).then(x => x.json());
 
         const type = document.getElementById("task_type");
+        clearSelectOptions(type);
         json.types.map(x => makeSelectOptions(type, x[1], x[0]))
 
         const priority = document.getElementById("priority");
+        clearSelectOptions(priority);
         json.priorities.map(x => makeSelectOptions(priority, x[1], x[0]))
 
         const assignee = document.getElementById("assignee_id");
+        clearSelectOptions(assignee);
         json.assignees.map(x => makeSelectOptions(assignee, x[1], x[0]))
         if (json.can_change_assignee === true) assignee.removeAttribute("disabled")
 
         const status = document.getElementById("status");
+        clearSelectOptions(status);
         json.statuses.map(x => makeSelectOptions(status, x[1], x[0]))
 
         document.getElementById("group_name").innerText = json.group.name;

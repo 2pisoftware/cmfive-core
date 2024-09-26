@@ -52,7 +52,6 @@ class Html5Autocomplete extends \Html\Form\InputField
 
     public static $_excludeFromOutput = [
         "source",
-        "value",
         "options",
         "onItemAdd",
         "onItemRemove",

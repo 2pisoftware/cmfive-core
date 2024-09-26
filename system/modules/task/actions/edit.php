@@ -78,8 +78,9 @@ function edit_GET($w)
                     "id|name" => "task_group",
                     "required" => "required",
                     "value" => !empty($taskgroup) ? $taskgroup->id : null,
+                    "disabled" => !empty($p["id"]) ? "true" : null,
                     "options" => $taskgroups,
-                    "maxLength" => 1
+                    "maxItems" => 1
                 ]),
 
                 (new Select([
