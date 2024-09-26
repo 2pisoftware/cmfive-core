@@ -78,9 +78,9 @@ function taskweek_ALL(Web &$w)
     }
 
     // load the search filters
-    $a = Html::select("assignee", $members, Request::mixed('assignee'));
+    $a = Html::select("assignee", $members ?? [], Request::mixed('assignee'));
     $w->ctx("assignee", $a);
 
-    $taskgroups = Html::select("taskgroup", $group, Request::mixed('taskgroup'));
+    $taskgroups = Html::select("taskgroup", $group ?? [], Request::mixed('taskgroup'));
     $w->ctx("taskgroups", $taskgroups);
 }
