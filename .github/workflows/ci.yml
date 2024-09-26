@@ -162,11 +162,11 @@ jobs:
           echo ">> CORE COMMIT DETAILS <<"
           echo "========================="
           echo "VENDOR DIRECTORY: (should be unused)"
-          docker exec -u cmfive cmfive sh -c "cd composer/vendor/2pisoftware/cmfive-core && git log -n 1"
+          docker exec -u cmfive cmfive sh -c "cd composer/vendor/2pisoftware/cmfive-core && git log -1 --pretty=format:"CORE_HASH=\"%H\"%nCORE_COMMIT_MSG=\"%s\"%nCORE_REF=\"%D\"""
           echo ""
           echo "MOUNTED CORE: (should be used, this is mounted to /system)"
           pushd core
-          git log -n 1
+          git log -1 --pretty=format:"CORE_HASH=\"%H\"%nCORE_COMMIT_MSG=\"%s\"%nCORE_REF=\"%D\""
 
       - name: Compile the theme
         run: |
