@@ -5,6 +5,7 @@ const Quill = quill.default || quill;
 
 export class QuillEditor {
     private static quillTarget = '.quill-editor';
+	private static quillExistsTarget = 'ql-container';
 
     static bindQuillEditor()
     {
@@ -12,6 +13,8 @@ export class QuillEditor {
 
         if (quillEditors) {
             quillEditors.forEach((q) => {
+				if (q.classList.contains(QuillEditor.quillExistsTarget)) return;
+
                 const options = q.getAttribute('data-quill-options');
                 let editor = new Quill('#' + q.id, JSON.parse(options));
 
