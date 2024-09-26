@@ -280,7 +280,19 @@ jobs:
             if [ $? -gt 0 ]; then
                 echo "Timelog module tests failed"
             fi
-            
+
+      - name: Get source code details
+        if: ${{ failure() }} || ${{ success() }}
+        run: |
+          echo ">> CONTAINER LABELS (BOILERPLATE) <<"
+          echo "===================================="
+          docker inspect --format='{{range $key, $value := .Config.Labels}}{{$key}}={{$value}}{{println}}{{end}}' cmfive
+          echo ""
+          echo ""
+          echo ">> CORE COMMIT DETAILS <<"
+          echo "========================="
+          docker exec -u cmfive cmfive sh -c "cd composer/vendor/2pisoftware/cmfive-core && git log -n 1"
+                
       - name: Get container logs
         if: ${{ failure() }} || ${{ success() }}
         run: |
