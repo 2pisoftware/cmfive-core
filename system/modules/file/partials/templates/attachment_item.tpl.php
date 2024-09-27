@@ -43,7 +43,7 @@
         } ?>
     </div>
     <div class="row-fluid clearfix text-center" style="overflow: hidden;">
-        (<?php echo $attachment->getSize(); ?>)
+        (<?php echo $attachment->getHumanReadableSize(); ?>)
     </div>
 </a>
 <div id="attachment_modal_<?php echo $attachment->id; ?>" class="reveal-modal file__pdf-modal" data-reveal role="dialog">

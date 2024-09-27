@@ -272,13 +272,24 @@ class Attachment extends DbObject
     }
 
     /**
+     * Returns size of attachment in bytes
+     * 
+     * @return int size
+     */
+
+    public function getSize(): int
+    {
+        return $this->getFile()->getSize();
+    }
+
+    /**
      * Returns size of attachment in human readable format
      * 
      * @return string size
      */
-    public function getSize(): string
+    public function getHumanReadableSize(): string
     {
-        return humanReadableBytes($this->getFile()->getSize());
+        return humanReadableBytes($this->getSize());
     }
 
     /**
