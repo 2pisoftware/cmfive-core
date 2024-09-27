@@ -50,7 +50,7 @@ function edit_GET(Web $w)
                 "id|name" => "description",
                 "value" => $t->description,
                 "label" => "Description",
-            ]))->setOptions(["placeholder" => "Please provide a brief description of the template"]) //["", "textarea", "description", $t->description]
+            ]))->setOptions(["placeholder" => "Please provide a brief description of the template"])
         ],
     ];
 
@@ -63,15 +63,15 @@ function edit_GET(Web $w)
                 "id|name" => "template_title",
                 "value" => $t->template_title,
                 "maxlength" => 100
-            ])) //["", "textarea", "template_title", $t->template_title, 100, 1, false]
+            ]))
         ]
     ];
     $newForm["Template Body"] = [
         [
             (new \Html\Cmfive\CodeMirrorEditor([
                 "id|name" => "template_body",
-                "value" => $t->template_body,
-            ])) //->addToConfig(['extensions' => ['basicSetup'], 'parent' => 'template_body']) //["", "textarea", "template_body", $t->template_body, 60, 100, "codemirror"]
+                "value" => htmlspecialchars($t->template_body),
+            ]))
         ]
     ];
 
