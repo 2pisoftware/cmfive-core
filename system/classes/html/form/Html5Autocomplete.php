@@ -4,6 +4,16 @@ namespace Html\Form;
 
 use LogService;
 
+/**
+ * HTML5 Autocomplete using Tom-Select on frontend.
+ * Renders an text <input> field with a dropdown for possible values,
+ * which can be provided in full on render or dynamically via an API call from the frontend.
+ * Frontend code: /system/templates/base/src/js/components/Autocomplete.ts
+ * For example usage, see modules/task/actions/edit.php
+ * or task/actions/tasklist.php
+ * @author Madeline Carlier
+ */
+
 class Html5Autocomplete extends \Html\Form\InputField
 {
     public $style;
