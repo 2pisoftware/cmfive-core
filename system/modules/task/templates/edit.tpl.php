@@ -261,6 +261,16 @@
 
     const clearSelectOptions = (select) => select.textContent = ""
 
+    const populateTaskExtraDetails = async () => {
+        const task_type = document.getElementById("task_type").value;
+        const json = await fetch(`/task/ajaxGetExtraDetails/${task_id}/${task_type}`)
+            .then(x => x.json());
+        document.getElementById("formdetails").innerHTML = json[0];
+        document.getElementById("formdetails").style.display = "block";
+    }
+
+    populateTaskExtraDetails();
+
     let fieldsControllers;
     const populateTaskFormFields = async () => {
         if (fieldsControllers) fieldsControllers.abort(); 
