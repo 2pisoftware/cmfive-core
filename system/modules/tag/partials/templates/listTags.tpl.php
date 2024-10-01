@@ -48,7 +48,9 @@
                 hidden: <?php echo json_encode($tags['hover']); ?>,
             };
 
-            const createTagElement = (text) => {
+            const createTagElement = (tag) => {
+                const text = typeof tag === "string" ? tag : tag.tag;
+
                 const elem = document.createElement("span");
                 elem.innerText = text;
                 elem.classList.add("bg-secondary", "tag-small")

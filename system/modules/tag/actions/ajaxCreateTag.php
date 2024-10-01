@@ -8,7 +8,7 @@ function ajaxCreateTag_GET(Web $w) {
     $w->setLayout(null);
     
     list($class, $id) = $w->pathMatch();
-    $new_tag = Request::string('tag');
+    $new_tag = Request::string("value") ?? Request::string('tag');
     
     if (empty($class) || empty($id) || empty($new_tag)) {
         return;

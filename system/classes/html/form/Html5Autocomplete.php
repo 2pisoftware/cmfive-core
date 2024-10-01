@@ -60,12 +60,19 @@ class Html5Autocomplete extends \Html\Form\InputField
      */
     public $onItemCreate;
 
+    /**
+     * The labels for the groups (headings) of data in `options`
+     * @var array<{ value: string, label: string }>
+     */
+    public $groups;
+
     public static $_excludeFromOutput = [
         "source",
         "options",
         "onItemAdd",
         "onItemRemove",
         "onItemCreate",
+        "groups"
     ];
 
     public function __construct($fields = [])
@@ -95,11 +102,17 @@ class Html5Autocomplete extends \Html\Form\InputField
             "data-config" .
             "='" .
             json_encode([
-                "options" => $this->options ? array_map(fn($val) => $this->convertOption($val), $this->options) : null,
+                "options" => $this->options ?
+                    array_map(fn($val) =>
+                        $this->convertOption($val), $this->options)
+                    : null,
                 "maxItems" => !isset($this->maxItems) ? $this->maxItems : 1,
                 "items" => $this->value,
                 "source" => $this->source,
                 "create" => $this->canCreate,
+                
+                "optgroups" => $this->groups,
+                "optgroupField" => "type",
 
                 // for sending data to the wrapper
                 "cmfive" => [
@@ -124,7 +137,8 @@ class Html5Autocomplete extends \Html\Form\InputField
         } else if (isset($val["value"]) && isset($val["text"])) {
             return [
                 "value" => $val["value"],
-                "text" => $val["text"]
+                "text" => $val["text"],
+                "type" => $val["type"],
             ];
         } else if (is_scalar($val)) {
             return [
