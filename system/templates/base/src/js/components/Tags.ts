@@ -17,7 +17,8 @@ export class Tags {
 
 		const modal = document.getElementById("cmfive-modal");
 		modal.addEventListener("hidden.bs.modal", () => {
-			const id = modal.querySelector("input.tom-select-target").id.replace("display_", "");
+			const id = modal.querySelector("input.tom-select-target")?.id?.replace("display_", "");
+			if (!id) return;
 			console.log(`tags for ${id} updated`);
 
 			this.update(document.getElementById(id).parentElement);
