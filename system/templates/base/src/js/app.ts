@@ -1,13 +1,13 @@
 // src/app.ts
 import { AlertAdaptation, DropdownAdaptation, FavouritesAdaptation, TabAdaptation, TableAdaptation } from './adaptations';
-import { Autocomplete, CodeMirror, InputWithOther, MultiFileUpload, Overlay, QuillEditor } from './components';
+import { Autocomplete, CodeMirror, InputWithOther, MultiFileUpload, Overlay, QuillEditor, Tags } from './components';
 
 import { Modal, Toast, Tooltip } from 'bootstrap';
 import { Sortable } from './components/Sortable';
 
 type window = Window & typeof globalThis & { cmfiveEventBus: Comment, cmfive: { toast: typeof Toast } };
 
-class Cmfive {
+export class Cmfive {
     static THEME_KEY = 'theme';
     static currentModal: Modal;
 
@@ -204,6 +204,7 @@ class Cmfive {
         Sortable.bindSortableElements();
         TabAdaptation.bindTabInteractions();
         TableAdaptation.bindTableInteractions();
+		Tags.bind();
 
         // Remove all foundation button classes and replace them with bootstrap if they don't exist
         target?.querySelectorAll('.button')?.forEach(b =>  {
