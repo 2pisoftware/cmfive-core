@@ -23,16 +23,15 @@ Config::set('admin', [
         ]
     ],
     "dependencies" => [
-        "swiftmailer/swiftmailer" => "~6.2",
-        "twig/twig" => "3.3.*",
-        "nesbot/carbon" => "2.55.2",
-        "robmorgan/phinx" => "0.8.*",
-        "sendgrid/sendgrid" => "^8.0.0",
-        "softark/creole" => "~1.2",
-        "monolog/monolog" => "^1.22",
-        "aws/aws-sdk-php" => "3.224",
-        "aws/aws-php-sns-message-validator" => "^1.1",
-        "maxbanton/cwh" => "^1.0"
+        "symfony/mailer" => "^7.1.5",
+        "twig/twig" => "^3.14.0",
+        "nesbot/carbon" => "^3.8.0",
+        "robmorgan/phinx" => "^0.16.4",
+        "softark/creole" => "^1.3",
+        "monolog/monolog" => "^3.7.0",
+        "aws/aws-sdk-php" => "3.322.10",
+        "aws/aws-php-sns-message-validator" => "^1.9",
+        "maxbanton/cwh" => "^2.0.4"
     ],
     "bulkemail" => [
         "number_per_cron" => 5,

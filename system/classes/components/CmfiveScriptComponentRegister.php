@@ -1,16 +1,17 @@
 <?php
 
-class CmfiveScriptComponentRegister extends CmfiveComponentRegister {
+class CmfiveScriptComponentRegister extends CmfiveComponentRegister
+{
+    protected static $_register = [];
 
-	protected static $_register = [];
+    public static function outputScripts()
+    {
+        usort(static::$_register, ['CmfiveComponentRegister', 'compareWeights']);
 
-	public static function outputScripts() {
-		usort(static::$_register, ['CmfiveComponentRegister', 'compareWeights']);
-
-		array_map(function($script) {
-			echo $script->_include() . "\n";
-		}, static::getComponents() ? : []);
-	}
+        array_map(function ($script) {
+            echo $script->_include() . "\n";
+        }, static::getComponents() ?: []);
+    }
 
     public static function requireVue3()
     {
@@ -24,5 +25,4 @@ class CmfiveScriptComponentRegister extends CmfiveComponentRegister {
     {
         static::registerComponent('vue2', new CmfiveScriptComponent('/system/templates/js/vue.js'));
     }
-
 }

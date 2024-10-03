@@ -11,15 +11,15 @@ const ENVIRONMENT_PRODUCTION = "production";
 
 defined("DS") || define("DS", DIRECTORY_SEPARATOR);
 
-define("ROOT_PATH", str_replace("\\", "/", getcwd()));
-define("SYSTEM_PATH", str_replace("\\", "/", getcwd() . '/system'));
+define("ROOT_PATH", str_replace("\\", "/", getcwd()) . DS . '..' . DS);
+define("SYSTEM_PATH", ROOT_PATH . '/system');
 
-define("LIBPATH", str_replace("\\", "/", getcwd() . '/lib'));
-define("SYSTEM_LIBPATH", str_replace("\\", "/", getcwd() . '/system/lib'));
-define("FILE_ROOT", str_replace("\\", "/", getcwd() . "/uploads/")); // dirname(__FILE__)
-define("MEDIA_ROOT", str_replace("\\", "/", dirname(__FILE__) . "/../media/"));
-define("ROOT", str_replace("\\", "/", dirname(__FILE__)));
-define("STORAGE_PATH", str_replace("\\", "/", getcwd() . '/storage'));
+define("LIBPATH", ROOT_PATH . '/lib');
+define("SYSTEM_LIBPATH", ROOT_PATH . DS . 'system' . DS . 'lib');
+define("FILE_ROOT", ROOT_PATH . DS . 'uploads' . DS);
+define("MEDIA_ROOT", str_replace("\\", "/", dirname(__FILE__)) . DS . '..' . DS . '..' . DS . 'media' . DS);
+define("ROOT", str_replace("\\", "/", dirname(__FILE__)) . DS . '..' . DS);
+define("STORAGE_PATH", ROOT_PATH . DS . 'storage');
 define("SESSION_NAME", "CM5-SID");
 
 set_include_path(get_include_path() . PATH_SEPARATOR . LIBPATH);
@@ -189,7 +189,7 @@ class Web
         }
 
         // 1. check if class directory has to be loaded from cache
-        $classdirectory_cache_file = ROOT_PATH . "/cache/classdirectory.cache";
+        $classdirectory_cache_file = ROOT_PATH . "cache/classdirectory.cache";
 
         if (empty($this->_classdirectory) && file_exists($classdirectory_cache_file)) {
             require_once $classdirectory_cache_file;
@@ -228,8 +228,7 @@ class Web
 
             $namespace_parts = explode('\\', $className);
             $class_file = array_pop($namespace_parts) . '.php';
-
-            $top_directory = new \RecursiveDirectoryIterator($this->getModuleDir($model) . 'models/', \FilesystemIterator::FOLLOW_SYMLINKS | \FilesystemIterator::SKIP_DOTS);
+            $top_directory = new \RecursiveDirectoryIterator(($this->getModuleDir($model) ?? '../') . 'models/', \FilesystemIterator::FOLLOW_SYMLINKS | \FilesystemIterator::SKIP_DOTS);
             $class_filter = new \RecursiveCallbackFilterIterator($top_directory, function ($current, $key, $iterator) {
                 return (!$current->isDir() && $current->getExtension() === "php") || true;
             });
@@ -250,7 +249,7 @@ class Web
         if (strstr($className, "Html") !== false) {
             $filePath = explode('\\', $className);
             $class = array_pop($filePath);
-            $file = 'system' . DS . 'classes' . DS . strtolower(implode("/", $filePath)) . DS . $class . ".php";
+            $file = ROOT_PATH . 'system' . DS . 'classes' . DS . strtolower(implode("/", $filePath)) . DS . $class . ".php";
 
             if (file_exists($file)) {
                 require_once $file;
@@ -261,7 +260,7 @@ class Web
         }
 
         // Last try, recurse in "/lib"
-        $toplibpath = 'system' . DS . 'lib';
+        $toplibpath = ROOT_PATH . 'system' . DS . 'lib';
         $namespaceparts = explode('\\', $className);
         $classfile = array_pop($namespaceparts) . '.php';
         $libmatch = false;
@@ -291,7 +290,7 @@ class Web
 
     private function componentLoader($name)
     {
-        $classes_directory = 'system' . DS . 'classes';
+        $classes_directory = ROOT_PATH . 'system' . DS . 'classes';
         $directory = $classes_directory . DS . 'components';
 
         if (file_exists($directory . DS . $name . '.php')) {
@@ -513,18 +512,18 @@ class Web
                 // Fallback to main module
                 $path = ROOT_PATH . "/" . $this->getModuleDir('main') . "translations";
                 $results = bindtextdomain('main', $path);
-                if (!$results) {
-                    throw new Exception('setlocale bindtextdomain failed on retry with main');
-                }
+                // if (!$results) {
+                //     throw new Exception('setlocale bindtextdomain failed on retry with main');
+                // }
             }
         } else {
             // Fallback to main module
             $path = ROOT_PATH . "/" . $this->getModuleDir('main') . "translations";
             $translationFile = $path . "/" . $this->currentLocale . "/LC_MESSAGES/main.mo";
             $results = bindtextdomain('main', $path);
-            if (!$results) {
-                throw new Exception('setlocale bindtextdomain failed on retry with main');
-            }
+            // if (!$results) {
+            //     throw new Exception('setlocale bindtextdomain failed on retry with main');
+            // }
         }
 
         bind_textdomain_codeset($domain ?? '', 'UTF-8');
@@ -1470,7 +1469,7 @@ class Web
         // check for explicit module path first
         $basepath = $this->moduleConf($module, 'path');
         if (!empty($basepath)) {
-            $path = $basepath . '/' . $module . '/';
+            $path = ROOT_PATH . $basepath . DS . $module . DS;
             return file_exists($path) ? $path : null;
         }
 
