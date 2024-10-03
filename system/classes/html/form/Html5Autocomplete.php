@@ -110,6 +110,8 @@ class Html5Autocomplete extends \Html\Form\InputField
                 "items" => $this->value,
                 "source" => $this->source,
                 "create" => $this->canCreate,
+
+                "addPrecedence" => true,
                 
                 "optgroups" => $this->groups,
                 "optgroupField" => "type",

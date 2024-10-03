@@ -12,25 +12,48 @@ type AssignedTags = {
 export class Tags {
 	private static target = ".tags-container";
 
+	private static selected: Set<string> = new Set();
+
 	static bind = async () => {
-		document.querySelectorAll(Tags.target).forEach(this.update);
+		document.querySelectorAll(Tags.target).forEach((e) => {
+			// don't update again on modal open
+			const id = e.getAttribute("data-tag-id");
+			console.log(id);
+			if (!this.selected.has(id))
+				this.update(e);
+			this.selected.add(id);
+		});
 
 		const modal = document.getElementById("cmfive-modal");
-		modal.addEventListener("hidden.bs.modal", () => {
+		// on modal hide, update
+		const cb = () => {
 			const id = modal.querySelector("input.tom-select-target")?.id?.replace("display_", "");
 			if (!id) return;
 			console.log(`tags for ${id} updated`);
 
 			this.update(document.getElementById(id).parentElement);
-		})
+
+			modal.removeEventListener("hidden.bs.modal", cb);
+		};
+		modal.addEventListener("hidden.bs.modal", cb);
 	}
 
 	private static update = async (container: Element) => {
+		const loader = container.getElementsByClassName("loader")[0];
+		
 		const id = container.getAttribute("data-tag-id");
+		console.log(`updating ${id}`);
+		const shown = document.getElementById(`tags_${id}`);
+		const hidden = document.getElementById(`hidden_tags_${id}`);
+
+		shown.innerHTML = "";
+		hidden.innerHTML = "";
+
+		loader.classList.remove("d-none");
+
 		const tags = await fetch(`/tag/ajaxGetTags/${id.replace("_", "/")}`).then(x => x.json());
 
-		const shown = document.getElementById(`tags_${id}`);
-		const hidden = document.getElementById(`tags_${id}`);
+		loader.classList.add("d-none");
 
 		shown.innerHTML = "";
 		hidden.innerHTML = "";
@@ -48,7 +71,7 @@ export class Tags {
 
 		const elem = document.createElement("span");
 		elem.innerText = text;
-		elem.classList.add("bg-secondary", "tag-small")
+		elem.classList.add("bg-secondary", "tag-small", "text-light")
 		
 		return elem;
 	}

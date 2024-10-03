@@ -8,6 +8,7 @@
 
     echo new Html5Autocomplete([
         'id' => 'display_tags_' . $object_class . '_' . $id,
+        "placeholder" => "Add tags...",
         'name' => 'tags',
         "maxItems" => null,
         "canCreate" => true,
@@ -38,11 +39,24 @@
 </div>
 
 <style>
+    #cmfive-modal .ts-control {
+        padding: 10px;
+    }
+
     #cmfive-modal .ts-dropdown-content {
         display: flex;
+        flex-wrap: wrap;
     }
 
     #cmfive-modal .optgroup {
         flex: 1;
+    }
+
+    #cmfive-modal .optgroup-header {
+        border-bottom: 1px solid black;
+    }
+
+    #cmfive-modal .create {
+        width: 100%;
     }
 </style>
