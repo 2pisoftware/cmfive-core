@@ -58,12 +58,16 @@ export class Tags {
 		shown.innerHTML = "";
 		hidden.innerHTML = "";
 
+		if (!tags.hover.length) container.getElementsByClassName("show_more")[0].classList.add("d-none");
+		else container.getElementsByClassName("show_more")[0].classList.remove("d-none");
+
 		if (tags.display.length === 0) {
 			return shown.appendChild(this.createTagElement("No tags"));
 		}
 
 		tags.display.forEach(tag => shown.appendChild(this.createTagElement(tag)));
 		tags.hover.forEach(tag => hidden.appendChild(this.createTagElement(tag)));
+	
 	}
 
 	private static createTagElement = (tag: Tag | string) => {

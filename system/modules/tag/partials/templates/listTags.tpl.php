@@ -9,6 +9,14 @@
             display: inline;
         }
 
+        .tags-container:hover .show_more {
+            display: none;
+        }
+
+        .show_more {
+            display: inline;
+        }
+
         .shown_tags {
             display: inline;
         }
@@ -35,6 +43,7 @@
         <div class="loader d-none"></div>
         <div id="tags_<?php echo $tag_obj_id ?>" class="shown_tags">
         </div>
+        <div class="show_more tag-small bg-secondary d-none">...</div>
         <div id="hidden_tags_<?php echo $tag_obj_id ?>" class="hidden_tags">
         </div>
     </div>
