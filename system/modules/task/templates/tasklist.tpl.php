@@ -1,3 +1,10 @@
+<style>
+    td {
+        /* hack, don't care. don't want to fight css rule precedence */
+        padding: 5px 20px 5px 20px !important;
+    }
+</style>
+
 <?php
 echo HtmlBootstrap5::filter("Filter Tasks", $filter_data, "/task/tasklist", "GET");
 
