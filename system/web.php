@@ -11,15 +11,21 @@ const ENVIRONMENT_PRODUCTION = "production";
 
 defined("DS") || define("DS", DIRECTORY_SEPARATOR);
 
-define("ROOT_PATH", str_replace("\\", "/", getcwd()) . DS . '..' . DS);
-define("SYSTEM_PATH", ROOT_PATH . '/system');
+define("PATH_UP", '..' . DS);
+if (str_ends_with(getcwd(), "public") || str_ends_with(getcwd(), "public" . DS)) {
+    define("ROOT_PATH", str_replace("\\", "/", getcwd()) . DS . PATH_UP);
+} else {
+    define("ROOT_PATH", str_replace("\\", "/", getcwd()) . DS);
+}
 
-define("LIBPATH", ROOT_PATH . '/lib');
-define("SYSTEM_LIBPATH", ROOT_PATH . DS . 'system' . DS . 'lib');
-define("FILE_ROOT", ROOT_PATH . DS . 'uploads' . DS);
-define("MEDIA_ROOT", str_replace("\\", "/", dirname(__FILE__)) . DS . '..' . DS . '..' . DS . 'media' . DS);
-define("ROOT", str_replace("\\", "/", dirname(__FILE__)) . DS . '..' . DS);
-define("STORAGE_PATH", ROOT_PATH . DS . 'storage');
+define("PUBLIC_PATH", ROOT_PATH . 'public' . DS);
+define("SYSTEM_PATH", ROOT_PATH . 'system');
+define("LIBPATH", ROOT_PATH . 'lib');
+define("SYSTEM_LIBPATH", ROOT_PATH .'system' . DS . 'lib');
+define("FILE_ROOT", ROOT_PATH . 'uploads' . DS);
+// define("MEDIA_ROOT", str_replace("\\", "/", dirname(__FILE__)) . DS . PATH_UP . PATH_UP . 'media' . DS);
+// define("ROOT", str_replace("\\", "/", dirname(__FILE__)) . DS . PATH_UP);
+define("STORAGE_PATH", ROOT_PATH . 'storage');
 define("SESSION_NAME", "CM5-SID");
 
 set_include_path(get_include_path() . PATH_SEPARATOR . LIBPATH);
