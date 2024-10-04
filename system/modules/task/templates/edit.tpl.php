@@ -149,7 +149,7 @@
                                                 <?php
                                                 echo HtmlBootstrap5::b(
                                                     '/task-subscriber/delete/' . $subscriber->id,
-                                                    'Delete',
+                                                    '×',
                                                     'Are you sure you want to remove this subscriber?',
                                                     null,
                                                     false,
