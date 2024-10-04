@@ -187,7 +187,7 @@
                                                 <?php foreach ($additional_details_flattened as $additional_detail) : ?>
                                                     <tr>
                                                         <td><?php echo $additional_detail[0]; ?></td>
-                                                        <td><?php echo $additional_detail[1]; ?></td>
+                                                        <td style="text-align: right"><?php echo $additional_detail[1]; ?></td>
                                                     </tr>
                                                 <?php endforeach; ?>
                                             </tbody>
@@ -203,15 +203,15 @@
                         <table class="table table-sm">
                             <tr>
                                 <th>Name</th>
-                                <td id="group_name"></td>
+                                <td style="text-align: right" id="group_name"></td>
                             </tr>
                             <tr>
                                 <th>Type</th>
-                                <td id="group_type"></td>
+                                <td style="text-align: right" id="group_type"></td>
                             </tr>
                             <tr>
                                 <th>Description</th>
-                                <td id="group_desc"></td>
+                                <td style="text-align: right" id="group_desc"></td>
                             </tr>
                         </table>
                     </div>
