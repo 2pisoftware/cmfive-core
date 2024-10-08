@@ -4,7 +4,7 @@
   "description": "Cmfive core new layout project",
   "private": true,
   "scripts": {
-    "vite": "vite build",
+    "vite": "GENERATE_SOURCEMAP=false vite build",
     "dev": "NODE_ENV=production npm run development",
     "development": "NODE_ENV=production node_modules/webpack/bin/webpack.js --progress --config=node_modules/laravel-mix/setup/webpack.config.js",
     "watch": "NODE_ENV=production npm run development -- --watch",

@@ -546,6 +546,7 @@ class Web
     public function start($init_database = true)
     {
         try {
+            $this->sanitisedRequestUri();
             if (Config::get('system.environment', ENVIRONMENT_DEVELOPMENT) === ENVIRONMENT_DEVELOPMENT) {
                 error_reporting(E_ALL);
                 ini_set('display_errors', 1);
@@ -558,7 +559,14 @@ class Web
                     $this->ctx('error', "An error occoured, if this message persists please contact your administrator.");
                 });
             }
-            
+
+            // Map files are causing CSRF to regenerate, if the map files are not found then return a 200 OK
+            // This may impact JS debugging in the browser
+            if (str_ends_with($_SERVER['REQUEST_URI'], ".js.map") && !file_exists(PUBLIC_PATH . $_SERVER['REQUEST_URI'])) {
+                $this->header('HTTP/1.1 200 OK');
+                echo "";
+                exit;
+            }
 
             // Set the timezone from Config
             $timezone = Config::get('system.timezone');
@@ -1753,6 +1761,31 @@ class Web
         }
 
         return $buffer;
+    }
+
+    private function sanitisedRequestUri()
+    {
+        $requestUri = ltrim($_SERVER['REQUEST_URI'], '/');
+        if ('' !== $requestUri && '/' === $requestUri[0]) {
+            // To only use path and query remove the fragment.
+            if (false !== $pos = strpos($requestUri, '#')) {
+                $requestUri = substr($requestUri, 0, $pos);
+            }
+        } else {
+            // HTTP proxy reqs setup request URI with scheme and host [and port] + the URL path,
+            // only use URL path.
+            $uriComponents = parse_url($requestUri);
+
+            if (isset($uriComponents['path'])) {
+                $requestUri = $uriComponents['path'];
+            }
+
+            if (isset($uriComponents['query'])) {
+                $requestUri .= '?'.$uriComponents['query'];
+            }
+        }
+
+        $_SERVER['REQUEST_URI'] = $requestUri;
     }
 
     /////////////////////////////////// Template stuff /////////////////////////

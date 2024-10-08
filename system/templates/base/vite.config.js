@@ -25,6 +25,7 @@ console.log("fileMap", _fileMapObj);
 export default defineConfig({
     plugins: [vue()],
     build: {
+        sourcemap: false,
         minify: "terser",
         target: 'es6',
         lib:
