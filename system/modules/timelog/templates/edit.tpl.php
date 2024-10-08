@@ -133,4 +133,4 @@ echo HtmlBootstrap5::multiColForm([
             ])
         ]
     ]
-]);
+], "/timelog/edit/" . (!empty($timelog->id) ? $timelog->id : ""));
