@@ -7,20 +7,20 @@
         overflow-y: auto;
     }
 </style>
-<div class='row-fluid clearfix panel'>
-    <div class='small-12 medium-9 columns'>
+<div class='row panel'>
+    <div class='col-12 col-md-9'></div>
         <p>Title: <?php echo $application->title; ?></p>
         <p>Description: <?php echo $application->description; ?></p>
         <p>Active: <?php echo $application->is_active == 1 ? 'Yes' : 'No'; ?></p>
     </div>
-    <div class='small-12 medium-3 columns'>
+    <div class='col-12 col-md-3'>
         <div class='row'>
-            <div class='small-6 columns'>
-                <?php echo Html::b('/form-application/edit/' . $application->id, 'Edit', null, null, false, "button expand"); ?> </br>
-                <?php echo Html::b('/form-application/export/'.$application->id, 'Export', null, null, false, "button expand"); ?>
+            <div class='col-6'>
+                <?php echo HtmlBootstrap5::b('/form-application/edit/' . $application->id, 'Edit', null, null, false, "btn btn-primary btn-block"); ?> </br>
+                <?php echo HtmlBootstrap5::b('/form-application/export/'.$application->id, 'Export', null, null, false, "btn btn-primary btn-block"); ?>
             </div>
-            <div class='small-6 columns'>
-                <?php echo Html::b('/form-application/delete/' . $application->id, 'Delete', 'Are you sure you want to delete this application? All references to already entered data will be lost!', null, false, "warning expand"); ?>
+            <div class='col-6'>
+                <?php echo HtmlBootstrap5::b('/form-application/delete/' . $application->id, 'Delete', 'Are you sure you want to delete this application? All references to already entered data will be lost!', null, false, "btn btn-danger btn-block"); ?>
             </div>
         </div>
     </div>

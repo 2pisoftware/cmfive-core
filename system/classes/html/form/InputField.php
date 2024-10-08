@@ -57,7 +57,7 @@ class InputField extends \Html\Form\FormElement
      * field given above and set the field value to the corresponding array
      * key value (implementation in parent).
      *
-     * @param Array $fields
+     * @param \array $fields
      */
     public function __construct($fields = [])
     {

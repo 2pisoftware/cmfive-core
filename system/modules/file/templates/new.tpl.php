@@ -34,8 +34,10 @@
     </div>
 </div>
 <script>
-    var app = new Vue({
-        el: "#app",
+    const {
+        createApp
+    } = Vue;
+    createApp({
         data: function() {
             return {
                 can_restrict: "<?php echo $can_restrict; ?>",
@@ -98,5 +100,5 @@
                 });
             }
         }
-    });
+    }).mount("#app");
 </script>

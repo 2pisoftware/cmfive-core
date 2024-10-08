@@ -44,7 +44,7 @@ function edit_GET(Web $w)
             ]
         ]
     ];
-    $w->ctx('event_form', Html::multiColForm($form, '/form-event/edit/' . $event->id . '?form_id=' . $form_id));
+    $w->ctx('event_form', HtmlBootstrap5::multiColForm($form, '/form-event/edit/' . $event->id . '?form_id=' . $form_id));
 }
 
 function edit_POST(Web $w)

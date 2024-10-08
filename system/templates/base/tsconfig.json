@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-        "module": "es2015",
+        "module": "ES6",
         "moduleResolution": "Node",
         "noImplicitAny": false,
         "removeComments": true,
