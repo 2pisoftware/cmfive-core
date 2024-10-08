@@ -191,8 +191,7 @@ class DbService
 
             // Default is deleted checks to 0
             $columns = $o->getDbTableColumnNames();
-
-            if (!$includeDeleted && (property_exists(get_class($o), "is_deleted") || (in_array("is_deleted", $columns)))) {
+            if (!$includeDeleted && in_array("is_deleted", $columns)) {
                 $this->_db->where('is_deleted', 0);
             }
         }
@@ -301,7 +300,7 @@ class DbService
         // Default is deleted checks to 0
         $columns = $o->getDbTableColumnNames();
 
-        if (!$includeDeleted && (property_exists(get_class($o), "is_deleted") || (in_array("is_deleted", $columns)))) {
+        if (!$includeDeleted && in_array("is_deleted", $columns)) {
             $this->_db->where('is_deleted', 0);
         }
 

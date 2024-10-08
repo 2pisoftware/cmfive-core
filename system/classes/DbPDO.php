@@ -469,8 +469,6 @@ class DbPDO extends PDO
         switch ($func) {
             case 'and':
                 return $this->where($args[0], $args[1]);
-                break;
-
             default:
                 /**
                  * What this does is palm off unknown function calls to the parent
@@ -483,7 +481,7 @@ class DbPDO extends PDO
                  * NOTE: You only need to prefix the first method when chaining as the return value for
                  * the first call is a PDOStatement
                  */
-                return call_user_func_array("parent::" . $func, $args);
+                return call_user_func_array([$this, $func], $args);
         }
     }
 

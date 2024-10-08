@@ -1,4 +1,5 @@
-<?php namespace Html;
+<?php
+namespace Html;
 
 /**
  * The base class for a Cmfive HTML element, this class is intended to house
@@ -8,6 +9,22 @@
  */
 abstract class Element
 {
+    protected $_data = [];
+
+    public function __get($name)
+    {
+        if (isset($this->_data[$name])) {
+            return $this->_data[$name];
+        }
+
+        return null;
+    }
+
+    public function __set($name, $value)
+    {
+        $this->_data[$name] = $value;
+    }
+
     /**
      * Constructor to set fields for subclassed object
      *

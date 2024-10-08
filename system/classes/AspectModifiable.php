@@ -106,6 +106,7 @@ class ObjectModification extends DbObject
     public $dt_modified;
     public $creator_id;
     public $modifier_id;
+    // protected int|null $is_deleted;
 
     // do not audit this table!
     public $__use_auditing = false;

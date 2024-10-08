@@ -9,6 +9,8 @@ class CmfiveStyleComponent extends CmfiveComponent
     public $_extension = 'css';
     public $_include_paths = [];
     public $_external = false;
+    public string|null $rel;
+    public string|null $href;
     public static $_allowed_extensions = ['css', 'scss'];
 
     public function __construct($path, $include_paths = [], $is_external = false, $props = [])

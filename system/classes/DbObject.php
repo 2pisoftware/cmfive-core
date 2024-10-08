@@ -82,8 +82,13 @@ class DbObject extends DbService
 
     private $_systemEncrypt = null;
     private $_systemDecrypt = null;
+    protected ?array $__old;
+    public $dt_created;
+    public $dt_modified;
+    public $creator_id;
+    public $modifier_id;
+    protected $is_deleted;
 
-    //This is list is depreciated, it has been left here for backwards compatability
     static $_stopwords = "about above across after again against all almost alone along already also although always among and any anybody anyone anything anywhere are area areas around ask asked asking asks away back backed backing backs became because become becomes been before began behind being beings best better between big both but came can cannot case cases certain certainly clear clearly come could did differ different differently does done down downed downing downs during each early either end ended ending ends enough even evenly ever every everybody everyone everything everywhere face faces fact facts far felt few find finds first for four from full fully further furthered furthering furthers gave general generally get gets give given gives going good goods got great greater greatest group grouped grouping groups had has have having her here herself high higher highest him himself his how however important interest interested interesting interests into its itself just keep keeps kind knew know known knows large largely last later latest least less let lets like likely long longer longest made make making man many may member members men might more most mostly mrs much must myself necessary need needed needing needs never new newer newest next nobody non noone not nothing now nowhere number numbers off often old older oldest once one only open opened opening opens order ordered ordering orders other others our out over part parted parting parts per perhaps place places point pointed pointing points possible present presented presenting presents problem problems put puts quite rather really right room rooms said same saw say says second seconds see seem seemed seeming seems sees several shall she should show showed showing shows side sides since small smaller smallest some somebody someone something somewhere state states still such sure take taken than that the their them then there therefore these they thing things think thinks this those though thought thoughts three through thus today together too took toward turn turned turning turns two under until upon use used uses very want wanted wanting wants was way ways well wells went were what when where whether which while who whole whose why will with within without work worked working works would year years yet you young younger youngest your yours";
 
     /**
@@ -678,11 +683,13 @@ class DbObject extends DbService
             }
 
             $data = [];
-            foreach (get_object_vars($this) as $k => $v) {
-                if (substr($k, 0, 1) != "_" && $k != "w" && $v !== null) {
-                    $dbk = $this->getDbColumnName($k);
-                    $data[$dbk] = $this->updateConvert($dbk, $v);
-                }
+            $filtered_values = array_filter(get_object_vars($this), function ($value, $key) use ($columns) {
+                return in_array($key, $columns) && substr($key, 0, 1) != "_" && $key != "w" && $value !== null;
+            }, ARRAY_FILTER_USE_BOTH);
+
+            foreach ($filtered_values as $k => $v) {
+                $dbk = $this->getDbColumnName($k);
+                $data[$dbk] = $this->updateConvert($dbk, $v);
             }
 
             $this->_db->insert($t, $data);
@@ -782,20 +789,22 @@ class DbObject extends DbService
             $this->validateBoolianProperties();
 
             $data = [];
-            foreach (get_object_vars($this) as $k => $v) {
-                if (substr($k, 0, 1) != "_" && $k != "w") { // ignore volatile vars
-                    $dbk = $this->getDbColumnName($k);
+            $filtered_values = array_filter(get_object_vars($this), function ($value, $key) use ($columns) {
+                return in_array($key, $columns) && substr($key, 0, 1) != "_" && $key != "w" && $value !== null;
+            }, ARRAY_FILTER_USE_BOTH);
 
-                    // call update conversions
-                    $v = $this->updateConvert($k, $v);
-                    if ($v !== null) {
-                        $data[$dbk] = $v;
-                    }
-                    // if $force_null_values is TRUE and $v is NULL, then set fields in DB to NULL
-                    // otherwise ignore NULL values
-                    if ($v === null && $force_null_values == true) {
-                        $data[$dbk] = null;
-                    }
+            foreach ($filtered_values as $k => $v) {
+                $dbk = $this->getDbColumnName($k);
+
+                // call update conversions
+                $v = $this->updateConvert($k, $v);
+                if ($v !== null) {
+                    $data[$dbk] = $v;
+                }
+                // if $force_null_values is TRUE and $v is NULL, then set fields in DB to NULL
+                // otherwise ignore NULL values
+                if ($v === null && $force_null_values == true) {
+                    $data[$dbk] = null;
                 }
             }
 
@@ -908,7 +917,7 @@ class DbObject extends DbService
      *
      * You can also override this function completely.
      *
-     * @return String
+     * @return string
      */
     public function getDbTableName()
     {
@@ -1047,10 +1056,9 @@ class DbObject extends DbService
         $exclude = ["dt_created", "dt_modified", "w"];
 
         foreach (get_object_vars($this) as $k => $v) {
-            if (
-                substr($k, 0, 1) != "_" // ignore volatile vars
+            if (substr($k, 0, 1) != "_" // ignore volatile vars
                 && (!property_exists($this, "_exclude_index") // ignore properties that should be excluded
-                    || !in_array($k, $this->_exclude_index)) && stripos($k, "_id") === false && !in_array($k, $exclude)
+                || !in_array($k, $this->_exclude_index)) && stripos($k, "_id") === false && !in_array($k, $exclude)
             ) {
                 if ($k == "id") {
                     $str .= "id" . $v . " ";

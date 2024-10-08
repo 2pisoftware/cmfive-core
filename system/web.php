@@ -97,6 +97,8 @@ class Web
     public $_module_loaded_hooks = []; //cache loaded module hook files
     private $_classdirectory; // used by the class auto loader
 
+    public string $_webroot = "";
+    public string|null $_actionMethod;
     public $_scripts = [];
     public $_styles = [];
     public $sHttps = null;
@@ -544,6 +546,11 @@ class Web
     public function start($init_database = true)
     {
         try {
+            if (Config::get('system.environment', ENVIRONMENT_DEVELOPMENT) === ENVIRONMENT_DEVELOPMENT) {
+                error_reporting(E_ALL);
+                ini_set('display_errors', 1);
+            }
+
             if (Config::get("system.environment") !== "development") {
                 set_error_handler(function ($errno, $errstr, $errfile, $errline) {
                     $logger = empty($this->currentModule()) ? "CMFIVE" : strtoupper($this->currentModule());

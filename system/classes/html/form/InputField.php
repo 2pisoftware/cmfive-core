@@ -76,7 +76,7 @@ class InputField extends \Html\Form\FormElement
     {
         $buffer = '<input ';
 
-        foreach (get_object_vars($this) as $field => $value) {
+        foreach (array_merge(get_object_vars($this), $this->_data ?? []) as $field => $value) {
             if (is_null($value) || in_array($field, static::$_excludeFromOutput) || $field[0] == "_") {
                 continue;
             }

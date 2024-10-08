@@ -15,6 +15,9 @@ function edit_GET(Web $w)
     $email_channel = $channel_id ? ChannelService::getInstance($w)->getEmailChannel($channel_id) : new EmailChannelOption($w);
 
     // Decrypt username and password
+    if ($email_channel == null) {
+        $w->error("Email Channel not found", "/channels/listchannels");
+    }
     $email_channel->decrypt();
 
     $form["Email"] = [

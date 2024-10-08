@@ -49,7 +49,7 @@ test("You can create a Timelog using Add Timelog" , async ({page, isMobile}) => 
         timelog,
         task,
         taskID,
-        DateTime.fromFormat("1/2/2021", "d/M/yyyy"),
+        DateTime.fromFormat("2021-02-01", "yyyy-mm-dd"),
         "10:00",
         "11:00",
     );

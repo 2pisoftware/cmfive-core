@@ -247,7 +247,7 @@ export class ChannelsHelper {
 
         const formElement = getFormElementByLabel(page, emailChannelFormLabelToId);
 
-        await expect(formElement("Protocol")).toHaveValue(channel["Protocol"] as string);
+        await expect(page.locator("#protocol")).toHaveValue(channel["Protocol"] as string);
 
         if (channel["Post Read Action"] !== undefined)
             await expect(formElement("Post Read Action")).toHaveValue(channel["Post Read Action"] as string);
