@@ -1,131 +1,136 @@
-<div class="row-fluid clearfix">
-    <div class="small-12 medium-6 large-4 columns">
-        <label>Select new Taskgroup
+<?php
+use Html\Form\Html5Autocomplete;
+use Html\Form\InputField\Hidden;
+use Html\Form\Select;
+
+$task_groups = array_filter(TaskService::getInstance($w)->getTaskGroups(), function ($task_group) {
+    return $task_group->getCanICreate();
+});
+
+?>
+
+<form action="javascript:void(0)">
+    <?php
+    echo new Hidden([
+        "id|name" => "old_taskgroup_id",
+        "value" => $old_taskgroup->id,
+    ]);
+
+    echo new Hidden([
+        "id|name" => "new_taskgroup_id",
+    ]);
+
+    echo new Hidden([
+        "id|name" => "task_id",
+        "value" => $task->id,
+    ]);
+    ?>
+
+    <div class="row">
+        <div class="col">
+            <label for="taskgroup" class="form-label">
+                Task Group
+                <small>Required</small>
+            </label>
             <?php
-            $task_groups = array_filter(TaskService::getInstance($w)->getTaskGroups(), function ($task_group) {
-                return $task_group->getCanICreate();
-            });
-            echo Html::autocomplete("taskgroup", $task_groups);
+            echo new Html5Autocomplete([
+                "id|name" => "taskgroup",
+                "class" => "form-control",
+                "required" => true,
+                "options" => $task_groups,
+                "value" => $old_taskgroup->id,
+                "placeholder" => "Select a task group",
+                "maxItems" => 1,
+            ])
             ?>
-        </label>
-    </div>
-</div>
-<div class="row-fluid clearfix" id="taskgroup_identical" style="display: none;">
-    <div class="small-12 columns">
-        <hr />
-        <p>No additional details are needed</p>
-        <form action="/task-group/saveNewTaskgroup" method="POST">
-            <?php echo (new \Html\Form\InputField\Hidden([
-                "name" => "old_taskgroup_id",
-                "id" => "old_taskgroup_id",
-                "value" => $old_taskgroup->id
-            ]));
-            echo (new \Html\Form\InputField\Hidden([
-                "name" => "new_taskgroup_id",
-                "class" => "new_taskgroup_id"
-            ]));
-            echo (new \Html\Form\InputField\Hidden([
-                "name" => "task_id",
-                "id" => "task_id",
-                "value" => $task->id
-            ]));
-            ?>
-            <button class="button">Save</button>
-        </form>
-    </div>
-</div>
-<div id="taskgroup_results" style="display: none;">
-    <hr />
-    <p>Choosing a different taskgroup type requires additional data to be entered:</p>
-    <div class="row-fluid clearfix">
-        <div class="small-12 columns">
-            <blockquote id="new_taskgroup_type_placeholder">
-            </blockquote>
         </div>
     </div>
 
-    <form action="/task-group/saveNewTaskgroup" method="POST">
-        <?php echo (new \Html\Form\InputField\Hidden([
-            "name" => "old_taskgroup_id",
-            "id" => "old_taskgroup_id",
-            "value" => $old_taskgroup->id
-        ]));
-        echo (new \Html\Form\InputField\Hidden([
-            "name" => "new_taskgroup_id",
-            "class" => "new_taskgroup_id"
-        ]));
-        echo (new \Html\Form\InputField\Hidden([
-            "name" => "task_id",
-            "id" => "task_id",
-            "value" => $task->id
-        ]));
-        ?>
-        <div class="row-fluid clearfix">
-            <div class="small-12 medium-6 large-4 columns">
-                <label>Select new Task Type (was <?php echo $task->task_type; ?>)
-                    <div id="new_task_type_placeholder">
-                        <?php echo (new \Html\Form\Select())->setName("new_task_type")->setId("new_task_type"); ?>
-                    </div>
-                </label>
+    <div class="row pt-2" id="identical_taskgroup">
+        <div class="col">
+            <p>No additional details required</p>
+            <button type="submit" class="btn btn-primary">Move</button>
+        </div>
+    </div>
+
+    <div class="row pt-2 d-none" id="different_taskgroup">
+        <p class="mb-0" >Choosing a different task group type requires additional information:</p>
+
+        <div class="row mt-0">
+            <div class="col">
+                <label class="form-label" for="new_task_type">New Task Type (was '<?php echo $task->task_type?>')</label>
+                <?php
+                echo new Select([
+                    "id|name" => "new_task_type",
+                    "class" => "form-select",
+                ])
+                ?>
+            </div>
+
+            <div class="col">
+                <label class="form-label" for="new_status">New Status (was '<?php echo $task->status?>')</label>
+                <?php
+                echo new Select([
+                    "id|name" => "new_status",
+                    "class" => "form-select",
+                ])
+                ?>
             </div>
         </div>
-        <div class="row-fluid clearfix">
-            <div class="small-12 medium-6 large-4 columns">
-                <label>Select new Status (was <?php echo $task->status; ?>)
-                    <div id="new_status_placeholder">
-                        <?php echo (new \Html\Form\Select())->setName("new_status")->setId("new_status"); ?>
-                    </div>
-                </label>
+
+        <div class="row">
+            <div class="col">
+                <label class="form-label" for="new_priority">New Priority (was '<?php echo $task->priority?>')</label>
+                <?php
+                echo new Select([
+                    "id|name" => "new_priority",
+                    "class" => "form-select",
+                ])
+                ?>
+            </div>
+
+            <div class="col">
+                <label class="form-label" for="new_assignee">New Assignee (was '<?php
+                    $user = AuthService::getInstance($w)->getUser($task->assignee_id);
+                    echo !empty($user) ? $user->getFullName() : "unassigned";?>')</label>
+                <?php
+                echo new Select([
+                    "id|name" => "new_assignee",
+                    "class" => "form-select",
+                ])
+                ?>
             </div>
         </div>
-        <div class="row-fluid clearfix">
-            <div class="small-12 medium-6 large-4 columns">
-                <label>Select new Priority (was <?php echo $task->priority; ?>)
-                    <div id="new_priority_placeholder">
-                        <?php echo (new \Html\Form\Select())->setName("new_priority")->setId("new_priority"); ?>
-                    </div>
-                </label>
+
+        <div class="row">
+            <div class="col">
+                <button type="submit" class="btn btn-primary">Move</button>
             </div>
         </div>
-        <div class="row-fluid clearfix">
-            <div class="small-12 medium-6 large-4 columns">
-                <label>Select new Assignee <?php
-                                            $user = AuthService::getInstance($w)->getUser($task->assignee_id);
-                                            echo "(was " . (!empty($user) ? $user->getFullName() : "unassigned") . ")"; ?>
-                    <div id="new_assignee_placeholder">
-                        <?php echo (new \Html\Form\Select())->setName("new_assignee")->setId("new_assignee"); ?>
-                    </div>
-                </label>
-            </div>
-        </div>
-        <div class="row-fluid clearfix">
-            <div class="small-12 medium-6 large-4 columns">
-                <button class="button">Save</button>
-            </div>
-        </div>
-    </form>
-</div>
+    </div>
+</form>
+
 <script>
-    var old_taskgroup_type = "<?php echo $old_taskgroup->task_group_type; ?>";
+    const old_taskgroup_type = "<?php echo $old_taskgroup->task_group_type; ?>";
 
-    function selectAutocompleteCallback(event, ui) {
-        if (event.target.id == "acp_taskgroup") {
-            $.get("/task-group/ajax_getTaskgroupDetails/" + ui.item.id, function(response) {
-                var res = JSON.parse(response);
-                if (res.taskgroup_type_name == old_taskgroup_type) {
-                    $(".new_taskgroup_id").val(ui.item.id);
-                    $("#taskgroup_identical").show();
-                } else {
-                    // New taskgroup type, prompt for details
-                    $(".new_taskgroup_id").val(ui.item.id);
-                    $("#new_taskgroup_type_placeholder").html(res.taskgroup_type + "<cite>" + res.taskgroup_description + "</cite>");
-                    $("#new_task_type_placeholder").html(res.task_types);
-                    $("#new_status_placeholder").html(res.statuses);
-                    $("#new_priority_placeholder").html(res.priorities);
-                    $("#new_assignee_placeholder").html(res.assignees);
-                    $("#taskgroup_results").show();
-                }
-            });
+    document.getElementById("taskgroup").addEventListener("change", async (e) => {
+        const taskgroup = e.target.value;
+
+        const json = await fetch(`/task-group/ajax_getTaskgroupDetails/${taskgroup}`).then(x => x.json());
+
+        document.getElementById("new_taskgroup_id").value = taskgroup;
+
+        if (json.taskgroup_type_name === old_taskgroup_type) {
+            document.getElementById("identical_taskgroup").classList.remove("d-none");
+            document.getElementById("different_taskgroup").classList.add("d-none");
+        } else {
+            document.getElementById("identical_taskgroup").classList.add("d-none");
+            document.getElementById("different_taskgroup").classList.remove("d-none");
+
+            document.getElementById("new_task_type").innerHTML = json.task_types;
+            document.getElementById("new_status").innerHTML = json.statuses;
+            document.getElementById("new_priority").innerHTML = json.priorities;
+            document.getElementById("new_assignee").innerHTML = json.assignees;
         }
-    }
+    });
 </script>
