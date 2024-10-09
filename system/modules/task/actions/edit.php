@@ -119,7 +119,7 @@ function edit_GET($w)
                 (new InputField\Date([
                     "label" => "Date Due",
                     "id|name" => "dt_due",
-                    "value" => formatDate($task->dt_due)
+                    "value" => formatDate($task->dt_due, "Y-m-d")
                 ])),
                 
                 (new Select([
