@@ -9,7 +9,7 @@ $task_groups = array_filter(TaskService::getInstance($w)->getTaskGroups(), funct
 
 ?>
 
-<form action="javascript:void(0)">
+<form action="/task-group/saveNewTaskgroup" method="POST">
     <?php
     echo new Hidden([
         "id|name" => "old_taskgroup_id",
