@@ -17,18 +17,18 @@ function import_GET(Web $w) {
 function import_POST(Web $w) {
 
 
-	if(isset($_FILES['file'])) {
+	if (isset($_FILES['file'])) {
 	    $filename = $_FILES['file']['name'];
 	    $source = $_FILES['file']['tmp_name'];
 	    $type = $_FILES['file']['type']; 
-	     
-	    $name = explode('.', $filename); 
+		
+		$name = preg_split("/[\:\.]/", $filename, -1, PREG_SPLIT_NO_EMPTY);
+	    
 	    //check for form dir in uploads
 	    if (!is_dir(ROOT_PATH .'/uploads/form')) {
 	    	mkdir(ROOT_PATH .'/uploads/form/');
 	    }
-	    $target = ROOT_PATH .'/uploads/form/' . $name[0] . '-' . time() . '/';  
-	     
+	    
 	    // Ensures that the correct file was chosen
 	    $accepted_types = array('application/zip', 
 	                                'application/x-zip-compressed', 
@@ -42,20 +42,32 @@ function import_POST(Web $w) {
 	        } 
 	    }
 	       
-	  //Safari and Chrome don't register zip mime types. Something better could be used here.
+	  	//Safari and Chrome don't register zip mime types. Something better could be used here.
 	    $okay = strtolower($name[1]) == 'zip' ? true: false;
 	 
 	    if(!$okay) {
-	          $w->error("Please choose a zip file","/form-application");       
+	          $w->error("Please choose a zip file", "/form-application");       
 	    }
 	    
+		//sanitize target filename
+		$new_dir = htmlspecialchars(strip_tags(trim($name[0])));
+		$target = ROOT_PATH .'/uploads/form/' . $new_dir . '-' . time() . '/';
 	    mkdir($target);
-	    $saved_file_location = $target . $filename;
+		//check if folder was created
+		if (realpath($target) != substr($target, 0, -1)) {
+			$w->error("Paths don't match", '/form-application');
+		}
+		if (realpath($target) === false) {
+			$w->error('Failed to create folder', '/form-application');
+		}
+
+		$new_filename = htmlspecialchars(strip_tags(trim($filename)));
+	    $saved_file_location = $target . $new_filename;
 	     
-	    if(move_uploaded_file($source, $saved_file_location)) {
+	    if (move_uploaded_file($source, $saved_file_location)) {
 	        $zip = new ZipArchive();
 		    $x = $zip->open($saved_file_location);
-		    if($x === true) {
+		    if ($x === true) {
 		        $zip->extractTo($target);
 		        $zip->close();
 		         
@@ -67,13 +79,13 @@ function import_POST(Web $w) {
 	        $w->error("Failed to save file upload","/form");
 	    }
 	     
-	    $content = json_decode(file_get_contents($target.$name[0]));
+	    $content = json_decode(file_get_contents($target . $name[0]));
 	    if (empty($content)) {
 	    	$w->error('no content found. PLease ensure that your zip filename matches your application name');
 	    }
 
 	    //delete file upload from directory
-	    unlink($target.$name[0]);
+	    unlink($target . $new_filename);
 	    rmdir($target);
 	//echo $target.$name[0]; die;
 	    //create form structure from $content

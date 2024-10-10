@@ -22,12 +22,12 @@ function import_POST(Web $w) {
 	    $source = $_FILES['file']['tmp_name'];
 	    $type = $_FILES['file']['type']; 
 	     
-	    $name = explode('.', $filename); 
+	    $name = preg_split("/[\:\.]/", $filename, -1, PREG_SPLIT_NO_EMPTY);
 	    //check for form dir in uploads
 	    if (!is_dir(ROOT_PATH .'/uploads/form')) {
 	    	mkdir(ROOT_PATH .'/uploads/form/');
 	    }
-	    $target = ROOT_PATH .'/uploads/form/' . $name[0] . '-' . time() . '/';  
+	    
 	     
 	    // Ensures that the correct file was chosen
 	    $accepted_types = array('application/zip', 
@@ -48,9 +48,21 @@ function import_POST(Web $w) {
 	    if(!$okay) {
 	          $w->error("Please choose a zip file","/form");       
 	    }
-	    
+	      
+		//sanitize target filename
+		$new_dir = htmlspecialchars(strip_tags(trim($name[0])));
+		$target = ROOT_PATH .'/uploads/form/' . $new_dir . '-' . time() . '/';
 	    mkdir($target);
-	    $saved_file_location = $target . $filename;
+		//check if folder was created
+		if (realpath($target) != substr($target, 0, -1)) {
+			$w->error("Paths don't match", '/form-application');
+		}
+		if (realpath($target) === false) {
+			$w->error('Failed to create folder', '/form-application');
+		}
+
+		$new_filename = htmlspecialchars(strip_tags(trim($filename)));
+	    $saved_file_location = $target . $new_filename;
 	     
 	    if(move_uploaded_file($source, $saved_file_location)) {
 	        $zip = new ZipArchive();
@@ -73,7 +85,7 @@ function import_POST(Web $w) {
 	    }
 
 	    //delete file upload from directory
-	    unlink($target.$name[0]);
+	    unlink($target . $new_filename);
 	    rmdir($target);
 	//echo $target.$name[0]; die;
 	    //create form structure from $content
