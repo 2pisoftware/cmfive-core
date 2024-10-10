@@ -7,9 +7,9 @@
         <div id='dynamic'>
             <?php
             echo HtmlBootstrap5::box(href: "/admin-lookups/edit", title: "Create Lookup", class: 'btn btn-primary');
-            echo HtmlBootstrap5::filter("Search Lookup Items", array(
+            echo HtmlBootstrap5::filter("Search Lookup Items", [
                 ["Type", "select", "type", Request::string('type'), LookupService::getInstance($w)->getLookupTypes(), "form-select"]
-            ), "/admin/lookup");
+            ], "/admin-lookups");
             echo $listitem; ?>
         </div>
         <div id='countries'>

@@ -1,28 +1,39 @@
 <?php
 
-class AdminAddMigrationMessageTextColumns extends CmfiveMigration {
+class AdminAddMigrationMessageTextColumns extends CmfiveMigration
+{
 
-	public function up() {
-		$this->addColumnToTable('migration', 'pretext', 'string', ['default' => null, 'null' => true]);
-		$this->addColumnToTable('migration', 'posttext', 'string', ['default' => null, 'null' => true]);
-		$this->addColumnToTable('migration', 'description', 'string', ['default' => null, 'null' => true]);
+	public function up()
+	{
+
+		if ($this->hasTable('migration') && !$this->table("migration")->hasColumn("pretext")) {
+			$this->addColumnToTable('migration', 'pretext', 'string', ['default' => null, 'null' => true]);
+			$this->addColumnToTable('migration', 'posttext', 'string', ['default' => null, 'null' => true]);
+			$this->addColumnToTable('migration', 'description', 'string', ['default' => null, 'null' => true]);
+		}
 	}
 
-	public function down() {
-		$this->removeColumnFromTable('migration', 'pretext');
-		$this->removeColumnFromTable('migration', 'posttext');
-		$this->removeColumnFromTable('migration', 'description');
+	public function down()
+	{
+		if ($this->hasTable('migration') && $this->table("migration")->hasColumn("pretext")) {
+			$this->removeColumnFromTable('migration', 'pretext');
+			$this->removeColumnFromTable('migration', 'posttext');
+			$this->removeColumnFromTable('migration', 'description');
+		}
 	}
 
-	public function preText() {
+	public function preText()
+	{
 		return "";
 	}
 
-	public function postText() {
+	public function postText()
+	{
 		return "";
 	}
 
-	public function description() {
+	public function description()
+	{
 		return "";
 	}
 }

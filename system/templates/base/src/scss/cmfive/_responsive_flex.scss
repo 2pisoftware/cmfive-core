@@ -1,0 +1,15 @@
+.responsive-flex {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+
+    @media (max-width: 768px) {
+        flex-direction: column;
+        align-items: center;
+
+        // Add top margin to all but the first child
+        & > div:not(:first-child) {
+            margin-top: 1rem;
+        }
+    }
+}
