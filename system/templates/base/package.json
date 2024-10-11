@@ -23,6 +23,7 @@
     "codemirror": "^6.0.1",
     "jquery": "^3.7.1",
     "quill": "^2.0.2",
+    "sortablejs": "^1.15.3",
     "tom-select": "^2.2.2",
     "typescript": "^4.9.5",
     "vue": "^2.7.14",
