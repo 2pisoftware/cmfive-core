@@ -39,15 +39,14 @@ use Html\Form\Textarea;
         </label>
         <?php
         if (AuthService::getInstance($w)->user()->is_admin && !empty($options)) {
-            echo new Select([
+            echo (new Select([
                 "id|name" => "user_id",
                 "class" => "form-select",
                 "required" => true,
-                "options" => $options,
-                "value" => empty($timelog->id)
-                ? AuthService::getInstance($w)->user()->id
-                : (!empty($timelog->user_id) ? $timelog->user_id : null)
-            ]);
+                "options" => $options
+            ]))->setSelectedOption(empty($timelog->id)
+            ? AuthService::getInstance($w)->user()->id
+            : (!empty($timelog->user_id) ? $timelog->user_id : null));
         } else {
             echo new Hidden([
                 "name" => "user_id",
