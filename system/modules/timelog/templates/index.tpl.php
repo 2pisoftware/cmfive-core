@@ -33,7 +33,7 @@
                         $actions[] = HtmlBootstrap5::b('/timelog/delete/' . $val->id, 'Delete', empty($confirmation_message) ? 'Are you sure you want to delete this timelog?' : $confirmation_message, null, null, "bg-danger");
                     }
 
-                    $row[] = implode("", $actions);
+                    $row[] = [implode("", $actions), "text-end"];
 
                     return $row;
                 }, $entry_struct["entries"]), null, "tablesorter", $header);
