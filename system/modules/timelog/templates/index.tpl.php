@@ -1,7 +1,7 @@
 <div class='row-fluid'>
     <?php if (!empty($time_entries)) : ?>
         <?php foreach ($time_entries as $date => $entry_struct) : ?>
-            <h4 style='border-bottom: 1px solid #777;'>
+            <h4 style='border-bottom: 1px solid #777;' class="mt-2">
                 <?php echo $date; ?>
                 <div style="float: right">
                     <?php echo TaskService::getInstance($w)->getFormatPeriod($entry_struct['total']); ?>
