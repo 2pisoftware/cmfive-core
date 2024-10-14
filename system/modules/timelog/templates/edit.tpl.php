@@ -144,6 +144,7 @@ use Html\Form\Textarea;
                 <span class="form-check d-inline ps-0">
                     <?php
                         echo new Radio([
+                            "id" => "select_end_method_time",
                             "name" => "select_end_method",
                             "class" => "",
                             "select" => "form-check-input",
@@ -175,31 +176,45 @@ use Html\Form\Textarea;
                 <span class="form-check d-inline ps-0">
                     <?php
                         echo new Radio([
+                            "id" => "select_end_method_hours",
                             "name" => "select_end_method",
                             "class" => "",
                             "select" => "form-check-input",
-                            "value"        => "time",
+                            "value"        => "hours",
                             "tabindex"    => -1
                         ]);
                     ?>
                 </span>
 
                 <span class="d-inline">
-                    <label class="form-label d-inline-flex" for="time_end">
+                    <label class="form-label d-inline-flex" for="hours_worked">
                         Hours/Minutes worked
                     </label>
-                    <?php
-                    echo new Number([
-                        "id|name" => "time_end",
-                        "class" => "form-control",
-                        "value" => $timelog->getMinutesWorked(),
-                        "min" => 0,
-                        "max" => 59,
-                        "step" => 1,
-                        "placeholder" => "Mins: 0-59",
-                        "disabled" => "true"
-                    ])
-                    ?>
+                    <div class="d-flex gap-2">
+                        <?php
+                        echo new Number([
+                            "id|name" => "hours_worked",
+                            "class" => "form-control",
+                            "value" => $timelog->getHoursWorked(),
+                            "min" => 0,
+                            "max" => 23,
+                            "step" => 1,
+                            "placeholder" => "Hours: 0-23",
+                            "disabled" => "true"
+                        ]);
+
+                        echo new Number([
+                            "id|name" => "minutes_worked",
+                            "class" => "form-control",
+                            "value" => $timelog->getMinutesWorked(),
+                            "min" => 0,
+                            "max" => 59,
+                            "step" => 1,
+                            "placeholder" => "Mins: 0-59",
+                            "disabled" => "true"
+                        ])
+                        ?>
+                    </div>
                 </span>
             </div> <!-- hours/minutes -->
         </div> <!-- end time inputs -->
@@ -237,3 +252,27 @@ use Html\Form\Textarea;
 
     <button type="submit" class="btn btn-primary ms-0">Submit</button>
 </form>
+
+<script>
+    const handleRadioChange = (e) => {
+        const value = e.target.value;
+
+        const time_end = document.getElementById("time_end");
+        const hours_worked = document.getElementById("hours_worked");
+        const minutes_worked = document.getElementById("minutes_worked");
+
+        if (value === "time") {
+            hours_worked.setAttribute("disabled", "disabled");
+            minutes_worked.setAttribute("disabled", "disabled");
+            time_end.removeAttribute("disabled");
+        }
+        else {
+            hours_worked.removeAttribute("disabled");
+            minutes_worked.removeAttribute("disabled");
+            time_end.setAttribute("disabled", "disabled");
+        }
+    }
+
+    document.getElementById("select_end_method_hours").addEventListener("change", handleRadioChange);
+    document.getElementById("select_end_method_time").addEventListener("change", handleRadioChange);
+</script>
