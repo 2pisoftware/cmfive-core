@@ -15,15 +15,6 @@ export class Tags {
 	private static selected: Set<string> = new Set();
 
 	static bind = async () => {
-		document.querySelectorAll(Tags.target).forEach((e) => {
-			// don't update again on modal open
-			const id = e.getAttribute("data-tag-id");
-			console.log(id);
-			if (!this.selected.has(id))
-				this.update(e);
-			this.selected.add(id);
-		});
-
 		const modal = document.getElementById("cmfive-modal");
 		// on modal hide, update
 		const cb = () => {
