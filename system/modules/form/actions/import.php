@@ -50,7 +50,7 @@ function import_POST(Web $w) {
 	    }
 	      
 		//sanitize target filename
-		$new_dir = htmlspecialchars(strip_tags(trim($name[0])));
+		$new_dir = md5($name[0]);
 		$target = ROOT_PATH .'/uploads/form/' . $new_dir . '-' . time() . '/';
 	    mkdir($target);
 		//check if folder was created
@@ -61,8 +61,8 @@ function import_POST(Web $w) {
 			$w->error('Failed to create folder', '/form-application');
 		}
 
-		$new_filename = htmlspecialchars(strip_tags(trim($filename)));
-	    $saved_file_location = $target . $new_filename;
+		$new_filename = md5($filename) . '.zip';
+	    $saved_file_location = realpath($target) . $new_filename;
 	     
 	    if(move_uploaded_file($source, $saved_file_location)) {
 	        $zip = new ZipArchive();
