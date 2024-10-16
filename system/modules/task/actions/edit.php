@@ -133,8 +133,16 @@ function edit_GET($w)
                     ->setSelectedOption($task->assignee_id),
             ],
             [
-                ["Estimated hours", "text", "estimate_hours", $task->estimate_hours],
-                ["Effort", "text", "effort", $task->effort],
+                new InputField([
+                    "id|name" => "estimate_hours",
+                    "label" => "Estimated Hours",
+                    "value" => $task->estimate_hours,
+                ]),
+                new InputField([
+                    "id|name" => "effort",
+                    "label" => "Effort",
+                    "value" => $task->effort,
+                ]),
             ],
             [
                 new QuillEditor([

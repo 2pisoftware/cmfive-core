@@ -27,13 +27,14 @@ function viewtaskgroup_GET(Web &$w) {
     // unset 'ALL' given all can never assign a task
     unset($arrassign[0]);
 
-        // Get list of possible task types and priorities adn assignees
-        $tasktypes = TaskService::getInstance($w)->getTaskTypes($group_details->task_group_type);
-        $priorities = TaskService::getInstance($w)->getTaskPriority($group_details->task_group_type);
-        $assignees = TaskService::getInstance($w)->getMembersInGroup($p['id']);
-        array_unshift($assignees,array("Unassigned","unassigned")); 
-        // No default assignee means it is unassigned
-        $default_assignee = (empty($group_details->default_assignee_id)) ? "unassigned" : $group_details->default_assignee_id;
+    // Get list of possible task types and priorities adn assignees
+    $tasktypes = TaskService::getInstance($w)->getTaskTypes($group_details->task_group_type);
+    $priorities = TaskService::getInstance($w)->getTaskPriority($group_details->task_group_type);
+    $assignees = TaskService::getInstance($w)->getMembersInGroup($p['id']);
+    array_unshift($assignees,array("Unassigned","unassigned")); 
+    // No default assignee means it is unassigned
+    $default_assignee = (empty($group_details->default_assignee_id)) ? "unassigned" : $group_details->default_assignee_id;
+    $grouptypes = TaskService::getInstance($w)->getAllTaskGroupTypes();
     
     // build form displaying current attributes from database
     $f = HtmlBootstrap5::multiColForm([
@@ -48,52 +49,49 @@ function viewtaskgroup_GET(Web &$w) {
                 "label" => "Description",
                 "value" => $group_details->description,
             ])],
-            [new Select([
-                "id|name" => "task_group_type",
-                "label" => "Task Group Type",
-                "options" => $grouptypes,
-            ])],
             [
-                new Select([
+                (new Select([
+                    "id|name" => "task_group_type",
+                    "label" => "Task Group Type",
+                    "options" => $grouptypes
+                ]))->setSelectedOption($group_details->task_group_type)
+            ],
+            [
+                (new Select([
                     "id|name" => "can_assign",
                     "label" => "Who Can Assign",
                     "options" => $arrassign,
-                    "value" => $group_details->can_assign,
-                ]),
-                new Select([
+                ]))->setSelectedOption($group_details->can_assign),
+
+                (new Select([
                     "id|name" => "can_view",
                     "label" => "Who Can View",
                     "options" => TaskService::getInstance($w)->getTaskGroupPermissions(),
-                    "value" => $group_details->can_view,
-                ]),
-                new Select([
+                ]))->setSelectedOption($group_details->can_view),
+                (new Select([
                     "id|name" => "can_create",
                     "label" => "Who Can Create",
                     "options" => TaskService::getInstance($w)->getTaskGroupPermissions(),
-                    "value" => $group_details->can_create,
-                ]),
+                ]))->setSelectedOption($group_details->can_create),
             ],
             [
-                new Select([
+                (new Select([
                     "id|name" => "default_task_type",
                     "label" => "Default Task Type",
-                    "value" => $group_details->default_task_type,
                     "options" => $tasktypes,
-                ]),
-                new Select([
+                ]))->setSelectedOption($group_details->default_task_type),
+                (new Select([
                     "id|name" => "default_priority",
                     "label" => "Default Priority",
-                    "value" => $group_details->default_priority,
                     "options" => $priorities
-                ])
+                ]))->setSelectedOption($group_details->default_priority)
             ],
             [
-                new Select([
+                (new Select([
                     "id|name" => "default_assignee_id",
                     "label" => "Default Assignee",
                     "options" => $assignees,
-                    "value" => $default_assignee,
-                ]),
+                ]))->setSelectedOption($default_assignee),
                 new Checkbox([
                     "id|name" => "is_automatic_subscription",
                     "label" => "Automatic Subscription",
@@ -101,7 +99,7 @@ function viewtaskgroup_GET(Web &$w) {
                 ]),
             ]
         ]
-    ], $w->localUrl("/task-group/viewtaskgroup/{$group_details->id}"), "UPDATE");
+    ], $w->localUrl("/task-group/viewtaskgroup/{$group_details->id}"), "POST", "Update");
 
     // display form
     $w->setLayout(null);

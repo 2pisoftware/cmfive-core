@@ -97,7 +97,7 @@ class HtmlBootstrap5 extends Html
         foreach ($data as $section => $rows) {
             // Print section header
             $buffer .= "<div class='panel clearfix'>";
-            $buffer .= "<div class='row g-0 clearfix section-header'><h4 class='col'>{$section}<span style='display: none;' class='changed_status right alert radius label'>changed</span></h4></div>";
+            $buffer .= "<div class='row g-0 clearfix section-header'><h4 class='col'>{$section}<span class='changed_status position-absolute bg-danger rounded p-1 d-none' style='right: 1rem; top: 0.5rem; font-size: 1rem'>Changed</span></h4></div>";
 
             // Loop through each row
             foreach ($rows as $row) {

@@ -101,7 +101,7 @@
             ?>
 
             <div class="row">
-                <div class="small-12 large-9">
+                <div class="small-12 large-9 position-relative">
                     <?php echo $form; ?>
                 </div>
 
@@ -251,6 +251,20 @@
 <script>
     const task_id = <?php echo !empty($task->id) ? $task->id : "undefined"; ?>
 
+    let initialForm = new FormData(document.getElementById("edit_form"));
+
+    document.getElementById("edit_form").addEventListener("change", (e) => {
+
+        const indicator = document.querySelector("#edit_form").querySelector(".changed_status")
+
+        if (initialForm.get(e.target.name) !== e.target.value) {
+            indicator.classList.remove("d-none");
+            return;
+        }
+
+        indicator.classList.add("d-none");
+    })
+
     const makeSelectOptions = (select, value, label) => {
         const elem = document.createElement("option");
         elem.value = value;
@@ -290,6 +304,8 @@
             `/task/ajaxGetFieldForm/${type}/${group}/${task_id}`,
             { signal: fieldsControllers.signal }
         ).then(x => x.json());
+
+        if (!json.current) return;
 
         container.innerHTML = json.current;
         container.style.display = "block";
@@ -337,6 +353,8 @@
         document.getElementById("group_type").innerText = json.group.type;
         document.getElementById("group_desc").innerText = json.group.desc;
         document.getElementById("group_details").style.display = "block";
+
+        initialForm = new FormData(document.getElementById("edit_form"));
     }
 
     populateTaskgroupDetails(<?php echo $task->task_group_id ?>);

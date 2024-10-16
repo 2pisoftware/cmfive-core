@@ -1,5 +1,5 @@
-import { HOST, CmfiveHelper } from "@utils/cmfive";
 import { expect, Page } from "@playwright/test";
+import { CmfiveHelper, HOST } from "@utils/cmfive";
 import { DateTime } from "luxon";
 
 export class TaskHelper  {
@@ -26,20 +26,20 @@ export class TaskHelper  {
         await page.getByRole('combobox', {name: "Task Group Type"}).selectOption(groupType);
         switch (groupType) {
         case "To Do":
-            await page.getByRole("combobox", {name: "Default Task Type"}).selectOption("To Do");
+            await page.locator("#task_type").selectOption("To Do");
             break;
         case "Software Development":
-            await page.getByRole("combobox", {name: "Default Task Type"}).selectOption("Programming Task");
+            await page.locator("#task_type").selectOption("Programming Task");
             break;
         case "Cmfive Support":
-            await page.getByRole("combobox", {name: "Default Task Type"}).selectOption("Support Ticket");
+            await page.locator("#task_type").selectOption("Support Ticket");
             break;
         }
 
         await page.getByRole("combobox", {name: "Who Can Assign"}).selectOption(whoCanAssign);
         await page.getByRole("combobox", {name: "Who Can View"}).selectOption(whoCanView);
         await page.getByRole("combobox", {name: "Who Can Create"}).selectOption(whoCanCreate);
-        await page.getByRole("combobox", {name: "Default Priority"}).selectOption("Normal");
+        await page.locator("#priority").selectOption("Normal");
 
         const subcheckbox = await page.getByRole("checkbox", {name: "Automatic Subscription"});
         if (automaticSubscription)
@@ -108,9 +108,11 @@ export class TaskHelper  {
 
         await page.getByRole("button", {name: "Add New Members"}).click();
 
-        await page.getByRole("combobox", {name: "As Role"}).selectOption(role);
-        await page.getByRole("combobox", {name: "Add Group Members"}).selectOption(memberName);
-        await page.getByRole("button", {name: "Submit"}).click();
+		await page.waitForSelector("#cmfive-modal");
+
+        await page.locator("#cmfive-modal #role").selectOption(role);
+        await page.locator("#cmfive-modal #member").selectOption(memberName);
+        await page.locator("#cmfive-modal").getByRole("button", {name: "Submit"}).click();
 
         await expect(page.getByText("Task Group updated")).toBeVisible();
     }
@@ -137,10 +139,11 @@ export class TaskHelper  {
     {
         await CmfiveHelper.clickCmfiveNavbar(page, isMobile , "Task", "New Task");
 
-        await CmfiveHelper.fillAutoComplete(page, "task_group_id", taskgroup, taskgroup);
+        await CmfiveHelper.fillAutoComplete(page, "task_group", taskgroup, taskgroup);
+
         await page.getByLabel('Task Title Required').fill(task);
 
-        await page.getByRole("combobox", {name: "Task Type Required"}).selectOption({
+        await page.locator("#task_type").selectOption({
             "To Do": "To Do",
             "Software Development": "Programming Task",
             "Cmfive Support": "Support Ticket"
@@ -153,14 +156,15 @@ export class TaskHelper  {
             for(let option of ["Estimated hours", "Effort"])
                 if(data[option] !== undefined) await page.getByLabel(option).fill(data[option]);
 
-            if(data["Description"] !== undefined) await page.getByRole('application', {name: "Rich Text Editor, description"}).fill(data["Description"]);
+            if(data["Description"] !== undefined) {
+				await page.locator("#quill_description").click();
+				await page.keyboard.type(data["Description"]);
+			}
         }
 
-        // check that datepicker works
-        await page.getByLabel("Date Due").click();
-        await page.waitForSelector("#ui-datepicker-div");
-        await page.getByRole("link", {name: "1", exact: true}).click();
-        await expect(page.locator("#dt_due")).toHaveValue(DateTime.now().set({day: 1}).toFormat("dd/MM/yyyy") as string);
+        // NOTE: this previously checked if a jquery datepicker worked
+		// now however, the page uses the built in browser date picker
+        await page.getByLabel("Date Due").fill(DateTime.now().set({day: 1}).toFormat("yyyy-MM-dd"))
 
         await page.getByRole("button", {name: "Save"}).click();
         await page.waitForURL(HOST + "/task/edit/*");
