@@ -28,7 +28,7 @@ function edit_GET(Web $w)
     $w->ctx('available_forms', $available_forms);
     $w->ctx('application', $application);
     $w->ctx('new_application', !empty($application->id));
-    $w->ctx('form', Html::multiColForm($form, '/form-application/edit/' . $application->id));
+    $w->ctx('form', HtmlBootstrap5::multiColForm($form, '/form-application/edit/' . $application->id));
 }
 
 function edit_POST(Web $w)

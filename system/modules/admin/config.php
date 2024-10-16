@@ -30,7 +30,7 @@ Config::set('admin', [
         "sendgrid/sendgrid" => "^8.0.0",
         "softark/creole" => "~1.2",
         "monolog/monolog" => "^1.22",
-        "aws/aws-sdk-php" => "3.224",
+        "aws/aws-sdk-php" => "^3.288",
         "aws/aws-php-sns-message-validator" => "^1.1",
         "maxbanton/cwh" => "^1.0"
     ],

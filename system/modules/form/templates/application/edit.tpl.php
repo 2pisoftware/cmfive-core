@@ -117,9 +117,15 @@
 
 <script src='/system/templates/vue-components/form/form-row.vue.js'></script>
 <script>
-
-    var form_application_vue_instance = new Vue({
-        el: '#form-application-<?php echo $application->id; ?>__vue-instance',
+<?php if ($w->_layout === "layout-bootstrap-5") : ?>
+    const {
+        createApp
+    } = Vue;
+    createApp({
+<?php else : ?>
+    const form-application-<?php echo $application->id; ?>__vue-instance = new Vue({
+        el: "#form-application-<?php echo $application->id; ?>__vue-instance",
+<?php endif; ?>
         data: {
             shadow_application: <?php echo json_encode($application->toArray(), JSON_FORCE_OBJECT); ?>,
             application: <?php echo json_encode($application->toArray(), JSON_FORCE_OBJECT); ?>,
@@ -130,84 +136,69 @@
             loading_members: true,
             loading_forms: true,
 
-            available_forms: <?php echo json_encode(array_map(function($available_form) {return ['id' => $available_form->id, 'title' => $available_form->title];}, $available_forms ? : [])); ?>,
+            available_forms: <?php echo json_encode(array_map(fn ($available_form) => ['id' => $available_form->id, 'title' => $available_form->title], $available_forms ? : [])); ?>,
             member_role_options: <?php echo json_encode(FormApplicationMember::$_roles, true); ?>,
             active_member: {id: '', member_user_id: '', name: '', role: '', application_id: '<?php echo $application->id; ?>'},
-            active_form: {id: '', title: '',application_id: '<?php echo $application->id; ?>'},
-            user_list: <?php echo json_encode(array_map(function ($user) {
-                    return ['id' => $user->id, 'name' => $user->getFullName()];
-                }, array_filter(AuthService::getInstance($w)->getUsers(), function($user) {return !empty($user->id) && $user->is_active == 1 && $user->is_deleted == 0;})), true); ?>
+            active_form: {id: '', title: '', application_id: '<?php echo $application->id; ?>'},
+            user_list: <?php echo json_encode(array_map(fn ($user) => ['id' => $user->id, 'name' => $user->getFullName()], array_filter(AuthService::getInstance($w)->getUsers(), fn ($user) => !empty($user->id) && $user->is_active == 1 && $user->is_deleted == 0)), true); ?>
         },
         methods: {
             setSelectedValue: function(selectedValue) {
-                console.log("new value", selectedValue);
                 this.active_member.member_user_id = selectedValue;
             },
-            setChecked: function() {
-                if (this.application.is_active !== undefined && this.application.is_active == 1) {
-                    return true;
-                }
-                return false;
-            },
-            saveApplication: function() {
-                var _this = this;
-                $.ajax('/form-vue/save_application/<?php echo $application->id; ?>', {
-                    method: 'POST',
-                    data: _this.application
-                }).done(function(response) {
-                    var _response = JSON.parse(response);
-                    if (_response.success === true) {
-                        _this.shadow_application = Vue.util.extend({}, _this.application);
-                    }
-                    _this.form_changed = false;
+            setChecked = () => this.application.is_active !== undefined && this.application.is_active == 1),
+            saveApplication: async function() {
+                // var _this = this;
+                const response = await fetch('/form-vue/save_application/<?php echo $application->id; ?>', {
+                    method: "POST",
+                    body: JSON.stringify(this.application),
                 });
+                const data = await response.json();
+                if (data.success === true) {
+                    this.shadow_application = Vue.util.extend({}, this.application);
+                }
+                this.form_changed = false;
             },
             resetApplication: function() {
                 this.application = Vue.util.extend({}, this.shadow_application);
                 this.form_changed = false;
             },
-            getApplicationForms: function() {
-                var _this = this;
+            getApplicationForms: async function() {
                 this.loading_forms = true;
-                $.ajax('/form-vue/get_forms/<?php echo $application->id; ?>').done(function(response) {
-                    var _response = JSON.parse(response);
-                    if (_response.success) {
-                        _this.application_forms = _response.data;
-                    } else {
-                        alert(_response.error);
-                    }
+                const response = await fetch('/form-vue/get_forms/<?php echo $application->id; ?>')
+                const data = await response.json();
+                if (data.success) {
+                    this.application_forms = data.data;
+                } else {
+                    alert(data.error);
+                }
 
-                    _this.loading_forms = false;
-                });
+                this.loading_forms = false;
             },
             getApplicationMembers: function() {
-                var _this = this;
                 this.loading_members = true;
-                $.ajax('/form-vue/get_members/<?php echo $application->id; ?>').done(function(response) {
-                    var _response = JSON.parse(response);
-                    if (_response.success) {
-                        _this.application_members = _response.data;
-                    } else {
-                        alert(_response.error);
-                    }
+                const response = await fetch('/form-vue/get_members/<?php echo $application->id; ?>');
+                const data = await response.json();
+                if (data.success) {
+                    this.application_members = data.data;
+                } else {
+                    alert(data.error);
+                }
 
-                    _this.loading_members = false;
-                });
+                this.loading_members = false;
             },
             editApplicationForm: function(form_index) {
                 if (form_index !== undefined && ((this.application_forms.length - 1) >= form_index)) {
-                      // this.active_form = Vue.util.extend({}, this.application_forms[form_index]);
-                      this.active_form.id = this.application_forms[form_index].id;
-                      this.active_form.title = this.application_forms[form_index].title;
-                  }
+                    // this.active_form = Vue.util.extend({}, this.application_forms[form_index]);
+                    this.active_form.id = this.application_forms[form_index].id;
+                    this.active_form.title = this.application_forms[form_index].title;
+                }
                 $('#form_application_form_modal').foundation('reveal', 'open');
             },
-            deleteApplicationForm: function(form) {
+            deleteApplicationForm: async function(form) {
                 if (form.id !== undefined && confirm("Are you sure you want to detach this form? (You can reattach it later if needed)")) {
-                    var _this = this;
-                    $.ajax('/form-vue/delete_form/<?php echo $application->id; ?>/' + form.id).done(function(response) {
-                        _this.getApplicationForms();
-                    });
+                    await fetch('/form-vue/delete_form/<?php echo $application->id; ?>/' + form.id);
+                    this.getApplicationForms();
                 }
             },
             editApplicationMember: function(member_index) {
@@ -220,26 +211,22 @@
             },
             saveApplicationMember: function() {
                 if (this.active_member.id != undefined) {
-                    var _this = this;
-                    $.ajax('/form-vue/save_member', {
+                    await fetch('/form-vue/save_member', {
                         method: 'POST',
-                        data: _this.active_member
-                    }).done(function(response) {
-                        _this.getApplicationMembers();
-                        _this.resetActiveMember();
+                        body: JSON.stringify(this.active_member),
                     });
+                    this.getApplicationMembers();
+                    this.resetActiveMember();
                 }
             },
-            saveApplicationForm: function() {
+            saveApplicationForm: async function() {
                 if (this.active_form.id != undefined) {
-                    var _this = this;
-                    $.ajax('/form-vue/save_form', {
+                    await fetch('/form-vue/save_form', {
                         method: 'POST',
-                        data: _this.active_form
-                    }).done(function(response) {
-                        _this.getApplicationForms();
-                        _this.resetActiveForm();
+                        body: JSON.stringify(this.active_form),
                     });
+                    this.getApplicationForms();
+                    this.resetActiveForm();
                 }
             },
             resetActiveMember: function() {
@@ -254,10 +241,8 @@
             },
             deleteApplicationMember: function(member) {
                 if (member.id !== undefined && confirm("Are you sure you want to remove this member? (You can re-add them later if needed)")) {
-                    var _this = this;
-                    $.ajax('/form-vue/delete_member/<?php echo $application->id; ?>/' + member.id).done(function(response) {
-                        _this.getApplicationMembers();
-                    });
+                    await fetch('/form-vue/delete_member/<?php echo $application->id; ?>/' + member.id);
+                    this.getApplicationMembers();
                 }
             }
         },
@@ -270,6 +255,6 @@
             this.getApplicationMembers();
             this.getApplicationForms();
         }
-    });
+    }).mount("#form-application-<?php echo $application->id; ?>__vue-instance");
 
 </script>

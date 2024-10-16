@@ -2,18 +2,6 @@ const mix = require("laravel-mix");
 const path = require('path');
 
 const { glb } = require('laravel-mix-glob');
-// const mixGlob = new MixGlob({
-//     mix,
-//     mapping: {
-//         base: {
-//             byFunc: {
-//                 scss: { ext: "css" },
-//                 sass: { ext: "css" },
-//                 css: { ext: "css" },
-//             }
-//         }
-//     }
-// });
 
 process.env.DEBUG = true;
 

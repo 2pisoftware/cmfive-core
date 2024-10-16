@@ -369,8 +369,8 @@ function get_form_instance_rows_GET(Web $w)
             $row_text = $instance->getTableRow();
             if (!$display_only) {
                 $row_text .= '<td>' .
-                    Html::box("/form-instance/edit/" . $instance->id . "?form_id=" . $form->id . "&redirect_url=" . $redirect_url . "&object_class=" . get_class($_object) . "&object_id=" . $_object->id, "Edit", true) .
-                    Html::b("/form-instance/delete/" . $instance->id . "?redirect_url=" . $redirect_url, "Delete", "Are you sure you want to delete this item?", null, false, 'warning') .
+                    HtmlBootstrap5::box("/form-instance/edit/" . $instance->id . "?form_id=" . $form->id . "&redirect_url=" . $redirect_url . "&object_class=" . get_class($_object) . "&object_id=" . $_object->id, "Edit", true) .
+                    HtmlBootstrap5::b("/form-instance/delete/" . $instance->id . "?redirect_url=" . $redirect_url, "Delete", "Are you sure you want to delete this item?", null, false, 'warning') .
                     '</td>';
             }
 

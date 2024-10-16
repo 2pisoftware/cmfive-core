@@ -29,7 +29,7 @@ function ajaxGetMetadata_GET(Web $w) {
 				if ($interface::respondsTo($type)) {
 					$metadata_form = $interface::metadataForm($type, $w);
 
-					// If form is an array assume its based on the Html::form layout
+					// If form is an array assume its based on the HtmlBootstrap5::form layout
 					if (is_array($metadata_form)) {
 						// Try and fill existing data in the event that the user changes back to the original field type if field already exists
 						if (!empty($field)) {
@@ -44,7 +44,7 @@ function ajaxGetMetadata_GET(Web $w) {
 						}
 						
 
-						$w->out(htmlentities(Html::form($metadata_form)));
+						$w->out(htmlentities(HtmlBootstrap5::form($metadata_form)));
 						return;
 					} else if (is_a($metadata_form, 'VueComponent')) {
 						// Else assume new Vue.js component layout - will already be in the template
@@ -59,7 +59,7 @@ function ajaxGetMetadata_GET(Web $w) {
 		if (!empty($field)) {
 			$metadata_form = $field->getMetadataForm();
 			if (!empty($metadata_form)) {
-				$w->out(htmlentities(Html::form($metadata_form)));
+				$w->out(htmlentities(HtmlBootstrap5::form($metadata_form)));
 				return;
 			}
 		} else {

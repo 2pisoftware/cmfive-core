@@ -45,8 +45,12 @@
     </div>
 </div>
 <script>
-    var app = new Vue({
-        el: "#app",
+
+    const {
+        createApp
+    } = Vue;
+
+    createApp({
         data: function() {
             return {
                 comment: "<?php echo $comment; ?>",
@@ -159,5 +163,5 @@
                 });
             },
         }
-    });
+    }).mount("#app");
 </script>

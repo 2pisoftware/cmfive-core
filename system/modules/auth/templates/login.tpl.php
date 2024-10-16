@@ -38,7 +38,6 @@
     <div v-else>
         <form @submit.prevent="executeLogin">
             <div data-alert class="alert alert-warning fade show row d-flex justify-content-between" v-if="error_message != null" role='alert'>
-
                 {{ error_message }}
                 <button type='button' class="btn-close" @click="error_message = null" aria-label='Close'></button>
             </div>
@@ -82,8 +81,11 @@
     </div>
 </div>
 <script>
-    var app = new Vue({
-        el: "#app",
+    const {
+        createApp
+    } = Vue;
+
+    createApp({
         data: function() {
             return {
                 login: null,
@@ -110,49 +112,49 @@
                     "password": _this.password,
                     "mfa_code": _this.mfa_code,
                 }
-
+                
                 fetch('/auth/login', {
-                        method: 'POST',
-                        headers: new Headers({
-                            'Content-Type': 'application/json'
-                        }),
-                        body: JSON.stringify(formData)
-                    }).then(response => {
-                        return response.json()
-                    }).then(response => {
-                        if (response.data.redirect_url != null) {
-                            window.location.href = response.data.redirect_url;
-                            return;
-                        }
-                        _this.is_mfa_enabled = response.data.is_mfa_enabled;
-                        if (_this.is_mfa_enabled) {
-                            _this.$nextTick(function() {
-                                document.getElementById("mfa_code").focus();
-                            });
-                        }
+                    method: 'POST',
+                    headers: new Headers({
+                        'Content-Type': 'application/json'
+                    }),
+                    body: JSON.stringify(formData)
+                }).then(response => {
+                    return response.json()
+                }).then(response => {
+                    if (response.data.redirect_url != null) {
+                        window.location.href = response.data.redirect_url;
+                        return;
+                    }
+                    _this.is_mfa_enabled = response.data.is_mfa_enabled;
+                    if (_this.is_mfa_enabled) {
+                        _this.$nextTick(function() {
+                            document.getElementById("mfa_code").focus();
+                        });
+                    }
 
-                        if (response.status == 500) {
-                            _this.login = null,
-                                _this.password = null,
-                                _this.mfa_code = null,
-                                _this.is_mfa_enabled = false;
-                            _this.error_message = response.message;
-                        }
-                    })
-                    .catch(error => {
+                    if (response.status == 500) {
                         _this.login = null,
                             _this.password = null,
                             _this.mfa_code = null,
                             _this.is_mfa_enabled = false;
-                        _this.error_message = error.message;
-                    }).finally(() => {
-                        _this.is_loading = false;
-                    });
+                        _this.error_message = response.message;
+                    }
+                })
+                .catch(error => {
+                    _this.login = null,
+                        _this.password = null,
+                        _this.mfa_code = null,
+                        _this.is_mfa_enabled = false;
+                    _this.error_message = error.message;
+                }).finally(() => {
+                    _this.is_loading = false;
+                });
             },
             back: function() {
                 this.is_mfa_enabled = false;
                 this.mfa_code = null;
             }
         }
-    })
+    }).mount("#app");
 </script>

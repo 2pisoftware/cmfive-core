@@ -37,30 +37,45 @@ function results_GET(Web $w)
                     }
                 }
 
+                // filter results by permission to view
+                foreach ($filter_results as $class => $objects) {
+                    $filter_results[$class] = array_filter($objects, fn ($object) => $object->canList(AuthService::getInstance($w)->user()));
+                }
+                $filter_results = array_filter($filter_results, fn ($object) => !empty($object));
+
                 foreach ($filter_results as $class => $objects) {
                     $title_added = false;
 
                     if (!empty($objects)) {
                         foreach ($objects as $object) {
-                            if (!$object->canList(AuthService::getInstance($w)->user())) {
-                                continue;
-                            }
-
+                            $buffer .= "<div class='card mb-1'>";
+                            $buffer .= '<div class="card-body">';
+                            
                             // Only add the title once after we know at least one object can be listed.
                             if (!$title_added) {
                                 $t_class = preg_replace('/(?<=\\w)(?=[A-Z])/', " $1", $class);
-                                $buffer .= "<div class='row search-class'><h4 style='padding-top: 10px; font-weight: lighter;'>{$t_class}</h4>";
+                                $buffer .= "<h4 class='card-title'>{$t_class}</h4>";
                                 $title_added = true;
                             }
 
-                            $buffer .= '<div class="panel search-result">';
-
                             if ($object->canView(AuthService::getInstance($w)->user())) {
-                                $buffer .= "<a class=row search-title href=" . $w->localUrl($object->printSearchUrl()) . ">{$object->printSearchTitle()}</a>"
-                                    . "<div class=row search-listing>{$object->printSearchListing()}</div>";
-                            } else {
-                                $buffer .= "<div class=small-12 columns search-title>{$object->printSearchTitle()}</div><div class=row search-listing>(restricted)</div>";
+                                $buffer .= "<a class='card-subtitle' href='{$w->localUrl($object->printSearchUrl())}'>";
+                                $buffer .= $object->printSearchTitle();
+                                $buffer .= "</a>";
+
+                                $buffer .= "<div class='card-text'>{$object->printSearchListing()}</div>";
                             }
+                            else {
+                                $buffer .= "<div class='card-subtitle'>{$object->printSearchTitle()}</div>";
+                                $buffer .= "<div class='card-text'>(restricted)</div>";
+                            }
+
+                            // if ($object->canView(AuthService::getInstance($w)->user())) {
+                            //     $buffer .= "<a class='row search-title' href=" . $w->localUrl($object->printSearchUrl()) . ">{$object->printSearchTitle()}</a>"
+                            //         . "<div class='row search-listing'>{$object->printSearchListing()}</div>";
+                            // } else {
+                            //     $buffer .= "<div class='small-12 columns search-title'>{$object->printSearchTitle()}</div><div class='row search-listing'>(restricted)</div>";
+                            // }
 
                             $buffer .= "</div>";
                         }

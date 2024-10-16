@@ -16,11 +16,11 @@
     <div class='small-12 medium-3 columns'>
         <div class='row'>
             <div class='small-6 columns'>
-                <?php echo Html::b('/form-application/edit/' . $application->id, 'Edit', null, null, false, "button expand"); ?> </br>
-                <?php echo Html::b('/form-application/export/'.$application->id, 'Export', null, null, false, "button expand"); ?>
+                <?php echo HtmlBootstrap5::b('/form-application/edit/' . $application->id, 'Edit', null, null, false, "button expand"); ?> </br>
+                <?php echo HtmlBootstrap5::b('/form-application/export/'.$application->id, 'Export', null, null, false, "button expand"); ?>
             </div>
             <div class='small-6 columns'>
-                <?php echo Html::b('/form-application/delete/' . $application->id, 'Delete', 'Are you sure you want to delete this application? All references to already entered data will be lost!', null, false, "warning expand"); ?>
+                <?php echo HtmlBootstrap5::b('/form-application/delete/' . $application->id, 'Delete', 'Are you sure you want to delete this application? All references to already entered data will be lost!', null, false, "warning expand"); ?>
             </div>
         </div>
     </div>

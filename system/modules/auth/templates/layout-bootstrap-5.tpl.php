@@ -10,11 +10,11 @@
     <?php
     CmfiveStyleComponentRegister::registerComponent('app', new CmfiveStyleComponent("/system/templates/base/dist/app.css"));
     CmfiveScriptComponentRegister::registerComponent('app', new CmfiveScriptComponent("/system/templates/base/dist/app.js"));
-
     $w->outputStyles();
     ?>
     <!-- backwards compat -->
-    <script src="/system/templates/base/node_modules/vue/dist/vue.min.js"></script>
+    <!-- <script src="/system/templates/base/node_modules/vue/dist/vue.min.js"></script> -->
+    <script src="/system/templates/base/node_modules/vue3/dist/vue.global.prod.js"></script>
     <style>
         #cmfive-body {
             background-color: #34486A !important;

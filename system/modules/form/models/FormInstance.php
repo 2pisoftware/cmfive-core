@@ -136,7 +136,7 @@ class FormInstance extends DbObject
 
     /**
      * Return an array representing the complete structure of a form to
-     * use with Html::multiColForm()
+     * use with HtmlBootstrap5::multiColForm()
      * @return  array[]
      */
     public function getEditForm($form)

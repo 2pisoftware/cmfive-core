@@ -13,9 +13,10 @@ function ajaxSelectTaskGroupType_ALL(Web $w) {
     $priorities = ($taskgrouptype != "") ? TaskService::getInstance($w)->getTaskPriority($taskgrouptype) : array();
  
     // create dropdowns loaded with respective data
-    $result = array();
-    $result[] = Html::select("task_type",$tasktypes,null);
-    $result[] = Html::select("priority",$priorities,null);
+    $result = [
+        HtmlBootstrap5::select("task_type", $tasktypes, null, "form-select"),
+        HtmlBootstrap5::select("priority", $priorities, null, "form-select"),
+    ];
 
     $w->setLayout(null);
     $w->out(json_encode($result));

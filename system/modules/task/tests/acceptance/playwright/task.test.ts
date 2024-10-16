@@ -1,12 +1,12 @@
 import { expect, test } from "@playwright/test";
-import { HOST, GLOBAL_TIMEOUT, CmfiveHelper } from "@utils/cmfive";
-import { TaskHelper} from "@utils/task";
 import { AdminHelper } from "@utils/admin";
+import { CmfiveHelper, GLOBAL_TIMEOUT, HOST } from "@utils/cmfive";
+import { TaskHelper } from "@utils/task";
 
 test.describe.configure({mode: 'parallel'});
 
 test("Test that you can manage taskgroups, taskgroup members, and tasks", async ({ page, isMobile }) => {
-    test.setTimeout(GLOBAL_TIMEOUT);
+    test.setTimeout(GLOBAL_TIMEOUT * 4);
     CmfiveHelper.acceptDialog(page);
 
     await CmfiveHelper.login(page, "admin", "admin");

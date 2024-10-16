@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { HOST, GLOBAL_TIMEOUT, CmfiveHelper } from "@utils/cmfive";
+import { CmfiveHelper, GLOBAL_TIMEOUT, HOST } from "@utils/cmfive";
 import { TagHelper } from "@utils/tag";
 import { TaskHelper } from "@utils/task";
 
@@ -41,12 +41,12 @@ test("Test that users can tag multiple objects with same tag", async ({ page, is
     await TagHelper.createTagOnTask(page, tagNameMultiple, taskId3);
 
     await page.goto(HOST + "/task/tasklist?task__assignee-id=unassigned");
-    expect(await page.getByText(tagNameMultiple).count()).toBe(3);
+    expect(await page.getByText(tagNameMultiple).count()).toBe(3 * 2);	// 6 total because the mobile form
 
     // Verify we still have our tags
     await CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Tag", "Tag Admin");
-    expect(await page.getByText(tagNameSingle).count()).toBe(1);
-    expect(await page.getByText(tagNameMultiple).count()).toBe(1);
+    expect(await page.getByText(tagNameSingle).count()).toBe(1 * 2);
+    expect(await page.getByText(tagNameMultiple).count()).toBe(1 * 2);
 
     // Edit a tag name
     const tagName = CmfiveHelper.randomID("tag_");
@@ -60,7 +60,7 @@ test("Test that users can tag multiple objects with same tag", async ({ page, is
     // Verify that the task tagged with our edited tag shows the new tag name
     await page.goto(HOST + "/task/tasklist?task__assignee-id=unassigned");
     await page.waitForTimeout(100);
-    expect(await page.getByText(tagName).count()).toBe(1);
+    expect(await page.getByText(tagName).count()).toBe(1 * 2);
 
     // Delete the tags
     await CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Tag", "Tag Admin");

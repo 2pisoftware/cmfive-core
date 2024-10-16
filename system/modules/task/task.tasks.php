@@ -89,7 +89,7 @@ class TaskType_ProgrammingTicket extends TaskType
         }
         return [
             [$this->getTaskTypeTitle(), "section"],
-            ["Ticket Type", "select", "b_or_f", $this->getTaskDataValueForKey($taskdata, "b_or_f"), ["Issue", "Feature", "Task"]],
+            ["Ticket Type", "select", "b_or_f", $this->getTaskDataValueForKey($taskdata, "b_or_f"), ["Issue", "Feature", "Task"], null, "form-select"],
             ["Identifier", "hidden", "ident", $this->getTaskDataValueForKey($taskdata, "ident")],
         ];
     }

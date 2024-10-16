@@ -1,6 +1,6 @@
 <div class='row-fluid'>
     <h4><?php echo $form->title; ?></h4>
-    <?php echo $display_only !== true ? Html::box("/form-instance/edit?form_id=" . $form->id . "&redirect_url=" . $redirect_url . "&object_class=" . get_class($object) . "&object_id=" . $object->id, "Add new " . $form->title, true) : ''; ?>
+    <?php echo $display_only !== true ? HtmlBootstrap5::box("/form-instance/edit?form_id=" . $form->id . "&redirect_url=" . $redirect_url . "&object_class=" . get_class($object) . "&object_id=" . $object->id, "Add new " . $form->title, true) : ''; ?>
 
     <div id="form_list_<?php echo $form->id; ?>">
 
@@ -28,8 +28,11 @@
     </div>
 
     <script>
-        var form_list_<?php echo $form->id; ?> = new Vue({
-            el: '#form_list_<?php echo $form->id; ?>',
+        const {
+            createApp
+        } = Vue;
+        
+        createApp({
             data: {
                 instances: [],
                 page: 1,
@@ -49,16 +52,15 @@
                         this.page = page;
                     }
                 },
-                getInstances: function() {
+                getInstances: async function() {
                     var _this = this;
-                    $.get('/form-vue/get_form_instance_rows/<?php echo $form->id; ?>/<?php echo get_class($object); ?>/<?php echo $object->id; ?>?page=' + this.page + '&pagesize=' + this.pagesize + '&display_only=<?php echo $display_only ? 1 : 0; ?>&redirect_url=<?php echo $redirect_url; ?>').done(function(response) {
-                        var _response = JSON.parse(response);
-                        if (_response.success) {
-                            _this.instances = _response.data;
-                        } else {
-                            alert(_response.error);
-                        }
-                    });
+                    const response = await fetch('/form-vue/get_form_instance_rows/<?php echo $form->id; ?>/<?php echo get_class($object); ?>/<?php echo $object->id; ?>?page=' + this.page + '&pagesize=' + this.pagesize + '&display_only=<?php echo $display_only ? 1 : 0; ?>&redirect_url=<?php echo $redirect_url; ?>');
+                    const _response = await response.json();
+                    if (_response.success) {
+                        _this.instances = _response.data;
+                    } else {
+                        alert(_response.error);
+                    }
                 }
             },
             watch: {
@@ -77,6 +79,6 @@
             created: function() {
                 this.getInstances();
             }
-        });
+        }).mount("#form_list_<?php echo $form->id; ?>");
     </script>
 </div>

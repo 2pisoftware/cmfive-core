@@ -1,5 +1,5 @@
 <?php 
-echo (empty($hide_filter) || $hide_filter !== true) ? Html::filter("Filter Tasks", $filter_data, '/' . $redirect, "GET", "Filter", "task_list") : '';
+echo (empty($hide_filter) || $hide_filter !== true) ? HtmlBootstrap5::filter("Filter Tasks", $filter_data, '/' . $redirect, "GET", "Filter", "task_list") : '';
 
 if (!empty($tasks)) {
     $table_header = array("Title", "Created By", "Assigned To", "Group", "Type", "Priority", "Status", "Due");
@@ -10,7 +10,7 @@ if (!empty($tasks)) {
     foreach ($tasks as $task) {
         if ($task->getCanIView()) {
             $table_line = array();
-			$table_line[] = Html::a("/task/edit/" . $task->id, $task->title);
+			$table_line[] = HtmlBootstrap5::a("/task/edit/" . $task->id, $task->title);
 
             // Append the rest of the data
             $table_line += array(null,
@@ -27,7 +27,7 @@ if (!empty($tasks)) {
         }
     }
 
-    echo Html::table($table_data, null, "tablesorter", $table_header);
+    echo HtmlBootstrap5::table($table_data, null, "tablesorter", $table_header);
 
 } else { ?>
     <h3><small>No tasks found.</small></h3>
