@@ -1,24 +1,24 @@
 <div class="panel clearfix">
     <div class="row g-0 clearfix section-header">
-        <h4 class="col">
+        <h4 class="col text-break">
             <?php echo $application->title; ?>
+
+            <div class="float-end">
+                <?php echo HtmlBootstrap5::buttonGroup(
+                    HtmlBootstrap5::b("/form-application/show/$application->id", 'View', class: "btn btn-sm btn-primary") .
+                    HtmlBootstrap5::box("/form-application/edit/$application->id", 'Edit', class: "btn btn-sm btn-secondary") .
+                    HtmlBootstrap5::b("/form-application/export/$application->id", 'Export', class: "btn btn-sm btn-secondary")
+                ); ?>
+            </div>
         </h4>
     </div>
     <?php if ($application->description != '') : ?>
         <div class="row">
-            <p><?php echo $application->description; ?></p>
+            <p class="text-break"><?php echo $application->description; ?></p>
         </div>
     <?php endif; ?>
     <div class="row">
-        <p><?php echo $application->description; ?></p>
-    </div>
-    <div class="row">
-        <div class="col">
-            <p>Active: <?php echo $application->is_active == 1 ? 'Yes' : 'No'; ?></p>
-        </div>
-        <div class="col">
-            <?php echo HtmlBootstrap5::b('/form-application/edit/' . $application->id, 'Edit', null, null, false, "btn btn-primary float-end"); ?>
-        </div>
+        <p><?php echo $application->is_active ? 'Active' : 'Inactive'; ?></p>
     </div>
 </div>
 
@@ -29,14 +29,14 @@
                 <h4 class="col">
                     Members
 
-                    <?php echo HtmlBootstrap5::box("/form-application/edit_member/$application->id", 'Add Member', true, class: "btn btn-sm btn-primary float-end"); ?>
+                    <?php echo HtmlBootstrap5::box("/form-application/edit_member/$application->id", 'Add Member', class: "btn btn-sm btn-primary float-end"); ?>
                 </h4>
             </div>
             <div class="row">
                 <?php if(empty($members)) : ?>
                     <p>No members found</p>
                 <?php else : ?>
-                    <!--sdfkuhsdfjkdsjbkfhjksdjf-->
+                    <?php echo $members; ?>
                 <?php endif; ?>
             </div>
         </div>
@@ -47,14 +47,14 @@
                 <h4 class="col">
                     Attached Forms
 
-                    <?php echo HtmlBootstrap5::b('/form-application/attach_form/' . $application->id, 'Attach Form', null, null, false, "btn btn-sm btn-primary float-end"); ?>
+                    <?php echo HtmlBootstrap5::box("/form-application/attach_form/$application->id", 'Attach Form', class: "btn btn-sm btn-primary float-end"); ?>
                 </h4>
             </div>
             <div class="row">
-                <?php if(empty($members)) : ?>
+                <?php if(empty($attached_forms)) : ?>
                     <p>No forms found</p>
                 <?php else : ?>
-                    <!--sdfkuhsdfjkdsjbkfhjksdjf-->
+                    <?php echo $attached_forms; ?>
                 <?php endif; ?>
             </div>
         </div>

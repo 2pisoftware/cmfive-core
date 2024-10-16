@@ -13,9 +13,9 @@ function index_GET(Web $w) {
 				$application->description,
 				$application->is_active == 1 ? 'Active' : 'Inactive',
 				HtmlBootstrap5::buttonGroup(
-					HtmlBootstrap5::b('/form-application/edit/' . $application->id, 'Edit', class: "btn-primary") .
-					HtmlBootstrap5::b('/form-application/export/' . $application->id, 'Export', class: "btn-secondary") .
-					HtmlBootstrap5::b('/form-application/delete/' . $application->id, 'Delete', 'Are you sure you want to delete this application? All references to already entered data will be lost!', null, false, class: "btn-danger")
+					HtmlBootstrap5::b("/form-application/manage/$application->id", 'Manage', class: "btn-primary") .
+					HtmlBootstrap5::b("/form-application/export/$application->id", 'Export', class: "btn-secondary") .
+					HtmlBootstrap5::b("/form-application/delete/$application->id", 'Delete', 'Are you sure you want to delete this application? All references to already entered data will be lost!', null, false, class: "btn-danger")
 				)
 			];
 		}
