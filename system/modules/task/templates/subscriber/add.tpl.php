@@ -1,18 +1,20 @@
 <?php echo $form; ?>
 
-<script>
-    
-    // $("#task-subscriber__add").submit(function() {
-    // 	if (!$("#acp_contact").val()) {
-    // 		// Validate fields
-    // 		if (!$("#firstname", $(this)).val() || !$("#lastname", $(this)).val() || !$("#email", $(this)).val() || !$("#work_number", $(this)).val()) {
-    // 			alert('All fields are required when adding a new contact');
-    // 			return false;
-    // 		}
-    // 		$("#email", $(this)).val(encodeURIComponent($("#email", $(this)).val()));
-    // 	}
-    // });
+<style>
+    #cmfive-modal .ts-control {
+        padding: 10px;
+    }
 
+    #cmfive-modal .panel {
+        margin-top: 0;
+    }
+
+    #cmfive-modal .columns {
+        padding: 0;
+    } 
+</style>
+
+<script>
     document.getElementById("task-subscriber__add").addEventListener("submit", (e) => {
         const data = new FormData(e.target);
 
@@ -26,5 +28,4 @@
 
         return true;
     })
-    
 </script>

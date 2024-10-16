@@ -1,5 +1,5 @@
-import { HOST, CmfiveHelper } from "@utils/cmfive";
 import { expect, Page } from "@playwright/test";
+import { CmfiveHelper, HOST } from "@utils/cmfive";
 
 export class TagHelper {
     static async createTagOnTask(page: Page, tagName: string, taskId: string)
@@ -7,21 +7,14 @@ export class TagHelper {
         await page.goto(HOST + "/task/edit/" + taskId);
         await page.getByText("No tags").click();
 
-        await page.locator(`#display_tags_Task_${taskId}-selectized`).focus();
-        await page.keyboard.type(tagName);
+		CmfiveHelper.fillAutoComplete(page, `display_tags_Task_${taskId}`, tagName, tagName);
 
-        // Check to see if the tag already exists
-        const existingLocator = page.locator('.selectize-control .option').getByText(tagName);
-        if (await existingLocator.isVisible()) {
-            await existingLocator.click();
-        } else {
-            await page.keyboard.press("Enter");
-        }
+		await page.waitForResponse((res) => res.url().includes("/ajaxAddTag/Task/"))
 
-        await page.locator('.close-reveal-modal').click()
+        await page.locator('button[data-bs-dismiss="modal"]').click()
         // await page.waitForResponse(HOST + `/tag/ajaxGetTags/Task/${taskId}`)
-        await page.waitForTimeout(100);
+        await page.waitForTimeout(100); 
 
-        await expect(page.locator(`#tag_container_Task_${taskId}`)).toHaveText(tagName)
+        await expect(page.locator(`.tags-container[data-tag-id="Task_${taskId}"]`)).toContainText(tagName)
     }
 }

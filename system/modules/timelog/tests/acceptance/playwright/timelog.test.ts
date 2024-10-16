@@ -1,50 +1,53 @@
 import { test } from "@playwright/test";
-import { TimelogHelper } from "@utils/timelog";
+import { CmfiveHelper, GLOBAL_TIMEOUT } from "@utils/cmfive";
 import { TaskHelper } from "@utils/task";
-import { GLOBAL_TIMEOUT, CmfiveHelper } from "@utils/cmfive";
+import { TimelogHelper } from "@utils/timelog";
 import { DateTime } from "luxon";
 
 test.describe.configure({mode: 'parallel'});
 
-test("You can create a Timelog using Timer" , async ({page}) => {
+// Menu hooks aren't implemented in bootstrap
+// So the start timer button isn't rendered
+test.skip("You can create a Timelog using Timer" , async ({page, isMobile}) => {
     test.setTimeout(GLOBAL_TIMEOUT);
     CmfiveHelper.acceptDialog(page);
 
     await CmfiveHelper.login(page, "admin", "admin");
     
     const taskgroup = CmfiveHelper.randomID("taskgroup_");
-    const taskgroupID = await TaskHelper.createTaskGroup(page, taskgroup, "Software Development", "OWNER", "OWNER", "OWNER");
-    await TaskHelper.addMemberToTaskgroup(page, taskgroup, taskgroupID, "admin admin", "OWNER");
-    await TaskHelper.setDefaultAssignee(page, taskgroup, taskgroupID, "admin admin");
+    const taskgroupID = await TaskHelper.createTaskGroup(page, isMobile, taskgroup, "Software Development", "OWNER", "OWNER", "OWNER");
+    await TaskHelper.addMemberToTaskgroup(page, isMobile, taskgroup, taskgroupID, "admin admin", "OWNER");
+    await TaskHelper.setDefaultAssignee(page, isMobile, taskgroup, taskgroupID, "admin admin");
 
     const task = CmfiveHelper.randomID("task_");
-    const taskID = await TaskHelper.createTask(page, task, taskgroup, "Software Development");
+    const taskID = await TaskHelper.createTask(page, isMobile, task, taskgroup, "Software Development");
     
     const timelog = CmfiveHelper.randomID("timelog_");
-    await TimelogHelper.createTimelogFromTimer(page, timelog, task, taskID);
+    await TimelogHelper.createTimelogFromTimer(page, isMobile, timelog, task, taskID);
     
-    await TimelogHelper.deleteTimelog(page, timelog, task, taskID);
-    await TaskHelper.deleteTask(page, task, taskID);
-    await TaskHelper.deleteTaskGroup(page, taskgroup, taskgroupID);
+    await TimelogHelper.deleteTimelog(page, isMobile, timelog, task, taskID);
+    await TaskHelper.deleteTask(page, isMobile, task, taskID);
+    await TaskHelper.deleteTaskGroup(page, isMobile, taskgroup, taskgroupID);
 });
 
-test("You can create a Timelog using Add Timelog" , async ({page}) => {
+test("You can create a Timelog using Add Timelog" , async ({page, isMobile}) => {
     test.setTimeout(GLOBAL_TIMEOUT);
     CmfiveHelper.acceptDialog(page);
 
     await CmfiveHelper.login(page, "admin", "admin");
     
     const taskgroup = CmfiveHelper.randomID("taskgroup_");
-    const taskgroupID = await TaskHelper.createTaskGroup(page, taskgroup, "Software Development", "OWNER", "OWNER", "OWNER");
-    await TaskHelper.addMemberToTaskgroup(page, taskgroup, taskgroupID, "admin admin", "OWNER");
-    await TaskHelper.setDefaultAssignee(page, taskgroup, taskgroupID, "admin admin");
+    const taskgroupID = await TaskHelper.createTaskGroup(page, isMobile, taskgroup, "Software Development", "OWNER", "OWNER", "OWNER");
+    await TaskHelper.addMemberToTaskgroup(page, isMobile, taskgroup, taskgroupID, "admin admin", "OWNER");
+    await TaskHelper.setDefaultAssignee(page, isMobile, taskgroup, taskgroupID, "admin admin");
 
     const task = CmfiveHelper.randomID("task_");
-    const taskID = await TaskHelper.createTask(page, task, taskgroup, "Software Development");
+    const taskID = await TaskHelper.createTask(page, isMobile, task, taskgroup, "Software Development");
 
     const timelog = CmfiveHelper.randomID("timelog_");
     await TimelogHelper.createTimelog(
         page,
+        isMobile,
         timelog,
         task,
         taskID,
@@ -53,28 +56,29 @@ test("You can create a Timelog using Add Timelog" , async ({page}) => {
         "11:00",
     );
     
-    await TimelogHelper.deleteTimelog(page, timelog, task, taskID);
-    await TaskHelper.deleteTask(page, task, taskID);
-    await TaskHelper.deleteTaskGroup(page, taskgroup, taskgroupID);
+    await TimelogHelper.deleteTimelog(page, isMobile, timelog, task, taskID);
+    await TaskHelper.deleteTask(page, isMobile, task, taskID);
+    await TaskHelper.deleteTaskGroup(page, isMobile, taskgroup, taskgroupID);
 });
 
-// test("Test that duplicate timelogs are deleted" , async ({page}) => {
+// test("Test that duplicate timelogs are deleted" , async ({page, isMobile}) => {
 //     test.setTimeout(GLOBAL_TIMEOUT);
 //     CmfiveHelper.acceptDialog(page);
 
 //     await CmfiveHelper.login(page, "admin", "admin");
     
 //     const taskgroup = CmfiveHelper.randomID("taskgroup_");
-//     const taskgroupID = await TaskHelper.createTaskGroup(page, taskgroup, "Software Development", "OWNER", "OWNER", "OWNER");
-//     await TaskHelper.addMemberToTaskgroup(page, taskgroup, taskgroupID, "admin admin", "OWNER");
-//     await TaskHelper.setDefaultAssignee(page, taskgroup, taskgroupID, "admin admin");
+//     const taskgroupID = await TaskHelper.createTaskGroup(page, isMobile, taskgroup, "Software Development", "OWNER", "OWNER", "OWNER");
+//     await TaskHelper.addMemberToTaskgroup(page, isMobile, taskgroup, taskgroupID, "admin admin", "OWNER");
+//     await TaskHelper.setDefaultAssignee(page, isMobile, taskgroup, taskgroupID, "admin admin");
 
 //     const task = CmfiveHelper.randomID("task_");
-//     const taskID = await TaskHelper.createTask(page, task, taskgroup, "Software Development");
+//     const taskID = await TaskHelper.createTask(page, isMobile, task, taskgroup, "Software Development");
 
 //     const timelog1 = CmfiveHelper.randomID("timelog_");
 //     await TimelogHelper.createTimelog(
 //         page,
+//         isMobile,
 //         timelog1,
 //         task,
 //         taskID,
@@ -85,6 +89,7 @@ test("You can create a Timelog using Add Timelog" , async ({page}) => {
 //     const timelog2 = CmfiveHelper.randomID("timelog_");
 //     await TimelogHelper.createTimelog(
 //         page,
+//         isMobile,
 //         timelog2,
 //         task,
 //         taskID,
@@ -94,7 +99,7 @@ test("You can create a Timelog using Add Timelog" , async ({page}) => {
 //         true
 //     );
 
-//     await TimelogHelper.deleteTimelog(page, timelog1, task, taskID);
-//     await TaskHelper.deleteTask(page, task, taskID);
-//     await TaskHelper.deleteTaskGroup(page, taskgroup, taskgroupID);
+//     await TimelogHelper.deleteTimelog(page, isMobile, timelog1, task, taskID);
+//     await TaskHelper.deleteTask(page, isMobile, task, taskID);
+//     await TaskHelper.deleteTaskGroup(page, isMobile, taskgroup, taskgroupID);
 // });

@@ -78,8 +78,9 @@ function edit_GET($w)
                     "id|name" => "task_group",
                     "required" => "required",
                     "value" => !empty($taskgroup) ? $taskgroup->id : null,
+                    "disabled" => !empty($p["id"]) ? "true" : null,
                     "options" => $taskgroups,
-                    "maxLength" => 1
+                    "maxItems" => 1
                 ]),
 
                 (new Select([
@@ -118,7 +119,7 @@ function edit_GET($w)
                 (new InputField\Date([
                     "label" => "Date Due",
                     "id|name" => "dt_due",
-                    "value" => formatDate($task->dt_due)
+                    "value" => formatDate($task->dt_due, "Y-m-d")
                 ])),
                 
                 (new Select([
@@ -132,8 +133,16 @@ function edit_GET($w)
                     ->setSelectedOption($task->assignee_id),
             ],
             [
-                ["Estimated hours", "text", "estimate_hours", $task->estimate_hours],
-                ["Effort", "text", "effort", $task->effort],
+                new InputField([
+                    "id|name" => "estimate_hours",
+                    "label" => "Estimated Hours",
+                    "value" => $task->estimate_hours,
+                ]),
+                new InputField([
+                    "id|name" => "effort",
+                    "label" => "Effort",
+                    "value" => $task->effort,
+                ]),
             ],
             [
                 new QuillEditor([

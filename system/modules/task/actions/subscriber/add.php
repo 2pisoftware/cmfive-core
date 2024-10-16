@@ -29,6 +29,7 @@ function add_GET(Web $w)
                 new Html5Autocomplete([
                     "label" => "Contact",
                     "id|name" => "contact",
+                    "placeholder" => "Search",
                     "options" => array_map(function ($contact) {
                         $user = $contact->getUser();
                         return [

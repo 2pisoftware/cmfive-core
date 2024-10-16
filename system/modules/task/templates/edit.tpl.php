@@ -101,7 +101,7 @@
             ?>
 
             <div class="row">
-                <div class="small-12 large-9">
+                <div class="small-12 large-9 position-relative">
                     <?php echo $form; ?>
                 </div>
 
@@ -149,7 +149,7 @@
                                                 <?php
                                                 echo HtmlBootstrap5::b(
                                                     '/task-subscriber/delete/' . $subscriber->id,
-                                                    'Delete',
+                                                    '×',
                                                     'Are you sure you want to remove this subscriber?',
                                                     null,
                                                     false,
@@ -187,7 +187,7 @@
                                                 <?php foreach ($additional_details_flattened as $additional_detail) : ?>
                                                     <tr>
                                                         <td><?php echo $additional_detail[0]; ?></td>
-                                                        <td><?php echo $additional_detail[1]; ?></td>
+                                                        <td style="text-align: right"><?php echo $additional_detail[1]; ?></td>
                                                     </tr>
                                                 <?php endforeach; ?>
                                             </tbody>
@@ -203,15 +203,15 @@
                         <table class="table table-sm">
                             <tr>
                                 <th>Name</th>
-                                <td id="group_name"></td>
+                                <td style="text-align: right" id="group_name"></td>
                             </tr>
                             <tr>
                                 <th>Type</th>
-                                <td id="group_type"></td>
+                                <td style="text-align: right" id="group_type"></td>
                             </tr>
                             <tr>
                                 <th>Description</th>
-                                <td id="group_desc"></td>
+                                <td style="text-align: right" id="group_desc"></td>
                             </tr>
                         </table>
                     </div>
@@ -251,6 +251,20 @@
 <script>
     const task_id = <?php echo !empty($task->id) ? $task->id : "undefined"; ?>
 
+    let initialForm = new FormData(document.getElementById("edit_form"));
+
+    document.getElementById("edit_form").addEventListener("change", (e) => {
+
+        const indicator = document.querySelector("#edit_form").querySelector(".changed_status")
+
+        if (initialForm.get(e.target.name) !== e.target.value) {
+            indicator.classList.remove("d-none");
+            return;
+        }
+
+        indicator.classList.add("d-none");
+    })
+
     const makeSelectOptions = (select, value, label) => {
         const elem = document.createElement("option");
         elem.value = value;
@@ -259,41 +273,88 @@
         select.appendChild(elem);
     };
 
-    let controller;
+    const clearSelectOptions = (select) => select.textContent = ""
+
+    const populateTaskExtraDetails = async () => {
+        const task_type = document.getElementById("task_type").value;
+        const json = await fetch(`/task/ajaxGetExtraDetails/${task_id}/${task_type}`)
+            .then(x => x.json());
+        document.getElementById("formdetails").innerHTML = json[0];
+        document.getElementById("formdetails").style.display = "block";
+    }
+
+    populateTaskExtraDetails();
+
+    let fieldsControllers;
+    const populateTaskFormFields = async () => {
+        if (fieldsControllers) fieldsControllers.abort(); 
+
+        const type = document.getElementById("task_type").value;
+        const group = document.getElementById("task_group").value;
+
+        // backend requires all 3
+        if (!type || !group || !task_id)
+            return;
+
+        fieldsControllers = new AbortController();
+
+        const container = document.getElementById("formfields")
+
+        const json = await fetch(
+            `/task/ajaxGetFieldForm/${type}/${group}/${task_id}`,
+            { signal: fieldsControllers.signal }
+        ).then(x => x.json());
+
+        if (!json.current) return;
+
+        container.innerHTML = json.current;
+        container.style.display = "block";
+        container.getElementsByTagName("form")[0].classList.remove("columns");
+    }
+
+    populateTaskFormFields();
+    document.getElementById("task_type").addEventListener("change", async (e) => populateTaskFormFields(e.target.value));
+
+    let detailsController;
     const populateTaskgroupDetails = async (value) => {
-        if (controller)
-            controller.abort();
+        if (detailsController)
+            detailsController.abort();
 
         if (!value) {
             document.getElementById("group_details").style.display = "none";
             return;
         }
 
-        controller = new AbortController();
+        detailsController = new AbortController();
 
         const json = await fetch(
             `/task/taskAjaxSelectbyTaskGroup/${value}${task_id ? `/${task_id}` : ""}`,
-            { signal: controller.signal }
-        )
-            .then(x => x.json());
+            { signal: detailsController.signal }
+        ).then(x => x.json());
 
         const type = document.getElementById("task_type");
+        clearSelectOptions(type);
         json.types.map(x => makeSelectOptions(type, x[1], x[0]))
 
         const priority = document.getElementById("priority");
+        clearSelectOptions(priority);
         json.priorities.map(x => makeSelectOptions(priority, x[1], x[0]))
 
         const assignee = document.getElementById("assignee_id");
+        clearSelectOptions(assignee);
         json.assignees.map(x => makeSelectOptions(assignee, x[1], x[0]))
         if (json.can_change_assignee === true) assignee.removeAttribute("disabled")
 
         const status = document.getElementById("status");
+        clearSelectOptions(status);
         json.statuses.map(x => makeSelectOptions(status, x[1], x[0]))
 
         document.getElementById("group_name").innerText = json.group.name;
         document.getElementById("group_type").innerText = json.group.type;
         document.getElementById("group_desc").innerText = json.group.desc;
         document.getElementById("group_details").style.display = "block";
+
+        initialForm = new FormData(document.getElementById("edit_form"));
     }
 
     populateTaskgroupDetails(<?php echo $task->task_group_id ?>);

@@ -18,7 +18,7 @@ function ajaxGetExtraDetails_ALL(Web $w) {
     }
     
     $extraDetails = $task_type->displayExtraDetails($task);
-//    $extraFormFields = $task_type->getFieldFormArray($task->_taskgroup);
     
-    $w->out(json_encode(array($extraDetails))); // , Html::form($extraFormFields))));
+    $w->setLayout(null);
+    $w->out(json_encode([$extraDetails]));
 }

@@ -5,6 +5,22 @@
             display: none;
         }
 
+        .tags-container:hover .hidden_tags {
+            display: inline;
+        }
+
+        .tags-container:hover .show_more {
+            display: none;
+        }
+
+        .show_more {
+            display: inline;
+        }
+
+        .shown_tags {
+            display: inline;
+        }
+
         .tags-container {
             display: flex;
             align-items: center;
@@ -12,66 +28,35 @@
             display: inline-block;
         }
 
-        .tags-container > #hidden_tags {
-            display: inline;
-        }
-
         .tag-small {
             font-size: 0.7rem;
             padding: 2px 3px 2px 3px;
+            margin-left: 5px;
+        }
+
+        .tags-container .loader {
+            border-left: 1.1em solid var(--bs-primary);
         }
     </style>
 
-    <div class="tags-container" data-modal-target="/tag/changeTags/<?php echo get_class($object); ?>/<?php echo $object->id; ?>">
-        <div id="tags_<?php echo $tag_obj_id ?>">
-        </div>
+    <div class="tags-container" data-tag-id="<?php echo $tag_obj_id ?>" data-modal-target="/tag/changeTags/<?php echo get_class($object); ?>/<?php echo $object->id; ?>">
+        <div class="loader d-none"></div>
+        <div id="tags_<?php echo $tag_obj_id ?>" class="shown_tags">
+            <?php
+            if (empty($tags["display"])) : ?>
+                <span class="bg-secondary tag-small text-light">
+                    No tags
+                </span>
+            <?php endif; ?>
 
+            <?php foreach ($tags["display"] as $tag) : ?>
+                <span class="bg-secondary tag-small text-light">
+                    <?php echo $tag["tag"]; ?>
+                </span>
+            <?php endforeach; ?>
+        </div>
+        <div class="show_more tag-small bg-secondary d-none">...</div>
         <div id="hidden_tags_<?php echo $tag_obj_id ?>" class="hidden_tags">
         </div>
     </div>
-
-    <script>
-        // wrap in an IIFE so that multiple tag partials don't conflict with eachother
-        // TODO: it would be better to just have a single script to manage the entire pages tags, like modals have
-        (() => {
-            const id = "<?php echo $tag_obj_id ?>";
-
-            // TODO: Htmlbootstrap5::table renders TWO tables, one for desktop and the other for mobile
-            // it also duplicates all the content, which means this partial gets rendered twice
-            // which means we need a way to track which version should get executed
-            window.tag_managers = window.tag_managers ?? [];
-            if (window.tag_managers.indexOf(id) !== -1) return;
-            window.tag_managers.push(id);
-
-            const tags = {
-                display: <?php echo json_encode($tags['display']); ?>,
-                hidden: <?php echo json_encode($tags['hover']); ?>,
-            };
-
-            const createTagElement = (text) => {
-                const elem = document.createElement("span");
-                elem.innerText = text;
-                elem.classList.add("bg-secondary", "tag-small")
-                
-                return elem;
-            }
-
-            const update = () => {
-                const shown = document.getElementById(`tags_${id}`);
-                const hidden = document.getElementById(`tags_${id}`);
-
-                if (tags.display.length === 0) {
-                    return shown.appendChild(createTagElement("No tags"));
-                }
-
-                tags.display.forEach(tag => shown.appendChild(createTagElement(tag)));
-                tags.hidden.forEach(tag => shown.appendChild(createTagElement(tag)));
-            }
-
-            // TODO: trigger a reload of tags when modal closes
-
-            update();
-        })();
-    </script>
-
 <?php endif;

@@ -97,7 +97,7 @@ class HtmlBootstrap5 extends Html
         foreach ($data as $section => $rows) {
             // Print section header
             $buffer .= "<div class='panel clearfix'>";
-            $buffer .= "<div class='row g-0 clearfix section-header'><h4 class='col'>{$section}<span style='display: none;' class='changed_status right alert radius label'>changed</span></h4></div>";
+            $buffer .= "<div class='row g-0 clearfix section-header'><h4 class='col'>{$section}<span class='changed_status position-absolute bg-danger rounded p-1 d-none' style='right: 1rem; top: 0.5rem; font-size: 1rem'>Changed</span></h4></div>";
 
             // Loop through each row
             foreach ($rows as $row) {
@@ -307,25 +307,27 @@ class HtmlBootstrap5 extends Html
 
         // Opening tags
         $buffer .= "<table class='{$class} d-none d-md-table'>";
-        if (!empty($header)) {
-            $buffer .= "<thead><tr>";
-            if (is_array($header)) {
-                foreach ($header as $h) {
-                    if (!is_array($h)) {
-                        $buffer .= "<th>{$h}</th>";
-                    } else {
-                        $buffer .= "<th " . ($h[1] === true ? "class='show-for-medium-up'" : "") . ">{$h[0]}</th>";
-                    }
-                }
-            } else {
-                // Backwards capability!
-                foreach ($data[0] as $h) {
-                    $buffer .= "<th>{$h}</th>";
-                }
-                array_shift($data);
-            }
-            $buffer .= "</tr></thead>";
+        if (empty($header)) {
+            $header = array_shift($data);
         }
+
+        $buffer .= "<thead><tr>";
+        if (is_array($header)) {
+            foreach ($header as $h) {
+                if (!is_array($h)) {
+                    $buffer .= "<th>{$h}</th>";
+                } else {
+                    $buffer .= "<th " . ($h[1] === true ? "class='show-for-medium-up'" : "") . ">{$h[0]}</th>";
+                }
+            }
+        } else {
+            // Backwards capability!
+            foreach ($data[0] as $h) {
+                $buffer .= "<th>{$h}</th>";
+            }
+            array_shift($data);
+        }
+        $buffer .= "</tr></thead>";
 
         $buffer .= "<tbody>";
         foreach ($data as $key => $row) {
@@ -343,11 +345,10 @@ class HtmlBootstrap5 extends Html
         }
         $buffer .= "</tbody></table>";
 
-        $buffer .= "<div class='d-block d-md-none'>";
+        $buffer .= "<div class='d-block d-md-none pt-4'>";
         if (!empty($data) && is_array($data)) {
             if (!is_array($header)) {
-                $header = $data[0];
-                array_slice($data, 0, 1);
+                $header = array_shift($data);
             }
 
             foreach ($data as $key => $row) {

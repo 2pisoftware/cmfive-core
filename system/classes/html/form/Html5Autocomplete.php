@@ -4,6 +4,16 @@ namespace Html\Form;
 
 use LogService;
 
+/**
+ * HTML5 Autocomplete using Tom-Select on frontend.
+ * Renders an text <input> field with a dropdown for possible values,
+ * which can be provided in full on render or dynamically via an API call from the frontend.
+ * Frontend code: /system/templates/base/src/js/components/Autocomplete.ts
+ * For example usage, see modules/task/actions/edit.php
+ * or task/actions/tasklist.php
+ * @author Madeline Carlier
+ */
+
 class Html5Autocomplete extends \Html\Form\InputField
 {
     public $style;
@@ -50,13 +60,19 @@ class Html5Autocomplete extends \Html\Form\InputField
      */
     public $onItemCreate;
 
+    /**
+     * The labels for the groups (headings) of data in `options`
+     * @var array<{ value: string, label: string }>
+     */
+    public $groups;
+
     public static $_excludeFromOutput = [
         "source",
-        "value",
         "options",
         "onItemAdd",
         "onItemRemove",
         "onItemCreate",
+        "groups"
     ];
 
     public function __construct($fields = [])
@@ -86,11 +102,19 @@ class Html5Autocomplete extends \Html\Form\InputField
             "data-config" .
             "='" .
             json_encode([
-                "options" => $this->options ? array_map(fn($val) => $this->convertOption($val), $this->options) : null,
+                "options" => $this->options ?
+                    array_map(fn($val) =>
+                        $this->convertOption($val), $this->options)
+                    : null,
                 "maxItems" => !isset($this->maxItems) ? $this->maxItems : 1,
                 "items" => $this->value,
                 "source" => $this->source,
                 "create" => $this->canCreate,
+
+                "addPrecedence" => true,
+                
+                "optgroups" => $this->groups,
+                "optgroupField" => "type",
 
                 // for sending data to the wrapper
                 "cmfive" => [
@@ -115,7 +139,8 @@ class Html5Autocomplete extends \Html\Form\InputField
         } else if (isset($val["value"]) && isset($val["text"])) {
             return [
                 "value" => $val["value"],
-                "text" => $val["text"]
+                "text" => $val["text"],
+                "type" => $val["type"],
             ];
         } else if (is_scalar($val)) {
             return [

@@ -136,6 +136,7 @@ function tasklist_ALL(Web $w)
         (new Html5Autocomplete([
             "id|name" => "task__task-group-id",
             "label" => "Task Group",
+            "placeholder" => "Search",
             "value" => !empty($task_group_id) ? $taskgroup->getSelectOptionValue() : null,
             "source" => $w->localUrl("/task-group/ajaxAutocompleteTaskgroups"),
             "minLength" => 2,
