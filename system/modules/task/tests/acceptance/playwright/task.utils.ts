@@ -175,8 +175,10 @@ export class TaskHelper  {
 
     static async deleteTask(page: Page, isMobile: boolean, taskName: string, taskID: string)
     {
-        await CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Task", "Task List");
-        await page.getByRole("link", {name: taskName, exact: true}).click();
+        // await CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Task", "Task List");
+        // await page.getByRole("link", {name: taskName, exact: true}).click();
+
+		await page.goto(`${HOST}/task/edit/${taskID}`)
      
         await page.getByRole("button", {name: "Delete", exact: true}).first().click();
         await expect(page.getByRole("link", {name: taskName, exact: true})).not.toBeVisible();

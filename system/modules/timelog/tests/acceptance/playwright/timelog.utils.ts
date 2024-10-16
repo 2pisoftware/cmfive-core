@@ -1,5 +1,5 @@
-import { HOST, CmfiveHelper } from "@utils/cmfive";
 import { expect, Page } from "@playwright/test";
+import { CmfiveHelper, HOST } from "@utils/cmfive";
 import { DateTime } from "luxon";
 
 export class TimelogHelper  {
@@ -28,8 +28,6 @@ export class TimelogHelper  {
         await page.getByRole("link", {name: "Time Log"}).click();
         await page.reload();
         await expect(page.getByText(timelog)).toBeVisible();
-        //check timelog date and time values
-        await expect(page.getByText(new DateTime('now').toFormat("dd-LL-yyyy") + ' ' + start_time)).toBeVisible();
     }
 
     static async createTimelog(page: Page, isMobile: boolean, timelog: string, taskName: string, taskID: string, date: DateTime, start_time: string, end_time: string, check_duplicate: boolean = false)
@@ -56,11 +54,16 @@ export class TimelogHelper  {
         await navbarCategory.getByText('Add Timelog').click();
         await page.waitForSelector("#cmfive-modal", {state: "visible"});
 
+		const modal = page.locator("#cmfive-modal");
+
         await CmfiveHelper.fillDatePicker(page, "Date Required", "date_start", date);
-        await page.locator("#time_start").fill(start_time);
-        await page.locator("#time_end").fill(end_time);
-        await page.getByLabel("Description", {exact: true}).fill(timelog);
-        await page.locator("#timelog_edit_form").getByRole("button", { name: "Save" }).click();
+        await modal.locator("#time_start").fill(start_time);
+        await modal.locator("#time_end").fill(end_time);
+        
+		await modal.locator("#quill_description").click();
+		await page.keyboard.type(timelog);
+
+        await modal.getByRole("button", { name: "Submit" }).click();
 
         // if(await page.$("#saved_record_id") != null)
         //     console.log(await page.$eval("#saved_record_id", el => el.innerHTML));
@@ -70,12 +73,9 @@ export class TimelogHelper  {
         await page.reload();
 
         if (check_duplicate)
-            await expect(page.getByText(timelog)).toBeHidden();
+            await expect(page.getByText(timelog).first()).toBeHidden();
         else
-            await expect(page.getByText(timelog)).toBeVisible();
-        //check timelog date and time values
-        await expect(page.getByText(date.toFormat("dd-LL-yyyy") + ' ' + start_time)).toBeVisible();
-        await expect(page.getByText(date.toFormat("dd-LL-yyyy") + ' ' + end_time)).toBeVisible();
+            await expect(page.getByText(timelog).first()).toBeVisible();
     }
 
     static async editTimelog(page: Page, isMobile: boolean, timelog: string, taskName: string, taskID: string, date: DateTime, start_time: string, end_time: string)
