@@ -55,8 +55,13 @@
                 </span>
             <?php endforeach; ?>
         </div>
-        <div class="show_more tag-small bg-secondary d-none">...</div>
+        <div class="show_more tag-small bg-secondary <?php empty($tags["hover"]) ? "d-none" : "" ?>">...</div>
         <div id="hidden_tags_<?php echo $tag_obj_id ?>" class="hidden_tags">
+            <?php foreach ($tags["hover"] as $tag) : ?>
+                <span class="bg-secondary tag-small text-light">
+                    <?php echo $tag["tag"]; ?>
+                </span>
+            <?php endforeach; ?>
         </div>
     </div>
 <?php endif;
