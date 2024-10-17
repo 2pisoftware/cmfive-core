@@ -26,6 +26,7 @@
             align-items: center;
             margin-left: 0.5rem;
             display: inline-block;
+            cursor: pointer;
         }
 
         .tag-small {
