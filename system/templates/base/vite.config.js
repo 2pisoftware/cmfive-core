@@ -72,7 +72,9 @@ export default defineConfig({
         }
     },
     define: {
-        'process.env': {}
+        'process.env': {
+            'rootPath': scriptPath,
+        },
     },
     resolve: {
         alias: {
