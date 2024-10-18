@@ -4,7 +4,7 @@ import { defineConfig, build } from 'vite'
 import { glob } from 'glob';
 import vue from '@vitejs/plugin-vue';
 
-const fs = require("fs");
+import fs from "fs";
 
 // We need to determine the root directory of the project - since everything is symlinked this requires a bit of thought
 let scriptPath = __dirname;
@@ -52,7 +52,7 @@ export default defineConfig({
         lib:
         {
             entry: _fileMapObj,
-            formats: ['cjs'],
+            formats: ['es'],
         },
         rollupOptions: {
             output: {
