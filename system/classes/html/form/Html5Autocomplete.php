@@ -66,13 +66,20 @@ class Html5Autocomplete extends \Html\Form\InputField
      */
     public $groups;
 
+    /**
+     *  Tom-Select plugins https://tom-select.js.org/plugins/
+     * @var array<string> | object
+     */
+    public $plugins;
+
     public static $_excludeFromOutput = [
         "source",
         "options",
         "onItemAdd",
         "onItemRemove",
         "onItemCreate",
-        "groups"
+        "groups",
+        "plugins"
     ];
 
     public function __construct($fields = [])
@@ -115,6 +122,8 @@ class Html5Autocomplete extends \Html\Form\InputField
                 
                 "optgroups" => $this->groups,
                 "optgroupField" => "type",
+
+                "plugins" => $this->plugins,
 
                 // for sending data to the wrapper
                 "cmfive" => [

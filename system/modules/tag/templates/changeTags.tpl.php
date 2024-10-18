@@ -29,6 +29,9 @@
             [ "value" => "all", "label" => "All tags" ],
         ],
         "value" => array_map(fn ($val) => $val->id, $tags),
+
+        "plugins" => ["remove_button"],
+
         // onItemAdd is called for both creation and addition,
         // and ajaxCreateTag creates if not exists, and adds it to the object if not already
         "onItemAdd" => $w->localUrl("/tag/ajaxAddTag/{$object_class}/{$id}"),

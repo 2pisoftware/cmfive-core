@@ -1,22 +1,43 @@
 // vite.config.js
-import { resolve } from 'path'
-import { defineConfig } from 'vite'
+import path, { resolve } from 'path'
+import { defineConfig, build } from 'vite'
 import { glob } from 'glob';
 import vue from '@vitejs/plugin-vue';
 
+import fs from "fs";
+
+// We need to determine the root directory of the project - since everything is symlinked this requires a bit of thought
+let scriptPath = __dirname;
+if (scriptPath.includes('cmfive-core')) {
+    // System is symlinked outside of boilerplate
+    scriptPath = scriptPath.split('cmfive-core')[0];
+    if (fs.existsSync(scriptPath + 'cmfive-boilerplate')) {
+        scriptPath += 'cmfive-boilerplate/';
+    } else {
+        throw new Error('Could not determine root directory of project');
+    }
+} else if (scriptPath.includes('cmfive-boilerplate')) {
+    // System is symlinked inside of boilerplate
+    scriptPath = scriptPath.split('cmfive-boilerplate')[0] + "cmfive-boilerplate/";
+}
+
 const _x = [
     resolve(__dirname, 'src/js/app.ts'),
-    // resolve(__dirname, 'src/scss/app.scss'),
-    ...glob.sync(resolve(__dirname, '../../', 'modules/**/assets/ts/*.ts')),
-    // ...glob.sync(resolve(__dirname, '../../../../../../../', 'system/modules/**/assets/scss/*.scss')),
-    ...glob.sync(resolve(__dirname, '../../../../../../../', 'modules/**/assets/ts/*.ts')),
-    // ...glob.sync(resolve(__dirname, '../../../../../../../', 'modules/**/assets/scss/*.scss')),
+    resolve(__dirname, 'src/scss/app.scss'),
+    ...glob.sync(resolve(__dirname, scriptPath, 'system/modules/**/assets/ts/*.ts')),
+    ...glob.sync(resolve(__dirname, scriptPath, 'system/modules/**/assets/scss/*.scss')),
+    ...glob.sync(resolve(__dirname, scriptPath, 'modules/**/assets/ts/*.ts')),
+    ...glob.sync(resolve(__dirname, scriptPath, 'modules/**/assets/scss/*.scss')),
 ];
 
 let _fileMapObj = {};
 _x.forEach((file) => {
-    const name = file.split('/').pop().split('.').shift();
+    let name = file.split('/').pop().split('.').shift();
     const ext = file.split('.').pop();
+
+    if (_fileMapObj.hasOwnProperty(`${name}`)) {
+        name = `${name}.${ext}`;
+    }
     _fileMapObj[`${name}`] = file;
 });
 
@@ -25,13 +46,13 @@ console.log("fileMap", _fileMapObj);
 export default defineConfig({
     plugins: [vue()],
     build: {
+        cssCodeSplit: true,
         minify: "terser",
-        target: 'es6',
+        target: 'modules',
         lib:
         {
-            entry: _x,
-            name: 'cmfive',
-            format: 'es',
+            entry: _fileMapObj,
+            formats: ['es'],
         },
         rollupOptions: {
             output: {
@@ -39,12 +60,21 @@ export default defineConfig({
                 assetFileNames: (assetInfo) => {
                     if (assetInfo.name === 'style.css') return 'app.css';
                     return assetInfo.name;
-                },
+                }
             },
         },
     },
+    css: {
+        preprocessorOptions: {
+            scss: {
+                includePaths: [scriptPath + 'system/templates/base/src/scss/', scriptPath + 'system/templates/base/node_modules']
+            }
+        }
+    },
     define: {
-        'process.env': {}
+        'process.env': {
+            'rootPath': scriptPath,
+        },
     },
     resolve: {
         alias: {
@@ -53,4 +83,4 @@ export default defineConfig({
             'vue': 'vue/dist/vue.esm-bundler.js',
         },
     }
-})
+});

@@ -22,10 +22,14 @@ export class QuillEditor {
 
                 const textarea = form.querySelector(`#${q.id.replace("quill_", "")}`) as HTMLTextAreaElement;
 
-				const cb = () => textarea.value = editor.getSemanticHTML();
+				// can't do it on form submit,
+				// because some pages override the form submit handler,
+				// and that may be executed first
+				editor.on("text-change", (curr, prev, source) => {
+					if (source !== "user") return;
 
-                form.removeEventListener('submit', cb);
-                form.addEventListener('submit', cb);
+					textarea.value = editor.getSemanticHTML();
+				});
             })
         }
     }

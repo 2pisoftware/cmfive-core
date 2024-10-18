@@ -1,6 +1,6 @@
 // src/app.ts
 import { AlertAdaptation, DropdownAdaptation, FavouritesAdaptation, TabAdaptation, TableAdaptation } from './adaptations';
-import { Autocomplete, CodeMirror, InputWithOther, MultiFileUpload, Overlay, QuillEditor, Tags } from './components';
+import { Autocomplete, CodeMirror, InputWithOther, MultiFileUpload, Overlay, QuillEditor, Tags, Toast as CmfiveToast } from './components';
 
 import { Modal, Toast, Tooltip } from 'bootstrap';
 import { Sortable } from './components/Sortable';
