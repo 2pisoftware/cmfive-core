@@ -86,14 +86,15 @@
 
     window.timelog_startTimer = async () => {
         const description = document.getElementById("quill_Description").innerHTML;
-        const time_start = document.getElementById("time_start").value;
+        const time = document.getElementById("start_time").value;
+
+        const body = new FormData();
+        body.append("start_time", time);
+        body.append("description", description);
 
         const json = await fetch(
                 `/timelog/ajaxStart/${track.class}/${track.id}`, {
-                    body: JSON.stringify({
-                        description,
-                        time_start,
-                    }),
+                    body,
                     method: "POST",
                 }
             )

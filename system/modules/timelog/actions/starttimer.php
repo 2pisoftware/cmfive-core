@@ -16,7 +16,7 @@ function starttimer_GET(Web $w)
             [
                 new Time([
                     "label" => "Start Time (default: now)",
-                    "id|name" => "time_start",
+                    "id|name" => "start_time",
                     "class" => "form-control",
                     "pattern" => "^(0?[0-9]|1[0-9]|2[0-3]):[0-5][0-9](\s+)?(AM|PM|am|pm)?$",
                     "placeholder" => "12hr format: 11:30pm or 24hr format: 23:30",
