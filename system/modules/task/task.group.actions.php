@@ -1,4 +1,8 @@
 <?php
+use Html\Cmfive\QuillEditor;
+use Html\Form\InputField;
+use Html\Form\InputField\Hidden;
+use Html\Form\Select;
 
 ////////////////////////////////////////////
 //				TASK GROUPS				  //
@@ -45,17 +49,18 @@ function deletetaskgroup_GET(Web &$w)
     }
 
     // build static form displaying group details for confirmation of delete
-    $f = Html::form(array(
-        array("Task Group Details", "section"),
-        array("Task Group Type", "static", "task_group_type", $taskgroup->getTypeTitle()),
-        array("Title", "static", "title", $taskgroup->title),
-        array("Who Can Assign", "static", "can_assign", $taskgroup->can_assign),
-        array("Who Can View", "static", "can_view", $taskgroup->can_view),
-        array("Who Can Create", "static", "can_create", $taskgroup->can_create),
-        array("Is Active", "static", "is_active", $isactive),
-        array("Description", "static", "description", $taskgroup->description),
-        array("Default Assignee", "static", "default_assignee_id", TaskService::getInstance($w)->getUserById($taskgroup->default_assignee_id)),
-    ), $w->localUrl("/task-group/deletetaskgroup/" . $taskgroup->id), "POST", "Delete");
+    $f = HtmlBootstrap5::multiColForm([
+        "Task Group Details" => [
+            [new InputField(["label" => "Title", "value" => $taskgroup->title, "disabled" => true])],
+            [new QuillEditor(["label" => "Description", "value" => $taskgroup->description, "disabled" => true])],
+            [new InputField(["label" => "Task Group Type", "value" => $taskgroup->getTypeTitle(), "disabled" => true])],
+            [new InputField(["label" => "Who Can Assign", "value" => $taskgroup->can_assign, "disabled" => true]),
+            new InputField(["label" => "Who Can View", "value" => $taskgroup->can_view, "disabled" => true]),
+            new InputField(["label" => "Who Can Create", "value" => $taskgroup->can_create, "disabled" => true])],
+            [new InputField(["label" => "Is Active", "value" => $isactive, "disabled" => true])],
+            [new InputField(["label" => "Default Assignee", "value" => TaskService::getInstance($w)->getUserById($taskgroup->default_assignee_id) ?: "None", "disabled" => true])],
+        ]
+    ], $w->localUrl("/task-group/deletetaskgroup/" . $taskgroup->id), "POST", "Delete");
 
     // display form
 
@@ -131,11 +136,26 @@ function viewmember_GET(Web &$w)
     $member = TaskService::getInstance($w)->getMemberById($p['id']);
 
     // build editable form for a member allowing change of membership type
-    $f = Html::form(array(
-        array("Member Details", "section"),
-        array("Name", "static", "name", TaskService::getInstance($w)->getUserById($member->user_id)),
-        array("Role", "select", "role", $member->role, TaskService::getInstance($w)->getTaskGroupPermissions())
-    ), $w->localUrl("/task-group/updategroupmember/" . $member->id), "POST", " Update ");
+    $f = HtmlBootstrap5::multiColForm([
+        "Member Details" => [
+            [
+                new InputField([
+                    "id|name" => "name",
+                    "label" => "Name",
+                    "value" => TaskService::getInstance($w)->getUserById($member->user_id),
+                    "disabled" => true,
+                ])
+            ],
+            [
+                (new Select([
+                    "id|name" => "role",
+                    "label" => "Role",
+                    "options" => TaskService::getInstance($w)->getTaskGroupPermissions()
+                ]))
+                    ->setSelectedOption($member->role)
+            ]
+        ]
+    ], $w->localUrl("/task-group/updategroupmember/" . $member->id), "POST", "Update");
 
     // display form
     $w->setLayout(null);
@@ -212,12 +232,33 @@ function deletegroupmember_GET(Web &$w)
     $member = TaskService::getInstance($w)->getMemberById($p['id']);
 
     // build a static form displaying members details for confirmation of delete
-    $f = Html::form(array(
-        array("Member Details", "section"),
-        array("", "hidden", "is_active", "1"),
-        array("Name", "static", "name", TaskService::getInstance($w)->getUserById($member->user_id)),
-        array("Role", "static", "role", $member->role)
-    ), $w->localUrl("/task-group/deletegroupmember/" . $member->id), "POST", " Delete ");
+    $f = HtmlBootstrap5::multiColForm([
+        "Member Details" => [
+            [
+                new Hidden([
+                    "id|name" => "is_active",
+                    "value" => 1,
+                ])
+            ],
+            [
+                new InputField([
+                    "id|name" => "name",
+                    "label" => "Name",
+                    "disabled" => true,
+                    "value" => TaskService::getInstance($w)->getUserById($member->user_id),
+                ])
+            ],
+            [
+                (new Select([
+                    "id|name" => "role",
+                    "label" => "Role",
+                    "disabled" => true,
+                    "options" => [$member->role]
+                ]))
+                    ->setSelectedOption($member->role)
+            ]
+        ]
+    ], $w->localUrl("/task-group/deletegroupmember/" . $member->id), "POST", " Delete");
 
     // display form
     $w->setLayout(null);
