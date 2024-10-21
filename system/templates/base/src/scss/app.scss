@@ -63,7 +63,15 @@ $bootstrap-icons-font-dir: "/system/templates/base/node_modules/bootstrap-icons/
 
     .item {
         margin-top: 0 !important;
+
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1.5;
     }
+}
+
+.ts-control:has(.item) {
+    padding: 0;
 }
 
 body {
