@@ -24,7 +24,6 @@
         .tags-container {
             display: flex;
             align-items: center;
-            margin-left: 0.5rem;
             display: inline-block;
             cursor: pointer;
         }
@@ -33,6 +32,10 @@
             font-size: 0.7rem;
             padding: 2px 3px 2px 3px;
             margin-left: 5px;
+        }
+
+        .tag-small:first-child {
+            margin-left: 0;
         }
 
         .tags-container .loader {
@@ -56,7 +59,7 @@
                 </span>
             <?php endforeach; ?>
         </div>
-        <div class="show_more tag-small bg-secondary <?php empty($tags["hover"]) ? "d-none" : "" ?>">...</div>
+        <div class="show_more tag-small bg-secondary <?php echo empty($tags["hover"]) ? "d-none" : "" ?>">...</div>
         <div id="hidden_tags_<?php echo $tag_obj_id ?>" class="hidden_tags">
             <?php foreach ($tags["hover"] as $tag) : ?>
                 <span class="bg-secondary tag-small text-light">
