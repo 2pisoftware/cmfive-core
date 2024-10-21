@@ -96,7 +96,7 @@
                     echo implode('', $buttons);
                 }
 
-                echo $w->partial('listTags', ['object' => $task], 'tag');
+                echo "<span class='ms-1'>" . $w->partial('listTags', ['object' => $task], 'tag') . "</span>";
             }
             ?>
 
