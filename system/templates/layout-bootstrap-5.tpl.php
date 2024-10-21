@@ -186,6 +186,17 @@ $theme_setting = AuthService::getInstance($w)->getSettingByKey('bs5-theme');
                                 endif;
                             endforeach; ?>
                         </ul>
+
+                        <ul class="navbar-nav mb-2 mb-lg-0">
+                        <?php
+                        $inject = $w->callHook('core_template', 'menu');
+                        if (!empty($inject)) {
+                            foreach ($inject as $i) {
+                                echo "</li>{$i}</li>";
+                            }
+                        }
+                        ?>
+                        </ul>
                     </div>
                 </nav>
                 <nav aria-label="breadcrumb" class="container-xl" id="breadcrumbs">
