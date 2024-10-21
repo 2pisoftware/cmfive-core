@@ -17,17 +17,21 @@ export class TimelogHelper  {
 
         await page.getByText("Start Timer", {exact: true}).click();
         await page.waitForSelector("#start_time", {state: "visible"});
-        await page.waitForSelector("#timerModal", {state: "visible"});
+        await page.waitForSelector("#timelog_starttimer_modal", {state: "visible"});
         await page.locator("#start_time").fill(start_time);
-        await page.getByLabel("Enter Description", {exact: true}).fill(timelog);
-        await page.click('#timerModal button:text-is("Save")');
 
-        await page.waitForSelector("#stop_timer", {state: "visible"});
-        await page.locator("#stop_timer").click();
+		await page.locator("#timelog_starttimer_modal #quill_Description").click();
+		await page.keyboard.type(timelog);
+
+        await page.click('#timelog_starttimer_modal button:text-is("Save")');
+
+        await page.waitForSelector("#timelog_widget_stop", {state: "visible"});
+        await page.locator("#timelog_widget_stop").click();
 
         await page.getByRole("link", {name: "Time Log"}).click();
         await page.reload();
-        await expect(page.getByText(timelog)).toBeVisible();
+		await page.waitForSelector("#timelog")
+        await expect(page.getByText(timelog).first()).toBeVisible();
     }
 
     static async createTimelog(page: Page, isMobile: boolean, timelog: string, taskName: string, taskID: string, date: DateTime, start_time: string, end_time: string, check_duplicate: boolean = false)

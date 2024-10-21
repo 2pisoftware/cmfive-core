@@ -6,9 +6,7 @@ import { DateTime } from "luxon";
 
 test.describe.configure({mode: 'parallel'});
 
-// Menu hooks aren't implemented in bootstrap
-// So the start timer button isn't rendered
-test.skip("You can create a Timelog using Timer" , async ({page, isMobile}) => {
+test("You can create a Timelog using Timer" , async ({page, isMobile}) => {
     test.setTimeout(GLOBAL_TIMEOUT);
     CmfiveHelper.acceptDialog(page);
 
