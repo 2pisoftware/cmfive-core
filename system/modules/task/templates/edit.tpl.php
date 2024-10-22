@@ -18,7 +18,10 @@
 
         <?php if (!empty($task->id)) : ?>
             <?php if (AuthService::getInstance($w)->user()->hasRole('timelog_user')) : ?>
-                <a href="#timelog">Time Log</a>
+                <a href="#timelog">
+                    Time Log
+                    <span class="badge rounded-pill bg-secondary text-light ms-1"><?php echo $timelog_count; ?></span>
+                </a>
             <?php endif; ?>
 
             <a href="#internal_comments">Internal Comments</a>

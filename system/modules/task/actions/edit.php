@@ -181,6 +181,8 @@ function edit_GET($w)
     }
     $w->ctx('createdDate', $createdDate);
 
+    $w->ctx("timelog_count", TimelogService::getInstance($w)->countTimelogsForObject($task));
+
     // Subscribers
     if (!empty($task->id))
     {
