@@ -14,7 +14,7 @@
             formatDate($val->dt_end, "d-m-Y H:i:s"),
             $val->isRunning ? "See Timer" : $val->getHoursWorked() . ':' . str_pad($val->getMinutesWorked(), 2, '0', STR_PAD_LEFT),
             $val->time_type,
-            "<pre class='break-pre'>" . $val->getComment()->comment . "</pre>",
+            "<pre class='break-pre text-truncate d-block' style='width: 250px;'>" . strip_tags($val->getComment()->comment) . "</pre>",
         ];
 
         $actions = [];
