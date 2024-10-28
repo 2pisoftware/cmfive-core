@@ -1,11 +1,21 @@
 <div class="enable_drop_attachments" data-object="<?php echo get_class($object); ?>" data-id="<?php echo $object->id; ?>" style="display:none;"></div>
 <?php
 if (AuthService::getInstance($w)->user()->hasRole("file_upload")) {
-    echo Html::box("/file/new/" . get_class($object) . "/{$object->id}?redirect_url=" . urlencode($redirect), "Attach a File", true);
+    echo HtmlBootstrap5::box(
+        "/file/new/" . get_class($object) . "/{$object->id}?redirect_url=" . urlencode($redirect),
+        "Attach a File",
+        true,
+        false,
+        null,
+        null,
+        "isbox",
+        null,
+        "btn btn-primary"
+    );
 }
 ?>
 <div id="image_attachment_list">
-    <?php echo Html::paginatedList(
+    <?php echo HtmlBootstrap5::paginatedList(
         $list_items,
         $page,
         $page_size,
@@ -17,7 +27,7 @@ if (AuthService::getInstance($w)->user()->hasRole("file_upload")) {
         "attachment__page-size"
     ); ?>
 </div>
-<script>
+<!-- <script>
     $(document).ready(function() {
         $(".image-container-overlay button").removeClass("tiny");
         $(".image-container").hover(function() {
@@ -26,7 +36,7 @@ if (AuthService::getInstance($w)->user()->hasRole("file_upload")) {
             $(".image-container-overlay", this).stop().fadeOut("fast");
         });
     });
-</script>
+</script> -->
 <style>
     div.image-container {
         width: auto;

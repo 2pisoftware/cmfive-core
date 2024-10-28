@@ -1,6 +1,6 @@
 <?php use Carbon\Carbon; ?>
-<div id="comment_<?php echo $c->id; ?>" class="panel">
-    <div class="row clearfix">
+<div id="comment_<?php echo $c->id; ?>" class="panel flat cmfive-comment">
+    <div class="row clearfix comment-body">
         <div class='col'>
             <img class="img-thumbnail" src='https://www.gravatar.com/avatar/<?php echo md5(strtolower(trim(@AuthService::getInstance($c->w)->getUser($c->creator_id)->getContact()->email))); ?>?d=identicon' />
         </div>
