@@ -182,6 +182,8 @@ function edit_GET($w)
     $w->ctx('createdDate', $createdDate);
 
     $w->ctx("timelog_count", TimelogService::getInstance($w)->countTimelogsForObject($task));
+    $w->ctx("internal_comments_count", CommentService::getInstance($w)->countCommentsForTable($task->getDbTableName(), $task->id, true));
+    $w->ctx("external_comments_count", CommentService::getInstance($w)->countCommentsForTable($task->getDbTableName(), $task->id, false, true));
 
     // Subscribers
     if (!empty($task->id))

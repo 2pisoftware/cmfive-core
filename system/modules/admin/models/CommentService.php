@@ -31,6 +31,31 @@ class CommentService extends DbService
         return null;
     }
 
+    public function countCommentsForTable($table, $object_id = null, $internal_only = false, $external_only = false) {
+        $query = $this->w->db->get("comment")
+            ->where("is_deleted = NULL OR is_deleted = 0");
+
+        if (is_a($table, "DbObject")) {
+            $query->where(["obj_table" => $table->getDbTableName()]);
+        }
+        else {
+            $query->where(["obj_table" => $table]);
+        }
+
+        if (!empty($object_id)) {
+            $query->where(["obj_id" => $object_id]);
+        }
+
+        if ($internal_only === true) {
+            $query->where(["is_internal" => 1]);
+        }
+        else if ($external_only === true) {
+            $query->where(["is_internal" => 0]);
+        }
+
+        return $query->count();
+    }
+
     public function getComment($id = null)
     {
         if (!empty($id)) {
