@@ -124,7 +124,7 @@
                                         null,
                                         'isbox',
                                         null,
-                                        'bg-secondary text-light'
+                                        'bg-secondary'
                                     )
                                     ?>
                                 </div>
@@ -156,7 +156,7 @@
                                                     'Are you sure you want to remove this subscriber?',
                                                     null,
                                                     false,
-                                                    'bg-warning d-inline'
+                                                    'bg-warning d-inline text-dark'
                                                 );
                                                 ?></td>
                                             </div>
