@@ -234,6 +234,15 @@ class Config
     {
         self::$shadow_register = $shadow_register;
     }
+    
+    public static function promoteSandbox()
+    {
+        if (self::isSandboxing()) {
+            if (!empty(self::$register)) {
+                self::$shadow_register = array_merge(self::$shadow_register, self::$register);
+            }
+        }
+    }
 
     public static function mergeSandbox()
     {

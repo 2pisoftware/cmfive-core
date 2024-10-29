@@ -8,13 +8,9 @@ function listTags(\Web $w, $params = []) {
         return;
     }
     
-    //$w->enqueueStyle(['name' => 'selectize-css', 'uri' => '/system/modules/tag/assets/lib/selectize.js/dist/css/selectize.css', 'weight' => 300]);
-    $w->enqueueStyle(['name' => 'selectize-css', 'uri' => '/composer/vendor/grimmlink/selectize/dist/css/selectize.css', 'weight' => 300]);
-    
-    $w->enqueueStyle(['name' => 'tag-css', 'uri' => '/system/modules/tag/assets/css/style.css', 'weight' => 290]);
-    //$w->enqueueScript(['name' => 'selectize-js', 'uri' => '/system/modules/tag/assets/lib/selectize.js/dist/js/standalone/selectize.js', 'weight' => 300]);
-    $w->enqueueScript(['name' => 'selectize-js', 'uri' => '/composer/vendor/grimmlink/selectize/dist/js/standalone/selectize.js', 'weight' => 300]);
-    // $w->enqueueScript(['name' => 'vue-js', 'uri' => '/system/modules/tag/assets/js/vue.min.js', 'weight' => 290]);
+    \CmfiveStyleComponentRegister::registerComponent("selectize-css", (new \CmfiveStyleComponent("/composer/vendor/grimmlink/selectize/dist/css/selectize.css", ['weight' => 300])));
+    \CmfiveStyleComponentRegister::registerComponent("tag-css", (new \CmfiveStyleComponent("/system/modules/tag/assets/css/style.css", ['weight' => 290])));
+    \CmfiveScriptComponentRegister::registerComponent("selectize-js", (new \CmfiveScriptComponent("/composer/vendor/grimmlink/selectize/dist/js/standalone/selectize.js", ['weight' => 300, 'type' => 'module'])));
     
     $w->ctx('object', $params['object']);
     
@@ -24,7 +20,7 @@ function listTags(\Web $w, $params = []) {
     
     $tag_str_len = 0;
     if (!empty($tags)) {
-        foreach($tags as $tag) {
+        foreach ($tags as $tag) {
             if ($tag_str_len < 10) {
                 $filtered_tags['display'][] = ['id' => $tag->id, 'tag' => $tag->tag];
             } else {

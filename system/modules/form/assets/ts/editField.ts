@@ -1,6 +1,6 @@
 // system/modules/form/assets/ts/editField.ts
 
-import { createApp } from '../../../../templates/base/node_modules/vue';
+import { createApp } from '../../../../templates/base/node_modules/vue/dist/vue.esm-bundler.js';
 import EditFieldComponent from './EditFieldComponent.vue';
 import testComponent from './testComponent.vue';
 

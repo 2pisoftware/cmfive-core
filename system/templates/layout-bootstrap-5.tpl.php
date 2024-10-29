@@ -36,9 +36,6 @@ $theme_setting = AuthService::getInstance($w)->getSettingByKey('bs5-theme');
         <div id="offscreen-menu" class="d-flex flex-column pb-0">
             <div class="d-flex flex-row justify-content-between offscreen-header pb-3">
                 <div class="d-flex flex-row align-items-center">
-                    <!-- <a class="nav-link px-3 pr-2" href="/">
-                        <img width="24px" height="24px" src="<?php echo Config::get('main.application_logo', '/system/templates/img/cmfive_V_logo.png'); ?>" />
-                    </a> -->
                     <h5 class="fw-bold text-2pi mt-1 mb-1 nav-link px-3 pr-2"><?php echo Config::get('main.application_name'); ?></h5>
                 </div>
                 <a class="nav-link pt-0 pb-1" data-toggle-menu="close"><i class="bi bi-x" style="font-size: 24px;"></i></a>
@@ -142,11 +139,23 @@ $theme_setting = AuthService::getInstance($w)->getSettingByKey('bs5-theme');
                             <?php endif; ?>
                         </ul>
                         <ul class="navbar-nav me-auto mb-2 mb-lg-0 d-none d-lg-flex">
-                            <?php foreach ($w->modules() as $module) :
+                            <?php $injectedModules = $w->callHook('core_template', 'topmenu');
+                            $base_modules = $w->modules();
+                            array_push($base_modules, ...array_merge(...array_values($injectedModules)));
+
+                            foreach ($base_modules as $module) :
+                                $module_service = ucfirst($module) . "Service";
+
+                                if (!in_array($module, $w->modules()) || method_exists($module_service, "config")) {
+                                    Config::enableSandbox();
+                                    Config::promoteSandbox();
+                                    Config::set($module, $module_service::config());
+                                }
+
                                 // Check if config is set to display on topmenu
-                                if (Config::get("{$module}.topmenu") && Config::get("{$module}.active")) :
+                                if ((Config::get("{$module}.topmenu") && Config::get("{$module}.active"))) :
                                     // Check for navigation
-                                    $module_service = ucfirst($module) . "Service";
+
                                     $array = [];
                                     $menu_link = method_exists($module_service, "menuLink") ? $module_service::getInstance($w)->menuLink() : $w->menuLink($module, is_bool(Config::get("{$module}.topmenu")) ? ucfirst($module) : Config::get("{$module}.topmenu"), $array, null, null, "nav-link");
                                     if ($menu_link !== false) :
@@ -170,7 +179,7 @@ $theme_setting = AuthService::getInstance($w)->getSettingByKey('bs5-theme');
                                                     }
                                                 } ?>
                                                 <div class="dropdown-menu" aria-labelledby="topnav_<?php echo $module; ?>_dropdown_link">
-                                                    <?php foreach ($module_navigation as $module_nav) : 
+                                                    <?php foreach ($module_navigation as $module_nav) :
                                                         if (is_string($module_nav)) {
                                                             echo $module_nav;
                                                             continue;
@@ -183,6 +192,7 @@ $theme_setting = AuthService::getInstance($w)->getSettingByKey('bs5-theme');
                                             <li class="nav-item <?php echo $w->_module == $module ? 'active' : ''; ?>"><?php echo $menu_link; ?></li>
                                         <?php endif; ?>
                                     <?php endif;
+                                    Config::disableSandbox();
                                 endif;
                             endforeach; ?>
                         </ul>

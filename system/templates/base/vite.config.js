@@ -8,11 +8,14 @@ import fs from "fs";
 
 // We need to determine the root directory of the project - since everything is symlinked this requires a bit of thought
 let scriptPath = __dirname;
+console.log("scriptPath", scriptPath);
 if (scriptPath.includes('cmfive-core')) {
     // System is symlinked outside of boilerplate
     scriptPath = scriptPath.split('cmfive-core')[0];
     if (fs.existsSync(scriptPath + 'cmfive-boilerplate')) {
         scriptPath += 'cmfive-boilerplate/';
+    } else if (fs.existsSync("/var/www/html")) {
+        scriptPath = "/var/www/html/";
     } else {
         throw new Error('Could not determine root directory of project');
     }
