@@ -90,7 +90,7 @@ class Config
      * key out of the array
      *
      * @param string $key
-     * @return Mixed the value
+     * @return mixed the value
      */
     public static function get($key, $default = null)
     {
@@ -233,6 +233,15 @@ class Config
     public static function setSandbox($shadow_register = [])
     {
         self::$shadow_register = $shadow_register;
+    }
+    
+    public static function promoteSandbox()
+    {
+        if (self::isSandboxing()) {
+            if (!empty(self::$register)) {
+                self::$shadow_register = array_merge(self::$shadow_register, self::$register);
+            }
+        }
     }
 
     public static function mergeSandbox()
