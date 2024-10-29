@@ -149,10 +149,10 @@ $theme_setting = AuthService::getInstance($w)->getSettingByKey('bs5-theme');
                             foreach ($base_modules as $module) :
                                 $module_service = ucfirst($module) . "Service";
 
-                                if (!in_array($module, $w->modules()) || method_exists($module_service, "config")) {
+                                if (!in_array($module, $w->modules()) && method_exists($module_service, "serviceConfig")) {
                                     Config::enableSandbox();
                                     Config::promoteSandbox();
-                                    Config::set($module, $module_service::config());
+                                    Config::set($module, $module_service::serviceConfig());
                                 }
 
                                 // Check if config is set to display on topmenu
