@@ -124,7 +124,7 @@
                                         null,
                                         'isbox',
                                         null,
-                                        'bg-secondary text-light'
+                                        'bg-secondary'
                                     )
                                     ?>
                                 </div>
@@ -156,7 +156,7 @@
                                                     'Are you sure you want to remove this subscriber?',
                                                     null,
                                                     false,
-                                                    'bg-warning d-inline'
+                                                    'bg-warning d-inline text-dark'
                                                 );
                                                 ?></td>
                                             </div>
@@ -234,7 +234,7 @@
                 <?php echo $w->partial("listcomments", ["object" => $task, "internal_only" => true, "redirect" => "task/edit/{$task->id}#internal_comments"], "admin"); ?>
             </div>
             <div id="external_comments">
-                <div class='alert-box warning'>External comments may be sent to clients, exercise caution!</div>
+                <div class='alert alert-warning'>External comments may be sent to clients, exercise caution!</div>
                 <?php echo $w->partial("listcomments", ["object" => $task, "internal_only" => false, "external_only" => true, "redirect" => "task/edit/{$task->id}#external_comments"], "admin"); ?>
             </div>
             <div id="attachments">

@@ -46,6 +46,7 @@
 <style>
     #cmfive-modal .ts-control {
         padding: 10px;
+        border: 1px solid var(--bs-body-color);
     }
 
     #cmfive-modal .ts-wrapper {
@@ -67,7 +68,7 @@
     }
 
     #cmfive-modal .optgroup-header {
-        border-bottom: 1px solid black;
+        border-bottom: 1px solid var(--bs-body-color);
     }
 
     #cmfive-modal .create {

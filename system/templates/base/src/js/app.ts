@@ -1,8 +1,8 @@
 // src/app.ts
 import { AlertAdaptation, DropdownAdaptation, FavouritesAdaptation, TabAdaptation, TableAdaptation } from './adaptations';
-import { Autocomplete, CodeMirror, InputWithOther, MultiFileUpload, Overlay, QuillEditor, Tags, Toast as CmfiveToast } from './components';
+import { Autocomplete, Toast as CmfiveToast, CodeMirror, InputWithOther, MultiFileUpload, Overlay, QuillEditor, Tags } from './components';
 
-import { Modal, Toast, Tooltip } from 'bootstrap';
+import { Modal, Tooltip } from 'bootstrap';
 import { Sortable } from './components/Sortable';
 
 import '../scss/app.scss';
@@ -25,6 +25,8 @@ export class Cmfive {
                 localStorage.setItem(Cmfive.THEME_KEY, 'default');
             }
         }
+
+		document.querySelector("html").setAttribute("data-bs-theme", localStorage.getItem(Cmfive.THEME_KEY) === "dark" ? "dark" : "light");
 
         document.querySelector('html').classList.remove('theme--default');
         document.querySelector('html').classList.remove('theme--dark');
