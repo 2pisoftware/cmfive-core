@@ -90,7 +90,7 @@ class Config
      * key out of the array
      *
      * @param string $key
-     * @return Mixed the value
+     * @return mixed the value
      */
     public static function get($key, $default = null)
     {
