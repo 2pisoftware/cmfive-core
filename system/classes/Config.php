@@ -484,8 +484,8 @@ class ConfigDependencyLoader
     /**
      * Searches the dependency stack for a registered module
      *
-     * @param String $module
-     * @return Mixed registered module
+     * @param string $module
+     * @return string|null registered module
      */
     public static function getRegisteredModule($module)
     {
@@ -505,9 +505,6 @@ class ConfigDependencyLoader
     public static function load()
     {
         if (!empty(self::$dependency_stack)) {
-            // Remove - testing graph capabilities by randomising the load order of modules
-            shuffle(self::$dependency_stack);
-
             foreach (self::$dependency_stack as $node) {
                 self::visitNode($node);
             }

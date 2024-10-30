@@ -231,7 +231,7 @@ class Web
 
             $top_directory = new \RecursiveDirectoryIterator($this->getModuleDir($model) . 'models/', \FilesystemIterator::FOLLOW_SYMLINKS | \FilesystemIterator::SKIP_DOTS);
             $class_filter = new \RecursiveCallbackFilterIterator($top_directory, function ($current, $key, $iterator) {
-                return (!$current->isDir() && $current->getExtension() === "php") || true;
+                return $current->isDir() || $current->getExtension() === "php";
             });
 
             foreach (new \RecursiveIteratorIterator($class_filter) as $info) {
@@ -1470,8 +1470,16 @@ class Web
         // check for explicit module path first
         $basepath = $this->moduleConf($module, 'path');
         if (!empty($basepath)) {
-            $path = $basepath . '/' . $module . '/';
-            return file_exists($path) ? $path : null;
+            $path = $basepath . DS . $module . DS;
+
+            if (!file_exists($path)) {
+                foreach ($this->modules() as $_m) {
+                    if (in_array($module, Config::get("{$_m}.injected_modules", []))) {
+                        return file_exists(Config::get("{$_m}.path") . DS . $_m . DS) ? Config::get("{$_m}.path") . DS . $_m . DS : null;
+                    }
+                }
+            }
+            return $path;
         }
 
         return null;
