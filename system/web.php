@@ -1472,11 +1472,12 @@ class Web
         if (!empty($basepath)) {
             $path = $basepath . DS . $module . DS;
 
+            // Now that we support injected modules sometimes this function will be called from their perspective
+            // We need to check if this is the case and return the module actually responsible for the injected modules
             if (!file_exists($path)) {
-                foreach ($this->modules() as $_m) {
-                    if (in_array($module, Config::get("{$_m}.injected_modules", []))) {
-                        return file_exists(Config::get("{$_m}.path") . DS . $_m . DS) ? Config::get("{$_m}.path") . DS . $_m . DS : null;
-                    }
+                $injected_rule = Config::get($module . '.injected_by');
+                if (!empty($injected_rule)) {
+                    return file_exists(Config::get("{$injected_rule}.path") . DS . $injected_rule . DS) ? Config::get("{$injected_rule}.path") . DS . $injected_rule . DS : null;
                 }
             }
             return $path;
