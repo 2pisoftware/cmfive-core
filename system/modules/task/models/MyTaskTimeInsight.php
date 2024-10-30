@@ -53,7 +53,7 @@ class MyTaskTimeInsight extends InsightBaseClass
             "Task",
             false,
             $parameters['dt_start'],
-            $parameters['dt_end'],
+            $parameters['dt_end']
         );
 
         if (is_null($timelogs)) {
