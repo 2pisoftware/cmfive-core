@@ -1,104 +1,93 @@
-<div v-cloak id="app">
-    <div class="panel">
-        <h3>New Attachment</h3>
-        <form method="POST" @submit.prevent="">
-            <div class="small-12 medium-12 large-12">
-                <label>
-                    <input type="file" id="file" ref="file" @change="prepareFile()"/>
-                </label>
-                <label style="font-size: 18px;">Title
-                    <input type="text" id="title" v-model="title"/>
-                </label>
-                <label style="font-size: 18px;">Description
-                    <input type="text" id="description" v-model="description"/>
-                </label><br>
-                <div v-if="can_restrict == 'true'">
-                    <label class="cmfive__checkbox-container">Restricted
-                        <input type="checkbox" v-model="is_restricted">
-                        <span class="cmfive__checkbox-checkmark"></span>
-                    </label>
-                    <div v-show="is_restricted"><strong>Select the users that can view this attachment</strong>
-                        <ul class="small-block-grid-1 medium-block-grid-3 large-block-grid-3">
-                            <li v-for="viewer in viewers" style="padding-bottom: 0;">
-                                <label class="cmfive__checkbox-container">{{ viewer.name }}
-                                    <input type="checkbox" v-model="viewer.can_view">
-                                    <span class="cmfive__checkbox-checkmark" ></span>
-                                </label>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div><br>
-            <button class="small" style="margin-bottom: 0rem;" @click="uploadFile()">Save</button>
+<div id="app">
+    <div class="card">
+        <div class="card-header">
+            <h3>New Attachment</h3>
+        </div>
+        <form id="attachmentForm" method="POST" class="card-body">
+            <input type="hidden" value="<?php echo $class; ?>" name="class" />
+            <input type="hidden" value="<?php echo $class_id; ?>" name="class_id" />
+
+            <div class="mb-3">
+                <label for="file" class="form-label">File</label>
+                <input type="file" class="form-control" name="file" />
+            </div>
+            <div class="mb-3">
+                <label for="title" class="form-label">Title</label>
+                <input type="text" class="form-control" name="title" />
+            </div>
+            <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                <input type="text" class="form-control" name="description" />
+            </div>
+
+            <div id="new_attachments_restricted" class="d-none">
+                <input class="form-check-input" type="checkbox" name="is_restricted">
+                <label class="form-check-label d-inline" for="is_restricted">Limit who can view this comment</label>
+
+                <div id="new_attachments_viewers"></div>
+            </div>
+            <button type="submit" class="btn btn-primary">Save</button>
         </form>
     </div>
 </div>
+
 <script>
-    const {
-        createApp
-    } = Vue;
-    createApp({
-        data: function() {
-            return {
-                can_restrict: "<?php echo $can_restrict; ?>",
-                viewers: <?php echo empty($viewers) ? json_encode([]) : $viewers; ?>,
-                title: null,
-                description: null,
-                file: null,
-                is_restricted: false,
-                max_upload_size: "<?php echo @FileService::getInstance($w)->getMaxFileUploadSize() ? : (2 * 1024 * 1024); ?>",
-                class: "<?php echo $class; ?>",
-                class_id: "<?php echo $class_id; ?>",
-                redirect_url: "<?php echo $redirect_url; ?>",
-            }
-        },
-        methods: {
-            prepareFile: function() {
-                this.file = this.$refs.file.files[0];
-            },
-            uploadFile: function() {
-                if (this.file === null) {
-                    new Toast("No file selected").show();
-                    return;
-                }
+    const can_restrict = <?php echo $can_restrict; ?>;
+    const viewers = <?php echo empty($viewers) ? "[]" : $viewers; ?>;
+    const object_class = "<?php echo $class; ?>";
+    const object_id = "<?php echo $class_id; ?>";
+    const redirect_url = "<?php echo $redirect_url; ?>";
 
-                if (this.file.size > this.max_upload_size) {
-                    new Toast("File size is too large").show();
-                    return;
-                }
+    if (can_restrict) {
+        document.getElementById("new_attachments_restricted").classList.remove("d-none")
 
-                toggleModalLoading();
+        const container = document.getElementById("new_attachments_viewers");
 
-                var file_data = {
-                    title: this.title,
-                    description: this.description,
-                    class: this.class,
-                    class_id: this.class_id,
-                    is_restricted: this.is_restricted,
-                    viewers: this.viewers.filter(function(viewer) {
-                        return viewer.can_view;
-                    })
-                };
-
-                var form_data = new FormData();
-                form_data.append("file", this.file);
-                form_data.append("file_data", JSON.stringify(file_data));
-
-                axios.post("/file-attachment/ajaxAddAttachment",
-                    form_data, {
-                        headers: {
-                            "Content-Type": "multipart/form-data"
-                        }
-                    }
-                ).then(function(response) {
-                    window.history.go();
-                }).catch(function(error) {
-                    new Toast("Failed to upload file").show();
-                    console.log(error);
-                }).finally(function() {
-                    hideModalLoading();
-                });
-            }
+        if (!viewers.length) {
+            container.innerText = "You have permission to restrict viewers, but you're the only one who can view."
         }
-    }).mount("#app");
+
+        for (const viewer of viewers) {
+            const div = document.createElement("div");
+            div.classList.add("form-check");
+
+            const input = document.createElement("input");
+            input.classList.add("form-check-input");
+            input.setAttribute("type", "checkbox");
+            input.setAttribute("name", `viewers[${viewer.id}]`);
+            div.appendChild(input)
+
+            const label = document.createElement("label");
+            label.innerText = viewer.name;
+            label.classList.add("form-check-label");
+            div.appendChild(label);
+        }
+    }
+
+    document.getElementById("attachmentForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const formData = new FormData(e.target);
+
+        formData.set(
+            "viewers",
+            viewers.filter(x => formData.get(`viewers[${x.id}]`) === "on")
+        );
+
+        const file = formData.get("file");
+        formData.delete("file");
+
+        const send = new FormData();
+        const obj = {};
+        formData.forEach((val, key) => obj[key] = val);
+        send.append("file_data", JSON.stringify(obj));
+        send.append("file", file);
+
+        await fetch("/file-attachment/ajaxAddAttachment", {
+            method: "POST",
+            body: send,
+        });
+
+        window.history.go();
+    })
 </script>
