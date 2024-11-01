@@ -32,4 +32,15 @@ interface InjectableModuleInterface
      * @return bool
      */
     public static function isInInjectedTopLevelModule(Web $w): bool;
+
+    /**
+     * MenuLink is needed as the Web version of the menuLink function makes checks to Auth allowed functions that interfere with display
+     *
+     * E.g.
+     * ```php
+     * return HtmlBootstrap5::a("/my-module/target_action", "My Injected Module", null, 'nav-link');
+     * ```
+     * @return string
+     */
+    public function menuLink(): string;
 }

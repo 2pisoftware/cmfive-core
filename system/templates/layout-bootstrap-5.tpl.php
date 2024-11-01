@@ -61,12 +61,12 @@ $theme_setting = AuthService::getInstance($w)->getSettingByKey('bs5-theme');
             <div class="accordion" id="accordion_menu">
                 <?php $injectedModules = $w->callHook('core_template', 'topmenu');
                 $base_modules = $w->modules();
+                $base_modules_ref = $w->modules();
                 array_push($base_modules, ...array_merge(...array_values($injectedModules)));
 
                 foreach ($base_modules as $module) :
                     $module_service = ucfirst($module) . "Service";
-
-                    if (!in_array($module, $w->modules()) && is_a($module_service, "InjectableModuleInterface")) {
+                    if (!in_array($module, $base_modules_ref) && (new \ReflectionClass($module_service))->implementsInterface("InjectableModuleInterface")) {
                         Config::enableSandbox();
                         Config::promoteSandbox();
                         Config::set($module, $module_service::serviceConfig());
@@ -179,7 +179,7 @@ $theme_setting = AuthService::getInstance($w)->getSettingByKey('bs5-theme');
 
                                 // We do this by requiring the injected module to have a service class as well as a serviceConfig method
                                 // this serviceConfig method needs to return an array consistent with an actual module config
-                                if (!in_array($module, $w->modules()) && method_exists($module_service, "serviceConfig")) {
+                                if (!in_array($module, $w->modules()) && (new \ReflectionClass($module_service))->implementsInterface("InjectableModuleInterface")) {
                                     Config::enableSandbox();
                                     Config::promoteSandbox();
                                     Config::set($module, $module_service::serviceConfig());
@@ -271,7 +271,7 @@ $theme_setting = AuthService::getInstance($w)->getSettingByKey('bs5-theme');
             </div>
             <div id="menu-overlay" data-toggle-menu="close"></div>
         </div>
-        <div class="container-xl" id="body-content">
+        <div class="<?php echo $w->ctx("layout-size") == "large" ? "container-fluid px-4" : "container-xl"; ?>" id="body-content">
             <?php
             if (!empty($error)) {
                 echo HtmlBootstrap5::alertBox($error, "alert-warning");
