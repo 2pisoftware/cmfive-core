@@ -2,25 +2,23 @@
 <p><?php echo $attachment->description ?></p>
 
 <?php
-if (!empty($owner))
-{
+if (!empty($owner)) {
     $contact = $owner->getContact();
-    if (!empty($contact))
-    {
-        echo $contact->getFullName();
-    }
-    else
-    {
-        echo $owner->getFullName();
+    if (!empty($contact)) {
+        echo "Owner: " . ($contact->getFullName() ?: $contact->email);
+    } else {
+        // if there isn't a contact for this user
+        // fallback to the user id
+        echo "Owner: User (" . $user->id . ")";
     }
 }
 ?>
 
 <p>
     Created by:
-    <?php if (!empty($creator))
-    {
-        echo $creator->getFullName();
+    <?php if (!empty($creator)) {
+        $creator_contact = $creator->getContact();
+        echo $creator_contact->getFullName() ?: $creator_contact->email;
     } ?>
 </p>
 

@@ -24,8 +24,9 @@
                 <input class="form-check-input" type="checkbox" name="is_restricted">
                 <label class="form-check-label d-inline" for="is_restricted">Limit who can view this comment</label>
 
-                <div id="new_attachments_viewers"></div>
+                <div id="new_attachments_viewers" class="pt-1"></div>
             </div>
+
             <button type="submit" class="btn btn-primary">Save</button>
         </form>
     </div>
@@ -33,12 +34,13 @@
 
 <script>
     const can_restrict = <?php echo $can_restrict; ?>;
+    const show_restrict = true;
     const viewers = <?php echo empty($viewers) ? "[]" : $viewers; ?>;
     const object_class = "<?php echo $class; ?>";
     const object_id = "<?php echo $class_id; ?>";
     const redirect_url = "<?php echo $redirect_url; ?>";
 
-    if (can_restrict) {
+    if (can_restrict && show_restrict) {
         document.getElementById("new_attachments_restricted").classList.remove("d-none")
 
         const container = document.getElementById("new_attachments_viewers");
@@ -48,6 +50,7 @@
         }
 
         for (const viewer of viewers) {
+            console.log(viewer);
             const div = document.createElement("div");
             div.classList.add("form-check");
 
@@ -61,11 +64,15 @@
             label.innerText = viewer.name;
             label.classList.add("form-check-label");
             div.appendChild(label);
+
+            container.appendChild(div);
         }
     }
 
     document.getElementById("attachmentForm").addEventListener("submit", async (e) => {
         e.preventDefault();
+        // show the loading indicator
+        document.getElementById("cmfive-overlay").style.display = "flex";
 
         const formData = new FormData(e.target);
 
