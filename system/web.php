@@ -231,7 +231,7 @@ class Web
 
             $top_directory = new \RecursiveDirectoryIterator($this->getModuleDir($model) . 'models/', \FilesystemIterator::FOLLOW_SYMLINKS | \FilesystemIterator::SKIP_DOTS);
             $class_filter = new \RecursiveCallbackFilterIterator($top_directory, function ($current, $key, $iterator) {
-                return (!$current->isDir() && $current->getExtension() === "php") || true;
+                return $current->isDir() || $current->getExtension() === "php";
             });
 
             foreach (new \RecursiveIteratorIterator($class_filter) as $info) {
@@ -1470,8 +1470,17 @@ class Web
         // check for explicit module path first
         $basepath = $this->moduleConf($module, 'path');
         if (!empty($basepath)) {
-            $path = $basepath . '/' . $module . '/';
-            return file_exists($path) ? $path : null;
+            $path = $basepath . DS . $module . DS;
+
+            // Now that we support injected modules sometimes this function will be called from their perspective
+            // We need to check if this is the case and return the module actually responsible for the injected modules
+            if (!file_exists($path)) {
+                $injected_rule = Config::get($module . '.injected_by');
+                if (!empty($injected_rule)) {
+                    return file_exists(Config::get("{$injected_rule}.path") . DS . $injected_rule . DS) ? Config::get("{$injected_rule}.path") . DS . $injected_rule . DS : null;
+                }
+            }
+            return $path;
         }
 
         return null;
