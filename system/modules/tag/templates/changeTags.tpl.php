@@ -9,7 +9,7 @@
 
     echo new Html5Autocomplete([
         'id' => 'display_tags_' . $object_class . '_' . $id,
-        // "placeholder" => "Add tags...",
+        "placeholder" => "Add tags...",
         "class" => "text-center",
         'name' => 'tags',
         "maxItems" => null,
@@ -55,7 +55,6 @@
 
     #cmfive-modal .ts-control input {
         flex: 0;
-        min-width: 0;
     }
 
     #cmfive-modal .ts-dropdown-content {
