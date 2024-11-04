@@ -80,6 +80,11 @@ $bootstrap-icons-font-dir: "/system/templates/base/node_modules/bootstrap-icons/
 	.ts-control input {
 		color: var(--bs-body-color);
 	}
+
+	.ts-wrapper.multi .ts-control .item {
+		background-color: var(--bs-tertiary-bg);
+		color: $white;
+	}
 }
 
 // Quill editor dark theme
