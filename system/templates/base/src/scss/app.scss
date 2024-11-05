@@ -72,8 +72,13 @@ $bootstrap-icons-font-dir: "/system/templates/base/node_modules/bootstrap-icons/
 		background-color: transparent;
 	}
 
-	.ts-dropdown, .ts-dropdown .optgroup-header, .ts-dropdown .active {
+	.ts-dropdown, .ts-dropdown .optgroup-header {
 		background-color: var(--bs-tertiary-bg);
+		color: $white !important;
+	}
+
+	.ts-dropdown .active {
+		background-color: var(--bs-secondary-bg);
 		color: $white !important;
 	}
 
