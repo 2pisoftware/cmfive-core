@@ -8,10 +8,6 @@ function listTags(\Web $w, $params = []) {
         return;
     }
     
-    \CmfiveStyleComponentRegister::registerComponent("selectize-css", (new \CmfiveStyleComponent("/composer/vendor/grimmlink/selectize/dist/css/selectize.css", ['weight' => 300])));
-    \CmfiveStyleComponentRegister::registerComponent("tag-css", (new \CmfiveStyleComponent("/system/modules/tag/assets/css/style.css", ['weight' => 290])));
-    \CmfiveScriptComponentRegister::registerComponent("selectize-js", (new \CmfiveScriptComponent("/composer/vendor/grimmlink/selectize/dist/js/standalone/selectize.js", ['weight' => 300, 'type' => 'module'])));
-    
     $w->ctx('object', $params['object']);
     
     // Filter tags into a displayable group and a group that only shows on hover
