@@ -1,10 +1,8 @@
 name: CI
 
 on:
-  push:
-    branches: [ develop ]
   pull_request:
-    branches: [ develop, master ]
+    branches: [ develop, main ]
 
   workflow_dispatch:
 env:
@@ -16,7 +14,7 @@ env:
   DB_PASSWORD: cmfive_test
   DB_DATABASE: cmfive_test
   PLAYWRIGHT_MODULES: "admin channel form tag report task timelog"
-  BOILERPLATE_IMAGE: ghcr.io/2pisoftware/cmfive:develop
+  LANG: en_AU.UTF-8
 
 jobs:
   # Lint
@@ -30,7 +28,7 @@ jobs:
     - name: Get phpcs
       run: wget https://raw.githubusercontent.com/2pisoftware/cmfive-boilerplate/master/phpcs.xml
     - name: Codesniffer
-      uses: pipeline-components/php-codesniffer@v0.31.0
+      uses: pipeline-components/php-codesniffer@v0.35.1
       with:
         options: -s -p --colors --extensions=php --runtime-set testVersion ${{matrix.php_version}}
 
@@ -53,12 +51,26 @@ jobs:
         with:
           path: core
 
+      # Set Boilerplate variables by determing which image and branch to use
+      - name: Set Boilerplate Vars
+        id: boilerplate_vars
+        run: |
+          if [ "${{ github.ref }}" == "refs/heads/main" ] || [ "${{ github.event.pull_request.base.ref }}" == "main" ]; then
+            # Base branch or current branch of core is main
+            echo "BOILERPLATE_IMAGE=ghcr.io/2pisoftware/cmfive:latest" >> $GITHUB_ENV
+            echo "BOILERPLATE_BRANCH=master" >> $GITHUB_ENV
+          else
+            # Base branch or current branch of core is another branch
+            echo "BOILERPLATE_IMAGE=ghcr.io/2pisoftware/cmfive:develop" >> $GITHUB_ENV
+            echo "BOILERPLATE_BRANCH=develop" >> $GITHUB_ENV
+          fi
+
       # Checkout the boilerplate
       - name: Checkout Boilerplate
         uses: actions/checkout@v4
         with:
           repository: '2pisoftware/cmfive-boilerplate'
-          ref: 'develop'
+          ref: ${{ env.BOILERPLATE_BRANCH }}
           path: boilerplate
 
       # Pre-requisites Prepare Cmfive Environment
@@ -69,7 +81,7 @@ jobs:
 
       - name: Start containers
         env:
-          CORE_BRANCH: "${{ github.event.pull_request.head.ref }}"
+          CORE_BRANCH: "${{ github.event.pull_request.head.ref || github.ref_name }}"
         run: |
           # Link system dir
           cd boilerplate
@@ -117,11 +129,11 @@ jobs:
             -v ${{ github.workspace }}/boilerplate/.codepipeline/test_agent/configs/test_agent-config.php:/var/www/html/config.php:rw \
             -v ${{ github.workspace }}/boilerplate/test:/var/www/html/test:rw \
             -v ${{ github.workspace }}/boilerplate/storage:/var/www/html/storage:rw \
+            -v ${{ github.workspace }}/core/system:/var/www/html/system:rw \
             -e DB_HOST=mysql-8 \
             -e DB_USERNAME=$DB_USERNAME \
             -e DB_PASSWORD=$DB_PASSWORD \
             -e DB_DATABASE=$DB_DATABASE \
-            -e CMFIVE_CORE_BRANCH=$CORE_BRANCH \
             -e ENVIRONMENT=development \
             --network=cmfive \
             $BOILERPLATE_IMAGE
@@ -139,6 +151,23 @@ jobs:
             fi
           done
 
+      - name: Get source code details
+        if: ${{ failure() }} || ${{ success() }}
+        run: |
+          echo ">> CONTAINER LABELS (BOILERPLATE) <<"
+          echo "===================================="
+          docker inspect --format='{{range $key, $value := .Config.Labels}}{{$key}}={{$value}}{{println}}{{end}}' cmfive
+          echo ""
+          echo ""
+          echo ">> CORE COMMIT DETAILS <<"
+          echo "========================="
+          echo "VENDOR DIRECTORY: (should be unused)"
+          docker exec -u cmfive cmfive sh -c "cd composer/vendor/2pisoftware/cmfive-core && git log -1 --pretty=format:"CORE_HASH=\"%H\"%nCORE_COMMIT_MSG=\"%s\"%nCORE_REF=\"%D\"""
+          echo ""
+          echo "MOUNTED CORE: (should be used, this is mounted to /system)"
+          pushd core
+          git log -1 --pretty=format:"CORE_HASH=\"%H\"%nCORE_COMMIT_MSG=\"%s\"%nCORE_REF=\"%D\""
+
       - name: Compile the theme
         run: |
           # Copy the theme from the docker container
@@ -153,6 +182,16 @@ jobs:
       - name: Setup cmfive Test Environment
         run: |
           docker exec -t cmfive sh -c "chmod -R ugo=rwX /var/www/html*"
+          sudo locale-gen en_AU.UTF-8
+          sudo update-locale en_AU.UTF-8
+          LANG=en_AU.UTF-8
+          LC_ALL=en_AU.UTF-8
+          echo "Test Execution context:"
+          echo "Runner locale info"
+          date
+          locale
+          echo "Web host timezone"
+          docker exec -t cmfive sh -c "date"
 
       - name: Inject configs into cmfive Test Environment
         run: |
@@ -258,7 +297,7 @@ jobs:
             if [ $? -gt 0 ]; then
                 echo "Timelog module tests failed"
             fi
-            
+                
       - name: Get container logs
         if: ${{ failure() }} || ${{ success() }}
         run: |

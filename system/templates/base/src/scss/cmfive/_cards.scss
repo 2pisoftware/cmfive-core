@@ -1,4 +1,3 @@
-
 .card {
     @include theme((background-color: 'white-black', color: 'dark-grey'));
 
@@ -7,4 +6,4 @@
             @include theme((background-color: 'white-black', color: 'dark-grey'));
         }
     }
-}
+}  
