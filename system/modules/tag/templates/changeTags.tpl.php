@@ -70,6 +70,10 @@
         border-bottom: 1px solid var(--bs-body-color);
     }
 
+    .ts-dropdown-content > .option {
+        width: 100%;
+    }
+
     #cmfive-modal .create {
         width: 100%;
     }
