@@ -20,20 +20,20 @@
                     $actions = [];
 
                     if ($val->object_class == "Task") {
-                        $actions[] = HtmlBootstrap5::b('/task/edit/' . $val->object_id . "#timelog", "View Time Log", null, null, null, "bg-primary");
+                        $actions[] = HtmlBootstrap5::b('/task/edit/' . $val->object_id . "#timelog", "View Time Log", null, null, null, "bg-primary btn-sm ");
                     }
 
                     if ($val->canEdit(AuthService::getInstance($w)->user())) {
-                        $actions[] = HtmlBootstrap5::box('/timelog/edit/' . $val->id, 'Edit', true, null, null, null, "isbox", null, "bg-primary");
-                        $actions[] = HtmlBootstrap5::box('/timelog/move/' . $val->id, 'Move', true, null, null, null, "isbox", null, "bg-primary");
+                        $actions[] = HtmlBootstrap5::box('/timelog/edit/' . $val->id, 'Edit', true, null, null, null, "isbox", null, "bg-primary btn-sm ");
+                        $actions[] = HtmlBootstrap5::box('/timelog/move/' . $val->id, 'Move', true, null, null, null, "isbox", null, "bg-primary btn-sm ");
                     }
 
                     if ($val->canDelete(AuthService::getInstance($w)->user())) {
                         $confirmation_message = implode("", $w->callHook("timelog", "before_display_timelog", $val));
-                        $actions[] = HtmlBootstrap5::b('/timelog/delete/' . $val->id, 'Delete', empty($confirmation_message) ? 'Are you sure you want to delete this timelog?' : $confirmation_message, null, null, "bg-danger");
+                        $actions[] = HtmlBootstrap5::b('/timelog/delete/' . $val->id, 'Delete', empty($confirmation_message) ? 'Are you sure you want to delete this timelog?' : $confirmation_message, null, null, "btn-sm bg-danger");
                     }
 
-                    $row[] = [implode("", $actions), "text-end"];
+                    $row[] = HtmlBootstrap5::buttonGroup(implode("", $actions));
 
                     return $row;
                 }, $entry_struct["entries"]), null, "tablesorter", $header);
