@@ -1,11 +1,43 @@
-<div id="user_edit_app">
-    <user-edit-component
-        user_json='<?php echo json_encode($user); ?>'
-        enforce_max_length="<?php echo Config::get('auth.login.password.enforce_length') ? 'true' : 'false' ?>"
-        enforce_min_length="<?php echo Config::get('auth.login.password.min_length', 8); ?>">
-    </user-edit-component>
-</div>
+<h1>
+    Edit -
+    <?php echo $user["account"]["firstname"] . " " . $user_details["account"]["lastname"] ?>
+</h1>
 
-<div class="d-none" id="userdetailsform">
-    <?php echo $userDetails; ?>
+<div class="tabs">
+    <div class="tab-head">
+        <a href="#details">Details</a>
+        <a href="#user_security_app">Security</a>
+        <a href="#groups">Groupss</a>
+    </div>
+
+    <div class="tab-body">
+        <div id="details">
+            <?php echo $userDetails; ?>
+        </div>
+
+        <div id="user_security_app">
+            <user-security-component
+                user_id="<?php echo $user["id"]; ?>"
+                locked="<?php echo $user["security"]["is_locked"]; ?>"
+                mfa_enabled="<?php echo $user["security"]["mfa_enabled"]; ?>"
+                pw_min_length="<?php echo Config::get('auth.login.password.min_length', 8); ?>">
+            >
+            </user-security-component>
+        </div>
+
+        <div id="groups">
+            <div class="row-fluid body panel clearfix">
+                <h3>Groups</h3>
+                <ul>
+                    <?php foreach ($user["groups"] as $group) : ?>
+                        <li>
+                            <a href="<?php echo $group["url"]; ?>" target="_blank">
+                                <?php echo $group["title"]; ?>
+                            </a>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+        </div>
+    </div>
 </div>

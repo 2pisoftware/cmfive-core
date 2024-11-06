@@ -13,7 +13,7 @@ function edit_GET(Web $w)
     CmfiveScriptComponentRegister::registerComponent(
         "UserEditComponent",
         new CmfiveScriptComponent(
-            "/system/templates/base/dist/UserEdit.js",
+            "/system/templates/base/dist/UserSecurity.js",
             ["weight" => "200", "type" => "module"]
         )
     );

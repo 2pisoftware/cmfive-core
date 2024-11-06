@@ -1,10 +1,10 @@
 import { createApp } from '../../../../templates/base/node_modules/vue';
-import UserEditComponent from "./UserEditComponent.vue";
+import UserSecurityComponent from "./UserSecurityComponent.vue";
 
 window.addEventListener("load", () => {
 	createApp({
 		components: {
-			UserEditComponent,
+			UserSecurityComponent,
 		}
-	}).mount("#user_edit_app");
+	}).mount("#user_security_app");
 })
