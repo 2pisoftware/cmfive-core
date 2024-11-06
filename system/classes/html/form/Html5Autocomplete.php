@@ -157,13 +157,20 @@ class Html5Autocomplete extends \Html\Form\InputField
                 "text" => $val["text"],
                 "type" => $val["type"],
             ];
+        } else if (isset($val["id"]) && isset($val["name"])) {
+            return [
+                "value" => $val["id"],
+                "text" => $val["name"],
+            ];
         } else if (is_scalar($val)) {
             return [
                 "value" => $val,
                 "text" => $val,
             ];
         } else {
-            LogService::getInstance($this->w)->setLogger("html5autocomplete")->error("option did not match format", $val);
+            // can't log cause don't have $w
+            // LogService::getInstance($w)->setLogger("html5autocomplete")->error("option did not match format", $val);
+            return [];
         }
     }
 }
