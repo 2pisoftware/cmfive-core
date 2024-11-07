@@ -19,10 +19,10 @@ export class Autocomplete {
 			// (wrt the tags module)
 
 			if (parsed?.cmfive?.onItemAdd) {
-				parsed.onItemAdd = function() {
+				parsed.onItemAdd = function(item: string) {
 					this.setTextboxValue("");
 					this.refreshOptions();
-					Autocomplete.tomSelectChange.call(null, new URL(parsed.cmfive.onItemAdd))
+					Autocomplete.tomSelectChange.call(null, new URL(parsed.cmfive.onItemAdd), item)
 				};
 			}
 			else {
