@@ -45,7 +45,7 @@
     "vue-loader": "^17.4.2",
     "vue-property-decorator": "^9.1.2",
     "vue-template-compiler": "^0.1.0",
-    "webpack": "^5.88.2",
+    "webpack": "^5.96.1",
     "webpack-cli": "^4.10.0"
   }
 }
