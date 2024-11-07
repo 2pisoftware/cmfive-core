@@ -2,8 +2,19 @@
 
 namespace System\Modules\Admin;
 
+use CmfiveScriptComponent;
+use CmfiveScriptComponentRegister;
+
 function listcomments(\Web $w, $params)
 {
+    CmfiveScriptComponentRegister::registerComponent(
+        "commentsModal",
+        new CmfiveScriptComponent(
+            "/system/templates/base/dist/commentsModal.js",
+            ["weight" => "200", "type" => "module"]
+        )
+    );
+
     $object = $params['object'];
     $redirect = $params['redirect'];
     $internal_only = array_key_exists('internal_only', $params) ? $params['internal_only'] : true;

@@ -231,7 +231,7 @@ class Web
 
             $top_directory = new \RecursiveDirectoryIterator($this->getModuleDir($model) . 'models/', \FilesystemIterator::FOLLOW_SYMLINKS | \FilesystemIterator::SKIP_DOTS);
             $class_filter = new \RecursiveCallbackFilterIterator($top_directory, function ($current, $key, $iterator) {
-                return (!$current->isDir() && $current->getExtension() === "php") || true;
+                return $current->isDir() || $current->getExtension() === "php";
             });
 
             foreach (new \RecursiveIteratorIterator($class_filter) as $info) {
@@ -636,7 +636,7 @@ class Web
                     $this->error('Your session has timed out, please log in again', '/auth/login');
                     exit;
                 } else {
-                    $_SESSION['logout_timestamp'] = time(); //set new timestamp
+                    $this->session('logout_timestamp', time()); //set new timestamp
                 }
             }
 
@@ -891,7 +891,7 @@ class Web
      * core_web_after_post_[module]_[submodule]
      * core_web_after_post_[module]_[submodule]_[action]
      *
-     * @param unknown $type eg. before / after
+     * @param string $type eg. before / after
      */
     public function _callWebHooks($type)
     {
@@ -1470,8 +1470,17 @@ class Web
         // check for explicit module path first
         $basepath = $this->moduleConf($module, 'path');
         if (!empty($basepath)) {
-            $path = $basepath . '/' . $module . '/';
-            return file_exists($path) ? $path : null;
+            $path = $basepath . DS . $module . DS;
+
+            // Now that we support injected modules sometimes this function will be called from their perspective
+            // We need to check if this is the case and return the module actually responsible for the injected modules
+            if (!file_exists($path)) {
+                $injected_rule = Config::get($module . '.injected_by');
+                if (!empty($injected_rule)) {
+                    return file_exists(Config::get("{$injected_rule}.path") . DS . $injected_rule . DS) ? Config::get("{$injected_rule}.path") . DS . $injected_rule . DS : null;
+                }
+            }
+            return $path;
         }
 
         return null;
@@ -1485,8 +1494,8 @@ class Web
     /**
      * A helper function to return the module name of a file located in its models directory
      *
-     * @param String $classname
-     * @return Mixed $module
+     * @param string $classname
+     * @return mixed $module
      */
     public function getModuleNameForModel($classname)
     {
@@ -1640,10 +1649,10 @@ class Web
     /**
      * Call hook method to invoke other modules helper functions
      *
-     * @param String module
-     * @param String $function
-     * @param Mixed $data
-     * @return array array of return values from all functions that answer to this hool
+     * @param string module
+     * @param string $function
+     * @param mixed $data
+     * @return array|null array of return values from all functions that answer to this hool
      */
     public function callHook($module, $function, $data = null)
     {
@@ -1910,8 +1919,8 @@ class Web
      *     pathMatch("eins","zwei","drei") will insert into the context
      *     ("eins" => "one", "zwei" => "two", "drei" => "three")
      *
-     * @param multiple string params, which will be turned into ctx entries
-     * @return an array of key, value pairs
+     * @param mixed string params, which will be turned into ctx entries
+     * @return array array of key, value pairs
      */
     public function pathMatch()
     {
@@ -2028,7 +2037,7 @@ class Web
      * If $value is null, the current value will be returned.
      *
      * @param string $key
-     * @param string $value
+     * @param mixed $value
      * @param boolean $append
      */
     public function ctx($key, $value = null, $append = false)

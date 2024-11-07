@@ -1,8 +1,12 @@
 <?php
+/** @var Web $w */
 $theme_setting = AuthService::getInstance($w)->getSettingByKey('bs5-theme');
 ?>
 <!DOCTYPE html>
-<html class="theme theme--<?php echo !empty($theme_setting->id) ? $theme_setting->setting_value : 'dark'; ?>">
+<html
+    class="theme theme--<?php echo !empty($theme_setting->id) ? $theme_setting->setting_value : 'dark'; ?>"
+    data-bs-theme="<?php echo !empty($theme_setting->id) ? ($theme_setting->setting_value === "dark" ? "dark" : "light") : "dark" ?>"
+>
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -36,9 +40,6 @@ $theme_setting = AuthService::getInstance($w)->getSettingByKey('bs5-theme');
         <div id="offscreen-menu" class="d-flex flex-column pb-0">
             <div class="d-flex flex-row justify-content-between offscreen-header pb-3">
                 <div class="d-flex flex-row align-items-center">
-                    <!-- <a class="nav-link px-3 pr-2" href="/">
-                        <img width="24px" height="24px" src="<?php echo Config::get('main.application_logo', '/system/templates/img/cmfive_V_logo.png'); ?>" />
-                    </a> -->
                     <h5 class="fw-bold text-2pi mt-1 mb-1 nav-link px-3 pr-2"><?php echo Config::get('main.application_name'); ?></h5>
                 </div>
                 <a class="nav-link pt-0 pb-1" data-toggle-menu="close"><i class="bi bi-x" style="font-size: 24px;"></i></a>
@@ -58,11 +59,22 @@ $theme_setting = AuthService::getInstance($w)->getSettingByKey('bs5-theme');
                 <li class="nav-item"><a class="nav-link nav-icon" href="#" data-toggle-nav-settings><i class="bi bi-gear-fill"></i></a></li>
             </ul>
             <div class="accordion" id="accordion_menu">
-                <?php foreach ($w->modules() as $module) :
+                <?php $injectedModules = $w->callHook('core_template', 'topmenu');
+                $base_modules = $w->modules();
+                $base_modules_ref = $w->modules();
+                array_push($base_modules, ...array_merge(...array_values($injectedModules)));
+
+                foreach ($base_modules as $module) :
+                    $module_service = ucfirst($module) . "Service";
+                    if (!in_array($module, $base_modules_ref) && (new \ReflectionClass($module_service))->implementsInterface("InjectableModuleInterface")) {
+                        Config::enableSandbox();
+                        Config::promoteSandbox();
+                        Config::set($module, $module_service::serviceConfig());
+                    }
+                    
                     // Check if config is set to display on topmenu
                     if (Config::get("{$module}.topmenu") && Config::get("{$module}.active")) :
                         // Check for navigation
-                        $module_service = ucfirst($module) . "Service";
                         $array = [];
                         $menu_link = method_exists($module_service, "menuLink") ? $module_service::getInstance($w)->menuLink() : $w->menuLink($module, is_bool(Config::get("{$module}.topmenu")) ? ucfirst($module) : Config::get("{$module}.topmenu"), $array, null, null, "nav-link");
                         if ($menu_link !== false) :
@@ -89,7 +101,7 @@ $theme_setting = AuthService::getInstance($w)->getSettingByKey('bs5-theme');
                                             <?php foreach ($module_navigation as $module_nav) :
                                                 if (is_string($module_nav)) : ?>
                                                     <li class="nav-item"><?php echo $module_nav; ?></li>
-                                                <?php else: ?>
+                                                <?php else : ?>
                                                     <li class="nav-item"><a <?php echo $module_nav->type == MenuLinkType::Modal ? 'data-modal-target' : 'href'; ?>="<?php echo $module_nav->url; ?>"><?php echo $module_nav->title; ?></a></li>
                                                 <?php endif;
                                             endforeach; ?>
@@ -105,6 +117,7 @@ $theme_setting = AuthService::getInstance($w)->getSettingByKey('bs5-theme');
                             <?php endif; ?>
                         <?php endif;
                     endif;
+                    Config::disableSandbox();
                 endforeach; ?>
             </div>
             <div class="mt-auto pt-4">
@@ -142,16 +155,45 @@ $theme_setting = AuthService::getInstance($w)->getSettingByKey('bs5-theme');
                             <?php endif; ?>
                         </ul>
                         <ul class="navbar-nav me-auto mb-2 mb-lg-0 d-none d-lg-flex">
-                            <?php foreach ($w->modules() as $module) :
+                            <?php
+                            // This feature allows modules to inject top level menu items
+                            $injectedModules = array_merge(...array_values($w->callHook('core_template', 'topmenu')));
+                            $base_modules = $w->modules();
+                            array_push($base_modules, ...$injectedModules);
+
+                            $printActiveFlag = function ($module, $module_service) use ($w) {
+                                if (method_exists($module_service, "isInInjectedTopLevelModule")) {
+                                    return $module_service::isInInjectedTopLevelModule($w) ? 'active' : '';
+                                }
+                                
+                                $ignoreActiveList = Config::get("{$module}.ignore_topmenu_active");
+                                if (!empty($ignoreActiveList) && in_array($w->_module . '-' . $w->_submodule, $ignoreActiveList)) {
+                                    return '';
+                                }
+
+                                return $w->_module == $module ? 'active' : '';
+                            };
+
+                            foreach ($base_modules as $module) :
+                                $module_service = ucfirst($module) . "Service";
+
+                                // We do this by requiring the injected module to have a service class as well as a serviceConfig method
+                                // this serviceConfig method needs to return an array consistent with an actual module config
+                                if (!in_array($module, $w->modules()) && (new \ReflectionClass($module_service))->implementsInterface("InjectableModuleInterface")) {
+                                    Config::enableSandbox();
+                                    Config::promoteSandbox();
+                                    Config::set($module, $module_service::serviceConfig());
+                                }
+
                                 // Check if config is set to display on topmenu
-                                if (Config::get("{$module}.topmenu") && Config::get("{$module}.active")) :
+                                if ((Config::get("{$module}.topmenu") && Config::get("{$module}.active"))) :
                                     // Check for navigation
-                                    $module_service = ucfirst($module) . "Service";
+
                                     $array = [];
                                     $menu_link = method_exists($module_service, "menuLink") ? $module_service::getInstance($w)->menuLink() : $w->menuLink($module, is_bool(Config::get("{$module}.topmenu")) ? ucfirst($module) : Config::get("{$module}.topmenu"), $array, null, null, "nav-link");
                                     if ($menu_link !== false) :
                                         if (method_exists($module . "Service", "navList") || method_exists($module . "Service", "navigation")) : ?>
-                                            <li class="nav-item dropdown <?php echo $w->_module == $module ? 'active' : ''; ?>" id="topnav_<?php echo $module; ?>">
+                                            <li class="nav-item dropdown <?php echo $printActiveFlag($module, $module_service); ?>" id="topnav_<?php echo $module; ?>">
                                                 <a class="nav-link dropdown-toggle caret-off" href="#" id="topnav_<?php echo $module; ?>_dropdown_link" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                     <?php echo is_bool(Config::get("{$module}.topmenu")) ? ucfirst($module) : Config::get("{$module}.topmenu"); ?>
                                                 </a>
@@ -170,7 +212,7 @@ $theme_setting = AuthService::getInstance($w)->getSettingByKey('bs5-theme');
                                                     }
                                                 } ?>
                                                 <div class="dropdown-menu" aria-labelledby="topnav_<?php echo $module; ?>_dropdown_link">
-                                                    <?php foreach ($module_navigation as $module_nav) : 
+                                                    <?php foreach ($module_navigation as $module_nav) :
                                                         if (is_string($module_nav)) {
                                                             echo $module_nav;
                                                             continue;
@@ -180,9 +222,10 @@ $theme_setting = AuthService::getInstance($w)->getSettingByKey('bs5-theme');
                                                 </div>
                                             </li>
                                         <?php else : ?>
-                                            <li class="nav-item <?php echo $w->_module == $module ? 'active' : ''; ?>"><?php echo $menu_link; ?></li>
+                                            <li class="nav-item <?php echo $printActiveFlag($module, $module_service); ?>"><?php echo $menu_link; ?></li>
                                         <?php endif; ?>
                                     <?php endif;
+                                    Config::disableSandbox();
                                 endif;
                             endforeach; ?>
                         </ul>
@@ -220,7 +263,7 @@ $theme_setting = AuthService::getInstance($w)->getSettingByKey('bs5-theme');
                                 <li class="breadcrumb-item">
                                     <a href='<?php echo $path; ?>' data-bs-toggle="tooltip" data-bs-placement="bottom" title="<?php echo $value['name']; ?>"><?php echo $value['name']; ?></a>
                                 </li>
-                        <?php endif;
+                            <?php endif;
                             $isFirst = false;
                         endforeach; ?>
                     </ol>
@@ -228,7 +271,7 @@ $theme_setting = AuthService::getInstance($w)->getSettingByKey('bs5-theme');
             </div>
             <div id="menu-overlay" data-toggle-menu="close"></div>
         </div>
-        <div class="container-xl" id="body-content">
+        <div class="<?php echo $w->ctx("layout-size") == "large" ? "container-fluid px-4" : "container-xl"; ?>" id="body-content">
             <?php
             if (!empty($error)) {
                 echo HtmlBootstrap5::alertBox($error, "alert-warning");

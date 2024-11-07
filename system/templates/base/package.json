@@ -8,7 +8,7 @@
     "vite": "vite build",
     "dev": "NODE_ENV=production npm run development",
     "development": "NODE_ENV=production node_modules/webpack/bin/webpack.js --progress --config=node_modules/laravel-mix/setup/webpack.config.js",
-    "watch": "NODE_ENV=production npm run development -- --watch",
+    "watch": "NODE_ENV=production npm run vite -- --watch",
     "watch-poll": "NODE_ENV=production npm run watch -- --watch-poll",
     "hot": "NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --disable-host-check --config=node_modules/laravel-mix/setup/webpack.config.js",
     "prod": "npm run production",

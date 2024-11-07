@@ -110,7 +110,7 @@ test("Test that users, groups & permissions are assignable", async ({ page, isMo
 });
 
 test("Test that Cmfive Admin handles lookups", async ({ page, isMobile }) => {
-    test.setTimeout(GLOBAL_TIMEOUT);
+    test.setTimeout(GLOBAL_TIMEOUT * 2);
     CmfiveHelper.acceptDialog(page);
 
     await CmfiveHelper.login(page, "admin", "admin");

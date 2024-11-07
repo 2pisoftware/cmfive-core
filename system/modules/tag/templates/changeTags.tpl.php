@@ -1,7 +1,8 @@
-<div class="text-center">
-    <h3>Tags for <span><?php echo $object_class; ?>: <?php echo $object->getSelectOptionTitle(); ?>
+<div>
+    <h3 class="text-center">Tags for <span><?php echo $object_class; ?>: <?php echo $object->getSelectOptionTitle(); ?>
         </span></h3>
 
+        <label for="<?php echo 'display_tags_' . $object_class . '_' . $id?>" class="form-label">Add tags</label>
     <?php
 
     use Html\Form\Html5Autocomplete;
@@ -9,6 +10,7 @@
     echo new Html5Autocomplete([
         'id' => 'display_tags_' . $object_class . '_' . $id,
         "placeholder" => "Add tags...",
+        "class" => "text-center",
         'name' => 'tags',
         "maxItems" => null,
         "canCreate" => true,
@@ -30,7 +32,7 @@
         ],
         "value" => array_map(fn ($val) => $val->id, $tags),
 
-        "plugins" => ["remove_button"],
+        "plugins" => ["remove_button", "caret_position"],
 
         // onItemAdd is called for both creation and addition,
         // and ajaxCreateTag creates if not exists, and adds it to the object if not already
@@ -44,6 +46,15 @@
 <style>
     #cmfive-modal .ts-control {
         padding: 10px;
+        border: 1px solid var(--bs-body-color);
+    }
+
+    #cmfive-modal .ts-wrapper {
+        padding: 0;
+    }
+
+    #cmfive-modal .ts-control input {
+        flex: 0;
     }
 
     #cmfive-modal .ts-dropdown-content {
@@ -56,7 +67,11 @@
     }
 
     #cmfive-modal .optgroup-header {
-        border-bottom: 1px solid black;
+        border-bottom: 1px solid var(--bs-body-color);
+    }
+
+    .ts-dropdown-content > .option {
+        width: 100%;
     }
 
     #cmfive-modal .create {

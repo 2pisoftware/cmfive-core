@@ -8,18 +8,26 @@ import fs from "fs";
 
 // We need to determine the root directory of the project - since everything is symlinked this requires a bit of thought
 let scriptPath = __dirname;
-if (scriptPath.includes('cmfive-core')) {
+
+console.log("dirname", scriptPath);
+
+if (scriptPath.includes('cmfive-boilerplate')) {
+    // System is symlinked inside of boilerplate
+    scriptPath = scriptPath.split('cmfive-boilerplate')[0] + "cmfive-boilerplate/";
+} else if (scriptPath.includes('cmfive-core')) {
     // System is symlinked outside of boilerplate
     scriptPath = scriptPath.split('cmfive-core')[0];
+    console.log("scriptPath 2", scriptPath);
     if (fs.existsSync(scriptPath + 'cmfive-boilerplate')) {
         scriptPath += 'cmfive-boilerplate/';
+    } else if (fs.existsSync("/var/www/html")) {
+        scriptPath = "/var/www/html/";
     } else {
         throw new Error('Could not determine root directory of project');
     }
-} else if (scriptPath.includes('cmfive-boilerplate')) {
-    // System is symlinked inside of boilerplate
-    scriptPath = scriptPath.split('cmfive-boilerplate')[0] + "cmfive-boilerplate/";
-}
+} 
+
+console.log("scriptPath", scriptPath);
 
 const _x = [
     resolve(__dirname, 'src/js/app.ts'),

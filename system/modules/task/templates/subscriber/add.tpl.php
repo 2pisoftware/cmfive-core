@@ -3,6 +3,7 @@
 <style>
     #cmfive-modal .ts-control {
         padding: 10px;
+        border: 1px solid var(--bs-body-color);
     }
 
     #cmfive-modal .panel {

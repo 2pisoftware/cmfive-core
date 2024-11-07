@@ -49,6 +49,69 @@ $bootstrap-icons-font-dir: "/system/templates/base/node_modules/bootstrap-icons/
     height: 200px;
 }
 
+// Tom select dark theme
+@include color-mode(dark) {
+	.disabled .ts-control {
+		opacity: 1;
+	}
+
+	.full .ts-control, .ts-wrapper {
+		background-color: var(--bs-body-bg);
+		color: $white;
+	}
+
+	.ts-wrapper.disabled {
+		border: var(--bs-border-width) solid $white;
+	}
+
+	.ts-wrapper.disabled, .disabled .ts-control {
+		background-color: var(--bs-secondary-bg);
+	}
+
+	.ts-control, .ts-wrapper.single.input-active .ts-control {
+		background-color: transparent;
+	}
+
+	.ts-dropdown, .ts-dropdown .optgroup-header {
+		background-color: var(--bs-tertiary-bg);
+		color: $white !important;
+	}
+
+	.ts-dropdown .active {
+		background-color: var(--bs-secondary-bg);
+		color: $white !important;
+	}
+
+	.ts-control input {
+		color: var(--bs-body-color);
+	}
+
+	.ts-wrapper.multi .ts-control .item {
+		background-color: var(--bs-tertiary-bg);
+		color: $white;
+	}
+}
+
+// Quill editor dark theme
+@include color-mode(dark) {
+	.ql-snow .ql-picker-options {
+		background-color: var(--bs-secondary-bg);
+	}
+
+	.ql-snow .ql-stroke {
+		stroke: var(--bs-body-color);
+	}
+
+	.ql-snow .ql-picker {
+		color: var(--bs-body-color)
+	}
+
+	form .ql-snow {
+		background-color: var(--bs-body-bg);
+		color: $white;
+	}
+}
+
 // Tom Select styles
 @import 'tom-select/src/scss/tom-select.scss';
 

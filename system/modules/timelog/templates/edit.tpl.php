@@ -25,13 +25,6 @@ use Html\Form\Textarea;
     target="_self"
     id="timelog_edit_form"
 >
-    <?php
-    echo new Hidden([
-        "id|name" => "object_id",
-        "value" => $timelog->object_id ?: $tracking_id
-    ]);
-    ?>
-
     <div class="mb-3">
         <label for="user_id" class="form-label m-0">
             Assigned user
@@ -91,10 +84,10 @@ use Html\Form\Textarea;
             }
 
             echo new Html5Autocomplete([
-                "id|name" => "search",
+                "id|name" => "object_id",
                 "class" => "form-control",
                 "title" => !empty($object) ? $object->getSelectOptionTitle() : null,
-                "value" => !empty($timelog->object_id) ? $timelog->object_id : $tracking_id,
+                "value" => $timelog->object_id ?: $tracking_id,
                 "required" => "required",
                 "source" => $w->localUrl("/timelog/ajaxSearch?index={$timelog->object_class}"),
                 "options" => !empty($usable_class) ? TimelogService::getInstance($w)->getObjects($usable_class, $where) : '',

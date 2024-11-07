@@ -1,13 +1,13 @@
 <?php use Carbon\Carbon; ?>
-<div id="comment_<?php echo $c->id; ?>" class="<?php echo isset($internal_only) && $internal_only === true ? 'internal' : 'external'; ?>_comment_section comment_section">
-    <div class="comment_body clearfix">
-        <div class='medium-1 column'>
-            <img class='comment_avatar' src='https://www.gravatar.com/avatar/<?php echo md5(strtolower(trim(@AuthService::getInstance($c->w)->getUser($c->creator_id)->getContact()->email))); ?>?d=identicon' />
+<div id="comment_<?php echo $c->id; ?>" class="panel flat cmfive-comment">
+    <div class="comment-body">
+        <div class="ps-1">
+            <img class="img-thumbnail" src='https://www.gravatar.com/avatar/<?php echo md5(strtolower(trim(@AuthService::getInstance($c->w)->getUser($c->creator_id)->getContact()->email))); ?>?d=identicon' />
         </div>
-        <div class='medium-11 columns comment_right_column'>
+        <div style="flex: 1; margin-left: 20px; margin-right: 20px;">
             <p><b><?php echo (!empty($c->creator_id) ?@AuthService::getInstance($c->w)->getUser($c->creator_id)->getFullName() : "") . ($c->isRestricted() ? ' <span class="fi-lock"></span>' : ""); ?></b></p>
             <?php echo $c->isRestricted() && $is_outgoing ? "[Restricted comment, please view in " . Config::get("main.application_name", "Cmfive") . "]" : CommentService::getInstance($w)->renderComment($c->comment); ?>
-            <div class="comment_meta">
+            <div class="text-white-50">
                 <?php if (!empty($c->dt_created)) : ?>
                     <span data-tooltip aria-haspopup="true" title="<?php echo @formatDate($c->dt_created, "d-M-Y \a\\t H:i"); ?>">
                         Posted <?php echo Carbon::createFromTimeStamp($c->dt_created)->diffForHumans(); ?>

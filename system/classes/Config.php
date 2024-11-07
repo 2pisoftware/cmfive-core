@@ -90,7 +90,7 @@ class Config
      * key out of the array
      *
      * @param string $key
-     * @return Mixed the value
+     * @return mixed the value
      */
     public static function get($key, $default = null)
     {
@@ -233,6 +233,15 @@ class Config
     public static function setSandbox($shadow_register = [])
     {
         self::$shadow_register = $shadow_register;
+    }
+    
+    public static function promoteSandbox()
+    {
+        if (self::isSandboxing()) {
+            if (!empty(self::$register)) {
+                self::$shadow_register = array_merge(self::$shadow_register, self::$register);
+            }
+        }
     }
 
     public static function mergeSandbox()
@@ -475,8 +484,8 @@ class ConfigDependencyLoader
     /**
      * Searches the dependency stack for a registered module
      *
-     * @param String $module
-     * @return Mixed registered module
+     * @param string $module
+     * @return string|null registered module
      */
     public static function getRegisteredModule($module)
     {
@@ -496,9 +505,6 @@ class ConfigDependencyLoader
     public static function load()
     {
         if (!empty(self::$dependency_stack)) {
-            // Remove - testing graph capabilities by randomising the load order of modules
-            shuffle(self::$dependency_stack);
-
             foreach (self::$dependency_stack as $node) {
                 self::visitNode($node);
             }
