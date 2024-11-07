@@ -5,11 +5,6 @@ use Html\Cmfive\SelectWithOther;
 
 function edit_GET(Web $w)
 {
-    $w->setLayout('layout-bootstrap-5');
-
-    VueComponentRegister::registerComponent("autocomplete", new VueComponent("autocomplete", "/system/templates/vue-components/form/elements/autocomplete.vue.js", "/system/templates/vue-components/form/elements/autocomplete.vue.css"));
-    // CmfiveScriptComponentRegister::registerComponent("toast", new CmfiveScriptComponent("/system/templates/base/dist/Toast.js"));
-
     CmfiveScriptComponentRegister::registerComponent(
         "UserEditComponent",
         new CmfiveScriptComponent(

@@ -19,10 +19,4 @@ class CmfiveScriptComponentRegister extends CmfiveComponentRegister {
             unset(static::$_register['vue2']);
         }
     }
-
-    public static function requireVue2()
-    {
-        static::registerComponent('vue2', new CmfiveScriptComponent('/system/templates/js/vue.js'));
-    }
-
 }

@@ -310,7 +310,7 @@ function edit_POST($w)
         foreach ($existing_task_data as $e_task_data)
         {
             // Autocomplete fields
-            if (strpos($e_task_data->data_key, \Html\Form\Autocomplete::$_prefix) === 0)
+            if (strpos($e_task_data->data_key, "acp_") === 0)
             {
                 $e_task_data->delete();
                 continue;
@@ -341,7 +341,7 @@ function edit_POST($w)
     {
         foreach ($_POST["extra"] as $key => $data)
         {
-            if (strpos($key, \Html\Form\Autocomplete::$_prefix) !== 0)
+            if (strpos($key, "acp_") !== 0)
             {
                 $tdata = new TaskData($w);
                 $tdata->task_id = $task->id;

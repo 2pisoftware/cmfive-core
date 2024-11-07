@@ -237,14 +237,6 @@ class HtmlBootstrap5 extends Html
                             $sl_class = !empty($field[6]) ? $field[6] : "form-select";
                             $buffer .= Html::select($name, $items, $value, $sl_class, "width: 100%;", $default, ($readonly ? ' disabled="disabled" ' : null) . ' ' . $required);
                             break;
-                        case "multiSelect":
-                            $items = !empty($field[4]) ? $field[4] : null;
-                            if ($readonly == "") {
-                                $buffer .= Html::multiSelect($name, $items, $value, null, "width: 100%;", $required);
-                            } else {
-                                $buffer .= $value;
-                            }
-                            break;
                         case "checkbox":
                             $defaultValue = !empty($field[4]) ? $field[4] : null;
                             $cb_class = !empty($field[5]) ? $field[5] : null;
@@ -684,14 +676,6 @@ class HtmlBootstrap5 extends Html
                     // $name, $items, $value=null, $class=null, $style=null, $allmsg = "-- Select --", $required = null
                     if ($readonly == "") {
                         $buffer .= Html::select($name, $items, $value, $class, $style, $allmsg);
-                    } else {
-                        $buffer .= $value;
-                    }
-                    break;
-                case "multiSelect":
-                    $items = $size;
-                    if ($readonly == "") {
-                        $buffer .= Html::multiSelect($name, $items, $value, null, "width: 100%;");
                     } else {
                         $buffer .= $value;
                     }

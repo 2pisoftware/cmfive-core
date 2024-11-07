@@ -4,11 +4,6 @@ use Html\Form\InputField\Password;
 use Html\Form\Select;
 use Html\Cmfive\SelectWithOther;
 
-/**
- * Display User edit form in colorbox
- *
- * @param <type> $w
- */
 function useradd_GET(Web $w)
 {
     $p = $w->pathMatch("box");

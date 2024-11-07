@@ -92,7 +92,7 @@ class Contact extends DbObject
     {
         $buf = "";
         if ($this->private_to_user_id) {
-            $buf .= "<img src='" . $this->w->localUrl("/templates/img/Lock-icon.png") . "' border='0'/>";
+            $buf .= "<img class='bi bi-lock' border='0'/>";
         }
 
         $first = true;

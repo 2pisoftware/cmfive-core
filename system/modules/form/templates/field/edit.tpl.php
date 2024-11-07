@@ -1,4 +1,3 @@
-<!-- <link rel='stylesheet' href='/system/templates/vue-components/loading-indicator.vue.css' /> -->
 <div id="edit_field_app">
     <!-- <test-component test="world"></test-component> -->
     <edit-field-component

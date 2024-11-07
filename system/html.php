@@ -428,14 +428,6 @@ class Html
                         $buffer .= $value;
                     }
                     break;
-                case "multiSelect":
-                    $items = !empty($field[4]) ? $field[4] : '';
-                    if ($readonly == "") {
-                        $buffer .= Html::multiSelect($name, $items, $value, null, "width: 100%;");
-                    } else {
-                        $buffer .= $value;
-                    }
-                    break;
                 case "checkbox":
                     $defaultValue = !empty($field[4]) ? $field[4] : '';
                     $class = !empty($field[5]) ? $field[5] : '';
@@ -720,14 +712,6 @@ class Html
                             $sl_class = !empty($field[6]) ? $field[6] : null;
                             $buffer .= Html::select($name, $items, $value, $sl_class, "width: 100%;", $default, ($readonly ? ' disabled="disabled" ' : null) . ' ' . $required);
                             break;
-                        case "multiSelect":
-                            $items = !empty($field[4]) ? $field[4] : null;
-                            if ($readonly == "") {
-                                $buffer .= Html::multiSelect($name, $items, $value, null, "width: 100%;", $required);
-                            } else {
-                                $buffer .= $value;
-                            }
-                            break;
                         case "checkbox":
                             $defaultValue = !empty($field[4]) ? $field[4] : null;
                             $cb_class = !empty($field[5]) ? $field[5] : null;
@@ -893,44 +877,6 @@ class Html
         $buf .= '</select><input type="hidden" value="' . $groupvalue . '" name="' . $name . '_group">';
 
         $buf .= '<script type="text/javascript">$("#' . $name . ' > optgroup").click(function(){$("[name=' . $name . '_group]").attr("value", $(this).attr("label"));});</script>';
-
-        return $buf;
-    }
-
-    /**
-     * Create a multi select field using jQuery
-     *
-     * @param <type> $name
-     * @param <type> $items
-     * @param <type> $values
-     * @param <type> $class
-     * @param <type> $style
-     * @param <type> $allmsg
-     * @return <type>
-     */
-    public static function multiSelect($name, $items, $values = null, $class = null, $style = null, $allmsg = null)
-    {
-        $buf = '<select  multiple="multiple" id="' . $name . '"  name="' . $name . '[]" class="' . $class . '" style="' . $style . '">';
-        if ($items) {
-            foreach ($items as $item) {
-                if (is_array($item)) {
-                    $selected = $values && in_array($item[1], $values) ? ' selected = "true" ' : "";
-                    $buf .= '<option value="' . htmlspecialchars($item[1]) . '"' . $selected . '>' . htmlentities($item[0]) . '</option>';
-                } elseif ($item instanceof DbObject) {
-                    $selected = $values && in_multiarray($item->getSelectOptionValue(), $values) ? ' selected = "true" ' : "";
-                    $buf .= '<option value="' . htmlspecialchars($item->getSelectOptionValue()) . '"' . $selected . '>' . htmlentities($item->getSelectOptionTitle()) . '</option>';
-                } elseif (is_scalar($item)) {
-                    $selected = $values && in_array($item, $values) ? ' selected = "true" ' : "";
-                    $buf .= '<option value="' . htmlspecialchars($item) . '"' . $selected . '>' . htmlentities($item) . '</option>';
-                }
-            }
-        }
-        $buf .= '</select>';
-
-        $buf .= "<script>
-                jQuery(\"#{$name}\").asmSelect({addItemTarget: 'bottom', removeLabel: '<img src=\"'" . WEBROOT . "'/img/bin_closed.png\" border=\"0\"/>'});
-                jQuery(\"#{$name}\").change(function(e, data) { $.fn.colorbox.resize(); });
-                </script>";
 
         return $buf;
     }
@@ -1394,14 +1340,6 @@ class Html
                     // $name, $items, $value=null, $class=null, $style=null, $allmsg = "-- Select --", $required = null
                     if ($readonly == "") {
                         $buffer .= Html::select($name, $items, $value, $class, $style, $allmsg);
-                    } else {
-                        $buffer .= $value;
-                    }
-                    break;
-                case "multiSelect":
-                    $items = $size;
-                    if ($readonly == "") {
-                        $buffer .= Html::multiSelect($name, $items, $value, null, "width: 100%;");
                     } else {
                         $buffer .= $value;
                     }

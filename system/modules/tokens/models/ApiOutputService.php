@@ -11,27 +11,6 @@ class ApiOutputService extends DbService
     //     $w->setLayout(null);
     // }
 
-    public function apiReturnCmfiveStyledHtml($w, $response)
-    {
-        $w->setLayout("layout-modal");
-        $w->enqueueScript(
-            [
-                "name" => "main.js", "uri" => "/system/templates/js/main.js", "weight" => 995
-            ]
-        );
-        $w->enqueueStyle(
-            [
-                "name" => "foundation.css", "uri" => "/system/templates/js/foundation-5.5.0/css/foundation.css", "weight" => 1005
-            ]
-        );
-        // $w->enqueueStyle(array("name" => "style.css", "uri" => "/system/templates/css/style.css", "weight" => 1000));
-        // $w->outputStyles();
-        // $w->outputScripts();
-        $w->out($response);
-        echo $w->_buffer;
-        exit(0);
-    }
-
     public function apiReturnJsonResponse($response)
     {
         $this->w->setLayout(null);

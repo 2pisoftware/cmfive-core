@@ -1,7 +1,5 @@
 <?php
 
-use Html\Form\Autocomplete as Autocomplete;
-
 /**
  * Action function for moving the Taskgroup, uses Angular JS
  *
