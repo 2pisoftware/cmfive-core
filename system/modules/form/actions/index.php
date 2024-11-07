@@ -4,8 +4,8 @@ function index_ALL(Web $w)
 {
     $w->ctx("title", "Forms list");
     $w->out(
-        HtmlBootstrap5::b(href: "/form/edit", title: "Add a form", class: 'btn-primary') .
-        HtmlBootstrap5::b(href: "/form/import", title: "Import a form", class: 'btn-secondary')
+        HtmlBootstrap5::box("/form/edit", "Add a form", class: 'btn btn-primary') .
+        HtmlBootstrap5::box("/form/import", "Import a form", class: 'btn btn-secondary')
     );
 
     $forms = FormService::getInstance($w)->getForms();
@@ -18,8 +18,8 @@ function index_ALL(Web $w)
             header: ['Title', 'Description', 'Actions'],
             data: array_map(function ($f) {
                 return [
-                    $f->toLink(),
-                    $f->description,
+                    '<span class="text-break">' . $f->toLink() . '</span>',
+                    '<p class="text-break">' . $f->description . '</p>',
                     HtmlBootstrap5::buttonGroup(
                         HtmlBootstrap5::b(href: "/form/edit/" . $f->id, title: "Edit", class: 'btn-primary') .
                         HtmlBootstrap5::b(href: "/form/export/" . $f->id, title: "Export", class: "btn-secondary") .

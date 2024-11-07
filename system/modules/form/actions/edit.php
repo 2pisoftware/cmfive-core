@@ -2,6 +2,8 @@
 
 function edit_GET(Web $w)
 {
+    $w->setLayout(null);
+
     list($form_id) = $w->pathMatch();
     $_form_object = $form_id ? FormService::getInstance($w)->getForm($form_id) : new Form($w);
 

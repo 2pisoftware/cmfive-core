@@ -1,6 +1,8 @@
 <?php
 
-function import_GET(Web $w) {
+function import_GET(Web $w)
+{
+	$w->setLayout(null);
 
 	$w->ctx('title',"Form Import");
 

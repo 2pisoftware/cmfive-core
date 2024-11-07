@@ -1,9 +1,9 @@
 <div class='row-fluid'>
-    <h4><?php echo $form->title; ?></h4>
-    <?php echo $display_only !== true ? HtmlBootstrap5::box("/form-instance/edit?form_id=" . $form->id . "&redirect_url=" . $redirect_url . "&object_class=" . get_class($object) . "&object_id=" . $object->id, "Add new " . $form->title, true) : ''; ?>
+    <?php echo $display_only !== true ? HtmlBootstrap5::box("/form-instance/edit?form_id=" . $form->id . "&redirect_url=" . $redirect_url . "&object_class=" . get_class($object) . "&object_id=" . $object->id, "Add new " . $form->title, true, class: "btn btn-primary") : ''; ?>
+
+    <?php echo HtmlBootstrap5::pagination($currentpage, $numpages, $pagesize, $totalresults, $redirect_url); ?>
 
     <div id="form_list_<?php echo $form->id; ?>">
-
         <table class='small-12'>
             <thead>
                 <tr><?php echo $form->getTableHeaders(); ?>

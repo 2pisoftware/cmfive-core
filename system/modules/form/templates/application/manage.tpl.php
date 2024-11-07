@@ -7,7 +7,8 @@
                 <?php echo HtmlBootstrap5::buttonGroup(
                     HtmlBootstrap5::b("/form-application/show/$application->id", 'View', class: "btn btn-sm btn-primary") .
                     HtmlBootstrap5::box("/form-application/edit/$application->id", 'Edit', class: "btn btn-sm btn-secondary") .
-                    HtmlBootstrap5::b("/form-application/export/$application->id", 'Export', class: "btn btn-sm btn-secondary")
+                    HtmlBootstrap5::b("/form-application/export/$application->id", 'Export', class: "btn btn-sm btn-secondary") .
+                    HtmlBootstrap5::b("/form-application/delete/$application->id", 'Delete', 'Are you sure you want to delete this application? All references to already entered data will be lost!', class: "btn btn-sm btn-danger")
                 ); ?>
             </div>
         </h4>

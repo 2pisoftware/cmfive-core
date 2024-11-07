@@ -11,13 +11,11 @@ function form_core_template_tab_headers(Web $w, $object)
         $tabHeaders = [];
         $forms = FormService::getInstance($w)->getFormsMappedToObject($object);
         foreach ($forms as $form) {
-            $form_mapping = FormService::getInstance($w)->getFormMapping($form, get_class($object)) ?? FormService::getInstance($w)->getFormApplicationMapping($form, $object);
-
             if ($form->is_deleted == 0) {
-                $tabHeaders[] = "<a href='#" . toSlug($form->title) . "'>$form->title" . " <span class='secondary round label cmfive__tab-label'>" .  $form->countFormInstancesForObject($object) . "</span></a>";
+                $tabHeaders[] = '<a href="#' . toSlug($form->title) . '">' . $form->title . ' <span class="badge rounded-pill bg-secondary text-light ms-1">' .  $form->countFormInstancesForObject($object) . '</span></a>';
             }
         }
-        return implode("", $tabHeaders);
+        return implode('', $tabHeaders);
     }
     return '';
 }
@@ -47,12 +45,26 @@ function form_core_template_tab_content(Web $w, $params)
             continue;
         }
 
-        $forms_list .= '<div id="' . toSlug($form->title) . '">' . $w->partial($form_mapping->is_singleton ? "show_form" : "listform", [
+        $partialArguments = [
             "form" => $form,
             "redirect_url" => $params['redirect_url'],
             'object' => $params['object'],
             "display_only" => false,
-        ], "form") . '</div>';
+        ];
+
+        if (!empty($params['paginated'])) {
+            $partialArguments['paginated'] = true;
+            $partialArguments['currentpage'] = $params['currentpage'];
+            $partialArguments['numpages'] = $params['numpages'];
+            $partialArguments['pagesize'] = $params['pagesize'];
+            $partialArguments['totalresults'] = $params['totalresults'];
+        }
+
+        $forms_list .= '<div id="' . toSlug($form->title) . '" class="pt-3">' . $w->partial(
+            $form_mapping->is_singleton ? "show_form" : "listform",
+            $partialArguments,
+            "form"
+        ) . '</div>';
     }
 
     return $forms_list;
