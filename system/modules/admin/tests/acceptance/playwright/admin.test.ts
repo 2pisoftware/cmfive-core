@@ -31,8 +31,8 @@ test("Admin can update password of user", async ({ page, isMobile }) => {
 	await security.waitFor();
 	await security.click();
 
-	await page.getByLabel('New Password', { exact: true }).fill("test password");
-	await page.getByLabel('Repeat New Password', { exact: true }).fill("test password");
+	await page.locator('input[name="password"]').fill("test password");
+	await page.locator('input[name="repeat_password"]').pressSequentially("test password");
 	await page.getByRole('button', { name: 'Update Password' }).click();
 
 	await CmfiveHelper.logout(page);
@@ -110,8 +110,8 @@ test("Test that users, groups & permissions are assignable", async ({ page, isMo
 });
 
 test("Test that Cmfive Admin handles lookups", async ({ page, isMobile }) => {
-    test.setTimeout(GLOBAL_TIMEOUT * 2);
-    CmfiveHelper.acceptDialog(page);
+	test.slow();
+	CmfiveHelper.acceptDialog(page);
 
     await CmfiveHelper.login(page, "admin", "admin");
     
