@@ -1,6 +1,15 @@
 <!-- var levels = ['3F7CAC', '95AFBA', 'FFCAB1', '393D3F', 'C1D7AE']; -->
 
 <style>
+    .cmfive-comment {
+        padding-right: 0;
+    }
+
+    .comment-body {
+        display: flex;
+        align-items: center;
+    }
+
     .cmfive-comment .comment-body {
         border-left: none;
     }

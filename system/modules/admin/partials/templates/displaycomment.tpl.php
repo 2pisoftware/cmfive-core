@@ -1,10 +1,10 @@
 <?php use Carbon\Carbon; ?>
 <div id="comment_<?php echo $c->id; ?>" class="panel flat cmfive-comment">
-    <div class="row clearfix comment-body">
-        <div class='col'>
+    <div class="comment-body">
+        <div class="ps-1">
             <img class="img-thumbnail" src='https://www.gravatar.com/avatar/<?php echo md5(strtolower(trim(@AuthService::getInstance($c->w)->getUser($c->creator_id)->getContact()->email))); ?>?d=identicon' />
         </div>
-        <div class='medium-11'>
+        <div style="flex: 1; margin-left: 20px; margin-right: 20px;">
             <p><b><?php echo (!empty($c->creator_id) ?@AuthService::getInstance($c->w)->getUser($c->creator_id)->getFullName() : "") . ($c->isRestricted() ? ' <span class="fi-lock"></span>' : ""); ?></b></p>
             <?php echo $c->isRestricted() && $is_outgoing ? "[Restricted comment, please view in " . Config::get("main.application_name", "Cmfive") . "]" : CommentService::getInstance($w)->renderComment($c->comment); ?>
             <div class="text-white-50">
