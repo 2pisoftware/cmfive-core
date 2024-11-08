@@ -1,5 +1,9 @@
 <?php
 
+use Html\Cmfive\QuillEditor;
+use Html\Form\InputField;
+use Html\Form\Textarea;
+
 function edit_GET(Web &$w)
 {
     $p = $w->pathMatch("id");
@@ -71,7 +75,11 @@ function edit_GET(Web &$w)
                     'options' => !empty($category_config_for_select[$report->module]) ? $category_config_for_select[$report->module] : []
                 ]))->setLabel('Category')
             ],
-            [["Description", "textarea", "description", $report->description, "110", "2"]],
+            [new QuillEditor([
+                "id|name" => "description",
+                "label" => "Description",
+                "value" => $report->description,
+            ])],
             [["Connection", "select", "report_connection_id", $report->report_connection_id, ReportService::getInstance($w)->getConnections()]],
         ]
     ];
@@ -84,11 +92,13 @@ function edit_GET(Web &$w)
 
     if (!empty($report)) {
         $sqlform = [
-            ["", "hidden", "title", $report->title],
-            ["", "hidden", "module", $report->module],
-            ["", "hidden", "description", $report->description],
-            ["Code", "textarea", "report_code", $report->report_code, "110", "82", "codemirror"],
-            ["", "hidden", "report_connection_id", $report->report_connection_id, ReportService::getInstance($w)->getConnections()],
+            "SQL Editor" => [
+                [new InputField\Hidden(["id|name" => "title", "value" => $report->title])],
+                [new InputField\Hidden(["id|name" => "module", "value" => $report->module])],
+                [new InputField\Hidden(["id|name" => "description", "value" => $report->description])],
+                [new InputField\Hidden(["id|name" => "report_connection_id", "value" => $report->report_connection_id])],
+                [new Textarea(["id|name" => "report_code", "value" => $report->report_code, "rows" => 10])],
+            ]
         ];
     }
 
@@ -110,8 +120,8 @@ function edit_GET(Web &$w)
         $w->ctx("duplicate_button", Html::b($w->localUrl("/report/duplicate/{$report->id}"), "Duplicate"));
     }
 
-    $w->ctx("report_form", Html::multiColForm($form, $w->localUrl("/report/edit/{$report->id}"), "POST", "Save Report"));
-    $w->ctx("sql_form", !empty($sqlform) ? Html::form($sqlform, $w->localUrl("/report/edit/{$report->id}"), "POST", "Save Report") : "");
+    $w->ctx("report_form", HtmlBootstrap5::multiColForm($form, $w->localUrl("/report/edit/{$report->id}"), "POST", "Save Report"));
+    $w->ctx("sql_form", !empty($sqlform) ? HtmlBootstrap5::multiColForm($sqlform, $w->localUrl("/report/edit/{$report->id}"), "POST", "Save Report") : "");
 
     if (!empty($report->id)) {
         // ============= Members tab ===================

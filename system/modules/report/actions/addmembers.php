@@ -1,4 +1,8 @@
 <?php
+
+use Html\Form\InputField\Hidden;
+use Html\Form\Select;
+
 // provide form by which to add members to a report
 function addmembers_GET(Web &$w)
 {
@@ -11,19 +15,25 @@ function addmembers_GET(Web &$w)
     $currentReportMembers = ReportService::getInstance($w)->getReportMembers($p["id"]);
     $currentMembers = [];
 
-    for ($i = 0; $i <= count($currentReportMembers) - 1; $i++) {
+    for ($i = 0; $i <= count($currentReportMembers) - 1; $i++)
+    {
         $currentMembers[] = AuthService::getInstance($w)->getUser($currentReportMembers[$i]->user_id);
     }
 
     $members = array_diff($possibleMembers, $currentMembers);
 
     // build form
-    $addUserForm = array(
-        array("", "hidden", "report_id", $p['id']),
-        array("Add Member", "select", "member", null, $members),
-        array("With Role", "select", "role", "", ReportService::getInstance($w)->getReportPermissions()),
-    );
+    $addUserForm = [
+        "Add Member" => [
+            [new Hidden([
+                "id|name" => "report_id",
+                "value" => $p["id"]
+            ])],
+            [new Select(["id|name" => "member", "label" => "Member", "options" => $members])],
+            [new Select(["id|name" => "role", "label" => "Role", "options" => ReportService::getInstance($w)->getReportPermissions()])]
+        ]
+    ];
 
     $w->setLayout(null);
-    $w->ctx("addmembers", Html::form($addUserForm, $w->localUrl("/report/updatemembers/"), "POST", " Submit "));
+    $w->ctx("addmembers", HtmlBootstrap5::multiColForm($addUserForm, $w->localUrl("/report/updatemembers/"), "POST", " Submit "));
 }
