@@ -97,7 +97,7 @@ function edit_GET(Web &$w)
                 [new InputField\Hidden(["id|name" => "module", "value" => $report->module])],
                 [new InputField\Hidden(["id|name" => "description", "value" => $report->description])],
                 [new InputField\Hidden(["id|name" => "report_connection_id", "value" => $report->report_connection_id])],
-                [new Textarea(["id|name" => "report_code", "value" => $report->report_code, "rows" => 50])],
+                [new Textarea(["id|name" => "report_code", "value" => $report->report_code, "rows" => 10])],
             ]
         ];
     }

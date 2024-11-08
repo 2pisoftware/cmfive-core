@@ -671,7 +671,8 @@ class ReportService extends DbService
             new MenuLinkStruct("Report Dashboard", "report/index")
         ];
         if (AuthService::getInstance($this->w)->user()->hasAnyRole(["report_editor", "report_admin"])) {
-            $list += [
+            $list = [
+                ...$list,
                 new MenuLinkStruct("Create a Report", "report/edit"),
                 new MenuLinkStruct("Connections", "report-connections"),
                 new MenuLinkStruct("Feeds Dashboard", "report/listfeed"),
