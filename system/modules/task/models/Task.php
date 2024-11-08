@@ -149,7 +149,7 @@ class Task extends DbObject
     public function displayExtraDetails()
     {
         $ttype = $this->getTaskTypeObject();
-        if ($ttype) {
+        if ($ttype && method_exists($ttype, "displayExtraDetails")) {
             return $ttype->displayExtraDetails($this);
         }
     }

@@ -87,24 +87,6 @@ use Html\Form\Html5Autocomplete; ?>
 <script language="javascript">
     var categories = <?php echo json_encode($category_config ?? []); ?>
 
-    // $('#module').change(function() {
-    //     var option_string = '<option value="">-- Select --</option>';
-
-    //     if (categories.hasOwnProperty($(this).val().toLowerCase())) {
-    //         var _categories = categories[$(this).val().toLowerCase()];
-
-    //         Object.keys(_categories).forEach(function(key) {
-    //             option_string += '<option value="' + key + '">' + _categories[key] + '</option>';
-    //         });
-
-    //         $("#category").removeAttr('disabled');
-    //     } else {
-    //         $("#category").attr('disabled', 'disabled');
-    //     }
-
-    //     $("#category").html(option_string);
-    // });
-
     const report_url = "/report/taskAjaxSelectbyTable?id=";
     document.getElementById("dbtables").addEventListener("change", async (e) => {
         const value = e.target.value;

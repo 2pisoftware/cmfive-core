@@ -1,5 +1,7 @@
 <?php
 
+use Html\Form\InputField;
+
 require_once "classes/html/GlobalAttributes.php";
 require_once "classes/html/a.php";
 require_once "classes/html/button.php";
@@ -456,7 +458,6 @@ class Html
             $buffer .= "</div></div>";
         }
         $buffer .= "</div>";
-        // $buffer .= "<script>$(function(){try{\$('textarea.ckeditor').each(function(){CKEDITOR.replace(this)})}catch(err){}});</script>";
 
         $buffer .= "<script>document.addEventListener('DOMContentLoaded', () => { [...document.querySelectorAll('textarea.ckeditor')].forEach(x => { CKEDITOR.replace(x) }) })</script>";
 
@@ -468,25 +469,29 @@ class Html
 
     public static function datePicker($name, $value = null, $size = null, $required = null)
     {
-        $firstDay = Config::get('main.datepicker_first_day');
-        $buf = '<input class="date_picker" type="text" name="' . $name . '" value="' . $value . '" size="' . $size . '" id="' . $name . '" ' . $required . ' />';
-        $buf .= "<script>$('#$name').datepicker({dateFormat: 'dd/mm/yy', changeMonth: true, changeYear: true, firstDay: $firstDay});$('#$name').keyup( function(event) { $(this).val('');}); </script>";
-        return $buf;
+        return new InputField\Date([
+            "id|name" => $name,
+            "value" => $value,
+            "required" => $required,
+        ]);
     }
 
     public static function datetimePicker($name, $value = null, $size = null, $required = null)
     {
-        $firstDay = Config::get('main.datepicker_first_day');
-        $buf = '<input class="date_picker" type="text" name="' . $name . '" value="' . $value . '" size="' . $size . '" id="' . $name . '" ' . $required . ' />';
-        $buf .= "<script>$('#$name').datetimepicker({ampm: true, dateFormat: 'dd/mm/yy', changeMonth: true, changeYear: true, firstDay: $firstDay});$('#$name').keyup( function(event) { $(this).val('');}); </script>";
-        return $buf;
+        return new InputField\Datetime([
+            "id|name" => $name,
+            "value" => $value,
+            "required" => $required,
+        ]);
     }
 
     public static function timePicker($name, $value = null, $size = null, $required = null)
     {
-        $buf = '<input class="date_picker" type="text" name="' . $name . '" value="' . $value . '" size="' . $size . '" id="' . $name . '" ' . $required . ' />';
-        $buf .= "<script>$('#$name').timepicker({ampm: true, dateFormat: 'dd/mm/yy'});$('#$name').keyup( function(event) { $(this).val('');}); </script>";
-        return $buf;
+        return new InputField\Time([
+            "id|name" => $name,
+            "value" => $value,
+            "required" => $required,
+        ]);
     }
 
     /**
@@ -740,6 +745,8 @@ class Html
             }
             $buffer .= "</div>";
         }
+
+        // TODO: ckeditor is no longer used in favour of quilleditor.
         $buffer .= "<script>$(function(){try{\$('.ckeditor').each(function(){CKEDITOR.replace(this)})}catch(err){}});</script>";
         $buffer .= "<script>$(function(){try{\$('.codemirror').each(function(){var editor = CodeMirror.fromTextArea($(this), {lineNumbers: true, mode: 'text/html', matchBrackets: true, viewportMargin: Infinity}); editor.refresh()})}catch(err){}});</script>";
 

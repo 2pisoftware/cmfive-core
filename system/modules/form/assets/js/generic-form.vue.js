@@ -41,9 +41,9 @@ Vue.component('generic-form', {
 	computed: {
 		getInstances: function() {
 			var _this = this;
-			$.ajax('/form-vue/get_form_instances/' + this.form.id + '/' + this.objectType + '/' + this.objectId).done(function(response) {
-				_this.instances = response.data;
-			});
+			fetch('/form-vue/get_form_instances/' + this.form.id + '/' + this.objectType + '/' + this.objectId)
+				.then(x => x.text())
+				.then(x => _this.instances = x);
 		}
 	},
 	methods: {
