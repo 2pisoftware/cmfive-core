@@ -153,7 +153,7 @@ export class Cmfive {
         }
 
         // Set up bootstrap tooltips
-        target.querySelectorAll('[data-bs-toggle="tooltip"]').forEach((tooltip) => {
+        target?.querySelectorAll('[data-bs-toggle="tooltip"]').forEach((tooltip) => {
             return new Tooltip(tooltip)
         })
 

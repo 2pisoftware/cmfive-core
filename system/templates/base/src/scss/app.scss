@@ -15,10 +15,12 @@ $bootstrap-icons-font-dir: "/system/templates/base/node_modules/bootstrap-icons/
 @import 'cmfive/mixins';
 
 @import 'cmfive/accordion';
+@import 'cmfive/alert';
 @import 'cmfive/breadcrumb';
 @import 'cmfive/buttons';
 @import 'cmfive/cards';
 @import 'cmfive/forms';
+@import 'cmfive/inputs';
 @import 'cmfive/menu';
 @import 'cmfive/modal';
 @import 'cmfive/multi_file_uploads';
@@ -29,6 +31,8 @@ $bootstrap-icons-font-dir: "/system/templates/base/node_modules/bootstrap-icons/
 @import 'cmfive/listgroup';
 @import 'cmfive/red_squiggly_underline';
 @import 'cmfive/responsive_flex';
+
+@import 'cmfive/quill';
 
 // Foundation adaptation styles
 // @import "cmfive/adaptations/accordion";
@@ -44,10 +48,7 @@ $bootstrap-icons-font-dir: "/system/templates/base/node_modules/bootstrap-icons/
 
 // Quill styles
 @import "quill/dist/quill.snow.css";
-.quill-editor {
-    min-height: 200px;
-    height: 200px;
-}
+
 
 // Tom select dark theme
 @include color-mode(dark) {
@@ -88,26 +89,6 @@ $bootstrap-icons-font-dir: "/system/templates/base/node_modules/bootstrap-icons/
 
 	.ts-wrapper.multi .ts-control .item {
 		background-color: var(--bs-tertiary-bg);
-		color: $white;
-	}
-}
-
-// Quill editor dark theme
-@include color-mode(dark) {
-	.ql-snow .ql-picker-options {
-		background-color: var(--bs-secondary-bg);
-	}
-
-	.ql-snow .ql-stroke {
-		stroke: var(--bs-body-color);
-	}
-
-	.ql-snow .ql-picker {
-		color: var(--bs-body-color)
-	}
-
-	form .ql-snow {
-		background-color: var(--bs-body-bg);
 		color: $white;
 	}
 }

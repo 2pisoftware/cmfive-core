@@ -48,21 +48,21 @@
         <div id="tags_<?php echo $tag_obj_id ?>" class="shown_tags">
             <?php
             if (empty($tags["display"])) : ?>
-                <span class="bg-secondary tag-small text-light">
+                <span class="bg-info tag-small text-light">
                     No tags
                 </span>
             <?php endif; ?>
 
             <?php foreach ($tags["display"] as $tag) : ?>
-                <span class="bg-secondary tag-small text-light">
+                <span class="bg-info tag-small text-light">
                     <?php echo $tag["tag"]; ?>
                 </span>
             <?php endforeach; ?>
         </div>
-        <div class="show_more tag-small bg-secondary <?php echo empty($tags["hover"]) ? "d-none" : "" ?>">...</div>
+        <div class="show_more tag-small bg-info <?php echo empty($tags["hover"]) ? "d-none" : "" ?>">...</div>
         <div id="hidden_tags_<?php echo $tag_obj_id ?>" class="hidden_tags">
             <?php foreach ($tags["hover"] as $tag) : ?>
-                <span class="bg-secondary tag-small text-light">
+                <span class="bg-info tag-small text-light">
                     <?php echo $tag["tag"]; ?>
                 </span>
             <?php endforeach; ?>

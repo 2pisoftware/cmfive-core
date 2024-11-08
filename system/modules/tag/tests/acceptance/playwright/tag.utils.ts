@@ -7,7 +7,7 @@ export class TagHelper {
         await page.goto(HOST + "/task/edit/" + taskId);
         await page.getByText("No tags").click();
 
-		CmfiveHelper.fillAutoComplete(page, `display_tags_Task_${taskId}`, tagName, tagName);
+		await CmfiveHelper.fillAutoComplete(page, `display_tags_Task_${taskId}`, tagName, tagName);
 
 		await page.waitForResponse((res) => res.url().includes("/ajaxAddTag/Task/"))
 

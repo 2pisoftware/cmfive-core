@@ -17,7 +17,7 @@ export class TaskHelper  {
         automaticSubscription: boolean = true
     ): Promise<string> {
         if(page.url() != HOST + "/task-group/viewtaskgrouptypes#dashboard")
-            CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Task", "Task Groups");
+            await CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Task", "Task Groups");
 
         await page.getByRole("link", {name: "New Task Group"}).click();
 
@@ -41,11 +41,11 @@ export class TaskHelper  {
         await page.getByRole("combobox", {name: "Who Can Create"}).selectOption(whoCanCreate);
         await page.locator("#priority").selectOption("Normal");
 
-        const subcheckbox = await page.getByRole("checkbox", {name: "Automatic Subscription"});
+        const subcheckbox = page.getByRole("checkbox", {name: "Automatic Subscription"});
         if (automaticSubscription)
             await subcheckbox.check();
         else
-            subcheckbox.uncheck();
+            await subcheckbox.uncheck();
 
         await page.getByRole("button", {name: "Save"}).click();
 
@@ -63,7 +63,7 @@ export class TaskHelper  {
     {
         if(page.url() != HOST + "/task-group/viewmembergroup/" + groupID + "#members") {
             if(page.url() != HOST + "/task-group/viewtaskgrouptypes#dashboard")
-                CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Task", "Task Groups");
+                await CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Task", "Task Groups");
             
             await page.getByRole("link", {name: groupName, exact: true}).click();
         }
@@ -86,7 +86,7 @@ export class TaskHelper  {
     {
         if(page.url() != HOST + "/task-group/viewmembergroup/" + groupID + "#members") {
             if(page.url() != HOST + "/task-group/viewtaskgrouptypes#dashboard")
-                CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Task", "Task Groups");
+                await CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Task", "Task Groups");
             
             await page.getByRole("link", {name: groupName, exact: true}).click();
         }
@@ -101,7 +101,7 @@ export class TaskHelper  {
     {
         if(page.url() != HOST + "/task-group/viewmembergroup/" + groupID + "#members") {
             if(page.url() != HOST + "/task-group/viewtaskgrouptypes#dashboard")
-                CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Task", "Task Groups");
+                await CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Task", "Task Groups");
             
             await page.getByRole("link", {name: groupName, exact: true}).click();
         }
@@ -121,7 +121,7 @@ export class TaskHelper  {
     {
         if(page.url() != HOST + "/task-group/viewmembergroup/" + groupID + "#members") {
             if(page.url() != HOST + "/task-group/viewtaskgrouptypes#dashboard")
-                CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Task", "Task Groups");
+                await CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Task", "Task Groups");
             
             await page.getByRole("link", {name: groupName, exact: true}).click();
         }

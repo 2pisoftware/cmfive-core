@@ -7,7 +7,7 @@
     <div class="tab-head">
         <a href="#details">Details</a>
         <a href="#user_security_app">Security</a>
-        <a href="#groups">Groupss</a>
+        <a href="#groups">Groups</a>
     </div>
 
     <div class="tab-body">

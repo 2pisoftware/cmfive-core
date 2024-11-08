@@ -1,0 +1,7 @@
+input {
+    @include theme((background-color: 'white-black'));
+}
+
+select {
+    @include theme((background-color: 'white-black'));
+}

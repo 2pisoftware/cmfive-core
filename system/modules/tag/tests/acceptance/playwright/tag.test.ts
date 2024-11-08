@@ -20,7 +20,7 @@ test("Test that users can tag objects", async ({ page, isMobile }) => {
 });
 
 test("Test that users can tag multiple objects with same tag", async ({ page, isMobile }) => {
-    test.setTimeout(GLOBAL_TIMEOUT);
+	test.slow();
 
     const tagNameMultiple = CmfiveHelper.randomID("tag_");
 
@@ -54,8 +54,7 @@ test("Test that users can tag multiple objects with same tag", async ({ page, is
     await page.locator("#tag").fill(tagName);
     await page.getByText("Save").click();
 
-    expect(page.getByText("Tag saved")).toBeVisible();
-    await page.getByText("Back to Tag List").click();
+    await expect(page.getByText("Tag saved")).toBeVisible();
 
     // Verify that the task tagged with our edited tag shows the new tag name
     await page.goto(HOST + "/task/tasklist?task__assignee-id=unassigned");
