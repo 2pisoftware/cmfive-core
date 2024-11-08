@@ -86,8 +86,8 @@ export default defineConfig({
     },
     resolve: {
         alias: {
-            '~': resolve(__dirname, 'node_modules'),
-            '@': resolve(__dirname, 'src'),
+            '~': resolve(__dirname, scriptPath + 'system/templates/base/node_modules'),
+            '@': resolve(__dirname, scriptPath + 'system/templates/base/src'),
             'vue': 'vue/dist/vue.esm-bundler.js',
         },
     }

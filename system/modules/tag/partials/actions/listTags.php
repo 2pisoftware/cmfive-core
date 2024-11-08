@@ -1,7 +1,5 @@
 <?php namespace System\Modules\Tag;
 
-
-
 function listTags(\Web $w, $params = []) {
     
     if (empty($params['object'])) {
@@ -10,7 +8,7 @@ function listTags(\Web $w, $params = []) {
     
     \CmfiveStyleComponentRegister::registerComponent("selectize-css", (new \CmfiveStyleComponent("/composer/vendor/grimmlink/selectize/dist/css/selectize.css", ['weight' => 300])));
     \CmfiveStyleComponentRegister::registerComponent("tag-css", (new \CmfiveStyleComponent("/system/modules/tag/assets/css/style.css", ['weight' => 290])));
-    \CmfiveScriptComponentRegister::registerComponent("selectize-js", (new \CmfiveScriptComponent("/composer/vendor/grimmlink/selectize/dist/js/standalone/selectize.js", ['weight' => 300, 'type' => 'module'])));
+    \CmfiveScriptComponentRegister::registerComponent("selectize-js", (new \CmfiveScriptComponent("/composer/vendor/grimmlink/selectize/dist/js/standalone/selectize.js", ['weight' => 300])));
     
     $w->ctx('object', $params['object']);
     
