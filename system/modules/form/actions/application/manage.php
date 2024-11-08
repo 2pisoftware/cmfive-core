@@ -19,9 +19,9 @@ function manage_GET(Web $w)
     $memberTableHeaders = ['User', 'Role', 'Actions'];
     $memberTableData = [];
     if (!empty($members)) {
-        foreach ($members as $memberId => $member) {
+        foreach ($members as $member) {
             $memberTableData[] = [
-                $member->getName(),
+                '<span class="text-break">' . $member->getName() . '</span>',
                 $member->role,
                 HtmlBootstrap5::buttonGroup(
                     HtmlBootstrap5::box("/form-application/edit_member/$application->id?member=$member->id", 'Edit', class: 'btn btn-primary') .
@@ -36,7 +36,7 @@ function manage_GET(Web $w)
     if (!empty($forms)) {
         foreach ($forms as $form) {
             $formTableData[] = [
-                $form->title,
+                '<span class="text-break">' . $form->title . '</span>',
                 $form->countFormInstancesForObject($application) ?: 0,
                 HtmlBootstrap5::b("/form-application/delete_form/$application->id?form=$form->id", 'Delete', 'Are you sure you want to delete this form?', class: 'btn btn-sm btn-danger'),
             ];

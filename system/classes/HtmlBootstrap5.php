@@ -745,7 +745,7 @@ class HtmlBootstrap5 extends Html
         return $buffer;
     }
 
-    public static function pagination($currentpage, $numpages, $pagesize, $totalresults, $baseurl, $pageparam = "p", $pagesizeparam = "ps", $totalresultsparam = "tr")
+    public static function pagination($currentpage, $numpages, $pagesize, $totalresults, $baseurl, $pageparam = "p", $pagesizeparam = "ps", $totalresultsparam = "tr", $tab = null): string
     {
         // Prepare buffer
         $buf = '';
@@ -755,11 +755,11 @@ class HtmlBootstrap5 extends Html
                 $buf = "<nav aria-label='pagination'><ul class='pagination justify-content-center flex-wrap'>";
 
                 // Build pagination links
+                $url_parsed = parse_url($baseurl);
+
                 for ($page = 1; $page <= $numpages; $page++) {
                     // Check if the current page
                     $buf .= "<li class='page-item" . ($currentpage == $page ? " active disabled' aria-current='page'" : "'") . ">";
-
-                    $url_parsed = parse_url($baseurl);
 
                     $url_string = $url_parsed['path'];
                     $url_string .= (empty($url_parsed['query']) ? '?' : '?' . $url_parsed['query'] . '&') . $pageparam . '=' . $page . '&' . $pagesizeparam . '=' . $pagesize . '&' . $totalresultsparam . '=' . $totalresults;

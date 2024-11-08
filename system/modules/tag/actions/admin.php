@@ -13,7 +13,10 @@ function admin_ALL(Web $w)
             $table_data[] = [
                 $tag->tag,
                 $tag->countAssignedObjects(),
-                Html::b("/tag/edit/" . $tag->id, "Edit", false) . Html::b("/tag/delete/" . $tag->id, "Delete", "Are you sure you want to delete the {$tag->tag} tag?", null, false, 'warning')
+                HtmlBootstrap5::buttonGroup(
+                    HtmlBootstrap5::b("/tag/edit/" . $tag->id, "Edit", false, null, false, "btn btn-sm btn-primary") .
+                    HtmlBootstrap5::b("/tag/delete/" . $tag->id, "Delete", "Are you sure you want to delete the {$tag->tag} tag?", null, false, 'btn btn-sm btn-danger')
+                )
             ];
         }
     }

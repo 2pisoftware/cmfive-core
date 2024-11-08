@@ -20,7 +20,7 @@ function edit_member_GET(Web $w)
      * Required to type $application correctly
      * 
      * @var FormApplication
-     * */
+     **/
     $application = FormApplicationService::getInstance($w)->getFormApplication($id);
 
     if (empty($application->id)) {

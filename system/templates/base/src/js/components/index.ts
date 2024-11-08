@@ -1,21 +1,9 @@
-import { Autocomplete } from './Autocomplete';
-import { CodeMirror } from './CodeMirror';
-import { InputWithOther } from './InputWithOther';
-import { MultiFileUpload } from './MultiFileUpload';
-import { Overlay } from './Overlay';
-import { QuillEditor } from './QuillEditor';
-import { Tags } from './Tags';
-import { Toast } from './Toast';
-// import TestComponent from './TestComponent';
-
-export {
-	Autocomplete,
-	CodeMirror,
-	InputWithOther,
-	MultiFileUpload,
-	Overlay,
-	QuillEditor,
-	Tags,
-	Toast
-};
-
+export { Autocomplete } from './Autocomplete';
+export { CodeMirror } from './CodeMirror';
+export { InputWithOther } from './InputWithOther';
+export { MultiFileUpload } from './MultiFileUpload';
+export { Overlay } from './Overlay';
+export { QuillEditor } from './QuillEditor';
+export { Tags } from './Tags';
+export { Toast } from './Toast';
+// export TestComponent from './TestComponent';

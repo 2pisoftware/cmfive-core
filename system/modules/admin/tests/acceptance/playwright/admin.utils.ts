@@ -67,7 +67,7 @@ export class AdminHelper {
         else
             await CmfiveHelper.getRowByText(page, username).getByRole("button", { name: "Edit" }).click();
 
-		await page.waitForSelector("#tab-1")
+		await page.waitForSelector("#details")
 
         for (let [label, value] of data) {
             if (label == "Title") {
