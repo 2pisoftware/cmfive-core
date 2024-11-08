@@ -360,7 +360,7 @@ class ReportService extends DbService
         }
 
         if ($table != "") {
-            $fields = $this->_db->sql("show columns in " . $this->_db->quote($table))->fetchAll();
+            $fields = $this->_db->sql("show columns in " . $table)->fetchAll();
 
             if ($fields) {
                 $output = "<table><tr><td><b>Field</b></td><td><b>Type</b></td></tr>";
