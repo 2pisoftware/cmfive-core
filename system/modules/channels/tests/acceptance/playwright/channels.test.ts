@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
-import { GLOBAL_TIMEOUT, CmfiveHelper } from "@utils/cmfive";
-import { ChannelsHelper} from "@utils/channels";
+import { ChannelsHelper } from "@utils/channels";
+import { CmfiveHelper, GLOBAL_TIMEOUT } from "@utils/cmfive";
 
 // test.describe.configure({mode: 'parallel'});
 
