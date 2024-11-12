@@ -61,6 +61,12 @@ class Html5Autocomplete extends \Html\Form\InputField
     public $onItemCreate;
 
     /**
+     * Whether or close the dropdown once a selection has been made
+     * @var boolean
+     */
+    public $closeAfterSelect;
+
+    /**
      * The labels for the groups (headings) of data in `options`
      * @var array<{ value: string, label: string }>
      */
@@ -125,6 +131,7 @@ class Html5Autocomplete extends \Html\Form\InputField
                 "create" => $this->canCreate,
 
                 "addPrecedence" => true,
+                "closeAfterSelect" => $this->closeAfterSelect,
 
                 "optgroups" => $this->groups,
                 "optgroupField" => "type",
