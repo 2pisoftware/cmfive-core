@@ -6,12 +6,12 @@ export class FormHelper {
     {
         await CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Form", "Forms");
 
-        await page.getByRole("button", {name: "Add a form"}).click();
+        await page.locator(".btn", {hasText: "Add a form"}).click();
 
-        await page.getByLabel("Title").fill(form);
-        await page.getByLabel("Description").fill(description);
+        await page.locator("#title").fill(form);
+        await page.locator("#description").fill(description);
 
-        await page.getByRole("button", {name: "Save"}).click();
+        await page.locator(".savebutton", {hasText: "Save"}).click();
 
         await expect(page.getByText("Form created")).toBeVisible();
     }
@@ -31,8 +31,8 @@ export class FormHelper {
 
         await CmfiveHelper.getRowByText(page, form).getByRole("button", {name: "Edit"}).click();
 
-        await page.getByLabel("Title").fill(newName);
-        await page.getByLabel("Description").fill(newDescription);
+        await page.locator("#title").fill(newName);
+        await page.locator("#description").fill(newDescription);
 
         await page.getByRole("button", {name: "Save"}).click();
 
@@ -46,12 +46,11 @@ export class FormHelper {
         await page.getByRole("link", {name: form}).click();
         await page.getByRole("button", {name: "Add a field"}).click();   
         await page.waitForSelector("#cmfive-modal", { state: "visible" });
-        await page.waitForSelector("#cmfive-modal", { state: "visible" });
         const modal = page.locator("#cmfive-modal");
 
-        await modal.getByLabel("Name").fill(name);
-        await modal.getByLabel("Key").fill(key);
-        await modal.getByLabel("Type").selectOption(type);
+        await modal.locator("#name").fill(name);
+        await modal.locator("#technical_name").fill(key);
+        await modal.locator("#type").selectOption(type);
 
         await modal.getByRole("button", {name: "Save"}).click();
 
@@ -61,17 +60,17 @@ export class FormHelper {
     static async createApplication(page: Page, isMobile: boolean, application: string, description: string)
     {
         await CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Form", "Applications");
-        await page.getByRole("button", {name: "Create Application"}).click();
+        await page.locator(".btn", {hasText: "Create Application"}).click();
 
-        await page.getByLabel("Title").fill(application);
-        await page.getByLabel("Description").fill(description);
+        await page.locator("#title").fill(application);
+        await page.locator("#description").fill(description);
 
-        await page.getByLabel("Active").check({force: true});
+        await page.locator("#is_active").check({force: true});
+        await page.locator(".savebutton").click();
+        // await page.waitForSelector("div[id^='form-application-'] a.button");
+        // await page.locator("div[id^='form-application-'] a.button.small:not(.secondary)").click(); // .getByText("Save", {exact: true})
 
-        await page.waitForSelector("div[id^='form-application-'] a.button");
-        await page.locator("div[id^='form-application-'] a.button.small:not(.secondary)").click(); // .getByText("Save", {exact: true})
-
-        await page.waitForResponse(new RegExp('/form-vue/save_application/*'));
+        // await page.waitForResponse(new RegExp('/form-vue/save_application/*'));
 
         // No need to navigate as the page doesn't redirect
         // await CmfiveHelper.clickCmfiveNavbar(page, "Form", "Applications");
@@ -83,11 +82,11 @@ export class FormHelper {
         await CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Form", "Applications");
         await CmfiveHelper.getRowByText(page, application).getByRole("button", {name: "Edit"}).click();
 
-        await page.getByRole("button", {name: "Attach form"}).click();
+        await page.locator(".btn", {hasText: "Attach form"}).click();
         await page.waitForSelector("#cmfive-modal", {state: "visible"});
         const modal = page.locator("#cmfive-modal");
 
-        await modal.getByLabel("Form").selectOption(form);
+        await modal.locator("#form").selectOption(form);
 
         await modal.getByRole("button", {name: "Save"}).click();
 

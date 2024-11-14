@@ -20,8 +20,8 @@ test("Test that forms can be created, edited and deleted", async ({ page, isMobi
     await FormHelper.editForm(page, isMobile, form, form_edited, description_edited);
 
     await CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Form", "Forms");
-    await expect(page.getByText(form_edited)).toBeVisible();
-    await expect(page.getByText(description_edited)).toBeVisible();
+    await expect(page.getByRole('link', { name: form_edited})).toBeVisible();
+    await expect(page.getByText(description_edited, {exact: true})).toBeVisible();
 
     await FormHelper.deleteForm(page, isMobile, form_edited);
 });
@@ -63,18 +63,20 @@ test("Test that form applications can be created, edited and deleted", async ({ 
     await FormHelper.addFormField(page, isMobile, form, form+"_truth", form+"_truth", "Yes/No");
 
     await CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Form", "Applications");
-    await CmfiveHelper.getRowByText(page, application).getByRole("button", { name: "Edit" }).click();
+    await page.getByRole("link", { name: application }).click();
+    await page.locator(".btn", { hasText: "Manage" }).click();
+    await page.locator(".btn", { hasText: "Attach Form" }).click();
     
-    await page.getByRole("button", { name: "Attach form" }).click();
-    
-    await page.waitForSelector("#form_application_form_modal", {state: "visible"});
-    const attach_form_modal = page.locator("#form_application_form_modal");
-    await attach_form_modal.getByLabel("Form").selectOption(form);
-    await attach_form_modal.getByText("Save").click();
+    // await page.waitForSelector("#form_application_form_modal", {state: "visible"});
+    // const attach_form_modal = page.locator("#form_application_form_modal");
+    await page.locator("#form").selectOption(form);
+    // Current fix for issue with tom select not closing after selection
+    await page.keyboard.press("Escape");
+    await page.locator(".savebutton").click();
 
     await CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Form", "Applications");
-    await page.getByRole("link", {name: application}).click();
-    await page.getByRole("button", {name: "Add new "+form}).click();
+    await page.locator(".btn", {hasText: application}).click();
+    await page.locator(".btn", {hasText: "Add new "+form}).click();
     await page.waitForSelector("#cmfive-modal", { state: "visible" });
     const modal = page.locator("#cmfive-modal");
 

@@ -26,7 +26,7 @@ export class Tags {
 
 			modal.removeEventListener("hidden.bs.modal", cb);
 		};
-		modal.addEventListener("hidden.bs.modal", cb);
+		modal?.addEventListener("hidden.bs.modal", cb);
 	}
 
 	private static update = async (container: Element) => {
