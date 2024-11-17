@@ -10,7 +10,16 @@ import fs from "fs";
 let scriptPath = __dirname;
 
 console.log("dirname", scriptPath);
-
+    /* Apply conditional steps to untangle, eg:
+    dirname /workspaces/cmfive_dev_box/cmfive-core/system/templates/base
+    scriptPath 2 /workspaces/cmfive_dev_box/
+    scriptPath SHOULD BE : /workspaces/cmfive_dev_box/cmfive-boilerplate/
+    _vs_
+    dirname /codebuild/output/src3846646311/src/composer/vendor/2pisoftware/cmfive-core/system/templates/base
+    scriptPath 2 /codebuild/output/src3846646311/src/composer/vendor/2pisoftware/
+    scriptPath SHOULD BE : /codebuild/output/src3846646311/src
+    _etc_ ...
+    */
 if (scriptPath.includes('cmfive-boilerplate')) {
     // System is symlinked inside of boilerplate
     scriptPath = scriptPath.split('cmfive-boilerplate')[0] + "cmfive-boilerplate/";
@@ -19,9 +28,14 @@ if (scriptPath.includes('cmfive-boilerplate')) {
     scriptPath = scriptPath.split('cmfive-core')[0];
     console.log("scriptPath 2", scriptPath);
     if (fs.existsSync(scriptPath + 'cmfive-boilerplate')) {
+        // we are in some assembled/mounted project
         scriptPath += 'cmfive-boilerplate/';
     } else if (fs.existsSync("/var/www/html")) {
+        // we are in hosted folders
         scriptPath = "/var/www/html/";
+    } else if (fs.existsSync("/codebuild/output")) {
+        // we are in a cdk pipeline
+        scriptPath = scriptPath.split('composer')[0];
     } else {
         throw new Error('Could not determine root directory of project');
     }
