@@ -1,7 +1,28 @@
 <div class='row-fluid'>
     <?php echo $display_only !== true ? HtmlBootstrap5::box("/form-instance/edit?form_id=" . $form->id . "&redirect_url=" . $redirect_url . "&object_class=" . get_class($object) . "&object_id=" . $object->id, "Add new " . $form->title, true, class: "btn btn-primary") : ''; ?>
+    <?php echo $form->row_template; ?>
+    <?php
+    // Create paginated list of form instances
+    $instances = FormService::getInstance($w)->getFormInstancesForFormAndObject($form, $object);
+    $instances_array = [];
+    if (!empty($instances)) {
+        foreach ($instances as $instance) {
+            $row_text = $instance->getTableRow();
+            if (!$display_only) {
+                $row_text .= '<td>' .
+                    HtmlBootstrap5::box("/form-instance/edit/" . $instance->id . "?form_id=" . $form->id . "&redirect_url=" . $redirect_url . "&object_class=" . get_class($object) . "&object_id=" . $_bject->id, "Edit", true) .
+                    HtmlBootstrap5::b("/form-instance/delete/" . $instance->id . "?redirect_url=" . $redirect_url, "Delete", "Are you sure you want to delete this item?", null, false, 'warning') .
+                    '</td>';
+            }
 
-    <?php echo HtmlBootstrap5::pagination($currentpage, $numpages, $pagesize, $totalresults, $redirect_url); ?>
+            $instances_array[] = $row_text;
+        }
+    }
+
+    foreach ($instances_array as $instance) {
+        echo HtmlBootstrap5::buttonGroup($instance);
+    }
+    ?>
 
     <div id="form_list_<?php echo $form->id; ?>">
         <table class='small-12'>

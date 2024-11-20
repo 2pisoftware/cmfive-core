@@ -49,13 +49,7 @@
             'core_template', 'tab_content', 
             [
                 'object' => $application, 
-                'redirect_url' => "/form-application/show/$application->id",
-
-                'paginated' => true,
-                'currentpage' => 2,
-                'numpages' => 2,
-                'pagesize' => 1,
-                'totalresults' => 2,
+                'redirect_url' => "/form-application/manage/$application->id",
             ]
         );
 

@@ -1,6 +1,6 @@
 // src/app.ts
 import { AlertAdaptation, DropdownAdaptation, FavouritesAdaptation, TabAdaptation, TableAdaptation } from './adaptations';
-import { Autocomplete, Toast as CmfiveToast, CodeMirror, InputWithOther, MultiFileUpload, Overlay, QuillEditor, Tags } from './components';
+import { Autocomplete, Toast as CmfiveToast, CodeMirror, InputWithOther, MultiFileUpload, Overlay, QuillEditor, Tags, TabbedPagination } from './components';
 
 import { Modal, Tooltip } from 'bootstrap';
 import { Sortable } from './components/Sortable';
@@ -207,6 +207,7 @@ export class Cmfive {
         TabAdaptation.bindTabInteractions();
         TableAdaptation.bindTableInteractions();
 		Tags.bind();
+        TabbedPagination.bindInteractions();
 
         // Remove all foundation button classes and replace them with bootstrap if they don't exist
         target?.querySelectorAll('.button')?.forEach(b =>  {
