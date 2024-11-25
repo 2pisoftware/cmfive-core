@@ -1,6 +1,6 @@
-<div class="show-hover">
+<div class="show-hover" style="max-width: 200px">
     <div>
-        <h3 class="mb-0 text-center display-0"><?php echo $attachment->title; ?></h3>
+        <h3 class="mb-0 text-center display-0 text-truncate"><?php echo $attachment->title; ?></h3>
         <!-- <p>Description: <?php echo $attachment->description; ?></p> -->
     </div>
     <div class="position-relative">
@@ -11,8 +11,8 @@
                 src="<?php echo $attachment->getThumbnailUrl(); ?>" />
         <?php else : ?>
             <div
-                class="img-thumbnail text-center <?php $attachment->getBootstrap5IconClass() ?>"
-                style="font-size: 7rem; width: 210px; height: 210px;"></div>
+                class="img-thumbnail text-center <?php echo $attachment->getBootstrap5IconClass() ?>"
+                style="font-size: 7rem; width: 200px; height: 200px;"></div>
         <?php endif; ?>
 
         <div class="hover-target position-absolute top-0 row ms-0 p-2" style="width: 100%; height: 100%;">
