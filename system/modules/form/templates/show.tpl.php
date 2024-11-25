@@ -1,6 +1,6 @@
 <div class="row panel">
     <div class="col-12 col-sm-9">
-        <div class="mt-2">Description: <?php echo $form->description; ?></div>
+        <div class="mt-2 text-break">Description: <?php echo $form->description; ?></div>
     </div>
     <div class="col-12 col-sm-3">
         <?php echo HtmlBootstrap5::b(href: "/form/export/" . $form->id, title: "Export", class: 'float-end btn-secondary'); ?>

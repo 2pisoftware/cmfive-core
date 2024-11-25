@@ -749,23 +749,27 @@ class HtmlBootstrap5 extends Html
     {
         // Prepare buffer
         $buf = '';
-        if (isNumber($currentpage) && isNumber($numpages) && isNumber($pagesize) && isNumber($totalresults)) {
+        if ((isNumber($currentpage) && isNumber($numpages)) && ((!empty($tab)) || (isNumber($pagesize) && isNumber($totalresults)))) {
             // Check that we're within range
             if ($currentpage > 0 && $currentpage <= $numpages && $numpages > 1) {
-                $buf = "<nav aria-label='pagination'><ul class='pagination justify-content-center flex-wrap'>";
-
-                // Build pagination links
-                $url_parsed = parse_url($baseurl);
+                $buf = "<nav aria-label='pagination'><ul class='pagination justify-content-center flex-wrap'" . ((!empty($tab)) ? " id='$tab-pagination-controls'" : "") . ">";
 
                 for ($page = 1; $page <= $numpages; $page++) {
-                    // Check if the current page
                     $buf .= "<li class='page-item" . ($currentpage == $page ? " active disabled' aria-current='page'" : "'") . ">";
 
-                    $url_string = $url_parsed['path'];
-                    $url_string .= (empty($url_parsed['query']) ? '?' : '?' . $url_parsed['query'] . '&') . $pageparam . '=' . $page . '&' . $pagesizeparam . '=' . $pagesize . '&' . $totalresultsparam . '=' . $totalresults;
-                    $url_string .= (!empty($url_parsed['fragment']) ? '#' . $url_parsed['fragment'] : '');
+                    if (!empty($tab)) { // Tabbed pagination
+                        $buf .= "<a class='page-link' data-tab='$tab' data-tabbed-pagination-page='$page'>$page</a>";
+                    } else { // Standard pagination
+                        $url_parsed = parse_url($baseurl);
 
-                    $buf .= '<a class="page-link" href=\'' . $url_string . '\'>' . $page . '</a></li>';
+                        $url_string = $url_parsed['path'];
+                        $url_string .= (empty($url_parsed['query']) ? '?' : '?' . $url_parsed['query'] . '&') . $pageparam . '=' . $page . '&' . $pagesizeparam . '=' . $pagesize . '&' . $totalresultsparam . '=' . $totalresults;
+                        $url_string .= (!empty($url_parsed['fragment']) ? '#' . $url_parsed['fragment'] : '');
+
+                        $buf .= '<a class="page-link" href=\'' . $url_string . '\'>' . $page . '</a>';
+                    }
+
+                    $buf .= "</li>";
                 }
 
                 $buf .= "</ul></nav>";
