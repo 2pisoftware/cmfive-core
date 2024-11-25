@@ -52,12 +52,22 @@ function form_core_template_tab_content(Web $w, $params)
             "display_only" => false,
         ];
 
+        if (!empty($params['paginated'])) {
+            $partialArguments['paginated'] = true;
+            // $partialArguments['currentpage'] = $params['currentpage'];
+            // $partialArguments['numpages'] = $params['numpages'];
+            // $partialArguments['pagesize'] = $params['pagesize'];
+            // $partialArguments['totalresults'] = $params['totalresults'];
+        }
+
         $forms_list .= '<div id="' . toSlug($form->title) . '" class="pt-3">' . $w->partial(
             $form_mapping->is_singleton ? "show_form" : "listform",
             $partialArguments,
             "form"
         ) . '</div>';
     }
+
+    // var_dump($forms_list);
 
     return $forms_list;
 }

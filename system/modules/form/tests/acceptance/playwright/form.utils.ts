@@ -86,7 +86,7 @@ export class FormHelper {
         await page.waitForSelector("#cmfive-modal", {state: "visible"});
         const modal = page.locator("#cmfive-modal");
 
-        await modal.locator("#form").selectOption(form);
+        await CmfiveHelper.fillAutoComplete(page, "form", form, form);
 
         await modal.getByRole("button", {name: "Save"}).click();
 
