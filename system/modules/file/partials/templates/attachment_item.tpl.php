@@ -9,18 +9,10 @@
                 class="img-thumbnail"
                 data-caption="<?php echo $attachment->title; ?>"
                 src="<?php echo $attachment->getThumbnailUrl(); ?>" />
-        <?php elseif ($attachment->isDocument()) : ?>
-            <div
-                class="img-thumbnail bi-filetype-doc text-center"
-                style="font-size: 7rem; width: 210px; height: 210px;"></div>
         <?php else : ?>
             <div
-                class="img-thumbnail
-                    bi-filetype-doc
-                    bi-filetype-<?php echo end(explode(".", $attachment->filename)) ?>
-                    text-center"
-                style="font-size: 7rem; width: 210px; height: 210px;">
-            </div>
+                class="img-thumbnail text-center <?php $attachment->getBootstrap5IconClass() ?>"
+                style="font-size: 7rem; width: 210px; height: 210px;"></div>
         <?php endif; ?>
 
         <div class="hover-target position-absolute top-0 row ms-0 p-2" style="width: 100%; height: 100%;">
