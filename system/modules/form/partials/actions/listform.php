@@ -4,7 +4,8 @@ namespace System\Modules\Form;
 
 function listform(\Web $w, $params)
 {
-    $w->enqueueScript(['name' => 'vue-js', 'uri' => '/system/templates/js/vue.js', 'weight' => 200]);
+    // $w->enqueueScript(['name' => 'vue-js', 'uri' => '/system/templates/js/vue.js', 'weight' => 200]);
+    \CmfiveStyleComponentRegister::registerComponent('list-form', new \CmfiveStyleComponent('/system/templates/base/dist/FormListForm.css'));
 
     $w->ctx("redirect_url", $params['redirect_url']);
     $w->ctx("form", $params['form']);
@@ -13,6 +14,8 @@ function listform(\Web $w, $params)
 
     $paginated = !empty($params['paginated']) ?? false;
     $w->ctx('paginated', $paginated);
+
+    $currentpage = $w->sessionOrRequest('currentpage', 1);
 
     if ($paginated) {
         $w->ctx('currentpage', $params['currentpage']);
