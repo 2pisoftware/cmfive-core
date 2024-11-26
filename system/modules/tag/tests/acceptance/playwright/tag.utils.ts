@@ -7,9 +7,9 @@ export class TagHelper {
         await page.goto(HOST + "/task/edit/" + taskId);
         await page.getByText("No tags").click();
 
-		await CmfiveHelper.fillAutoComplete(page, `display_tags_Task_${taskId}`, tagName, tagName);
+        await CmfiveHelper.fillAutoComplete(page, `display_tags_Task_${taskId}`, tagName, tagName);
 
-		await page.waitForResponse((res) => res.url().includes("/ajaxAddTag/Task/"))
+        await page.waitForResponse((res) => res.url().includes("/ajaxAddTag/Task/"))
 
         await page.locator('button[data-bs-dismiss="modal"]').click()
         // await page.waitForResponse(HOST + `/tag/ajaxGetTags/Task/${taskId}`)

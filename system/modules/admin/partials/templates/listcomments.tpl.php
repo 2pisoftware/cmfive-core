@@ -56,7 +56,6 @@
 </style>
 
 <?php
-
 if (AuthService::getInstance($w)->hasRole('comment')) {
     if (!isset($internal_only)) {
         $internal_only = false;
@@ -65,22 +64,22 @@ if (AuthService::getInstance($w)->hasRole('comment')) {
     // /admin/comment/[COMMENT_ID]/[TABLE_NAME]/[OBJECT_ID]?redirect_url=[REDIRECT_URL]
     // Its a bit farfetched but provides us with a standard commenting interface
     // Dont need to worry about urlencoding the redirect url
-    echo HtmlBootstrap5::box(
-        "/admin/comment/0/" . get_class($object) .
-        "/{$object->id}?redirect_url=" . urlencode($redirect) .
-        "&internal_only=" . ($internal_only === true ? '1' : '0') .
-        "&has_notification_selection=" . ($has_notification_selection ? '1' : '0'),
-        "Add Comment",
-        true,
-        false,
-        null,
-        null,
-        "isbox",
-        null,
-        "btn btn-primary"
-    );
+    ?>
+    <div class="row mb-2">
+        <div class="col-12"> 
+            <?php echo HtmlBootstrap5::box(
+                href: "/admin/comment/0/" . get_class($object) .
+                "/{$object->id}?redirect_url=" . urlencode($redirect) .
+                "&internal_only=" . ($internal_only === true ? '1' : '0') .
+                "&has_notification_selection=" . ($has_notification_selection ? '1' : '0'),
+                title: "Add Comment",
+                button: true,
+                class: "btn btn-primary"
+            ); ?>
+        </div>
+    </div>
 
-
+    <?php
     if (!empty($comments)) :
         // Now that we have comments on comments, I decided to change the partial structure
         // Loop comments is responsible for listing all of the comments given
@@ -93,6 +92,6 @@ if (AuthService::getInstance($w)->hasRole('comment')) {
     <?php endif;
 } else {
     ?>
-    <div class="warning"><p>'Comment' permissions are required. See your system administrator.</p></div>
+    <div class="warning"><p>You do not have permissions to view and make comments. See your system administrator.</p></div>
     <?php
 }

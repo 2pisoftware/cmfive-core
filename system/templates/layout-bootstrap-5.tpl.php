@@ -139,7 +139,7 @@ $theme_setting = AuthService::getInstance($w)->getSettingByKey('bs5-theme');
         </div>
         <div id="content">
             <div class="container-fluid p-0 py-2 p-lg-2" id="navbar">
-                <nav class="container-xl navbar navbar-expand navbar-light bg-light p-0 p-lg-2">
+                <nav class="<?php echo count($w->modules()) <= 9 ? "container-xl" : "container-fluid"; ?> navbar navbar-expand navbar-light bg-light p-0 p-lg-2">
                     <div class="container-fluid justify-content-start">
                         <ul class="navbar-nav me-md-4">
                             <li class="nav-item"><a class="nav-link nav-icon" data-toggle-menu="open"><i class="bi bi-list"></i></a></li>
@@ -235,14 +235,14 @@ $theme_setting = AuthService::getInstance($w)->getSettingByKey('bs5-theme');
                         $inject = $w->callHook('core_template', 'menu');
                         if (!empty($inject)) {
                             foreach ($inject as $i) {
-                                echo "</li>{$i}</li>";
+                                echo "<li>{$i}</li>";
                             }
                         }
                         ?>
                         </ul>
                     </div>
                 </nav>
-                <nav aria-label="breadcrumb" class="container-xl" id="breadcrumbs">
+                <nav aria-label="breadcrumb" class="<?php echo count($w->modules()) <= 9 ? "container-xl" : "container-fluid"; ?>" id="breadcrumbs">
                     <ol class="breadcrumb pt-1">
                         <?php
                         $breadcrumbs = History::get();

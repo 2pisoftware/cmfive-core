@@ -138,25 +138,27 @@ export class TaskHelper  {
     static async createTask(page: Page, isMobile: boolean, task: string, taskgroup: string, taskType: string, data?: Record<string, string>): Promise<string>
     {
         await CmfiveHelper.clickCmfiveNavbar(page, isMobile , "Task", "New Task");
-
         await CmfiveHelper.fillAutoComplete(page, "task_group", taskgroup, taskgroup);
 
         await page.getByLabel('Task Title Required').fill(task);
+        await page.locator("#task_type").click();
+        await page.screenshot({path: "./task.png"});
+        await page.locator("#task_type").selectOption(taskType);
 
-        await page.locator("#task_type").selectOption({
-            "To Do": "To Do",
-            "Software Development": "Programming Task",
-            "Cmfive Support": "Support Ticket"
-        }[taskType] as string);
+        if (data !== undefined) {
+            for (let option of ["Priority", "Status", "Assigned To"]) {
+                if (data[option] !== undefined) {
+                    await page.getByRole("combobox", {name: option}).selectOption(data[option]);
+                }
+            }
 
-        if(data !== undefined) {
-            for(let option of ["Priority", "Status", "Assigned To"])
-                if(data[option] !== undefined) await page.getByRole("combobox", {name: option}).selectOption(data[option]);
+            for (let option of ["Estimated hours", "Effort"]) {
+                if (data[option] !== undefined) {
+                    await page.getByLabel(option).fill(data[option]);
+                }
+            }
 
-            for(let option of ["Estimated hours", "Effort"])
-                if(data[option] !== undefined) await page.getByLabel(option).fill(data[option]);
-
-            if(data["Description"] !== undefined) {
+            if (data["Description"] !== undefined) {
 				await page.locator("#quill_description").click();
 				await page.keyboard.type(data["Description"]);
 			}

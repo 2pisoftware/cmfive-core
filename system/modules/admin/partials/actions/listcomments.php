@@ -7,20 +7,13 @@ use CmfiveScriptComponentRegister;
 
 function listcomments(\Web $w, $params)
 {
-    CmfiveScriptComponentRegister::registerComponent(
-        "commentsModal",
-        new CmfiveScriptComponent(
-            "/system/templates/base/dist/commentsModal.js",
-            ["weight" => "200", "type" => "module"]
-        )
-    );
+    CmfiveScriptComponentRegister::registerComponent("commentsModal", new CmfiveScriptComponent("/system/templates/base/dist/commentsModal.js", ["weight" => "200", "type" => "module"]));
 
     $object = $params['object'];
     $redirect = $params['redirect'];
     $internal_only = array_key_exists('internal_only', $params) ? $params['internal_only'] : true;
     $external_only = $internal_only === true ? false : (array_key_exists('external_only', $params) ? $params['external_only'] : false);
     $has_notification_selection = array_key_exists('has_notification_selection', $params) ? $params["has_notification_selection"] : true;
-
 
     $comments = \CommentService::getInstance($w)->getCommentsForTable($object->getDbTableName(), $object->id, $internal_only, $external_only);
     $user = \AuthService::getInstance($w)->user();

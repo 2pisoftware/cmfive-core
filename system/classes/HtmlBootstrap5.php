@@ -19,7 +19,7 @@ class HtmlBootstrap5 extends Html
         } else {
             $element = new \Html\a();
         }
-        $element->id($id)->setClass($class)->setAttribute('data-modal-target', $href)->text($title);
+        $element->id($id)->setClass($class)->setAttribute('data-modal-target', $href)->text($title)->setAttribute("role", "button");
         if (!empty($confirm)) {
             $element->setAttribute('data-modal-confirm', $confirm);
         }
