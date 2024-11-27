@@ -1,6 +1,6 @@
 <div class="enable_drop_attachments" data-object="<?php echo get_class($object); ?>" data-id="<?php echo $object->id; ?>" style="display:none;"></div>
 <?php
-if (AuthService::getInstance($w)->user()->hasRole("file_upload"))
+if (AuthService::getInstance($w)->user()->hasRole("file_upload") && !$hide_attach_btn)
 {
     echo HtmlBootstrap5::box(
         "/file/new/" . get_class($object) . "/{$object->id}?redirect_url=" . urlencode($redirect),
