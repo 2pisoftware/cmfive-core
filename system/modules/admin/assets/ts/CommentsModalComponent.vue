@@ -35,8 +35,9 @@
 	let quill: Quill;
 	onMounted(() => {
 		quill = new Quill("#new_comment_modal_quill", {
-			theme: "snow"
+			theme: "snow",
 		});
+		quill.setText(props.comment);
 	});
 
 	const canNotifyViewers = computed(() => viewers.value.filter(viewer => {
@@ -90,15 +91,17 @@
 				</div>
 
 				<div>
-					<div v-if="props.viewers.length !== 0">
-						<strong>Select the users that will be notified by this comment</strong>
-					</div>
+					<div v-if="props.is_new_comment == 'true'">
+						<div v-if="props.viewers.length !== 0">
+							<strong>Select the users that will be notified by this comment</strong>
+						</div>
 
-					<div class="form-check" v-for="viewer in canNotifyViewers">
-						<input :id="'notified_' + viewer.id" class="form-check-input" type="checkbox" v-model="viewer.is_notify" />
-						<label :for="'notified_' + viewer.id" class="form-check-label d-inline ms-1">{{ viewer.name }}</label>
+						<div class="form-check" v-for="viewer in canNotifyViewers">
+							<input :id="'notified_' + viewer.id" class="form-check-input" type="checkbox" v-model="viewer.is_notify" />
+							<label :for="'notified_' + viewer.id" class="form-check-label d-inline ms-1">{{ viewer.name }}</label>
+						</div>
+						<hr />
 					</div>
-					<hr />
 					<div v-if="props.can_restrict === 'true' && canRestrictViewers.length">
 						<div class="form-check">
 							<input 
