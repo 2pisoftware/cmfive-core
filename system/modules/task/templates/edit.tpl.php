@@ -126,15 +126,10 @@
                                     <p class="fs-4 m-0">Subscribers</p>
                                     <?php
                                     echo HtmlBootstrap5::box(
-                                        '/task-subscriber/add/' . $task->id,
-                                        'Add',
-                                        true,
-                                        false,
-                                        null,
-                                        null,
-                                        'isbox',
-                                        null,
-                                        'bg-secondary'
+                                        href: '/task-subscriber/add/' . $task->id,
+                                        title: 'Add',
+                                        button: true,
+                                        class: 'bg-secondary'
                                     )
                                     ?>
                                 </div>
@@ -142,11 +137,11 @@
 
                             <?php if (!empty($subscribers)) : ?>
                                 <style>
-                                    .subscribers>div {
+                                    .subscribers > div {
                                         border-bottom: 1px solid white;
                                     }
 
-                                    .subscribers>div:last-child {
+                                    .subscribers > div:last-child {
                                         border-bottom: none;
                                     }
                                 </style>
@@ -170,8 +165,8 @@
                                                 );
                                                 ?></td>
                                             </div>
-                                        <?php endif; ?>
-                                    <?php endforeach; ?>
+                                        <?php endif;
+                                    endforeach; ?>
                                 </div>
                             <?php endif; ?>
                         </div>
@@ -262,12 +257,10 @@
 </nav>
 
 <script>
-    const task_id = <?php echo !empty($task->id) ? $task->id : null; ?>
-
+    const task_id = <?php echo !empty($task->id) ? $task->id : "null"; ?>
     let initialForm = new FormData(document.getElementById("edit_form"));
 
     document.getElementById("edit_form").addEventListener("change", (e) => {
-
         const indicator = document.querySelector("#edit_form").querySelector(".changed_status")
 
         if (initialForm.get(e.target.name) !== e.target.value) {
@@ -276,7 +269,7 @@
         }
 
         indicator.classList.add("d-none");
-    })
+    });
 
     const makeSelectOptions = (select, value, label) => {
         const elem = document.createElement("option");

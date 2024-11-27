@@ -160,7 +160,7 @@ function edit_GET($w)
     $createdDate = '';
     if (!empty($task->id)) {
         $creator = $task->_modifiable->getCreator();
-        $createdDate =  formatDate($task->_modifiable->getCreatedDate()) . (!empty($creator) ? ' by <strong>' . @$creator->getFullName() . '</strong>' : '');
+        $createdDate = formatDate($task->_modifiable->getCreatedDate()) . (!empty($creator) ? ' by <strong>' . @$creator->getFullName() . '</strong>' : '');
     }
     $w->ctx('createdDate', $createdDate);
 
@@ -253,9 +253,10 @@ function edit_POST($w)
     $w->setLayout(null);
     list($task_id) = $w->pathMatch("id");
     $task = (!empty($task_id) ? TaskService::getInstance($w)->getTask($task_id) : new Task($w));
-    $task->fill($_POST['edit']);
+    $edit_array = Request::array('edit');
+    $task->fill($edit_array);
 
-    $task->assignee_id = intval($_POST['edit']['assignee_id']);
+    $task->assignee_id = intval($edit_array['assignee_id']);
 
     if (empty($task->dt_due)) {
         $task->dt_due = TaskService::getInstance($w)->getNextMonth();
@@ -308,7 +309,7 @@ function edit_POST($w)
         }
     }
 
-    if (empty($p['id']) && Config::get('task.ical.send') == true) {
+    if (empty($task_id) && Config::get('task.ical.send') == true) {
         $data = $task->getIcal();
         $user = AuthService::getInstance($w)->getUser($task->assignee_id);
         $contact = !empty($user->id) ? $user->getContact() : AuthService::getInstance($w)->user()->getContact();

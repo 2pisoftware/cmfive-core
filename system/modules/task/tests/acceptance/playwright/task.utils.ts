@@ -139,10 +139,11 @@ export class TaskHelper  {
     {
         await CmfiveHelper.clickCmfiveNavbar(page, isMobile , "Task", "New Task");
         await CmfiveHelper.fillAutoComplete(page, "task_group", taskgroup, taskgroup);
+        await page.keyboard.press("Escape");
+        await page.screenshot({path: "./tas123k.png"});
 
-        await page.getByLabel('Task Title Required').fill(task);
-        await page.locator("#task_type").click();
-        await page.screenshot({path: "./task.png"});
+        await page.locator("#title").fill(task);
+        // await page.locator("#task_type").click();
         await page.locator("#task_type").selectOption(taskType);
 
         if (data !== undefined) {
