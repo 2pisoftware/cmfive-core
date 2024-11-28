@@ -1,5 +1,6 @@
 <?php
 
+use Carbon\CarbonInterval;
 use Html\Form\InputField\Password;
 
 function resetpassword_GET(Web $w)
@@ -13,8 +14,13 @@ function resetpassword_GET(Web $w)
     if (!empty($user->id)) {
         // Check that the password reset hasn't expired
         LogService::getInstance($w)->setLogger("AUTH")->debug("USER: " . $user->id . " TIME: " . time() . " USER_RESET: " . $user->dt_password_reset_at . " RESULT: " . (time() - $user->dt_password_reset_at));
-        if ((time() - $user->dt_password_reset_at) > 86400) {
-            $w->msg("Your token has expired (max 24 hours), please submit for a new one", "/auth/forgotpassword");
+        
+        // default 30 minutes
+        $expiry = Config::get("auth.login.password.reset_token_expiry", 30 * 60);
+        $readable_expiry = CarbonInterval::seconds($expiry)->cascade()->forHumans();
+
+        if ((time() - $user->dt_password_reset_at) > $expiry) {
+            $w->msg("Your token has expired (max {$readable_expiry}), please submit for a new one", "/auth/forgotpassword");
             return;
         }
 

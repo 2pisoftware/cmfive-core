@@ -16,7 +16,8 @@ Config::set('auth', [
     'login' => [
         'password' => [
             'enforce_length' => false,
-            'min_length' => 8
+            'min_length' => 8,
+            "reset_token_expiry" => 30 * 60 // 30 minutes
         ],
         'attempts' => [
             'track_attempts' => false,
