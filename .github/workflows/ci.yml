@@ -84,6 +84,9 @@ jobs:
           CORE_BRANCH: "${{ github.event.pull_request.head.ref || github.ref_name }}"
         run: |
           # Link system dir
+          cd core
+          git status
+          cd ..
           cd boilerplate
           ln -s ../core/system system
 
