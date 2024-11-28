@@ -9,11 +9,13 @@ export class TagHelper {
 
         await CmfiveHelper.fillAutoComplete(page, `display_tags_Task_${taskId}`, tagName, tagName);
 
-        await page.waitForResponse((res) => res.url().includes("/ajaxAddTag/Task/"))
+        // await page.waitForResponse((res) => res.url().includes("/ajaxAddTag/Task/"));
 
-        await page.locator('button[data-bs-dismiss="modal"]').click()
-        // await page.waitForResponse(HOST + `/tag/ajaxGetTags/Task/${taskId}`)
-        await page.waitForTimeout(100); 
+        page.locator('button[data-bs-dismiss="modal"]').click();
+        await page.locator("#cmfive-modal").waitFor({ state: "hidden" });
+
+        // await page.waitForResponse((res) => res.url().includes("tag/ajaxGetTags"));
+        await page.waitForTimeout(100);
 
         await expect(page.locator(`.tags-container[data-tag-id="Task_${taskId}"]`)).toContainText(tagName)
     }

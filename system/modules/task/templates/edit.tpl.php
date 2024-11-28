@@ -257,7 +257,7 @@
 </nav>
 
 <script>
-    const task_id = <?php echo !empty($task->id) ? $task->id : "null"; ?>
+    const task_id = <?php echo !empty($task->id) ? $task->id : "null"; ?>;
     let initialForm = new FormData(document.getElementById("edit_form"));
 
     document.getElementById("edit_form").addEventListener("change", (e) => {

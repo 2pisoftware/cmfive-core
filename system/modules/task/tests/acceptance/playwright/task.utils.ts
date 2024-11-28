@@ -138,9 +138,12 @@ export class TaskHelper  {
     static async createTask(page: Page, isMobile: boolean, task: string, taskgroup: string, taskType: string, data?: Record<string, string>): Promise<string>
     {
         await CmfiveHelper.clickCmfiveNavbar(page, isMobile , "Task", "New Task");
+        const promise = page.waitForResponse((res) => res.url().includes("taskAjaxSelectbyTaskGroup"));
         await CmfiveHelper.fillAutoComplete(page, "task_group", taskgroup, taskgroup);
+        await promise;
         await page.keyboard.press("Escape");
         await page.screenshot({path: "./tas123k.png"});
+
 
         await page.locator("#title").fill(task);
         // await page.locator("#task_type").click();

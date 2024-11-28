@@ -7,7 +7,7 @@ test.describe.configure({mode: 'parallel'});
 
 test("Test that you can manage taskgroups, taskgroup members, and tasks", async ({ page, isMobile }) => {
     test.setTimeout(GLOBAL_TIMEOUT * 4);
-    CmfiveHelper.acceptDialog(page);
+    await CmfiveHelper.acceptDialog(page);
 
     await CmfiveHelper.login(page, "admin", "admin");
 
@@ -49,7 +49,6 @@ test("Test that you can manage taskgroups, taskgroup members, and tasks", async 
     // duplicate task
     await page.getByRole("button", {name: "Duplicate Task"}).click();
     await expect(page.getByText("Task duplicated")).toBeVisible();
-    await page.waitForResponse((res) => res.url().includes("/task/taskAjaxSelectbyTaskGroup/"));
     const duplicateTaskID = page.url().split("/edit/")[1].split("#")[0];
     expect(duplicateTaskID).not.toBe(taskID);
 
@@ -57,7 +56,6 @@ test("Test that you can manage taskgroups, taskgroup members, and tasks", async 
     await page.getByRole("combobox", {name: "Status"}).selectOption("Wip");
     await expect(page.getByText("changed")).toBeVisible();
     await page.getByRole("button", {name: "Save"}).click();
-    await page.waitForResponse((res) => res.url().includes("/task/taskAjaxSelectbyTaskGroup/"));
     await expect(page.getByRole("combobox", {name: "Status Required"})).toHaveValue("Wip");
 
     // edit task group member details
