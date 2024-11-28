@@ -174,7 +174,7 @@ jobs:
           docker cp cmfive:/var/www/html/system/templates/base /tmp/cmfive-theme
           cd /tmp/cmfive-theme
           npm ci || npm install
-          npm run production
+          npm run prod
           # Copy the compiled theme back to the docker container
           docker cp /tmp/cmfive-theme/. cmfive:/var/www/html/system/templates/base
 

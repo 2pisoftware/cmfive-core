@@ -27,7 +27,7 @@ jobs:
         run: npm install
       - name: Build
         working-directory: ./system/templates/base
-        run: npm run production
+        run: npm run prod
       - name: Save artifact
         uses: actions/upload-artifact@v4
         with:
