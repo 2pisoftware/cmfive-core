@@ -1,5 +1,5 @@
-import { HOST, CmfiveHelper } from "@utils/cmfive";
 import { expect, Page } from "@playwright/test";
+import { CmfiveHelper } from "@utils/cmfive";
 
 export class FormHelper {
     static async createForm(page: Page, isMobile: boolean, form: string, description: string)
@@ -45,7 +45,7 @@ export class FormHelper {
 
         await page.getByRole("link", {name: form}).click();
         await page.getByRole("button", {name: "Add a field"}).click();   
-        await page.waitForSelector("#cmfive-modal", { state: "visible" });
+        await page.locator("#cmfive-modal").waitFor({ state: "visible" });
         const modal = page.locator("#cmfive-modal");
 
         await modal.locator("#name").fill(name);
@@ -83,14 +83,14 @@ export class FormHelper {
         await CmfiveHelper.getRowByText(page, application).getByRole("button", {name: "Edit"}).click();
 
         await page.locator(".btn", {hasText: "Attach form"}).click();
-        await page.waitForSelector("#cmfive-modal", {state: "visible"});
+        await page.locator("#cmfive-modal").waitFor({state: "visible"});
         const modal = page.locator("#cmfive-modal");
 
         await CmfiveHelper.fillAutoComplete(page, "form", form, form);
 
         await modal.getByRole("button", {name: "Save"}).click();
 
-        await page.waitForTimeout(1_000);
+        await page.waitForLoadState();
         await expect(page.getByText(form)).toBeVisible();
     }
 };

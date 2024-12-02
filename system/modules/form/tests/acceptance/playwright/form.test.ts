@@ -1,11 +1,10 @@
 import { expect, test } from "@playwright/test";
-import { GLOBAL_TIMEOUT, CmfiveHelper } from "@utils/cmfive";
+import { CmfiveHelper, GLOBAL_TIMEOUT } from "@utils/cmfive";
 import { FormHelper } from "@utils/form";
-import { DateTime } from "luxon";
 
 test.describe.configure({mode: 'parallel'});
 
-test("Test that forms can be created, edited and deleted", async ({ page, isMobile }) => {
+test("that forms can be created, edited and deleted", async ({ page, isMobile }) => {
     test.setTimeout(GLOBAL_TIMEOUT);
     CmfiveHelper.acceptDialog(page);
 
@@ -26,7 +25,7 @@ test("Test that forms can be created, edited and deleted", async ({ page, isMobi
     await FormHelper.deleteForm(page, isMobile, form_edited);
 });
 
-test("Test that singleton forms can be created and deleted", async ({ page, isMobile }) => {
+test("that singleton forms can be created and deleted", async ({ page, isMobile }) => {
     test.setTimeout(GLOBAL_TIMEOUT);
     CmfiveHelper.acceptDialog(page);
 
@@ -46,7 +45,7 @@ test("Test that singleton forms can be created and deleted", async ({ page, isMo
     await FormHelper.deleteForm(page, isMobile, form);
 });
 
-test("Test that form applications can be created, edited and deleted", async ({ page, isMobile }) => {
+test("that form applications can be created, edited and deleted", async ({ page, isMobile }) => {
     test.setTimeout(GLOBAL_TIMEOUT);
     CmfiveHelper.acceptDialog(page);
 
@@ -79,7 +78,7 @@ test("Test that form applications can be created, edited and deleted", async ({ 
     await CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Form", "Applications");
     await page.getByRole("link", {name: application}).click();
     await page.locator(".btn", {hasText: "Add new "+form}).click();
-    await page.waitForSelector("#cmfive-modal", { state: "visible" });
+    await page.locator("#cmfive-modal").waitFor({ state: "visible" });
     const modal = page.locator("#cmfive-modal");
 
     await modal.locator(`#${form}_name`).fill(form+" name");
@@ -107,5 +106,5 @@ test("Test that form applications can be created, edited and deleted", async ({ 
     await CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Form", "Applications");
     await page.getByRole("link", {name: application}).click();
 
-    await expect(page.getByRole("button", {name: "Add new "+form})).not.toBeVisible();
+    await expect(page.getByRole("button", {name: "Add new "+form})).toBeHidden();
 });

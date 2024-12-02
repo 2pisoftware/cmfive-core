@@ -30,7 +30,7 @@ test("You can create a Timelog using Timer" , async ({page, isMobile}) => {
 
 test("You can create a Timelog using Add Timelog" , async ({page, isMobile}) => {
     test.setTimeout(GLOBAL_TIMEOUT);
-    await CmfiveHelper.acceptDialog(page);
+    CmfiveHelper.acceptDialog(page);
 
     await CmfiveHelper.login(page, "admin", "admin");
     
