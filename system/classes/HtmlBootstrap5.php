@@ -422,8 +422,8 @@ class HtmlBootstrap5 extends Html
      * in the following format:
      *    [0 => "<sort column>", 1 => "<title>"]
      *
-     * @param Array $header
-     * @param Array $data
+     * @param array $header
+     * @param array $data
      * @param int $page
      * @param int $page_size
      * @param int $total_results

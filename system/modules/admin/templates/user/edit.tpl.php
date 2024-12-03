@@ -1,6 +1,6 @@
 <h1>
     Edit -
-    <?php echo $user["account"]["firstname"] . " " . $user_details["account"]["lastname"] ?>
+    <?php echo $user["account"]["firstname"] . " " . $user["account"]["lastname"] ?>
 </h1>
 
 <div class="tabs">

@@ -91,6 +91,29 @@ export class AdminHelper {
         await expect(page.getByText("User details updated")).toBeVisible();
     }
 
+    static async changeUserPassword(page: Page, isMobile: boolean, username: string, password: string)
+    {
+        await page.waitForTimeout(100); // let page load so next line doesn't fail if previous function ended on a redirect to user list
+        if (page.url() != HOST + "/admin/users#internal") {
+            await CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Admin", "List Users");
+        }
+        await page.waitForURL(HOST + "/admin/users#internal");
+
+        if (isMobile) {
+            await page.click(`ul:has(li:has(span:text("${username}"))) button:text("Edit")`);
+        } else {
+            await CmfiveHelper.getRowByText(page, username).getByRole("button", {name: "Edit"}).click();
+        }
+
+        await page.locator("a", {hasText: "Security"}).click();
+        await page.locator("input[name='password']").fill(password);
+        await page.locator("input[name='repeat_password']").fill(password);
+        await page.locator(".btn", {hasText: "Update Password"}).click();
+
+        await page.waitForSelector(".cmfive-toast-message", {state: "visible"});
+        await expect(page.getByText("User password updated")).toBeVisible();
+    }
+
     static async createLookupType(page: Page, isMobile: boolean, type: string, code: string, lookup: string)
     {
         if(page.url() != HOST + "/admin-lookups#dynamic")
