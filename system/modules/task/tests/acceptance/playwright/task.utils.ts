@@ -69,12 +69,12 @@ export class TaskHelper  {
         }
 
         await page.getByRole("button", {name: "Edit Task Group"}).click();
-        await page.waitForSelector('#cmfive-modal');
-        const modal = await page.locator('#cmfive-modal');
+        await page.locator('#cmfive-modal').waitFor();
+        const modal = page.locator('#cmfive-modal');
 
         if(edit["Title"] !== undefined) await modal.getByLabel("Title").fill(edit["Title"] as string);
 
-        for(let option of ["Who Can Assign", "Who Can View", "Who Can Create", "Default Task Type", "Default Priority", "Default Assignee"])
+        for(const option of ["Who Can Assign", "Who Can View", "Who Can Create", "Default Task Type", "Default Priority", "Default Assignee"])
            if(edit[option] !== undefined) await modal.getByRole("combobox", {name: option}).selectOption(edit[option] as string);
 
         if(edit["Automatic Subscription"] !== undefined) await modal.getByLabel("Automatic Subscription").setChecked(edit["Automatic Subscription"] as boolean);
@@ -108,7 +108,7 @@ export class TaskHelper  {
 
         await page.getByRole("button", {name: "Add New Members"}).click();
 
-		await page.waitForSelector("#cmfive-modal");
+		await page.locator("#cmfive-modal").waitFor();
 
         await page.locator("#cmfive-modal #role").selectOption(role);
         await page.locator("#cmfive-modal #member").selectOption(memberName);
@@ -150,13 +150,13 @@ export class TaskHelper  {
         await page.locator("#task_type").selectOption(taskType);
 
         if (data !== undefined) {
-            for (let option of ["Priority", "Status", "Assigned To"]) {
+            for (const option of ["Priority", "Status", "Assigned To"]) {
                 if (data[option] !== undefined) {
                     await page.getByRole("combobox", {name: option}).selectOption(data[option]);
                 }
             }
 
-            for (let option of ["Estimated hours", "Effort"]) {
+            for (const option of ["Estimated hours", "Effort"]) {
                 if (data[option] !== undefined) {
                     await page.getByLabel(option).fill(data[option]);
                 }
@@ -187,6 +187,6 @@ export class TaskHelper  {
 		await page.goto(`${HOST}/task/edit/${taskID}`)
      
         await page.getByRole("button", {name: "Delete", exact: true}).first().click();
-        await expect(page.getByRole("link", {name: taskName, exact: true})).not.toBeVisible();
+        await expect(page.getByRole("link", {name: taskName, exact: true})).toBeHidden();
     }
 }

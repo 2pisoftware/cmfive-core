@@ -1,12 +1,12 @@
 import { expect, test } from "@playwright/test";
-import { HOST, CmfiveHelper } from "@utils/cmfive";
 import { AdminHelper } from "@utils/admin";
+import { CmfiveHelper } from "@utils/cmfive";
 
 const report_name = CmfiveHelper.randomID("report_");
 
 test.describe.configure({ mode: 'serial' });
 
-test("Test that users can create reports", async ({ page, isMobile }) => {
+test("that users can create reports", async ({ page, isMobile }) => {
     await CmfiveHelper.login(page, "admin", "admin");
     await CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Report", "Create a Report");
     await page.locator("#title").fill(report_name);
@@ -25,7 +25,7 @@ test("Test that users can create reports", async ({ page, isMobile }) => {
     await page.getByRole('button', { name: 'Save Report' }).click();
 });
 
-test("Test that users can run reports", async ({ page, isMobile }) => {
+test("that users can run reports", async ({ page, isMobile }) => {
     await CmfiveHelper.login(page, "admin", "admin");
     await CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Report", "Report Dashboard");
 
@@ -39,7 +39,7 @@ test("Test that users can run reports", async ({ page, isMobile }) => {
     await expect(page.getByText("precedent")).toBeVisible();
 })
 
-test("Test that users can attach templates to reports", async ({ page, isMobile }) => {
+test("that users can attach templates to reports", async ({ page, isMobile }) => {
     await CmfiveHelper.login(page, "admin", "admin");
 
     // @TODO: template creation broken
@@ -84,7 +84,7 @@ test("Test that users can attach templates to reports", async ({ page, isMobile 
     await expect(page.getByText("ABN: 12345678901")).toBeVisible();
 });
 
-test("Test that users can duplicate reports", async ({ page, isMobile }) => {
+test("that users can duplicate reports", async ({ page, isMobile }) => {
     await CmfiveHelper.login(page, "admin", "admin");
     await CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Report", "Report Dashboard");
     await expect(page.getByRole("link", {name: report_name})).toBeVisible();
@@ -95,9 +95,9 @@ test("Test that users can duplicate reports", async ({ page, isMobile }) => {
     // expect(page.getByText(report_name + " - Copy")).toBeVisible();
 });
 
-test("Test that users can delete reports", async ({ page, isMobile }) => {
+test("that users can delete reports", async ({ page, isMobile }) => {
     await CmfiveHelper.login(page, "admin", "admin");
-    await CmfiveHelper.acceptDialog(page);
+    CmfiveHelper.acceptDialog(page);
     await CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Report", "Report Dashboard");
     await expect(page.getByRole('link', { name: report_name, exact: true })).toBeVisible();
 
