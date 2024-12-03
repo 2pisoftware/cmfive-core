@@ -12,7 +12,7 @@ const locked = ref(props.locked === "true");
 const user_id = props.user_id;
 const mfa_enabled = ref(props.mfa_enabled === "true");
 const pw_min_length = props.pw_min_length ? parseInt(props.pw_min_length) : 0;
-
+ 
 const mfa_qr_code_url = ref<string>();
 const mfa_secret = ref<string>();
 const is_loading = ref(false);
