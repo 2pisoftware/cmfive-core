@@ -2,24 +2,25 @@
 
 function comment_GET(Web $w)
 {
-    $p = $w->pathMatch("comment_id", "object_class", "object_id");
+    $w->setLayout(null);
+    list($comment_id, $object_class, $object_id) = $w->pathMatch("comment_id", "object_class", "object_id");
     $is_internal_only = intval(Request::int("internal_only", 0));
     $has_notification_selection = Request::int("has_notification_selection", 1);
 
-    $comment_id = intval($p["comment_id"]);
-    $comment = $comment_id > 0 ? CommentService::getInstance($w)->getComment($comment_id) : new Comment($w);
+    // $comment_id = intval($comment_id);
+    $comment = !empty($comment_id) ? CommentService::getInstance($w)->getComment($comment_id) : new Comment($w);
 
     $is_restricted = false;
     $is_parent_restricted = false;
 
     // Setup for comment notifications.
-    $parent_object_class_name = $p["object_class"];
-    $parent_object_id = $p["object_id"];
+    $parent_object_class_name = $object_class;
+    $parent_object_id = $object_id;
     $root_object = null;
     $parent_comment = null;
 
     if (strtolower($parent_object_class_name) == "comment") {
-        $parent_comment = CommentService::getInstance($w)->getComment($p["object_id"]);
+        $parent_comment = CommentService::getInstance($w)->getComment($object_id);
         if (!empty($parent_comment)) {
             $root_object = $parent_comment->getParentObject();
         }
@@ -115,12 +116,12 @@ function comment_GET(Web $w)
     // make sure line breaks are escaped for correct processing in js
     $w->ctx("comment", addcslashes($comment->comment, "\n\""));
 
-    $w->ctx("comment_id", $p["comment_id"] == "{0}" ? "0" : $p["comment_id"]);
+    $w->ctx("comment_id", $comment_id == "{0}" ? "0" : $comment_id);
     $w->ctx("viewers", json_encode($viewers));
     $w->ctx("top_object_class_name", strtolower(preg_replace('/(?<=\\w)(?=[A-Z])/', "_$1", $parent_object_class_name)));
     $w->ctx("top_object_id", $parent_object_id);
     $w->ctx("new_owner", json_encode($new_owner));
-    $w->ctx("is_new_comment", empty($p["comment_id"]) || $p["comment_id"] == 0 ? "true" : "false");
+    $w->ctx("is_new_comment", empty($comment_id) || $comment_id == 0 ? "true" : "false");
     $w->ctx("is_internal_only", $is_internal_only);
     $w->ctx("has_notification_selection", $has_notification_selection);
     $w->ctx("is_restricted", json_encode($is_restricted));

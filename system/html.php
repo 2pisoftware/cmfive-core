@@ -464,7 +464,9 @@ class Html
             $buffer .= "</div></div>";
         }
         $buffer .= "</div>";
-        $buffer .= "<script>$(function(){try{\$('textarea.ckeditor').each(function(){CKEDITOR.replace(this)})}catch(err){}});</script>";
+        // $buffer .= "<script>$(function(){try{\$('textarea.ckeditor').each(function(){CKEDITOR.replace(this)})}catch(err){}});</script>";
+
+        $buffer .= "<script>document.addEventListener('DOMContentLoaded', () => { [...document.querySelectorAll('textarea.ckeditor')].forEach(x => { CKEDITOR.replace(x) }) })</script>";
 
         if (null !== $action) {
             $buffer .= $form->close($submitTitle);

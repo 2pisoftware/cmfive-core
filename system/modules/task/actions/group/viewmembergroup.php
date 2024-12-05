@@ -3,85 +3,42 @@
 // clicking the 'More Info' button for a task group gives all details specific to this group
 // including group attributes and group membership
 function viewmembergroup_GET(Web $w) {
-	$p = $w->pathMatch("id");
+    $p = $w->pathMatch("id");
 
-	// tab: Members
-	// get all members in a task group given a task group ID
-	$member_group = TaskService::getInstance($w)->getMemberGroup($p['id']);
+    // tab: Members
+    // get all members in a task group given a task group ID
+    $member_group = TaskService::getInstance($w)->getMemberGroup($p['id']);
 
-	// get the group attributes given a task group ID
-	$taskgroup = TaskService::getInstance($w)->getTaskGroup($p['id']);
-	if (empty($taskgroup->id)) {
-		$w->error("Taskgroup not found", '/task');
-	}
+    // get the group attributes given a task group ID
+    $taskgroup = TaskService::getInstance($w)->getTaskGroup($p['id']);
+    if (empty($taskgroup->id)) {
+        $w->error("Taskgroup not found", '/task');
+    }
 
-	// put the group title into the page heading
-	TaskService::getInstance($w)->navigation($w, "Task Group - " . $taskgroup->title);
+    // put the group title into the page heading
+    TaskService::getInstance($w)->navigation($w, "Task Group - " . $taskgroup->title);
 
-	History::add("Task Group: " . $taskgroup->title, null, $taskgroup);
+    History::add("Task Group: " . $taskgroup->title, null, $taskgroup);
 
-	// set columns headings for display of members
-	$line[] = array("Member", "Role", "");
+    // set columns headings for display of members
+    $line[] = array("Member", "Role", "");
 
-	// if their are members, display their full name, role and buttons to edit or delete the member
-	if ($member_group) {
-		foreach ($member_group as $member) {
-			$line[] = array(TaskService::getInstance($w)->getUserById($member->user_id), $member->role,
-				Html::box(WEBROOT . "/task-group/viewmember/" . $member->id, " Edit ", true) .
-				"&nbsp;&nbsp;" .
-				Html::box(WEBROOT . "/task-group/deletegroupmember/" . $member->id, " Delete ", true)
-			);
-		}
-	} else {
-		// if there are no members, say as much
-		$line[] = array("Group currently has no members. Please Add New Members.", "", "");
-	}
+    // if their are members, display their full name, role and buttons to edit or delete the member
+    if ($member_group) {
+        foreach ($member_group as $member) {
+            $line[] = array(TaskService::getInstance($w)->getUserById($member->user_id), $member->role,
+                HtmlBootstrap5::box(WEBROOT . "/task-group/viewmember/" . $member->id, " Edit ", true, null, null, null, null, null, "bg-primary text-light") .
+                "&nbsp;&nbsp;" .
+                HtmlBootstrap5::box(WEBROOT . "/task-group/deletegroupmember/" . $member->id, " Delete ", true,  null, null, null, null, null, "bg-danger text-light")
+            );
+        }
+    } else {
+        // if there are no members, say as much
+        $line[] = array("Group currently has no members. Please Add New Members.", "", "");
+    }
 
-	// display list of group members
-	$w->ctx("viewmembers", Html::table($line, null, "tablesorter", true));
-	
-	// DEPRECATED IN FAVOUR OF TASK SUBSCRIBERS
-	// tab:  Notify
-	// $notify = TaskService::getInstance($w)->getTaskGroupNotify($taskgroup->id);
-	// 
-	// if ($notify) {
-	// 	foreach ($notify as $n) {
-	// 		$v[$n->role][$n->type] = $n->value;
-	// 	}
-	// } else {
-	// 	$v['guest']['creator'] = 0;
-	// 	$v['member']['creator'] = 0;
-	// 	$v['member']['assignee'] = 0;
-	// 	$v['owner']['creator'] = 0;
-	// 	$v['owner']['assignee'] = 0;
-	// 	$v['owner']['other'] = 0;
-	// }
-	// 
-	// $notifyForm['Task Group Notifications'] = array(
-	// 	array(array("", "hidden", "task_group_id", $taskgroup->id)),
-	// 	array(
-	// 		array("", "static", ""),
-	// 		array("Creator", "static", "creator"),
-	// 		array("Assignee", "static", "assignee"),
-	// 		array("All Others", "static", "others"),
-	// 	),
-	// 	array(
-	// 		array("Guest", "static", "guest"),
-	// 		array("", "checkbox", "guest_creator", $v['guest']['creator'])
-	// 	),
-	// 	array(
-	// 		array("Member", "static", "member"),
-	// 		array("", "checkbox", "member_creator", $v['member']['creator']),
-	// 		array("", "checkbox", "member_assignee", $v['member']['assignee']),
-	// 	),
-	// 	array(
-	// 		array("Owner", "static", "owner"),
-	// 		array("", "checkbox", "owner_creator", $v['owner']['creator']),
-	// 		array("", "checkbox", "owner_assignee", $v['owner']['assignee']),
-	// 		array("", "checkbox", "owner_other", $v['owner']['other']),
-	// 	),
-	// );
+    // display list of group members
+    $w->ctx("viewmembers", HtmlBootstrap5::table($line, null, "tablesorter", true));
 
-	$w->ctx("taskgroup", $taskgroup);
-	// $w->ctx("notifymatrix", Html::multiColForm($notifyForm, $w->localUrl("/task-group/updategroupnotify/")));
+    $w->ctx("taskgroup", $taskgroup);
 }

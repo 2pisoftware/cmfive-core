@@ -21,7 +21,7 @@ function edit_GET(Web $w)
 
     //setup application select options
     $applications = FormService::getInstance($w)->getFormApplicationsForFormId($form_id);
-    $application_select_options = [['label' => '--- Select ---', 'value' => null]];
+    $application_select_options = []; // [['label' => '--- Select ---', 'value' => null]];
     foreach ($applications as $application) {
         $application_select_options[] = ['label' => $application->title, 'value' => $application->id];
     }
@@ -30,21 +30,41 @@ function edit_GET(Web $w)
     $form = [
         'Event' => [
             [
-                (new \Html\Form\InputField($w))->setLabel('Title')->setName('title')->setValue($event->title)
+                (new \Html\Form\InputField([
+                    "label" => "Title",
+                    "id|name" => "title",
+                    "value" => $event->title,
+                    "required" => true
+                ]))
             ],
             [
-                (new \Html\Form\Select($w))->setLabel('Type')->setName('event_type')->setOptions($event->_event_type_ui_select_options)->setSelectedOption($event->event_type),
-                (new \Html\Form\Inputfield\Checkbox($w))->setLabel('Active')->setName('is_active')->setChecked($event->is_active)
+                (new \Html\Form\Select([
+                    "label" => "Type",
+                    "id|name" => "event_type",
+                    "required" => true
+                ]))->setOptions($event->_event_type_ui_select_options)->setSelectedOption($event->event_type),
+                (new \Html\Form\Inputfield\Checkbox([
+                    "label" => "Active",
+                    "id|name" => "is_active",
+                    "required" => true
+                ]))->setChecked($event->is_active)
             ],
             [
-                (new \Html\Form\Select($w))->setLabel('Form Application (Optional - Leave blank to add event to all form instances)')->setName('form_application_id')->setOptions($application_select_options)->setSelectedOption($event->form_application_id)
+                (new \Html\Form\Select([
+                    "label" => "Processor",
+                    "id|name" => "processor_class",
+                    "required" => true
+                ]))->setOptions($processor_options)->setSelectedOption(((!empty($event->class) && !empty($event->module)) ? $event->module . '.' . $event->class : null))
             ],
             [
-                (new \Html\Form\Select($w))->setLabel('Processor')->setName('processor_class')->setOptions($processor_options)->setSelectedOption(((!empty($event->class) && !empty($event->module)) ? $event->module . '.' . $event->class : null))
-            ]
+                (new \Html\Form\Select([
+                    "label" => "Form Application (Optional - Leave blank to add event to all form instances)",
+                    "id|name" => "form_application_id",
+                ]))->setOptions($application_select_options)->setSelectedOption($event->form_application_id)
+            ],
         ]
     ];
-    $w->ctx('event_form', Html::multiColForm($form, '/form-event/edit/' . $event->id . '?form_id=' . $form_id));
+    $w->ctx('event_form', HtmlBootstrap5::multiColForm($form, '/form-event/edit/' . $event->id . '?form_id=' . $form_id));
 }
 
 function edit_POST(Web $w)
@@ -70,6 +90,7 @@ function edit_POST(Web $w)
     $processor_class = explode('.', $processor_class);
     $event->module = $processor_class[0];
     $event->class = $processor_class[1];
+    $event->form_application_id = Request::int('form_application_id');
     $event->insertOrUpdate();
     $w->msg('Form Event Saved', '/form/show/' . $event->form_id . '#events');
 }

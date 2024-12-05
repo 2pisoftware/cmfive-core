@@ -1,4 +1,4 @@
-import { Page, Locator, expect } from "@playwright/test";
+import { Locator, Page, expect } from "@playwright/test";
 import { CmfiveHelper, HOST } from "@utils/cmfive";
 
 const webChannelFormLabelToId = {
@@ -61,11 +61,11 @@ export class ChannelsHelper {
 
         const formElement = getFormElementByLabel(page, webChannelFormLabelToId);
 
-        for(let option of ["Name", "Web API URL"])
+        for(const option of ["Name", "Web API URL"])
             if (channel[option] !== undefined)
                 await formElement(option).fill(channel[option] as string);
 
-        for(let option of ["Is Active", "Run processors?"])
+        for(const option of ["Is Active", "Run processors?"])
             if(channel[option] !== undefined) {
                 if (channel[option] === true)
                     await formElement(option).check();
@@ -80,21 +80,17 @@ export class ChannelsHelper {
     {
         expect(edit["Name"] === undefined || (typeof edit["Name"] == "string" && edit["Name"] != "")).toBeTruthy();
 
-        // await CmfiveHelper.clickCmfiveNavbar(page, "Channels", "List Channels");
-        // await CmfiveHelper.getRowByText(page, channel["Name"] as string).getByRole("button", {name: "Edit"}).click();
-        // await page.waitForSelector("#cmfive-modal", {state: "visible"});
-        // const modal = page.locator("#cmfive-modal");
-        await page.waitForTimeout(500);
-        await page.goto(HOST + "/channels-web/edit/1");
-        await page.waitForTimeout(500);
+        await page.goto(HOST + "/channels/listchannels")
+        await CmfiveHelper.getRowByText(page, channel["Name"] as string).getByRole("button", {name: "Edit"}).click();
+		await page.waitForLoadState();
 
         const formElement = getFormElementByLabel(page, webChannelFormLabelToId);
 
-        for(let option of ["Name", "Web API URL"])
+        for(const option of ["Name", "Web API URL"])
             if (edit[option] !== undefined)
                 await formElement(option).fill(edit[option] as string);
         
-        for(let option of ["Is Active", "Run processors?"])
+        for(const option of ["Is Active", "Run processors?"])
             if(edit[option] !== undefined) {
                 if (edit[option] === true)
                     await formElement(option).check();
@@ -104,8 +100,8 @@ export class ChannelsHelper {
         
         await page.getByRole("button", {name: "Save"}).click();
 
-        let editedChannel: Record<string, string | boolean> = {};
-        for(let option of ["Name", "Web API URL", "Is Active", "Run processors?"])
+        const editedChannel: Record<string, string | boolean> = {};
+        for(const option of ["Name", "Web API URL", "Is Active", "Run processors?"])
             if (edit[option] !== undefined)
                 editedChannel[option] = edit[option];
             else
@@ -116,28 +112,24 @@ export class ChannelsHelper {
 
     static async verifyWebChannel(page: Page, channel: Record<string, string | boolean>)
     {
-        // await CmfiveHelper.clickCmfiveNavbar(page, "Channels", "List Channels");
-        // await CmfiveHelper.getRowByText(page, channel["Name"] as string).getByRole("button", { name: "Edit" }).click();
-        // await page.waitForSelector("#cmfive-modal", {state: "visible"});
-        // const modal = page.locator("#cmfive-modal");
-        await page.waitForTimeout(500);
-        await page.goto(HOST + "/channels-web/edit/1");
-        await page.waitForTimeout(500);
+       	await page.goto(HOST + "/channels/listchannels");
+        await CmfiveHelper.getRowByText(page, channel["Name"] as string).getByRole("button", { name: "Edit" }).click();
+		await page.waitForLoadState();
 
         const formElement = getFormElementByLabel(page, webChannelFormLabelToId);
 
-        for(let option of ["Name", "Web API URL"])
+        for(const option of ["Name", "Web API URL"])
             if (channel[option] !== undefined)
                 await expect(formElement(option)).toHaveValue(channel[option] as string);
             else
                 await expect(formElement(option)).toHaveValue("");
 
-        for(let option of ["Is Active", "Run processors?"])
+        for(const option of ["Is Active", "Run processors?"])
             if(channel[option] !== undefined) {
                 if (channel[option] === true)
-                    expect(await formElement(option).isChecked()).toBeTruthy();
+                    await expect(formElement(option)).toBeChecked();
                 else if (channel[option] === false)
-                    expect(await formElement(option).isChecked()).toBeFalsy();
+                    await expect(formElement(option)).not.toBeChecked();
             } // web channel defaults to true for both Is Active and Run Processors? if not specified
             else
                 expect(formElement(option).isChecked()).toBeTruthy();
@@ -147,8 +139,8 @@ export class ChannelsHelper {
 
     static async createEmailChannel(page: Page, channel: Record<string, string | boolean>)
     {
-        for(let required of ["Name", "Protocol", "Server URL", "Username", "Password"])
-            await expect(typeof channel[required] == "string" && channel[required] != "").toBeTruthy();
+        for(const required of ["Name", "Protocol", "Server URL", "Username", "Password"])
+            expect(typeof channel[required] == "string" && channel[required] != "").toBeTruthy();
 
         // await CmfiveHelper.clickCmfiveNavbar(page, "Channels", "List Channels");
         // await page.getByRole("button", { name: "Add Email Channel" }).click();
@@ -168,14 +160,14 @@ export class ChannelsHelper {
         if (channel["Port"] !== undefined)
             await formElement("Port").fill(channel["Port"] as string);
 
-        for(let option of ["Name", "Server URL", "Username", "Password"])
+        for(const option of ["Name", "Server URL", "Username", "Password"])
             await formElement(option).fill(channel[option] as string);
 
-        for(let option of ["Folder", "To", "From", "Subject", "CC", "Body", "Post Read Data"])
+        for(const option of ["Folder", "To", "From", "Subject", "CC", "Body", "Post Read Data"])
             if (channel[option] !== undefined)
                 await formElement(option).fill(channel[option] as string);
 
-        for(let option of ["Is Active", "Run processors?", "Use Auth?", "Verify Peer", "Allow self signed certificates"])
+        for(const option of ["Is Active", "Run processors?", "Use Auth?", "Verify Peer", "Allow self signed certificates"])
             if(channel[option] !== undefined) {
                 if (channel[option] === true)
                     await formElement(option).check();
@@ -188,35 +180,31 @@ export class ChannelsHelper {
 
     static async editEmailChannel(page: Page, channel: Record<string, string | boolean>, edit: Record<string, string | boolean>)
     {
-        for(let required of ["Name", "Protocol", "Server URL", "Username", "Password"])
-            await expect(edit[required] === undefined || (typeof edit[required] == "string" && edit[required] != "")).toBeTruthy();
+        for(const required of ["Name", "Protocol", "Server URL", "Username", "Password"])
+            expect(edit[required] === undefined || (typeof edit[required] == "string" && edit[required] != "")).toBeTruthy();
 
-        // await CmfiveHelper.clickCmfiveNavbar(page, "Channels", "List Channels");
-        // await CmfiveHelper.getRowByText(page, channel["Name"] as string).getByRole("button", {name: "Edit"}).click();
-        // await page.waitForSelector("#cmfive-modal.show");
-        // const modal = page.locator("#cmfive-modal.show");
-        await page.waitForTimeout(500);
-        await page.goto(HOST + "/channels-email/edit/2"); // 2 because this is second channel created, channel tests are sequential
-        await page.waitForTimeout(500);
+        await page.goto(HOST + "/channels/listchannels");
+        await CmfiveHelper.getRowByText(page, channel["Name"] as string).getByRole("button", {name: "Edit"}).click();
+		await page.waitForLoadState();
 
         const formElement = getFormElementByLabel(page, emailChannelFormLabelToId);
 
         if (edit["Port"] !== undefined)
             await formElement("Port").fill(edit["Port"] as string);
 
-        for(let option of ["Protocol", "Post Read Action"])
+        for(const option of ["Protocol", "Post Read Action"])
             if (edit[option] !== undefined)
                 await formElement(option).selectOption(edit[option] as string);
 
-        for(let option of ["Name", "Server URL", "Username", "Password"])
+        for(const option of ["Name", "Server URL", "Username", "Password"])
             if (edit[option] !== undefined)
                 await formElement(option).fill(edit[option] as string);
 
-        for(let option of ["Folder", "To", "From", "Subject", "CC", "Body", "Post Read Data"])
+        for(const option of ["Folder", "To", "From", "Subject", "CC", "Body", "Post Read Data"])
             if (edit[option] !== undefined)
                 await formElement(option).fill(edit[option] as string);
 
-        for(let option of ["Is Active", "Run processors?", "Use Auth?", "Verify Peer", "Allow self signed certificates"])
+        for(const option of ["Is Active", "Run processors?", "Use Auth?", "Verify Peer", "Allow self signed certificates"])
             if(edit[option] !== undefined)
                 if (edit[option] === true)
                     await formElement(option).check();
@@ -225,8 +213,8 @@ export class ChannelsHelper {
 
         await page.getByRole("button", {name: "Save"}).click();
 
-        let editedChannel: Record<string, string | boolean> = {};
-        for(let option of ["Name", "Protocol", "Server URL", "Username", "Password", "Port", "Folder", "To", "From", "Subject", "CC", "Body", "Post Read Data", "Post Read Action", "Is Active", "Run processors?", "Use Auth?", "Verify Peer", "Allow self signed certificates"])
+        const editedChannel: Record<string, string | boolean> = {};
+        for(const option of ["Name", "Protocol", "Server URL", "Username", "Password", "Port", "Folder", "To", "From", "Subject", "CC", "Body", "Post Read Data", "Post Read Action", "Is Active", "Run processors?", "Use Auth?", "Verify Peer", "Allow self signed certificates"])
             if (edit[option] !== undefined)
                 editedChannel[option] = edit[option];
             else if (channel[option] !== undefined)
@@ -237,13 +225,9 @@ export class ChannelsHelper {
 
     static async verifyEmailChannel(page: Page, channel: Record<string, string | boolean>)
     {
-        // await CmfiveHelper.clickCmfiveNavbar(page, "Channels", "List Channels");
-        // await CmfiveHelper.getRowByText(page, channel["Name"] as string).getByRole("button", {name: "Edit"}).click();
-        // await page.waitForSelector("#cmfive-modal.show");
-        // const modal = page.locator("#cmfive-modal.show");
-        await page.waitForTimeout(500);
-        await page.goto(HOST + "/channels-email/edit/2"); // 2 because this is second channel created, channel tests are sequential
-        await page.waitForTimeout(500);
+        await page.goto(HOST + "/channels/listchannels");
+        await CmfiveHelper.getRowByText(page, channel["Name"] as string).getByRole("button", {name: "Edit"}).click();
+		await page.waitForLoadState();
 
         const formElement = getFormElementByLabel(page, emailChannelFormLabelToId);
 
@@ -252,33 +236,33 @@ export class ChannelsHelper {
         if (channel["Post Read Action"] !== undefined)
             await expect(formElement("Post Read Action")).toHaveValue(channel["Post Read Action"] as string);
         else
-            await expect(await formElement("Post Read Action").locator('option[selected="true"]').count()).toBe(0);
+            await expect(formElement("Post Read Action").locator('option[selected="true"]')).toHaveCount(0);
 
         if (channel["Port"] !== undefined)
             await expect(formElement("Port")).toHaveValue(channel["Port"] as string);
         else
             await expect(formElement("Port")).toHaveValue("");
 
-        for(let option of ["Name", "Server URL", "Username", "Password"])
+        for(const option of ["Name", "Server URL", "Username", "Password"])
             await expect(formElement(option)).toHaveValue(channel[option] as string);
 
-        for(let option of ["Folder", "To", "From", "Subject", "CC", "Body", "Post Read Data"])
+        for(const option of ["Folder", "To", "From", "Subject", "CC", "Body", "Post Read Data"])
             if (channel[option] !== undefined)
                 await expect(formElement(option)).toHaveValue(channel[option] as string);
             else
                 await expect(formElement(option)).toHaveValue("");
 
-        for(let option of ["Is Active", "Run processors?", "Use Auth?", "Verify Peer", "Allow self signed certificates"])
+        for(const option of ["Is Active", "Run processors?", "Use Auth?", "Verify Peer", "Allow self signed certificates"])
             if(channel[option] !== undefined) {
                 if (channel[option] === true)
-                    await expect(await formElement(option).isChecked()).toBeTruthy();
+                    await expect(formElement(option)).toBeChecked();
                 else if (channel[option] === false)
-                    await expect(await formElement(option).isChecked()).toBeFalsy();
+                    await expect(formElement(option)).not.toBeChecked();
             }
         
-        for(let option of ["Is Active", "Run processors?"])
+        for(const option of ["Is Active", "Run processors?"])
             if (channel[option] === undefined)
-                await expect(formElement(option).isChecked()).toBeTruthy();
+                expect(formElement(option).isChecked()).toBeTruthy();
 
         await page.getByRole("button", {name: "Cancel"}).click();
     }
@@ -317,13 +301,9 @@ export class ChannelsHelper {
 
     static async verifyProcessor(page: Page, processorName: string, channel: string, processorClass: string)
     {
-        // await CmfiveHelper.clickCmfiveNavbar(page, "Channels", "List Processors");
-        // await CmfiveHelper.getRowByText(page, processorName).getByRole("button", {name: "Edit"}).click(); // if this doesn't fail, name is verified as correct
-        // await page.waitForSelector("#cmfive-modal", {state: "visible"});
-        // const modal = page.locator("#cmfive-modal");
-        await page.waitForTimeout(500);
-        await page.goto(HOST + "/channels-processor/edit/1");
-        await page.waitForTimeout(500);
+        await page.goto(HOST + "/channels/listprocessors");
+        await CmfiveHelper.getRowByText(page, processorName).getByRole("button", {name: "Edit"}).click(); // if this doesn't fail, name is verified as correct	
+		await page.waitForLoadState();
 
         const formElement = getFormElementByLabel(page, processorFormLabelToId);
 
@@ -343,6 +323,6 @@ export class ChannelsHelper {
             await CmfiveHelper.getRowByText(page, processorName).getByRole("button", { name: "More" }).click();
         
         await page.getByRole("button", {name: "Delete"}).click();
-        page.reload();
+        await page.reload();
     }
 }

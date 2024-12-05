@@ -28,7 +28,7 @@ function edit_GET(Web $w) {
         )
     );
     
-    $w->out(Html::multiColForm($form, "/report-connections/edit/{$report_connection->id}"));
+    $w->out(HtmlBootstrap5::multiColForm($form, "/report-connections/edit/{$report_connection->id}"));
 }
 
 function edit_POST(Web $w) {

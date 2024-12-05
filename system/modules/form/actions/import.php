@@ -1,6 +1,8 @@
 <?php
 
-function import_GET(Web $w) {
+function import_GET(Web $w)
+{
+	$w->setLayout(null);
 
 	$w->ctx('title',"Form Import");
 
@@ -11,7 +13,7 @@ function import_GET(Web $w) {
 		]
 	];
 
-	$w->ctx("form", Html::multiColForm($_form, "/form/import", "POST", "Save"));
+	$w->ctx("form", HtmlBootstrap5::multiColForm($_form, "/form/import", "POST", "Save"));
 }
 
 function import_POST(Web $w) {

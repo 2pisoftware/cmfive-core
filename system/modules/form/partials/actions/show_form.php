@@ -45,9 +45,9 @@ function show_form(\Web $w, $params)
     }
 
     if (array_key_exists("display_only", $params) && !$params["display_only"]) {
-        $w->ctx("edit_button", Html::box("/form-instance/edit/{$form_instance_id}?form_id={$form->id}&redirect_url={$redirect_url}&object_class={$object_class}&object_id={$object->id}", "Edit", true));
+        $w->ctx("edit_button", HtmlBootstrap5::box("/form-instance/edit/{$form_instance_id}?form_id={$form->id}&redirect_url={$redirect_url}&object_class={$object_class}&object_id={$object->id}", "Edit", true));
     }
 
     $w->ctx("form", $form);
-    $w->ctx("table", Html::multiColTable($table_data));
+    $w->ctx("table", HtmlBootstrap5::multiColTable($table_data));
 }

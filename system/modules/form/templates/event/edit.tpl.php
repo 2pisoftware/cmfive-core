@@ -1,1 +1,1 @@
-<?php echo isset($event_form) ? $event_form : '';?>
+<?php echo isset($event_form) ? $event_form : '';

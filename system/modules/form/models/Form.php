@@ -83,6 +83,15 @@ class Form extends DbObject
         return $header_string;
     }
 
+    public function getTableHeadersAsArray(): array
+    {
+        if (!empty($this->header_template)) {
+            return $this->header_template;
+        }
+
+        return array_map(fn(FormField $f) => $f->name, $this->getFields());
+    }
+
     /**
      * Generate the summary row for the form table
      *

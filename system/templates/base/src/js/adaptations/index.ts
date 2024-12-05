@@ -1,7 +1,5 @@
-import { AlertAdaptation } from './alert';
-import { DropdownAdaptation } from './dropdown';
-import { FavouritesAdaptation} from './favourites';
-import { TabAdaptation } from './tabs';
-import { TableAdaptation } from './table';
-
-export { AlertAdaptation, DropdownAdaptation, FavouritesAdaptation, TabAdaptation, TableAdaptation };
+export { AlertAdaptation } from './alert';
+export { DropdownAdaptation } from './dropdown';
+export { FavouritesAdaptation} from './favourites';
+export { TabAdaptation } from './tabs';
+export { TableAdaptation } from './table';

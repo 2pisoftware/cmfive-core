@@ -750,13 +750,15 @@ class TaskService extends DbService
     public function getMembersBeAssigned($id)
     {
         $line = [];
-        $where = "task_group_id = " . $id . " and (role = 'MEMBER' or role = 'OWNER') and is_active = 1";
+        $where = "task_group_id = " . $id . " and (role = 'MEMBER' or role = 'OWNER') and is_active = 1 and user_id > 0";
         $members = $this->getObjects("TaskGroupMember", $where);
+
         if (!empty($members)) {
             foreach ($members as $member) {
                 $line[] = [$this->getUserById($member->user_id), $member->user_id];
             }
         }
+
         return $line;
     }
 

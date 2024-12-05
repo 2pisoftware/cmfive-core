@@ -34,8 +34,11 @@
 <link rel='stylesheet' href='/system/templates/vue-components/loading-indicator.vue.css' />
 <script src='/system/templates/vue-components/loading-indicator.vue.js'></script>
 <script>
-    var app = new Vue({
-        el: "#app",
+    const {
+        createApp
+    } = Vue;
+    
+    createApp({
         data: function() {
             return {
                 form_id: '<?php echo $form_id; ?>',
@@ -104,5 +107,5 @@
                 });
             },
         },
-    })
+    }).mount("#app");
 </script>

@@ -43,21 +43,9 @@ class CodeMirrorEditor extends \Html\Form\InputField
         $this->_values = $values;
         return $this;
     }
-   /*
-    public function __toString(): string
-    {
-        if (!empty($this->_values)) {
-            $this->_config['items'] = $this->_values;
-        }
-        $this->setAttribute('data-config', json_encode($this->_config));
-        $this->class = $this->class .= ' code-mirror-target';
 
-        return parent::__toString();
-    }
-*/
     public function __toString()
     {
         return '<textarea name="' . $this->name . '" id="' . $this->id . '" style="display:none"></textarea><div class="code-mirror-target" cm-value=\'' . $this->value . '\' id="' . $this->id . '">'  . '</div>';
     }
-
 }

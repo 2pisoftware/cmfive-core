@@ -32,9 +32,8 @@ export class TableAdaptation {
     static bindTableInteractions = () => {
         TableAdaptation.tables?.forEach(table => {
             table.querySelectorAll('th:not(.no-sort)')?.forEach((thead, index) => {
-                thead.addEventListener('click', () => {
-                    TableAdaptation.headerClickEvent(thead as HTMLTableCellElement, table, index)
-                })
+                thead.removeEventListener('click', () => TableAdaptation.headerClickEvent(thead as HTMLTableCellElement, table, index))
+                thead.addEventListener('click', () => TableAdaptation.headerClickEvent(thead as HTMLTableCellElement, table, index))
             })
         });
     }

@@ -11,7 +11,7 @@ function groups_GET(Web &$w)
     $w->setLayout('layout-bootstrap-5');
     AdminService::getInstance($w)->navigation($w, "Groups");
 
-    $table = [["Title", "Parent Groups", "Operations", "sort_key" => null]];
+    $table = [["Title", "Parent Groups", "Operations"]];
 
     $groups = AuthService::getInstance($w)->getGroups();
 
@@ -34,13 +34,13 @@ function groups_GET(Web &$w)
             }
             $line[] = count($ancestors) > 0 ? "<div class='text-success'>" . implode(", ", $ancestors) . "</div>" : "";
 
-            $operations = Html::b("/admin/moreInfo/" . $group->id, "Edit");
+            $operations = HtmlBootstrap5::b("/admin/moreInfo/" . $group->id, "Edit", null, null, false, "btn btn-sm btn-primary");
 
             if (AuthService::getInstance($w)->user()->is_admin) {
-                $operations .= Html::b("/admin/groupdelete/" . $group->id, "Delete", "Are you sure you want to delete this group?");
+                $operations .= HtmlBootstrap5::b("/admin/groupdelete/" . $group->id, "Delete", "Are you sure you want to delete this group?", null, false, "btn btn-sm btn-danger");
             }
 
-            $line[] = $operations;
+            $line[] = HtmlBootstrap5::buttonGroup($operations);
             $table[] = $line;
         }
     }

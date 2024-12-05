@@ -1,0 +1,40 @@
+
+// Quill editor dark theme
+
+.quill-editor {
+    min-height: 200px;
+    height: 200px;
+}
+
+.ql-snow .ql-picker-options {
+    @include theme((background-color: 'white-black'));
+}
+
+form .ql-snow {
+    @include theme((background-color: 'white-black'));
+    // background-color: var(--bs-body-bg);
+
+    color: $white;
+
+    &.ql-toolbar {
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+
+        .ql-header {
+            @include theme((color: 'black-grey'));	
+        }
+
+        .ql-stroke {
+            @include theme((stroke: 'black-grey'));	
+        }
+    }
+
+    &.ql-container {
+        border-bottom-left-radius: 5px;
+        border-bottom-right-radius: 5px;
+
+        .ql-editor {
+            @include theme((color: 'black-grey'));
+        }
+    }
+}

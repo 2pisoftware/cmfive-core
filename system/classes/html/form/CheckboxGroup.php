@@ -9,6 +9,13 @@ class CheckboxGroup extends InputField
     public $checkbox_values = [];
     public $selected_values = [];
 
+    public function setCheckboxValues(array $checkbox_values, array $selected_values)
+    {
+        $this->checkbox_values = $checkbox_values;
+        $this->selected_values = $selected_values;
+        return $this;
+    }
+
     public static $_excludeFromOutput = [
         'checkbox_values',
         'selected_values'

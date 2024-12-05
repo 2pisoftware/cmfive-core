@@ -24,7 +24,7 @@ function settings_GET(Web $w)
         $form = $class->getSettingsForm($event->settings, $w);
 
         if (!empty($form)) {
-            $w->out(Html::multiColForm($form, "/form-event/settings/{$event->id}?form_id=" . $form_id));
+            $w->out(HtmlBootstrap5::multiColForm($form, "/form-event/settings/{$event->id}?form_id=" . $form_id));
         } else {
             $w->error("Form implementation is empty");
         }

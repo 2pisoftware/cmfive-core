@@ -1,4 +1,6 @@
 <?php
+
+use Html\Form\Select;
 function createfeed_GET(Web &$w)
 {
     ReportService::getInstance($w)->navigation($w, "Create a Feed");
@@ -15,11 +17,15 @@ function createfeed_GET(Web &$w)
         }
     }
 
-    $f = Html::form([
-        ["Create a Feed from a Report", "section"],
-        ["Select Report", "select", "rid", null, $myrep],
-        ["Feed Title", "text", "title"],
-        ["Description", "textarea", "description", null, "40", "6"],
+    $f = HtmlBootstrap5::multiColForm([
+        "Create a Feed from a Report" => [
+            [new Select(["id|name" => "rid", "label" => "Select Report", "options" => $myrep])]
+        ]
+
+        // ["Create a Feed from a Report", "section"],
+        // ["Select Report", "select", "rid", null, $myrep],
+        // ["Feed Title", "text", "title"],
+        // ["Description", "textarea", "description", null, "40", "6"],
     ], $w->localUrl("/report/createfeed"), "POST", "Save");
 
     $w->ctx("createfeed", $f);

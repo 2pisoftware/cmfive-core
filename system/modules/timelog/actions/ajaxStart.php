@@ -1,9 +1,11 @@
 <?php
 
 function ajaxStart_POST(Web $w) {
+    $w->setLayout(null);
+
     if (TimelogService::getInstance($w)->hasActiveLog()) {
         LogService::getInstance($w)->debug("active log exists");
-		
+        
         return "0";
     }
     
@@ -30,11 +32,11 @@ function ajaxStart_POST(Web $w) {
         $timelog = new Timelog($w);
         $timelog->fill($_POST);
         $timelog->start($object, $start_time);
-		
-		if (!empty($_POST['description'])) {
-			$timelog->setComment($_POST['description']);
-		}
-		
+        
+        if (!empty($_POST['description'])) {
+            $timelog->setComment($_POST['description']);
+        }
+        
         $w->out(json_encode([
             'object'    => $p['class'],
             'title'     => $object->getSelectOptionTitle(),
@@ -42,6 +44,6 @@ function ajaxStart_POST(Web $w) {
         ]));
     } else {
         LogService::getInstance($w)->debug("object not found");
-		return "0";
+        return "0";
     }
 }

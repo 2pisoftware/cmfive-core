@@ -5,26 +5,22 @@
 @import 'variables';
 @import 'bootstrap_overrides';
 
-// Required
-// @import "~bootstrap/scss/functions";
-// @import "~bootstrap/scss/variables";
-// @import "~bootstrap/scss/mixins";
-// @import "~bootstrap/scss/maps";
-// @import "~bootstrap/scss/utilities";
-// @import "~bootstrap/scss/bootstrap-grid";
+$bootstrap-icons-font-dir: "/system/templates/base/node_modules/bootstrap-icons/font/fonts";
 
-// Optional bootstrap extras
-@import "~bootstrap/scss/bootstrap";
-@import "~bootstrap-icons/font/bootstrap-icons";
+// Import bootstrap
+@import "bootstrap/scss/bootstrap";
+@import "bootstrap-icons/font/bootstrap-icons";
 
 // Cmfive styles
 @import 'cmfive/mixins';
 
 @import 'cmfive/accordion';
+@import 'cmfive/alert';
 @import 'cmfive/breadcrumb';
 @import 'cmfive/buttons';
 @import 'cmfive/cards';
 @import 'cmfive/forms';
+@import 'cmfive/inputs';
 @import 'cmfive/menu';
 @import 'cmfive/modal';
 @import 'cmfive/multi_file_uploads';
@@ -35,6 +31,8 @@
 @import 'cmfive/listgroup';
 @import 'cmfive/red_squiggly_underline';
 @import 'cmfive/responsive_flex';
+
+@import 'cmfive/quill';
 
 // Foundation adaptation styles
 // @import "cmfive/adaptations/accordion";
@@ -49,14 +47,10 @@
 @import "cmfive/adaptations/tables";
 
 // Quill styles
-@import "~quill/dist/quill.snow.css";
-.quill-editor {
-    min-height: 200px;
-    height: 200px;
-}
+@import "quill/dist/quill.snow.css";
 
 // Tom Select styles
-@import '~tom-select/src/scss/tom-select.scss';
+@import 'tom-select/src/scss/tom-select.scss';
 
 // There is a collision in styles between quill and tom-select - this is a patch for this:
 .ts-wrapper.multi.has-items .ts-control {
@@ -69,7 +63,15 @@
 
     .item {
         margin-top: 0 !important;
+
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1.5;
     }
+}
+
+.ts-control:has(.item) {
+    padding: 0;
 }
 
 body {
