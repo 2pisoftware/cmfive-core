@@ -153,12 +153,16 @@
             ?>
         </div>
         <div id="events">
-            <?php echo HtmlBootstrap5::box(href: '/form-event/edit?form_id=' . $form->id, title: 'Add New Event', button: true, class: 'btn btn-primary'); ?>
+            <h3>Events</h3>
+            <div class="row">
+                <div class="col">
+                    <?php echo HtmlBootstrap5::box(href: '/form-event/edit?form_id=' . $form->id, title: 'Add New Event', button: true, class: 'btn btn-primary'); ?>
+                </div>
+            </div>
 
-            <?php if (isset($event_table)) : ?>
-                <h4>Events</h4>
-                <?php echo $event_table; ?>
-            <?php endif; ?>
+            <?php if (!empty($event_table)) {
+                echo $event_table;
+            } ?>
         </div>
     </div>
 </div>
