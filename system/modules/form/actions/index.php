@@ -21,7 +21,7 @@ function index_ALL(Web $w)
                     '<span class="text-break">' . $f->toLink() . '</span>',
                     '<p class="text-break">' . $f->description . '</p>',
                     HtmlBootstrap5::buttonGroup(
-                        HtmlBootstrap5::b(href: "/form/edit/" . $f->id, title: "Edit", class: 'btn-primary') .
+                        HtmlBootstrap5::box(href: "/form/edit/" . $f->id, title: "Edit", class: 'btn btn-primary') .
                         HtmlBootstrap5::b(href: "/form/export/" . $f->id, title: "Export", class: "btn-secondary") .
                         HtmlBootstrap5::b(href: "/form/delete/" . $f->id, title: "Delete", class: "btn-danger", confirm: "Are you sure you want to delete this form? (WARNING: there may be existing data saved to this form!)")
                     )
