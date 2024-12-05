@@ -25,7 +25,7 @@ function createreport_ALL(Web &$w)
             [new Select([
                 "id|name" => "module",
                 "label" => "Module",
-                "value" => Request::string("module"),
+                "selected_option" => Request::string("module"),
                 "options" => ReportService::getInstance($w)->getModules(),
             ])],
 
@@ -53,7 +53,7 @@ function createreport_ALL(Web &$w)
             [new Select([
                 "id|name" => "report_connection_id",
                 "label" => "Connect",
-                "value" => Request::int("report_connection_id"),
+                "selected_option" => Request::int("report_connection_id"),
                 "options" => ReportService::getInstance($w)->getConnections(),
             ])]
         ]

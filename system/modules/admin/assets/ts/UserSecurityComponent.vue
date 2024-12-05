@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineProps, ref, defineModel } from '../../../../templates/base/node_modules/vue';
+import { defineProps, ref, defineModel } from 'vue';
 
 const props = defineProps<{
 	user_id: string;
