@@ -1,10 +1,9 @@
-import { InputWithOther } from './InputWithOther';
-import { MultiFileUpload } from './MultiFileUpload';
-import { MultiSelect } from './MultiSelect';
-import { Overlay } from './Overlay';
-import { QuillEditor } from './QuillEditor';
-import { Toast } from './Toast';
-import { CodeMirror } from './CodeMirror';
-// import TestComponent from './TestComponent';
-
-export { InputWithOther, MultiFileUpload, MultiSelect, Overlay, QuillEditor, Toast, CodeMirror };
+export { Autocomplete } from './Autocomplete';
+export { CodeMirror } from './CodeMirror';
+export { InputWithOther } from './InputWithOther';
+export { MultiFileUpload } from './MultiFileUpload';
+export { Overlay } from './Overlay';
+export { QuillEditor } from './QuillEditor';
+export { Tags } from './Tags';
+export { Toast } from './Toast';
+export { TabbedPagination } from './TabbedPagination';

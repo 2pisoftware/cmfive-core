@@ -1,12 +1,15 @@
 // src/app.ts
 import { AlertAdaptation, DropdownAdaptation, FavouritesAdaptation, TabAdaptation, TableAdaptation } from './adaptations';
-import { CodeMirror, InputWithOther, MultiFileUpload, MultiSelect, Overlay, QuillEditor } from './components';
+import { Autocomplete, Toast as CmfiveToast, CodeMirror, InputWithOther, MultiFileUpload, Overlay, QuillEditor, Tags, TabbedPagination } from './components';
 
-import { Modal, Toast, Tooltip } from 'bootstrap';
+import { Modal, Tooltip } from 'bootstrap';
+import { Sortable } from './components/Sortable';
 
-type window = Window & typeof globalThis & { cmfiveEventBus: Comment, cmfive: { toast: typeof Toast } };
+import '../scss/app.scss';
 
-class Cmfive {
+type window = Window & typeof globalThis & { cmfiveEventBus: Comment, cmfive: { toast: typeof CmfiveToast } };
+
+export class Cmfive {
     static THEME_KEY = 'theme';
     static currentModal: Modal;
 
@@ -22,6 +25,8 @@ class Cmfive {
                 localStorage.setItem(Cmfive.THEME_KEY, 'default');
             }
         }
+
+		document.querySelector("html").setAttribute("data-bs-theme", localStorage.getItem(Cmfive.THEME_KEY) === "dark" ? "dark" : "light");
 
         document.querySelector('html').classList.remove('theme--default');
         document.querySelector('html').classList.remove('theme--dark');
@@ -103,7 +108,14 @@ class Cmfive {
 			// Unfortunately, various modals however contian script tags we need to execute
 			modalContent.querySelectorAll("script").forEach(x => {
 				eval(x.innerHTML);
-			})
+			});
+
+            // Emit modal load event
+            // @ts-ignore
+            if (window.cmfiveEventBus) {
+                // @ts-ignore
+                window.cmfiveEventBus.dispatchEvent(new CustomEvent('modal-load'));
+            }
     
             // Rebind elements for modal
             Cmfive.ready(modalContent);
@@ -126,19 +138,10 @@ class Cmfive {
      * 
      * @param target Document|Element
      */
-    static ready(target: Document|Element) {
-        if (!window.hasOwnProperty('cmfiveEventBus')) {
-            // @ts-ignore
-            window.cmfiveEventBus = document.createComment('Helper')
-            // @ts-ignore
-            window.cmfiveEventBus.addEventListener('dom-update', (event) => {
-                console.log("DOM EVENT", event); // => detail-data
-                Cmfive.ready(event.detail);
-            });
-        }
-
+    static ready(target: Document|Element) 
+    {
         (window as window).cmfive = {
-            toast: require('./components/Toast').Toast
+            toast: CmfiveToast
         }
 
         // Add offset for breadcrumb if scrollbar is visible
@@ -150,7 +153,7 @@ class Cmfive {
         }
 
         // Set up bootstrap tooltips
-        target.querySelectorAll('[data-bs-toggle="tooltip"]').forEach((tooltip) => {
+        target?.querySelectorAll('[data-bs-toggle="tooltip"]').forEach((tooltip) => {
             return new Tooltip(tooltip)
         })
 
@@ -192,16 +195,19 @@ class Cmfive {
         //     o.addEventListener('click', Overlay.showOverlay);
         // })
 
-        AlertAdaptation.bindCloseEvent();
+        AlertAdaptation.bind(target);
+        CodeMirror.bindCodeMirrorEditor();
         DropdownAdaptation.bindDropdownHover();
         FavouritesAdaptation.bindFavouriteInteractions();
         InputWithOther.bindOtherInteractions();
         MultiFileUpload.bindInteractions();
-        MultiSelect.bindInteractions();
+        Autocomplete.bindInteractions();
+        QuillEditor.bindQuillEditor();
+        Sortable.bindSortableElements();
         TabAdaptation.bindTabInteractions();
         TableAdaptation.bindTableInteractions();
-        QuillEditor.bindQuillEditor();
-        CodeMirror.bindCodeMirrorEditor();
+		Tags.bind();
+        TabbedPagination.bindInteractions();
 
         // Remove all foundation button classes and replace them with bootstrap if they don't exist
         target?.querySelectorAll('.button')?.forEach(b =>  {
@@ -222,6 +228,16 @@ class Cmfive {
             m.addEventListener('click', this.linkClickListener);
         })
     }
+}
+
+if (!window.hasOwnProperty('cmfiveEventBus')) {
+    // @ts-ignore
+    window.cmfiveEventBus = document.createComment('Helper')
+    // @ts-ignore
+    window.cmfiveEventBus.addEventListener('dom-update', (event) => {
+        console.log("DOM EVENT", event); // => detail-data
+        Cmfive.ready(event.detail);
+    });
 }
 
 window.addEventListener('load', () => Cmfive.ready(document));

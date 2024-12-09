@@ -5,19 +5,31 @@ const Quill = quill.default;
 
 export class QuillEditor {
     private static quillTarget = '.quill-editor';
+	private static quillExistsTarget = 'ql-container';
 
     static bindQuillEditor()
     {
-        const quillEditors = document.querySelectorAll(QuillEditor.quillTarget);
+        const quillEditors: NodeListOf<HTMLElement> = document.querySelectorAll(QuillEditor.quillTarget);
 
         if (quillEditors) {
             quillEditors.forEach((q) => {
-                const options = q.getAttribute('data-quill-options');
-                let editor = new Quill('#' + q.id, JSON.parse(options));
+				if (q.classList.contains(QuillEditor.quillExistsTarget)) return;
 
-                const textarea = document.getElementById(q.id.substring(6));
-                q.closest('form').removeEventListener('submit', () => textarea.innerText = q.querySelector('.ql-editor').innerHTML);
-                q.closest('form').addEventListener('submit', () => textarea.innerText = q.querySelector('.ql-editor').innerHTML);
+                const options = q.getAttribute('data-quill-options');
+                let editor = new Quill(q, JSON.parse(options));
+
+				const form = q.closest("form");
+
+                const textarea = form.querySelector(`#${q.id.replace("quill_", "")}`) as HTMLTextAreaElement;
+
+				// can't do it on form submit,
+				// because some pages override the form submit handler,
+				// and that may be executed first
+				editor.on("text-change", (curr, prev, source) => {
+					if (source !== "user") return;
+
+					textarea.value = editor.getSemanticHTML();
+				});
             })
         }
     }

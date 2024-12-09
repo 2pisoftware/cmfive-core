@@ -1,0 +1,8 @@
+div.alert {
+    @each $key, $value in $colours {
+        &.alert-#{$key} {
+            background-color: map-get($value, "background-color");
+            color: map-get($value, "color");
+        }
+    }
+}

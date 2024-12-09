@@ -1,9 +1,10 @@
 <?php
 
 //load form elements for required feilds
+use Html\Cmfive\QuillEditor;
+use Html\Form\Html5Autocomplete;
 use \Html\Form\InputField as InputField;
 use \Html\Form\Select as Select;
-use \Html\Form\Autocomplete as Autocomplete;
 
 function edit_GET($w)
 {
@@ -44,7 +45,7 @@ function edit_GET($w)
     // Try and prefetch the taskgroup by given id
     $taskgroup = null;
     $taskgroup_id = Request::int("gid");
-    $assigned = 0;
+    // $assigned = 0;
     if (!empty($taskgroup_id) || !empty($task->task_group_id)) {
         $taskgroup = TaskService::getInstance($w)->getTaskGroup(!empty($task->task_group_id) ? $task->task_group_id : $taskgroup_id);
 
@@ -54,7 +55,7 @@ function edit_GET($w)
             $members = TaskService::getInstance($w)->getMembersBeAssigned($taskgroup->id);
             sort($members);
             array_unshift($members, ["Unassigned", "0"]);
-            $assigned = (empty($task->assignee_id)) ? "unassigned" : $task->assignee_id;
+            // $assigned = (empty($task->assignee_id)) ? "unassigned" : $task->assignee_id;
         }
     }
 
@@ -62,46 +63,83 @@ function edit_GET($w)
     $form = [
         (!empty($p["id"]) ? 'Edit task' : "Create a new task") => [
             [
-                (new Autocomplete())
-                    ->setLabel("Task Group")
-                    ->setName(!empty($p["id"]) ? "task_group_id_text" : "task_group_id")
-                    ->setReadOnly(!empty($p["id"]) ? 'true' : null)
-                    ->setOptions($taskgroups)
-                    ->setValue(!empty($taskgroup) ? $taskgroup->id : null)
-                    ->setTitle(!empty($taskgroup) ? $taskgroup->getSelectOptionTitle() : null)
-                    ->setRequired('required'),
+                new Html5Autocomplete([
+                    "label" => "Task Group",
+                    "id|name" => "task_group",
+                    "required" => "required",
+                    "value" => !empty($taskgroup) ? $taskgroup->id : null,
+                    "disabled" => !empty($p["id"]) ? "true" : null,
+                    "options" => $taskgroups,
+                    "maxItems" => 1
+                ]),
+
                 (new Select([
-                    "id|name" => "task_type"
-                ]))->setLabel("Task Type")
-                    ->setDisabled(!empty($p["id"]) ? "true" : null)
-                    ->setOptions($tasktypes)
-                    ->setSelectedOption(!empty($p["id"]) ? $task->task_type : (is_array($tasktypes) && count($tasktypes) === 1 ? $tasktypes[0] : null))
-                    ->setRequired('required')
+                    "id|name" => "task_type",
+                    "label" => "Task Type",
+                    "disabled" => !empty($p["id"]) ? "true" : null,
+                    "options" => $tasktypes,
+                    "required" => "required",
+                ]))->setSelectedOption(!empty($p["id"]) ? $task->task_type : (is_array($tasktypes) && count($tasktypes) === 1 ? $tasktypes[0] : null))
             ],
             [
-                ["Task Title", "text", "title", $task->title],
-                ["Status", "select", "status", $task->status, $task->getTaskGroupStatus()],
+                (new InputField([
+                    "label" => "Task Title",
+                    "id|name" => "title",
+                    "value" => $task->title,
+                    "required" => "required"
+                ])),
+
+                (new Select([
+                    "label" => "Status",
+                    "id|name" => "status",
+                    "value" => $task->status,
+                    "options" => $task?->getTaskGroupStatus(),
+                    "required" => "required"
+                ]))->setSelectedOption($task->status),
             ],
             [
-                ["Priority", "select", "priority", $task->priority, $priority],
-                ["Date Due", "date", "dt_due", formatDate($task->dt_due)],
+                (new Select([
+                    "label" => "Priority",
+                    "id|name" => "priority",
+                    "value" => $task->priority,
+                    "options" => $priority,
+                ]))->setSelectedOption($task->priority),
+
+                (new InputField\Date([
+                    "label" => "Date Due",
+                    "id|name" => "dt_due",
+                    "value" => formatDate($task->dt_due, "Y-m-d")
+                ])),
+
                 (new Select([
                     "id|name" => "assignee_id",
                     "label" => "Assigned To",
-                    "style" => "width: 100%"
-                ]))->setOptions($members, true)
-                   ->setDisabled(!empty($taskgroup) && $taskgroup->getCanIAssign() ? null : "disabled")
-                   ->setRequired("required")
-                   ->setSelectedOption($task->assignee_id),
+                    "options" => $members,
+                    "disabled" => !empty($taskgroup) && $taskgroup->getCanIAssign() ? null : "disabled",
+                    "required" => "required",
+                    "value" => $task->assignee_id,
+                ]))->setSelectedOption($task->assignee_id),
             ],
             [
-                ["Estimated hours", "text", "estimate_hours", $task->estimate_hours],
-                ["Effort", "text", "effort", $task->effort],
+                new InputField([
+                    "id|name" => "estimate_hours",
+                    "label" => "Estimated Hours",
+                    "value" => $task->estimate_hours,
+                ]),
+                new InputField([
+                    "id|name" => "effort",
+                    "label" => "Effort",
+                    "value" => $task->effort,
+                ]),
             ],
             [
-                ["Description", "textarea", "description", $task->description]
+                new QuillEditor([
+                    "label" => "Description",
+                    "id|name" => "description",
+                    "value" => $task->description,
+                ])
             ],
-                !empty($p['id']) ? [["Task Group ID", "hidden", "task_group_id", $task->task_group_id]] : null
+            !empty($p['id']) ? [["Task Group ID", "hidden", "task_group_id", $task->task_group_id]] : null
         ]
     ];
 
@@ -117,19 +155,22 @@ function edit_GET($w)
     }
 
     $w->ctx("task", $task);
-    $w->ctx("form", Html::multiColForm($form, $w->localUrl("/task/edit/{$task->id}"), "POST", "Save", "edit_form", "prompt", null, "_self", true, Task::$_validation));
+    $w->ctx("form", HtmlBootstrap5::multiColForm($form, $w->localUrl("/task/edit/{$task->id}"), "POST", "Save", "edit_form", "prompt", null, "_self", true, Task::$_validation));
 
     $createdDate = '';
     if (!empty($task->id)) {
         $creator = $task->_modifiable->getCreator();
-        $createdDate =  formatDate($task->_modifiable->getCreatedDate()) . (!empty($creator) ? ' by <strong>' . @$creator->getFullName() . '</strong>' : '');
+        $createdDate = formatDate($task->_modifiable->getCreatedDate()) . (!empty($creator) ? ' by <strong>' . @$creator->getFullName() . '</strong>' : '');
     }
     $w->ctx('createdDate', $createdDate);
+
+    $w->ctx("timelog_count", TimelogService::getInstance($w)->countTimelogsForObject($task));
+    $w->ctx("internal_comments_count", CommentService::getInstance($w)->countCommentsForTable("task", $task->id, true));
+    $w->ctx("external_comments_count", CommentService::getInstance($w)->countCommentsForTable("task", $task->id, false, true));
 
     // Subscribers
     if (!empty($task->id)) {
         $task_subscribers = $task->getSubscribers();
-
 
         $w->ctx('subscribers', $task_subscribers);
     }
@@ -198,39 +239,34 @@ function edit_GET($w)
     foreach ($banners ?? [] as $banner) {
         if (isset($banner["message"])) {
             $taskbanners .= "<div data-alert class='alert-box "
-            .($banner["style"] ?? "secondary")."'>"
-            .$banner["message"]
-            .((isset($banner["dismiss"])&&$banner["dismiss"])?"<a href='#' class='close'>&times;</a>":"")
-            ."</div>";
+                . ($banner["style"] ?? "secondary") . "'>"
+                . $banner["message"]
+                . ((isset($banner["dismiss"]) && $banner["dismiss"]) ? "<a href='#' class='close'>&times;</a>" : "")
+                . "</div>";
         }
     }
     $w->ctx("taskbanners", $taskbanners);
-
 }
 
 function edit_POST($w)
 {
-    $p = $w->pathMatch("id");
-    $task = (!empty($p["id"]) ? TaskService::getInstance($w)->getTask($p["id"]) : new Task($w));
-    $taskdata = null;
-    if (!empty($p["id"])) {
-        $taskdata = TaskService::getInstance($w)->getTaskData($p['id']);
-    }
+    $w->setLayout(null);
+    list($task_id) = $w->pathMatch("id");
+    $task = (!empty($task_id) ? TaskService::getInstance($w)->getTask($task_id) : new Task($w));
+    $edit_array = Request::array('edit');
+    $task->fill($edit_array);
 
-    $task->fill($_POST['edit']);
-
-    $task->assignee_id = intval($_POST['edit']['assignee_id']);
+    $task->assignee_id = intval($edit_array['assignee_id']);
 
     if (empty($task->dt_due)) {
         $task->dt_due = TaskService::getInstance($w)->getNextMonth();
     }
     $task->estimate_hours = !empty($task->estimate_hours) ? $task->estimate_hours : null;
-    $task->effort = empty($task->effort) ? null : floatval($task->effort);
-    $task->rate = empty($task->rate) ? null : $task->rate;
+    $task->effort = !empty($task->effort) ? floatval($task->effort) : null;
+    $task->rate = !empty($task->rate) ? $task->rate : null;
     $task->insertOrUpdate(true);
 
     // Tell the template what the task id is (this post action is being called via ajax)
-    $w->setLayout(null);
     $w->out($task->id);
 
     // Get existing task_data objects for this task and update them
@@ -273,7 +309,7 @@ function edit_POST($w)
         }
     }
 
-    if (empty($p['id']) && Config::get('task.ical.send') == true) {
+    if (empty($task_id) && Config::get('task.ical.send') == true) {
         $data = $task->getIcal();
         $user = AuthService::getInstance($w)->getUser($task->assignee_id);
         $contact = !empty($user->id) ? $user->getContact() : AuthService::getInstance($w)->user()->getContact();
@@ -281,7 +317,7 @@ function edit_POST($w)
         $messageObject = new Swift_Message("Invite to: " . $task->title);
         $messageObject->setTo([$contact->email]);
         $messageObject->setReplyTo([AuthService::getInstance($w)->user()->getContact()->email])
-        ->setFrom(Config::get("main.company_support_email"));
+            ->setFrom(Config::get("main.company_support_email"));
 
         $messageObject->addPart("Your iCal is attached<br/><br/><a href='http://www.google.com/calendar/event?action=TEMPLATE&text={$task->title}" .
             "&dates=" . date("Ymd", strtotime(str_replace('/', '-', $task->dt_due))) . "/" . date("Ymd", strtotime(str_replace('/', '-', $task->dt_due))) .

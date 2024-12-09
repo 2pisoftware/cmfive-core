@@ -41,4 +41,5 @@ function listattachments(\Web $w, $params)
     $w->ctx("list_items", $list_items);
     $w->ctx("redirect", $redirect);
     $w->ctx("object", $object);
+    $w->ctx("hide_attach_btn", $params["hide_attach_btn"] ?? false);
 }

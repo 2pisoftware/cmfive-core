@@ -2,8 +2,7 @@
 
 function deletecomment_ALL(Web &$w)
 {
-    $p = $w->pathMatch("id");
-    $comment_id = intval($p["id"]);
+    list($comment_id) = $w->pathMatch("id");
 
     if (!empty($comment_id)) {
         $comment = CommentService::getInstance($w)->getComment($comment_id);

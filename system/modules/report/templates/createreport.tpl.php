@@ -1,3 +1,5 @@
+<?php use Html\Form\Html5Autocomplete; ?>
+
 <div class="tabs">
     <div class="tab-head">
         <a href="#tab-1">Create Report</a>
@@ -10,23 +12,58 @@
                 <?php echo $createreport; ?>
             </div>
         </div>
-        <div id="tab-2" style="display: none;">
+        <div id="tab-2">
             <div class="clearfix">
-                <?php echo $dbform; ?>
+                <div>
+                    <h3>Special Parameters</h3>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Key</th>
+                                <th>Value</th>
+                            </tr>
+                        </thead>
+                        <tbody class="table-group-divider">
+                            <tr>
+                                <td>{{current_user_id}}</td>
+                                <td>User</td>
+                            </tr>
+                            <tr>
+                                <td>{{roles}}</td>
+                                <td>Roles</td>
+                            </tr>
+                            <tr>
+                                <td>{{webroot}}</td>
+                                <td>Site URL</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div>
+                    <h3>View Database</h3>
+                    <label>Tables</label>
+                    <?php echo new Html5Autocomplete([
+                        "id|name" => "dbtables",
+                        "class" => "form-select",
+                        "options" => ReportService::getInstance($w)->getAllDBTables(),
+                        "maxItems" => 1,
+                    ]); ?>
+
+                    <div id="dbfields"></div>
+                </div>
             </div>
         </div>
-   </div>
+    </div>
 </div>
 
 <script>
-    $.ajaxSetup ({
-        cache: false
-    });
+    const report_url = "/report/taskAjaxSelectbyTable?id=";
+    document.getElementById("dbtables").addEventListener("change", async (e) => {
+        const value = e.target.value;
+        const res = await fetch(`${report_url}${value}`);
+        const body = await res.text();
 
-    var report_url = "/report/taskAjaxSelectbyTable?id="; 
-    $("select[id='dbtables']").change(function(event) {
-        $.getJSON(report_url + $(this).val(), function(result) {
-            $('#dbfields').closest(".small-12").html("<span id='dbfields'>" + result + "</span>");
-        });
+        document.getElementById("dbfields").innerHTML = body.replaceAll("\"", "").replaceAll("\\", "");
     });
 </script>

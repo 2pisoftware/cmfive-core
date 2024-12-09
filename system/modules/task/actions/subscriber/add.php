@@ -1,5 +1,6 @@
 <?php
 
+use Html\Form\Html5Autocomplete;
 use \Html\Form\InputField as InputField;
 
 function add_GET(Web $w)
@@ -22,16 +23,22 @@ function add_GET(Web $w)
         return strcasecmp($a->getFullName(), $b->getFullName());
     });
 
-    $w->ctx('form', Html::multiColForm([
+    $w->ctx('form', HtmlBootstrap5::multiColForm([
         'Add an existing contact' => [
-            [[(new \Html\Form\Autocomplete())->setLabel('Contact')
-                    ->setId('contact')
-                    ->setName('contact')
-                    ->setOptions($contacts, function ($contact) {
+            [[
+                new Html5Autocomplete([
+                    "label" => "Contact",
+                    "id|name" => "contact",
+                    "placeholder" => "Search",
+                    "options" => array_map(function ($contact) {
                         $user = $contact->getUser();
-                        return $contact->getFullName() . ' - ' . $contact->email . (empty($user->id) || $user->is_external == 1 ? ' (external)' : '');
-                    }),
-            ]],
+                        return [
+                            "text" => $contact->getFullName() . ' - ' . $contact->email . (empty($user->id) || $user->is_external == 1 ? ' (external)' : ''),
+                            "value" => $contact->id
+                        ];
+                    }, $contacts),
+                ])
+            ]]
         ],
         'Or add an external user' => [
             [
@@ -56,7 +63,7 @@ function add_GET(Web $w)
                 ])),
             ],
         ],
-    ], '/task-subscriber/add/' . $task_id, 'POST', 'Save', 'task-subscriber__add'));
+    ], '/task-subscriber/add/' . $task_id, 'POST', 'Save', 'task-subscriber__add', null, null, "_self", true, null, false));
 }
 
 function add_POST(Web $w)

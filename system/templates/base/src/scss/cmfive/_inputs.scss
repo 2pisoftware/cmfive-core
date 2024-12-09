@@ -1,0 +1,32 @@
+input {
+    @include theme((background-color: 'white-black'));
+}
+
+select {
+    @include theme((background-color: 'white-black'));
+}
+
+// tom-select styling
+.ts-control,
+.ts-control input,
+.ts-dropdown .optgroup-header,
+.ts-wrapper.single.input-active .ts-control,
+.ts-dropdown {
+	@include theme((background-color: 'white-black'));
+	color: var(--bs-body-color) !important;
+}
+
+.ts-dropdown .active {
+	@include theme((background-color: 'light-grey'));
+	color: var(--bs-body-color) !important;
+}
+
+.ts-wrapper.multi .ts-control > div {
+	@include theme((background-color: "light-grey"));
+	color: var(--bs-body-color) !important;
+}
+
+.form-control {
+	@include theme((background-color: 'white-black'));
+	border: 1px solid #ccc;
+}

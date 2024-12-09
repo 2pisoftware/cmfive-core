@@ -1,20 +1,23 @@
 
-import { basicSetup, EditorView } from 'codemirror'
+import { basicSetup, EditorView } from 'codemirror';
 // import {EditorState} from "@codemirror/state"
-import { syntaxHighlighting, defaultHighlightStyle } from "@codemirror/language"
-import { html } from "@codemirror/lang-html"
-
+import { html } from "@codemirror/lang-html";
+import { defaultHighlightStyle, syntaxHighlighting } from "@codemirror/language";
 
 export class CodeMirror {
     private static SELECT_TARGET = '.code-mirror-target';
     private static views: EditorView[];
     
     static bindCodeMirrorEditor() {
-
+        console.log("bind cm call")
         const cmEditors = document.querySelectorAll(CodeMirror.SELECT_TARGET);
 
         if (cmEditors) {
             cmEditors.forEach((cm) => {
+                if (cm.querySelector(".cm-editor")) {
+                    return; //already bound
+                }
+
                 const content = cm.getAttribute('cm-value');
                 
                 const editorView = new EditorView({

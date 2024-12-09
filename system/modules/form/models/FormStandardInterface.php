@@ -21,7 +21,7 @@ class FormStandardInterface extends FormFieldInterface
     ];
 
     /**
-     * Map FormField type to Html::multiColForm() type
+     * Map FormField type to HtmlBootstrap5::multiColForm() type
      *
      * @return string
      */
@@ -35,8 +35,9 @@ class FormStandardInterface extends FormFieldInterface
             case "date":
                 return "date";
             case "datetime":
-            case "time":
                 return "datetime";
+            case "time":
+                return "time";
             case "autocomplete":
                 return "autocomplete";
             case "select":
@@ -52,11 +53,10 @@ class FormStandardInterface extends FormFieldInterface
             default:
                 return "text";
         }
-        return null;
     }
 
     /**
-     * Map Form metadata to an array of extra parameters to Html::multiColForm()
+     * Map Form metadata to an array of extra parameters to HtmlBootstrap5::multiColForm()
      *
      * @return []
      */

@@ -1,7 +1,7 @@
 import { test } from "@playwright/test";
-import { TimelogHelper } from "@utils/timelog";
+import { CmfiveHelper, GLOBAL_TIMEOUT } from "@utils/cmfive";
 import { TaskHelper } from "@utils/task";
-import { GLOBAL_TIMEOUT, CmfiveHelper } from "@utils/cmfive";
+import { TimelogHelper } from "@utils/timelog";
 import { DateTime } from "luxon";
 
 test.describe.configure({mode: 'parallel'});
@@ -18,11 +18,11 @@ test("You can create a Timelog using Timer" , async ({page, isMobile}) => {
     await TaskHelper.setDefaultAssignee(page, isMobile, taskgroup, taskgroupID, "admin admin");
 
     const task = CmfiveHelper.randomID("task_");
-    const taskID = await TaskHelper.createTask(page, isMobile, task, taskgroup, "Software Development");
+    const taskID = await TaskHelper.createTask(page, isMobile, task, taskgroup, "Programming Task");
     
     const timelog = CmfiveHelper.randomID("timelog_");
-    const start_time = new DateTime('now').minus({hours: 1}).toFormat("HH:mm");
-    await TimelogHelper.createTimelogFromTimer(page, isMobile, timelog, task, taskID, start_time);
+    await TimelogHelper.createTimelogFromTimer(page, isMobile, timelog, task, taskID);
+    
     await TimelogHelper.deleteTimelog(page, isMobile, timelog, task, taskID);
     await TaskHelper.deleteTask(page, isMobile, task, taskID);
     await TaskHelper.deleteTaskGroup(page, isMobile, taskgroup, taskgroupID);
@@ -40,7 +40,7 @@ test("You can create a Timelog using Add Timelog" , async ({page, isMobile}) => 
     await TaskHelper.setDefaultAssignee(page, isMobile, taskgroup, taskgroupID, "admin admin");
 
     const task = CmfiveHelper.randomID("task_");
-    const taskID = await TaskHelper.createTask(page, isMobile, task, taskgroup, "Software Development");
+    const taskID = await TaskHelper.createTask(page, isMobile, task, taskgroup, "Programming Task");
 
     const timelog = CmfiveHelper.randomID("timelog_");
     await TimelogHelper.createTimelog(
@@ -49,7 +49,7 @@ test("You can create a Timelog using Add Timelog" , async ({page, isMobile}) => 
         timelog,
         task,
         taskID,
-        DateTime.fromFormat("1/2/2021", "d/M/yyyy"),
+        DateTime.fromFormat("1/1/2021", "d/M/yyyy"),
         "10:00",
         "11:00",
     );
