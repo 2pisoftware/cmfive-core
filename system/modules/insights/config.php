@@ -1,6 +1,7 @@
 <?php
-Config::set('insights', array(
+
+Config::set('insights', [
     'active' => true,
     'path' => 'system/modules',
     'topmenu' => true,
-));
+]);

@@ -2,8 +2,6 @@
 
 /**
  * This service class aids in the registration and usage of timelog objects
- *
- * @author Adam Buckley <adam@2pisoftware.com>
  */
 class TimelogService extends DbService
 {
@@ -14,7 +12,7 @@ class TimelogService extends DbService
      *
      * @param User $user
      * @param boolean $includeDeleted
-     * @return Timelog
+     * @return Timelog[]
      */
     public function getTimelogsForUser(User $user = null, $includeDeleted = false, $page = 1, $page_size = 20)
     {
@@ -35,7 +33,7 @@ class TimelogService extends DbService
      *
      * @param User $user
      * @param boolean $includeDeleted
-     * @return Timelog
+     * @return Timelog[]
      */
     public function getTimelogsForUserAndClass(User $user, $className, $includeDeleted = false, $dt_start = null, $dt_end = null, $page = null, $page_size = null)
     {
@@ -80,6 +78,36 @@ class TimelogService extends DbService
     }
 
     /**
+     * Returns a list of time types used in timelogs by a given user
+     *
+     * @param int|string $user_id
+     * @param ?string $class
+     * @return string[]
+     */
+    public function getTimeTypesLoggedByUser(int|string $user_id, ?string $class = null): array
+    {
+        $query = $this->_db->get("timelog")->select()
+            ->select("DISTINCT(time_type) as time_type")
+            ->where("user_id", $user_id)
+            ->where("is_deleted", 0)
+            ->where("time_type IS NOT NULL");
+        
+        if (!empty($class)) {
+            $query->where("object_class", $class);
+        }
+
+        $time_types = $query->fetchAll();
+
+        if (empty($time_types)) {
+            return [];
+        }
+
+        return array_map(function ($time_type) {
+            return $time_type['time_type'];
+        }, $time_types);
+    }
+
+    /**
      * Returns number of timelogs for a given object
      *
      * @param DbObject $object
@@ -115,7 +143,7 @@ class TimelogService extends DbService
     /**
      * Returns all non deleted timelogs
      *
-     * @return Array<Timelog>
+     * @return Timelog[]
      */
     public function getTimelogs()
     {
@@ -173,12 +201,12 @@ class TimelogService extends DbService
     public function shouldShowTimer()
     {
         // Check if tracking object set or existing timelog is running
-        return ((!empty(AuthService::getInstance($this->w)->user())) && AuthService::getInstance($this->w)->user()->hasRole("timelog_user") && ($this->hasTrackingObject() || $this->hasActiveLog()));
+        return (!empty(AuthService::getInstance($this->w)->user())) && AuthService::getInstance($this->w)->user()->hasRole("timelog_user") && ($this->hasTrackingObject() || $this->hasActiveLog());
     }
 
     /**
      * returns a list of objects to which you can attach timelogs
-     * @return type array
+     * @return array
      */
     public function getLoggableObjects()
     {
