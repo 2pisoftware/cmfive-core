@@ -122,14 +122,14 @@ function tasklist_ALL(Web $w)
         new Select([
             "name|id" => "task__assignee-id",
             "label" => "Assignee",
-            "value" => !empty($assignee_id) ? $assignee_id : null,
+            "selected_option" => !empty($assignee_id) ? $assignee_id : null,
             "options" => $filter_assignees,
         ]),
 
         new Select([
             "name|id" => "task__creator-id",
             "label" => "Creator",
-            "value" => !empty($creator_id) ? $creator_id : null,
+            "selected_option" => !empty($creator_id) ? $creator_id : null,
             "options" => $taskgroup_data["members"],
         ]),
 
@@ -145,21 +145,21 @@ function tasklist_ALL(Web $w)
         new Select([
             "name|id" => "task__type",
             "label" => "Task Type",
-            "value" => !empty($task_type) ? $task_type : null,
+            "selected_option" => !empty($task_type) ? $task_type : null,
             "options" => $taskgroup_data["types"],
         ]),
 
         new Select([
             "name|id" => "task__priority",
             "label" => "Task Priority",
-            "value" => !empty($filter_urgent) ? "Urgent" : (!empty($task_priority) ? $task_priority : null),
+            "selected_option" => !empty($filter_urgent) ? "Urgent" : (!empty($task_priority) ? $task_priority : null),
             "options" => $taskgroup_data["priorities"],
         ]),
 
         new Select([
             "name|id" => "task__status",
             "label" => "Task Status",
-            "value" => !empty($task_status) ? $task_status : null,
+            "selected_option" => !empty($task_status) ? $task_status : null,
             "options" => $taskgroup_data["statuses"],
         ]),
 
@@ -172,7 +172,7 @@ function tasklist_ALL(Web $w)
                 ["label" => "Yes", "value" => '1'],
                 ["label" => "Both", "value" => '']
             ],
-            "value" => $is_closed,
+            "selected_option" => $is_closed,
         ]))
     ];
 

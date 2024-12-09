@@ -1,6 +1,6 @@
 <h1>
     Edit -
-    <?php echo $user["account"]["firstname"] . " " . $user_details["account"]["lastname"] ?>
+    <?php echo $user["account"]["firstname"] . " " . $user["account"]["lastname"] ?>
 </h1>
 
 <div class="tabs">
@@ -19,7 +19,7 @@
             <user-security-component
                 user_id="<?php echo $user["id"]; ?>"
                 locked="<?php echo $user["security"]["is_locked"]; ?>"
-                mfa_enabled="<?php echo $user["security"]["mfa_enabled"]; ?>"
+                mfa_enabled="<?php echo $user["security"]["is_mfa_enabled"]; ?>"
                 pw_min_length="<?php echo Config::get('auth.login.password.min_length', 8); ?>">
             >
             </user-security-component>

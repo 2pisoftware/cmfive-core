@@ -4,7 +4,7 @@ import { CmfiveHelper, GLOBAL_TIMEOUT } from "@utils/cmfive";
 
 // test.describe.configure({mode: 'parallel'});
 
-test("Test that you can create a Web Channel using the Channels module", async ({ page, isMobile }) => {
+test("that you can create a Web Channel using the Channels module", async ({ page, isMobile }) => {
     test.setTimeout(GLOBAL_TIMEOUT);
     CmfiveHelper.acceptDialog(page);
 
@@ -35,13 +35,13 @@ test("Test that you can create a Web Channel using the Channels module", async (
 
     // check that you can delete a processor
     await ChannelsHelper.deleteProcessor(page, isMobile, editedChannel["Name"]+"_processor");
-    await expect(page.getByText(editedChannel["Name"]+"_processor")).not.toBeVisible();
+    await expect(page.getByText(editedChannel["Name"]+"_processor")).toBeHidden();
 
     // check that you can delete a web channel
     await ChannelsHelper.deleteChannel(page, isMobile, editedChannel);
 });
 
-test("Test that you can create an Email Channel using the Channels module", async ({ page, isMobile }) => {
+test("that you can create an Email Channel using the Channels module", async ({ page, isMobile }) => {
     test.setTimeout(GLOBAL_TIMEOUT);
     CmfiveHelper.acceptDialog(page);
 

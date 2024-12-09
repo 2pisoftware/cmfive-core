@@ -12,7 +12,7 @@ function view_GET(Web $w) {
     $owner = RestrictableService::getInstance($w)->getOwner($attachment);
 
     // how are you *meant* to get a user?
-    $creator = DbService::getInstance($w)->getObject("User", $attachment->creator_id);
+    $creator = AuthService::getInstance($w)->getUser($attachment->creator_id);
 
     $w->ctx("attachment", $attachment);
     $w->ctx("owner", $owner);

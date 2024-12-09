@@ -1355,9 +1355,9 @@ class Html
                     $buffer .= Html::checkbox($name, $value, $value, $class);
                     break;
                 case "radio":
-                    $group = !empty($field[4]) ? $field[4] : null;
-                    $defaultValue = !empty($field[5]) ? $field[5] : null;
-                    $class = !empty($field[6]) ? $field[6] : null;
+                    $group = !empty($row[4]) ? $row[4] : null;
+                    $defaultValue = !empty($row[5]) ? $row[5] : null;
+                    $class = !empty($row[6]) ? $row[6] : null;
                     $buffer .= Html::radio($name, $group, $value, $defaultValue, $class) . "&nbsp;" . htmlentities($title);
                     break;
                 case "hidden":

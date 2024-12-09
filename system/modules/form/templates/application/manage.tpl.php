@@ -23,8 +23,8 @@
     </div>
 </div>
 
-<div class="row-fluid">
-    <div class="small-12 medium-6 columns pt-4">
+<div class="row">
+    <div class="col-sm-12 col-md-6 pt-4">
         <div class="panel clearfix">
             <div class="row g-0 clearfix section-header">
                 <h4 class="col">
@@ -34,7 +34,7 @@
                 </h4>
             </div>
             <div class="row">
-                <?php if(empty($members)) : ?>
+                <?php if (empty($members)) : ?>
                     <p>No members found</p>
                 <?php else : ?>
                     <?php echo $members; ?>
@@ -42,7 +42,7 @@
             </div>
         </div>
     </div>
-    <div class="small-12 medium-6 columns pt-4">
+    <div class="col-sm-12 col-md-6 pt-4">
         <div class="panel clearfix">
             <div class="row g-0 clearfix section-header">
                 <h4 class="col">
@@ -52,7 +52,7 @@
                 </h4>
             </div>
             <div class="row">
-                <?php if(empty($attached_forms)) : ?>
+                <?php if (empty($attached_forms)) : ?>
                     <p>No forms found</p>
                 <?php else : ?>
                     <?php echo $attached_forms; ?>

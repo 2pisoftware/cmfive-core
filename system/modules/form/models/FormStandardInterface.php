@@ -35,8 +35,9 @@ class FormStandardInterface extends FormFieldInterface
             case "date":
                 return "date";
             case "datetime":
-            case "time":
                 return "datetime";
+            case "time":
+                return "time";
             case "autocomplete":
                 return "autocomplete";
             case "select":
@@ -52,7 +53,6 @@ class FormStandardInterface extends FormFieldInterface
             default:
                 return "text";
         }
-        return null;
     }
 
     /**

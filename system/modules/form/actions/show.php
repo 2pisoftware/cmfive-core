@@ -6,11 +6,8 @@ function show_GET(Web $w)
     if (empty($form_id)) {
         $w->error("Form not found", "/form");
     }
-
     
     CmfiveScriptComponentRegister::registerComponent("editField", new CmfiveScriptComponent("/system/templates/base/dist/editField.js", ["weight" => "200", "type" => "module"]));
-    // VueComponentRegister::registerComponent('metadata-subform', new VueComponent('metadata-subform', '/system/modules/form/assets/js/metadata-subform.vue.js'));
-    // VueComponentRegister::registerComponent('metadata-select', new VueComponent('metadata-select', '/system/modules/form/assets/js/metadata-select.vue.js', '/system/modules/form/assets/js/metadata-select.vue.css'));
 
     $_form_object = FormService::getInstance($w)->getForm($form_id);
 
@@ -32,9 +29,26 @@ function show_GET(Web $w)
                 $event->module . '.' . $event->class,
                 // add settings
                 str_replace(',', ',<br>', $event->settings),
-                HtmlBootstrap5::box('/form-event/edit/' . $event->id . '?form_id=' . $_form_object->id, 'Edit', true) .
-                    HtmlBootstrap5::b('/form-event/delete/' . $event->id, 'Delete', 'Are you sure you want to delete this event?', null, false, "alert") .
-                    HtmlBootstrap5::box('/form-event/settings/' . $event->id . '?form_id=' . $_form_object->id, 'Edit Settings', true)
+                HtmlBootstrap5::buttonGroup(
+                    HtmlBootstrap5::box(
+                        href: '/form-event/edit/' . $event->id . '?form_id=' . $_form_object->id,
+                        title: 'Edit',
+                        class: 'btn btn-sm btn-secondary',
+                        button: true,
+                    ) .
+                    HtmlBootstrap5::b(
+                        href: '/form-event/delete/' . $event->id,
+                        title: 'Delete',
+                        confirm: 'Are you sure you want to delete this event?',
+                        class: 'btn btn-sm btn-danger',
+                    ) .
+                    HtmlBootstrap5::box(
+                        href: '/form-event/settings/' . $event->id . '?form_id=' . $_form_object->id,
+                        title: 'Edit Settings',
+                        class: 'btn btn-sm btn-info',
+                        button: true,
+                    )
+                )
             ];
         }
         $w->ctx('event_table', HtmlBootstrap5::table($event_table, null, 'tablesorter', $event_table_headers));

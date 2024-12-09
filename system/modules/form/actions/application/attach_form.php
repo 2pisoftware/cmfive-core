@@ -9,7 +9,7 @@ function attach_form_GET(Web $w)
     list($id) = $w->pathMatch('id');
 
     if (empty($id)) {
-        $w->error("No Application found", '/form-application');
+        $w->out(HtmlBootstrap5::alertBox("No Application found", "alert-warning", false));
         return;
     }
 
@@ -21,14 +21,14 @@ function attach_form_GET(Web $w)
     $application = FormApplicationService::getInstance($w)->getFormApplication($id);
 
     if (empty($application->id)) {
-        $w->error("Application not found", '/form-application');
+        $w->out(HtmlBootstrap5::alertBox("Application not found", "alert-warning", false));
         return;
     }
 
     $available_forms = FormService::getInstance($w)->getForms();
 
     if (empty($available_forms)) {
-        $w->error("No forms to attach", "/form-application/manage/$id");
+        $w->out(HtmlBootstrap5::alertBox("There are no forms to attach", "alert-warning", false));
         return;
     }
 

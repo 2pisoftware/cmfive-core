@@ -40,8 +40,7 @@
 
             <?php
             $tab_headers = $w->callHook('core_template', 'tab_headers', $task);
-            if (!empty($tab_headers))
-            {
+            if (!empty($tab_headers)) {
                 echo implode('', $tab_headers);
             }
             ?>
@@ -51,8 +50,7 @@
     <div class="tab-body">
         <div id="details">
             <?php
-            if (!empty($task->id))
-            {
+            if (!empty($task->id)) {
                 echo FavoriteService::getInstance($w)->getBootstrapButton($task);
 
                 $tasktypeobject = $task->getTaskTypeObject();
@@ -91,8 +89,7 @@
 
                 /** @var TaskGroup */
                 $task_group = TaskService::getInstance($w)->getTaskGroup($task->task_group_id);
-                if (!empty($task_group) && $task_group->getCanICreate())
-                {
+                if (!empty($task_group) && $task_group->getCanICreate()) {
                     echo HtmlBootstrap5::box(
                         "/task-group/moveTaskgroup/" . $task->id,
                         "Move to Taskgroup",
@@ -108,8 +105,7 @@
 
                 // Extra buttons for task
                 $buttons = $w->callHook("task", "extra_buttons", $task);
-                if (!empty($buttons) && is_array($buttons))
-                {
+                if (!empty($buttons) && is_array($buttons)) {
                     echo implode('', $buttons);
                 }
 
@@ -117,7 +113,7 @@
             }
             ?>
 
-            <div class="row">
+            <div class="row mt-2">
                 <div class="small-12 large-9 position-relative">
                     <?php echo $form; ?>
                 </div>
@@ -130,15 +126,10 @@
                                     <p class="fs-4 m-0">Subscribers</p>
                                     <?php
                                     echo HtmlBootstrap5::box(
-                                        '/task-subscriber/add/' . $task->id,
-                                        'Add',
-                                        true,
-                                        false,
-                                        null,
-                                        null,
-                                        'isbox',
-                                        null,
-                                        'bg-secondary'
+                                        href: '/task-subscriber/add/' . $task->id,
+                                        title: 'Add',
+                                        button: true,
+                                        class: 'bg-secondary'
                                     )
                                     ?>
                                 </div>
@@ -146,11 +137,11 @@
 
                             <?php if (!empty($subscribers)) : ?>
                                 <style>
-                                    .subscribers>div {
+                                    .subscribers > div {
                                         border-bottom: 1px solid white;
                                     }
 
-                                    .subscribers>div:last-child {
+                                    .subscribers > div:last-child {
                                         border-bottom: none;
                                     }
                                 </style>
@@ -174,27 +165,21 @@
                                                 );
                                                 ?></td>
                                             </div>
-                                        <?php endif; ?>
-                                    <?php endforeach; ?>
+                                        <?php endif;
+                                    endforeach; ?>
                                 </div>
                             <?php endif; ?>
                         </div>
 
                         <?php
                         $additional_details = $w->callHook("task", "additional_details", $task);
-                        if (!is_null($additional_details) && is_array($additional_details))
-                        {
+                        if (!is_null($additional_details) && is_array($additional_details)) {
                             $additional_details_flattened = [];
-                            foreach ($additional_details as $module_details)
-                            {
-                                if (isset($module_details[0]) && !is_array($module_details[0]))
-                                {
+                            foreach ($additional_details as $module_details) {
+                                if (isset($module_details[0]) && !is_array($module_details[0])) {
                                     $additional_details_flattened[] = $module_details;
-                                }
-                                else
-                                {
-                                    foreach ($module_details as $details)
-                                    {
+                                } else {
+                                    foreach ($module_details as $details) {
                                         $additional_details_flattened[] = $details;
                                     }
                                 }
@@ -216,7 +201,7 @@
                                         </tbody>
                                     </table>
                                 </div>
-                        <?php endif;
+                            <?php endif;
                         }
                         ?>
                     <?php endif; ?>
@@ -263,8 +248,7 @@
 
             <?php
             $tab_content = $w->callHook('core_template', 'tab_content', ['object' => $task, 'redirect_url' => '/task/edit/' . $task->id]);
-            if (!empty($tab_content))
-            {
+            if (!empty($tab_content)) {
                 echo implode('', $tab_content);
             }
             ?>
@@ -273,12 +257,10 @@
 </nav>
 
 <script>
-    const task_id = <?php echo !empty($task->id) ? $task->id : "undefined"; ?>
-
+    const task_id = <?php echo !empty($task->id) ? $task->id : "null"; ?>;
     let initialForm = new FormData(document.getElementById("edit_form"));
 
     document.getElementById("edit_form").addEventListener("change", (e) => {
-
         const indicator = document.querySelector("#edit_form").querySelector(".changed_status")
 
         if (initialForm.get(e.target.name) !== e.target.value) {
@@ -287,7 +269,7 @@
         }
 
         indicator.classList.add("d-none");
-    })
+    });
 
     const makeSelectOptions = (select, value, label) => {
         const elem = document.createElement("option");
@@ -303,6 +285,7 @@
         const task_type = document.getElementById("task_type").value;
         const json = await fetch(`/task/ajaxGetExtraDetails/${task_id}/${task_type}`)
             .then(x => x.json());
+        if (json.length === 0) return;
         document.getElementById("formdetails").innerHTML = json[0];
         document.getElementById("formdetails").style.display = "block";
     }
@@ -383,7 +366,9 @@
         initialForm = new FormData(document.getElementById("edit_form"));
     }
 
-    populateTaskgroupDetails(<?php echo $task->task_group_id ?>);
+    if (task_id == null) {
+        populateTaskgroupDetails(<?php echo $task->task_group_id ?>);
+    }
 
     document.getElementById("task_group").addEventListener("change", async (e) => populateTaskgroupDetails(e.target.value));
 

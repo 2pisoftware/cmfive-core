@@ -9,7 +9,9 @@ const taskGroupName = CmfiveHelper.randomID("taskgroup_");
 
 test.describe.configure({ mode: 'serial' });
 
-test("Test that users can tag objects", async ({ page, isMobile }) => {
+// ignore this rule. it's done in the function calls
+// eslint-disable-next-line playwright/expect-expect
+test("that users can tag objects", async ({ page, isMobile }) => {
     test.setTimeout(GLOBAL_TIMEOUT);
     await CmfiveHelper.login(page, "admin", "admin");
 
@@ -19,12 +21,12 @@ test("Test that users can tag objects", async ({ page, isMobile }) => {
     await TagHelper.createTagOnTask(page, tagNameSingle, taskId);
 });
 
-test("Test that users can tag multiple objects with same tag", async ({ page, isMobile }) => {
+test("that users can tag multiple objects with same tag", async ({ page, isMobile }) => {
 	test.slow();
+    CmfiveHelper.acceptDialog(page);
 
     const tagNameMultiple = CmfiveHelper.randomID("tag_");
 
-    CmfiveHelper.acceptDialog(page);
     const taskGroupName = CmfiveHelper.randomID("taskgroup_");
     const taskName1 = CmfiveHelper.randomID("task_");
     const taskName2 = CmfiveHelper.randomID("task_");
@@ -58,7 +60,7 @@ test("Test that users can tag multiple objects with same tag", async ({ page, is
 
     // Verify that the task tagged with our edited tag shows the new tag name
     await page.goto(HOST + "/task/tasklist?task__assignee-id=unassigned");
-    await page.waitForTimeout(100);
+    await page.waitForLoadState();
     expect(await page.getByText(tagName).count()).toBe(1 * 2);
 
     // Delete the tags

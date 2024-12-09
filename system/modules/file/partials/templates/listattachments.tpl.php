@@ -1,6 +1,6 @@
 <div class="enable_drop_attachments" data-object="<?php echo get_class($object); ?>" data-id="<?php echo $object->id; ?>" style="display:none;"></div>
 <?php
-if (AuthService::getInstance($w)->user()->hasRole("file_upload"))
+if (AuthService::getInstance($w)->user()->hasRole("file_upload") && !$hide_attach_btn)
 {
     echo HtmlBootstrap5::box(
         "/file/new/" . get_class($object) . "/{$object->id}?redirect_url=" . urlencode($redirect),
@@ -17,16 +17,13 @@ if (AuthService::getInstance($w)->user()->hasRole("file_upload"))
 ?>
 
 <?php
-$url = parse_url($_SERVER["REQUEST_URI"]);
 $total = FileService::getInstance($w)->countAttachments($object);
 echo HtmlBootstrap5::pagination(
     $page,
     ceil($total / $page_size),
     $page_size,
     $total,
-    // this is a gross hack that won't work for other pages
-    // I'm sure it'll come back to bite me
-    $url["path"] . "#attachments",
+    $redirect,
     "attachment__" . hash("crc32", get_class($object) . $object->id) . "__page",
 );
 ?>

@@ -18,7 +18,7 @@ test("You can create a Timelog using Timer" , async ({page, isMobile}) => {
     await TaskHelper.setDefaultAssignee(page, isMobile, taskgroup, taskgroupID, "admin admin");
 
     const task = CmfiveHelper.randomID("task_");
-    const taskID = await TaskHelper.createTask(page, isMobile, task, taskgroup, "Software Development");
+    const taskID = await TaskHelper.createTask(page, isMobile, task, taskgroup, "Programming Task");
     
     const timelog = CmfiveHelper.randomID("timelog_");
     await TimelogHelper.createTimelogFromTimer(page, isMobile, timelog, task, taskID);
@@ -40,7 +40,7 @@ test("You can create a Timelog using Add Timelog" , async ({page, isMobile}) => 
     await TaskHelper.setDefaultAssignee(page, isMobile, taskgroup, taskgroupID, "admin admin");
 
     const task = CmfiveHelper.randomID("task_");
-    const taskID = await TaskHelper.createTask(page, isMobile, task, taskgroup, "Software Development");
+    const taskID = await TaskHelper.createTask(page, isMobile, task, taskgroup, "Programming Task");
 
     const timelog = CmfiveHelper.randomID("timelog_");
     await TimelogHelper.createTimelog(

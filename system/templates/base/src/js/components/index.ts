@@ -6,4 +6,4 @@ export { Overlay } from './Overlay';
 export { QuillEditor } from './QuillEditor';
 export { Tags } from './Tags';
 export { Toast } from './Toast';
-// export TestComponent from './TestComponent';
+export { TabbedPagination } from './TabbedPagination';

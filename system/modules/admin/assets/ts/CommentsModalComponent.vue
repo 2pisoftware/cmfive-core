@@ -1,5 +1,6 @@
 <script setup lang="ts">
-    import { defineProps, onMounted, computed, watchEffect, defineModel } from '../../../../templates/base/node_modules/vue';
+	/* @ts-ignore */
+    import { ref, defineProps, onMounted, computed, watchEffect, defineModel } from 'vue';
 	import Quill from "../../../../templates/base/node_modules/quill";
 
 	type Viewer = {
@@ -26,16 +27,17 @@
 		authed_user_id: string,
 	}>();
 
-	const is_restricted = defineModel()
+	const is_restricted = ref(false)
 	is_restricted.value = props.is_restricted === "true";
 
-	const viewers = computed(() => JSON.parse(props.viewers) as  Viewer[]);
+	const viewers = computed(() => JSON.parse(props.viewers) as Viewer[]);
 
 	let quill: Quill;
 	onMounted(() => {
 		quill = new Quill("#new_comment_modal_quill", {
-			theme: "snow"
+			theme: "snow",
 		});
+		quill.setText(props.comment);
 	});
 
 	const canNotifyViewers = computed(() => viewers.value.filter(viewer => {
@@ -50,11 +52,10 @@
 	}))
 
 	const canRestrictViewers = computed(() => viewers.value.filter(viewer => viewer.id != props.authed_user_id));
-
 	const canViewViewers = computed(() => viewers.value.filter(viewer => viewer.can_view));
 
 	const saveComment = async () => {
-		const json = await fetch("/admin/ajaxAddComment", {
+		await fetch("/admin/ajaxAddComment", {
 			method: "POST",
 			body: JSON.stringify({
 				comment: quill.getSemanticHTML(),
@@ -73,10 +74,10 @@
 </script>
 
 <template>
-	<div class="panel">
+	<div>
         <h3>{{ props.is_new_comment == "true" ? "New Comment" : "Edit Comment" }}</h3>
 
-		<form id="new_comment_modal_form" method="POST" @submit.prevent="">
+		<form id="new_comment_modal_form" method="POST" @submit.prevent="saveComment">
 			<div id="new_comment_modal_quill" style="height: 250px"></div>
 
 			<div class="mt-4" v-if="props.has_notification_selection == '1'">
@@ -84,43 +85,52 @@
 					<label for="owner">Comment Owner</label>
 					<select class="form-select">
 						<option id="owner" v-for="viewer in canViewViewers">
-							{{  viewer.name }}
+							{{ viewer.name }}
 						</option>
 					</select>
 				</div>
 
 				<div>
-					<div v-if="props.viewers.length !== 0">
-						<strong>Select the users that will be notified by this comment</strong>
-					</div>
+					<div v-if="props.is_new_comment == 'true'">
+						<div v-if="props.viewers.length !== 0">
+							<strong>Select the users that will be notified by this comment</strong>
+						</div>
 
-					<ul>
-						<li v-for="viewer in canNotifyViewers">
-							<input :id="'notified_' + viewer.id" class="form-check-input" type="checkbox" v-model="viewer.is_notify"/>
+						<div class="form-check" v-for="viewer in canNotifyViewers">
+							<input :id="'notified_' + viewer.id" class="form-check-input" type="checkbox" v-model="viewer.is_notify" />
 							<label :for="'notified_' + viewer.id" class="form-check-label d-inline ms-1">{{ viewer.name }}</label>
-						</li>
-					</ul>
-
+						</div>
+						<hr />
+					</div>
 					<div v-if="props.can_restrict === 'true' && canRestrictViewers.length">
-						<input name="is_restricted" type="checkbox" class="form-check-input" v-model="is_restricted" :disabled="props.is_parent_restricted == 'true'"/>
-						<label for="is_restricted" class="form-check-label d-inline ms-1">Limit who can view this comment:</label>
+						<div class="form-check">
+							<input 
+								name="is_restricted" 
+								id="is_restricted"
+								type="checkbox"
+								class="form-check-input mt-1"
+								v-model="is_restricted"
+								:disabled="props.is_parent_restricted == 'true'" />
+							<label for="is_restricted" class="form-check-label">Limit who can view this comment</label>
+						</div>
 						
-						<fieldset class="mt-0">
-							<ul>
-								<li v-for="viewer in canRestrictViewers">
-									<input :id="'restrict_' + viewer.id" class="form-check-input" type="checkbox" v-model="viewer.can_view"/>
-									<label :for="'restrict_' + viewer.id" class="form-check-label d-inline">{{ viewer.name }}</label>
-								</li>
-							</ul>
-						</fieldset>
+						<div class="ms-4 mt-2" v-if="is_restricted">
+							<div class="form-check" v-for="viewer in canRestrictViewers">
+								<input :id="'restrict_' + viewer.id" class="form-check-input" type="checkbox" v-model="viewer.can_view" />
+								<label :for="'restrict_' + viewer.id" class="form-check-label d-inline">{{ viewer.name }}</label>
+							</div>
+						</div>
 					</div>
 					<div v-else-if="props.can_restrict === 'true'">
 						<p>You have permission to restrict viewers, but you're the only one who can view.</p>
 					</div>
 				</div>
 			</div>
-
-			<button class="btn btn-primary savebutton" @click="saveComment()">Save</button>
+			<div class="row mt-2">
+				<div class="col">
+					<button class="btn btn-primary savebutton" type="submit">Save</button>
+				</div>
+			</div>
 		</form>
 	</div>
 </template>

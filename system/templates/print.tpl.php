@@ -4,7 +4,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
         <title><?php echo $title; ?></title>
-        <link rel="stylesheet" type="text/css" href="<?php echo $webroot; ?>/templates/css/style.css" />
+        <link rel="stylesheet" type="text/css" href="<?php echo $webroot; ?>/templates/css/print.css" />
     </head>
     <body>
         <div id="body">

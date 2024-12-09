@@ -4,6 +4,8 @@ namespace System\Modules\Form;
 
 function listform(\Web $w, $params)
 {
+    \CmfiveStyleComponentRegister::registerComponent('list-form', new \CmfiveStyleComponent('/system/templates/base/dist/FormListForm.css'));
+
     $w->ctx("redirect_url", $params['redirect_url']);
     $w->ctx("form", $params['form']);
     $w->ctx("object", $params['object']);
@@ -11,6 +13,8 @@ function listform(\Web $w, $params)
 
     $paginated = !empty($params['paginated']) ?? false;
     $w->ctx('paginated', $paginated);
+
+    $currentpage = $w->sessionOrRequest('currentpage', 1);
 
     if ($paginated) {
         $w->ctx('currentpage', $params['currentpage']);

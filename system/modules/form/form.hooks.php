@@ -54,10 +54,10 @@ function form_core_template_tab_content(Web $w, $params)
 
         if (!empty($params['paginated'])) {
             $partialArguments['paginated'] = true;
-            $partialArguments['currentpage'] = $params['currentpage'];
-            $partialArguments['numpages'] = $params['numpages'];
-            $partialArguments['pagesize'] = $params['pagesize'];
-            $partialArguments['totalresults'] = $params['totalresults'];
+            // $partialArguments['currentpage'] = $params['currentpage'];
+            // $partialArguments['numpages'] = $params['numpages'];
+            // $partialArguments['pagesize'] = $params['pagesize'];
+            // $partialArguments['totalresults'] = $params['totalresults'];
         }
 
         $forms_list .= '<div id="' . toSlug($form->title) . '" class="pt-3">' . $w->partial(
@@ -66,6 +66,8 @@ function form_core_template_tab_content(Web $w, $params)
             "form"
         ) . '</div>';
     }
+
+    // var_dump($forms_list);
 
     return $forms_list;
 }

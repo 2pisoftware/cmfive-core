@@ -5,7 +5,7 @@ import { TaskHelper } from "@utils/task";
 
 test.describe.configure({mode: 'parallel'});
 
-test("Test that you can manage taskgroups, taskgroup members, and tasks", async ({ page, isMobile }) => {
+test("that you can manage taskgroups, taskgroup members, and tasks", async ({ page, isMobile }) => {
     test.setTimeout(GLOBAL_TIMEOUT * 4);
     CmfiveHelper.acceptDialog(page);
 
@@ -63,29 +63,29 @@ test("Test that you can manage taskgroups, taskgroup members, and tasks", async 
     await CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Task", "Task Groups");
     await page.getByRole("link", {name: taskgroup+"_edited", exact: true}).click();
     await CmfiveHelper.getRowByText(page, user+"_firstname "+user+"_lastname").getByRole("button", {name: "Edit"}).click();
-    await page.waitForSelector("#cmfive-modal");
-    const modal = await page.locator("#cmfive-modal");
+    await page.locator("#cmfive-modal").waitFor();
+    const modal = page.locator("#cmfive-modal");
 
     await modal.getByRole("combobox", {name: "Role"}).selectOption("ALL");
     await modal.getByRole("button", {name: "Update"}).click();
-    await expect(await CmfiveHelper.getRowByText(page, user+"_firstname "+user+"_lastname").getByText("ALL")).toBeVisible();
+    await expect(CmfiveHelper.getRowByText(page, user+"_firstname "+user+"_lastname").getByText("ALL")).toBeVisible();
 
     // delete member from taskgroup
     await CmfiveHelper.getRowByText(page, user+"_firstname "+user+"_lastname").getByRole("button", {name: "Delete"}).click();
-    await page.waitForSelector("#cmfive-modal");
+    await page.locator("#cmfive-modal").waitFor();
     await page.locator("#cmfive-modal").getByRole("button", {name: "Delete"}).click();
 
     // delete tasks/taskgroup/user
     const tasks = [[task, taskID], [task+" -Copy", duplicateTaskID]];
 
-    for(let [taskName, taskNum] of tasks) {
+    for(const [taskName, taskNum] of tasks) {
         await page.goto(HOST + "/task/edit/" + taskNum + "#details");
-        await page.waitForTimeout(100);
+        await page.waitForLoadState();
 
         await expect(page.getByRole("button", {name: "Delete", exact: true}).first()).toBeVisible();
         await page.getByRole("button", {name: "Delete", exact: true}).first().click();
 
-        await expect(page.getByRole("link", {name: taskName, exact: true})).not.toBeVisible();
+        await expect(page.getByRole("link", {name: taskName, exact: true})).toBeHidden();
     }
 
     await TaskHelper.deleteTaskGroup(page, isMobile, taskgroup+"_edited", taskgroupID);
