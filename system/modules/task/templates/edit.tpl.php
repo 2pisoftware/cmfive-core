@@ -187,7 +187,7 @@
                     $('#task_type').val('');
                     $('#priority').parent().html(result[1]);
                     $('#assignee_id').parent().html(result[2]);
-                    $('#status').html(result[4])
+                    $('#status').parent().html(result[4])
                 }
                 $('#tasktext').html(result[3]);
                 $("#tasktext").fadeIn();
