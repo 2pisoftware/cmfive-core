@@ -34,7 +34,7 @@ class MultiFileUpload extends \Html\Form\InputField\File
         if (!empty($this->accept)) {
             $user_facing_file->setAccept($this->accept);
         }
-        
+
         $buffer = '<div class="multi-upload-file-container row" id="' . $this->id . '" data-name="' . $this->name . '"><div class="' . (!empty($this->existing_files) ? 'col-sm-12 col-md-6' : 'col') . '">' .
             '<button type="button" class="btn btn-outline-primary multi-upload-button">Add a file</button>' .
             $user_facing_file .
@@ -43,7 +43,7 @@ class MultiFileUpload extends \Html\Form\InputField\File
                 'class' => 'd-none multi-upload-files',
                 'multiple' => true
             ])) .
-            '<div class="multi-upload-files-display d-none"></div></div>';
+        '<div class="multi-upload-files-display d-none"></div></div>';
 
         // Existing files container
         if (!empty($this->existing_files)) {
