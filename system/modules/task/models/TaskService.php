@@ -1116,4 +1116,46 @@ class TaskService extends DbService
             new MenuLinkStruct("Task Groups", "task-group/viewtaskgrouptypes"),
         ];
     }
+
+    public function getTotalTimeByTimeType($task_id) {
+        $all_tasks = TaskService::getInstance($this->w)->getTasks();
+        foreach ($all_tasks as $task) {
+            if ($task->id == $task_id) {
+                $current_task = $task;
+            }
+        }
+        $all_timelogs_for_task = TimelogService::getInstance($this->w)->getTimelogsForObject($current_task);
+        
+        $config_var = Config::get('task.TaskType_' . $current_task->task_type);
+        if (!array_key_exists('time-types', $config_var)) {
+            return;
+        }
+        $timelog_types = $config_var['time-types'];
+        
+        $time_totals_for_time_types = [];
+        foreach ($timelog_types as $timelog_type) {
+            $total_time_for_type = 0;
+            foreach ($all_timelogs_for_task as $timelog) {
+                if ($timelog->time_type == $timelog_type) {
+                    $total_time_for_type += $timelog->getDuration();
+                }
+                $total_time_fmtd = floor($total_time_for_type / 3600) . gmdate(":i:s", $total_time_for_type) . '  ';
+            }
+            $time_totals_for_time_types[$timelog_type] = $total_time_fmtd;
+        }
+        return $time_totals_for_time_types;
+    }
+
+    public function getTotalTimeByBillable($task_id) {
+        $time_totals = $this->getTotalTimeByTimeType($task_id);
+        $time_totals_in_seconds = [];
+        foreach ($time_totals as $time_total) {
+            $time_totals_in_seconds[] = strtotime("1970-01-01 $time_total UTC");
+        }
+        $billable_time_in_seconds = array_sum(array_merge(array_slice($time_totals_in_seconds, 0, 3), [$time_totals_in_seconds[4]]));
+        $billable_time = floor($billable_time_in_seconds / 3600) . gmdate(":i:s", $billable_time_in_seconds);
+        $nonbillable_time = floor($time_totals_in_seconds[3] / 3600) . gmdate(":i:s", $time_totals_in_seconds[3]);
+        return ['Billable' => substr($billable_time, 0, -3), 'Non-Billable' => substr($nonbillable_time, 0, -3)];
+    }
+    
 }
