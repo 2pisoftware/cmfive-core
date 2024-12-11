@@ -1,153 +1,132 @@
 <?php
+
+use Html\Form\Html5Autocomplete;
+use Html\Form\InputField;
+
 $w->setTemplatePath(SYSTEM_PATH . "/templates");
 $w->setLayout("layout")
 ?>
-<div id="app">
-    <h3>Edit Profile</h3>
-    <html-tabs>
-        <html-tab title="Account" selected>
-            <div class="row-fluid body panel clearfix">
-                <div class="small-12 medium-6 large-4 columns">
-                    <h3>General</h3>
-                    <label>Redirect URL
-                        <?php
-                        echo (new \Html\Form\InputField([
+
+<h3>Edit Profile</h3>
+
+<div class="tabs">
+    <div class="tab-head">
+        <a href="#details">Details</a>
+        <a href="#user_security_app">Security</a>
+    </div>
+
+    <div class="tab-body">
+        <div id="details">
+            <?php
+            // see: assets/ts/AuthProfileForm.ts for submit handler
+            echo HtmlBootstrap5::multiColForm([
+                "Application" => [
+                    [new InputField\Hidden([
+                        "id|name" => "user_id",
+                        "value" => $user["id"],
+                    ])],
+
+                    [
+                        new InputField([
+                            "label" => "Redirect URL",
+                            "value" => $user["account"]["redirect_url"],
                             "id|name" => "redirect_url",
-                        ]))->setAttribute("v-model", "user.account.redirect_url");
-                        ?>
-                    </label>
-                </div>
-                <div class="small-12 medium-6 large-4 columns">
-                    <h3>Personal</h3>
-                    <label>Title
-                        <autocomplete :list="user.account.titles" v-model="user.account.title"></autocomplete>
-                    </label>
-                    <label>First Name
-                        <?php
-                        echo (new \Html\Form\InputField([
+                        ])
+                    ]
+                ],
+                "Personal" => [
+                    [
+                        new InputField([
+                            "label" => "First Name",
                             "id|name" => "firstname",
-                        ]))->setAttribute("v-model", "user.account.firstname");
-                        ?>
-                    </label>
-                    <label>Last Name
-                        <?php
-                        echo (new \Html\Form\InputField([
+                            "value" => $user["account"]["firstname"],
+                        ]),
+                        new InputField([
+                            "label" => "Last Name",
                             "id|name" => "lastname",
-                        ]))->setAttribute("v-model", "user.account.lastname");
-                        ?>
-                    </label>
-                    <label>Other Name
-                        <?php
-                        echo (new \Html\Form\InputField([
+                            "value" => $user["account"]["lastname"],
+                        ])
+                    ],
+
+                    [
+                        new Html5Autocomplete([
+                            "id|name" => "title",
+                            "class" => "form-control",
+                            "label" => "Title",
+                            "maxItems" => 1,
+                            "options" => $user["account"]["titles"],
+                            "value" => $user["account"]["title"]
+                        ]),
+                        new InputField([
+                            "label" => "Other Name",
                             "id|name" => "othername",
-                        ]))->setAttribute("v-model", "user.account.othername");
-                        ?>
-                    </label>
-                    <label>Language
-                        <?php
-                        echo (new \Html\Form\Select([
+                            "value" => $user["account"]["othername"],
+                        ])
+                    ],
+                    [
+                        new Html5Autocomplete([
                             "id|name" => "language",
-                        ]))->setOptions([]);
-                        ?>
-                    </label>
-                </div>
-                <div class="small-12 medium-6 large-4 columns">
-                    <h3>Contact</h3>
-                    <label>Home Phone
-                        <?php
-                        echo (new \Html\Form\InputField\Tel([
+                            "class" => "form-control",
+                            "label" => "Language",
+                            "maxItems" => 1,
+                            "options" => [],
+                            "canCreate" => true, // this shouldn't be here
+                        ])
+                    ]
+                ],
+                "Contact" => [
+                    [
+                        new InputField\Tel([
+                            "label" => "Home Phone",
                             "id|name" => "homephone",
-                        ]))->setAttribute("v-model", "user.account.homephone");
-                        ?>
-                    </label>
-                    <label>Work Phone
-                        <?php
-                        echo (new \Html\Form\InputField\Tel([
+                            "value" => $user["account"]["homephone"],
+                        ]),
+
+                        new InputField\Tel([
+                            "label" => "Work Phone",
                             "id|name" => "workphone",
-                        ]))->setAttribute("v-model", "user.account.workphone");
-                        ?>
-                    </label>
-                    <label>Mobile
-                        <?php
-                        echo (new \Html\Form\InputField\Tel([
+                            "value" => $user["account"]["workphone"],
+                        ]),
+
+                        new InputField\Tel([
+                            "label" => "Mobile",
                             "id|name" => "mobile",
-                        ]))->setAttribute("v-model", "user.account.mobile");
-                        ?>
-                    </label>
-                    <label>Private Mobile
-                        <?php
-                        echo (new \Html\Form\InputField\Tel([
+                            "value" => $user["account"]["mobile"],
+                        ]),
+                    ],
+
+                    [
+                        new InputField\Tel([
+                            "label" => "Private Mobile",
                             "id|name" => "priv_mobile",
-                        ]))->setAttribute("v-model", "user.account.priv_mobile");
-                        ?>
-                    </label>
-                    <label>Fax
-                        <?php
-                        echo (new \Html\Form\InputField([
+                            "value" => $user["account"]["priv_mobile"],
+                        ]),
+
+                        new InputField\Tel([
+                            "label" => "Fax",
                             "id|name" => "fax",
-                        ]))->setAttribute("v-model", "user.account.fax");
-                        ?>
-                    </label>
-                    <label>Email Address
-                        <?php
-                        echo (new \Html\Form\InputField\Email([
+                            "value" => $user["account"]["fax"],
+                        ]),
+
+                        new InputField\Email([
+                            "label" => "Email",
                             "id|name" => "email",
-                        ]))->setAttribute("v-model", "user.account.email");
-                        ?>
-                    </label>
-                </div>
-                <div class="small-12 columns">
-                    <br>
-                    <button class="tiny" @click="updateAccountDetails" :disabled="is_loading">Update</button>
-                </div>
-            </div>
-        </html-tab>
-        <html-tab title="Security">
-            <profile-security :user-id="user.id.toString()" :is-mfa-enabled="Boolean(user.security.is_mfa_enabled)"></profile-security>
-        </html-tab>
-    </html-tabs>
+                            "value" => $user["account"]["email"]
+                        ])
+                    ]
+                ]
+            ], null, "POST", "Update", "user_details_form", null, null, "_self", true, null, false);
+            ?>
+        </div>
+
+        <div id="user_security_app">
+            <user-security-component
+                user_id="<?php echo $user["id"]; ?>"
+                locked="false"
+                mfa_enabled="<?php echo $user["security"]["is_mfa_enabled"]; ?>"
+                pw_min_length="<?php echo Config::get('auth.login.password.min_length', 8); ?>">
+                >
+            </user-security-component>
+        </div>
+    </div>
 </div>
-<script>
-    var app = new Vue({
-        el: "#app",
-        data: function() {
-            return {
-                user: <?php echo json_encode($user); ?>,
-                mfa_code: "",
-                mfa_secret: "",
-                mfa_qr_code_url: null,
-                show_qr_code: false,
-                is_confirming_code: false,
-                is_loading: false,
-            }
-        },
-        methods: {
-            updateAccountDetails: function() {
-                var _this = this;
-
-                if (_this.is_loading === true) {
-                    return;
-                }
-
-                _this.is_loading = true;
-
-                axios.post("/auth/ajax_update_account_details", {
-                    id: _this.user.id,
-                    account_details: _this.user.account
-                }).then(function(response) {
-                    if (response.status !== 200) {
-                        new Toast("Failed to update").show();
-                        return;
-                    }
-
-                    new Toast("Account details updated").show();
-                }).catch(function(error) {
-                    new Toast("Failed to update").show();
-                    console.log(error);
-                }).finally(function() {
-                    _this.is_loading = false;
-                });
-            }
-        }
-    })
-</script>

@@ -37,7 +37,7 @@ function runreport_ALL(Web &$w)
 
                     // if there is a form display it, otherwise say as much
                     if ($form) {
-                        $theform = Html::$form_function($form, $w->localUrl("/report/exereport/" . $rep->id), "POST", " Display Report ");
+                        $theform = HtmlBootstrap5::$form_function($form, $w->localUrl("/report/exereport/" . $rep->id), "POST", " Display Report ");
                     } else {
                         $w->redirect($w->localUrl("/report/exereport/" . $rep->id));
                     }

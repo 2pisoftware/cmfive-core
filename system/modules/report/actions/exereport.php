@@ -3,6 +3,8 @@
 // criteria/parameter form is submited and report is executed
 function exereport_ALL(Web &$w)
 {
+    $w->ctx("layout-size", "large");
+
     ReportService::getInstance($w)->navigation($w, "Generate Report");
     $p = $w->pathMatch("id");
 

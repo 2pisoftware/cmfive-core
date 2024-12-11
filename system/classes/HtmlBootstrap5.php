@@ -19,7 +19,7 @@ class HtmlBootstrap5 extends Html
         } else {
             $element = new \Html\a();
         }
-        $element->id($id)->setClass($class)->setAttribute('data-modal-target', $href)->text($title);
+        $element->id($id)->setClass($class)->setAttribute('data-modal-target', $href)->text($title)->setAttribute("role", "button");
         if (!empty($confirm)) {
             $element->setAttribute('data-modal-confirm', $confirm);
         }
@@ -97,16 +97,16 @@ class HtmlBootstrap5 extends Html
         foreach ($data as $section => $rows) {
             // Print section header
             $buffer .= "<div class='panel clearfix'>";
-            $buffer .= "<div class='row g-0 clearfix section-header'><h4 class='col'>{$section}<span style='display: none;' class='changed_status right alert radius label'>changed</span></h4></div>";
+            $buffer .= "<div class='row g-0 clearfix section-header'><h4 class='col'>{$section}<span class='changed_status position-absolute bg-danger rounded p-1 d-none' style='right: 1rem; top: 0.5rem; font-size: 1rem'>Changed</span></h4></div>";
 
             // Loop through each row
             foreach ($rows as $row) {
-                // Print each field
-                $buffer .= "<div class='row'>";
-
                 if (empty($row)) {
                     continue;
                 }
+
+                // Print each field
+                $buffer .= "<div class='row'>";
 
                 foreach ($row as $entry) {
                     // Backwards compatibility - provide option to pass additional data
@@ -201,19 +201,19 @@ class HtmlBootstrap5 extends Html
                         case "autocomplete":
                             $options = !empty($field[4]) ? $field[4] : null;
                             $minValue = !empty($field[5]) ? $field[5] : 1;
-                            $buffer .= Html::autocomplete($name, $options, $value, "form-control", "width: 100%;", $minValue, $required);
+                            $buffer .= HtmlBootstrap5::autocomplete($name, $options, $value, "form-control", "width: 100%;", $minValue, $required);
                             break;
                         case "date":
                             $size = !empty($field[4]) ? $field[4] : null;
-                            $buffer .= Html::datePicker($name, $value, $size, $required);
+                            $buffer .= HtmlBootstrap5::datePicker($name, $value, $size, $required);
                             break;
                         case "datetime":
                             $size = !empty($field[4]) ? $field[4] : null;
-                            $buffer .= Html::datetimePicker($name, $value, $size, $required);
+                            $buffer .= HtmlBootstrap5::datetimePicker($name, $value, $size, $required);
                             break;
                         case "time":
                             $size = !empty($field[4]) ? $field[4] : null;
-                            $buffer .= Html::timePicker($name, $value, $size, $required);
+                            $buffer .= HtmlBootstrap5::timePicker($name, $value, $size, $required);
                             break;
                         case "static":
                             $size = !empty($field[4]) ? $field[4] : null;
@@ -235,12 +235,12 @@ class HtmlBootstrap5 extends Html
 
                             $default = !empty($field[5]) ? ($field[5] == "null" ? null : $field[5]) : "-- Select --";
                             $sl_class = !empty($field[6]) ? $field[6] : "form-select";
-                            $buffer .= Html::select($name, $items, $value, $sl_class, "width: 100%;", $default, ($readonly ? ' disabled="disabled" ' : null) . ' ' . $required);
+                            $buffer .= HtmlBootstrap5::select($name, $items, $value, $sl_class, "width: 100%;", $default, ($readonly ? ' disabled="disabled" ' : null) . ' ' . $required);
                             break;
                         case "multiSelect":
                             $items = !empty($field[4]) ? $field[4] : null;
                             if ($readonly == "") {
-                                $buffer .= Html::multiSelect($name, $items, $value, null, "width: 100%;", $required);
+                                $buffer .= HtmlBootstrap5::multiSelect($name, $items, $value, null, "width: 100%;", $required);
                             } else {
                                 $buffer .= $value;
                             }
@@ -248,13 +248,13 @@ class HtmlBootstrap5 extends Html
                         case "checkbox":
                             $defaultValue = !empty($field[4]) ? $field[4] : null;
                             $cb_class = !empty($field[5]) ? $field[5] : null;
-                            $buffer .= Html::checkbox($name, $value, $defaultValue, $cb_class);
+                            $buffer .= HtmlBootstrap5::checkbox($name, $value, $defaultValue, $cb_class);
                             break;
                         case "radio":
                             $group = !empty($field[4]) ? $field[4] : null;
                             $defaultValue = !empty($field[5]) ? $field[5] : null;
                             $rd_class = !empty($field[6]) ? $field[6] : null;
-                            $buffer .= Html::radio($name, $group, $value, $defaultValue, $rd_class) . "&nbsp;" . htmlentities($title);
+                            $buffer .= HtmlBootstrap5::radio($name, $group, $value, $defaultValue, $rd_class) . "&nbsp;" . htmlentities($title);
                             break;
                         case "hidden":
                             $buffer .= '<input type="hidden" name="' . $name . '" value="' . (empty($value) ? '' : htmlspecialchars($value)) . '" id="' . $name . '"/>';
@@ -264,7 +264,7 @@ class HtmlBootstrap5 extends Html
                             $buffer .= '<input style="width:100%;"  type="' . $type . '" name="' . $name . '" size="' . $size . '" id="' . $name . '"/>';
                             break;
                         case "multifile":
-                            $buffer .= Html::multiFileUpload($name);
+                            $buffer .= HtmlBootstrap5::multiFileUpload($name);
                             break;
                     }
                     $buffer .= ($type !== "hidden" ? "</div>" : "");
@@ -295,7 +295,7 @@ class HtmlBootstrap5 extends Html
      * @param array $array is the array of data
      * @param string $id is a css id
      * @param string $class is a css class
-     * @param boolean $header use first row as <th> if true
+     * @param boolean|string[] $header use first row as <th> if true
      *
      */
     public static function table($data, $id = null, $class = "tablesorter", $header = null)
@@ -355,7 +355,7 @@ class HtmlBootstrap5 extends Html
                 $buffer .= '<div class="card d-block mb-4"><ul class="list-group list-group-flush">';
                 foreach ($row as $index => $column) {
                     $buffer .= '<li class="list-group-item">';
-                    if (!empty($header) && array_key_exists($index, $header)) {
+                    if (!empty($header) && is_array($header) && array_key_exists($index, $header)) {
                         $buffer .= "<strong class='me-3'>" . (is_array($header[$index]) ? $header[$index][0] : $header[$index]) . "</strong>";
                     }
                     $buffer .= "<span>" . (is_array($column) ? $column[0] : $column) . "</span></li>";
@@ -422,8 +422,8 @@ class HtmlBootstrap5 extends Html
      * in the following format:
      *    [0 => "<sort column>", 1 => "<title>"]
      *
-     * @param Array $header
-     * @param Array $data
+     * @param array $header
+     * @param array $data
      * @param int $page
      * @param int $page_size
      * @param int $total_results
@@ -549,23 +549,23 @@ class HtmlBootstrap5 extends Html
 
     /**
      *  Filter function returns formatted form for declaring filters. Data is the same
-     *  as how Html::form is used. Filter parameters can be retrieved with $w->request
+     *  as how HtmlBootstrap5::form is used. Filter parameters can be retrieved with $w->request
      *  and it may be a good idea to prefix input names with 'filter_' to avoid naming
      *  collisions in requests
      *
-     *  @param String $legend
-     *  @param Array $data
-     *  @param String $action
-     *  @param String $method
-     *  @param String $submitTitle
-     *  @param String $id
-     *  @param String $class
+     *  @param string $legend
+     *  @param array $data
+     *  @param string $action
+     *  @param string $method
+     *  @param string $submitTitle
+     *  @param string $id
+     *  @param string $class
      *
-     *  @return String $buf
+     *  @return string $buf
      */
     public static function filter($legend, $data, $action = null, $method = "POST", $submitTitle = "Filter", $id = null, $class = null, $validation = null)
     {
-        // This will pretty much be a redesigned Html::form layout
+        // This will pretty much be a redesigned HtmlBootstrap5::form layout
         if (empty($data)) {
             return;
         }
@@ -653,16 +653,16 @@ class HtmlBootstrap5 extends Html
                     break;
                 case "autocomplete":
                     $minlength = !empty($row[5]) ? $row[5] : null;
-                    $buffer .= Html::autocomplete($name, $size, $value, null, "width: 100%;", !empty($minlength) ? $minlength : 1, $required);
+                    $buffer .= HtmlBootstrap5::autocomplete($name, $size, $value, null, "width: 100%;", !empty($minlength) ? $minlength : 1, $required);
                     break;
                 case "date":
-                    $buffer .= Html::datePicker($name, $value, $size, $required);
+                    $buffer .= HtmlBootstrap5::datePicker($name, $value, $size, $required);
                     break;
                 case "datetime":
-                    $buffer .= Html::datetimePicker($name, $value, $size, $required);
+                    $buffer .= HtmlBootstrap5::datetimePicker($name, $value, $size, $required);
                     break;
                 case "time":
-                    $buffer .= Html::timePicker($name, $value, $size, $required);
+                    $buffer .= HtmlBootstrap5::timePicker($name, $value, $size, $required);
                     break;
                 case "static":
                     $buffer .= $value;
@@ -683,7 +683,7 @@ class HtmlBootstrap5 extends Html
                     $allmsg = !empty($row[7]) ? $row[7] : "-- Select --";
                     // $name, $items, $value=null, $class=null, $style=null, $allmsg = "-- Select --", $required = null
                     if ($readonly == "") {
-                        $buffer .= Html::select($name, $items, $value, $class, $style, $allmsg);
+                        $buffer .= HtmlBootstrap5::select($name, $items, $value, $class, $style, $allmsg);
                     } else {
                         $buffer .= $value;
                     }
@@ -691,19 +691,19 @@ class HtmlBootstrap5 extends Html
                 case "multiSelect":
                     $items = $size;
                     if ($readonly == "") {
-                        $buffer .= Html::multiSelect($name, $items, $value, null, "width: 100%;");
+                        $buffer .= HtmlBootstrap5::multiSelect($name, $items, $value, null, "width: 100%;");
                     } else {
                         $buffer .= $value;
                     }
                     break;
                 case "checkbox":
-                    $buffer .= Html::checkbox($name, $value, $value, $class);
+                    $buffer .= HtmlBootstrap5::checkbox($name, $value, $value, $class);
                     break;
                 case "radio":
                     $group = !empty($field[4]) ? $field[4] : null;
                     $defaultValue = !empty($field[5]) ? $field[5] : null;
                     $class = !empty($field[6]) ? $field[6] : null;
-                    $buffer .= Html::radio($name, $group, $value, $defaultValue, $class) . "&nbsp;" . htmlentities($title);
+                    $buffer .= HtmlBootstrap5::radio($name, $group, $value, $defaultValue, $class) . "&nbsp;" . htmlentities($title);
                     break;
                 case "hidden":
                     $hidden .= "<input type=\"hidden\" name=\"" . $name . "\" value=\"" . (empty($value) ? '' : htmlspecialchars($value)) . "\"/>\n";
@@ -745,27 +745,31 @@ class HtmlBootstrap5 extends Html
         return $buffer;
     }
 
-    public static function pagination($currentpage, $numpages, $pagesize, $totalresults, $baseurl, $pageparam = "p", $pagesizeparam = "ps", $totalresultsparam = "tr")
+    public static function pagination($currentpage, $numpages, $pagesize, $totalresults, $baseurl, $pageparam = "p", $pagesizeparam = "ps", $totalresultsparam = "tr", $tab = null): string
     {
         // Prepare buffer
         $buf = '';
-        if (isNumber($currentpage) && isNumber($numpages) && isNumber($pagesize) && isNumber($totalresults)) {
+        if ((isNumber($currentpage) && isNumber($numpages)) && ((!empty($tab)) || (isNumber($pagesize) && isNumber($totalresults)))) {
             // Check that we're within range
             if ($currentpage > 0 && $currentpage <= $numpages && $numpages > 1) {
-                $buf = "<nav aria-label='pagination'><ul class='pagination justify-content-center flex-wrap'>";
+                $buf = "<nav aria-label='pagination'><ul class='pagination justify-content-center flex-wrap'" . ((!empty($tab)) ? " id='$tab-pagination-controls'" : "") . ">";
 
-                // Build pagination links
                 for ($page = 1; $page <= $numpages; $page++) {
-                    // Check if the current page
                     $buf .= "<li class='page-item" . ($currentpage == $page ? " active disabled' aria-current='page'" : "'") . ">";
 
-                    $url_parsed = parse_url($baseurl);
+                    if (!empty($tab)) { // Tabbed pagination
+                        $buf .= "<a class='page-link' data-tab='$tab' data-tabbed-pagination-page='$page'>$page</a>";
+                    } else { // Standard pagination
+                        $url_parsed = parse_url($baseurl);
 
-                    $url_string = $url_parsed['path'];
-                    $url_string .= (empty($url_parsed['query']) ? '?' : '?' . $url_parsed['query'] . '&') . $pageparam . '=' . $page . '&' . $pagesizeparam . '=' . $pagesize . '&' . $totalresultsparam . '=' . $totalresults;
-                    $url_string .= (!empty($url_parsed['fragment']) ? '#' . $url_parsed['fragment'] : '');
+                        $url_string = $url_parsed['path'];
+                        $url_string .= (empty($url_parsed['query']) ? '?' : '?' . $url_parsed['query'] . '&') . $pageparam . '=' . $page . '&' . $pagesizeparam . '=' . $pagesize . '&' . $totalresultsparam . '=' . $totalresults;
+                        $url_string .= (!empty($url_parsed['fragment']) ? '#' . $url_parsed['fragment'] : '');
 
-                    $buf .= '<a class="page-link" href=\'' . $url_string . '\'>' . $page . '</a></li>';
+                        $buf .= '<a class="page-link" href=\'' . $url_string . '\'>' . $page . '</a>';
+                    }
+
+                    $buf .= "</li>";
                 }
 
                 $buf .= "</ul></nav>";
@@ -799,5 +803,21 @@ class HtmlBootstrap5 extends Html
             $buffer .= '<p><strong>' . $row_header . '</strong><br/>' . $row_data . '</p>';
         }
         return $buffer . '</div></div>';
+    }
+
+    
+    public static function datePicker($name, $value = null, $size = null, $required = null)
+    {
+        return '<input class="form-control" type="date" name="' . $name . '" value="' . $value . '" size="' . $size . '" id="' . $name . '" ' . $required . ' />';
+    }
+
+    public static function datetimePicker($name, $value = null, $size = null, $required = null)
+    {
+        return '<input class="form-control" type="datetime-local" name="' . $name . '" value="' . $value . '" size="' . $size . '" id="' . $name . '" ' . $required . ' />';
+    }
+
+    public static function timePicker($name, $value = null, $size = null, $required = null)
+    {
+        return '<input class="form-control" type="time" name="' . $name . '" value="' . $value . '" size="' . $size . '" id="' . $name . '" ' . $required . ' />';
     }
 }

@@ -12,18 +12,18 @@
         </div>
     </div>
 </div>
-<script language="javascript">
+<script>
     // On change of task group type, get the task types and populate the select,
     // the do the same for priority
-    $(document).ready(function() {
-        $("#task_group_type").on("change", function(event) {
-            var task_group_type = $("#task_group_type").val();
-            $.getJSON("/task-group/ajaxSelectTaskGroupType/" + task_group_type,
-                function (result) {
-                    $("#default_task_type").html(result[0]);
-                    $("#default_priority").html(result[1]);
-                }
-            );
-       });        
-    });            
+    document.addEventListener("DOMContentLoaded", () => {
+        document.getElementById("task_group_type").addEventListener("change", async (e) => {
+            const val = e.target.value;
+
+            const json = await fetch(`/task-group/ajaxSelectTaskGroupType/${val}`)
+                .then(x => x.json());
+
+            document.getElementById("default_task_type").outerHTML = json[0];
+            document.getElementById("default_priority").outerHTML = json[1];
+        })
+    });
 </script>

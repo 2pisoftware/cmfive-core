@@ -124,7 +124,7 @@ class FormInstance extends DbObject
         if (!empty($form_fields)) {
             foreach ($form_fields as $field) {
                 if (!empty($formValueCollated[$field->id])) {
-                    $table_row .= "<td class=form_instance_" . $this->id . ">" . $formValueCollated[$field->id]->getMaskedValue() . "</td>";
+                    $table_row .= "<td class='form_instance_" . $this->id . "'>" . $formValueCollated[$field->id]->getMaskedValue() . "</td>";
                 } else {
                     $table_row .= "<td>&nbsp;</td>";
                 }
@@ -136,7 +136,7 @@ class FormInstance extends DbObject
 
     /**
      * Return an array representing the complete structure of a form to
-     * use with Html::multiColForm()
+     * use with HtmlBootstrap5::multiColForm()
      * @return  array[]
      */
     public function getEditForm($form)
@@ -169,6 +169,7 @@ class FormInstance extends DbObject
                 }
             }
         }
+        
         return [$form->title => $form_structure];
     }
 

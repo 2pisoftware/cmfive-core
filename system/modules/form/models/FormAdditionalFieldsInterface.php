@@ -12,7 +12,7 @@ class FormAdditionalFieldsInterface extends FormFieldInterface
     ];
 
     /**
-     * Map FormField type to Html::multiColForm() type
+     * Map FormField type to HtmlBootstrap5::multiColForm() type
      *
      * @return string
      */
@@ -39,7 +39,7 @@ class FormAdditionalFieldsInterface extends FormFieldInterface
     }
 
     /**
-     * Map Form metadata to an array of extra parameters to Html::multiColForm()
+     * Map Form metadata to an array of extra parameters to HtmlBootstrap5::multiColForm()
      *
      * @return []
      */
@@ -102,8 +102,8 @@ class FormAdditionalFieldsInterface extends FormFieldInterface
 
                 return $output;
             case "subform":
-                return Html::box('/form-field/manage_subform/' . $form_value->id . '?display_only=1', 'View ' . $field->name, true, false, null, null, null, null, 'block-link') .
-                    Html::b('/form-field/manage_subform/' . $form_value->id, 'Manage ' . $field->name, null, null, true);
+                return HtmlBootstrap5::box('/form-field/manage_subform/' . $form_value->id . '?display_only=1', 'View ' . $field->name, true, false, null, null, null, null, 'block-link') .
+                    HtmlBootstrap5::b('/form-field/manage_subform/' . $form_value->id, 'Manage ' . $field->name, null, null, true);
 
                 break;
             case "boolean":

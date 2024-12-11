@@ -57,8 +57,15 @@ function ajaxGetFieldForm_ALL(Web $w)
     }, $old_task_data_query->fetchAll() ?: []);
 
     // Output
-    $w->out(json_encode(
-        (count($table_data) > 0 ? "<table style='width: 100%; margin-bottom: 0px;'><tr><td class='section'>Historical task data</td></tr></table>" . Html::table($table_data, null, "small-12", ["Data key", "Value"]) : '') .
-            (!empty($task_type_form) ? Html::form($task_type_form, "/task/edit", null, null, "form_fields_form") : '')
-    ));
+
+    $w->setLayout(null);
+    $w->out(json_encode([
+        "historial" => HtmlBootstrap5::table($table_data, null, "small-12", ["Data key", "Value"]),
+        "current" => HtmlBootstrap5::form($task_type_form, "/task/edit", null, null, "form_fields_form"),
+    ]));
+
+    // $w->out(json_encode(
+    //     (count($table_data) > 0 ? "<table style='width: 100%; margin-bottom: 0px;'><tr><td class='section'>Historical task data</td></tr></table>" . Html::table($table_data, null, "small-12", ["Data key", "Value"]) : '') .
+    //         (!empty($task_type_form) ? Html::form($task_type_form, "/task/edit", null, null, "form_fields_form") : '')
+    // ));
 }
