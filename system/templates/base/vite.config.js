@@ -11,25 +11,25 @@ let scriptPath = __dirname;
 
 console.log("dirname", scriptPath);
     /* Apply conditional steps to untangle, eg:
-    dirname /workspaces/cmfive_dev_box/cmfive-core/system/templates/base
+    dirname /workspaces/cmfive_dev_box/cosine-core/system/templates/base
     scriptPath 2 /workspaces/cmfive_dev_box/
-    scriptPath SHOULD BE : /workspaces/cmfive_dev_box/cmfive-boilerplate/
+    scriptPath SHOULD BE : /workspaces/cmfive_dev_box/cosine-boilerplate/
     _vs_
-    dirname /codebuild/output/src3846646311/src/composer/vendor/2pisoftware/cmfive-core/system/templates/base
+    dirname /codebuild/output/src3846646311/src/composer/vendor/2pisoftware/cosine-core/system/templates/base
     scriptPath 2 /codebuild/output/src3846646311/src/composer/vendor/2pisoftware/
     scriptPath SHOULD BE : /codebuild/output/src3846646311/src
     _etc_ ...
     */
-if (scriptPath.includes('cmfive-boilerplate')) {
+if (scriptPath.includes('cosine-boilerplate')) {
     // System is symlinked inside of boilerplate
-    scriptPath = scriptPath.split('cmfive-boilerplate')[0] + "cmfive-boilerplate/";
-} else if (scriptPath.includes('cmfive-core')) {
+    scriptPath = scriptPath.split('cosine-boilerplate')[0] + "cosine-boilerplate/";
+} else if (scriptPath.includes('cosine-core')) {
     // System is symlinked outside of boilerplate
-    scriptPath = scriptPath.split('cmfive-core')[0];
+    scriptPath = scriptPath.split('cosine-core')[0];
     console.log("scriptPath 2", scriptPath);
-    if (fs.existsSync(scriptPath + 'cmfive-boilerplate')) {
+    if (fs.existsSync(scriptPath + 'cosine-boilerplate')) {
         // we are in some assembled/mounted project
-        scriptPath += 'cmfive-boilerplate/';
+        scriptPath += 'cosine-boilerplate/';
     } else if (fs.existsSync("/var/www/html")) {
         // we are in hosted folders
         scriptPath = "/var/www/html/";

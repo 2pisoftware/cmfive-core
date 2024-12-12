@@ -1,7 +1,7 @@
 {
-  "name": "cmfive-core",
+  "name": "cosine-core",
   "version": "6.0.0",
-  "description": "Cmfive core new layout project",
+  "description": "cosine core new layout project",
   "private": true,
   "type": "module",
   "scripts": {

@@ -6,17 +6,17 @@ const fs = require("fs");
 
 // We need to determine the root directory of the project - since everything is symlinked this requires a bit of thought
 let scriptPath = __dirname;
-if (scriptPath.includes('cmfive-core')) {
+if (scriptPath.includes('cosine-core')) {
     // System is symlinked outside of boilerplate
-    scriptPath = scriptPath.split('cmfive-core')[0];
-    if (fs.existsSync(scriptPath + 'cmfive-boilerplate')) {
-        scriptPath += 'cmfive-boilerplate/';
+    scriptPath = scriptPath.split('cosine-core')[0];
+    if (fs.existsSync(scriptPath + 'cosine-boilerplate')) {
+        scriptPath += 'cosine-boilerplate/';
     } else {
         throw new Error('Could not determine root directory of project');
     }
-} else if (scriptPath.includes('cmfive-boilerplate')) {
+} else if (scriptPath.includes('cosine-boilerplate')) {
     // System is symlinked inside of boilerplate
-    scriptPath = scriptPath.split('cmfive-boilerplate')[0] + "cmfive-boilerplate/";
+    scriptPath = scriptPath.split('cosine-boilerplate')[0] + "cosine-boilerplate/";
 }
 
 console.log("Script Path: " + scriptPath);
