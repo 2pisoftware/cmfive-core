@@ -24,8 +24,7 @@
     "sortablejs": "^1.15.3",
     "tom-select": "^2.3.1",
     "typescript": "^5.0.0",
-    "vue": "^3.2.25",
-    "vue3": "npm:vue@^3.4.8"
+    "vue3": "^3.4.8"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^3.1.1",
