@@ -1,4 +1,5 @@
 // vite.config.js
+import { viteStaticCopy } from 'vite-plugin-static-copy'
 import path, { resolve } from 'path'
 import { defineConfig, build } from 'vite'
 import { glob } from 'glob';
@@ -66,7 +67,20 @@ _x.forEach((file) => {
 console.log("fileMap", _fileMapObj);
 
 export default defineConfig({
-    plugins: [vue()],
+    plugins: [vue(),
+        viteStaticCopy({
+            targets: [
+              {
+                src: resolve(__dirname, scriptPath, 'system/templates/base/node_modules/bootstrap-icons/font/fonts/bootstrap-icons.woff'),
+                dest: 'fonts' 
+              },
+              {
+                src: resolve(__dirname, scriptPath, 'system/templates/base/node_modules/bootstrap-icons/font/fonts/bootstrap-icons.woff2'),
+                dest: 'fonts' 
+              }
+            ]
+          })
+        ],
     build: {
         cssCodeSplit: true,
         minify: "terser",

@@ -46,6 +46,7 @@
     "ts-loader": "^9.5.1",
     "vite": "^5.4.2",
     "vite-plugin-commonjs": "^0.10.1",
+    "vite-plugin-static-copy": "^2.2.0",
     "vue-loader": "^17.4.2",
     "webpack": "^5.93.0",
     "webpack-cli": "^5.1.4"
