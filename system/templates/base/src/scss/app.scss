@@ -7,7 +7,7 @@ $enable-cssgrid: true;
 @import 'variables';
 @import 'bootstrap_overrides';
 
-$bootstrap-icons-font-dir: "/system/templates/base/node_modules/bootstrap-icons/font/fonts";
+$bootstrap-icons-font-dir: "/system/templates/base/dist/fonts";
 
 // Import bootstrap
 @import "bootstrap/scss/bootstrap";
