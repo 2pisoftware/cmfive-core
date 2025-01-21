@@ -49,7 +49,7 @@ trait GlobalAttributes
      * used by Angular JS.
      *
      * @param string $name
-     * @param Mixed $value
+     * @param mixed $value
      * @return this
      */
     public function setAttribute($name, $value)

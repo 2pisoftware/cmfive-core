@@ -48,6 +48,205 @@ class HtmlBootstrap5 extends Html
         </div>';
     }
 
+/**
+     * creates a simple one column form from the following array:
+     * array(
+     *       array("title","type","fieldname","value",{size | array(select options) | cols, rows}),
+     *       ...
+     * )
+     *
+     * valid field types are:
+     *  text, password, autocomplete, static, date, textarea, section,
+     *  select, multiselect, checkbox, hidden
+     *
+     * Field type auto uses ui hints from a DbObject.
+     *
+     * when prefixing a fieldname with a minus sign '-' this field will be read-only
+     */
+    public static function form($data, $action = null, $method = "POST", $submitTitle = "Save", $id = null, $class = null, $target = "_self", $enctype = null)
+    {
+        if (empty($data)) {
+            return;
+        }
+
+        $buffer = "";
+
+        if (null !== $action) {
+            $form = new \Html\FormBootstrap5();
+
+            // If form tag is needed print it
+            $class .= " col";
+            $form->id($id)->setClass($class)->method($method)->action($action)->target($target);
+
+            if (in_modified_multiarray("file", $data, 1)) {
+                $form->enctype("multipart/form-data");
+            }
+
+            $buffer .= $form->open();
+        }
+
+        foreach ($data as $row) {
+            $buffer .= "<div class='row'><div class='col-12'>";
+
+            // Backwards compatibility - provide option to pass additional data
+            $field = null;
+            $tooltip = null;
+            if (is_object($row)) {
+                $field = property_exists($row, 'field') ? $row->field : $row;
+                $tooltip = property_exists($row, 'tooltip') ? $row->tooltip : null;
+            } else {
+                $field = array_key_exists('field', $row) ? $row['field'] : $row;
+                $tooltip = array_key_exists('tooltip', $row) ? $row['tooltip'] : null;
+            }
+
+            // Check if the row is an object like an InputField
+            if (!is_array($field) && is_object($field)) {
+                $label_class = 'form-label';
+                $field->setClass(str_replace(['small-12', 'columns', 'column'], '', $field->class ?? ''));
+                switch (get_class($field)) {
+                    case 'Html\Form\Select':
+                    case 'Html\Cmfive\SelectWithOther':
+                        $field->setClass($field->class . ' form-select');
+                        break;
+                    case 'Html\Form\InputField\Checkbox':
+                    case 'Html\Form\InputField\Radio':
+                        $field->setClass($field->class . ' form-check-control');
+                        // $label_class = 'form-check-label';
+                        break;
+                    case 'Html\Form\InputField\Text':
+                    case 'Html\Form\InputField\Date':
+                    case 'Html\Form\InputField\File':
+                    case 'Html\Form\InputField\Number':
+                    default:
+                        $field->setClass($field->class . ' form-control');
+                        break;
+                }
+                if ((property_exists($field, "type") && $field->type !== "hidden") || !property_exists($field, "type")) {
+                    $buffer .= '<div class="col"><label class="' . $label_class . '"'
+                        . (property_exists($field, 'id') && !empty($field->id) ? ' for="' . $field->id . '"' : '')
+                        . '>'
+                        . $field->label
+                        . (property_exists($field, "required") && $field->required ? " <small>Required</small>" : "")
+                        . "</label>"
+                        . $field->__toString() . '</div>';
+                } else {
+                    $buffer .= $field->__toString();
+                }
+                continue;
+            }
+
+            $title = !empty($field[0]) ? $field[0] : '';
+            $type = !empty($field[1]) ? $field[1] : '';
+            $name = !empty($field[2]) ? $field[2] : '';
+            $value = !empty($field[3]) ? $field[3] : '';
+            $readonly = "";
+
+            // handle disabled fields
+            if (substr(($name ?? ""), 0, 1) == '-') {
+                $name = substr(($name ?? ""), 1);
+                $readonly = " readonly='true' ";
+            }
+            // Add title field
+            if ("section" === $type) {
+                $buffer .= "<h4>{$title}</h4></div></div>";
+                continue;
+            }
+
+            if (!empty($title) && "static" !== $type && "hidden" !== $type) {
+                $buffer .= "<label class='col-12'>$title";
+            }
+
+            switch ($type) {
+                case "text":
+                case "password":
+                    $size = !empty($field[4]) ? $field[4] : '';
+                    $required = !empty($field[5]) ? $field[5] : '';
+                    $buffer .= '<input' . $readonly . ' style="width:100%;" type="' . $type . '" name="' . $name . '" value="' . htmlspecialchars($value) . '" size="' . $size . '" id="' . $name . '"  ' . $required . '/>';
+                    break;
+                case "autocomplete":
+                    $options = !empty($field[4]) ? $field[4] : '';
+                    $minValue = !empty($field[5]) ? $field[5] : 1;
+                    $required = !empty($field[6]) ? $field[6] : '';
+                    $buffer .= HtmlBootstrap5::autocomplete($name, $options, $value, null, "width: 100%;", $minValue, $required);
+                    break;
+                case "date":
+                    $size = !empty($field[4]) ? $field[4] : '';
+                    $buffer .= HtmlBootstrap5::datePicker($name, $value, $size);
+                    break;
+                case "datetime":
+                    $size = !empty($field[4]) ? $field[4] : '';
+                    $buffer .= HtmlBootstrap5::datetimePicker($name, $value, $size);
+                    break;
+                case "time":
+                    $size = !empty($field[4]) ? $field[4] : '';
+                    $buffer .= HtmlBootstrap5::timePicker($name, $value, $size);
+                    break;
+                case "static":
+                    $size = !empty($field[4]) ? $field[4] : '';
+                    $buffer .= "<div class='col-6 col-md-3'>{$title}</div><div class='col-6 col-md-9'>{$value}</div>";
+                    break;
+                case "textarea":
+                    $c = !empty($field[4]) ? $field[4] : '';
+                    $r = !empty($field[5]) ? $field[5] : '';
+                    $custom_class = true;
+                    if (isset($field[6])) {
+                        $custom_class = $field[6];
+                    }
+                    $buffer .= '<textarea' . $readonly . ' style="width:100%; height:auto; " name="' . $name . '" rows="' . $r . '" cols="' . $c . '" ' .
+                        (!empty($custom_class) ? ($custom_class === true ? "class='ckeditor'" : "class='$custom_class' ") : '') . ' id="' . $name . '">' . $value . '</textarea>';
+                    break;
+                case "select":
+                    $items = !empty($field[4]) ? $field[4] : '';
+                    $default = !empty($field[5]) ? ($field[5] == "null" ? '' : $field[5]) : "-- Select --";
+                    $class = !empty($field[6]) ? $field[6] : '';
+                    if ($readonly == "") {
+                        $buffer .= HtmlBootstrap5::select($name, $items, $value, $class, "width: 100%;", $default, $readonly != "");
+                    } else {
+                        $buffer .= $value;
+                    }
+                    break;
+                case "multiSelect":
+                    $items = !empty($field[4]) ? $field[4] : '';
+                    if ($readonly == "") {
+                        $buffer .= HtmlBootstrap5::multiSelect($name, $items, $value, null, "width: 100%;");
+                    } else {
+                        $buffer .= $value;
+                    }
+                    break;
+                case "checkbox":
+                    $defaultValue = !empty($field[4]) ? $field[4] : '';
+                    $class = !empty($field[5]) ? $field[5] : '';
+                    $buffer .= HtmlBootstrap5::checkbox($name, $value, $defaultValue, $class);
+                    break;
+                case "radio":
+                    $group = !empty($field[4]) ? $field[4] : '';
+                    $defaultValue = !empty($field[5]) ? $field[5] : '';
+                    $class = !empty($field[6]) ? $field[6] : '';
+                    $buffer .= HtmlBootstrap5::radio($name, $group, $value, $defaultValue, $class) . "&nbsp;" . htmlentities($title);
+                    break;
+                case "hidden":
+                    $buffer .= '<input type="hidden" name="' . $name . '" value="' . htmlspecialchars($value) . '" id="' . $name . '"/>';
+                    break;
+                case "file":
+                    $size = !empty($field[4]) ? $field[4] : '';
+                    $buffer .= '<input style="width:100%;"  type="' . $type . '" name="' . $name . '" size="' . $size . '" id="' . $name . '"/>';
+                    break;
+                case "multifile":
+                    $buffer .= HtmlBootstrap5::multiFileUpload($name);
+                    break;
+            }
+            if (!empty($title) && "static" !== $type && "hidden" !== $type) {
+                $buffer .= "</label>";
+            }
+            $buffer .= "</div></div>";
+        }
+
+        if (null !== $action) {
+            $buffer .= $form->close($submitTitle);
+        }
+        return $buffer;
+    }
+
     /**
      * Creates a complex form where each section can have
      * a different number of columns.
