@@ -6,7 +6,9 @@
     <div class="position-relative">
         <?php if ($attachment->isImage()) : ?>
             <img
+                loading="lazy"
                 class="img-thumbnail"
+                style="min-height: 200px"
                 data-caption="<?php echo $attachment->title; ?>"
                 src="<?php echo $attachment->getThumbnailUrl(); ?>" />
         <?php else : ?>
