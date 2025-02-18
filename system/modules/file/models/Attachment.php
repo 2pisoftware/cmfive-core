@@ -283,7 +283,8 @@ class Attachment extends DbObject
         }
 
         // return bi-filetype-doc here as a fallback
-        return "bi-filetype-doc bi-filetype-" . end(explode(".", $this->filename));
+        $exploded = explode(".", $this->filename); // must create new variable here as end() requires ref
+        return "bi-filetype-doc bi-filetype-" . end($exploded);
     }
 
     /**

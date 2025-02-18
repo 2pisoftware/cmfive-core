@@ -14,7 +14,9 @@ function role_file_upload_allowed(Web $w,$path) {
 			$w->checkUrl($path, "file", null, "new") ||
 			$w->checkUrl($path, "file", null, "edit") ||
 			$w->checkUrl($path, "file", null, "delete") ||
-			$w->checkUrl($path, "file", "attachment", "ajaxAddAttachment");
+			$w->checkUrl($path, "file", "attachment", "ajaxAddAttachment") ||
+            $w->checkUrl($path, "file", null, "ajax_multipart") ||
+            $w->checkUrl($path, "file", "multipart", null);
 }
 /*****************************************
  * Check if the user with the file_download role is allowed access to this path
