@@ -93,7 +93,7 @@ const disableUpload = ref(false);
         </div>
 
         <form @submit.prevent="upload">
-            <fieldset id="multipart_uploader_fieldset" class="d-flex gap-2 align-items-center pt-0">
+            <fieldset id="multipart_uploader_fieldset" class="d-flex gap-2 align-items-center pt-0 shadow-none">
                 <label for="multipart_uploader_files" :class="disableUpload ? 'opacity-50' : ''"
                     style="cursor: pointer">
                     <p class="mb-0 form-control">Select Files <i class="bi bi-cloud-arrow-up"></i></p>
