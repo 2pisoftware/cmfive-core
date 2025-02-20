@@ -146,10 +146,6 @@ class FileMultipartUploadService extends DbService
 
     private function makeClient()
     {
-        return new S3Client([
-            "credentials" => Config::get("file.adapters.s3.credentials"),
-            "region" => Config::get("file.adapters.s3.region"),
-            "version" => Config::get("file.adapters.s3.version", "2006-03-01")
-        ]);
+        return FileService::getInstance($this->w)->getS3Client();
     }
 }
