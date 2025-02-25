@@ -57,6 +57,15 @@ const upload = async (e: SubmitEvent) => {
 
     disableUpload.value = false;
     done.value = true;
+
+    // This is kind of awful, sorry
+    //@ts-ignore
+    cmfiveEventBus
+        .dispatchEvent(new CustomEvent("multipart-upload-success", {
+            detail: {
+                files: files.value,
+            }
+        }));
 };
 
 const updateFilePreview = (event: ChangeEvent<HTMLInputElement>) => {
