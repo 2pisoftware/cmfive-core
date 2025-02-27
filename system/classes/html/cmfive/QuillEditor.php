@@ -31,6 +31,6 @@ class QuillEditor extends \Html\Form\InputField
 
     public function __toString()
     {
-        return '<textarea name="' . $this->name . '" id="' . $this->id . '" style="display:none">' . $this->value . '</textarea><div class="quill-editor" data-quill-options=\'' . json_encode($this->options, JSON_FORCE_OBJECT) . '\' id="quill_' . $this->id . '">' . $this->value . '</div>';
+        return '<textarea name="' . $this->name . '" id="' . $this->id . '" style="display:none">' . $this->value . '</textarea><div class="quill-editor" data-quill-options=\'' . json_encode($this->options) . '\' id="quill_' . $this->id . '">' . $this->value . '</div>';
     }
 }
