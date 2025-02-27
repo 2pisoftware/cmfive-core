@@ -1,6 +1,6 @@
 import { ArrayBuffer as spark } from "~/spark-md5";
 
-const beginMultipartUpload = async (file: File, endpoint = "/file/ajax_multipart") => {
+const beginMultipartUpload = async (file: File, endpoint = "/file/ajax_multipart"): Promise<string> => {
     const res = await fetch(endpoint, {
         method: "POST",
         body: JSON.stringify({
@@ -48,6 +48,9 @@ const upload_part = async (data: number[], upload_id: string, part_number: numbe
     if (!up.ok) throw new Error(upres);
 };
 
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+const ATTEMPT_DELAY_SECONDS = 5;
+
 const uploadParts = async (file: File, upload_id: string) => {
     const CHUNK_SIZE = 1024 * 1024 * 5;
     const MAX_RETRIES = 5;
@@ -71,6 +74,7 @@ const uploadParts = async (file: File, upload_id: string) => {
             }
             catch (e) {
                 console.log(`failed: ${e.message}`);
+                await sleep(ATTEMPT_DELAY_SECONDS * attempts * 1000);
                 // we failed. try again until max retries
             }
         } while (attempts < MAX_RETRIES);
