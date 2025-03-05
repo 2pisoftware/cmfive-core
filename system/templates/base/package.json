@@ -22,16 +22,17 @@
     "jquery": "^3.7.1",
     "quill": "^2.0.2",
     "sortablejs": "^1.15.3",
+    "spark-md5": "^3.0.2",
     "tom-select": "^2.3.1",
     "typescript": "^5.0.0",
-    "vue": "^3.2.25",
-    "vue3": "npm:vue@^3.4.8"
+    "vue": "^3.4.8"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^3.1.1",
     "@tsconfig/svelte": "^5.0.4",
     "@types/bootstrap": "^5.2.10",
     "@types/jquery": "^3.5.30",
+    "@types/spark-md5": "^3.0.5",
     "@vitejs/plugin-vue": "^5.1.2",
     "autoprefixer": "^10.4.20",
     "css-loader": "^7.1.2",
@@ -47,6 +48,7 @@
     "ts-loader": "^9.5.1",
     "vite": "^5.4.2",
     "vite-plugin-commonjs": "^0.10.1",
+    "vite-plugin-static-copy": "^2.2.0",
     "vue-loader": "^17.4.2",
     "webpack": "^5.93.0",
     "webpack-cli": "^5.1.4"
