@@ -50,6 +50,10 @@ function edit_GET($w)
         $taskgroup = TaskService::getInstance($w)->getTaskGroup(!empty($task->task_group_id) ? $task->task_group_id : $taskgroup_id);
 
         if (!empty($taskgroup->id)) {
+            //set the task taskgroup id in case taskgroup is set by request
+            if (empty($task->task_group_id) && !empty($taskgroup_id)) {
+                $task->task_group_id = $taskgroup_id;
+            }
             $tasktypes = TaskService::getInstance($w)->getTaskTypes($taskgroup->task_group_type);
             $priority = TaskService::getInstance($w)->getTaskPriority($taskgroup->task_group_type);
             $members = TaskService::getInstance($w)->getMembersBeAssigned($taskgroup->id);
