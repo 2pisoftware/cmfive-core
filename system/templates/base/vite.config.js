@@ -40,7 +40,10 @@ if (scriptPath.includes('cmfive-boilerplate')) {
     } else {
         throw new Error('Could not determine root directory of project');
     }
-} 
+} else if (fs.existsSync("/var/www/html")) {
+    // we are in hosted folders
+    scriptPath = "/var/www/html/";
+}
 
 console.log("scriptPath", scriptPath);
 
