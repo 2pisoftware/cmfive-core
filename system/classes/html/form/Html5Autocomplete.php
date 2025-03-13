@@ -119,13 +119,13 @@ class Html5Autocomplete extends \Html\Form\InputField
                     array_map(
                         fn($val) =>
                         array_map(
-                            fn($inner) => htmlspecialchars($inner),
+                            fn($inner) => htmlspecialchars($inner, 0, null, false),
                             $this->convertOption($val)
                         ),
                         $this->options
                     )
                     : null,
-                "maxItems" => !isset($this->maxItems) ? $this->maxItems : 1,
+                "maxItems" => $this->maxItems,
                 "items" => $this->value,
                 "source" => $this->source,
                 "create" => $this->canCreate,
