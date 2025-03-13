@@ -125,7 +125,7 @@ class Html5Autocomplete extends \Html\Form\InputField
                         $this->options
                     )
                     : null,
-                "maxItems" => !isset($this->maxItems) ? $this->maxItems : 1,
+                "maxItems" => $this->maxItems,
                 "items" => $this->value,
                 "source" => $this->source,
                 "create" => $this->canCreate,
