@@ -119,7 +119,7 @@ class Html5Autocomplete extends \Html\Form\InputField
                     array_map(
                         fn($val) =>
                         array_map(
-                            fn($inner) => htmlspecialchars($inner),
+                            fn($inner) => htmlspecialchars($inner, 0, null, false),
                             $this->convertOption($val)
                         ),
                         $this->options
