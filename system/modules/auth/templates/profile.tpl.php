@@ -69,8 +69,8 @@ $w->setLayout("layout")
                             "class" => "form-control",
                             "label" => "Language",
                             "maxItems" => 1,
-                            "options" => [],
-                            "canCreate" => true, // this shouldn't be here
+                            "options" => AdminService::getInstance($w)->getLanguages(),
+                            "value" => $user["account"]["language"],
                         ])
                     ]
                 ],

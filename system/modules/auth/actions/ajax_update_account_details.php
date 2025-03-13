@@ -20,6 +20,10 @@ function ajax_update_account_details_POST(Web $w)
         $user->redirect_url = $request_data["account_details"]["redirect_url"];
     }
 
+    if (array_key_exists("language", $request_data["account_details"])) {
+        $user->language = $request_data["account_details"]["language"];
+    }
+
     if (!$user->insertOrUpdate()) {
         $w->out((new JsonResponse())->setErrorResponse("Failed to update details", null));
         return;
