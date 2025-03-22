@@ -258,11 +258,11 @@ $theme_setting = AuthService::getInstance($w)->getSettingByKey('bs5-theme');
                             }
                             if ($isFirst) : ?>
                                 <li class="breadcrumb-item active" aria-current="page">
-                                    <span data-bs-toggle="tooltip" data-bs-placement="bottom" title="<?php echo $value['name']; ?>"><?php echo $value['name']; ?></span>
+                                    <span data-bs-toggle="tooltip" data-bs-placement="bottom" title="<?php echo html_entity_decode($value['name']); ?>"><?php echo html_entity_decode($value['name']); ?></span>
                                 </li>
                             <?php else : ?>
                                 <li class="breadcrumb-item">
-                                    <a href='<?php echo $path; ?>' data-bs-toggle="tooltip" data-bs-placement="bottom" title="<?php echo $value['name']; ?>"><?php echo $value['name']; ?></a>
+                                    <a href='<?php echo $path; ?>' data-bs-toggle="tooltip" data-bs-placement="bottom" title="<?php echo html_entity_decode($value['name']); ?>"><?php echo html_entity_decode($value['name']); ?></a>
                                 </li>
                             <?php endif;
                             $isFirst = false;
