@@ -1310,6 +1310,32 @@ class Web
     }
 
     /**
+     * Converts input data to encoded entities for safe display to screen
+     * 
+     * @param string $data
+     * @return string
+     */
+    public function safePrint(?string $data): string
+    {
+        if (!$data) return '';
+        return htmlspecialchars(string: $data, double_encode: false);
+    }
+
+    /**
+     * This is the opposite of {@see Web::safePrint}, it ensures encoded HTML tags are rendered to the screen
+     * This is really only useful for displaying the content of a WYSIWYG editor like Quill
+     * without the tags being rendered as raw text.
+     * 
+     * @param string $data
+     * @return string
+     */
+    public function unsafePrint(?string $data): string
+    {
+        if (!$data) return '';
+        return htmlspecialchars_decode($data);
+    }
+
+    /**
      * Creates a url prefixed with the webroot
      *
      * @param string $link
