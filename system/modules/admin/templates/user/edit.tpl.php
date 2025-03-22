@@ -1,6 +1,6 @@
 <h1>
     Edit -
-    <?php echo $user["account"]["firstname"] . " " . $user["account"]["lastname"] ?>
+    <?php echo $w->safePrint($user["account"]["firstname"]) . " " . $w->safePrint($user["account"]["lastname"]); ?>
 </h1>
 
 <div class="tabs">

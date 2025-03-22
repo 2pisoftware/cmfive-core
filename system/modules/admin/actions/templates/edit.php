@@ -70,7 +70,7 @@ function edit_GET(Web $w)
         [
             (new \Html\Cmfive\CodeMirrorEditor([
                 "id|name" => "template_body",
-                "value" => htmlspecialchars($t->template_body),
+                "value" => str_replace("'", "\'", $w->unsafePrint($t->template_body)),
             ]))
         ]
     ];

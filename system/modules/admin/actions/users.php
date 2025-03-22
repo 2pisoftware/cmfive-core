@@ -154,9 +154,9 @@ function users_GET(Web $w)
             $contact = $internal_user->getContact();
 
             $internal_data[] = [
-                ($internal_user->is_locked ? '<i class="bi bi-lock"></i>' : '') . $internal_user->login,
-                !empty($contact) ? $contact->firstname . ' ' . $contact->lastname : "",
-                !empty($contact) ? $contact->email : "",
+                ($internal_user->is_locked ? '<i class="bi bi-lock"></i>' : '') . $w->safePrint($internal_user->login),
+                !empty($contact) ? $w->safePrint($contact->firstname . ' ' . $contact->lastname) : "",
+                !empty($contact) ? $w->safePrint($contact->email) : "",
                 $internal_user->is_admin ? "Yes" : "No",
                 $internal_user->is_active ? "Yes" : "No",
                 $internal_user->is_mfa_enabled ? "Yes" : "No",
@@ -177,9 +177,9 @@ function users_GET(Web $w)
             $contact = $external_user->getContact();
 
             $external_data[] = [
-                $external_user->login,
-                !empty($contact->id) ? $contact->firstname . ' ' . $contact->lastname : 'No Contact object found',
-                !empty($contact) ? $contact->email : "",
+                $w->safePrint($external_user->login),
+                !empty($contact->id) ? $w->safePrint($contact->firstname . ' ' . $contact->lastname) : 'No Contact object found',
+                !empty($contact) ? $w->safePrint($contact->email) : "",
                // !empty($contact->id) ? $contact->lastname : 'No Contact object found',
                 // [$external_user->is_admin ? "Yes" : "No", true],
                 // [$external_user->is_active ? "Yes" : "No", true],

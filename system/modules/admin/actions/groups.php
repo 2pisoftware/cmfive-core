@@ -23,13 +23,13 @@ function groups_GET(Web &$w)
         foreach ($groups as $group) {
             $ancestors = [];
 
-            $line = [AuthService::getInstance($w)->user()->is_admin ? Html::box($w->localUrl("/admin/groupedit/" . $group->id), "<u>" . $group->login . "</u>") : $group->login];
+            $line = [AuthService::getInstance($w)->user()->is_admin ? Html::box($w->localUrl("/admin/groupedit/" . $group->id), "<u>" . $w->safePrint($group->login) . "</u>") : $w->safePrint($group->login)];
             //if it is a sub group from other group;
             $groupUsers = $group->isInGroups();
 
             if ($groupUsers) {
                 foreach ($groupUsers as $groupUser) {
-                    $ancestors[] = $groupUser->getGroup()->login;
+                    $ancestors[] = $w->safePrint($groupUser->getGroup()->login);
                 }
             }
             $line[] = count($ancestors) > 0 ? "<div class='text-success'>" . implode(", ", $ancestors) . "</div>" : "";

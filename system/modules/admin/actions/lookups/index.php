@@ -6,7 +6,11 @@ function index_ALL(Web &$w)
     AdminService::getInstance($w)->navigation($w, "Lookups");
     History::add("List Lookups");
 
-    $types = LookupService::getInstance($w)->getLookupTypes();
+    $types = array_map(function(array $l) use ($w) {
+        $l[0] = $w->safePrint($l[0]);
+        $l[1] = $w->safePrint($l[1]);
+        return $l;
+    }, LookupService::getInstance($w)->getLookupTypes());
 
     $typelist = Html::select("type", $types, Request::string('type'));
     $w->ctx("typelist", $typelist);
@@ -31,9 +35,9 @@ function index_ALL(Web &$w)
     if ($lookup) {
         foreach ($lookup as $look) {
             $line[] = [
-                $look->type,
-                $look->code,
-                $look->title,
+                $w->safePrint($look->type),
+                $w->safePrint($look->code),
+                $w->safePrint($look->title),
                 HtmlBootstrap5::box(
                     href: $w->localUrl("/admin-lookups/edit/" . $look->id . "/" . urlencode(Request::string('type', ''))),
                     title: "Edit",
