@@ -21,9 +21,9 @@ function users_GET(Web $w)
     $external_page_number = $w->sessionOrRequest('cmfive-external-users__page-number', 1);
 
     // Get filter parameters
-    $login = $w->sessionOrRequest("admin/user__filter-login");
-    $name = $w->sessionOrRequest("admin/user__filter-name");
-    $email = $w->sessionOrRequest("admin/user__filter-email");
+    $login = $w->safePrint($w->sessionOrRequest("admin/user__filter-login"));
+    $name = $w->safePrint($w->sessionOrRequest("admin/user__filter-name"));
+    $email = $w->safePrint($w->sessionOrRequest("admin/user__filter-email"));
     $reset = Request::string("filter_reset_users_filter");
 
     $filter_url = "";
