@@ -188,7 +188,7 @@ class Form extends DbObject
      */
     public function getSelectOptionTitle()
     {
-        return $this->title;
+        return $this->w->safePrint($this->title);
     }
 
     /**
@@ -208,7 +208,7 @@ class Form extends DbObject
      */
     public function printSearchTitle()
     {
-        return $this->title;
+        return $this->w->safePrint($this->title);
     }
 
     /**
@@ -219,6 +219,17 @@ class Form extends DbObject
     public function printSearchUrl()
     {
         return "/form/show/" . $this->id;
+    }
+
+    public function toArray()
+    {
+        return [
+            'title' => $this->w->safePrint($this->title),
+            'description' => $this->w->safePrint($this->description),
+            'header_template' => $this->w->safePrint($this->header_template),
+            'row_template' => $this->w->safePrint($this->row_template),
+            'summary_template' => $this->w->safePrint($this->summary_template),
+        ];
     }
 
     /**

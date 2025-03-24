@@ -16,7 +16,7 @@ function index_GET($w)
     if (!empty($templates)) {
         foreach ($templates as $t) {
             $table_data[]  = [
-                $t->title, $t->module, $t->category,
+                $w->safePrint($t->title), $w->safePrint($t->module), $w->safePrint($t->category),
                 [$t->is_active ? "Active" : "Inactive", true],
                 // [Date("H:i d-m-Y", $t->dt_created), true],
                 // [Date("H:i d-m-Y", $t->dt_modified), true], 

@@ -394,7 +394,7 @@ class HtmlBootstrap5 extends Html
                         case "email":
                         case "tel":
                             $size = !empty($field[4]) ? $field[4] : null;
-                            $buffer .= '<input' . $readonly . ' class="form-control" type="' . $type . '" name="' . $name . '" value="' . (empty($value) ? '' : htmlspecialchars($value)) .
+                            $buffer .= '<input' . $readonly . ' class="form-control" type="' . $type . '" name="' . $name . '" value="' . (empty($value) ? '' : $value) .
                                 '" size="' . $size . '" id="' . $name . '" ' . $required . " />";
                             break;
                         case "autocomplete":

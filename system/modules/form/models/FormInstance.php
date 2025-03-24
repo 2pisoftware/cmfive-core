@@ -104,7 +104,7 @@ class FormInstance extends DbObject
             if (!empty($form_values)) {
                 foreach ($form_values as $form_value) {
                     $field = $form_value->getFormField();
-                    $template_data[$field->technical_name] = $form_value->value;
+                    $template_data[$field->technical_name] = $w->safePrint($form_value->value);
                 }
             }
 
@@ -116,7 +116,7 @@ class FormInstance extends DbObject
         // collate available form values
         if (!empty($form_values)) {
             foreach ($form_values as $value) {
-                $formValueCollated[$value->form_field_id] = $value;
+                $formValueCollated[$value->form_field_id] = $w->safePrint($value);
             }
         }
 
@@ -170,7 +170,7 @@ class FormInstance extends DbObject
             }
         }
         
-        return [$form->title => $form_structure];
+        return [$this->w->safePrint($form->title) => $form_structure];
     }
 
     public function delete($force = false)

@@ -2,17 +2,14 @@
 
 function ajaxGetMetadata_GET(Web $w)
 {
-
     $w->setLayout(null);
-    list($field_id) = $w->pathMatch();
+    list($field_id) = $w->pathMatch('field_id');
     $type = Request::string("type");
 
     if (empty($field_id) && empty($type)) {
         // header("HTTP/1.1 404 Not Found");
         return;
     }
-
-    // VueComponentRegister::registerComponent('metadata-subform', new VueComponent('metadata-subform', '/system/modules/form/assets/js/metadata-subform.vue.js'));
 
     $field = null;
     if (!empty($field_id)) {

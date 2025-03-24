@@ -22,10 +22,10 @@ function show_GET(Web $w)
         $event_table = [];
         foreach ($events as $event) {
             $event_table[] = [
-                $event->title,
-                $event->event_type,
+                $w->safePrint($event->title),
+                $w->safePrint($event->event_type),
                 $event->is_active ? 'ON' : 'OFF',
-                !empty($event->form_application_id) ? FormService::getInstance($w)->getFormApplication($event->form_application_id)->title : 'None',
+                !empty($event->form_application_id) ? $w->safePrint(FormService::getInstance($w)->getFormApplication($event->form_application_id)->title) : 'None',
                 $event->module . '.' . $event->class,
                 // add settings
                 str_replace(',', ',<br>', $event->settings),

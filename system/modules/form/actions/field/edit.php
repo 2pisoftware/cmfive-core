@@ -2,7 +2,7 @@
 
 function edit_GET(Web $w)
 {
-    list($field_id) = $w->pathMatch();
+    list($field_id) = $w->pathMatch("field_id");
     $form_id = Request::int("form_id");
 
     if (empty($form_id)) {
@@ -17,7 +17,7 @@ function edit_GET(Web $w)
 
 function edit_POST(Web $w)
 {
-    list($field_id) = $w->pathMatch();
+    list($field_id) = $w->pathMatch("field_id");
     $form_id = Request::int("form_id");
 
     $_form_field_object = $field_id ? FormService::getInstance($w)->getFormField($field_id) : new FormField($w);

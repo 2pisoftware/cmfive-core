@@ -60,9 +60,9 @@ function index_ALL(Web &$w)
     $countries = AdminService::getInstance($w)->getCountries();
     uasort($countries, fn ($a, $b) => $a->name <=> $b->name);
     $country_rows = array_map(fn (Country $c) => [
-        $c->name, 
-        $c->alpha_2_code . ' / ' . $c->alpha_3_code, 
-        $c->demonym,
+        $w->safePrint($c->name),
+        $w->safePrint($c->alpha_2_code) . ' / ' . $w->safePrint($c->alpha_3_code), 
+        $w->safePrint($c->demonym),
         HtmlBootstrap5::box(href: "/admin-lookups/edit_country/" . $c->id, title: "Edit", class: 'btn btn-sm btn-primary') .
         HtmlBootstrap5::b(href: "/admin-lookups/delete_country/" . $c->id, title: "Delete", confirm: "Are you sure you wish to delete this Country?", class: 'btn btn-sm btn-danger')
     ], $countries);

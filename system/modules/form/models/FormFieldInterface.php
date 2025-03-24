@@ -84,7 +84,7 @@ abstract class FormFieldInterface
      */
     public static function modifyForDisplay(FormValue $form_value, $w, $metadata = null)
     {
-        return $value;
+        return $form_value->value;
     }
 
     /**
@@ -116,7 +116,7 @@ abstract class FormFieldInterface
      */
     public static function modifyForPersistance(FormValue $form_value)
     {
-        return $value;
+        return $form_value->value;
     }
 
     /**

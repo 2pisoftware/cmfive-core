@@ -18,9 +18,9 @@ function listform(\Web $w, $params)
     $currentpage = $w->sessionOrRequest('currentpage', 1);
 
     if ($paginated) {
-        $w->ctx('currentpage', $params['currentpage']);
-        $w->ctx('numpages', $params['numpages']);
-        $w->ctx('pagesize', $params['pagesize']);
-        $w->ctx('totalresults', $params['totalresults']);
+        $w->ctx('currentpage', array_key_exists('currentpage', $params) ? $params['currentpage'] : $currentpage);
+        $w->ctx('numpages', array_key_exists('numpages', $params) ? $params['numpages'] : 1);
+        $w->ctx('pagesize', array_key_exists('pagesize', $params) ? $params['pagesize'] : 20);
+        $w->ctx('totalresults', array_key_exists('totalresults', $params) ? $params['totalresults'] : 1);
     }
 }

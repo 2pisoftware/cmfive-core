@@ -14,43 +14,43 @@ function edit_country_GET(Web $w)
                 (new \Html\Form\InputField\Text([
                     'id|name' => 'name',
                     'label' => 'Name',
-                    'value' => htmlentities($country->name ?? ''),
+                    'value' => $w->safePrint($country->name ?? ''),
                     'required' => true,
                 ]))
             ], [
                 (new \Html\Form\InputField\Text([
                     'id|name' => 'alpha_2_code',
                     'label' => 'Alpha 2 Code',
-                    'value' => $country->alpha_2_code ?? '',
+                    'value' => $w->safePrint($country->alpha_2_code ?? ''),
                     'required' => true,
                 ])),
                 (new \Html\Form\InputField\Text([
                     'id|name' => 'alpha_3_code',
                     'label' => 'Alpha 3 Code',
-                    'value' => $country->alpha_3_code ?? '',
+                    'value' => $w->safePrint($country->alpha_3_code ?? ''),
                     'required' => true,
                 ]))
             ], [
                 (new \Html\Form\InputField\Text([
                     'id|name' => 'capital',
                     'label' => 'Capital',
-                    'value' => $country->capital ?? '',
+                    'value' => $w->safePrint($country->capital ?? ''),
                 ])), 
                 (new \Html\Form\InputField\Text([
                     'id|name' => 'region',
                     'label' => 'Region',
-                    'value' => $country->region ?? '',
+                    'value' => $w->safePrint($country->region ?? ''),
                 ]))
             ], [
                 (new \Html\Form\InputField\Text([
                     'id|name' => 'subregion',
                     'label' => 'Subregion',
-                    'value' => $country->subregion ?? '',
+                    'value' => $w->safePrint($country->subregion ?? ''),
                 ])),
                 (new \Html\Form\InputField\Text([
                     'id|name' => 'demonym',
                     'label' => 'Demonym',
-                    'value' => htmlentities($country->demonym ?? ''),
+                    'value' => $w->safePrint($country->demonym ?? ''),
                 ]))
         ]
     ]];
