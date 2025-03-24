@@ -45,7 +45,7 @@ $theme_setting = AuthService::getInstance($w)->getSettingByKey('bs5-theme');
                 <a class="nav-link pt-0 pb-1" data-toggle-menu="close"><i class="bi bi-x" style="font-size: 24px;"></i></a>
             </div>
             <ul class="nav py-2 justify-content-around border-top border-bottom">
-                <li class="nav-item"><a class="nav-link nav-icon" href="/"><i class="bi bi-house-fill"></i></a></li>
+                <li class="nav-item"><a class="nav-link nav-icon" href="/<?php echo AuthService::getInstance($w)->user()->redirect_url; ?>"><i class="bi bi-house-fill"></i></a></li>
                 <?php if (Config::get('favorite.active', true) === true && AuthService::getInstance($w)->user()->allowed('/favorite')) : ?>
                     <li class="nav-item"><a class="nav-link nav-icon" data-modal-target="/favorite"><i class="bi bi-star-fill"></i></a></li>
                 <?php endif;
@@ -144,7 +144,7 @@ $theme_setting = AuthService::getInstance($w)->getSettingByKey('bs5-theme');
                     <div class="container-fluid justify-content-start">
                         <ul class="navbar-nav me-md-4">
                             <li class="nav-item"><a class="nav-link nav-icon" data-toggle-menu="open"><i class="bi bi-list"></i></a></li>
-                            <li class="nav-item"><a class="nav-link nav-icon" href="/"><i class="bi bi-house-fill"></i></a></li>
+                            <li class="nav-item"><a class="nav-link nav-icon" href="/<?php echo AuthService::getInstance($w)->user()->redirect_url; ?>"><i class="bi bi-house-fill"></i></a></li>
                             <?php if (Config::get('favorite.active', true) === true && AuthService::getInstance($w)->user()->allowed('/favorite')) : ?>
                                 <li class="nav-item"><a class="nav-link nav-icon" data-modal-target="/favorite"><i class="bi bi-star-fill"></i></a></li>
                             <?php endif;

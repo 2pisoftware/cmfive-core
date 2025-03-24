@@ -2,8 +2,6 @@
 
 namespace Html\Form;
 
-use LogService;
-
 /**
  * HTML5 Autocomplete using Tom-Select on frontend.
  * Renders an text <input> field with a dropdown for possible values,
@@ -125,7 +123,7 @@ class Html5Autocomplete extends \Html\Form\InputField
                         $this->options
                     )
                     : null,
-                "maxItems" => !isset($this->maxItems) ? $this->maxItems : 1,
+                "maxItems" => $this->maxItems,
                 "items" => $this->value,
                 "source" => $this->source,
                 "create" => $this->canCreate,

@@ -52,6 +52,7 @@ function profile_GET(Web &$w)
             "priv_mobile" => $contact->priv_mobile,
             "fax" => $contact->fax,
             "email" => $contact->email,
+            "language" => $user->language,
         ],
         "security" => [
             "new_password" => "",
