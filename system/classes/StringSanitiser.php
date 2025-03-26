@@ -12,7 +12,7 @@ class StringSanitiser {
         if (!$string) {
             return '';
         }
-        return htmlspecialchars(string: $string, flags: $flags, encoding: 'UTF-8', double_encode: false);
+        return htmlspecialchars(string: $string, flags: $flags, double_encode: false);
     }
 
     /**
@@ -43,5 +43,13 @@ class StringSanitiser {
             return '';
         }
         return preg_replace('/[^a-zA-Z0-9]/', '', $string) ?? '';
+    }
+
+    public static function escapeQuotes(?string $string): string
+    {
+        if (!$string) {
+            return '';
+        }
+        return addslashes($string);
     }
 }

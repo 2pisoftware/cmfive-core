@@ -47,7 +47,6 @@ $w->setLayout("layout")
                             "value" => $user["account"]["lastname"],
                         ])
                     ],
-
                     [
                         new Html5Autocomplete([
                             "id|name" => "title",

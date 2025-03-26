@@ -60,8 +60,8 @@ function profile_GET(Web &$w)
             "is_mfa_enabled" => $user->is_mfa_enabled,
         ],
     ];
-
-    var_dump($user_details);
-
+// echo "<pre>";
+//     var_dump($user_details);
+// echo "</pre>";
     $w->ctx("user", $user_details);
 }

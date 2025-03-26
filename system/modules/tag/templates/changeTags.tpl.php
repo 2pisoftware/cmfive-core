@@ -17,7 +17,7 @@
         "options" => array_map(function ($val) use ($object_tags, $object_class) {
             return [
                 "value" => $val->getSelectOptionValue(),
-                "text" => $val->getSelectOptionTitle(),
+                "text" => StringSanitiser::sanitise($val->getSelectOptionTitle()),
                 "type" => empty($object_tags)
                     ? "all"
                     // will throw an error if object_tags has no elements
