@@ -69,10 +69,10 @@ $w->setLayout("layout")
                             "label" => "Language",
                             "maxItems" => 1,
                             "options" => array_map(function ($lang) {
-                                $lang->name = StringSanitiser::sanitise($lang->name);
-                                $lang->native_name = StringSanitiser::sanitise($lang->native_name);
-                                $lang->iso_639_1 = StringSanitiser::sanitise($lang->iso_639_1);
-                                $lang->iso_639_2 = StringSanitiser::sanitise($lang->iso_639_2);
+                                $lang->name = $lang->name;
+                                $lang->native_name = $lang->native_name;
+                                $lang->iso_639_1 = $lang->iso_639_1;
+                                $lang->iso_639_2 = $lang->iso_639_2;
                                 return $lang;
                             }, AdminService::getInstance($w)->getLanguages()),
                             "value" => $user["account"]["language"],

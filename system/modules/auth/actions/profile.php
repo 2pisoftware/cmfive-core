@@ -33,7 +33,7 @@ function profile_GET(Web &$w)
     foreach (AuthService::getInstance($w)->getTitles() as $title) {
         $titles_array[] = [
             "id" => $title->id,
-            "name" => StringSanitiser::sanitise($title->title),
+            "name" => $title->title,
         ];
     }
 

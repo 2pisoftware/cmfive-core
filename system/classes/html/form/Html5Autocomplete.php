@@ -142,18 +142,13 @@ class Html5Autocomplete extends \Html\Form\InputField
                 "onItemCreate" => $this->onItemCreate,
             ]
         ]);
-        var_dump($config);
         $buffer .=
             "data-config" .
             "='" .
             json_encode([
                 "options" => $this->options ?
                     array_map(
-                        fn($val) =>
-                        array_map(
-                            fn($inner) => StringSanitiser::sanitise($inner),
-                            $this->convertOption($val)
-                        ),
+                        fn($val) => $this->convertOption($val),
                         $this->options
                     )
                     : null,
@@ -187,8 +182,8 @@ class Html5Autocomplete extends \Html\Form\InputField
         // Check for option 1
         if (is_a($val, "DbObject")) {
             return [
-                "value" => StringSanitiser::sanitise($val->getSelectOptionValue()),
-                "text" => StringSanitiser::sanitise($val->getSelectOptionTitle())
+                "value" => $val->getSelectOptionValue(),
+                "text" => $val->getSelectOptionTitle()
             ];
         } else if (isset($val["value"]) && isset($val["text"])) {
             return [
