@@ -2,6 +2,8 @@
 
 namespace Html\Form;
 
+use StringSanitiser;
+
 /**
  * HTML5 Autocomplete using Tom-Select on frontend.
  * Renders an text <input> field with a dropdown for possible values,
@@ -153,8 +155,8 @@ class Html5Autocomplete extends \Html\Form\InputField
         // Check for option 1
         if (is_a($val, "DbObject")) {
             return [
-                "value" => $val->getSelectOptionValue(),
-                "text" => $val->getSelectOptionTitle()
+                "value" => StringSanitiser::sanitise($val->getSelectOptionValue()),
+                "text" => StringSanitiser::sanitise($val->getSelectOptionTitle())
             ];
         } else if (isset($val["value"]) && isset($val["text"])) {
             return [

@@ -21,9 +21,9 @@ function users_GET(Web $w)
     $external_page_number = $w->sessionOrRequest('cmfive-external-users__page-number', 1);
 
     // Get filter parameters
-    $login = $w->safePrint($w->sessionOrRequest("admin/user__filter-login"));
-    $name = $w->safePrint($w->sessionOrRequest("admin/user__filter-name"));
-    $email = $w->safePrint($w->sessionOrRequest("admin/user__filter-email"));
+    $login = StringSanitiser::sanitise($w->sessionOrRequest("admin/user__filter-login"));
+    $name = StringSanitiser::sanitise($w->sessionOrRequest("admin/user__filter-name"));
+    $email = StringSanitiser::sanitise($w->sessionOrRequest("admin/user__filter-email"));
     $reset = Request::string("filter_reset_users_filter");
 
     $filter_url = "";
@@ -154,9 +154,9 @@ function users_GET(Web $w)
             $contact = $internal_user->getContact();
 
             $internal_data[] = [
-                ($internal_user->is_locked ? '<i class="bi bi-lock"></i>' : '') . $w->safePrint($internal_user->login),
-                !empty($contact) ? $w->safePrint($contact->firstname . ' ' . $contact->lastname) : "",
-                !empty($contact) ? $w->safePrint($contact->email) : "",
+                ($internal_user->is_locked ? '<i class="bi bi-lock"></i>' : '') . StringSanitiser::sanitise($internal_user->login),
+                !empty($contact) ? StringSanitiser::sanitise($contact->firstname . ' ' . $contact->lastname) : "",
+                !empty($contact) ? StringSanitiser::sanitise($contact->email) : "",
                 $internal_user->is_admin ? "Yes" : "No",
                 $internal_user->is_active ? "Yes" : "No",
                 $internal_user->is_mfa_enabled ? "Yes" : "No",
@@ -177,9 +177,9 @@ function users_GET(Web $w)
             $contact = $external_user->getContact();
 
             $external_data[] = [
-                $w->safePrint($external_user->login),
-                !empty($contact->id) ? $w->safePrint($contact->firstname . ' ' . $contact->lastname) : 'No Contact object found',
-                !empty($contact) ? $w->safePrint($contact->email) : "",
+                StringSanitiser::sanitise($external_user->login),
+                !empty($contact->id) ? StringSanitiser::sanitise($contact->firstname . ' ' . $contact->lastname) : 'No Contact object found',
+                !empty($contact) ? StringSanitiser::sanitise($contact->email) : "",
                // !empty($contact->id) ? $contact->lastname : 'No Contact object found',
                 // [$external_user->is_admin ? "Yes" : "No", true],
                 // [$external_user->is_active ? "Yes" : "No", true],

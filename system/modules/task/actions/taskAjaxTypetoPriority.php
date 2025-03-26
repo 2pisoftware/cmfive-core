@@ -28,7 +28,7 @@ function taskAjaxTypetoPriority_ALL(Web &$w) {
 	$priority = array(array("No assigned Tasks",""));
 
 	// load priority dropdown and return
-	$priority = Html::select("tpriority",$priority,null);
+	$priority = HtmlBootstrap5::select("tpriority",$priority,null);
 
 	$w->setLayout(null);
 	$w->out(json_encode($priority));

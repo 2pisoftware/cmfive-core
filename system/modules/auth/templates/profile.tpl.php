@@ -69,7 +69,13 @@ $w->setLayout("layout")
                             "class" => "form-control",
                             "label" => "Language",
                             "maxItems" => 1,
-                            "options" => AdminService::getInstance($w)->getLanguages(),
+                            "options" => array_map(function ($lang) {
+                                $lang->name = StringSanitiser::sanitise($lang->name);
+                                $lang->native_name = StringSanitiser::sanitise($lang->native_name);
+                                $lang->iso_639_1 = StringSanitiser::sanitise($lang->iso_639_1);
+                                $lang->iso_639_2 = StringSanitiser::sanitise($lang->iso_639_2);
+                                return $lang;
+                            }, AdminService::getInstance($w)->getLanguages()),
                             "value" => $user["account"]["language"],
                         ])
                     ]
@@ -125,7 +131,6 @@ $w->setLayout("layout")
                 locked="false"
                 mfa_enabled="<?php echo $user["security"]["is_mfa_enabled"]; ?>"
                 pw_min_length="<?php echo Config::get('auth.login.password.min_length', 8); ?>">
-                >
             </user-security-component>
         </div>
     </div>

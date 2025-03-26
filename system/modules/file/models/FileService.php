@@ -614,7 +614,7 @@ class FileService extends DbService
     }
 
     /**
-     * Uploads multiple attachments at once (Using the Html::multiFileUpload function
+     * Uploads multiple attachments at once (Using the HtmlBootstrap5::multiFileUpload function
      *
      *  Stores in /uploads/attachments/<ObjectTableName>/<year>/<month>/<day>/<attachId>/<filename>
      *
@@ -806,8 +806,8 @@ class FileService extends DbService
                     src="' . WEBROOT . '/file/atthumb/' . $att->id . '/250/250" border="0" /></a><br/>' . $att->description . '
                 </div>
 
-                <div class="actions">' . Html::a(WEBROOT . "/file/atdel/" . $att->id . "/" . $backUrl . "+" . $object->id, "Delete", null, null, "Do you want to delete this attachment?")
-                    . ' ' . Html::a(WEBROOT . "/file/atfile/" . $att->id . "/" . $att->filename, "Download") . '
+                <div class="actions">' . HtmlBootstrap5::a(WEBROOT . "/file/atdel/" . $att->id . "/" . $backUrl . "+" . $object->id, "Delete", null, null, "Do you want to delete this attachment?")
+                    . ' ' . HtmlBootstrap5::a(WEBROOT . "/file/atfile/" . $att->id . "/" . $att->filename, "Download") . '
                 </div>
                 </div>';
             }

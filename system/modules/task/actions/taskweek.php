@@ -24,27 +24,20 @@ function taskweek_ALL(Web &$w)
     $tasks = TaskService::getInstance($w)->getTaskWeek($taskgroup, $assignee, $from, $to);
 
     // set task activity heading
-    $line = [
-        ["An overview of the activity in Tasks: " . $from . " to " . $to],
-    ];
-    if ($tasks)
-    {
+    $line = [["An overview of the activity in Tasks: " . $from . " to " . $to]];
+    if ($tasks) {
         // dont wanna keep displaying same date so set a variable for comparison
         $olddate = "";
         $i = 0;
-        foreach ($tasks as $task)
-        {
+        foreach ($tasks as $task) {
             $taskgroup = TaskService::getInstance($w)->getTaskGroup($task['task_group_id']);
             $caniview = $taskgroup->getCanIView();
 
-            if ($caniview)
-            {
+            if ($caniview) {
                 // if current task date = previous task date, dont display
-                if (formatDate($task['dt_modified']) != $olddate)
-                {
+                if (formatDate($task['dt_modified']) != $olddate) {
                     // if this is not the first record, display emtpy row between date lists
-                    if ($i > 0)
-                    {
+                    if ($i > 0) {
                         $line[] = ["&nbsp;"];
                     }
                     // display fancy date
@@ -52,14 +45,12 @@ function taskweek_ALL(Web &$w)
                 }
                 // display comments. if no group selected, display with link to task list with group preselected
                 $thisgroup = ($taskgroup != "") ? "" : "<a title=\"View Task Group\" href=\"" . WEBROOT . "/task/tasklist/?taskgroups=" . $task['task_group_id'] . "\">" . TaskService::getInstance($w)->getTaskGroupTitleById($task['task_group_id']) . "</a>:&nbsp;&nbsp;";
-                $line[] = ["<dd>" . date("g:i a", strtotime($task['dt_modified'])) . " - " . $thisgroup . "<a title=\"View Task Details\" href=\"" . WEBROOT . "/task/edit/" . $task['id'] . "\"><b>" . $task['title'] . "</b></a>: " . TaskService::getInstance($w)->findURL($task['comment']) . " - " . TaskService::getInstance($w)->getUserById($task['creator_id']) . "</dd>"];
+                $line[] = ["<dd>" . date("g:i a", strtotime($task['dt_modified'])) . " - " . $thisgroup . "<a title=\"View Task Details\" href=\"" . WEBROOT . "/task/edit/" . $task['id'] . "\"><b>" . StringSanitiser::sanitise($task['title']) . "</b></a>: " . TaskService::getInstance($w)->findURL($task['comment']) . " - " . TaskService::getInstance($w)->getUserById($task['creator_id']) . "</dd>"];
                 $olddate = formatDate($task['dt_modified']);
                 $i++;
             }
         }
-    }
-    else
-    {
+    } else {
         // if no tasks found, say as much
         $line[] = ["No Task Activity found for given selections."];
     }
@@ -70,21 +61,17 @@ function taskweek_ALL(Web &$w)
 
     // get list of groups of which i am a member
     $mygroups = TaskService::getInstance($w)->getMemberGroups($_SESSION['user_id']);
-    if ($mygroups)
-    {
-        foreach ($mygroups as $mygroup)
-        {
+    if ($mygroups) {
+        foreach ($mygroups as $mygroup) {
             $taskgroup = TaskService::getInstance($w)->getTaskGroup($mygroup->task_group_id);
             $caniview = $taskgroup->getCanIView();
 
-            if ($caniview)
-            {
+            if ($caniview) {
                 $group[$mygroup->task_group_id] = [TaskService::getInstance($w)->getTaskGroupTitleById($mygroup->task_group_id), $mygroup->task_group_id];
 
                 // for those groups of which i am a member, get list of all members for display in Assignee & Creator dropdowns
                 $mymembers = TaskService::getInstance($w)->getMembersInGroup($mygroup->task_group_id);
-                foreach ($mymembers as $mymem)
-                {
+                foreach ($mymembers as $mymem) {
                     $members[$mymem[1]] = [$mymem[0], $mymem[1]];
                 }
             }
@@ -106,12 +93,12 @@ function taskweek_ALL(Web &$w)
         new Date([
             "id|name" => "dt_from",
             "label" => "From",
-            "value" => DateTime::createFromFormat("d/m/Y", $from)->format("Y-m-d"), // annoying
+            "value" => $from
         ]),
         new Date([
             "id|name" => "dt_to",
             "label" => "To date",
-            "value" => DateTime::createFromFormat("d/m/Y", $to)->format("Y-m-d"), // annoying
+            "value" => $to
         ]),
     ], $w->localUrl("/task/taskweek"), "POST");
 

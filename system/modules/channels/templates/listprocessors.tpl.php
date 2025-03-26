@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col">    
-        <?php echo Html::box("/channels-processor/edit", "Add Processor", true); ?>
+        <?php echo HtmlBootstrap5::box("/channels-processor/edit", "Add Processor", true); ?>
     </div>
 </div>
 <?php if (!empty($processors)) :
@@ -10,10 +10,10 @@
         $channel = $p->getChannel();
         $line = [
             $p->id,
-            $w->safePrint($p->name),
-            $w->safePrint($p->class),
-            $w->safePrint($p->module),
-            !empty($channel->name) ? $w->safePrint($channel->name) : "",
+            StringSanitiser::sanitise($p->name),
+            StringSanitiser::sanitise($p->class),
+            StringSanitiser::sanitise($p->module),
+            !empty($channel->name) ? StringSanitiser::sanitise($channel->name) : "",
         ];
         $line[] = HtmlBootstrap5::buttonGroup(
             HtmlBootstrap5::box("/channels-processor/edit/{$p->id}", "Edit", true, false, null, null, "isbox", null, "btn btn-sm btn-secondary") .
@@ -22,7 +22,7 @@
                     [
                         HtmlBootstrap5::box(href: "/channels-processor/editsettings/{$p->id}", title: "Settings", button: true, class: "dropdown-item btn btn-sm text-start"),
                         '<hr class="dropdown-divider">',
-                        HtmlBootstrap5::box(href: "/channels-processor/delete/{$p->id}", title: "Delete", confirm: "Are you sure you want to delete " . (!empty($p->name) ? $w->safePrint($p->name) : "this processor") . "?", class: "dropdown-item btn btn-sm text-start text-danger")
+                        HtmlBootstrap5::box(href: "/channels-processor/delete/{$p->id}", title: "Delete", confirm: "Are you sure you want to delete " . (!empty($p->name) ? StringSanitiser::sanitise($p->name) : "this processor") . "?", class: "dropdown-item btn btn-sm text-start text-danger")
                     ],
                     "btn-info btn btn-sm rounded-0 rounded-end-1"
                 )

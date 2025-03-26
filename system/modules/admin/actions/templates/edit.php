@@ -20,7 +20,7 @@ function edit_GET(Web $w)
                 "id|name" => "title",
                 "label" => "Title",
                 "required" => true,
-                "value" => $w->safePrint($t->title)
+                "value" => StringSanitiser::sanitise($t->title)
             ])), // ["Title", "text", "title", $t->title],
             (new \Html\Form\InputField\Checkbox([
                 "id|name" => "is_active",
@@ -34,13 +34,13 @@ function edit_GET(Web $w)
                 "id|name" => "module",
                 "label" => "Module",
                 "required" => true,
-                "value" => $w->safePrint($t->module)
+                "value" => StringSanitiser::sanitise($t->module)
             ])), //["Module", "text", "module", $t->module],
             (new \Html\Form\InputField\Text([
                 "id|name" => "category",
                 "label" => "Category",
                 "required" => true,
-                "value" => $w->safePrint($t->category)
+                "value" => StringSanitiser::sanitise($t->category)
             ])) //["Category", "text", "category", $t->category]
         ]
     ];
@@ -61,7 +61,7 @@ function edit_GET(Web $w)
         [
             (new \Html\Form\InputField\Text([
                 "id|name" => "template_title",
-                "value" => $w->safePrint($t->template_title),
+                "value" => StringSanitiser::sanitise($t->template_title),
                 "maxlength" => 100
             ]))
         ]
@@ -82,7 +82,7 @@ function edit_GET(Web $w)
         [
             (new \Html\Form\InputField\Text([
                 "id|name" => "test_title_json",
-                "value" => $w->safePrint($t->test_title_json),
+                "value" => StringSanitiser::sanitise($t->test_title_json),
                 "maxlength" => 500
             ])) //["", "textarea", "test_title_json", $t->test_title_json, 100, 5, false]]
         ]
@@ -91,7 +91,7 @@ function edit_GET(Web $w)
         [
             (new \Html\Form\Textarea([
                 "id|name" => "test_body_json",
-                "value" => $w->safePrint($t->test_body_json),
+                "value" => StringSanitiser::sanitise($t->test_body_json),
                 "maxlength" => 2000
             ])) // ["", "textarea", "test_body_json", $t->test_body_json, 100, 20, false]]
         ]

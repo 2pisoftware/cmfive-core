@@ -50,7 +50,7 @@ function ajaxGetFieldForm_ALL(Web $w)
         $old_task_data_query->where("data_key != ?", $data_key);
     }, $display_keys ?: []);
 
-    // Map to format for Html::table
+    // Map to format for HtmlBootstrap5::table
     $table_data = [];
     array_map(function ($data_row) use (&$table_data) {
         $table_data[] = [$data_row['data_key'], $data_row['value']];
@@ -65,7 +65,7 @@ function ajaxGetFieldForm_ALL(Web $w)
     ]));
 
     // $w->out(json_encode(
-    //     (count($table_data) > 0 ? "<table style='width: 100%; margin-bottom: 0px;'><tr><td class='section'>Historical task data</td></tr></table>" . Html::table($table_data, null, "small-12", ["Data key", "Value"]) : '') .
-    //         (!empty($task_type_form) ? Html::form($task_type_form, "/task/edit", null, null, "form_fields_form") : '')
+    //     (count($table_data) > 0 ? "<table style='width: 100%; margin-bottom: 0px;'><tr><td class='section'>Historical task data</td></tr></table>" . HtmlBootstrap5::table($table_data, null, "small-12", ["Data key", "Value"]) : '') .
+    //         (!empty($task_type_form) ? HtmlBootstrap5::form($task_type_form, "/task/edit", null, null, "form_fields_form") : '')
     // ));
 }

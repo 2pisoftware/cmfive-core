@@ -10,10 +10,10 @@ function edit_GET(Web $w)
     $form = [
         "Form" => [
             [
-                ["Title", "text", "title", $w->safePrint($_form_object->title)],
+                ["Title", "text", "title", StringSanitiser::sanitise($_form_object->title)],
             ],
             [
-                ["Description", "text", "description", $w->safePrint($_form_object->description)],
+                ["Description", "text", "description", StringSanitiser::sanitise($_form_object->description)],
             ],
         ]
     ];

@@ -161,7 +161,7 @@ class HtmlBootstrap5 extends Html
                 case "password":
                     $size = !empty($field[4]) ? $field[4] : '';
                     $required = !empty($field[5]) ? $field[5] : '';
-                    $buffer .= '<input' . $readonly . ' style="width:100%;" type="' . $type . '" name="' . $name . '" value="' . htmlspecialchars($value) . '" size="' . $size . '" id="' . $name . '"  ' . $required . '/>';
+                    $buffer .= '<input' . $readonly . ' style="width:100%;" type="' . $type . '" name="' . $name . '" value="' . $value . '" size="' . $size . '" id="' . $name . '"  ' . $required . '/>';
                     break;
                 case "autocomplete":
                     $options = !empty($field[4]) ? $field[4] : '';

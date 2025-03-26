@@ -10,7 +10,7 @@ function login_GET(Web $w)
         $w->redirect($w->localUrl(!empty($user->redirect_url) ? $user->redirect_url : "/main"));
     }
 
-    $loginform = Html::form([
+    $loginform = HtmlBootstrap5::form([
         ["Application Login", "section"],
         ["Username", "text", "login"],
         ["Password", "password", "password"],

@@ -10,7 +10,7 @@ function printfile_GET(Web $w) {
             array(array("Filename", "hidden", "file", $_GET["filename"])))
     );
     
-    $w->out(Html::multiColForm($form, "/admin/printfile", "POST", "Print", null, null, null, "_self", true, array("printer_id")));
+    $w->out(HtmlBootstrap5::multiColForm($form, "/admin/printfile", "POST", "Print", null, null, null, "_self", true, array("printer_id")));
 }
 
 function printfile_POST(Web $w) {

@@ -21,8 +21,8 @@ function manage_GET(Web $w)
     if (!empty($members)) {
         foreach ($members as $member) {
             $memberTableData[] = [
-                '<span class="text-break">' . $w->safePrint($member->getName()) . '</span>',
-                $w->safePrint($member->role),
+                '<span class="text-break">' . StringSanitiser::sanitise($member->getName()) . '</span>',
+                StringSanitiser::sanitise($member->role),
                 HtmlBootstrap5::buttonGroup(
                     HtmlBootstrap5::box("/form-application/edit_member/$application->id?member=$member->id", 'Edit', class: 'btn btn-primary') .
                     HtmlBootstrap5::b("/form-application/delete_member/$application->id?member=$member->id", 'Delete', 'Are you sure you want to delete this member?', class: 'btn btn-danger'),
@@ -37,7 +37,7 @@ function manage_GET(Web $w)
     if (!empty($forms)) {
         foreach ($forms as $form) {
             $formTableData[] = [
-                '<span class="text-break">' . $w->safePrint($form->title) . '</span>',
+                '<span class="text-break">' . StringSanitiser::sanitise($form->title) . '</span>',
                 $form->countFormInstancesForObject($application) ?: 0,
                 HtmlBootstrap5::b("/form-application/delete_form/$application->id?form=$form->id", 'Delete', 'Are you sure you want to delete this form?', class: 'btn btn-sm btn-danger'),
             ];

@@ -227,7 +227,7 @@ function edit_GET($w)
             ]
         ];
 
-        $w->ctx("tasknotify", Html::multiColForm($form, $w->localUrl("/task/updateusertasknotify/" . $task->id), "POST"));
+        $w->ctx("tasknotify", HtmlBootstrap5::multiColForm($form, $w->localUrl("/task/updateusertasknotify/" . $task->id), "POST"));
     }
 
     ///////////////////
@@ -265,7 +265,7 @@ function edit_POST($w)
     if (empty($task->dt_due)) {
         $task->dt_due = TaskService::getInstance($w)->getNextMonth();
     }
-    $task->estimate_hours = !empty($task->estimate_hours) ? $task->estimate_hours : null;
+    $task->estimate_hours = !empty($task->estimate_hours) ? intval($task->estimate_hours) : null;
     $task->effort = !empty($task->effort) ? floatval($task->effort) : null;
     $task->rate = !empty($task->rate) ? $task->rate : null;
     $task->insertOrUpdate(true);

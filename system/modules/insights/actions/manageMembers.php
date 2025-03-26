@@ -46,5 +46,5 @@ function manageMembers_ALL(Web $w)
     }
 
     //send the table to the template using ctx
-    $w->ctx('membersTable', Html::table($table, 'membersTable', 'tablesorter', $tableHeaders));
+    $w->ctx('membersTable', HtmlBootstrap5::table($table, 'membersTable', 'tablesorter', $tableHeaders));
 }

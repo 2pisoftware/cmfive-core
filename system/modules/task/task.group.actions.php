@@ -26,7 +26,7 @@ function createtaskgroup_POST(Web &$w)
     );
 
     // return
-    $w->msg("<div id='saved_record_id' data-id='" . $taskgroup->id . "' >Task Group " . $taskgroup->title . " added</div>", "/task-group/viewmembergroup/" . $taskgroup->id . "#members");
+    $w->msg("<div id='saved_record_id' data-id='" . $taskgroup->id . "' >Task Group " . StringSanitiser::sanitise($taskgroup->title) . " added</div>", "/task-group/viewmembergroup/" . $taskgroup->id . "#members");
 }
 
 
@@ -51,7 +51,7 @@ function deletetaskgroup_GET(Web &$w)
     // build static form displaying group details for confirmation of delete
     $f = HtmlBootstrap5::multiColForm([
         "Task Group Details" => [
-            [new InputField(["label" => "Title", "value" => $taskgroup->title, "disabled" => true])],
+            [new InputField(["label" => "Title", "value" => StringSanitiser::sanitise($taskgroup->title), "disabled" => true])],
             [new QuillEditor(["label" => "Description", "value" => $taskgroup->description, "disabled" => true])],
             [new InputField(["label" => "Task Group Type", "value" => $taskgroup->getTypeTitle(), "disabled" => true])],
             [new InputField(["label" => "Who Can Assign", "value" => $taskgroup->can_assign, "disabled" => true]),
@@ -85,7 +85,7 @@ function deletetaskgroup_POST(Web &$w)
     // Delete and return
     $taskgroup->delete();
 
-    $w->msg("Task Group " . $taskgroup->title . " deleted.", "/task-group/viewtaskgrouptypes");
+    $w->msg("Task Group " . StringSanitiser::sanitise($taskgroup->title) . " deleted.", "/task-group/viewtaskgrouptypes");
 }
 
 ////////////////////////////////////////////////////
@@ -183,11 +183,11 @@ function addgroupmembers_GET(Web &$w)
 
     // build 'add members' form given task group ID, the list of group roles and the list of users.
     // if current members are added as if new, their membership will be updated, not recreated, with the selected role
-    $addUserForm['Add Group Members'] = array(
-        array(array("", "hidden", "task_group_id", $p['task_group_id'])),
-        array(array("As Role", "select", "role", null, TaskService::getInstance($w)->getTaskGroupPermissions())),
-        array(array("Add Group Members", "select", "member", null, $users))
-    );
+    $addUserForm['Add Group Members'] = [
+        [["", "hidden", "task_group_id", $p['task_group_id']]],
+        [["As Role", "select", "role", null, TaskService::getInstance($w)->getTaskGroupPermissions()]],
+        [["Add Group Members", "select", "member", null, $users]]
+    ];
 
     $w->out(HtmlBootstrap5::multiColForm($addUserForm, $w->localUrl("/task-group/updategroupmembers/"), "POST", "Submit"));
 }
@@ -196,15 +196,14 @@ function updategroupmembers_POST(Web &$w)
 {
     // populate input array with preliminary membership details pertaining to target task group
     // these details will be the same for all new members to be added to the group
-    $arrdb = array();
-    $arrdb['task_group_id'] = $_REQUEST['task_group_id'];
-    $arrdb['role'] = $_REQUEST['role'];
-    $arrdb['priority'] = 1;
-    $arrdb['is_active'] = 1;
-
-    // for each selected member, complete population of input array
-    //	foreach ($_REQUEST['member'] as $member) {
-    $arrdb['user_id'] = Request::string('member');
+    $arrdb = [
+        'task_group_id' => $_REQUEST['task_group_id'],
+        'role' => $_REQUEST['role'],
+        'priority' => 1,
+        'is_active' => 1,
+        'user_id' => Request::string('member'),
+    ];
+    
     // check to see if member already exists in this group
     $mem = TaskService::getInstance($w)->getMemberGroupById($arrdb['task_group_id'], $arrdb['user_id']);
 

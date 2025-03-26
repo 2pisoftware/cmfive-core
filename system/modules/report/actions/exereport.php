@@ -19,12 +19,12 @@ function exereport_ALL(Web &$w)
     $repurl = "/report/exereport/" . $p['id'] . "?";
     $strREQ = $arrreq ? implode("&", $arrreq) : "";
     $urlcsv = $repurl . $strREQ . "&format=csv";
-    $btncsv = Html::b($urlcsv, "Export as CSV");
+    $btncsv = HtmlBootstrap5::b($urlcsv, "Export as CSV");
     $urlxml = $repurl . $strREQ . "&format=xml";
-    $btnxml = Html::b($urlxml, "Export as XML");
-    $btnrun = Html::b($runurl, "Edit Report Parameters");
-    $btnview = Html::b($viewurl, "Edit Report");
-    $btnpdf = Html::b($repurl . $strREQ . "&format=pdf", "Export as PDF");
+    $btnxml = HtmlBootstrap5::b($urlxml, "Export as XML");
+    $btnrun = HtmlBootstrap5::b($runurl, "Edit Report Parameters");
+    $btnview = HtmlBootstrap5::b($viewurl, "Edit Report");
+    $btnpdf = HtmlBootstrap5::b($repurl . $strREQ . "&format=pdf", "Export as PDF");
     $results = "";
 
     // if there is a report ID in the URL ...
@@ -147,7 +147,7 @@ function exereport_ALL(Web &$w)
                             $t = array_merge($hds, $t);
 
                             // Render selected template
-                            $results .= "<b>" . $title . "</b>" . Html::table($t, null, "tablesorter", true);
+                            $results .= "<b>" . $title . "</b>" . HtmlBootstrap5::table($t, null, "tablesorter", true);
                         }
                         // reset parameters string
                         $strcrumb = "";

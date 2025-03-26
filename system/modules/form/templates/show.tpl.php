@@ -1,6 +1,6 @@
 <div class="row panel">
     <div class="col-12 col-sm-9">
-        <div class="mt-2 text-break">Description: <?php echo $w->safePrint($form->description); ?></div>
+        <div class="mt-2 text-break">Description: <?php echo StringSanitiser::sanitise($form->description); ?></div>
     </div>
     <div class="col-12 col-sm-3">
         <?php echo HtmlBootstrap5::b(href: "/form/export/" . $form->id, title: "Export", class: 'float-end btn-secondary'); ?>
@@ -36,8 +36,8 @@
                         <?php foreach ($fields as $field) : ?>
                             <tr id="field_<?php echo $field->id; ?>" style="height: 40px;">
                                 <td><i class="bi bi-grip-vertical"></i></td>
-                                <td><?php echo $w->safePrint($field->name); ?></td>
-                                <td><?php echo $w->safePrint($field->technical_name); ?></td>
+                                <td><?php echo StringSanitiser::sanitise($field->name); ?></td>
+                                <td><?php echo StringSanitiser::sanitise($field->technical_name); ?></td>
                                 <td><?php echo $field->getReadableType(); ?></td>
                                 <td><?php echo $field->getAdditionalDetails(); ?></td>
                                 <td>

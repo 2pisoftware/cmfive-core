@@ -39,7 +39,7 @@ function ajaxGetExtraData_GET(Web $w) {
 			if (!is_null($required)) {
 				$select->setRequired($required);
 			}
-			echo $select->__toString() . "</label>"; // Html::select($form_data[0][0][2], $form_data[0][0][4], null, null, null, "-- Select --", null, $required);
+			echo $select->__toString() . "</label>"; // HtmlBootstrap5::select($form_data[0][0][2], $form_data[0][0][4], null, null, null, "-- Select --", null, $required);
 		} else if (is_a($form_data[0][0], "\Html\Form\Select")) {
 			$title = "<label class='small-12 columns'>Time Type";
 
@@ -78,7 +78,7 @@ function ajaxGetExtraData_GET(Web $w) {
 //			]
 //		];
 //		
-//		$w->out(Html::multiColForm($form));
+//		$w->out(HtmlBootstrap5::multiColForm($form));
 //	} else {
 //		return;
 //	}

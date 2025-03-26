@@ -7,12 +7,12 @@ function index_ALL(Web &$w)
     History::add("List Lookups");
 
     $types = array_map(function(array $l) use ($w) {
-        $l[0] = $w->safePrint($l[0]);
-        $l[1] = $w->safePrint($l[1]);
+        $l[0] = StringSanitiser::sanitise($l[0]);
+        $l[1] = StringSanitiser::sanitise($l[1]);
         return $l;
     }, LookupService::getInstance($w)->getLookupTypes());
 
-    $typelist = Html::select("type", $types, Request::string('type'));
+    $typelist = HtmlBootstrap5::select("type", $types, Request::string('type'));
     $w->ctx("typelist", $typelist);
 
     // tab: Lookup List
@@ -35,9 +35,9 @@ function index_ALL(Web &$w)
     if ($lookup) {
         foreach ($lookup as $look) {
             $line[] = [
-                $w->safePrint($look->type),
-                $w->safePrint($look->code),
-                $w->safePrint($look->title),
+                StringSanitiser::sanitise($look->type),
+                StringSanitiser::sanitise($look->code),
+                StringSanitiser::sanitise($look->title),
                 HtmlBootstrap5::box(
                     href: $w->localUrl("/admin-lookups/edit/" . $look->id . "/" . urlencode(Request::string('type', ''))),
                     title: "Edit",
@@ -54,18 +54,18 @@ function index_ALL(Web &$w)
     }
 
     // display list of items, if any
-    $w->ctx("listitem", Html::table($line, null, "tablesorter", true));
+    $w->ctx("listitem", HtmlBootstrap5::table($line, null, "tablesorter", true));
 
     // Countries tab
     $countries = AdminService::getInstance($w)->getCountries();
     uasort($countries, fn ($a, $b) => $a->name <=> $b->name);
     $country_rows = array_map(fn (Country $c) => [
-        $w->safePrint($c->name),
-        $w->safePrint($c->alpha_2_code) . ' / ' . $w->safePrint($c->alpha_3_code), 
-        $w->safePrint($c->demonym),
+        StringSanitiser::sanitise($c->name),
+        StringSanitiser::sanitise($c->alpha_2_code) . ' / ' . StringSanitiser::sanitise($c->alpha_3_code), 
+        StringSanitiser::sanitise($c->demonym),
         HtmlBootstrap5::box(href: "/admin-lookups/edit_country/" . $c->id, title: "Edit", class: 'btn btn-sm btn-primary') .
         HtmlBootstrap5::b(href: "/admin-lookups/delete_country/" . $c->id, title: "Delete", confirm: "Are you sure you wish to delete this Country?", class: 'btn btn-sm btn-danger')
     ], $countries);
 
-    $w->ctx("country_rows", Html::table($country_rows, null, "tablesorter", ["Name", "Code", "Demonym", "Actions"]));
+    $w->ctx("country_rows", HtmlBootstrap5::table($country_rows, null, "tablesorter", ["Name", "Code", "Demonym", "Actions"]));
 }

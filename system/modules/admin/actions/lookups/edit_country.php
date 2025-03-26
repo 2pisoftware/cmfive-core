@@ -14,43 +14,43 @@ function edit_country_GET(Web $w)
                 (new \Html\Form\InputField\Text([
                     'id|name' => 'name',
                     'label' => 'Name',
-                    'value' => $w->safePrint($country->name ?? ''),
+                    'value' => StringSanitiser::sanitise($country->name ?? ''),
                     'required' => true,
                 ]))
             ], [
                 (new \Html\Form\InputField\Text([
                     'id|name' => 'alpha_2_code',
                     'label' => 'Alpha 2 Code',
-                    'value' => $w->safePrint($country->alpha_2_code ?? ''),
+                    'value' => StringSanitiser::sanitise($country->alpha_2_code ?? ''),
                     'required' => true,
                 ])),
                 (new \Html\Form\InputField\Text([
                     'id|name' => 'alpha_3_code',
                     'label' => 'Alpha 3 Code',
-                    'value' => $w->safePrint($country->alpha_3_code ?? ''),
+                    'value' => StringSanitiser::sanitise($country->alpha_3_code ?? ''),
                     'required' => true,
                 ]))
             ], [
                 (new \Html\Form\InputField\Text([
                     'id|name' => 'capital',
                     'label' => 'Capital',
-                    'value' => $w->safePrint($country->capital ?? ''),
+                    'value' => StringSanitiser::sanitise($country->capital ?? ''),
                 ])), 
                 (new \Html\Form\InputField\Text([
                     'id|name' => 'region',
                     'label' => 'Region',
-                    'value' => $w->safePrint($country->region ?? ''),
+                    'value' => StringSanitiser::sanitise($country->region ?? ''),
                 ]))
             ], [
                 (new \Html\Form\InputField\Text([
                     'id|name' => 'subregion',
                     'label' => 'Subregion',
-                    'value' => $w->safePrint($country->subregion ?? ''),
+                    'value' => StringSanitiser::sanitise($country->subregion ?? ''),
                 ])),
                 (new \Html\Form\InputField\Text([
                     'id|name' => 'demonym',
                     'label' => 'Demonym',
-                    'value' => $w->safePrint($country->demonym ?? ''),
+                    'value' => StringSanitiser::sanitise($country->demonym ?? ''),
                 ]))
         ]
     ]];

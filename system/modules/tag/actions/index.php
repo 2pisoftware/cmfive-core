@@ -13,9 +13,9 @@ function index_ALL(Web $w) {
 	// 	foreach($tags as $t) {
 	// 		$table_data[]  =array(
 	// 			$t['tag'],
-	// 			Html::b("/tag/edit/".$t['id'],"Edit",false).Html::b("/tag/delete/".$t['id'],"Delete",false)
+	// 			HtmlBootstrap5::b("/tag/edit/".$t['id'],"Edit",false).HtmlBootstrap5::b("/tag/delete/".$t['id'],"Delete",false)
 	// 		);
 	// 	}
 	// }
-	// $w->ctx("tags_table", Html::table($table_data, null, "tablesorter", $table_header));
+	// $w->ctx("tags_table", HtmlBootstrap5::table($table_data, null, "tablesorter", $table_header));
 }

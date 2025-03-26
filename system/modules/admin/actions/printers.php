@@ -10,7 +10,7 @@ function printers_GET(Web $w) {
     if (!empty($printers)) {
         foreach($printers as $printer) {
             $table_data[] = [
-                $w->safePrint($printer->name), $w->safePrint($printer->server), $w->safePrint($printer->port),
+                StringSanitiser::sanitise($printer->name), StringSanitiser::sanitise($printer->server), StringSanitiser::sanitise($printer->port),
                 HtmlBootstrap5::box("/admin/editprinter/{$printer->id}", "Edit", true, false, null, null, 'isbox', null, 'btn btn-sm btn-primary') .
                 HtmlBootstrap5::b("/admin/deleteprinter/{$printer->id}", "Delete", "Are you sure you want to delete this printer?", "deletebutton", false, "btn-sm btn-danger")
             ];

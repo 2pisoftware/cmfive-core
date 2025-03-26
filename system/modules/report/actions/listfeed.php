@@ -23,8 +23,8 @@ function listfeed_ALL(Web &$w) {
                     $rep->title,
                     $feed->description,
                     formatDateTime($feed->dt_created),
-                    Html::b(WEBROOT . "/report/editfeed/" . $feed->id, " View ") .
-                    Html::b(WEBROOT . "/report/deletefeed/" . $feed->id, " Delete ", "Are you sure you wish to DELETE this feed?")
+                    HtmlBootstrap5::b(WEBROOT . "/report/editfeed/" . $feed->id, " View ") .
+                    HtmlBootstrap5::b(WEBROOT . "/report/deletefeed/" . $feed->id, " Delete ", "Are you sure you wish to DELETE this feed?")
                 );
             }
         }
@@ -34,5 +34,5 @@ function listfeed_ALL(Web &$w) {
     }
 
     // display results
-    $w->ctx("feedlist", Html::table($line, null, "tablesorter", true));
+    $w->ctx("feedlist", HtmlBootstrap5::table($line, null, "tablesorter", true));
 }

@@ -1,8 +1,6 @@
 <?php
 
 use Html\Cmfive\QuillEditor;
-use Html\Form\InputField;
-use Html\Form\Textarea;
 
 function edit_GET(Web &$w)
 {
@@ -60,7 +58,7 @@ function edit_GET(Web &$w)
 
     $form = [!empty($report->id) ? "Edit" : "Create a New" . " Report" =>
         [
-            [["Title", "text", "title", $report->title]],
+            [["Title", "text", "title", StringSanitiser::sanitise($report->title)]],
             [
                 (new \Html\Form\Select([
                     "id|name" => "module",
@@ -71,7 +69,7 @@ function edit_GET(Web &$w)
                 (new \Html\Form\Select([
                     'id|name' => 'category',
                     'label' => 'Category',
-                    'selected_option' => $report->category,
+                    'selected_option' => StringSanitiser::sanitise($report->category),
                     'options' => !empty($category_config_for_select[$report->module]) ? $category_config_for_select[$report->module] : []
                 ]))->setLabel('Category')
             ],
@@ -93,17 +91,17 @@ function edit_GET(Web &$w)
     if (!empty($report)) {
         $sqlform = [
             "SQL Editor" => [
-                [new InputField\Hidden(["id|name" => "title", "value" => $report->title])],
-                [new InputField\Hidden(["id|name" => "module", "value" => $report->module])],
-                [new InputField\Hidden(["id|name" => "description", "value" => $report->description])],
-                [new InputField\Hidden(["id|name" => "report_connection_id", "value" => $report->report_connection_id])],
+                // [new InputField\Hidden(["id|name" => "title", "value" => StringSanitiser::sanitise($report->title)])],
+                // [new InputField\Hidden(["id|name" => "module", "value" => StringSanitiser::sanitise($report->module)])],
+                // [new InputField\Hidden(["id|name" => "description", "value" => StringSanitiser::sanitise($report->description)])],
+                // [new InputField\Hidden(["id|name" => "report_connection_id", "value" => $report->report_connection_id])],
                 [new \Html\Cmfive\CodeMirrorEditor(["id|name" => "report_code", "value" => $report->report_code, "rows" => 10])],
             ]
         ];
     }
 
     // DB view table
-    $db_table = Html::form([
+    $db_table = HtmlBootstrap5::form([
         ["Special Parameters", "section"],
         ["User", "static", "user", "{{current_user_id}}"],
         ["Roles", "static", "roles", "{{roles}}"],
@@ -116,8 +114,8 @@ function edit_GET(Web &$w)
     $w->ctx("dbform", $db_table);
 
     if (!empty($report->id)) {
-        $w->ctx("btnrun", Html::b("/report/runreport/" . $report->id, "Execute Report"));
-        $w->ctx("duplicate_button", Html::b($w->localUrl("/report/duplicate/{$report->id}"), "Duplicate"));
+        $w->ctx("btnrun", HtmlBootstrap5::b(href: $w->localUrl("/report/runreport/" . $report->id), title: "Execute Report", class: "btn btn-primary"));
+        $w->ctx("duplicate_button", HtmlBootstrap5::b(href: $w->localUrl("/report/duplicate/{$report->id}"), title: "Duplicate", class: "btn btn-secondary"));
     }
 
     $w->ctx("report_form", HtmlBootstrap5::multiColForm($form, $w->localUrl("/report/edit/{$report->id}"), "POST", "Save Report"));
@@ -137,8 +135,8 @@ function edit_GET(Web &$w)
                     ReportService::getInstance($w)->getUserById($member->user_id),
                     $member->is_email_recipient ? "Yes" : "No",
                     $member->role,
-                    Html::box("/report/editmember/" . $report->id . "/" . $member->user_id, " Edit ", true) .
-                    Html::box("/report/deletemember/" . $report->id . "/" . $member->user_id, " Delete ", true),
+                    HtmlBootstrap5::box(href: "/report/editmember/" . $report->id . "/" . $member->user_id, title: " Edit ", button: true, class: 'btn btn-secondary') .
+                    HtmlBootstrap5::box(href: "/report/deletemember/" . $report->id . "/" . $member->user_id, title: " Delete ", button: true, class: 'btn btn-danger'),
                 ];
             }
         } else {
@@ -147,7 +145,7 @@ function edit_GET(Web &$w)
         }
 
         // display list of group members
-        $w->ctx("viewmembers", Html::table($line, null, "tablesorter", true));
+        $w->ctx("viewmembers", HtmlBootstrap5::table($line, null, "tablesorter", true));
 
         // =========== template tab ======================
         $report_templates = $report->getTemplates();
@@ -161,17 +159,17 @@ function edit_GET(Web &$w)
             foreach ($report_templates as $report_template) {
                 $template = $report_template->getTemplate();
                 $table_data[] = [
-                    $template->title,
-                    $template->category,
+                    StringSanitiser::sanitise($template->title),
+                    StringSanitiser::sanitise($template->category),
                     $report_template->is_email_template ? "Yes" : "No",
                     $report_template->type,
-                    Html::box("/report-templates/edit/{$report->id}/{$report_template->id}", "Edit", true) .
-                    Html::b("/report-templates/delete/{$report_template->id}", "Delete", "Are you sure you want to delete this Report template entry?"),
+                    HtmlBootstrap5::box("/report-templates/edit/{$report->id}/{$report_template->id}", "Edit", true) .
+                    HtmlBootstrap5::b("/report-templates/delete/{$report_template->id}", "Delete", "Are you sure you want to delete this Report template entry?"),
                 ];
             }
         }
         // Render table
-        $w->ctx("templates_table", Html::table($table_data, null, "tablesorter", $table_header));
+        $w->ctx("templates_table", HtmlBootstrap5::table($table_data, null, "tablesorter", $table_header));
     }
 }
 

@@ -92,7 +92,7 @@ class FormStandardInterface extends FormFieldInterface
                 }
             } elseif (!empty($metadata['user_rows'])) {
                 foreach ($metadata['user_rows'] as $index => $user_row) {
-                    $options[$index] = [$w->safePrint($user_row['value']), $w->safePrint($user_row['key'])];
+                    $options[$index] = [StringSanitiser::sanitise($user_row['value']), StringSanitiser::sanitise($user_row['key'])];
                 }
             }
         }

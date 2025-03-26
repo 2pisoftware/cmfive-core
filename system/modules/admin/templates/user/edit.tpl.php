@@ -1,6 +1,6 @@
 <h1>
     Edit -
-    <?php echo $w->safePrint($user["account"]["firstname"]) . " " . $w->safePrint($user["account"]["lastname"]); ?>
+    <?php echo StringSanitiser::sanitise($user["account"]["firstname"]) . " " . StringSanitiser::sanitise($user["account"]["lastname"]); ?>
 </h1>
 
 <div class="tabs">

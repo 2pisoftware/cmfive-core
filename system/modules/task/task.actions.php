@@ -13,7 +13,7 @@ function editComment_GET(Web &$w) {
     );
 
     // return the comment for display and edit
-    $form = Html::form($form, $w->localUrl("/task/editComment/" . $p['taskid'] . "/" . $p['comm_id']), "POST", "Save");
+    $form = HtmlBootstrap5::form($form, $w->localUrl("/task/editComment/" . $p['taskid'] . "/" . $p['comm_id']), "POST", "Save");
     $w->setLayout(null);
     $w->out($form);
 }
@@ -31,7 +31,7 @@ function popComment_GET(Web &$w) {
     );
 
     // return the comment for display
-    $form = Html::form($form);
+    $form = HtmlBootstrap5::form($form);
     $w->setLayout(null);
     $w->out($form);
 }
@@ -81,7 +81,7 @@ function attachForm_GET(Web $w) {
     );
 
     // diplay form
-    $form = Html::form($form, $w->localUrl("/task/attachForm/" . $task->id), "POST", " Upload ", null, null, null, 'multipart/form-data');
+    $form = HtmlBootstrap5::form($form, $w->localUrl("/task/attachForm/" . $task->id), "POST", " Upload ", null, null, null, 'multipart/form-data');
 
     $w->setLayout(null);
     $w->out($form);
@@ -140,7 +140,7 @@ function attachForm_POST(Web $w) {
 //         array("Page", "autocomplete", "page", null, $pages)
 //     );
 
-//     $form = Html::form($f, $w->localUrl("/task/addpage/" . $p['id']), "POST", "Save");
+//     $form = HtmlBootstrap5::form($f, $w->localUrl("/task/addpage/" . $p['id']), "POST", "Save");
 
 //     // return and display form
 //     $w->setLayout(null);
@@ -236,7 +236,7 @@ function addtime_GET(Web &$w) {
         array("Comments", "textarea", "comments", !empty($comment) ? $comment : null, "40", "10"),
     );
 
-    $form = Html::form($f, $w->localUrl("/task/edittime/" . $p['taskid'] . "/" . $p['log_id']), "POST", "Save");
+    $form = HtmlBootstrap5::form($f, $w->localUrl("/task/edittime/" . $p['taskid'] . "/" . $p['log_id']), "POST", "Save");
 
     $w->setLayout(null);
     $w->out($form);
@@ -626,7 +626,7 @@ function updateusergroupnotify_GET(Web &$w) {
     $f[] = array("Documents Added", "checkbox", "task_documents", $task_documents);
     $f[] = array("Pages Added", "checkbox", "task_pages", $task_pages);
 
-    $f = Html::form($f, $w->localUrl("/task/updateusergroupnotify/" . $p['id']), "POST", "Save");
+    $f = HtmlBootstrap5::form($f, $w->localUrl("/task/updateusergroupnotify/" . $p['id']), "POST", "Save");
 
     $w->setLayout(null);
     $w->out($f);

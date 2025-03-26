@@ -104,7 +104,7 @@ class FormInstance extends DbObject
             if (!empty($form_values)) {
                 foreach ($form_values as $form_value) {
                     $field = $form_value->getFormField();
-                    $template_data[$field->technical_name] = $w->safePrint($form_value->value);
+                    $template_data[StringSanitiser::sanitise($field->technical_name)] = StringSanitiser::sanitise($form_value->value);
                 }
             }
 
@@ -116,7 +116,7 @@ class FormInstance extends DbObject
         // collate available form values
         if (!empty($form_values)) {
             foreach ($form_values as $value) {
-                $formValueCollated[$value->form_field_id] = $w->safePrint($value);
+                $formValueCollated[$value->form_field_id] = $value;
             }
         }
 
@@ -124,7 +124,7 @@ class FormInstance extends DbObject
         if (!empty($form_fields)) {
             foreach ($form_fields as $field) {
                 if (!empty($formValueCollated[$field->id])) {
-                    $table_row .= "<td class='form_instance_" . $this->id . "'>" . $formValueCollated[$field->id]->getMaskedValue() . "</td>";
+                    $table_row .= "<td class='form_instance_" . $this->id . "'>" . StringSanitiser::sanitise($formValueCollated[$field->id]->getMaskedValue()) . "</td>";
                 } else {
                     $table_row .= "<td>&nbsp;</td>";
                 }
@@ -170,7 +170,7 @@ class FormInstance extends DbObject
             }
         }
         
-        return [$this->w->safePrint($form->title) => $form_structure];
+        return [StringSanitiser::sanitise($form->title) => $form_structure];
     }
 
     public function delete($force = false)

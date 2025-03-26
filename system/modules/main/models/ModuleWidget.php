@@ -24,7 +24,7 @@ abstract class ModuleWidget extends DbService {
 	/** 
 	 * This settings array will be Widget specific and saved to the DB
 	 * as a JSON string ensuring transportability The returned array 
-	 * must match the Html::multiColForm() nested array structure so 
+	 * must match the HtmlBootstrap5::multiColForm() nested array structure so 
 	 * that these settings can be changed
 	 *
 	 * @param String $current_settings

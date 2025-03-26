@@ -13,7 +13,7 @@ function createfeed_GET(Web &$w)
         foreach ($reports as $report) {
             // get report data
             $rep = ReportService::getInstance($w)->getReportInfo($report->report_id);
-            $myrep[] = [$rep->title, $rep->id];
+            $myrep[] = [StringSanitiser::sanitise($rep->title), $rep->id];
         }
     }
 

@@ -10,8 +10,8 @@ function export_ALL(Web $w) {
 		$w->error("No application found for id", "/form/index");
 	}
 	$export = [
-		'title' => $w->safePrint($application->title),
-		'description' => $w->safePrint($application->description),
+		'title' => StringSanitiser::sanitise($application->title),
+		'description' => StringSanitiser::sanitise($application->description),
 		'forms' => []
 	];
 	$forms = $application->getForms();

@@ -12,6 +12,8 @@ class QuillEditor extends \Html\Form\InputField
 
     public $options = ["theme" => "snow"];
 
+    public $tag_allow_list = ["<h1>", "<h2>", "<h3>", "<p>", "<strong>", "<em>", "<u>", "<ol>", "<ul>", "<li>", "<a>", "<img>", "<blockquote>", "<code>", "<pre>", "<br>", "<hr>"];
+
     /**
      * Value of the textarea
      * @var string
@@ -29,8 +31,16 @@ class QuillEditor extends \Html\Form\InputField
         return $this;
     }
 
+    public function setTagAllowList(array $tag_allow_list = []): self
+    {
+        $this->tag_allow_list = $tag_allow_list;
+        return $this;
+    }
+
     public function __toString()
     {
-        return '<textarea name="' . $this->name . '" id="' . $this->id . '" style="display:none">' . $this->value . '</textarea><div class="quill-editor" data-quill-options=\'' . json_encode($this->options) . '\' id="quill_' . $this->id . '">' . $this->value . '</div>';
+        $value = strip_tags($this->value ?? '', $this->tag_allow_list);
+
+        return '<textarea name="' . $this->name . '" id="' . $this->id . '" style="display:none">' . $value . '</textarea><div class="quill-editor" data-quill-options=\'' . json_encode($this->options) . '\' id="quill_' . $this->id . '">' . $value . '</div>';
     }
 }

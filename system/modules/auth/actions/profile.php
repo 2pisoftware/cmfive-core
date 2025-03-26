@@ -33,7 +33,7 @@ function profile_GET(Web &$w)
     foreach (AuthService::getInstance($w)->getTitles() as $title) {
         $titles_array[] = [
             "id" => $title->id,
-            "name" => $title->title,
+            "name" => StringSanitiser::sanitise($title->title),
         ];
     }
 
@@ -41,18 +41,18 @@ function profile_GET(Web &$w)
         "id" => $user->id,
         "account" => [
             "redirect_url" => $user->redirect_url,
-            "title" => $contact->getTitle(),
+            "title" => StringSanitiser::sanitise($contact->getTitle()),
             "titles" => $titles_array,
-            "firstname" => $contact->firstname,
-            "lastname" => $contact->lastname,
-            "othername" => $contact->othername,
-            "homephone" => $contact->homephone,
-            "workphone" => $contact->workphone,
-            "mobile" => $contact->mobile,
-            "priv_mobile" => $contact->priv_mobile,
-            "fax" => $contact->fax,
-            "email" => $contact->email,
-            "language" => $user->language,
+            "firstname" => StringSanitiser::sanitise($contact->firstname),
+            "lastname" => StringSanitiser::sanitise($contact->lastname),
+            "othername" => StringSanitiser::sanitise($contact->othername),
+            "homephone" => StringSanitiser::sanitise($contact->homephone),
+            "workphone" => StringSanitiser::sanitise($contact->workphone),
+            "mobile" => StringSanitiser::sanitise($contact->mobile),
+            "priv_mobile" => StringSanitiser::sanitise($contact->priv_mobile),
+            "fax" => StringSanitiser::sanitise($contact->fax),
+            "email" => StringSanitiser::sanitise($contact->email),
+            "language" => StringSanitiser::sanitise($user->language),
         ],
         "security" => [
             "new_password" => "",
@@ -60,6 +60,8 @@ function profile_GET(Web &$w)
             "is_mfa_enabled" => $user->is_mfa_enabled,
         ],
     ];
+
+    var_dump($user_details);
 
     $w->ctx("user", $user_details);
 }

@@ -12,7 +12,7 @@ function form_core_template_tab_headers(Web $w, $object)
         $forms = FormService::getInstance($w)->getFormsMappedToObject($object);
         foreach ($forms as $form) {
             if ($form->is_deleted == 0) {
-                $tabHeaders[] = '<a href="#' . preg_replace('/[^A-Za-z0-9\-]/', '', ($form->title)) . '">' . $w->safePrint($form->title) . ' <span class="badge rounded-pill bg-secondary text-light ms-1">' .  $form->countFormInstancesForObject($object) . '</span></a>';
+                $tabHeaders[] = '<a href="#' . preg_replace('/[^A-Za-z0-9\-]/', '', ($form->title)) . '">' . StringSanitiser::sanitise($form->title) . ' <span class="badge rounded-pill bg-secondary text-light ms-1">' .  $form->countFormInstancesForObject($object) . '</span></a>';
             }
         }
         return implode('', $tabHeaders);

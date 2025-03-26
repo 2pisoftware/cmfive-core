@@ -26,14 +26,14 @@ function edit_GET(Web $w)
                         'label' => 'Title',
                         'id|name' => 'title',
                         'required' => 'required',
-                        'value' => $is_new ? '' : $w->safePrint($application->title),
+                        'value' => $is_new ? '' : StringSanitiser::sanitise($application->title),
                     ]
                 ),
                 new InputField(
                     [
                         'label' => 'Description',
                         'id|name' => 'description',
-                        'value' => $is_new ? '' : $w->safePrint($application->description),
+                        'value' => $is_new ? '' : StringSanitiser::sanitise($application->description),
                     ]
                 ),
             ],

@@ -7,7 +7,7 @@ try {
     foreach ($run_data as $data) {
         echo '<h4>' . $data->title . '</h4>';
         echo "<div style='overflow: auto;'>";
-        echo Html::table($data->data, null, "tablesorter", $data->header);
+        echo HtmlBootstrap5::table($data->data, null, "tablesorter", $data->header);
         echo "</div>";
     }
 } catch (Error $e) {

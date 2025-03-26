@@ -7,5 +7,5 @@
 		<p>This user is a member of <?php echo count($member_reports); ?> report<?php echo count($member_reports) == 1 ? '' : 's'; ?></p>
 	<?php endif; ?>
 
-	<?php echo Html::box("/report-user/reassign/" . $user->id . "?redirect=" . urlencode("/admin-user/remove/" . $user->id), "Reassign report(s)", true, false, null, null, null, null, "button warning expand"); ?>
+	<?php echo HtmlBootstrap5::box("/report-user/reassign/" . $user->id . "?redirect=" . urlencode("/admin-user/remove/" . $user->id), "Reassign report(s)", true, false, null, null, null, null, "button warning expand"); ?>
 <?php endif;
