@@ -53,7 +53,7 @@
                 <input class="form-control" type="text" name="options" :value="getDefaultValue('options','')" id="vue-metadata-select__options" />
             </div>
         </div>
-        <div class="row vue-metadata-select__content-container" v-if="!showObjectMap()">
+        <div v-else class="row vue-metadata-select__content-container">
             <div class="row">
                 <div class="col-12">
                     <button type="button" class="btn btn-sm btn-secondary col-12 col-sm-2" @click="addRow()">Add row</button>

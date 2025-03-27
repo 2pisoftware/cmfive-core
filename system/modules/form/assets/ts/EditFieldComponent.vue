@@ -25,14 +25,14 @@
     let vue_metadata_components = ['subform', 'select', 'autocomplete'];
 
     // watch
-    watchEffect(selected_type, "getMetadataForm");
+    watchEffect(selected_type, () => getMetadataForm());
 
     // computed
     const metadata_form_html = () => {
         console.log("MF", metadata_form.value);
         const _div = document.createElement('div');
         _div.innerHTML = metadata_form.value;
-        return _div.textContent || _div.innerText || '';
+        return _div.innerHTML;
     };
 
     // Methods
@@ -43,7 +43,7 @@
     }
 
     const disableUpdate = () => should_update_technical_name.value = false;
-    const selectedTypeIsVueComponent = () => vue_metadata_components.indexOf(selected_type) > -1;
+    const selectedTypeIsVueComponent = () => vue_metadata_components.indexOf(selected_type.value) !== -1;
 
     const getMetadataForm = () => {
         if (!selectedTypeIsVueComponent()) {
@@ -60,16 +60,12 @@
 
     // onMounted
     onMounted(() => {
-        selected_type.value = field.selected_type;
+        selected_type.value = field.type;
     });
 
     // onCreated
     if (props.field.name?.length == 0) {
         should_update_technical_name = true;
-    }
-
-    if (!selectedTypeIsVueComponent()) {
-        getMetadataForm();
     }
 </script>
 <template>
@@ -84,7 +80,7 @@
             <option v-for="type in types" :value="type[1]">{{ type[0] }}</option>
         </select>
         <div class="additional_details" v-show="!loading_metadata">
-            <div v-if='!selectedTypeIsVueComponent()'>{{ metadata_form_html() }}</div>
+            <div v-if='!selectedTypeIsVueComponent()' v-html="metadata_form_html()"></div>
             <metadata-select v-if="selected_type == 'select' || selected_type == 'autocomplete'" :default-value="metadata"></metadata-select>
             <metadata-subform v-if="selected_type == 'subform'" :forms="form_list" :default-value="metadata"></metadata-subform>
         </div>

@@ -42,7 +42,7 @@ function ajaxGetMetadata_GET(Web $w)
                         }
 
 
-                        $w->out(htmlentities(HtmlBootstrap5::form($metadata_form)));
+                        $w->out(HtmlBootstrap5::form($metadata_form));
                         return;
                     } else if (is_a($metadata_form, 'VueComponent')) {
                         // Else assume new Vue.js component layout - will already be in the template
@@ -57,7 +57,7 @@ function ajaxGetMetadata_GET(Web $w)
         if (!empty($field)) {
             $metadata_form = $field->getMetadataForm();
             if (!empty($metadata_form)) {
-                $w->out(htmlentities(HtmlBootstrap5::form($metadata_form)));
+                $w->out(HtmlBootstrap5::form($metadata_form));
                 return;
             }
         } else {
