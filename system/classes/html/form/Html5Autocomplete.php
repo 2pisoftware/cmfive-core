@@ -111,37 +111,6 @@ class Html5Autocomplete extends \Html\Form\InputField
             $buffer .= $field . "='" . StringSanitiser::escapeQuotes(is_array($value) ? implode(",", $value) : $value) . "' ";
         }
 
-        $config = json_encode([
-            "options" => $this->options ?
-                array_map(
-                    fn($val) =>
-                    array_map(
-                        fn($inner) => $inner,
-                        $this->convertOption($val)
-                    ),
-                    $this->options
-                )
-                : null,
-            "maxItems" => $this->maxItems,
-            "items" => $this->value,
-            "source" => $this->source,
-            "create" => $this->canCreate,
-
-            "addPrecedence" => true,
-            "closeAfterSelect" => $this->closeAfterSelect,
-
-            "optgroups" => $this->groups,
-            "optgroupField" => "type",
-
-            "plugins" => $this->plugins,
-
-            // for sending data to the wrapper
-            "cmfive" => [
-                "onItemAdd" => $this->onItemAdd,
-                "onItemRemove" => $this->onItemRemove,
-                "onItemCreate" => $this->onItemCreate,
-            ]
-        ]);
         $buffer .=
             "data-config" .
             "='" .
@@ -171,7 +140,7 @@ class Html5Autocomplete extends \Html\Form\InputField
                     "onItemRemove" => $this->onItemRemove,
                     "onItemCreate" => $this->onItemCreate,
                 ]
-            ]) .
+            ], JSON_HEX_APOS | JSON_HEX_QUOT) .
             "' ";
 
         return $buffer . '/>';
