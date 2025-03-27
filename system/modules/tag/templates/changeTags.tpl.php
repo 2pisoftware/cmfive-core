@@ -4,10 +4,8 @@
 
         <label for="<?php echo 'display_tags_' . $object_class . '_' . $id?>" class="form-label">Add tags</label>
     <?php
-
-    use Html\Form\Html5Autocomplete;
-
-    echo new Html5Autocomplete([
+    
+    echo new Html\Form\Html5Autocomplete([
         'id' => 'display_tags_' . $object_class . '_' . $id,
         "placeholder" => "Add tags...",
         "class" => "text-center",

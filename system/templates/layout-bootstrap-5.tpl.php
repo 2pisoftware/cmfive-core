@@ -12,7 +12,7 @@ $theme_setting = AuthService::getInstance($w)->getSettingByKey('bs5-theme');
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="shortcut icon" href="/system/templates/img/favicon.ico" type="image/x-icon" />
-    <title><?php echo ucfirst($w->currentModule()); ?><?php echo !empty($title) ? ' - ' . $title : ''; ?></title>
+    <title><?php echo ucfirst($w->currentModule()); ?><?php echo !empty($title) ? ' &#x2022; ' . $title : ''; ?></title>
     <script>var exports = {};</script>
     <?php
     CmfiveStyleComponentRegister::registerComponent('app', new CmfiveStyleComponent("/system/templates/base/dist/app.css"));

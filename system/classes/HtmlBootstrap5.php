@@ -1019,4 +1019,27 @@ class HtmlBootstrap5 extends Html
     {
         return '<input class="form-control" type="time" name="' . $name . '" value="' . $value . '" size="' . $size . '" id="' . $name . '" ' . $required . ' />';
     }
+
+    /**
+     * Create a single select autocomplete widget
+     *
+     * @param <type> $data
+     * @param <type> $value
+     * @param <type> $class
+     */
+    public static function autocomplete($name, $options, $value = null, $class = null, $style = null, $minLength = 1, $required = null)
+    {
+        return (new \Html\Form\Html5Autocomplete([
+            "id|name" => "title",
+            "class" => "form-control " . $class,
+            "label" => "Title",
+            "maxItems" => 1,
+            "options" => $options,
+            "value" => $value,
+            "required" => !!$required,
+            "style" => $style,
+            "minLength" => $minLength,
+            "options" => $options,
+        ]))->__toString();
+    }
 }

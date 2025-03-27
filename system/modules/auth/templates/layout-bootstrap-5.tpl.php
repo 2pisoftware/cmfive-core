@@ -5,8 +5,8 @@
     <meta charset="utf-8" />
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="shortcut icon" href="/system/templates/img/favicon.ico" type="image/x-icon" />
-    <title><?php echo ucfirst($w->currentModule()); ?><?php echo !empty($title) ? ' - ' . $title : ''; ?></title>
+    <link rel="shortcut icon" href="<?php echo Config::get('main.favicon_path', '/system/templates/img/favicon.ico'); ?>" type="image/x-icon" />
+    <title><?php echo Config::get('main.application_name', ''); ?><?php echo !empty($title) ? ' &#x2022; ' . $title : ''; ?></title>
     <?php
     CmfiveStyleComponentRegister::registerComponent('app', new CmfiveStyleComponent("/system/templates/base/dist/app.css"));
     CmfiveScriptComponentRegister::registerComponent('app', new CmfiveScriptComponent("/system/templates/base/dist/app.js", ['type' => 'module']));

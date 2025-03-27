@@ -2,8 +2,8 @@
 
 function login_GET(Web $w)
 {
-    // CmfiveScriptComponentRegister::requireVue3();
-
+    $w->ctx('title', Config::get('auth.login_title', 'Login'));
+    
     // Check if logged in already
     $user = AuthService::getInstance($w)->user();
     if (AuthService::getInstance($w)->loggedIn() && AuthService::getInstance($w)->allowed($user->redirect_url)) {
