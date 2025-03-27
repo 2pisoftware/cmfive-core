@@ -17,7 +17,9 @@ export class CodeMirror {
                     return; //already bound
                 }
 
-                const content = cm.getAttribute('cm-value');
+                const textarea = document.getElementById(cm.getAttribute("data-id")) as HTMLTextAreaElement;
+                const content = textarea.value;
+
                 const editorView = new EditorView({
                     doc: content,
                     extensions: [
@@ -31,7 +33,6 @@ export class CodeMirror {
                 cm.removeEventListener('update', (event) => CodeMirror.updateCallback(editorView, event));
                 cm.addEventListener('update', (event) => CodeMirror.updateCallback(editorView, event));
 
-                const textarea = document.getElementById(cm.id);
                 cm.closest('form').removeEventListener('submit', () => textarea.innerText = CodeMirror.getContentAsJSONString(editorView));
                 cm.closest('form').addEventListener('submit', () => textarea.innerText = CodeMirror.getContentAsJSONString(editorView));
             })
