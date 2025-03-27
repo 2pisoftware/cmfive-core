@@ -17,22 +17,9 @@ export class CodeMirror {
                     return; //already bound
                 }
 
-                // const content = cm.getAttribute('cm-value');
-
-                const textareaId = cm.getAttribute('data-id');
-                
-                // const editorView = new EditorView({
-                //     doc: content,
-                //     extensions: [
-                //         basicSetup,
-                //         html(),
-                //         syntaxHighlighting(defaultHighlightStyle),
-                //     ],
-                //     parent: cm as HTMLInputElement,
-                // });
-                
+                const content = cm.getAttribute('cm-value');
                 const editorView = new EditorView({
-                    doc: document.getElementById(textareaId).innerText,
+                    doc: content,
                     extensions: [
                         basicSetup,
                         html(),
@@ -44,9 +31,7 @@ export class CodeMirror {
                 cm.removeEventListener('update', (event) => CodeMirror.updateCallback(editorView, event));
                 cm.addEventListener('update', (event) => CodeMirror.updateCallback(editorView, event));
 
-                // CodeMirror.views.push(editorView);
-
-                const textarea = document.getElementById(textareaId);
+                const textarea = document.getElementById(cm.id);
                 cm.closest('form').removeEventListener('submit', () => textarea.innerText = CodeMirror.getContentAsJSONString(editorView));
                 cm.closest('form').addEventListener('submit', () => textarea.innerText = CodeMirror.getContentAsJSONString(editorView));
             })
@@ -54,24 +39,12 @@ export class CodeMirror {
     }
 
     static getContentAsJSONString(editorView: EditorView) {
-        let editor_string = editorView.state.doc.toString();
-        // console.log("raw", editor_string);
-        // return editor_string;
-        
-        return JSON.stringify(editor_string, (_, char) => {
+        return JSON.stringify(editorView.state.doc.toString(), (_, char) => {
             // Replace whitespace characters with escape sequences
             if (char === '\n') return '\\n'; // newline
             else if (char === '\t') return '\\t'; // tab
             else return char; // for non-whitespace characters
         });
-        
-        // if (editor_string[0] === '"') {	
-        //     editor_string = editor_string.slice(1, -1);	
-        // }
-
-        // console.log("parsed", editor_string);
-
-        // return editor_string;
     }
 
     static updateCallback(editorView: EditorView, event) {
