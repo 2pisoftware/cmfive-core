@@ -1,6 +1,6 @@
 // src/app.ts
 import { AlertAdaptation, DropdownAdaptation, FavouritesAdaptation, TabAdaptation, TableAdaptation } from './adaptations';
-import { Autocomplete, Toast as CmfiveToast, CodeMirror, InputWithOther, MultiFileUpload, Overlay, QuillEditor, Tags, TabbedPagination } from './components';
+import { Autocomplete, Toast as CmfiveToast, CodeMirror, InputWithOther, MultiFileUpload, Overlay, QuillEditor, TabbedPagination, Tags } from './components';
 
 import { Modal, Tooltip } from 'bootstrap';
 import { Sortable } from './components/Sortable';
@@ -86,18 +86,24 @@ export class Cmfive {
     }
 
     static openModal(url: string, target: string = '#cmfive-modal') {
-        Cmfive.currentModal = new Modal(document.getElementById('cmfive-modal')) //, options
+        const controller = new AbortController();
+
+        const container = document.getElementById('cmfive-modal');
+        Cmfive.currentModal = new Modal(container) //, options
     
         let modalContent = document.querySelector(target + ' .modal-content');
         if (modalContent) {
             modalContent.innerHTML = '<button type="button" class="btn-close" data-bs-dismiss="modal" data-bs-target="' + target + '" aria-label="Close"></button>';
         }
+
+        container.addEventListener("hide.bs.modal", () => controller.abort());
     
         Cmfive.currentModal.show();
         fetch(url, {
             headers: {
                 'Content-Type': 'application/json'
-            }
+            },
+            signal: controller.signal,
         }).then((response) => {
             return response.text()
         }).then((content) => {
@@ -105,7 +111,7 @@ export class Cmfive {
 
 			// https://developer.mozilla.org/en-US/docs/Web/API/Element/innerHTML#security_considerations
 			// Appending scripts to the DOM via innerHTML is not meant to execute them for security purposes
-			// Unfortunately, various modals however contian script tags we need to execute
+			// Unfortunately, various modals however contain script tags we need to execute
 			modalContent.querySelectorAll("script").forEach(x => {
 				eval(x.innerHTML);
 			});
