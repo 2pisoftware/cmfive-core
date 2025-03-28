@@ -7,18 +7,20 @@
     const user_rows = ref([]);
 
     onMounted(() => {
+        console.log("Default Value", defaultValue);
+        is_object_map.value = getDefaultValue("is_object_map", "0");
         const rows = defaultValue.value.find(x => x.meta_key === "user_rows");
         if (!rows) return;
 
         user_rows.value = rows.meta_value;
-    })
+    });
 
     const showObjectMap = () => is_object_map.value == "1";
     const getDefaultValue = (key, default_return) => {
         if (defaultValue !== undefined) {
-            for(var i in defaultValue) {
-                if (defaultValue[i].meta_key == key) {
-                    return defaultValue[i].meta_value;
+            for(var i in defaultValue.value) {
+                if (defaultValue.value[i].meta_key == key) {
+                    return defaultValue.value[i].meta_value;
                 }
             }
         }
@@ -75,8 +77,8 @@
                     <label class="form-label">Value</label>
                     <input class="form-control form-control-sm" type="text" :name="getRowFieldName('value', index)" v-model="user_rows[index].value" />
                 </div>
-                <div class="col-12 col-md-2">
-                    <button type="button" class="btn btn-sm btn-danger vue-metadata-select__button mt-4" @click="removeRow(index)">Delete</button>
+                <div class="col-12 col-md-2 d-flex align-items-end">
+                    <button type="button" class="btn btn-sm btn-danger vue-metadata-select__button" @click="removeRow(index)">Delete</button>
                 </div>
             </div>
         </div>

@@ -187,6 +187,11 @@ class FormStandardInterface extends FormFieldInterface
                             $filter = $metadata['object_filter'];
                         }
                     }
+
+                    // Check if defined class exists and extends DbObject
+                    if (!class_exists($metadata['object_type']) || !is_subclass_of($metadata['object_type'], 'DbObject')) {
+                        return null;
+                    }
                     $options = FormService::getInstance($w)->getObjects($metadata['object_type'], $filter);
                     foreach ($options as $option) {
                         if ($option->id == $value) {

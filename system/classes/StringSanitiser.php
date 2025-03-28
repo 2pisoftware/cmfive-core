@@ -17,6 +17,10 @@ class StringSanitiser {
 
     /**
      * Strips default Quill HTML tags from the input string
+     * 
+     * @param ?string $string
+     * @param ?array $tags
+     * @return string
      */
     public static function stripTags(?string $string, ?array $tags = []): string
     {
@@ -34,8 +38,8 @@ class StringSanitiser {
     /**
      * Strips anything that is not alphanumeric from the input string
      * 
-     * @param mixed $string
-     * @return string|null
+     * @param ?string $string
+     * @return string
      */
     public static function stripNonAlphaNumeric(?string $string): string
     {
@@ -45,6 +49,12 @@ class StringSanitiser {
         return preg_replace('/[^a-zA-Z0-9]/', '', $string) ?? '';
     }
 
+    /**
+     * Escapes quotes of the input string
+     * 
+     * @param ?string $string
+     * @return string
+     */
     public static function escapeQuotes(?string $string): string
     {
         if (!$string) {

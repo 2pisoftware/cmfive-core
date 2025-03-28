@@ -34,7 +34,7 @@ abstract class FormFieldInterface
     /**
      * Returns whether or not this class can interact with a given type
      *
-     * @param String $type
+     * @param string $type
      * @return boolean
      */
     public static function doesRespondTo($type)
