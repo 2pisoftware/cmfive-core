@@ -153,11 +153,11 @@ class FormStandardInterface extends FormFieldInterface
             case "select":
                 return static::modifyAutocompleteForDisplay($form_value->value, $metadata, $w);
             case "date":
-                return (!empty($form_value->value) ? formatDate($form_value->value, "d/m/Y") : $form_value->value);
+                return !empty($form_value->value) ? formatDate($form_value->value, "d/m/Y") : $form_value->value;
             case "datetime":
-                return (!empty($form_value->value) ? formatDateTime($form_value->value, "d/m/Y H:i:s") : $form_value->value);
+                return !empty($form_value->value) ? formatDateTime($form_value->value, "d/m/Y H:i:s") : $form_value->value;
             case "time":
-                return (!empty($form_value->value) ? formatTime($form_value->value) : $form_value->value);
+                return !empty($form_value->value) ? formatTime($form_value->value) : $form_value->value;
             default:
                 return $form_value->value;
         }
