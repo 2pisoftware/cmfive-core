@@ -31,15 +31,17 @@ class FormFieldMetadata extends DbObject
         return parent::update($force_null_values, $force_validation);
     }
 
-    public function toArray()
-    {
-        return [
-            'form_field_id' => $this->form_field_id,
-            'meta_key' => StringSanitiser::sanitise($this->meta_key),
-            'meta_value' => is_scalar($this->meta_value) ? $this->meta_value : array_map(fn ($m) => [
-                'key' => StringSanitiser::sanitise($m['key']),
-                'value' => StringSanitiser::sanitise($m['value']),
-            ], $this->meta_value),
-        ];
-    }
+    // can't sanitise here as it gets JSON encoded later
+    // and html encoding this will cause the json encode to fail
+    // public function toArray()
+    // {
+    //     return [
+    //         'form_field_id' => $this->form_field_id,
+    //         'meta_key' => StringSanitiser::sanitise($this->meta_key),
+    //         'meta_value' => is_scalar($this->meta_value) ? $this->meta_value : array_map(fn ($m) => [
+    //             'key' => StringSanitiser::sanitise($m['key']),
+    //             'value' => StringSanitiser::sanitise($m['value']),
+    //         ], $this->meta_value),
+    //     ];
+    // }
 }

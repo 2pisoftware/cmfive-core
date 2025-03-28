@@ -1,10 +1,17 @@
 <script setup>
-    import { defineProps, ref } from 'vue'
+    import { defineProps, ref, onMounted } from 'vue'
     const props = defineProps(['defaultValue'])
 
     const is_object_map = ref("0");
     const defaultValue = ref(props.defaultValue);
     const user_rows = ref([]);
+
+    onMounted(() => {
+        const rows = defaultValue.value.find(x => x.meta_key === "user_rows");
+        if (!rows) return;
+
+        user_rows.value = rows.meta_value;
+    })
 
     const showObjectMap = () => is_object_map.value == "1";
     const getDefaultValue = (key, default_return) => {
