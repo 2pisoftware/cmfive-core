@@ -175,7 +175,7 @@ class FormField extends DbObject
         if (is_array($metaData) && count($metaData) > 0) {
             $metaArray = [];
             foreach ($metaData as $meta) {
-                $metaArray[$meta->meta_key] = is_string($meta->meta_value) ? StringSanitiser::sanitise($meta->meta_value) : $meta->meta_value;
+                $metaArray[$meta->meta_key] = is_string($meta->meta_value) ? $meta->meta_value : $meta->meta_value;
             }
 
             $formConfig = $interface::formConfig($this->type, $metaArray, $this->w);

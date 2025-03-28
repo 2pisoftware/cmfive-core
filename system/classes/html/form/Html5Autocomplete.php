@@ -170,6 +170,11 @@ class Html5Autocomplete extends \Html\Form\InputField
                 "value" => $val,
                 "text" => $val,
             ];
+        } else if (is_array($val) && count($val) === 2) {
+            return [
+                "value" => $val[0],
+                "text" => $val[1],
+            ];
         } else {
             // can't log cause don't have $w
             // LogService::getInstance($w)->setLogger("html5autocomplete")->error("option did not match format", $val);
