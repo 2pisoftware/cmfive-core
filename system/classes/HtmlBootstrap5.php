@@ -1034,7 +1034,6 @@ class HtmlBootstrap5 extends Html
             "class" => "form-control " . $class,
             "label" => "Title",
             "maxItems" => 1,
-            "options" => $options,
             "value" => $value,
             "required" => !!$required,
             "style" => $style,
