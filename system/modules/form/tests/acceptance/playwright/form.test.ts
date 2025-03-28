@@ -69,6 +69,7 @@ test("that form applications can be created, edited and deleted", async ({ page,
     // await page.waitForSelector("#form_application_form_modal", {state: "visible"});
     // const attach_form_modal = page.locator("#form_application_form_modal");
     await CmfiveHelper.fillAutoComplete(page, "form", form, form);
+    await page.keyboard.press("Escape");
     // await page.locator("#form").selectOption(form);
 
     // Current fix for issue with tom select not closing after selection
@@ -84,16 +85,8 @@ test("that form applications can be created, edited and deleted", async ({ page,
     await modal.locator(`#${form}_name`).fill(form+" name");
 
     await page.locator(`#${form}_clocked`).click();
-    // fill("05:15PM");
+
     await page.keyboard.type("05:15PM");
-
-    // await modal.getByLabel(form+"_clocked").click();
-    // await page.waitForSelector("#ui-datepicker-div");
-    // await page.locator("#ui-datepicker-div").getByRole("link", {name: "1", exact: true}).click();
-    // await expect(page.locator("#"+form+"_clocked")).toHaveValue(DateTime.now().set({day: 1}).toFormat("dd/MM/yyyy") as string + " 12:00 am");
-
-    // if(isMobile)
-    //     await page.locator(".ui-datepicker-close").click();
 
     await modal.getByText(form+"_truth").click();
 
