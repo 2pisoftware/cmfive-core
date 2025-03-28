@@ -8,19 +8,21 @@
 
     onMounted(() => {
         const rows = defaultValue.value.find(x => x.meta_key === "user_rows");
-        if (!rows) return;
+        if (rows) {
+            user_rows.value = rows.meta_value;
+        }
 
-        user_rows.value = rows.meta_value;
+        const is_map = defaultValue.value.find(x => x.meta_key === "is_object_map");
+        if (is_map) {
+            is_object_map.value = is_map.meta_value;
+        }
     })
 
     const showObjectMap = () => is_object_map.value == "1";
     const getDefaultValue = (key, default_return) => {
         if (defaultValue !== undefined) {
-            for(var i in defaultValue) {
-                if (defaultValue[i].meta_key == key) {
-                    return defaultValue[i].meta_value;
-                }
-            }
+            const data = defaultValue.value.find(x => x.meta_key === key);
+            if (data) return data.meta_value ?? default_return;
         }
 
         return default_return;
