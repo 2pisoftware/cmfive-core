@@ -80,7 +80,7 @@ class FormStandardInterface extends FormFieldInterface
                         }
                     }
                     $options = $service->getObjects($metadata['object_type'], $filter);
-                } catch (Exception $e) {
+                } catch (Throwable $e) {
                     //silently fail no options
                 }
             } elseif (!empty($metadata['options'])) {
