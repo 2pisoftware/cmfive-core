@@ -47,7 +47,6 @@ $w->setLayout("layout")
                             "value" => $user["account"]["lastname"],
                         ])
                     ],
-
                     [
                         new Html5Autocomplete([
                             "id|name" => "title",
@@ -69,8 +68,14 @@ $w->setLayout("layout")
                             "class" => "form-control",
                             "label" => "Language",
                             "maxItems" => 1,
-                            "options" => [],
-                            "canCreate" => true, // this shouldn't be here
+                            "options" => array_map(function ($lang) {
+                                $lang->name = $lang->name;
+                                $lang->native_name = $lang->native_name;
+                                $lang->iso_639_1 = $lang->iso_639_1;
+                                $lang->iso_639_2 = $lang->iso_639_2;
+                                return $lang;
+                            }, AdminService::getInstance($w)->getLanguages()),
+                            "value" => $user["account"]["language"],
                         ])
                     ]
                 ],
@@ -125,7 +130,6 @@ $w->setLayout("layout")
                 locked="false"
                 mfa_enabled="<?php echo $user["security"]["is_mfa_enabled"]; ?>"
                 pw_min_length="<?php echo Config::get('auth.login.password.min_length', 8); ?>">
-                >
             </user-security-component>
         </div>
     </div>

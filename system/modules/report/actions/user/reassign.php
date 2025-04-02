@@ -15,7 +15,7 @@ function reassign_GET(Web $w) {
 	});
 	
 	// Print form
-	$w->out(Html::multiColForm([
+	$w->out(HtmlBootstrap5::multiColForm([
 		"Reassign reports" => [
 			[["Reassign reports to", "select", "reassign_to", null, $report_editors]]
 		]

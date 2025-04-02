@@ -16,9 +16,9 @@ class ReportLib {
 				$line[] = array(
 				ReportService::getInstance($w)->getUserById($member->user_id),
 				$member->role,
-				Html::box("/report/editmember/".$report->id . "/". $member->user_id," Edit ", true) .
+				HtmlBootstrap5::box("/report/editmember/".$report->id . "/". $member->user_id," Edit ", true) .
 					"&nbsp;&nbsp;" . 
-				Html::box("/report/deletemember/".$report->id."/".$member->user_id," Delete ", true)
+				HtmlBootstrap5::box("/report/deletemember/".$report->id."/".$member->user_id," Delete ", true)
 				);
 			}
 		}
@@ -30,6 +30,6 @@ class ReportLib {
 		$w->ctx("reportid",$report->id);
 	
 		// display list of group members
-		$w->ctx("viewmembers",Html::table($line,null,"tablesorter",true));
+		$w->ctx("viewmembers",HtmlBootstrap5::table($line,null,"tablesorter",true));
 	}	
 }

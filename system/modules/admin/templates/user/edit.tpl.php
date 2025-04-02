@@ -1,6 +1,6 @@
 <h1>
     Edit -
-    <?php echo $user["account"]["firstname"] . " " . $user["account"]["lastname"] ?>
+    <?php echo StringSanitiser::sanitise($user["account"]["firstname"]) . " " . StringSanitiser::sanitise($user["account"]["lastname"]); ?>
 </h1>
 
 <div class="tabs">

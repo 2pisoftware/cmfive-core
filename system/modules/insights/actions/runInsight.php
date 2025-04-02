@@ -1,19 +1,17 @@
 <?php
 
-/**@author Alice Hutley <alice@2pisoftware.com> */
-
+/**
+ * @author Alice Hutley <alice@2pisoftware.com>
+ */
 function runInsight_GET(Web $w)
 {
-
     $w->setLayout('layout-bootstrap-5');
-
-    /** @var InsightBaseClass $insight */
-    /** this class will be used on all other classes accessed by the runInsight action. It sets up the initial parameters for each insight */
-
+    
     $p = $w->pathMatch('insight_class');
     if (empty($p['insight_class'])) {
         $w->error('No insight class found', '/insights');
     }
+    /** @var InsightBaseClass $insight */
     $insight = InsightService::getInstance($w)->getInsightInstance($p['insight_class']);
     if (empty($insight)) {
         $w->error('Insight class could not resolve', '/insights');

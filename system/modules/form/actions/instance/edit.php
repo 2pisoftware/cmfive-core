@@ -57,5 +57,5 @@ function edit_POST(Web $w)
 
     $form = $form_instance->getForm();
 
-    $w->msg($form->title . (!empty($p['id']) ? " updated" : " created"), $redirect_url . "#" . toSlug($form->title));
+    $w->msg($form->title . (!empty($p['id']) ? " updated" : " created"), $redirect_url . "#" . StringSanitiser::stripNonAlphaNumeric($form->title));
 }

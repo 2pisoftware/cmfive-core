@@ -4,28 +4,36 @@ function edit_GET(Web $w)
 {
     $w->setLayout(null);
 
-    list($form_id) = $w->pathMatch();
+    list($form_id) = $w->pathMatch("form_id");
     $_form_object = $form_id ? FormService::getInstance($w)->getForm($form_id) : new Form($w);
 
     $form = [
         "Form" => [
             [
-                ["Title", "text", "title", $_form_object->title],
+                ["Title", "text", "title", StringSanitiser::sanitise($_form_object->title)],
             ],
             [
-                ["Description", "text", "description", $_form_object->description],
+                ["Description", "text", "description", StringSanitiser::sanitise($_form_object->description)],
             ],
         ]
     ];
 
     $validation = ['title' => ['required']];
 
-    $w->out(HtmlBootstrap5::multiColForm($form, '/form/edit/' . $_form_object->id, "POST", "Save", null, null, null, "_self", true, $validation));
+    $w->out(HtmlBootstrap5::multiColForm(
+        data: $form,
+        action: '/form/edit/' . $_form_object->id,
+        method: "POST",
+        submitTitle: "Save",
+        target: "_self",
+        includeFormTag: true,
+        validation: $validation
+    ));
 }
 
 function edit_POST(Web $w)
 {
-    list($form_id) = $w->pathMatch();
+    list($form_id) = $w->pathMatch("form_id");
     $_form_object = $form_id ? FormService::getInstance($w)->getForm($form_id) : new Form($w);
 
     $_form_object->fill($_POST);

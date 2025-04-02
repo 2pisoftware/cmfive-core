@@ -124,13 +124,13 @@ class Autocomplete extends \Html\Form\FormElement {
 		return $this;
 	}
 
-        /**
-         * Sets the boolean readonly attribute
-         *
-         * @param string $readonly 'true' for readonly fields
-         * @return \Html\Form\Autocomplete this
-         */
-        public function setReadOnly($readonly) {
+	/**
+	 * Sets the boolean readonly attribute
+	 *
+	 * @param string $readonly 'true' for readonly fields
+	 * @return \Html\Form\Autocomplete this
+	 */
+	public function setReadOnly($readonly) {
 		$this->readonly = $readonly;
 
 		return $this;

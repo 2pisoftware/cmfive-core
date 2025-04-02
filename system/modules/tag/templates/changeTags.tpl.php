@@ -4,10 +4,8 @@
 
         <label for="<?php echo 'display_tags_' . $object_class . '_' . $id?>" class="form-label">Add tags</label>
     <?php
-
-    use Html\Form\Html5Autocomplete;
-
-    echo new Html5Autocomplete([
+    
+    echo new Html\Form\Html5Autocomplete([
         'id' => 'display_tags_' . $object_class . '_' . $id,
         "placeholder" => "Add tags...",
         "class" => "text-center",
@@ -17,7 +15,7 @@
         "options" => array_map(function ($val) use ($object_tags, $object_class) {
             return [
                 "value" => $val->getSelectOptionValue(),
-                "text" => $val->getSelectOptionTitle(),
+                "text" => StringSanitiser::sanitise($val->getSelectOptionTitle()),
                 "type" => empty($object_tags)
                     ? "all"
                     // will throw an error if object_tags has no elements

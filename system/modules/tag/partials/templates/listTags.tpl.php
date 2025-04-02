@@ -55,7 +55,7 @@
 
             <?php foreach ($tags["display"] as $tag) : ?>
                 <span class="bg-info tag-small text-light">
-                    <?php echo $tag["tag"]; ?>
+                    <?php echo StringSanitiser::sanitise($tag["tag"]); ?>
                 </span>
             <?php endforeach; ?>
         </div>
@@ -63,7 +63,7 @@
         <div id="hidden_tags_<?php echo $tag_obj_id ?>" class="hidden_tags">
             <?php foreach ($tags["hover"] as $tag) : ?>
                 <span class="bg-info tag-small text-light">
-                    <?php echo $tag["tag"]; ?>
+                    <?php echo StringSanitiser::sanitise($tag["tag"]); ?>
                 </span>
             <?php endforeach; ?>
         </div>

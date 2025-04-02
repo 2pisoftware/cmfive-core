@@ -1,5 +1,5 @@
 <?php
-echo Html::box("/main/addwidget/{$module}", "Add Widget", true);
+echo HtmlBootstrap5::box("/main/addwidget/{$module}", "Add Widget", true);
 
 if (!empty($widgets)):
 ?>
@@ -8,8 +8,8 @@ if (!empty($widgets)):
             <?php for ($i = 0; $i < count($widgets); $i++): ?>
                 <li class="widget">
                     <div class="widget_buttons">
-                        <?php echo Html::box("/main/configwidget/{$module}/{$widgets[$i]->id}", __("Config"), false, false, null, null, "isbox", null, "widget_config"); ?>
-                        <?php echo Html::a("/main/removewidget/{$module}/{$widgets[$i]->id}", __("Remove"), __("Remove Widget"), "widget_remove"); ?>
+                        <?php echo HtmlBootstrap5::box("/main/configwidget/{$module}/{$widgets[$i]->id}", __("Config"), false, false, null, null, "isbox", null, "widget_config"); ?>
+                        <?php echo HtmlBootstrap5::a("/main/removewidget/{$module}/{$widgets[$i]->id}", __("Remove"), __("Remove Widget"), "widget_remove"); ?>
                     </div>
                     <?php // echo $w->partial($widgets[$i]->widget_name, null, $widgets[$i]->source_module); ?>
                     <?php if (!empty($widgets[$i]->widget_class)) {

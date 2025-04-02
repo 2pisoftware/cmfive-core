@@ -2,8 +2,6 @@
 
 namespace Html\Form;
 
-use LogService;
-
 /**
  * HTML5 Autocomplete using Tom-Select on frontend.
  * Renders an text <input> field with a dropdown for possible values,
@@ -108,7 +106,7 @@ class Html5Autocomplete extends \Html\Form\InputField
                 continue;
             }
 
-            $buffer .= $field . "='" . addslashes(is_array($value) ? implode(",", $value) : $value) . "' ";
+            $buffer .= $field . "='" . \StringSanitiser::escapeQuotes(is_array($value) ? implode(",", $value) : $value) . "' ";
         }
 
         $buffer .=
@@ -117,15 +115,11 @@ class Html5Autocomplete extends \Html\Form\InputField
             json_encode([
                 "options" => $this->options ?
                     array_map(
-                        fn($val) =>
-                        array_map(
-                            fn($inner) => htmlspecialchars($inner),
-                            $this->convertOption($val)
-                        ),
+                        fn($val) => $this->convertOption($val),
                         $this->options
                     )
                     : null,
-                "maxItems" => !isset($this->maxItems) ? $this->maxItems : 1,
+                "maxItems" => $this->maxItems,
                 "items" => $this->value,
                 "source" => $this->source,
                 "create" => $this->canCreate,
@@ -144,7 +138,7 @@ class Html5Autocomplete extends \Html\Form\InputField
                     "onItemRemove" => $this->onItemRemove,
                     "onItemCreate" => $this->onItemCreate,
                 ]
-            ]) .
+            ], JSON_HEX_APOS | JSON_HEX_QUOT) .
             "' ";
 
         return $buffer . '/>';
@@ -173,6 +167,11 @@ class Html5Autocomplete extends \Html\Form\InputField
             return [
                 "value" => $val,
                 "text" => $val,
+            ];
+        } else if (is_array($val) && count($val) === 2) {
+            return [
+                "value" => $val[0],
+                "text" => $val[1],
             ];
         } else {
             // can't log cause don't have $w

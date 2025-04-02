@@ -21,7 +21,7 @@ function editfeed_GET(Web &$w) {
 	$note = "Available Formats: html, csv, pdf, xml<br>";
 	$note .= "Date Formats must be <b>d/m/Y</b> to mimic date picker";
 
-	$f = Html::form(array(
+	$f = HtmlBootstrap5::form(array(
 	array("Create a Feed from a Report","section"),
 	array("Select Report","select","rid",$feed->report_id,$myrep),
 	array("Feed Title","text","title",$feed->title),

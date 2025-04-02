@@ -40,6 +40,6 @@ function metadata_GET(Web $w)
         $table_data[] = [];
     }
 
-    $w->ctx("exif_table", Html::table($table_data, null, "tablesorter", ["Type", "Key", "Value"]));
+    $w->ctx("exif_table", HtmlBootstrap5::table($table_data, null, "tablesorter", ["Type", "Key", "Value"]));
     $w->ctx("attachment", $attachment);
 }

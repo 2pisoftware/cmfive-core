@@ -5,7 +5,7 @@
         $pagesize = 50;
         echo $display_only !== true ? HtmlBootstrap5::box(
             href: "/form-instance/edit?form_id=" . $form->id . "&redirect_url=" . $redirect_url . "&object_class=" . get_class($object) . "&object_id=" . $object->id,
-            title: "Add new " . $form->title,
+            title: "Add new " . StringSanitiser::sanitise($form->title),
             button: true,
             class: "btn btn-sm btn-primary"
         ) : '';

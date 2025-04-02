@@ -24,7 +24,7 @@ function viewtaskgrouptypes_ALL(Web $w)
     if ($task_groups) {
         foreach ($task_groups as $group) {
             $row = [
-                Html::a(WEBROOT . "/task-group/viewmembergroup/" . $group->id, $group->title),
+                HtmlBootstrap5::a(WEBROOT . "/task-group/viewmembergroup/" . $group->id, $group->title),
                 $group->getTypeTitle(),
                 $group->description,
                 $group->getDefaultAssigneeName(),

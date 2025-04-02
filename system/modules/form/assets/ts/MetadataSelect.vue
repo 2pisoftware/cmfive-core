@@ -1,19 +1,28 @@
 <script setup>
-    import { defineProps, ref } from 'vue'
+    import { defineProps, ref, onMounted } from 'vue'
     const props = defineProps(['defaultValue'])
 
     const is_object_map = ref("0");
     const defaultValue = ref(props.defaultValue);
     const user_rows = ref([]);
 
+    onMounted(() => {
+        const rows = defaultValue.value.find(x => x.meta_key === "user_rows");
+        if (rows) {
+            user_rows.value = rows.meta_value;
+        }
+
+        const is_map = defaultValue.value.find(x => x.meta_key === "is_object_map");
+        if (is_map) {
+            is_object_map.value = is_map.meta_value;
+        }
+    })
+
     const showObjectMap = () => is_object_map.value == "1";
     const getDefaultValue = (key, default_return) => {
         if (defaultValue !== undefined) {
-            for(var i in defaultValue) {
-                if (defaultValue[i].meta_key == key) {
-                    return defaultValue[i].meta_value;
-                }
-            }
+            const data = defaultValue.value.find(x => x.meta_key === key);
+            if (data) return data.meta_value ?? default_return;
         }
 
         return default_return;
@@ -53,7 +62,7 @@
                 <input class="form-control" type="text" name="options" :value="getDefaultValue('options','')" id="vue-metadata-select__options" />
             </div>
         </div>
-        <div class="row vue-metadata-select__content-container" v-if="!showObjectMap()">
+        <div v-else class="row vue-metadata-select__content-container">
             <div class="row">
                 <div class="col-12">
                     <button type="button" class="btn btn-sm btn-secondary col-12 col-sm-2" @click="addRow()">Add row</button>
@@ -68,8 +77,8 @@
                     <label class="form-label">Value</label>
                     <input class="form-control form-control-sm" type="text" :name="getRowFieldName('value', index)" v-model="user_rows[index].value" />
                 </div>
-                <div class="col-12 col-md-2">
-                    <button type="button" class="btn btn-sm btn-danger vue-metadata-select__button mt-4" @click="removeRow(index)">Delete</button>
+                <div class="col-12 col-md-2 d-flex align-items-end">
+                    <button type="button" class="btn btn-sm btn-danger vue-metadata-select__button" @click="removeRow(index)">Delete</button>
                 </div>
             </div>
         </div>
