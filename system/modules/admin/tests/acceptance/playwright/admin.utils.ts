@@ -67,7 +67,7 @@ export class AdminHelper {
         else
             await CmfiveHelper.getRowByText(page, username).getByRole("button", { name: "Edit" }).click();
 
-		await page.locator("#details").waitFor()
+        await page.locator("#details").waitFor()
 
         for (const [label, value] of data) {
             if (label == "Title") {
@@ -119,15 +119,15 @@ export class AdminHelper {
         if(page.url() != HOST + "/admin-lookups#dynamic")
             await CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Admin", "Lookups");
 
-		await page.getByText("Create Lookup").click();
+        await page.getByText("Create Lookup").click();
 
-		await page.locator("#cmfive-modal").waitFor({ state: "visible" });
+        await page.locator("#cmfive-modal").waitFor({ state: "visible" });
         const modal = page.locator("#cmfive-modal");
 
-		await modal.getByLabel("or Add New Type", { exact: true }).fill(type);
+        await modal.getByLabel("or Add New Type", { exact: true }).fill(type);
 
-		await modal.getByLabel("Code").fill(code);
-		await modal.getByLabel("Title",).fill(lookup);
+        await modal.getByLabel("Code").fill(code);
+        await modal.getByLabel("Title",).fill(lookup);
         await modal.getByRole("button", {name: "Create"}).click();
 
         await expect(page.getByText("Lookup Item created")).toBeVisible();
@@ -138,15 +138,15 @@ export class AdminHelper {
         if(page.url() != HOST + "/admin-lookups#dynamic")
             await CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Admin", "Lookups");
 
-		await page.getByText("Create Lookup").click();
+        await page.getByText("Create Lookup").click();
 
         await page.locator("#cmfive-modal").waitFor({ state: "visible" });
         const modal = page.locator("#cmfive-modal");
 
-		await modal.locator('#type').selectOption(type);
+        await modal.locator('#type').selectOption(type);
 
-		await modal.getByLabel("Code").fill(code);
-		await modal.getByLabel("Title").fill(lookup);
+        await modal.getByLabel("Code").fill(code);
+        await modal.getByLabel("Title").fill(lookup);
         await modal.getByRole("button", {name: "Create"}).click();
 
         await expect(page.getByText("Lookup Item created")).toBeVisible();
@@ -154,23 +154,23 @@ export class AdminHelper {
 
     static async deleteLookup(page: Page, isMobile: boolean, lookup: string)
     {
-		if (page.url() != HOST + "/admin-lookups#dynamic")
-			await CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Admin", "Lookups");
+        if (page.url() != HOST + "/admin-lookups#dynamic")
+            await CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Admin", "Lookups");
 
-		// await CmfiveHelper.getRowByText(page, lookup).getByRole("button", { name: "Delete" }).click();
-		await page.getByRole('row', { name: lookup }).locator('button', { hasText: "Delete" }).click();
-	}
+        // await CmfiveHelper.getRowByText(page, lookup).getByRole("button", { name: "Delete" }).click();
+        await page.getByRole('row', { name: lookup }).locator('button', { hasText: "Delete" }).click();
+    }
 
     static async editLookup(page: Page, isMobile: boolean, lookup: string, data: Record<string, string>)
     {
         if(page.url() != HOST + "/admin-lookups#dynamic")
             await CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Admin", "Lookups");
 
-		// TODO: mobile isn't actually implemented for new lookups page
+        // TODO: mobile isn't actually implemented for new lookups page
         // if(isMobile)
         //     await page.click(`ul:has(li:has(span:text("${lookup}"))) button:text("Edit")`);
         // else
-		await page.getByRole('row', { name: lookup }).locator('a').click();
+        await page.getByRole('row', { name: lookup }).locator('a').click();
 
         await page.locator("#cmfive-modal").waitFor({ state: "visible" });
         const modal = page.locator("#cmfive-modal");
@@ -309,7 +309,7 @@ export class AdminHelper {
         await page.getByRole("link", {name: "Template", exact: true}).click();
         await page.locator("#template_title").fill(templateTitle);
         
-        await page.locator("#template_body").nth(1).click();
+        await page.locator("[data-id='template_body']").click();
 
         // code mirror auto completes open/closed html tags, so skip writing them
         // typing <table> puts cursor on new line between <table> and </table>
