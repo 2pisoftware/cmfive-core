@@ -18,7 +18,7 @@ test("that users can create reports", async ({ page, isMobile }) => {
 
     // Define report SQL
     const reportSQL = "[[test||text||Test]]@@headers|| select 'known' as 'pedigree' , 'established' as 'precedent' @@ @@info||select distinct classname from migration @@";
-    await page.locator("[data-id='report_code']").click();
+    await page.getByRole('textbox').focus();
     await page.keyboard.type(reportSQL);
 
     // Save report
