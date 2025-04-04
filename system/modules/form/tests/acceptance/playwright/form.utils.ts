@@ -13,6 +13,8 @@ export class FormHelper {
 
         await page.locator(".savebutton", {hasText: "Save"}).click();
 
+        await page.waitForLoadState();
+
         await expect(page.getByText("Form created")).toBeVisible();
     }
 
