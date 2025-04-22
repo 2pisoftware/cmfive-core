@@ -100,9 +100,9 @@ $theme_setting = AuthService::getInstance($w)->getSettingByKey('bs5-theme');
                                         <ul class="nav flex-column">
                                             <?php foreach ($module_navigation as $module_nav) :
                                                 if (is_string($module_nav)) : ?>
-                                                    <li class="nav-item w-100 text-truncate"><?php echo $module_nav; ?></li>
+                                                    <li class="nav-item w-100 cosine-header-dropdowns"><?php echo $module_nav; ?></li>
                                                 <?php else : ?>
-                                                    <li class="nav-item w-100 text-truncate"><a <?php echo $module_nav->type == MenuLinkType::Modal ? 'data-modal-target' : 'href'; ?>="<?php echo $module_nav->url; ?>"><?php echo $module_nav->title; ?></a></li>
+                                                    <li class="nav-item w-100 cosine-header-dropdowns"><a <?php echo $module_nav->type == MenuLinkType::Modal ? 'data-modal-target' : 'href'; ?>="<?php echo $module_nav->url; ?>"><?php echo $module_nav->title; ?></a></li>
                                                 <?php endif;
                                             endforeach; ?>
                                         </ul>
