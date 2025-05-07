@@ -22,7 +22,8 @@ class FileMultipartUploadService extends DbService
         string $key,
         string $mime,
         string|null $bucket,
-        $parent = null,
+        string|null $parent = null,
+        $display_name = null,
     ) {
         if (empty($bucket)) {
             $bucket = Config::get("file.adapters.s3.bucket");
@@ -41,6 +42,7 @@ class FileMultipartUploadService extends DbService
         $obj->bucket = $bucket;
         $obj->key_path = $key;
         $obj->mime = $mime;
+        $obj->display_name = $display_name;
 
         if (!empty($parent)) {
             $obj->parent_id = $parent->id;
@@ -105,6 +107,7 @@ class FileMultipartUploadService extends DbService
             $attachment->parent_table = $obj->parent_table;
             $attachment->parent_id = $obj->parent_id;
             $attachment->filename = substr($obj->key_path, strpos($obj->key_path, "/") + 1);
+            $attachment->title = $obj->display_name;
             $attachment->adapter = "s3";
             $attachment->fullpath = $obj->key_path;
             $attachment->skip_path_prefix = true;

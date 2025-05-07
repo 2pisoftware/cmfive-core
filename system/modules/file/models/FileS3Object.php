@@ -3,6 +3,12 @@
 class FileS3Object extends DbObject
 {
     /**
+     * The display name of this file provided by the user.
+     * @var string | null
+     */
+    public $display_name;
+
+    /**
      * The UploadId provided by aws when starting the multipart upload
      * @var string
      */
