@@ -22,8 +22,8 @@ class FileMultipartUploadService extends DbService
         string $key,
         string $mime,
         string|null $bucket,
-        string|null $parent = null,
-        $display_name = null,
+        $parent = null,
+        string|null $display_name = null,
     ) {
         if (empty($bucket)) {
             $bucket = Config::get("file.adapters.s3.bucket");
