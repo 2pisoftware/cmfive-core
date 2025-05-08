@@ -22,10 +22,14 @@ class TokensService extends DbService
         return json_decode($json, true) ?? ['error' => "json parse failed"];
     }
 
-    // This will only work for a vanilla HS256 token!
+    // This will only work for a vanilla HS256 token! 
+    // Custom modules should provision their own hash/validate symmetric code (not use this)
+    // It understands by default a direct/naive hash only, with no key at all.
+    // If a key is passed, it conforms to HS256 (HMAC with SHA-256).
+    // In cases other than HS256 it refuses to validate.
     // Key-pair hashed tokens (Cognito etc) will neeed their own check methods
 
-    public function getJwtSignatureCheck($jwt, $asBase64 = false): bool
+    public function getJwtSignatureCheck($jwt, $asBase64 = false, $knownKey = null): bool
     {
         $parts = explode(".", $jwt);
 
@@ -36,7 +40,10 @@ class TokensService extends DbService
             return false;
         }
 
-        $signature = hash('sha256', $parts[0] . "." . ($parts[1] ?? ""));
+        $signature = empty($knownKey)
+            ? hash('sha256', $parts[0] . "." . ($parts[1] ?? ""))
+            : hash_hmac('sha256', $parts[0] . "." . ($parts[1] ?? ""), $knownKey);
+
         if ($asBase64) {
             $signature = $this->getBase64URL($signature);
         }
