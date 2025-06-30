@@ -19,46 +19,46 @@ function edit_GET(Web $w)
 
     $form["Email"] = [
         [
-            ["Protocol", "select", "protocol", $email_channel->protocol, $email_channel::$_select_protocol]
+            ["Protocol", "select", "protocol", StringSanitiser::sanitise($email_channel->protocol), $email_channel::$_select_protocol]
         ],
         [
-            ["Server URL", "text", "server", $email_channel->server]
+            ["Server URL", "text", "server", StringSanitiser::sanitise($email_channel->server)]
         ],
         [
             ["Username", "text", "s_username", $email_channel->s_username],
             ["Password", "password", "s_password", $email_channel->s_password]
         ],
         [
-            ["Port <small>Only required for non-standard port configuarations</small>", "text", "port", $email_channel->port],
-            ["Use Auth?", "checkbox", "use_auth", $email_channel->use_auth]
+            ["Port <small>Only required for non-standard port configuarations</small>", "text", "port", StringSanitiser::sanitise($email_channel->port)],
+            ["Use Auth?", "checkbox", "use_auth", intval($email_channel->use_auth)]
         ],
         [
-            ['Verify Peer', 'checkbox', 'verify_peer', $email_channel->verify_peer == null ? 0 : $email_channel->verify_peer],
-            ['Allow self signed certificates', 'checkbox', 'allow_self_signed', $email_channel->allow_self_signed == null ? 0 : $email_channel->allow_self_signed]
+            ['Verify Peer', 'checkbox', 'verify_peer', $email_channel->verify_peer == null ? 0 : intval($email_channel->verify_peer)],
+            ['Allow self signed certificates', 'checkbox', 'allow_self_signed', $email_channel->allow_self_signed == null ? 0 : intval($email_channel->allow_self_signed)]
         ],
         [
-            ["Folder", "text", "folder", $email_channel->folder]
+            ["Folder", "text", "folder", StringSanitiser::sanitise($email_channel->folder)]
         ],
     ];
 
     $form["Filter"] = [
         [
-            ["To", "text", "to_filter", $email_channel->to_filter],
-            ["From", "text", "from_filter", $email_channel->from_filter]
+            ["To", "text", "to_filter", StringSanitiser::sanitise($email_channel->to_filter)],
+            ["From", "text", "from_filter", StringSanitiser::sanitise($email_channel->from_filter)]
         ],
         [
-            ["CC", "text", "cc_filter", $email_channel->cc_filter],
-            ["Subject", "text", "subject_filter", $email_channel->subject_filter]
+            ["CC", "text", "cc_filter", StringSanitiser::sanitise($email_channel->cc_filter)],
+            ["Subject", "text", "subject_filter", StringSanitiser::sanitise($email_channel->subject_filter)]
         ],
         [
-            ["Body", "text", "body_filter", $email_channel->body_filter]
+            ["Body", "text", "body_filter", StringSanitiser::sanitise($email_channel->body_filter)]
         ]
     ];
 
     $form["Action"] = [
         [
-            ["Post Read Action", "select", "post_read_action", $email_channel->post_read_action, $email_channel::$_select_read_action],
-            ["Post Read Data", "text", "post_read_parameter", $email_channel->post_read_parameter]
+            ["Post Read Action", "select", "post_read_action", StringSanitiser::sanitise($email_channel->post_read_action), $email_channel::$_select_read_action],
+            ["Post Read Data", "text", "post_read_parameter", StringSanitiser::sanitise($email_channel->post_read_parameter)]
         ]
     ];
 

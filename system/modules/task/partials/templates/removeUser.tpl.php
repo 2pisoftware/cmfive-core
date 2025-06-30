@@ -20,7 +20,7 @@
 				<br/>Please add members to the following Taskgroups before proceeding:<br/>
 				
 				<?php foreach($single_member_taskgroups as $single_member_taskgroup) :
-					echo Html::b("/task-group/viewmembergroup/" . $single_member_taskgroup->id . "#members", $single_member_taskgroup->title, null, null, true, "warning") . '<br/>';
+					echo HtmlBootstrap5::b("/task-group/viewmembergroup/" . $single_member_taskgroup->id . "#members", $single_member_taskgroup->title, null, null, true, "warning") . '<br/>';
 				endforeach; ?>
 			</div>
 			<?php endif; ?>

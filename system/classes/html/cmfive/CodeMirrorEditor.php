@@ -46,6 +46,6 @@ class CodeMirrorEditor extends \Html\Form\InputField
 
     public function __toString()
     {
-        return '<textarea name="' . $this->name . '" id="' . $this->id . '" style="display:none"></textarea><div class="code-mirror-target" cm-value=\'' . $this->value . '\' id="' . $this->id . '">'  . '</div>';
+        return '<textarea name="' . $this->name . '" id="' . $this->id . '" style="display:none">' . $this->value . '</textarea><div class="code-mirror-target" data-id="' . $this->id . '">'  . '</div>';
     }
 }

@@ -7,7 +7,7 @@ function edit_GET(Web $w) {
     $user = (!empty($p['id']) ? AuthService::getInstance($w)->getUser($p['id']) : new User($w));
     
     $template[($user->id ? "Edit" : "Create") . ' Group'] = array(array(array("Group Title","text", "title", $user->login)));
-    $w->out(Html::multiColForm($template,"/admin-groups/edit/".$user->id));
+    $w->out(HtmlBootstrap5::multiColForm($template,"/admin-groups/edit/".$user->id));
     $w->setLayout(null);
 }
 

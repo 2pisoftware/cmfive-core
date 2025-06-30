@@ -38,13 +38,13 @@ function index_ALL(Web &$w)
 
             // editor & admin get EDIT button
             if ((!empty($member->role) && $member->role == "EDITOR") || (AuthService::getInstance($w)->user()->hasRole("report_admin"))) {
-                $edit_button = Html::b($w->localUrl("/report/edit/" . $rep->id), "Edit", null, null, false, "btn btn-primary btn-sm");
+                $edit_button = HtmlBootstrap5::b($w->localUrl("/report/edit/" . $rep->id), "Edit", null, null, false, "btn btn-primary btn-sm");
                 $duplicate_button = HtmlBootstrap5::b($w->localUrl("/report/duplicate/{$rep->id}"), "Duplicate", null, null, false, "btn btn-secondary btn-sm");
             }
 
             // admin also gets DELETE button
             if (AuthService::getInstance($w)->user()->hasRole("report_admin")) {
-                $btndelete = Html::b($w->localUrl("/report/deletereport/" . $rep->id), "Delete", "Are you sure you want to delete this Report?", null, false, "btn btn-danger btn-sm");
+                $btndelete = HtmlBootstrap5::b($w->localUrl("/report/deletereport/" . $rep->id), "Delete", "Are you sure you want to delete this Report?", null, false, "btn btn-danger btn-sm");
             } else {
                 $btndelete = "";
             }
@@ -53,18 +53,18 @@ function index_ALL(Web &$w)
             if ((AuthService::getInstance($w)->user()->hasRole("report_user")) && (!AuthService::getInstance($w)->user()->hasRole("report_editor")) && (!AuthService::getInstance($w)->user()->hasRole("report_admin"))) {
                 if ($rep->is_approved == "1") {
                     $line[] = [
-                        Html::a($w->localUrl("/report/runreport/" . $rep->id), $rep->title),
+                        HtmlBootstrap5::a($w->localUrl("/report/runreport/" . $rep->id), StringSanitiser::sanitise($rep->title)),
                         ucfirst($rep->module),
-                        $rep->description,
+                        StringSanitiser::stripTags($rep->description),
                         (!empty($edit_button) ? $edit_button : "")
                     ];
                 }
             } else {
                 // if editor or admin, list all active reports of which i have membership and show approval status and buttons
                 $line[] = [
-                    Html::a($w->localUrl("/report/runreport/" . $rep->id), $rep->title),
+                    HtmlBootstrap5::a($w->localUrl("/report/runreport/" . $rep->id), StringSanitiser::sanitise($rep->title)),
                     ucfirst($rep->module),
-                    $rep->description,
+                    StringSanitiser::stripTags($rep->description),
                     HtmlBootstrap5::buttonGroup($edit_button . $duplicate_button . $btndelete),
                 ];
             }
@@ -78,7 +78,7 @@ function index_ALL(Web &$w)
     $modules = ReportService::getInstance($w)->getModules();
     $w->ctx("modules", $modules);
     $type = [];
-    $w->ctx("type", Html::select("type", $type));
+    $w->ctx("type", HtmlBootstrap5::select("type", $type));
 
     // display list of reports, if any
     $w->ctx("viewreports", HtmlBootstrap5::table($line, null, "tablesorter", true));

@@ -1,5 +1,8 @@
-<?php echo HtmlBootstrap5::b("/admin-templates", "Back to Templates List", null, null, false, "btn btn-sm btn-primary"); ?>
-<br /><br />
+<div class="row mb-3">
+    <div class="col">
+        <?php echo HtmlBootstrap5::b("/admin-templates", "Back to Templates List", null, null, false, "btn btn-sm btn-primary"); ?>
+    </div>
+</div>
 <div class='tabs'>
     <div class='tab-head'>
         <a class='active' href="#tab-1">Details</a>

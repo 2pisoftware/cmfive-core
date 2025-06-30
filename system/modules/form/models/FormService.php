@@ -88,8 +88,7 @@ class FormService extends DbService
      */
     public function buildForm(FormInstance $form_instance, Form $form)
     {
-        $form_structure = $form_instance->getEditForm($form);
-        return $form_structure;
+        return $form_instance->getEditForm($form);
     }
 
     /**

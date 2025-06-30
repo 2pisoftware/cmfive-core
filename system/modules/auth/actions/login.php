@@ -2,15 +2,15 @@
 
 function login_GET(Web $w)
 {
-    // CmfiveScriptComponentRegister::requireVue3();
-
+    $w->ctx('title', Config::get('auth.login_title', 'Login'));
+    
     // Check if logged in already
     $user = AuthService::getInstance($w)->user();
     if (AuthService::getInstance($w)->loggedIn() && AuthService::getInstance($w)->allowed($user->redirect_url)) {
         $w->redirect($w->localUrl(!empty($user->redirect_url) ? $user->redirect_url : "/main"));
     }
 
-    $loginform = Html::form([
+    $loginform = HtmlBootstrap5::form([
         ["Application Login", "section"],
         ["Username", "text", "login"],
         ["Password", "password", "password"],

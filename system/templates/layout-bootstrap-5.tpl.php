@@ -11,11 +11,11 @@ $theme_setting = AuthService::getInstance($w)->getSettingByKey('bs5-theme');
     <meta charset="utf-8" />
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="shortcut icon" href="/system/templates/img/favicon.ico" type="image/x-icon" />
-    <title><?php echo ucfirst($w->currentModule()); ?><?php echo !empty($title) ? ' - ' . $title : ''; ?></title>
+    <link rel="shortcut icon" href="/system/templates/img/cosine-icon-colour.png" type="image/x-icon" />
+    <title><?php echo ucfirst($w->currentModule()); ?><?php echo !empty($title) ? ' &#x2022; ' . $title : ''; ?></title>
     <script>var exports = {};</script>
     <?php
-    CmfiveStyleComponentRegister::registerComponent('app', new CmfiveStyleComponent("/system/templates/base/dist/app.css"));
+    CmfiveStyleComponentRegister::registerComponent('app', new CmfiveStyleComponent(Config::get('system.style_override', "/system/templates/base/dist/app.css")));
     CmfiveScriptComponentRegister::registerComponent('app', new CmfiveScriptComponent("/system/templates/base/dist/app.js", ['type' => 'module']));
 
     $w->outputStyles();
@@ -258,11 +258,11 @@ $theme_setting = AuthService::getInstance($w)->getSettingByKey('bs5-theme');
                             }
                             if ($isFirst) : ?>
                                 <li class="breadcrumb-item active" aria-current="page">
-                                    <span data-bs-toggle="tooltip" data-bs-placement="bottom" title="<?php echo $value['name']; ?>"><?php echo $value['name']; ?></span>
+                                    <span data-bs-toggle="tooltip" data-bs-placement="bottom" title="<?php echo html_entity_decode($value['name']); ?>"><?php echo html_entity_decode($value['name']); ?></span>
                                 </li>
                             <?php else : ?>
                                 <li class="breadcrumb-item">
-                                    <a href='<?php echo $path; ?>' data-bs-toggle="tooltip" data-bs-placement="bottom" title="<?php echo $value['name']; ?>"><?php echo $value['name']; ?></a>
+                                    <a href='<?php echo $path; ?>' data-bs-toggle="tooltip" data-bs-placement="bottom" title="<?php echo html_entity_decode($value['name']); ?>"><?php echo html_entity_decode($value['name']); ?></a>
                                 </li>
                             <?php endif;
                             $isFirst = false;

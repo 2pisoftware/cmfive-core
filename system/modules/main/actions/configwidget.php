@@ -17,7 +17,7 @@ function configwidget_GET(Web $w) {
 	}
 
 	if (!empty($widget_config)) {
-		$w->out(Html::multiColForm($widget_config->getSettingsForm(), "/main/configwidget/{$p['origin']}/{$p['id']}")); // {$p['origin']}/{$p['source']}/{$p['widget']}"));
+		$w->out(HtmlBootstrap5::multiColForm($widget_config->getSettingsForm(), "/main/configwidget/{$p['origin']}/{$p['id']}")); // {$p['origin']}/{$p['source']}/{$p['widget']}"));
 	} else {
 		$w->out(__("Could not find widget class ({$widgetname})"));
 	}

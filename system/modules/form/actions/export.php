@@ -13,12 +13,13 @@ function export_ALL(Web $w) {
 	$export = FormService::getInstance($w)->getFormForExport($form->id);
 
 	$export_json = json_encode($export);
+	$form_title = preg_replace('/[^A-Za-z0-9\-]/', '', $form->title);
 	$zip = new ZipArchive();
-	$zip_name = $form->title .".zip"; // Zip name
+	$zip_name = $form_title .".zip"; // Zip name
 
 	$zip->open($zip_name,  ZipArchive::CREATE);
 	
-	$zip->addFromString($form->title,  $export_json);  
+	$zip->addFromString($form_title,  $export_json);  
 	  
 	
 	$zip->close();

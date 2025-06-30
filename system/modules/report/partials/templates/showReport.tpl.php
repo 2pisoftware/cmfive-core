@@ -1,7 +1,7 @@
 <?php if (!empty($form)) {
-    echo $is_multicol_form ? Html::multiColForm($form, "/report/exereport/" . $report->id, "POST", "Download", "report_partial_form") : Html::form($form);
+    echo $is_multicol_form ? HtmlBootstrap5::multiColForm($form, "/report/exereport/" . $report->id, "POST", "Download", "report_partial_form") : HtmlBootstrap5::form($form);
 } else {
-    echo Html::alertBox('No report form data was returned', 'error');
+    echo HtmlBootstrap5::alertBox('No report form data was returned', 'error');
 }
 ?>
 

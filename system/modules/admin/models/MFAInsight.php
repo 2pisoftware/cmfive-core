@@ -33,9 +33,9 @@ class MFAInsight extends InsightBaseClass
             $contact = $no_mfa->getContact();
 
             $mfa_breakdown[] = [
-                $no_mfa->login,
-                !empty($contact) ? $contact->getFullName() : 'No contact object found',
-                !empty($contact) ? $contact->email : 'No contact object found',
+                StringSanitiser::sanitise($no_mfa->login),
+                !empty($contact) ? StringSanitiser::sanitise($contact->getFullName()) : 'No contact object found',
+                !empty($contact) ? StringSanitiser::sanitise($contact->email) : 'No contact object found',
                 formatDate($no_mfa->dt_lastlogin, 'Y-m-d')
             ];
         }

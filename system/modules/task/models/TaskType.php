@@ -32,7 +32,7 @@ abstract class TaskType
     }
 
     /**
-     * return an array similar to the Html::form
+     * return an array similar to the HtmlBootstrap5::form
      * which describes the fields available for this
      * task type and the way they should be presented in
      * task details.

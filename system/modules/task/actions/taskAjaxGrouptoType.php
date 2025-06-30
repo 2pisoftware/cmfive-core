@@ -26,7 +26,7 @@ function taskAjaxGrouptoType_ALL(Web &$w) {
 	$types = array(array("No assigned Tasks",""));
 
 	// load type dropdown and return
-	$tasktypes = Html::select("tasktypes",$types,null);
+	$tasktypes = HtmlBootstrap5::select("tasktypes",$types,null);
 
 	$w->setLayout(null);
 	$w->out(json_encode($tasktypes));

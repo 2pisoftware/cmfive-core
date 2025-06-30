@@ -31,7 +31,7 @@ function taskAjaxPrioritytoStatus_ALL(Web &$w)
 		$status = array(array("No assigned Tasks", ""));
 
 	// load status dropdown and return
-	$status = Html::select("status", $status, null);
+	$status = HtmlBootstrap5::select("status", $status, null);
 
 	$w->setLayout(null);
 	$w->out(json_encode($status));

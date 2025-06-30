@@ -1,6 +1,6 @@
 <?php if (!empty($task->id)) : ?>
     <div class="row-fluid clearfix panel">
-        <h3>Task [<?php echo $task->id; ?>]: <?php echo $task->title; ?></h3>
+        <h3>Task [<?php echo $task->id; ?>]: <?php echo StringSanitiser::sanitise($task->title); ?></h3>
         <div>
             <div>Created: <?php echo $createdDate; ?></div>
             <div>Taskgroup: <?php echo $task->getTaskGroupTypeTitle(); ?></div>
@@ -60,7 +60,7 @@
 
                 echo $task->canDelete(AuthService::getInstance($w)->user())
                     ? HtmlBootstrap5::b(
-                        $task->w->localUrl('/task/delete/' . $task->id),
+                        $w->localUrl('/task/delete/' . $task->id),
                         "Delete",
                         "Are you sure you want to delete this task?",
                         null,
@@ -70,7 +70,7 @@
                     : '';
 
                 echo HtmlBootstrap5::b(
-                    $task->w->localURL('task/duplicatetask/' . $task->id),
+                    $w->localURL('task/duplicatetask/' . $task->id),
                     "Duplicate Task",
                     null,
                     null,
@@ -79,7 +79,7 @@
                 );
 
                 echo HtmlBootstrap5::b(
-                    $task->w->localURL('/task/edit/?gid=' . $task->task_group_id),
+                    $w->localURL('/task/edit/?gid=' . $task->task_group_id),
                     "New Task",
                     null,
                     null,
@@ -382,14 +382,17 @@
         }, {
             '<?php echo \CSRF::getTokenId(); ?>': '<?php echo \CSRF::getTokenValue(); ?>'
         });
-
+        console.log("edit", edit);
         const action = e.target.getAttribute("action");
+        console.log("action", action);
         const res = await fetch(action, {
             method: "POST",
             body: new URLSearchParams(edit)
         });
+        const text = await res.text();
+        console.log("res", text);
 
-        if (res.ok) window.location.href = `/task/edit/${await res.text()}`
+        if (res.ok) window.location.href = `/task/edit/${text}`
         else window.location.reload();
     })
 </script>

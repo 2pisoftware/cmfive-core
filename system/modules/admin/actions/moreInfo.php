@@ -15,9 +15,9 @@ function moreInfo_GET(Web &$w)
     AdminService::getInstance($w)->navigation($w, AuthService::getInstance($w)->getUser($option['group_id'])->login);
 
     if (AuthService::getInstance($w)->user()->is_admin || AuthService::getInstance($w)->getRoleForLoginUser($option['group_id'], AuthService::getInstance($w)->user()->id) == "owner") {
-        $w->ctx("addMember", Html::box("/admin/groupmember/" . $option['group_id'], "New Member", true));
+        $w->ctx("addMember", HtmlBootstrap5::box("/admin/groupmember/" . $option['group_id'], "New Member", true));
     }
-    $w->ctx("editPermission", Html::b("/admin/permissionedit/" . $option['group_id'], "Edit Permissions"));
+    $w->ctx("editPermission", HtmlBootstrap5::b("/admin/permissionedit/" . $option['group_id'], "Edit Permissions"));
 
     //fill in member table;
     $table = [["Name", "Role", "Operations"]];
@@ -42,7 +42,7 @@ function moreInfo_GET(Web &$w)
             ];
 
             if (AuthService::getInstance($w)->user()->is_admin || AuthService::getInstance($w)->getRoleForLoginUser($option['group_id'], AuthService::getInstance($w)->user()->id) == "owner") {
-                $line[] = Html::b(
+                $line[] = HtmlBootstrap5::b(
                     href: "/admin/memberdelete/" . $option['group_id'] . "/" . $groupMember->id,
                     title: "Delete",
                     confirm: "Are you sure you want to delete this member?",
@@ -55,5 +55,5 @@ function moreInfo_GET(Web &$w)
         }
     }
 
-    $w->ctx("memberList", Html::table($table, null, "tablesorter", true));
+    $w->ctx("memberList", HtmlBootstrap5::table($table, null, "tablesorter", true));
 }

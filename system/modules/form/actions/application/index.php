@@ -9,8 +9,8 @@ function index_GET(Web $w)
     if (!empty($applications)) {
         foreach ($applications as $application) {
             $application_table_data[] = [
-                HtmlBootstrap5::a("/form-application/show/$application->id", $application->title, "View application $application->title", "text-break"),
-                '<span class="text-break">' . $application->description . '</span>',
+                HtmlBootstrap5::a("/form-application/show/$application->id", StringSanitiser::sanitise($application->title), "View application " . StringSanitiser::sanitise($application->title), "text-break"),
+                '<span class="text-break">' . StringSanitiser::sanitise($application->description) . '</span>',
                 $application->is_active == 1 ? 'Active' : 'Inactive',
                 HtmlBootstrap5::buttonGroup(
                     HtmlBootstrap5::b("/form-application/manage/$application->id", 'Manage', class: "btn-primary") .

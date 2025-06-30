@@ -16,10 +16,10 @@ function index_ALL(Web $w)
     } else {
         $w->out(HtmlBootstrap5::table(
             header: ['Title', 'Description', 'Actions'],
-            data: array_map(function ($f) {
+            data: array_map(function ($f) use ($w) {
                 return [
                     '<span class="text-break">' . $f->toLink() . '</span>',
-                    '<p class="text-break">' . $f->description . '</p>',
+                    '<p class="text-break">' . StringSanitiser::sanitise($f->description) . '</p>',
                     HtmlBootstrap5::buttonGroup(
                         HtmlBootstrap5::box(href: "/form/edit/" . $f->id, title: "Edit", class: 'btn btn-primary') .
                         HtmlBootstrap5::b(href: "/form/export/" . $f->id, title: "Export", class: "btn-secondary") .

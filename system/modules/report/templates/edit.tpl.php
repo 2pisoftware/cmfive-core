@@ -18,7 +18,12 @@ use Html\Form\Html5Autocomplete; ?>
         </div>
         <?php if (!empty($report->id)) : ?>
             <div id="code" class="clearfix">
-                <?php echo $btnrun . $sql_form; ?>
+                <div class="row mb-4">
+                    <div class="col">
+                        <?php echo $btnrun; ?>
+                    </div>
+                </div>
+                <?php echo $sql_form; ?>
             </div>
             <div id="templates">
                 <p>You can add special templates to render the data. Create a <a href="/admin-templates">System Template in Admin</a> and set the

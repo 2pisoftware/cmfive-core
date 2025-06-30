@@ -174,10 +174,11 @@ class TaskService extends DbService
     // convert dd/mm/yyyy date to yyy-mm-dd for SQL statements
     public function date2db($date)
     {
-        if ($date) {
+        if ($date && strpos($date, "/") > -1) {
             list($d, $m, $y) = preg_split("/\/|-|\./", $date);
             return $y . "-" . $m . "-" . $d;
         }
+        return $date;
     }
 
     // nicely format a number of seconds as H:m
@@ -778,7 +779,7 @@ class TaskService extends DbService
     public function getUserById($id)
     {
         $u = AuthService::getInstance($this->w)->getUser($id);
-        return $u ? $u->getFullName() : "";
+        return $u ? StringSanitiser::sanitise($u->getFullName()) : "";
     }
 
     // load our task files to make available: titles, descriptions, status, additional form fields, etc.

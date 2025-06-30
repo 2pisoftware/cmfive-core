@@ -33,7 +33,7 @@ const upload = async (e: SubmitEvent) => {
     for (const file of files.value) {
         let upload_id: string | undefined = undefined;
         try {
-            upload_id = await s3.beginMultipartUpload(file, endpoint.value);
+            upload_id = await s3.beginMultipartUpload(file, file.name, endpoint.value);
 
             progress.value++;
 

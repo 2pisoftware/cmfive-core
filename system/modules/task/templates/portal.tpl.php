@@ -40,6 +40,6 @@
 		$line[] = array("No Task Activity found for given date span");
 	}
 
-	return Html::table($line,null,"tablesorter",true);
+	return HtmlBootstrap5::table($line,null,"tablesorter",true);
 
 	?>

@@ -1,11 +1,11 @@
 <form method="POST" action="/auth/forgotpassword">
     <input type="hidden" name="<?php echo CSRF::getTokenID(); ?>" value="<?php echo CSRF::getTokenValue(); ?>" />
     <div class='row'>
-        <label for="login" class='col-form-label'><?php echo Config::get('auth.login_label', 'Login'); ?>
+        <label for="login" class='col-form-label'><?php echo Config::get('auth.password_reset_label', 'Login'); ?>
             <?php
             echo (new \Html\Form\InputField([
                 "id|name" => "login",
-                "placeholder" => Config::get('auth.login_label', 'Login'),
+                "placeholder" => "Email",
                 "required" => true,
                 "class" => "form-control-lg",
             ]));

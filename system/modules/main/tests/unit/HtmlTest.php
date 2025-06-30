@@ -34,7 +34,7 @@ class HtmlTest extends TestCase
         ];
 
         foreach ($table as $t) {
-            $this->assertEquals($t["want"], Html::sanitise($t["string"]));
+            $this->assertEquals($t["want"], HtmlBootstrap5::sanitise($t["string"]));
         }
     }
 }

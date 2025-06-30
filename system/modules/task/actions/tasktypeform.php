@@ -29,6 +29,6 @@ function tasktypeform_POST(Web $w) {
 	array_push($theform, $hiden);
 
 	// display the form
-	$f = Html::form($theform, $w->localUrl("/task/edit/"),"POST"," Submit ");
+	$f = HtmlBootstrap5::form($theform, $w->localUrl("/task/edit/"),"POST"," Submit ");
 	$w->ctx("formfields",$f);
 }

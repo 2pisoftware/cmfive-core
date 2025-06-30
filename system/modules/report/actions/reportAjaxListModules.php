@@ -19,7 +19,7 @@ function reportAjaxListModules_ALL(Web $w) {
 	$modules = array(array("No Reports",""));
 
 	// load Module dropdown and return
-	$modules = Html::select("module",$modules);
+	$modules = HtmlBootstrap5::select("module",$modules);
 
 	$w->setLayout(null);
 	$w->out(json_encode($modules));

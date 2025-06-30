@@ -151,7 +151,7 @@ class Attachment extends DbObject
      */
     public function getThumb()
     {
-        return Html::box(FileService::getInstance($this->w)->getDownloadUrl($this->fullpath), FileService::getInstance($this->w)->getThumbImg($this->fullpath));
+        return HtmlBootstrap5::box(FileService::getInstance($this->w)->getDownloadUrl($this->fullpath), FileService::getInstance($this->w)->getThumbImg($this->fullpath));
     }
 
     public function getDownloadUrl()
@@ -174,10 +174,10 @@ class Attachment extends DbObject
     {
         $view_url = $this->getViewUrl();
         if ($this->isDocument()) {
-            return Html::embedDocument($view_url, $width, $height);
+            return HtmlBootstrap5::embedDocument($view_url, $width, $height);
         }
 
-        return Html::a($view_url, $this->title);
+        return HtmlBootstrap5::a($view_url, $this->title);
     }
 
     /**

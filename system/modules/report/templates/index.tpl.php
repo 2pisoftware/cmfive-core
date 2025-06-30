@@ -1,1 +1,1 @@
-<?php echo $viewreports; ?>
+<?php echo $viewreports;

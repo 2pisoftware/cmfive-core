@@ -1,7 +1,7 @@
 <div class="panel clearfix">
     <div class="row g-0 clearfix section-header">
         <h4 class="col text-break">
-            <?php echo $application->title; ?>
+            <?php echo StringSanitiser::sanitise($application->title); ?>
 
             <div class="float-end">
                 <?php echo HtmlBootstrap5::buttonGroup(
@@ -15,7 +15,7 @@
     </div>
     <?php if ($application->description != '') : ?>
         <div class="row">
-            <p class="text-break"><?php echo $application->description; ?></p>
+            <p class="text-break"><?php echo StringSanitiser::sanitise($application->description); ?></p>
         </div>
     <?php endif; ?>
     <div class="row">

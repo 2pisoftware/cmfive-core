@@ -18,7 +18,7 @@ function index_GET(Web &$w)
 
                 $line = array();
 
-                $line[] = AuthService::getInstance($w)->user()->is_admin ? Html::box($w->localUrl("/admin/groupedit/".$group->id),"<u>".$group->login."</u>") : $group->login;
+                $line[] = AuthService::getInstance($w)->user()->is_admin ? HtmlBootstrap5::box($w->localUrl("/admin/groupedit/".$group->id),"<u>".$group->login."</u>") : $group->login;
                 //if it is a sub group from other group;
                 $groupUsers = $group->isInGroups();
 
@@ -29,10 +29,10 @@ function index_GET(Web &$w)
                 }
                 $line[] = count($ancestors) > 0 ? "<div style=\"color:green;\">".implode(", ", $ancestors)."</div>" : "";
 
-                $operations = Html::b("/admin-groups/edit/".$group->id,"Edit");
+                $operations = HtmlBootstrap5::b("/admin-groups/edit/".$group->id,"Edit");
 
                 if (AuthService::getInstance($w)->user()->is_admin)
-                $operations .= Html::b("/admin-groups/delete/".$group->id,"Delete","Are you sure you want to delete this group?");
+                $operations .= HtmlBootstrap5::b("/admin-groups/delete/".$group->id,"Delete","Are you sure you want to delete this group?");
 
                 $line[] = $operations;
 
@@ -41,8 +41,8 @@ function index_GET(Web &$w)
 	}
 
 	if (AuthService::getInstance($w)->user()->is_admin) {
-            $w->out(Html::box("/admin/groupadd", "New Group", true));
+            $w->out(HtmlBootstrap5::box("/admin/groupadd", "New Group", true));
 	}
         
-	$w->out(Html::table($table,null,"tablesorter",true));
+	$w->out(HtmlBootstrap5::table($table,null,"tablesorter",true));
 }

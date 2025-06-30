@@ -135,7 +135,7 @@ class FormField extends DbObject
                 $additional_details .= ucwords(str_replace("_", " ", $meta->meta_key)) . ": " . (is_array($meta->meta_value) ? json_encode($meta->meta_value) : $meta->meta_value) . ($meta !== end($metadata) ? ', ' : '');
             }
         }
-        return $additional_details;
+        return StringSanitiser::sanitise($additional_details);
     }
 
     /**
@@ -154,7 +154,7 @@ class FormField extends DbObject
      */
     public function getFormReferenceName()
     {
-        return str_replace(" ", "_", $this->name);
+        return str_replace(" ", "_", StringSanitiser::sanitise($this->name));
     }
 
     /**
@@ -169,13 +169,13 @@ class FormField extends DbObject
         }
 
         $interface = $this->interface_class;
-        $row = [$this->name, $interface::formType($this->type), $this->technical_name, ""];
+        $row = [StringSanitiser::sanitise($this->name), $interface::formType($this->type), StringSanitiser::sanitise($this->technical_name), ""];
         $metaData = $this->getMetadata();
 
         if (is_array($metaData) && count($metaData) > 0) {
             $metaArray = [];
             foreach ($metaData as $meta) {
-                $metaArray[$meta->meta_key] = $meta->meta_value;
+                $metaArray[$meta->meta_key] = is_string($meta->meta_value) ? $meta->meta_value : $meta->meta_value;
             }
 
             $formConfig = $interface::formConfig($this->type, $metaArray, $this->w);

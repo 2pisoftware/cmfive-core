@@ -10,8 +10,8 @@ if (!empty($channels)) {
         if (!empty($base_channel->id)) {
             $line = [];
             $line[] = $base_channel->id;
-            $line[] = $c->_channeltype;
-            $line[] = $base_channel->name;
+            $line[] = StringSanitiser::sanitise($c->_channeltype);
+            $line[] = StringSanitiser::sanitise($base_channel->name);
             $line[] = $base_channel->is_active ? "Yes" : "No";
             $line[] = HtmlBootstrap5::buttonGroup(
                 HtmlBootstrap5::b("/channels-{$c->_channeltype}/edit/{$base_channel->id}", "Edit", null, null, false, "btn btn-secondary") .

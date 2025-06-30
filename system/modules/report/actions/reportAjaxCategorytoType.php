@@ -33,5 +33,5 @@ function reportAjaxCategorytoType_ALL(Web $w) {
     }
 
     $w->setLayout(null);
-    $w->out(json_encode(Html::select("type", $type)));
+    $w->out(json_encode(HtmlBootstrap5::select("type", $type)));
 }

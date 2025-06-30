@@ -17,10 +17,10 @@ function toc_GET(Web $w) {
 		if (AuthService::getInstance($w)->allowed($module.'/index')) {
 			$content = file_get_contents($path);
 			$title = HelpLib::extractTitle($content);
-			$ul[]=Html::a(WEBROOT.'/help/view/'.$module.'/'.$module.'_toc',$title?$title:ucfirst($module));
+			$ul[]=HtmlBootstrap5::a(WEBROOT.'/help/view/'.$module.'/'.$module.'_toc',$title?$title:ucfirst($module));
 		}
 	}
 
-	$w->ctx("ul", Html::ul($ul));
+	$w->ctx("ul", HtmlBootstrap5::ul($ul));
 }
 

@@ -16,7 +16,7 @@ function index_GET($w)
     if (!empty($templates)) {
         foreach ($templates as $t) {
             $table_data[]  = [
-                $t->title, $t->module, $t->category,
+                StringSanitiser::sanitise($t->title), StringSanitiser::sanitise($t->module), StringSanitiser::sanitise($t->category),
                 [$t->is_active ? "Active" : "Inactive", true],
                 // [Date("H:i d-m-Y", $t->dt_created), true],
                 // [Date("H:i d-m-Y", $t->dt_modified), true], 

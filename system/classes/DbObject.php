@@ -193,7 +193,7 @@ class DbObject extends DbService
         } elseif (property_exists(get_class($this), "name")) {
             $title = $this->name;
         }
-        return $title;
+        return StringSanitiser::sanitise($title);
     }
 
     /**

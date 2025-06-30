@@ -8,7 +8,7 @@ function deletemember_GET(Web &$w)
 
     if ($member) {
         // build a static form displaying members details for confirmation of delete
-        $f = Html::form([
+        $f = HtmlBootstrap5::form([
             ["Confirm Delete Member", "section"],
             ["", "hidden", "is_deleted", "1"],
             ["Name", "static", "name", ReportService::getInstance($w)->getUserById($member->user_id)],

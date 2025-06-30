@@ -39,15 +39,15 @@ function index_ALL(Web $w)
                     if ($userHasAccess) {
                         // add values to the row in the same order as the table headers
                         $row = [
-                            Html::a('/insights/viewInsight/' . $insight_class, $insight->name),
+                            HtmlBootstrap5::a('/insights/viewInsight/' . $insight_class, $insight->name),
                             $modulename,
                             $insight->description
                         ];
 
                         // the actions column is used to hold buttons that link to actions per insight. Note the insight id is added to the href on these buttons.
-                        $button_group = Html::b('/insights/viewInsight/' . $insight_class, 'View');
+                        $button_group = HtmlBootstrap5::b(href: '/insights/viewInsight/' . $insight_class, title: 'View', class: 'btn btn-primary');
                         if (InsightService::getInstance($w)->isInsightOwner($user_id, $insight_class)) {
-                            $button_group .= Html::b(
+                            $button_group .= HtmlBootstrap5::b(
                                 href: '/insights/manageMembers?insight_class=' . $insight_class,
                                 title: 'Manage Members',
                                 class: 'btn-secondary'
