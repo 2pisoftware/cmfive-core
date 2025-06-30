@@ -1,11 +1,14 @@
 <div style="width:400px">
-    <?php echo (!empty($rep)) ? $rep->description : "No Report for user"; ?>
+    <?php echo (!empty($rep)) ? StringSanitiser::stripTags($rep->description) : "No Report for user"; ?>
     <?php echo (!empty($report)) ? $report : "" ?>
 </div>
 
 
 <script language="javascript">
-    $(document).ready(function() {
-        $("#format").val("html");
-    });
+    (function() {
+        const format = document.getElementById("format")
+        if (format) {
+            format.value = "html";
+        }
+    })();
 </script>

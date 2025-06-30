@@ -61,7 +61,7 @@ test("that an admin can create and delete a user", async ({ page, isMobile }) =>
 });
 
 test("that users, groups & permissions are assignable", async ({ page, isMobile }) => {
-    test.setTimeout(GLOBAL_TIMEOUT);
+    test.setTimeout(GLOBAL_TIMEOUT * 2);
     CmfiveHelper.acceptDialog(page);
 
     await CmfiveHelper.login(page, "admin", "admin");

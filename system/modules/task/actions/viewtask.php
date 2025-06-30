@@ -44,7 +44,7 @@ function viewtask_GET(Web &$w) {
 		// See if i am assignee or creator, if yes provide editable form, else provide static display
 		$btndelete = "";
 		if ($task->getCanIEdit()) {
-			$btndelete = Html::b(WEBROOT."/task/deletetask/".$task->id," Delete Task ", "Are you should you with to DELETE this task?");
+			$btndelete = HtmlBootstrap5::b(WEBROOT."/task/deletetask/".$task->id," Delete Task ", "Are you should you with to DELETE this task?");
 
 			// if task is closed and Task Group type says cannot be reopened, display static status
 			if ($task->getisTaskClosed() && !$task->getTaskReopen()) {
@@ -121,7 +121,7 @@ function viewtask_GET(Web &$w) {
 		}
 
 		// create form
-		$form = Html::form($f,$w->localUrl("/task/updatetask/".$task->id),"POST"," Update ");
+		$form = HtmlBootstrap5::form($f,$w->localUrl("/task/updatetask/".$task->id),"POST"," Update ");
 
 		// create 'start time log' button
 		$buttontimelog = "";
@@ -142,7 +142,7 @@ function viewtask_GET(Web &$w) {
 		// provide button to add time entry
 		$addtime = "";
 		if ($task->assignee_id == AuthService::getInstance($w)->user()->id) {		
-                    $addtime = Html::box(WEBROOT."/task/addtime/".$task->id," Add Time Log entry ",true);
+                    $addtime = HtmlBootstrap5::box(WEBROOT."/task/addtime/".$task->id," Add Time Log entry ",true);
 		}
 		$w->ctx("addtime",$addtime);
 
@@ -172,11 +172,11 @@ function viewtask_GET(Web &$w) {
 				if ($log->is_suspect == "0") {
 					$label = " Review ";
 					$totseconds += $seconds;
-					$bedit = Html::box($w->localUrl("/task/addtime/".$task->id."/".$log->id)," Edit ",true);
+					$bedit = HtmlBootstrap5::box($w->localUrl("/task/addtime/".$task->id."/".$log->id)," Edit ",true);
 				}
 
 				// ony Task Group owner gets to reject/accept time log entries
-				$bsuspect = (TaskService::getInstance($w)->getIsOwner($task->task_group_id, $_SESSION['user_id'])) ? Html::b($w->localUrl("/task/suspecttime/".$task->id."/".$log->id),$label) : "";
+				$bsuspect = (TaskService::getInstance($w)->getIsOwner($task->task_group_id, $_SESSION['user_id'])) ? HtmlBootstrap5::b($w->localUrl("/task/suspecttime/".$task->id."/".$log->id),$label) : "";
 
 				$line[] = array(TaskService::getInstance($w)->getUserById($log->user_id),
 				TaskService::getInstance($w)->getUserById($log->creator_id),
@@ -186,11 +186,11 @@ function viewtask_GET(Web &$w) {
 				!empty(CommentService::getInstance($w)->getComment($log->comment_id)) ? CommentService::getInstance($w)->getComment($log->comment_id)->comment:"",					
 				$bedit .
 								 
-				Html::b($w->localUrl("/task/deletetime/".$task->id."/".$log->id)," Delete ","Are you sure you wish to DELETE this Time Log Entry?") .
+				HtmlBootstrap5::b($w->localUrl("/task/deletetime/".$task->id."/".$log->id)," Delete ","Are you sure you wish to DELETE this Time Log Entry?") .
 								
 				$bsuspect .
 								
-				Html::box($w->localUrl("/task/popComment/".$task->id."/".$log->comment_id)," Comment ",true)
+				HtmlBootstrap5::box($w->localUrl("/task/popComment/".$task->id."/".$log->comment_id)," Comment ",true)
 				);
 			}
 			$line[] = array("","","","<b>Total</b>", "<b>".TaskService::getInstance($w)->getFormatPeriod($totseconds)."</b>","");
@@ -200,7 +200,7 @@ function viewtask_GET(Web &$w) {
 		}
 
 		// display the task time log
-		$w->ctx("timelog",Html::table($line,null,"tablesorter",true));
+		$w->ctx("timelog",HtmlBootstrap5::table($line,null,"tablesorter",true));
 
 		// tab: notifications
 		// if i am assignee, creator or task group owner, i can get notifications for this task
@@ -267,7 +267,7 @@ function viewtask_GET(Web &$w) {
 			$f[] = array("Task Data Updated","checkbox","task_data", !empty($task_data) ? $task_data : null);
 			$f[] = array("Documents Added","checkbox","task_documents", !empty($task_documents) ? $task_documents : null);
 
-			$form = Html::form($f,$w->localUrl("/task/updateusertasknotify/".$task->id),"POST","Save");
+			$form = HtmlBootstrap5::form($f,$w->localUrl("/task/updateusertasknotify/".$task->id),"POST","Save");
 
 
 			// display

@@ -17,10 +17,10 @@ function runreport_ALL(Web &$w)
             // if report exists, first check status and user role before displaying
             if (!empty($rep)) {
                 if (($rep->is_approved == "0") && ($member->role != "EDITOR") && (!AuthService::getInstance($w)->user()->hasRole("report_admin"))) {
-                    $w->msg($rep->title . ": Report is yet to be approved", "/report/index/");
+                    $w->msg(StringSanitiser::sanitise($rep->title) . ": Report is yet to be approved", "/report/index/");
                 } else {
                     // display form
-                    ReportService::getInstance($w)->navigation($w, $rep->title);
+                    ReportService::getInstance($w)->navigation($w, StringSanitiser::sanitise($rep->title));
                     History::add("Report: " . $rep->title);
 
                     // get the form array

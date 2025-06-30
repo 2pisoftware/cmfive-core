@@ -41,7 +41,7 @@ function resetpassword_GET(Web $w)
 
         $user_contact = $user->getContact();
         if (!empty($user_contact)) {
-            $password_form = Html::form([
+            $password_form = HtmlBootstrap5::form([
                 ["Enter new password", "section"],
                 $password_field,
                 $password_confirm_field,

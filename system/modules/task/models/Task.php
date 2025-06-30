@@ -507,7 +507,7 @@ class Task extends DbObject
             $user = AuthService::getInstance($this->w)->user();
         }
         if ($this->canView($user)) {
-            return Html::a($this->w->localUrl($this->printSearchUrl()), (!empty($this->title) ? htmlentities($this->title) : 'Task [' . $this->id . ']'), null, $class, null, $target);
+            return HtmlBootstrap5::a($this->w->localUrl($this->printSearchUrl()), (!empty($this->title) ? htmlentities($this->title) : 'Task [' . $this->id . ']'), null, $class, null, $target);
         }
         return (!empty($this->title) ? htmlentities($this->title) : 'Task [' . $this->id . ']');
     }
@@ -819,7 +819,7 @@ ORGANIZER;CN=" . $task_creator->getFullName() . ":mailto:" . $task_creator->getC
 UID:" . md5(uniqid(mt_rand(), true)) . "@2pisoftware.com
 ATTENDEE;CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=NEEDS-ACTION;RSVP=
   TRUE;CN=" . $assignee_name . ";X-NUM-GUESTS=0:mailto:" . $mailto_email . "
-SUMMARY:" . $this->title . "
+SUMMARY:" . StringSanitiser::sanitise($this->title) . "
 DESCRIPTION:" . htmlentities($this->description) . "
 SEQUENCE:0
 STATUS:CONFIRMED

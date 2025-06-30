@@ -87,7 +87,7 @@ function edit_GET(Web $w)
                     "id|name" => "login",
                     'label' => 'Login',
                     "required" => true,
-                    'value' => $user->login,
+                    'value' => StringSanitiser::sanitise($user->login),
                 ])),
                 (new \Html\Form\InputField\Checkbox([
                     "id|name" => "admin",
@@ -107,7 +107,7 @@ function edit_GET(Web $w)
                 (new Select([
                     "id|name" => "language",
                     'label' => 'Language',
-                    'selected_option' => $user->language,
+                    'selected_option' => StringSanitiser::sanitise($user->language),
                     'options' => $availableLocales,
                 ])),
             ],
@@ -118,13 +118,13 @@ function edit_GET(Web $w)
                     "id|name" => "firstname",
                     'label' => 'First Name',
                     'required' => true,
-                    "value" => $user_details["account"]["firstname"],
+                    "value" => StringSanitiser::sanitise($user_details["account"]["firstname"]),
                 ])),
                 (new \Html\Form\InputField([
                     "id|name" => "lastname",
                     'label' => 'Last Name',
                     'required' => true,
-                    "value" => $user_details["account"]["lastname"],
+                    "value" => StringSanitiser::sanitise($user_details["account"]["lastname"]),
                 ])),
             ],
             [
@@ -132,7 +132,11 @@ function edit_GET(Web $w)
                     "id|name" => "title_lookup_id",
                     'label' => 'Title',
                     'selected_option' => !empty($contact->title_lookup_id) ? LookupService::getInstance($w)->getLookup($contact->title_lookup_id)->code : null,
-                    'options' => LookupService::getInstance($w)->getLookupByType("title"),
+                    'options' => array_map(function(Lookup $lookup) use ($w) {
+                        $lookup->title = StringSanitiser::sanitise($lookup->title);
+                        $lookup->code = StringSanitiser::sanitise($lookup->code);
+                        return $lookup;
+                    }, LookupService::getInstance($w)->getLookupByType("title")),
                     'other_field' => new \Html\Form\InputField([
                         'id|name' => 'title_other',
                         'placeholder' => 'Other Title'
@@ -141,41 +145,41 @@ function edit_GET(Web $w)
                 (new \Html\Form\InputField([
                     "id|name" => "othername",
                     'label' => 'Other Name',
-                    "value" => $user_details["account"]["othername"],
+                    "value" => StringSanitiser::sanitise($user_details["account"]["othername"]),
                 ]))
             ],
             [
                 (new \Html\Form\InputField\Tel([
                     "id|name" => "homephone",
                     'label' => 'Home Phone',
-                    "value" => $user_details["account"]["homephone"],
+                    "value" => StringSanitiser::sanitise($user_details["account"]["homephone"]),
                 ])),
                 (new \Html\Form\InputField\Tel([
                     "id|name" => "workphone",
                     'label' => 'Work Phone',
-                    "value" => $user_details["account"]["workphone"],
+                    "value" => StringSanitiser::sanitise($user_details["account"]["workphone"]),
                 ])),
                 (new \Html\Form\InputField\Tel([
                     "id|name" => "mobile",
                     'label' => 'Mobile',
-                    "value" => $user_details["account"]["mobile"],
+                    "value" => StringSanitiser::sanitise($user_details["account"]["mobile"]),
                 ])),
             ],
             [
                 (new \Html\Form\InputField\Tel([
                     "id|name" => "priv_mobile",
                     'label' => 'Private Mobile',
-                    "value" => $user_details["account"]["priv_mobile"],
+                    "value" => StringSanitiser::sanitise($user_details["account"]["priv_mobile"]),
                 ])),
                 (new \Html\Form\InputField([
                     "id|name" => "fax",
                     'label' => 'Fax',
-                    "value" => $user_details["account"]["fax"],
+                    "value" => StringSanitiser::sanitise($user_details["account"]["fax"]),
                 ])),
                 (new \Html\Form\InputField\Email([
                     "id|name" => "email",
                     'label' => 'Email',
-                    "value" => $user_details["account"]["email"],
+                    "value" => StringSanitiser::sanitise($user_details["account"]["email"]),
                 ])),
             ]
         ],

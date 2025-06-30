@@ -1,4 +1,4 @@
-input {
+input:not([type="checkbox"]) {
     @include theme((background-color: 'white-black'));
 }
 

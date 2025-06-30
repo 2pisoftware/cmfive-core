@@ -20,7 +20,7 @@ class History
 
     /**
      * This function adds a history value to the SESSION
-     * @param String $name
+     * @param string $name
      */
     public static function add($name, Web $w = null, $object = null)
     {
@@ -59,7 +59,7 @@ class History
      *
      * @param string $key (optional)
      * @param int $length (optional)
-     * @return Array the history
+     * @return array the history
      */
     public static function get($key = null, $length = 0)
     {

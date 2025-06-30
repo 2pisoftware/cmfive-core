@@ -138,7 +138,7 @@ class InputField extends \Html\Form\FormElement
      * video/* representing video files HTML5
      * image/* representing image files HTML5
      *
-     * @param Mixed accept
+     * @param \mixed accept
      * @return \Html\Form\InputField this
      */
     public function setAccept($accept)
@@ -162,7 +162,7 @@ class InputField extends \Html\Form\FormElement
      * cc-type, transaction-currency, transaction-amount, language, bday,
      * bday-day, bday-month, bday-year, sex, tel, url, photo
      *
-     * @param Mixed autocomplete
+     * @param \mixed autocomplete
      * @return \Html\Form\InputField this
      */
     public function setAutocomplete($autocomplete)
@@ -181,7 +181,7 @@ class InputField extends \Html\Form\FormElement
      * automatically set focus to a hidden control). Note that the focusing of
      * the control may occur before the firing of the DOMContentLoaded event.
      *
-     * @param Mixed $autofocus
+     * @param \mixed $autofocus
      * @return \Html\Form\InputField this
      */
     public function setAutofocus($autofocus)
@@ -196,7 +196,7 @@ class InputField extends \Html\Form\FormElement
      * type attribute is search, previous search term values will persist in the
      * dropdown across page load.
      *
-     * @param Mixed $autosave
+     * @param \mixed $autosave
      * @return \Html\Form\InputField this
      */
     public function setAutosave($autosave)
@@ -215,7 +215,7 @@ class InputField extends \Html\Form\FormElement
      * checked state of an <input> across page loads. Use the autocomplete
      * attribute to control this feature.
      *
-     * @param Mixed $checked
+     * @param \mixed $checked
      * @return \Html\Form\InputField this
      */
     public function setChecked($checked)
@@ -235,7 +235,7 @@ class InputField extends \Html\Form\FormElement
      * disabled state of an <input> across page loads. Use the autocomplete
      * attribute to control this feature.
      *
-     * @param Mixed $disabled
+     * @param \mixed $disabled
      * @return \Html\Form\InputField this
      */
     public function setDisabled($disabled)
@@ -254,7 +254,7 @@ class InputField extends \Html\Form\FormElement
      * descendants of their form elements. An input can only be associated with
      * one form.
      *
-     * @param Mixed $form
+     * @param \mixed $form
      * @return \Html\Form\InputField this
      */
     public function setForm($form)
@@ -268,7 +268,7 @@ class InputField extends \Html\Form\FormElement
      * The URI of a program that processes the information submitted by the
      * input element, if it is a submit button or image. If specified, it
      * overrides the action attribute of the element's form owner.
-     * @param Mixed $formaction
+     * @param \mixed $formaction
      * @return \Html\Form\InputField this
      */
     public function setFormaction($formaction)
@@ -291,7 +291,7 @@ class InputField extends \Html\Form\FormElement
      * If this attribute is specified, it overrides the enctype attribute of
      * the element's form owner.
      *
-     * @param Mixed $formenctype
+     * @param \mixed $formenctype
      * @return \Html\Form\InputField this
      */
     public function setFormenctype($formenctype)
@@ -315,7 +315,7 @@ class InputField extends \Html\Form\FormElement
      * If specified, this attribute overrides the method attribute of the
      * element's form owner.
      *
-     * @param Mixed $formmethod
+     * @param \mixed $formmethod
      * @return \Html\Form\InputField this
      */
     public function setFormmethod($formmethod)
@@ -331,7 +331,7 @@ class InputField extends \Html\Form\FormElement
      * this attribute is specified, it overrides the novalidate attribute of
      * the element's form owner.
      *
-     * @param Mixed $formvalidate
+     * @param \mixed $formvalidate
      * @return \Html\Form\InputField this
      */
     public function setFormvalidate($formvalidate)
@@ -360,7 +360,7 @@ class InputField extends \Html\Form\FormElement
      *          and has no parent). If there is no parent, this option behaves
      *          the same way as _self.
      *
-     * @param Mixed $formtarget
+     * @param \mixed $formtarget
      * @return \Html\Form\InputField this
      */
     public function setFormtarget($formtarget)
@@ -374,7 +374,7 @@ class InputField extends \Html\Form\FormElement
      * If the value of the type attribute is image, this attribute defines the
      * height of the image displayed for the button.
      *
-     * @param Mixed $height
+     * @param \mixed $height
      * @return \Html\Form\InputField this
      */
     public function setHeight($height)
@@ -390,7 +390,7 @@ class InputField extends \Html\Form\FormElement
      * url. Possible values are: verbatim, latin, latin-name, latin-prose,
      * full-width-latin, kana, katakana, numberic, tel, email, url
      *
-     * @param Mixed $inputmode
+     * @param \mixed $inputmode
      * @return \Html\Form\InputField this
      */
     public function setInputmode($inputmode)
@@ -407,7 +407,7 @@ class InputField extends \Html\Form\FormElement
      * element. This attribute is ignored when the type attribute's value is
      * hidden, checkbox, radio, file, or a button type.
      *
-     * @param Mixed $list
+     * @param \mixed $list
      * @return \Html\Form\InputField this
      */
     public function setList($list)
@@ -421,7 +421,7 @@ class InputField extends \Html\Form\FormElement
      * The maximum (numeric or date-time) value for this item, which must not be
      * less than its minimum (min attribute) value.
      *
-     * @param Mixed $max
+     * @param \mixed $max
      * @return \Html\Form\InputField this
      */
     public function setMax($max)
@@ -441,7 +441,7 @@ class InputField extends \Html\Form\FormElement
      * the user can enter an unlimited number of characters. The constraint is
      * evaluated only when the value of the attribute has been changed.
      *
-     * @param Mixed $maxlength
+     * @param \mixed $maxlength
      * @return \Html\Form\InputField this
      */
     public function setMaxlength($maxlength)
@@ -455,7 +455,7 @@ class InputField extends \Html\Form\FormElement
      * The minimum (numeric or date-time) value for this item, which must not be
      * greater than its maximum (max attribute) value.
      *
-     * @param Mixed $min
+     * @param \mixed $min
      * @return \Html\Form\InputField this
      */
     public function setMin($min)
@@ -471,7 +471,7 @@ class InputField extends \Html\Form\FormElement
      * Unicode code points) that the user can enter; for other control types, it
      * is ignored.
      *
-     * @param Mixed $minlength
+     * @param \mixed $minlength
      * @return \Html\Form\InputField this
      */
     public function setMinlength($minlength)
@@ -486,7 +486,7 @@ class InputField extends \Html\Form\FormElement
      * value. This attribute applies when the type attribute is set to email or
      * file; otherwise it is ignored.
      *
-     * @param Mixed $multiple
+     * @param \mixed $multiple
      * @return \Html\Form\InputField this
      */
     public function setMultiple($multiple)
@@ -499,7 +499,7 @@ class InputField extends \Html\Form\FormElement
     /**
      * The name of the control, which is submitted with the form data.
      *
-     * @param Mixed $name
+     * @param \mixed $name
      * @return \Html\Form\InputField this
      */
     public function setName($name)
@@ -518,7 +518,7 @@ class InputField extends \Html\Form\FormElement
      * language is the same as JavaScript's. The pattern is not surrounded by
      * forward slashes.
      *
-     * @param Mixed $pattern
+     * @param \mixed $pattern
      * @return \Html\Form\InputField this
      */
     public function setPattern($pattern)
@@ -532,7 +532,7 @@ class InputField extends \Html\Form\FormElement
      * A hint to the user of what can be entered in the control . The
      * placeholder text must not contain carriage returns or line-feeds.
      *
-     * @param Mixed $placeholder
+     * @param \mixed $placeholder
      * @return \Html\Form\InputField this
      */
     public function setPlaceholder($placeholder)
@@ -548,7 +548,7 @@ class InputField extends \Html\Form\FormElement
      * range, color, checkbox, radio, file, or a button type (such as button or
      * submit).
      *
-     * @param Mixed $readonly
+     * @param \mixed $readonly
      * @return \Html\Form\InputField this
      */
     public function setReadonly($readonly)
@@ -564,7 +564,7 @@ class InputField extends \Html\Form\FormElement
      * image, or a button type (submit, reset, or button). The :optional and
      * :required CSS pseudo-classes will be applied to the field as appropriate.
      *
-     * @param Mixed $required
+     * @param \mixed $required
      * @return \Html\Form\InputField this
      */
     public function setRequired($required)
@@ -580,7 +580,7 @@ class InputField extends \Html\Form\FormElement
      * in an RTL locale, or "backward" if the selection was made in the opposite
      * direction. This can be "none" if the selection direction is unknown.
      *
-     * @param Mixed $selectionDirection
+     * @param \mixed $selectionDirection
      * @return \Html\Form\InputField this
      */
     public function setSelectionDirection($selectionDirection)
@@ -598,7 +598,7 @@ class InputField extends \Html\Form\FormElement
      * password; otherwise it is ignored. In addition, the size must be greater
      * than zero. If you don't specify a size, a default value of 20 is used.
      *
-     * @param Mixed $size
+     * @param \mixed $size
      * @return \Html\Form\InputField this
      */
     public function setSize($size)
@@ -613,7 +613,7 @@ class InputField extends \Html\Form\FormElement
      * URI for the location of an image to display on the graphical submit
      * button; otherwise it is ignored.
      *
-     * @param Mixed $src
+     * @param \mixed $src
      * @return \Html\Form\InputField this
      */
     public function setSrc($src)
@@ -630,7 +630,7 @@ class InputField extends \Html\Form\FormElement
      * control accepts only values at multiples of the step value greater than
      * the minimum.
      *
-     * @param Mixed $step
+     * @param \mixed $step
      * @return \Html\Form\InputField this
      */
     public function setStep($step)
@@ -661,7 +661,7 @@ class InputField extends \Html\Form\FormElement
      * The initial value of the control. This attribute is optional except when
      * the value of the type attribute is radio or checkbox.
      *
-     * @param Mixed $value
+     * @param \mixed $value
      * @return \Html\Form\InputField this
      */
     public function setValue($value)
@@ -675,7 +675,7 @@ class InputField extends \Html\Form\FormElement
      * If the value of the type attribute is image, this attribute defines the
      * width of the image displayed for the button.
      *
-     * @param Mixed $width
+     * @param \mixed $width
      * @return \Html\Form\InputField this
      */
     public function setWidth($width)

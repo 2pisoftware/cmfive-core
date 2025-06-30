@@ -26,14 +26,14 @@ function edit_GET(Web $w)
                         'label' => 'Title',
                         'id|name' => 'title',
                         'required' => 'required',
-                        'value' => $is_new ? '' : $application->title,
+                        'value' => $is_new ? '' : StringSanitiser::sanitise($application->title),
                     ]
                 ),
                 new InputField(
                     [
                         'label' => 'Description',
                         'id|name' => 'description',
-                        'value' => $is_new ? '' : $application->description,
+                        'value' => $is_new ? '' : StringSanitiser::sanitise($application->description),
                     ]
                 ),
             ],
@@ -45,7 +45,7 @@ function edit_GET(Web $w)
                             'id|name' => 'is_active',
                         ]
                     )
-                )->setChecked($is_new ? false : $application->is_active),
+                )->setChecked($is_new ? false : boolval($application->is_active)),
 
                 new InputField(
                     [

@@ -50,6 +50,10 @@ function edit_GET($w)
         $taskgroup = TaskService::getInstance($w)->getTaskGroup(!empty($task->task_group_id) ? $task->task_group_id : $taskgroup_id);
 
         if (!empty($taskgroup->id)) {
+            //set the task taskgroup id in case taskgroup is set by request
+            if (empty($task->task_group_id) && !empty($taskgroup_id)) {
+                $task->task_group_id = $taskgroup_id;
+            }
             $tasktypes = TaskService::getInstance($w)->getTaskTypes($taskgroup->task_group_type);
             $priority = TaskService::getInstance($w)->getTaskPriority($taskgroup->task_group_type);
             $members = TaskService::getInstance($w)->getMembersBeAssigned($taskgroup->id);
@@ -223,7 +227,7 @@ function edit_GET($w)
             ]
         ];
 
-        $w->ctx("tasknotify", Html::multiColForm($form, $w->localUrl("/task/updateusertasknotify/" . $task->id), "POST"));
+        $w->ctx("tasknotify", HtmlBootstrap5::multiColForm($form, $w->localUrl("/task/updateusertasknotify/" . $task->id), "POST"));
     }
 
     ///////////////////
@@ -261,7 +265,7 @@ function edit_POST($w)
     if (empty($task->dt_due)) {
         $task->dt_due = TaskService::getInstance($w)->getNextMonth();
     }
-    $task->estimate_hours = !empty($task->estimate_hours) ? $task->estimate_hours : null;
+    $task->estimate_hours = !empty($task->estimate_hours) ? intval($task->estimate_hours) : null;
     $task->effort = !empty($task->effort) ? floatval($task->effort) : null;
     $task->rate = !empty($task->rate) ? $task->rate : null;
     $task->insertOrUpdate(true);

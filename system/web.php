@@ -1264,7 +1264,7 @@ class Web
         if (startsWith($path, $this->currentModule())) {
             $class .= " current active";
         }
-        $link = AuthService::getInstance($this)->allowed($path, Html::a($this->localUrl($path), $title, $title, $class, $confirm, $target));
+        $link = AuthService::getInstance($this)->allowed($path, HtmlBootstrap5::a($this->localUrl($path), $title, $title, $class, $confirm, $target));
         if ($array !== null) {
             $array[] = $link;
         }

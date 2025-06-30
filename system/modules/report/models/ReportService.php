@@ -102,7 +102,7 @@ class ReportService extends DbService
         return ($a->dt_schedule < $b->dt_schedule) ? +1 : -1;
     }
 
-    // get list of modules for Html::select
+    // get list of modules for HtmlBootstrap5::select
     public function getModules()
     {
         $modules = $this->w->modules();

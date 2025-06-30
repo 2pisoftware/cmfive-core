@@ -18,7 +18,7 @@ if (!empty($tasks)) {
         if ($task->getCanIView()) {
             $table_line = [];
             $table_line[] = $task->id;
-            $table_line[] = $task->toLink() . // Html::a("/task/edit/" . $task->id, $task->title);
+            $table_line[] = $task->toLink() . // HtmlBootstrap5::a("/task/edit/" . $task->id, $task->title);
                 $w->partial('listTags', ['object' => $task, 'limit' => 1], 'tag');
 
             // Append the rest of the data

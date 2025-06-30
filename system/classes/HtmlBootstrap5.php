@@ -161,7 +161,7 @@ class HtmlBootstrap5 extends Html
                 case "password":
                     $size = !empty($field[4]) ? $field[4] : '';
                     $required = !empty($field[5]) ? $field[5] : '';
-                    $buffer .= '<input' . $readonly . ' style="width:100%;" type="' . $type . '" name="' . $name . '" value="' . htmlspecialchars($value) . '" size="' . $size . '" id="' . $name . '"  ' . $required . '/>';
+                    $buffer .= '<input' . $readonly . ' style="width:100%;" type="' . $type . '" name="' . $name . '" value="' . $value . '" size="' . $size . '" id="' . $name . '"  ' . $required . '/>';
                     break;
                 case "autocomplete":
                     $options = !empty($field[4]) ? $field[4] : '';
@@ -394,7 +394,7 @@ class HtmlBootstrap5 extends Html
                         case "email":
                         case "tel":
                             $size = !empty($field[4]) ? $field[4] : null;
-                            $buffer .= '<input' . $readonly . ' class="form-control" type="' . $type . '" name="' . $name . '" value="' . (empty($value) ? '' : htmlspecialchars($value)) .
+                            $buffer .= '<input' . $readonly . ' class="form-control" type="' . $type . '" name="' . $name . '" value="' . (empty($value) ? '' : $value) .
                                 '" size="' . $size . '" id="' . $name . '" ' . $required . " />";
                             break;
                         case "autocomplete":
@@ -1018,5 +1018,27 @@ class HtmlBootstrap5 extends Html
     public static function timePicker($name, $value = null, $size = null, $required = null)
     {
         return '<input class="form-control" type="time" name="' . $name . '" value="' . $value . '" size="' . $size . '" id="' . $name . '" ' . $required . ' />';
+    }
+
+    /**
+     * Create a single select autocomplete widget
+     *
+     * @param <type> $data
+     * @param <type> $value
+     * @param <type> $class
+     */
+    public static function autocomplete($name, $options, $value = null, $class = null, $style = null, $minLength = 1, $required = null)
+    {
+        return (new \Html\Form\Html5Autocomplete([
+            "id|name" => "title",
+            "class" => "form-control " . $class,
+            "label" => "Title",
+            "maxItems" => 1,
+            "value" => $value,
+            "required" => !!$required,
+            "style" => $style,
+            "minLength" => $minLength,
+            "options" => $options,
+        ]))->__toString();
     }
 }

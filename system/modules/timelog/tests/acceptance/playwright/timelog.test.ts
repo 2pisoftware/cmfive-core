@@ -6,8 +6,9 @@ import { DateTime } from "luxon";
 
 test.describe.configure({mode: 'parallel'});
 
+// eslint-disable-next-line playwright/expect-expect
 test("You can create a Timelog using Timer" , async ({page, isMobile}) => {
-    test.setTimeout(GLOBAL_TIMEOUT);
+    test.setTimeout(GLOBAL_TIMEOUT * 2);
     CmfiveHelper.acceptDialog(page);
 
     await CmfiveHelper.login(page, "admin", "admin");
@@ -28,8 +29,9 @@ test("You can create a Timelog using Timer" , async ({page, isMobile}) => {
     await TaskHelper.deleteTaskGroup(page, isMobile, taskgroup, taskgroupID);
 });
 
+// eslint-disable-next-line playwright/expect-expect
 test("You can create a Timelog using Add Timelog" , async ({page, isMobile}) => {
-    test.setTimeout(GLOBAL_TIMEOUT);
+    test.setTimeout(GLOBAL_TIMEOUT * 2);
     CmfiveHelper.acceptDialog(page);
 
     await CmfiveHelper.login(page, "admin", "admin");

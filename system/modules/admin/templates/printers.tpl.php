@@ -1,3 +1,6 @@
-<?php 
-    echo HtmlBootstrap5::box("/admin/editprinter", "Add a printer", true, false, null, null, 'isbox', null, 'btn btn-sm btn-primary');
-    echo HtmlBootstrap5::table($table_data, null, "tablesorter", $table_header); 
+<div class="row">
+    <div class="col">
+        <?php echo HtmlBootstrap5::box(href: "/admin/editprinter", title: "Add a printer", button: true, class: 'btn btn-primary'); ?>
+    </div>
+</div>
+<?php echo HtmlBootstrap5::table($table_data, null, "tablesorter", $table_header); 

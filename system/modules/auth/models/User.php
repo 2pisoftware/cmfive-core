@@ -211,7 +211,7 @@ class User extends DbObject
 
     public function getSelectOptionTitle()
     {
-        return $this->getFullName();
+        return StringSanitiser::sanitise($this->getFullName());
     }
 
     public function getSelectOptionValue()

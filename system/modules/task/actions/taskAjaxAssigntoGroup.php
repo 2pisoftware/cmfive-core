@@ -20,7 +20,7 @@ function taskAjaxAssigntoGroup_ALL(Web $w) {
 	$group = array(array("No assigned Tasks",""));
 
 	// load Group dropdown and return
-	$taskgroups = Html::select("taskgroups",$group,null);
+	$taskgroups = HtmlBootstrap5::select("taskgroups",$group,null);
 
 	$w->setLayout(null);
 	$w->out(json_encode($taskgroups));

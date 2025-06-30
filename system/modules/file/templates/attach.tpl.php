@@ -3,7 +3,7 @@
     <table class="form" width="100%">
         <tr><td class='section' colspan='2'>Attach a File</td></tr>
         <?php if (!empty($types) && sizeof($types)) : ?>
-            <tr><td nowrap='true'>Attachment Type</td><td><?php echo Html::select("type_code",$types); ?></td></tr>
+            <tr><td nowrap='true'>Attachment Type</td><td><?php echo HtmlBootstrap5::select("type_code",$types); ?></td></tr>
         <?php endif; ?>
         <tr><td nowrap='true'>File</td><td><input type="file" name="file" /></td></tr>
         <tr><td nowrap='true'>Title</td><td><input type="text" name="title" /></td></tr>

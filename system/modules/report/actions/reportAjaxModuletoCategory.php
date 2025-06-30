@@ -24,7 +24,7 @@ function reportAjaxModuletoCategory_ALL(Web $w)
 		$category = array(array("No Reports", ""));
 
 	// load Category dropdown and return
-	$category = Html::select("category", $category);
+	$category = HtmlBootstrap5::select("category", $category);
 
 	$w->setLayout(null);
 	$w->out(json_encode($category));

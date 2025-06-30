@@ -41,6 +41,11 @@ function edit_GET(Web $w)
         }
     }
 
+    if (!empty($timelog->object_class) && !class_exists($timelog->object_class)) {
+        $w->out(HtmlBootstrap5::alertBox("Invalid Timelog object class", "alert-danger", false));
+        return;
+    }
+
     $object = TimelogService::getInstance($w)->getObject($timelog->object_class ?: $tracking_class, $timelog->object_id ?: $tracking_id);
     $w->ctx("object", $object);
     // Hook relies on knowing the timelogs time_type record, but also the object, so we give the time_type to object

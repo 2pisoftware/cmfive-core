@@ -34,8 +34,6 @@ class FormAdditionalFieldsInterface extends FormFieldInterface
             default:
                 return "text";
         }
-
-        return null;
     }
 
     /**
@@ -68,8 +66,6 @@ class FormAdditionalFieldsInterface extends FormFieldInterface
             default:
                 return null;
         }
-
-        return null;
     }
 
     /**

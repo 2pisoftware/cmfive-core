@@ -26,7 +26,7 @@ class Form extends DbObject
     /**
      * Load the fields associated with this form
      *
-     * @return Array<FormField>
+     * @return array<FormField>
      */
     public function getFields()
     {
@@ -76,7 +76,7 @@ class Form extends DbObject
         $header_string = '';
         if (!empty($fields)) {
             foreach ($fields as $field) {
-                $header_string .= '<th>' . $field->name . '</th>';
+                $header_string .= '<th>' . StringSanitiser::sanitise($field->name) . '</th>';
             }
         }
 
@@ -89,7 +89,7 @@ class Form extends DbObject
             return $this->header_template;
         }
 
-        return array_map(fn(FormField $f) => $f->name, $this->getFields());
+        return array_map(fn(FormField $f) => StringSanitiser::sanitise($f->name), $this->getFields());
     }
 
     /**
@@ -113,7 +113,7 @@ class Form extends DbObject
                         $instance_structure = [];
                         foreach ($saved_values as $saved_value) {
                             $field = $saved_value->getFormField();
-                            $instance_structure[$field->technical_name] = $saved_value->value;
+                            $instance_structure[StringSanitiser::sanitise($field->technical_name)] = StringSanitiser::sanitise($saved_value->value);
                         }
                     }
 
@@ -188,7 +188,7 @@ class Form extends DbObject
      */
     public function getSelectOptionTitle()
     {
-        return $this->title;
+        return StringSanitiser::sanitise($this->title);
     }
 
     /**
@@ -208,7 +208,7 @@ class Form extends DbObject
      */
     public function printSearchTitle()
     {
-        return $this->title;
+        return StringSanitiser::sanitise($this->title);
     }
 
     /**
@@ -219,6 +219,17 @@ class Form extends DbObject
     public function printSearchUrl()
     {
         return "/form/show/" . $this->id;
+    }
+
+    public function toArray()
+    {
+        return [
+            'title' => StringSanitiser::sanitise($this->title),
+            'description' => StringSanitiser::sanitise($this->description),
+            'header_template' => StringSanitiser::sanitise($this->header_template),
+            'row_template' => StringSanitiser::sanitise($this->row_template),
+            'summary_template' => StringSanitiser::sanitise($this->summary_template),
+        ];
     }
 
     /**
