@@ -95,4 +95,6 @@ Config::set('system.aws', [
     ],
 ]);
 
+Config::set('system.include_frame_options_header', true); // set to false to disable X-Frame-Options header
+
 Config::set('system.use_api', true);

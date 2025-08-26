@@ -11,7 +11,7 @@ $theme_setting = AuthService::getInstance($w)->getSettingByKey('bs5-theme');
     <meta charset="utf-8" />
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="shortcut icon" href="/system/templates/img/favicon.ico" type="image/x-icon" />
+    <link rel="shortcut icon" href="/system/templates/img/cosine-icon-colour.png" type="image/x-icon" />
     <title><?php echo ucfirst($w->currentModule()); ?><?php echo !empty($title) ? ' &#x2022; ' . $title : ''; ?></title>
     <script>var exports = {};</script>
     <?php
@@ -100,9 +100,9 @@ $theme_setting = AuthService::getInstance($w)->getSettingByKey('bs5-theme');
                                         <ul class="nav flex-column">
                                             <?php foreach ($module_navigation as $module_nav) :
                                                 if (is_string($module_nav)) : ?>
-                                                    <li class="nav-item w-100 cosine-header-dropdowns"><?php echo $module_nav; ?></li>
+                                                    <li class="nav-item"><?php echo $module_nav; ?></li>
                                                 <?php else : ?>
-                                                    <li class="nav-item w-100 cosine-header-dropdowns"><a <?php echo $module_nav->type == MenuLinkType::Modal ? 'data-modal-target' : 'href'; ?>="<?php echo $module_nav->url; ?>"><?php echo $module_nav->title; ?></a></li>
+                                                    <li class="nav-item"><a <?php echo $module_nav->type == MenuLinkType::Modal ? 'data-modal-target' : 'href'; ?>="<?php echo $module_nav->url; ?>"><?php echo $module_nav->title; ?></a></li>
                                                 <?php endif;
                                             endforeach; ?>
                                         </ul>
@@ -212,7 +212,7 @@ $theme_setting = AuthService::getInstance($w)->getSettingByKey('bs5-theme');
                                                         }
                                                     }
                                                 } ?>
-                                                <div class="dropdown-menu cosine-header-dropdowns" aria-labelledby="topnav_<?php echo $module; ?>_dropdown_link">
+                                                <div class="dropdown-menu" aria-labelledby="topnav_<?php echo $module; ?>_dropdown_link">
                                                     <?php foreach ($module_navigation as $module_nav) :
                                                         if (is_string($module_nav)) {
                                                             echo $module_nav;

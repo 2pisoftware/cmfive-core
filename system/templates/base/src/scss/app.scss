@@ -84,8 +84,3 @@ body {
 .clearfix {
     @include clearfix();
 }
-
-.cosine-header-dropdowns a {
-    overflow-x: hidden;
-    text-overflow: ellipsis;
-}

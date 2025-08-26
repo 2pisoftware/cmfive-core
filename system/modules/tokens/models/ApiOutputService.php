@@ -44,18 +44,7 @@ class ApiOutputService extends DbService
             // header($_SERVER["SERVER_PROTOCOL"] . " " . $response['status'] . " " . $response['payload'][0]);
         }
 
-        // From here on, we are already set on a response status & content type
-        // But we can allow a listening token validator/router to modify JSON schema
-        // in case it does not like what (eg) $w->auth::allowed is delivering
-        
-        $hook_results = $this->w->callHook("tokens", "conform_json_output", ['response' => $response]);
-        if(empty($hook_results)) {
-            echo json_encode(['response' => $response]);
-        }
-        else {
-            // first in = best dressed:
-            echo json_encode(array_pop($hook_results));
-        }
+        echo json_encode(['response' => $response]);
         exit(0);
     }
 
