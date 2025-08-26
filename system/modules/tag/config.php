@@ -1,4 +1,5 @@
 <?php
+
 /**
  * config settings for tags
  *
@@ -6,13 +7,10 @@
  **/
 
 Config::set('tag', array(
-    'active' => true,
-    'path' => 'system/modules',
-    'topmenu' => true,
-    'hooks' => array(
-		  'core_dbobject',
-    ),
-    "dependencies" => array(
-      "grimmlink/selectize" => "0.12.*"
-    ),
+	'active' => true,
+	'path' => 'system/modules',
+	'topmenu' => true,
+	'hooks' => [
+		'core_dbobject'
+	]
 ));

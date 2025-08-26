@@ -103,11 +103,14 @@ class FileMultipartUploadService extends DbService
                 return $existing;
             }
 
+            $slash_pos = strpos($obj->key_path, "/");
+            $filename = !$slash_pos ? $obj->key_path : substr($obj->key_path, $slash_pos + 1);
+
             $attachment = new Attachment($this->w);
+            $attachment->title = $obj->display_name;
             $attachment->parent_table = $obj->parent_table;
             $attachment->parent_id = $obj->parent_id;
-            $attachment->filename = substr($obj->key_path, strpos($obj->key_path, "/") + 1);
-            $attachment->title = $obj->display_name;
+            $attachment->filename = $filename;
             $attachment->adapter = "s3";
             $attachment->fullpath = $obj->key_path;
             $attachment->skip_path_prefix = true;

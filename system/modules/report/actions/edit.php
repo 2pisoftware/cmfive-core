@@ -177,6 +177,9 @@ function edit_POST(Web $w)
 {
     $p = $w->pathMatch("id");
 
+    /**
+     * @var Report $report
+     */
     $report = !empty($p['id']) ? ReportService::getInstance($w)->getReport($p['id']) : new Report($w);
     if (!empty($p['id']) && empty($report->id)) {
         $w->error("Report not found", "/report");
@@ -201,6 +204,9 @@ function edit_POST(Web $w)
 
     // Insert or Update
     $report->fill($_POST);
+    if (isset($_POST['report_code'])) {
+        $report->report_code = json_decode($_POST['report_code']);
+    }
 
     // Force select statements only
     $report->sqltype = "select";

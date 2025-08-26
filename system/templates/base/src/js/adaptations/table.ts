@@ -22,7 +22,7 @@ export class TableAdaptation {
                 b = a;
                 a = c;
             }
-            return (a.querySelector('td:nth-child(' + (index + 1) + ')') as HTMLTableColElement)?.innerText.localeCompare((b.querySelector('td:nth-child(' + (index + 1) + ')') as HTMLTableColElement)?.innerText)
+            return (a.querySelector('td:nth-child(' + (index + 1) + ')') as HTMLTableColElement)?.innerText.localeCompare((b.querySelector('td:nth-child(' + (index + 1) + ')') as HTMLTableColElement)?.innerText, 'en', { numeric: true, sensitivity: 'base' }) || 0;
         })
 
         tbody.querySelectorAll('tr')?.forEach(row => tbody?.removeChild(row));

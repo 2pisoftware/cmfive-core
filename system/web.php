@@ -198,7 +198,7 @@ class Web
         // 2. if filename is stored in $this->_classdirectory
         if (!empty($this->_classdirectory[$className])) {
             if (file_exists($this->_classdirectory[$className])) {
-                require_once $this->_classdirectory[$className];
+                require_once str_replace('\\', '/', $this->_classdirectory[$className]);
                 return true;
             }
         }
@@ -219,10 +219,10 @@ class Web
             // Try a lower case version
             $file = $this->getModuleDir($model) . 'models/' . $className . ".php";
             if (file_exists($file)) {
-                require_once $file;
+                require_once str_replace('\\', '/', $file);
                 // add this class file to the cache file
-                file_put_contents($classdirectory_cache_file, '// ' . $cause . "\n" . '$this->_classdirectory["' . $className . '"]="' . $file . '";' . "\n\n", FILE_APPEND);
-                $this->_classdirectory[$className] = $file;
+                file_put_contents($classdirectory_cache_file, '// ' . $cause . "\n" . '$this->_classdirectory["' . $className . '"]="' . str_replace('\\', '/', $file) . '";' . "\n\n", FILE_APPEND);
+                $this->_classdirectory[$className] = str_replace('\\', '/', $file);
                 return true;
             }
 
@@ -239,9 +239,9 @@ class Web
                     continue;
                 }
 
-                require_once $info->getPathname();
-                file_put_contents($classdirectory_cache_file, '// ' . implode("\\", $namespace_parts) . " " . $cause . "\n" . '$this->_classdirectory["' . $className . '"]="' . $info->getPathname() . '";' . "\n\n", FILE_APPEND);
-                $this->_classdirectory[$className] = $info->getPathname();
+                require_once str_replace('\\', '/', $info->getPathname());
+                file_put_contents($classdirectory_cache_file, '// ' . implode("\\", $namespace_parts) . " " . $cause . "\n" . '$this->_classdirectory["' . $className . '"]="' . str_replace('\\', '/', $info->getPathname()) . '";' . "\n\n", FILE_APPEND);
+                $this->_classdirectory[$className] = str_replace('\\', '/', $info->getPathname());
                 return true;
             }
         }
@@ -252,10 +252,10 @@ class Web
             $class = array_pop($filePath);
             $file = 'system' . DS . 'classes' . DS . strtolower(implode("/", $filePath)) . DS . $class . ".php";
 
-            if (file_exists($file)) {
-                require_once $file;
-                file_put_contents($classdirectory_cache_file, '// ' . $cause . "\n" . '$this->_classdirectory["' . $className . '"]="' . $file . '";' . "\n\n", FILE_APPEND);
-                $this->_classdirectory[$className] = $file;
+            if (file_exists(str_replace('\\', '/', $file))) {
+                require_once str_replace('\\', '/', $file);
+                file_put_contents($classdirectory_cache_file, '// ' . $cause . "\n" . '$this->_classdirectory["' . $className . '"]="' . str_replace('\\', '/', $file) . '";' . "\n\n", FILE_APPEND);
+                $this->_classdirectory[$className] = str_replace('\\', '/', $file);
                 return true;
             }
         }
@@ -279,9 +279,9 @@ class Web
         foreach ($iterator as $info) {
             if ($info->getFilename() == $classfile) {
                 $matchfile = $info->getPathname();
-                require_once $matchfile;
-                file_put_contents($classdirectory_cache_file, '// ' . implode("\\", $namespaceparts) . " " . $cause . "\n" . '$this->_classdirectory["' . $className . '"]="' . $matchfile . '";' . "\n\n", FILE_APPEND);
-                $this->_classdirectory[$className] = $matchfile;
+                require_once str_replace('\\', '/', $matchfile);
+                file_put_contents($classdirectory_cache_file, '// ' . implode("\\", $namespaceparts) . " " . $cause . "\n" . '$this->_classdirectory["' . $className . '"]="' . str_replace('\\', '/', $matchfile) . '";' . "\n\n", FILE_APPEND);
+                $this->_classdirectory[$className] = str_replace('\\', '/', $matchfile);
                 $libmatch = true;
             }
         }
@@ -803,6 +803,11 @@ class Web
 
                 $this->header("Strict-Transport-Security", "max-age=63072000");
                 $this->header("X-Content-Type-Options", "nosniff");
+                if (Config::get('system.include_frame_options_header', true) === true) {
+                    $this->header("X-Frame-Options", "SAMEORIGIN");
+                }
+                $this->header("Referrer-Policy", "strict-origin-when-cross-origin");
+
                 //  $this->sendHeader("X-Frame-Options", "DENY");
                 $this->header("X-XSS-Protection", "1; mode=block");
 
@@ -2150,9 +2155,13 @@ class Web
      *
      * @return null
      */
-    public function header($string)
+    public function header(string $string, ?string $value = '')
     {
         if (!headers_sent($file, $line)) {
+            if (!empty($value)) {
+                $string = $string . ": " . $value;
+            }
+
             header($string);
         } else {
             LogService::getInstance($this)->error("Attempted to resend header {$string}, output started in {$file} on line {$line}");

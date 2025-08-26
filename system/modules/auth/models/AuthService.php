@@ -337,11 +337,11 @@ class AuthService extends DbService
         // If I have an authentication header: and it has a token -> else fallthrough to original logic
         // ie: expecting [...curl...etc...] -H "Authorization: Bearer {token}"
         /*
-                Note! If under Apache & HTTP_AUTHORIZATION is dropped, prove site HTPPS and then patch access:
-                RewriteEngine On
-                RewriteCond %{HTTP:Authorization} ^(.+)$
-                RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
-                */
+            Note! If under Apache & HTTP_AUTHORIZATION is dropped, prove site HTPPS and then patch access:
+            RewriteEngine On
+            RewriteCond %{HTTP:Authorization} ^(.+)$
+            RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+        */
 
         if (empty($this->user()) && (Config::get('system.use_api') === true) && !empty($_SERVER['HTTP_AUTHORIZATION'])) {
             $speculativeToken = TokensService::getInstance($this->w)->getTokenFromAuthorisationHeader($_SERVER['HTTP_AUTHORIZATION']);

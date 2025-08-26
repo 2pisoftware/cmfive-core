@@ -1,93 +1,44 @@
-
-.selectize-dropdown-content .option.selected {
-    background-color: #a0d3e8;
-    margin: 2px;
-    border: 1px solid #ddd;
+.hidden_tags {
+	display: none;
 }
 
-.selectize-input div.item {
-    margin: 8px 3px 8px !important;
+.tags-container:hover .hidden_tags {
+	display: inline;
 }
 
-.tag_container {
-    display: inline-block;
-    /*position: relative;*/
+.tags-container:hover .show_more {
+	display: none;
 }
 
-.tag_container:hover {
-    cursor: pointer;
+.show_more {
+	display: inline;
 }
 
-div[class^='show_hover'] {
-    position: absolute;
-    /*max-width: 300px;*/
-    width: auto;
-    z-index: 1000;
-    display: none;
+.shown_tags {
+	display: inline;
 }
 
-span[class^='count_hover_tags'] {
-    font-size: 0.8em;
+.tags-container {
+	display: flex;
+	align-items: center;
+	display: inline-block;
+	cursor: pointer;
 }
 
-.tag_show_container span:not(:last-child) {
-    margin-right: 5px;
+.tags-container:hover {
+	cursor: pointer;
 }
 
-div[class^='show_hover'] span:not(:last-child) {
-    margin-right: 5px;
+.tag-small {
+	font-size: 0.7rem;
+	padding: 2px 3px 2px 3px;
+	margin-left: 5px;
 }
 
-.selectize-dropdown-content {
-    max-height: none;
+.tag-small:first-child {
+	margin-left: 0;
 }
 
-div[id^='tag_container_']:hover div[class^='show_hover_'] {
-    display: block;
-    background-color: #efefef;
-    background-color: rgba(150, 150, 150, 0.5);
-    padding: 5px;
-}
-
-.loader,
-.loader:after {
-    border-radius: 50%;
-    width: 15px;
-    height: 15px;
-}
-.loader {
-    display: block;
-    margin: 1px auto;
-    font-size: 2px;
-    position: relative;
-    text-indent: -9999em;
-    border-top: 1.1em solid rgba(255, 255, 255, 0);
-    border-right: 1.1em solid rgba(255, 255, 255, 0);
-    border-bottom: 1.1em solid rgba(255, 255, 255, 0);
-    border-left: 1.1em solid #4c4c4c;
-    -webkit-transform: translateZ(0);
-    -ms-transform: translateZ(0);
-    transform: translateZ(0);
-    -webkit-animation: loading_indicator 1.1s infinite linear;
-    animation: loading_indicator 1.1s infinite linear;
-}
-@-webkit-keyframes loading_indicator {
-    0% {
-        -webkit-transform: rotate(0deg);
-        transform: rotate(0deg);
-    }
-    100% {
-        -webkit-transform: rotate(360deg);
-        transform: rotate(360deg);
-    }
-}
-@keyframes loading_indicator {
-    0% {
-        -webkit-transform: rotate(0deg);
-        transform: rotate(0deg);
-    }
-    100% {
-        -webkit-transform: rotate(360deg);
-        transform: rotate(360deg);
-    }
+.tags-container .loader {
+	border-left: 1.1em solid var(--bs-primary);
 }

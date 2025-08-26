@@ -8,7 +8,7 @@ export class TimelogHelper  {
         if(page.url() != HOST + "/task/edit/" + taskID + "#details") {
             if(page.url() != HOST + "/task/tasklist")
                 await CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Task", "Task List");
-            
+            await page.getByRole("button", { name: 'Reset', exact: true }).click();
             await page.getByRole("link", {name: taskName, exact: true}).click();
         }
 
@@ -39,7 +39,7 @@ export class TimelogHelper  {
         if(page.url() != HOST + "/task/edit/" + taskID + "#details") {
             if(page.url() != HOST + "/task/tasklist")
                 await CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Task", "Task List");
-            
+            await page.getByRole("button", { name: 'Reset', exact: true }).click();
             await page.getByRole("link", {name: taskName, exact: true}).click();
         }
 
@@ -88,7 +88,7 @@ export class TimelogHelper  {
         else if(page.url() != HOST + "/task/edit/" + taskID + "#details") {
             if(page.url() != HOST + "/task/tasklist")
                 await CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Task", "Task List");
-            
+            await page.getByRole("button", { name: 'Reset', exact: true }).click();
             await page.getByRole("link", {name: taskName, exact: true}).click();
             await page.getByRole("link", {name: "Time Log"}).click();
         }
@@ -109,7 +109,7 @@ export class TimelogHelper  {
         else if(page.url() != HOST + "/task/edit/" + taskID + "#details") {
             if(page.url() != HOST + "/task/tasklist")
                 await CmfiveHelper.clickCmfiveNavbar(page, isMobile, "Task", "Task List");
-            
+            await page.getByRole("button", { name: 'Reset', exact: true }).click();
             await page.getByRole("link", {name: taskName, exact: true}).click();
             await page.getByRole("link", {name: "Time Log"}).click();
         }

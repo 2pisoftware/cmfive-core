@@ -34,7 +34,7 @@ class ZendMailStorageImap extends \Laminas\Mail\Storage\Imap
         $host     = isset($params->host)     ? $params->host     : 'localhost';
         $password = isset($params->password) ? $params->password : '';
         $port     = isset($params->port)     ? $params->port     : null;
-        $ssl      = isset($params->ssl)      ? $params->ssl      : false;
+        $ssl      = isset($params->ssl)      ? ($port !== 993 ? "tls" : $params->ssl) : false;
         $options  = isset($params->options)  ? $params->options  : null;
 
         $this->protocol = new ZendMailProtocolImap();
@@ -78,10 +78,10 @@ class ZendMailProtocolImap extends \Laminas\Mail\Protocol\Imap
         ErrorHandler::start();
 
         // Use stream_context_create instead of fsockopen as it allows us to specify SSL stream options
-        $stream = stream_context_create();
-        if ($ssl !== false && !is_null($options) && is_array($options) && array_key_exists('ssl', $options)) {
-            stream_context_set_option($stream, $options);
-        }
+        $stream = stream_context_create($options);
+        // if ($ssl !== false && !is_null($options) && is_array($options) && array_key_exists('ssl', $options)) {
+        //     stream_context_set_option($stream, $options);
+        // }
 
         $this->socket = stream_socket_client($host . ':' . $port, $errno, $errstr, self::TIMEOUT_CONNECTION, STREAM_CLIENT_CONNECT, $stream);
 

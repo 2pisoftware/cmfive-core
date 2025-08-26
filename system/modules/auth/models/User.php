@@ -408,10 +408,10 @@ class User extends DbObject
     public function encryptPassword($password)
     {
         // If User's password salt is not built into the password hash use SHA1.
-        // Should not be used in Cmfive v5
-        // if (!empty($this->password_salt)) {
-        //     return sha1($this->password_salt . $password);
-        // }
+        // This is actually necessary to prevent issues rehashing SHA1 passwords to the new bcrypt hash
+        if (!empty($this->password_salt)) {
+            return sha1($this->password_salt . $password);
+        }
 
         $hash = false;
         $algorithm = PASSWORD_DEFAULT;
@@ -462,11 +462,16 @@ class User extends DbObject
             return false;
         }
 
-        if (!empty($this->password_salt)) {
-            $this->password_salt = null;
+        // This will need to change if we ever want to rehash to another algorithm.
+        if (startsWith($this->password, "$2y$")) {
+            // The password is already using bcrypt.
+            return false;
         }
+        
+        $this->password_salt = null;
 
-        // $this->setPassword($password);
+        // Actually set the password to the new hash.
+        $this->setPassword($password);
         return $this->update(true);
     }
 
