@@ -13,7 +13,8 @@ Config::set('file', [
     ],
     'hooks' => [
         'admin',
-        'core_web'
+        'core_web',
+        "file",
     ],
     'adapters' => [
         'local' => [
