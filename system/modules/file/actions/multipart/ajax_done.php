@@ -21,6 +21,16 @@ function ajax_done_POST(Web $w)
 
     $obj->delete();
 
+    $w->callHook(
+        "file",
+        "multipart_upload_done",
+        $attachment !== true
+            ? [
+                "attachment" => $attachment
+            ]
+            : null
+    );
+
     $w->out(
         (new JsonResponse())
             ->setSuccessfulResponse(
