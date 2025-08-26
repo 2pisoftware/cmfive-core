@@ -11,33 +11,82 @@ import { viteStaticCopy } from "vite-plugin-static-copy";
 let scriptPath = __dirname;
 
 console.log("dirname", scriptPath);
-
-scriptPath = scriptPath.split("system")[0];
+/* Apply conditional steps to untangle, eg:
+    dirname /workspaces/cmfive_dev_box/cmfive-core/system/templates/base
+    scriptPath 2 /workspaces/cmfive_dev_box/
+    scriptPath SHOULD BE : /workspaces/cmfive_dev_box/cmfive-boilerplate/
+    _vs_
+    dirname /codebuild/output/src3846646311/src/composer/vendor/2pisoftware/cmfive-core/system/templates/base
+    scriptPath 2 /codebuild/output/src3846646311/src/composer/vendor/2pisoftware/
+    scriptPath SHOULD BE : /codebuild/output/src3846646311/src
+    _etc_ ...
+    */
+if (scriptPath.includes("cmfive-boilerplate")) {
+	// System is symlinked inside of boilerplate
+	scriptPath =
+		scriptPath.split("cmfive-boilerplate")[0] + "cmfive-boilerplate/";
+} else if (scriptPath.includes("cmfive-core")) {
+	// System is symlinked outside of boilerplate
+	scriptPath = scriptPath.split("cmfive-core")[0];
+	console.log("scriptPath 2", scriptPath);
+	if (fs.existsSync(scriptPath + "cmfive-boilerplate")) {
+		// we are in some assembled/mounted project
+		scriptPath += "cmfive-boilerplate/";
+	} else if (fs.existsSync("/var/www/html")) {
+		// we are in hosted folders
+		scriptPath = "/var/www/html/";
+	} else if (fs.existsSync("/codebuild/output")) {
+		// we are in a cdk pipeline
+		scriptPath = scriptPath.split("composer")[0];
+	} else {
+		throw new Error("Could not determine root directory of project");
+	}
+} else if (fs.existsSync("/var/www/html")) {
+	// we are in hosted folders
+	scriptPath = "/var/www/html/";
+}
 
 console.log("scriptPath", scriptPath);
 
 const _x = [
-	resolve(__dirname, "src/js/app.ts"),
-	resolve(__dirname, "src/scss/app.scss"),
+	resolve(__dirname, "src/js/app.ts").replace(/\\/g, "/"),
+	resolve(__dirname, "src/scss/app.scss").replace(/\\/g, "/"),
 	...glob.sync(
-		resolve(__dirname, scriptPath, "system/modules/**/assets/ts/*.ts"),
+		resolve(__dirname, scriptPath, "system/modules/**/assets/ts/*.ts").replace(
+			/\\/g,
+			"/",
+		),
 	),
 	...glob.sync(
-		resolve(__dirname, scriptPath, "system/modules/**/assets/scss/*.scss"),
+		resolve(
+			__dirname,
+			scriptPath,
+			"system/modules/**/assets/scss/*.scss",
+		).replace(/\\/g, "/"),
 	),
-	...glob.sync(resolve(__dirname, scriptPath, "modules/**/assets/ts/*.ts")),
-	...glob.sync(resolve(__dirname, scriptPath, "modules/**/assets/scss/*.scss")),
+	...glob.sync(
+		resolve(__dirname, scriptPath, "modules/**/assets/ts/*.ts").replace(
+			/\\/g,
+			"/",
+		),
+	),
+	...glob.sync(
+		resolve(__dirname, scriptPath, "modules/**/assets/scss/*.scss").replace(
+			/\\/g,
+			"/",
+		),
+	),
 ];
 
 const _fileMapObj = {};
 _x.forEach((file) => {
-	let name = file.split("/").pop().split(".").shift();
-	const ext = file.split(".").pop();
+	let name = file.replace(/\\/g, "/").split("/").pop().split(".").shift();
+	const ext = file.replace(/\\/g, "/").split(".").pop();
 
 	if (Object.hasOwn(_fileMapObj, `${name}`)) {
 		name = `${name}.${ext}`;
 	}
-	_fileMapObj[`${name}`] = file;
+	_fileMapObj[`${name}`] = file.replace(/\\/g, "/");
 });
 
 console.log("fileMap", _fileMapObj);
@@ -52,7 +101,7 @@ export default defineConfig({
 						__dirname,
 						scriptPath,
 						"system/templates/base/node_modules/bootstrap-icons/font/fonts/bootstrap-icons.woff",
-					),
+					).replace(/\\/g, "/"),
 					dest: "fonts",
 				},
 				{
@@ -60,7 +109,7 @@ export default defineConfig({
 						__dirname,
 						scriptPath,
 						"system/templates/base/node_modules/bootstrap-icons/font/fonts/bootstrap-icons.woff2",
-					),
+					).replace(/\\/g, "/"),
 					dest: "fonts",
 				},
 			],
@@ -104,8 +153,11 @@ export default defineConfig({
 			"~": resolve(
 				__dirname,
 				scriptPath + "system/templates/base/node_modules",
+			).replace(/\\/g, "/"),
+			"@": resolve(__dirname, scriptPath + "system/templates/base/src").replace(
+				/\\/g,
+				"/",
 			),
-			"@": resolve(__dirname, scriptPath + "system/templates/base/src"),
 			vue: "vue/dist/vue.esm-bundler.js",
 		},
 	},
